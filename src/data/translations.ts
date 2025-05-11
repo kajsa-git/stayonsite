@@ -10,8 +10,10 @@ export type TranslationKey =
   | 'hero.title'
   | 'hero.subtitle'
   | 'hero.cta'
+  | 'hero.tagline'
   | 'services.title'
   | 'services.subtitle'
+  | 'services.tagline'
   | 'services.process.title'
   | 'services.process.step1.title'
   | 'services.process.step1.description'
@@ -23,6 +25,7 @@ export type TranslationKey =
   | 'services.process.step4.description'
   | 'references.title'
   | 'references.subtitle'
+  | 'references.tagline'
   | 'references.testimonial1.quote'
   | 'references.testimonial1.author'
   | 'references.testimonial1.company'
@@ -34,6 +37,7 @@ export type TranslationKey =
   | 'references.testimonial3.company'
   | 'inquiry.title'
   | 'inquiry.subtitle'
+  | 'inquiry.tagline'
   | 'inquiry.form.companyName'
   | 'inquiry.form.contactName'
   | 'inquiry.form.email'
@@ -59,9 +63,11 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.title': 'Snabbt boende till era byggarbetare',
     'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
     'hero.cta': 'Skicka förfrågan',
+    'hero.tagline': 'Lugnt. Enkelt. Effektivt.',
     
     'services.title': 'Våra tjänster',
     'services.subtitle': 'Vi erbjuder en smidig process för att hitta rätt boende till era behov',
+    'services.tagline': 'Enkelt och smidigt',
     'services.process.title': 'Så här fungerar det',
     'services.process.step1.title': 'Skicka förfrågan',
     'services.process.step1.description': 'Fyll i vårt enkla formulär med detaljer om era behov',
@@ -74,6 +80,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'references.title': 'Referenser',
     'references.subtitle': 'Vad våra kunder säger om oss',
+    'references.tagline': 'Vad våra kunder säger',
     'references.testimonial1.quote': 'StayOnSite löste vårt boendebekymmer på bara två dagar. Mycket imponerande service!',
     'references.testimonial1.author': 'Anders Johansson',
     'references.testimonial1.company': 'AB Byggbolaget',
@@ -86,6 +93,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'inquiry.title': 'Skicka en förfrågan',
     'inquiry.subtitle': 'Fyll i formuläret nedan så återkommer vi så snart som möjligt',
+    'inquiry.tagline': 'Kontakta oss',
     'inquiry.form.companyName': 'Företagsnamn',
     'inquiry.form.contactName': 'Kontaktperson',
     'inquiry.form.email': 'E-post',
@@ -111,9 +119,11 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.title': 'Fast accommodation for your construction workers',
     'hero.subtitle': 'We help construction companies quickly find accommodations in other locations for their workers',
     'hero.cta': 'Send Inquiry',
+    'hero.tagline': 'Calm. Simple. Effective.',
     
     'services.title': 'Our Services',
     'services.subtitle': 'We offer a smooth process to find the right accommodation for your needs',
+    'services.tagline': 'Simple and smooth',
     'services.process.title': 'How it works',
     'services.process.step1.title': 'Send inquiry',
     'services.process.step1.description': 'Fill out our simple form with details about your needs',
@@ -126,6 +136,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'references.title': 'References',
     'references.subtitle': 'What our customers say about us',
+    'references.tagline': 'What our customers say',
     'references.testimonial1.quote': 'StayOnSite solved our accommodation issue in just two days. Very impressive service!',
     'references.testimonial1.author': 'Anders Johansson',
     'references.testimonial1.company': 'AB Byggbolaget',
@@ -138,6 +149,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'inquiry.title': 'Send an Inquiry',
     'inquiry.subtitle': 'Fill out the form below and we will get back to you as soon as possible',
+    'inquiry.tagline': 'Contact us',
     'inquiry.form.companyName': 'Company Name',
     'inquiry.form.contactName': 'Contact Person',
     'inquiry.form.email': 'Email',
