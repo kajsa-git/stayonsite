@@ -7,12 +7,12 @@ const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 text-white pt-32 pb-20 md:pb-32">
-      {/* Overlay pattern */}
-      <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMzYgMzRoLTJsMi0yaC0ydjJoLTJ2LTJoLTJ2MmgtMnYtNGgxMHY0em0tMiAyaC0ydjJoLTJ2LTJoLTJWMzRoNnYyem0tMiA0aC0ydjJoMnYtMnoiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMCAwaDYwdjYwSDB6Ii8+PC9nPjwvc3ZnPg==')]"></div>
+    <section id="home" className="relative bg-cover bg-center text-white pt-32 pb-20 md:pb-32" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')" }}>
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
       
       <div className="container mx-auto px-4 relative">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl backdrop-blur-sm bg-black/20 p-8 rounded-2xl">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             {t('hero.title')}
           </h1>
