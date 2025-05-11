@@ -7,7 +7,7 @@ const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="relative bg-cover bg-center text-gray-800 pt-32 pb-20 md:pb-32" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')" }}>
+    <section id="home" className="relative bg-cover bg-center text-gray-800 pt-32 pb-20 md:pb-32" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?ixlib=rb-4.0.3&auto=format&fit=crop&w=2965&q=80')" }}>
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-gray-900/40"></div>
       
