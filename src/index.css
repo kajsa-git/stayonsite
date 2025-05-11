@@ -16,52 +16,52 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 210 100% 40%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 255 70% 64%;
+    --primary-foreground: 255 40% 98%;
 
-    --secondary: 25 100% 50%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 25 95% 56%;
+    --secondary-foreground: 255 40% 98%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 255 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 255 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 255 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 1.5rem;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --foreground: 255 40% 98%;
 
     --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 255 40% 98%;
 
     --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 255 40% 98%;
 
-    --primary: 210 100% 50%;
+    --primary: 255 70% 64%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 25 100% 60%;
+    --secondary: 25 95% 65%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 255 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 255 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
@@ -81,7 +81,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
-    @apply font-semibold;
+    @apply font-semibold tracking-tight;
   }
 }
 
@@ -93,3 +93,16 @@
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
+
+.glass-card {
+  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+}
+
+.section-spacing {
+  @apply py-16 md:py-24;
+}
+

@@ -21,7 +21,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center">
           <a href="#" className="flex items-center">
-            <span className="text-xl font-bold text-primary-600">StayOn<span className="text-secondary-500">Site</span></span>
+            <span className="text-xl font-bold text-primary-600">Stay<span className="text-secondary-500">On</span>Site</span>
           </a>
         </div>
 
@@ -41,7 +41,14 @@ const Header = () => {
           </ul>
           <div className="flex items-center space-x-2">
             <LanguageSwitcher />
-            <Button as="a" href="#inquiry" size="sm">{t('nav.inquiryForm')}</Button>
+            <Button 
+              size="sm"
+              onClick={() => {
+                document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              {t('nav.inquiryForm')}
+            </Button>
           </div>
         </nav>
 
@@ -77,10 +84,11 @@ const Header = () => {
               ))}
               <li>
                 <Button 
-                  as="a" 
-                  href="#inquiry" 
                   className="w-full"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
+                    setIsMenuOpen(false);
+                  }}
                 >
                   {t('nav.inquiryForm')}
                 </Button>
