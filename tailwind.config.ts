@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -27,28 +28,28 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					100: '#E0F2F1', // Soft teal
-					200: '#B2DFDB',
-					300: '#80CBC4',
-					400: '#4DB6AC',
-					500: '#26A69A', // Main teal
-					600: '#00897B',
-					700: '#00796B',
-					800: '#00695C',
-					900: '#004D40',
+					100: '#E3F2FD', // Light blue
+					200: '#BBDEFB',
+					300: '#90CAF9',
+					400: '#64B5F6',
+					500: '#42A5F5', // Medium blue
+					600: '#2196F3',
+					700: '#1E88E5',
+					800: '#1976D2',
+					900: '#1565C0',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))',
-					100: '#FFF8E1', // Soft amber
-					200: '#FFECB3',
-					300: '#FFE082',
-					400: '#FFD54F',
-					500: '#FFCA28', // Main amber
-					600: '#FFB300',
-					700: '#FFA000',
-					800: '#FF8F00',
-					900: '#FF6F00',
+					100: '#E8EAF6', // Light indigo
+					200: '#C5CAE9',
+					300: '#9FA8DA',
+					400: '#7986CB',
+					500: '#5C6BC0', // Medium indigo
+					600: '#3F51B5',
+					700: '#3949AB',
+					800: '#303F9F',
+					900: '#283593',
 				},
 				construction: {
 					100: '#F1F8E9', // Soft green

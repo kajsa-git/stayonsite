@@ -45,9 +45,9 @@ const Header = () => {
           <a href="#" className="flex items-center">
             <span className={cn(
               "text-2xl font-bold transition-colors duration-300",
-              scrolled ? "text-teal-600" : "text-teal-800"
+              scrolled ? "text-primary-600" : "text-primary-800"
             )}>
-              Stay<span className="text-amber-500">On</span>Site
+              Stay<span className="text-primary-400">On</span>Site
             </span>
           </a>
         </div>
@@ -60,8 +60,8 @@ const Header = () => {
                 <a 
                   href={link.href}
                   className={cn(
-                    "font-medium transition-colors hover:text-amber-500",
-                    scrolled ? "text-gray-700" : "text-teal-800"
+                    "font-medium transition-colors hover:text-primary-500",
+                    scrolled ? "text-gray-700" : "text-gray-800"
                   )}
                 >
                   {link.label}
@@ -70,10 +70,10 @@ const Header = () => {
             ))}
           </ul>
           <div className="flex items-center space-x-4">
-            <LanguageSwitcher className={scrolled ? "" : "text-teal-800"} />
+            <LanguageSwitcher className={scrolled ? "" : "text-gray-800"} />
             <Button 
               variant={scrolled ? "default" : "secondary"}
-              className="rounded-full bg-amber-400 hover:bg-amber-500 text-gray-800"
+              className="rounded-full bg-primary-500 hover:bg-primary-600 text-white"
               onClick={() => {
                 document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
               }}
@@ -85,14 +85,14 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <LanguageSwitcher className={scrolled ? "" : "text-teal-800"} />
+          <LanguageSwitcher className={scrolled ? "" : "text-gray-800"} />
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             className={cn(
               "ml-2",
-              scrolled ? "text-gray-700" : "text-teal-800"
+              scrolled ? "text-gray-700" : "text-gray-800"
             )}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -118,7 +118,7 @@ const Header = () => {
               ))}
               <li className="pt-4">
                 <Button 
-                  className="w-full rounded-full"
+                  className="w-full rounded-full bg-primary-500 hover:bg-primary-600 text-white"
                   onClick={() => {
                     document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
                     setIsMenuOpen(false);
