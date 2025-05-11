@@ -37,7 +37,7 @@ const InquiryForm = () => {
   };
 
   return (
-    <section id="inquiry" className="py-16 bg-primary-50">
+    <section id="inquiry" className="py-16 bg-teal-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">{t('inquiry.title')}</h2>
@@ -48,19 +48,19 @@ const InquiryForm = () => {
 
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="grid md:grid-cols-5">
-            <div className="md:col-span-2 bg-primary-700 p-8 text-white">
+            <div className="md:col-span-2 bg-teal-100 p-8 text-teal-900">
               <h3 className="text-xl font-semibold mb-6">Kontaktinformation</h3>
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <Mail className="mr-3 h-5 w-5 text-primary-200" />
+                  <Mail className="mr-3 h-5 w-5 text-teal-600" />
                   <span>info@stayonsite.se</span>
                 </div>
                 <div className="flex items-center">
-                  <Phone className="mr-3 h-5 w-5 text-primary-200" />
+                  <Phone className="mr-3 h-5 w-5 text-teal-600" />
                   <span>+46 70 123 45 67</span>
                 </div>
                 <div className="flex items-start">
-                  <MapPin className="mr-3 h-5 w-5 text-primary-200 mt-1" />
+                  <MapPin className="mr-3 h-5 w-5 text-teal-600 mt-1" />
                   <span>StayOnSite AB<br />Storgatan 1<br />114 55 Stockholm</span>
                 </div>
               </div>
@@ -69,19 +69,19 @@ const InquiryForm = () => {
                 <h4 className="text-lg font-medium mb-4">Varför välja oss?</h4>
                 <ul className="space-y-2">
                   <li className="flex items-center">
-                    <div className="h-2 w-2 bg-secondary-400 rounded-full mr-2"></div>
+                    <div className="h-2 w-2 bg-amber-300 rounded-full mr-2"></div>
                     <span>Snabba svar inom 24 timmar</span>
                   </li>
                   <li className="flex items-center">
-                    <div className="h-2 w-2 bg-secondary-400 rounded-full mr-2"></div>
+                    <div className="h-2 w-2 bg-amber-300 rounded-full mr-2"></div>
                     <span>Boenden över hela Sverige</span>
                   </li>
                   <li className="flex items-center">
-                    <div className="h-2 w-2 bg-secondary-400 rounded-full mr-2"></div>
+                    <div className="h-2 w-2 bg-amber-300 rounded-full mr-2"></div>
                     <span>Smidig process från start till mål</span>
                   </li>
                   <li className="flex items-center">
-                    <div className="h-2 w-2 bg-secondary-400 rounded-full mr-2"></div>
+                    <div className="h-2 w-2 bg-amber-300 rounded-full mr-2"></div>
                     <span>Över 10 års erfarenhet</span>
                   </li>
                 </ul>

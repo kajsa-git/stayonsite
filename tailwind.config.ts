@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -28,39 +27,39 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					100: '#E5DEFF', // Soft purple
-					200: '#C7BEFF',
-					300: '#A99EFF',
-					400: '#8B7DFF',
-					500: '#6C5CE7', // Main purple
-					600: '#564ABB',
-					700: '#41378F',
-					800: '#2B2562',
-					900: '#161236',
+					100: '#E0F2F1', // Soft teal
+					200: '#B2DFDB',
+					300: '#80CBC4',
+					400: '#4DB6AC',
+					500: '#26A69A', // Main teal
+					600: '#00897B',
+					700: '#00796B',
+					800: '#00695C',
+					900: '#004D40',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))',
-					100: '#FDE1D3', // Soft peach
-					200: '#FBC4A9',
-					300: '#F9A77F',
-					400: '#F78A54',
-					500: '#F56B2A', // Main peach
-					600: '#C45621',
-					700: '#934119',
-					800: '#622C11',
-					900: '#311608',
+					100: '#FFF8E1', // Soft amber
+					200: '#FFECB3',
+					300: '#FFE082',
+					400: '#FFD54F',
+					500: '#FFCA28', // Main amber
+					600: '#FFB300',
+					700: '#FFA000',
+					800: '#FF8F00',
+					900: '#FF6F00',
 				},
 				construction: {
-					100: '#F1F0FB', // Soft gray
-					200: '#E2E1F6',
-					300: '#CACAE8',
-					400: '#9F9FCC',
-					500: '#7878B0',
-					600: '#5A5A87',
-					700: '#3D3D5E',
-					800: '#252538',
-					900: '#121219',
+					100: '#F1F8E9', // Soft green
+					200: '#DCEDC8',
+					300: '#C5E1A5',
+					400: '#AED581',
+					500: '#9CCC65',
+					600: '#8BC34A',
+					700: '#7CB342',
+					800: '#689F38',
+					900: '#558B2F',
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',

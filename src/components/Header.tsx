@@ -45,9 +45,9 @@ const Header = () => {
           <a href="#" className="flex items-center">
             <span className={cn(
               "text-2xl font-bold transition-colors duration-300",
-              scrolled ? "text-primary-600" : "text-white"
+              scrolled ? "text-teal-600" : "text-teal-800"
             )}>
-              Stay<span className="text-secondary-500">On</span>Site
+              Stay<span className="text-amber-500">On</span>Site
             </span>
           </a>
         </div>
@@ -60,8 +60,8 @@ const Header = () => {
                 <a 
                   href={link.href}
                   className={cn(
-                    "font-medium transition-colors hover:text-secondary-500",
-                    scrolled ? "text-gray-700" : "text-white"
+                    "font-medium transition-colors hover:text-amber-500",
+                    scrolled ? "text-gray-700" : "text-teal-800"
                   )}
                 >
                   {link.label}
@@ -70,10 +70,10 @@ const Header = () => {
             ))}
           </ul>
           <div className="flex items-center space-x-4">
-            <LanguageSwitcher className={scrolled ? "" : "text-white"} />
+            <LanguageSwitcher className={scrolled ? "" : "text-teal-800"} />
             <Button 
               variant={scrolled ? "default" : "secondary"}
-              className="rounded-full"
+              className="rounded-full bg-amber-400 hover:bg-amber-500 text-gray-800"
               onClick={() => {
                 document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
               }}
@@ -85,14 +85,14 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <LanguageSwitcher className={scrolled ? "" : "text-white"} />
+          <LanguageSwitcher className={scrolled ? "" : "text-teal-800"} />
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             className={cn(
               "ml-2",
-              scrolled ? "text-gray-700" : "text-white"
+              scrolled ? "text-gray-700" : "text-teal-800"
             )}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
