@@ -28,39 +28,41 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					100: '#E3F2FD', // Light blue
-					200: '#BBDEFB',
-					300: '#90CAF9',
-					400: '#64B5F6',
-					500: '#42A5F5', // Medium blue
-					600: '#2196F3',
-					700: '#1E88E5',
-					800: '#1976D2',
-					900: '#1565C0',
+					50: '#f0f7fa',
+					100: '#e0eff5',
+					200: '#bddbe8',
+					300: '#8ec1d5',
+					400: '#5ea5c0',
+					500: '#3d8cab',
+					600: '#30708e',
+					700: '#295d76',
+					800: '#254d62',
+					900: '#214153',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))',
-					100: '#E8EAF6', // Light indigo
-					200: '#C5CAE9',
-					300: '#9FA8DA',
-					400: '#7986CB',
-					500: '#5C6BC0', // Medium indigo
-					600: '#3F51B5',
-					700: '#3949AB',
-					800: '#303F9F',
-					900: '#283593',
+					50: '#f8f9f6',
+					100: '#eff0eb',
+					200: '#e2e5dc',
+					300: '#c4c9b9',
+					400: '#a7ae95',
+					500: '#8b9375',
+					600: '#72795f',
+					700: '#5d634e',
+					800: '#4d5241',
+					900: '#414538',
 				},
-				construction: {
-					100: '#F1F8E9', // Soft green
-					200: '#DCEDC8',
-					300: '#C5E1A5',
-					400: '#AED581',
-					500: '#9CCC65',
-					600: '#8BC34A',
-					700: '#7CB342',
-					800: '#689F38',
-					900: '#558B2F',
+				nordic: {
+					100: '#f7f7f5', // Off white
+					200: '#ebeae3', // Warm beige
+					300: '#dbd8cf', // Taupe
+					400: '#a8b6a8', // Sage
+					500: '#7d96a6', // Dusty blue
+					600: '#d0bbac', // Terracotta light
+					700: '#b89283', // Terracotta
+					800: '#5b6a6b', // Deep teal
+					900: '#424343', // Charcoal
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -86,6 +88,7 @@ export default {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				heading: ['Montserrat', 'sans-serif'],
+				display: ['Playfair Display', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -111,8 +114,8 @@ export default {
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-down': 'accordion-down 0.3s ease-out',
+				'accordion-up': 'accordion-up 0.3s ease-out'
 			}
 		}
 	},

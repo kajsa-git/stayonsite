@@ -11,72 +11,77 @@ const Services = () => {
       title: t('services.process.step1.title'),
       description: t('services.process.step1.description'),
       icon: ClipboardList,
-      color: 'bg-primary-100 text-primary-600'
+      color: 'text-nordic-500'
     },
     {
       title: t('services.process.step2.title'),
       description: t('services.process.step2.description'),
       icon: MessageSquare,
-      color: 'bg-secondary-100 text-secondary-600'
+      color: 'text-nordic-500'
     },
     {
       title: t('services.process.step3.title'),
       description: t('services.process.step3.description'),
       icon: CheckCircle,
-      color: 'bg-green-100 text-green-600'
+      color: 'text-nordic-500'
     },
     {
       title: t('services.process.step4.title'),
       description: t('services.process.step4.description'),
       icon: Home,
-      color: 'bg-blue-100 text-blue-600'
+      color: 'text-nordic-500'
     }
   ];
 
   return (
-    <section id="services" className="py-16 md:py-24 bg-gradient-to-b from-white to-primary-50">
-      <div className="container mx-auto px-4">
+    <section id="services" className="py-24 bg-white">
+      <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">{t('services.title')}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
+            {t('services.tagline') || 'Enkelt och smidigt'}
+          </span>
+          <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('services.title')}</h2>
+          <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
             {t('services.subtitle')}
           </p>
         </div>
 
         <div>
-          <h3 className="text-xl md:text-2xl font-semibold mb-10 text-center text-gray-700">{t('services.process.title')}</h3>
+          <h3 className="text-xl md:text-2xl font-normal mb-12 text-center text-nordic-900 font-display">{t('services.process.title')}</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
-                <Card key={index} className="border-none shadow-md rounded-2xl card-hover overflow-hidden">
+                <Card key={index} className="border border-nordic-200 shadow-none rounded-lg overflow-hidden transition-all duration-500 hover:border-nordic-300">
                   <CardHeader className="pb-2">
-                    <div className={`w-14 h-14 rounded-xl ${step.color} flex items-center justify-center mb-4`}>
-                      <Icon size={28} />
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6 border border-nordic-300">
+                      <Icon size={24} className={step.color} />
                     </div>
-                    <CardTitle className="text-xl">{step.title}</CardTitle>
+                    <CardTitle className="text-lg font-normal text-nordic-900">{step.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600">{step.description}</p>
+                    <p className="text-nordic-700 font-light">{step.description}</p>
                   </CardContent>
                 </Card>
               );
             })}
           </div>
           
-          <div className="mt-16 glass-card p-8 md:p-10 mx-4 md:mx-auto max-w-5xl">
+          <div className="mt-20 p-10 mx-auto max-w-5xl border border-nordic-200 rounded-lg">
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-              <div className="bg-primary-100 p-5 rounded-full">
-                <img 
-                  src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                  alt="Construction workers" 
-                  className="w-24 h-24 object-cover rounded-full"
-                />
+              <div className="p-3 border border-nordic-200 rounded-full">
+                <div className="w-24 h-24 rounded-full overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                    alt="Construction workers" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-800">Trygghet genom erfaren partner</h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <h3 className="text-2xl font-normal mb-4 text-nordic-900 font-display">Trygghet genom erfaren partner</h3>
+                <p className="text-nordic-800 leading-relaxed font-light">
                   Med över 10 års erfarenhet av att hjälpa byggbolag med boende, 
                   kan ni lita på att StayOnSite levererar boenden som uppfyller era behov, 
                   i tid och enligt överenskommelse. Vi har ett brett nätverk av boendealternativ 

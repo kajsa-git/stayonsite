@@ -7,64 +7,64 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="contact" className="bg-gradient-to-b from-gray-100 to-gray-200 text-gray-800">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <footer id="contact" className="bg-nordic-100 text-nordic-800 nordic-texture">
+      <div className="container mx-auto px-6 md:px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
           <div>
-            <h3 className="text-2xl font-bold mb-6">Stay<span className="text-secondary-500">On</span><span className="text-primary-600">Site</span></h3>
-            <p className="mb-6 text-gray-600 leading-relaxed">
+            <h3 className="text-2xl font-display mb-8">Stay<span className="text-nordic-500">On</span>Site</h3>
+            <p className="mb-6 text-nordic-700 leading-relaxed font-light">
               Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.
             </p>
           </div>
           
           <div>
-            <h3 className="text-xl font-bold mb-6">{t('footer.contact')}</h3>
-            <ul className="space-y-4">
+            <h3 className="text-xl font-normal mb-8 font-display">{t('footer.contact')}</h3>
+            <ul className="space-y-6">
               <li className="flex items-center">
-                <div className="bg-primary-100 p-2 rounded-full mr-3">
-                  <Phone size={18} className="text-primary-600" />
+                <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-nordic-300">
+                  <Phone size={18} className="text-nordic-500" />
                 </div>
-                <a href="tel:+46701234567" className="hover:text-primary-600 transition-colors">+46 70 123 45 67</a>
+                <a href="tel:+46701234567" className="font-light hover:text-nordic-500 transition-colors duration-300">+46 70 123 45 67</a>
               </li>
               <li className="flex items-center">
-                <div className="bg-primary-100 p-2 rounded-full mr-3">
-                  <Mail size={18} className="text-primary-600" />
+                <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-nordic-300">
+                  <Mail size={18} className="text-nordic-500" />
                 </div>
-                <a href="mailto:info@stayonsite.se" className="hover:text-primary-600 transition-colors">info@stayonsite.se</a>
+                <a href="mailto:info@stayonsite.se" className="font-light hover:text-nordic-500 transition-colors duration-300">info@stayonsite.se</a>
               </li>
-              <li className="flex items-center">
-                <div className="bg-primary-100 p-2 rounded-full mr-3">
-                  <MapPin size={18} className="text-primary-600" />
+              <li className="flex items-start">
+                <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-nordic-300 mt-1">
+                  <MapPin size={18} className="text-nordic-500" />
                 </div>
-                <span>Stockholm, Sverige</span>
+                <span className="font-light">Stockholm, Sverige</span>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-xl font-bold mb-6">Snabblänkar</h3>
-            <ul className="grid grid-cols-2 gap-3">
+            <h3 className="text-xl font-normal mb-8 font-display">Snabblänkar</h3>
+            <ul className="grid grid-cols-1 gap-5">
               <li>
-                <a href="#home" className="hover:text-primary-600 transition-colors flex items-center">
-                  <span className="bg-gray-200 w-2 h-2 rounded-full mr-2"></span>
+                <a href="#home" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   {t('nav.home')}
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-primary-600 transition-colors flex items-center">
-                  <span className="bg-gray-200 w-2 h-2 rounded-full mr-2"></span>
+                <a href="#services" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   {t('nav.services')}
                 </a>
               </li>
               <li>
-                <a href="#references" className="hover:text-primary-600 transition-colors flex items-center">
-                  <span className="bg-gray-200 w-2 h-2 rounded-full mr-2"></span>
+                <a href="#references" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   {t('nav.references')}
                 </a>
               </li>
               <li>
-                <a href="#inquiry" className="hover:text-primary-600 transition-colors flex items-center">
-                  <span className="bg-gray-200 w-2 h-2 rounded-full mr-2"></span>
+                <a href="#inquiry" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   {t('nav.inquiryForm')}
                 </a>
               </li>
@@ -72,8 +72,8 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 text-center text-gray-500 border-t border-gray-200">
-          <p>&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
+        <div className="mt-16 pt-8 text-center text-nordic-600 border-t border-nordic-200">
+          <p className="font-light">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
         </div>
       </div>
     </footer>

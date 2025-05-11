@@ -7,33 +7,42 @@ const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="relative bg-cover bg-center text-gray-800 pt-32 pb-20 md:pb-32" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?ixlib=rb-4.0.3&auto=format&fit=crop&w=2965&q=80')" }}>
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-gray-900/40"></div>
+    <section 
+      id="home" 
+      className="relative bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture" 
+      style={{ 
+        backgroundImage: "url('https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-4.0.3&auto=format&fit=crop&w=2670&q=80')"
+      }}
+    >
+      {/* Subtle overlay for better text visibility */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/70 to-white/30"></div>
       
-      <div className="container mx-auto px-4 relative">
-        <div className="max-w-3xl glass-card bg-white/80 p-8 rounded-2xl shadow-lg">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-primary-600">
+      <div className="container mx-auto px-6 md:px-8 relative">
+        <div className="max-w-2xl nordic-card p-8 md:p-10 border border-nordic-200">
+          <span className="inline-block text-nordic-500 mb-3 text-sm uppercase tracking-wider font-heading">
+            {t('hero.tagline') || 'Lugnt. Enkelt. Effektivt.'}
+          </span>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal mb-6 leading-tight text-nordic-900">
             {t('hero.title')}
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 mb-10 leading-relaxed">
+          <p className="text-base md:text-lg text-nordic-800 mb-10 leading-relaxed font-light">
             {t('hero.subtitle')}
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-6">
             <Button 
               size="lg" 
-              className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
+              className="bg-nordic-500 hover:bg-nordic-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500"
               onClick={() => {
                 document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
               {t('hero.cta')}
-              <ArrowRight size={18} className="ml-2" />
+              <ArrowRight size={16} className="ml-2 opacity-70" />
             </Button>
             <Button 
               variant="outline"
               size="lg"
-              className="backdrop-blur-sm bg-white/60 border-primary-300 hover:bg-primary-100 text-primary-700 rounded-full"
+              className="border-nordic-300 hover:bg-nordic-100 text-nordic-800 rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500"
               onClick={() => {
                 document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
               }}
@@ -44,13 +53,13 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Wave effect at the bottom */}
+      {/* Subtle wave effect at the bottom */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" className="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" className="w-full">
           <path 
             fill="#ffffff" 
             fillOpacity="1" 
-            d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,42.7C1120,32,1280,32,1360,32L1440,32L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z">
+            d="M0,32L48,37.3C96,43,192,53,288,53.3C384,53,480,43,576,37.3C672,32,768,32,864,32C960,32,1056,32,1152,37.3C1248,43,1344,53,1392,58.7L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z">
           </path>
         </svg>
       </div>

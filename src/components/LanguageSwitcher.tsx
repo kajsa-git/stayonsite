@@ -24,31 +24,31 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className={cn("flex items-center gap-2", className)}
+        className={cn("flex items-center gap-2 font-light rounded-md", className)}
       >
         <Globe size={16} />
         <span className="uppercase">{language}</span>
       </Button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 z-50">
+        <div className="absolute right-0 mt-2 w-28 rounded-md shadow-sm bg-white border border-nordic-200 z-50">
           <div className="py-1">
             <button
               onClick={() => toggleLanguage('sv')}
-              className={`block px-4 py-2 text-sm w-full text-left ${
+              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
                 language === 'sv' 
-                  ? 'bg-primary-100 text-primary-600' 
-                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-nordic-100 text-nordic-800' 
+                  : 'text-nordic-800 hover:bg-nordic-50'
               }`}
             >
               Svenska
             </button>
             <button
               onClick={() => toggleLanguage('en')}
-              className={`block px-4 py-2 text-sm w-full text-left ${
+              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
                 language === 'en' 
-                  ? 'bg-primary-100 text-primary-600' 
-                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-nordic-100 text-nordic-800' 
+                  : 'text-nordic-800 hover:bg-nordic-50'
               }`}
             >
               English
