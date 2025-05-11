@@ -3,8 +3,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Globe } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+  className?: string;
+}
+
+const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   
@@ -19,14 +24,14 @@ const LanguageSwitcher = () => {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2"
+        className={cn("flex items-center gap-2", className)}
       >
         <Globe size={16} />
         <span className="uppercase">{language}</span>
       </Button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+        <div className="absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 z-50">
           <div className="py-1">
             <button
               onClick={() => toggleLanguage('sv')}

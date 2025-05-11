@@ -2,19 +2,18 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 text-white">
+    <section id="home" className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 text-white pt-32 pb-20 md:pb-32">
       {/* Overlay pattern */}
       <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMzYgMzRoLTJsMi0yaC0ydjJoLTJ2LTJoLTJ2MmgtMnYtNGgxMHY0em0tMiAyaC0ydjJoLTJ2LTJoLTJWMzRoNnYyem0tMiA0aC0ydjJoMnYtMnoiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMCAwaDYwdjYwSDB6Ii8+PC9nPjwvc3ZnPg==')]"></div>
       
-      <div className="container mx-auto px-4 py-20 md:py-32 relative">
+      <div className="container mx-auto px-4 relative">
         <div className="max-w-3xl">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             {t('hero.title')}
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed">
@@ -29,7 +28,7 @@ const Hero = () => {
               }}
             >
               {t('hero.cta')}
-              <ArrowRight size={18} />
+              <ArrowRight size={18} className="ml-2" />
             </Button>
             <Button 
               variant="outline"
@@ -45,7 +44,7 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Wave effect at the bottom with updated color */}
+      {/* Wave effect at the bottom */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" className="w-full">
           <path 

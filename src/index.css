@@ -19,7 +19,7 @@
     --primary: 255 70% 64%;
     --primary-foreground: 255 40% 98%;
 
-    --secondary: 25 95% 56%;
+    --secondary: 25 95% 65%;
     --secondary-foreground: 255 40% 98%;
 
     --muted: 255 40% 96.1%;
@@ -83,8 +83,14 @@
     font-family: 'Montserrat', sans-serif;
     @apply font-semibold tracking-tight;
   }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
+/* Animation classes */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -94,15 +100,36 @@
   100% { opacity: 1; }
 }
 
+/* Modern glass effect */
 .glass-card {
   @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20;
 }
 
+/* Card hover effects */
 .card-hover {
   @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
 }
 
+/* Section spacing */
 .section-spacing {
   @apply py-16 md:py-24;
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
