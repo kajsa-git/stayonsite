@@ -49,6 +49,7 @@ export type TranslationKey =
   | 'inquiry.form.message'
   | 'inquiry.form.submit'
   | 'inquiry.form.success'
+  | 'inquiry.form.error'
   | 'footer.rights'
   | 'footer.contact';
 
@@ -105,6 +106,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.message': 'Meddelande',
     'inquiry.form.submit': 'Skicka förfrågan',
     'inquiry.form.success': 'Tack för din förfrågan! Vi återkommer så snart som möjligt.',
+    'inquiry.form.error': 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.',
     
     'footer.rights': 'Alla rättigheter förbehållna',
     'footer.contact': 'Kontakta oss'
@@ -161,6 +163,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.message': 'Message',
     'inquiry.form.submit': 'Submit Inquiry',
     'inquiry.form.success': 'Thank you for your inquiry! We will get back to you as soon as possible.',
+    'inquiry.form.error': 'There was an error submitting the form. Please try again later.',
     
     'footer.rights': 'All rights reserved',
     'footer.contact': 'Contact us'
