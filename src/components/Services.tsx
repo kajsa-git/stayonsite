@@ -73,8 +73,8 @@ const Services = () => {
               <div className="p-3 border border-nordic-200 rounded-full">
                 <div className="w-24 h-24 rounded-full overflow-hidden">
                   <img 
-                    src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                    alt="Construction workers" 
+                    src="https://images.unsplash.com/photo-1620315808304-66597517f188?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                    alt="Padlock security" 
                     className="w-full h-full object-cover"
                   />
                 </div>
