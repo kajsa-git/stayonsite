@@ -1,40 +1,32 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ClipboardList, MessageSquare, CheckCircle, Home } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 const Services = () => {
-  const { t } = useLanguage();
-
-  const steps = [
-    {
-      title: t('services.process.step1.title'),
-      description: t('services.process.step1.description'),
-      icon: ClipboardList,
-      color: 'text-nordic-500'
-    },
-    {
-      title: t('services.process.step2.title'),
-      description: t('services.process.step2.description'),
-      icon: MessageSquare,
-      color: 'text-nordic-500'
-    },
-    {
-      title: t('services.process.step3.title'),
-      description: t('services.process.step3.description'),
-      icon: CheckCircle,
-      color: 'text-nordic-500'
-    },
-    {
-      title: t('services.process.step4.title'),
-      description: t('services.process.step4.description'),
-      icon: Home,
-      color: 'text-nordic-500'
-    }
-  ];
-
-  return (
-    <section id="services" className="py-24 bg-white">
+  const {
+    t
+  } = useLanguage();
+  const steps = [{
+    title: t('services.process.step1.title'),
+    description: t('services.process.step1.description'),
+    icon: ClipboardList,
+    color: 'text-nordic-500'
+  }, {
+    title: t('services.process.step2.title'),
+    description: t('services.process.step2.description'),
+    icon: MessageSquare,
+    color: 'text-nordic-500'
+  }, {
+    title: t('services.process.step3.title'),
+    description: t('services.process.step3.description'),
+    icon: CheckCircle,
+    color: 'text-nordic-500'
+  }, {
+    title: t('services.process.step4.title'),
+    description: t('services.process.step4.description'),
+    icon: Home,
+    color: 'text-nordic-500'
+  }];
+  return <section id="services" className="py-24 bg-white">
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
@@ -51,9 +43,8 @@ const Services = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <Card key={index} className="border border-nordic-200 shadow-none rounded-lg overflow-hidden transition-all duration-500 hover:border-nordic-300">
+            const Icon = step.icon;
+            return <Card key={index} className="border border-nordic-200 shadow-none rounded-lg overflow-hidden transition-all duration-500 hover:border-nordic-300">
                   <CardHeader className="pb-2">
                     <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6 border border-nordic-300">
                       <Icon size={24} className={step.color} />
@@ -63,20 +54,15 @@ const Services = () => {
                   <CardContent>
                     <p className="text-nordic-700 font-light">{step.description}</p>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
           
           <div className="mt-20 p-10 mx-auto max-w-5xl border border-nordic-200 rounded-lg">
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
               <div className="p-3 border border-nordic-200 rounded-full">
                 <div className="w-24 h-24 rounded-full overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1620315808304-66597517f188?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                    alt="Padlock security" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img alt="Padlock security" className="w-full h-full object-cover" src="/lovable-uploads/6247830f-d640-4319-9d3a-dfb0b0160839.jpg" />
                 </div>
               </div>
               <div>
@@ -92,8 +78,6 @@ const Services = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Services;
