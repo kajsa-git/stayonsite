@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, MapPin, Users, Calendar, MessageSquare, Building2 } from 'lucide-react';
+
 const InquiryForm = () => {
   const {
     t,
@@ -99,7 +100,7 @@ const InquiryForm = () => {
                     <MapPin className="h-5 w-5 text-nordic-500" />
                   </div>
                   <span className="font-light">
-                    StayOnSite AB<br />Storgatan 1<br />114 55 Stockholm
+                    StayOnSite AB<br />11646 Stockholm
                   </span>
                 </div>
               </div>
