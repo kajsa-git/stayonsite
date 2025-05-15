@@ -87,7 +87,7 @@ const InquiryFormFields = ({
               {t('inquiry.form.workers')}
             </span>
           </Label>
-          <Input id="workers" name="workers" type="number" required min="1" placeholder="5" className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
+          <Input id="workers" name="workers" type="number" required min="1" placeholder="" className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
         </div>
         
         <div className="space-y-2.5">
