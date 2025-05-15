@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -24,55 +25,51 @@ const InquiryForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
     try {
+      // Get form data
       const formData = new FormData(e.currentTarget);
-      const formDataObj: Record<string, string> = {};
-
-      // Convert FormData to object for email template
-      formData.forEach((value, key) => {
-        formDataObj[key] = value.toString();
-      });
-
-      // Add recipient
-      formDataObj.recipient = 'kajsa@stayonsite.se';
       
       // Handle "until further notice" case
       if (isUntilFurtherNotice) {
-        formDataObj.endDate = t('inquiry.form.untilFurtherNotice');
+        formData.set('endDate', t('inquiry.form.untilFurtherNotice'));
       }
-
-      // Use EmailJS-like service
-      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send-form', {
+      
+      // Submit the form manually using fetch to FormSubmit endpoint
+      const response = await fetch('https://formsubmit.co/ajax/kajsa@stayonsite.se', {
         method: 'POST',
         body: formData
       });
-
-      // For demo purposes, we'll simulate a successful submission
-      // In a real application, you would check the response status
-
-      setIsSubmitting(false);
-      setFormSuccess(true);
-      toast({
-        title: t('inquiry.form.success'),
-        description: new Date().toLocaleTimeString()
-      });
-
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setFormSuccess(false);
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-        setIsUntilFurtherNotice(false);
-      }, 3000);
+      
+      const result = await response.json();
+      
+      if (result.success === "true" || result.success === true) {
+        setFormSuccess(true);
+        toast({
+          title: t('inquiry.form.success'),
+          description: new Date().toLocaleTimeString()
+        });
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setFormSuccess(false);
+          if (formRef.current) {
+            formRef.current.reset();
+          }
+          setIsUntilFurtherNotice(false);
+        }, 3000);
+      } else {
+        throw new Error('Form submission failed');
+      }
     } catch (error) {
       console.error('Form submission error:', error);
-      setIsSubmitting(false);
       toast({
         title: t('inquiry.form.error') || 'Error',
         description: language === 'sv' ? 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.' : 'There was an error submitting the form. Please try again later.',
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -151,10 +148,18 @@ const InquiryForm = () => {
                   <p className="text-nordic-800 font-light">{t('inquiry.form.success')}</p>
                 </div>
               ) : (
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-7" action="https://formsubmit.co/kajsa@stayonsite.se" method="POST">
+                <form 
+                  ref={formRef} 
+                  onSubmit={handleSubmit} 
+                  className="space-y-7"
+                  action="https://formsubmit.co/kajsa@stayonsite.se" 
+                  method="POST"
+                >
+                  {/* FormSubmit.co configuration */}
                   <input type="hidden" name="_subject" value="Ny förfrågan från StayOnSite" />
                   <input type="hidden" name="_next" value={window.location.origin} />
                   <input type="hidden" name="_captcha" value="false" />
+                  <input type="hidden" name="_template" value="table" />
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                     <div className="space-y-2.5">
