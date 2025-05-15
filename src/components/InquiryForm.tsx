@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Phone, MapPin, Users, Calendar, MessageSquare, Building2 } from 'lucide-react';
 
 const InquiryForm = () => {
@@ -17,7 +19,9 @@ const InquiryForm = () => {
   } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [isUntilFurtherNotice, setIsUntilFurtherNotice] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -32,6 +36,11 @@ const InquiryForm = () => {
 
       // Add recipient
       formDataObj.recipient = 'kajsa@stayonsite.se';
+      
+      // Handle "until further notice" case
+      if (isUntilFurtherNotice) {
+        formDataObj.endDate = language === 'sv' ? 'Tillsvidare' : 'Until further notice';
+      }
 
       // Use EmailJS-like service
       const response = await fetch('https://api.emailjs.com/api/v1.0/email/send-form', {
@@ -55,6 +64,7 @@ const InquiryForm = () => {
         if (formRef.current) {
           formRef.current.reset();
         }
+        setIsUntilFurtherNotice(false);
       }, 3000);
     } catch (error) {
       console.error('Form submission error:', error);
@@ -66,6 +76,7 @@ const InquiryForm = () => {
       });
     }
   };
+  
   return <section id="inquiry" className="py-24 bg-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
@@ -220,7 +231,35 @@ const InquiryForm = () => {
                           {t('inquiry.form.endDate')}
                         </span>
                       </Label>
-                      <Input id="endDate" name="endDate" type="date" required className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
+                      {isUntilFurtherNotice ? (
+                        <div className="flex items-center h-10 px-3 border rounded-md bg-gray-50 border-nordic-200 text-muted-foreground">
+                          {language === 'sv' ? 'Tillsvidare' : 'Until further notice'}
+                        </div>
+                      ) : (
+                        <Input 
+                          id="endDate" 
+                          name="endDate" 
+                          type="date" 
+                          required={!isUntilFurtherNotice}
+                          disabled={isUntilFurtherNotice}
+                          className="border-nordic-200 focus-visible:ring-nordic-400 font-light" 
+                        />
+                      )}
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Checkbox 
+                          id="untilFurtherNotice" 
+                          checked={isUntilFurtherNotice}
+                          onCheckedChange={(checked) => {
+                            setIsUntilFurtherNotice(checked === true);
+                          }}
+                        />
+                        <label
+                          htmlFor="untilFurtherNotice"
+                          className="text-sm font-light text-muted-foreground leading-none cursor-pointer"
+                        >
+                          {language === 'sv' ? 'Tillsvidare' : 'Until further notice'}
+                        </label>
+                      </div>
                     </div>
                   </div>
                   
