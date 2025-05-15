@@ -1,3 +1,4 @@
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin } from 'lucide-react';
 const Footer = () => {
@@ -11,7 +12,7 @@ const Footer = () => {
           <div>
             <h3 className="text-2xl font-display mb-8">Stay<span className="text-nordic-500">On</span>Site</h3>
             <p className="mb-6 text-nordic-700 leading-relaxed font-light">
-              Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.
+              {t('footer.description')}
             </p>
           </div>
           

@@ -51,7 +51,8 @@ export type TranslationKey =
   | 'inquiry.form.success'
   | 'inquiry.form.error'
   | 'footer.rights'
-  | 'footer.contact';
+  | 'footer.contact'
+  | 'footer.description';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {
@@ -109,7 +110,8 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.',
     
     'footer.rights': 'Alla rättigheter förbehållna',
-    'footer.contact': 'Kontakta oss'
+    'footer.contact': 'Kontakta oss',
+    'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.'
   },
   en: {
     'nav.home': 'Home',
@@ -166,6 +168,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'There was an error submitting the form. Please try again later.',
     
     'footer.rights': 'All rights reserved',
-    'footer.contact': 'Contact us'
+    'footer.contact': 'Contact us',
+    'footer.description': 'We help construction companies quickly find accommodations in other locations for their workers.'
   }
 };
