@@ -1,13 +1,11 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin } from 'lucide-react';
-
 const Footer = () => {
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const currentYear = new Date().getFullYear();
-
-  return (
-    <footer id="contact" className="bg-nordic-100 text-nordic-800 nordic-texture">
+  return <footer id="contact" className="bg-nordic-100 text-nordic-800 nordic-texture">
       <div className="container mx-auto px-6 md:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
           <div>
@@ -24,7 +22,7 @@ const Footer = () => {
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-nordic-300">
                   <Phone size={18} className="text-nordic-500" />
                 </div>
-                <a href="tel:+46701234567" className="font-light hover:text-nordic-500 transition-colors duration-300">+46 70 123 45 67</a>
+                <a href="tel:+46701234567" className="font-light hover:text-nordic-500 transition-colors duration-300">+46 762 49 84 86</a>
               </li>
               <li className="flex items-center">
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-nordic-300">
@@ -76,8 +74,6 @@ const Footer = () => {
           <p className="font-light">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;

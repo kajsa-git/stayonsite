@@ -1,9 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Quote } from 'lucide-react';
-
 type Testimonial = {
   id: string;
   quote: string;
@@ -11,11 +9,11 @@ type Testimonial = {
   company: string;
   img: string;
 };
-
 const References = () => {
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-
   useEffect(() => {
     // Load testimonials from localStorage if available
     const savedTestimonials = localStorage.getItem('testimonials');
@@ -23,35 +21,29 @@ const References = () => {
       setTestimonials(JSON.parse(savedTestimonials));
     } else {
       // Use default testimonials from translations if none found in localStorage
-      const defaultTestimonials = [
-        {
-          id: '1',
-          quote: t('references.testimonial1.quote'),
-          author: t('references.testimonial1.author'),
-          company: t('references.testimonial1.company'),
-          img: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '2',
-          quote: t('references.testimonial2.quote'),
-          author: t('references.testimonial2.author'),
-          company: t('references.testimonial2.company'),
-          img: 'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-        },
-        {
-          id: '3',
-          quote: t('references.testimonial3.quote'),
-          author: t('references.testimonial3.author'),
-          company: t('references.testimonial3.company'),
-          img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-        },
-      ];
+      const defaultTestimonials = [{
+        id: '1',
+        quote: t('references.testimonial1.quote'),
+        author: t('references.testimonial1.author'),
+        company: t('references.testimonial1.company'),
+        img: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      }, {
+        id: '2',
+        quote: t('references.testimonial2.quote'),
+        author: t('references.testimonial2.author'),
+        company: t('references.testimonial2.company'),
+        img: 'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      }, {
+        id: '3',
+        quote: t('references.testimonial3.quote'),
+        author: t('references.testimonial3.author'),
+        company: t('references.testimonial3.company'),
+        img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      }];
       setTestimonials(defaultTestimonials);
     }
   }, [t]);
-
-  return (
-    <section id="references" className="py-24 bg-white nordic-texture">
+  return <section id="references" className="py-24 bg-white nordic-texture">
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
@@ -65,19 +57,14 @@ const References = () => {
         
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={testimonial.id || index} className="overflow-hidden border border-nordic-200 shadow-none">
+            {testimonials.map((testimonial, index) => <Card key={testimonial.id || index} className="overflow-hidden border border-nordic-200 shadow-none">
                 <CardContent className="p-8">
                   <Quote size={24} className="text-nordic-400 mb-6" />
                   <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">"{testimonial.quote}"</p>
                   <div className="flex items-center">
                     <div className="mr-4">
                       <div className="w-12 h-12 bg-nordic-200 rounded-full overflow-hidden">
-                        <img 
-                          src={testimonial.img} 
-                          alt={testimonial.author}
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={testimonial.img} alt={testimonial.author} className="w-full h-full object-cover" />
                       </div>
                     </div>
                     <div>
@@ -86,32 +73,29 @@ const References = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
         
         <div className="mt-20 flex flex-wrap justify-center gap-x-14 gap-y-8">
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">100+</div>
+            <div className="text-3xl font-light text-nordic-800 mb-2.5">70+</div>
             <p className="text-nordic-600 font-light">Nöjda kunder</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">1000+</div>
+            <div className="text-3xl font-light text-nordic-800 mb-2.5">100+</div>
             <p className="text-nordic-600 font-light">Ordnade boenden</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">24h</div>
+            <div className="text-3xl font-light text-nordic-800 mb-2.5">3h</div>
             <p className="text-nordic-600 font-light">Genomsnittlig svarstid</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">20+</div>
+            <div className="text-3xl font-light text-nordic-800 mb-2.5">40+</div>
             <p className="text-nordic-600 font-light">Städer i Sverige</p>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default References;
