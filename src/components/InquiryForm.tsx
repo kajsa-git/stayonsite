@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -39,7 +38,7 @@ const InquiryForm = () => {
       
       // Handle "until further notice" case
       if (isUntilFurtherNotice) {
-        formDataObj.endDate = language === 'sv' ? 'Tillsvidare' : 'Until further notice';
+        formDataObj.endDate = t('inquiry.form.untilFurtherNotice');
       }
 
       // Use EmailJS-like service
@@ -77,11 +76,12 @@ const InquiryForm = () => {
     }
   };
   
-  return <section id="inquiry" className="py-24 bg-nordic-100">
+  return (
+    <section id="inquiry" className="py-24 bg-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
-            {t('inquiry.tagline') || 'Kontakta oss'}
+            {t('inquiry.tagline')}
           </span>
           <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('inquiry.title')}</h2>
           <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
@@ -92,7 +92,7 @@ const InquiryForm = () => {
         <div className="max-w-4xl mx-auto bg-white rounded-lg border border-nordic-200 overflow-hidden">
           <div className="grid md:grid-cols-5">
             <div className="md:col-span-2 bg-nordic-200/60 p-8 md:p-10 text-nordic-800">
-              <h3 className="text-xl font-normal mb-8 text-nordic-900">Kontaktinformation</h3>
+              <h3 className="text-xl font-normal mb-8 text-nordic-900">{t('inquiry.contactInfo.title')}</h3>
               <div className="space-y-6">
                 <div className="flex items-center">
                   <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
@@ -104,7 +104,7 @@ const InquiryForm = () => {
                   <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
                     <Phone className="h-5 w-5 text-nordic-500" />
                   </div>
-                  <span className="font-light">+46 762 49 84 86</span>
+                  <a href="tel:+46762498486" className="font-light hover:underline text-nordic-600 transition-colors">+46 762 49 84 86</a>
                 </div>
                 <div className="flex items-start">
                   <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center mt-1">
@@ -117,30 +117,31 @@ const InquiryForm = () => {
               </div>
               
               <div className="mt-16">
-                <h4 className="text-lg font-normal mb-6 text-nordic-900">Varför välja oss?</h4>
+                <h4 className="text-lg font-normal mb-6 text-nordic-900">{t('services.whyus.title')}</h4>
                 <ul className="space-y-4">
                   <li className="flex items-center">
                     <div className="h-1 w-6 bg-nordic-500 mr-4 rounded-full"></div>
-                    <span className="font-light">Snabba svar inom 24 timmar</span>
+                    <span className="font-light">{t('services.whyus.point1')}</span>
                   </li>
                   <li className="flex items-center">
                     <div className="h-1 w-6 bg-nordic-500 mr-4 rounded-full"></div>
-                    <span className="font-light">Boenden över hela Sverige</span>
+                    <span className="font-light">{t('services.whyus.point2')}</span>
                   </li>
                   <li className="flex items-center">
                     <div className="h-1 w-6 bg-nordic-500 mr-4 rounded-full"></div>
-                    <span className="font-light">Smidig process från start till mål</span>
+                    <span className="font-light">{t('services.whyus.point3')}</span>
                   </li>
                   <li className="flex items-center">
                     <div className="h-1 w-6 bg-nordic-500 mr-4 rounded-full"></div>
-                    <span className="font-light">Över 10 års erfarenhet</span>
+                    <span className="font-light">{t('services.whyus.point4')}</span>
                   </li>
                 </ul>
               </div>
             </div>
             
             <div className="md:col-span-3 p-8 md:p-10">
-              {formSuccess ? <div className="h-full flex flex-col items-center justify-center text-center">
+              {formSuccess ? (
+                <div className="h-full flex flex-col items-center justify-center text-center">
                   <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
@@ -148,7 +149,9 @@ const InquiryForm = () => {
                   </div>
                   <h3 className="text-2xl font-normal text-nordic-900 mb-2">Tack!</h3>
                   <p className="text-nordic-800 font-light">{t('inquiry.form.success')}</p>
-                </div> : <form ref={formRef} onSubmit={handleSubmit} className="space-y-7" action="https://formsubmit.co/kajsa@stayonsite.se" method="POST">
+                </div>
+              ) : (
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-7" action="https://formsubmit.co/kajsa@stayonsite.se" method="POST">
                   <input type="hidden" name="_subject" value="Ny förfrågan från StayOnSite" />
                   <input type="hidden" name="_next" value={window.location.origin} />
                   <input type="hidden" name="_captcha" value="false" />
@@ -161,7 +164,7 @@ const InquiryForm = () => {
                           {t('inquiry.form.companyName')}
                         </span>
                       </Label>
-                      <Input id="companyName" name="companyName" type="text" required placeholder={language === 'sv' ? "Företagsnamn" : "Company name"} className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
+                      <Input id="companyName" name="companyName" type="text" required placeholder={t('inquiry.form.companyName')} className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
                     </div>
                     
                     <div className="space-y-2.5">
@@ -171,7 +174,7 @@ const InquiryForm = () => {
                           {t('inquiry.form.contactName')}
                         </span>
                       </Label>
-                      <Input id="contactName" name="contactName" type="text" required placeholder={language === 'sv' ? "Kontaktperson" : "Contact person"} className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
+                      <Input id="contactName" name="contactName" type="text" required placeholder={t('inquiry.form.contactName')} className="border-nordic-200 focus-visible:ring-nordic-400 font-light" />
                     </div>
                     
                     <div className="space-y-2.5">
@@ -233,7 +236,7 @@ const InquiryForm = () => {
                       </Label>
                       {isUntilFurtherNotice ? (
                         <div className="flex items-center h-10 px-3 border rounded-md bg-gray-50 border-nordic-200 text-muted-foreground">
-                          {language === 'sv' ? 'Tillsvidare' : 'Until further notice'}
+                          {t('inquiry.form.untilFurtherNotice')}
                         </div>
                       ) : (
                         <Input 
@@ -257,7 +260,7 @@ const InquiryForm = () => {
                           htmlFor="untilFurtherNotice"
                           className="text-sm font-light text-muted-foreground leading-none cursor-pointer"
                         >
-                          {language === 'sv' ? 'Tillsvidare' : 'Until further notice'}
+                          {t('inquiry.form.untilFurtherNotice')}
                         </label>
                       </div>
                     </div>
@@ -270,23 +273,40 @@ const InquiryForm = () => {
                         {t('inquiry.form.message')}
                       </span>
                     </Label>
-                    <Textarea id="message" name="message" rows={4} placeholder={language === 'sv' ? "Beskriv era behov..." : "Describe your needs..."} className="border-nordic-200 focus-visible:ring-nordic-400 font-light resize-none" />
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      rows={4} 
+                      placeholder={language === 'sv' ? "Beskriv era behov..." : "Describe your needs..."} 
+                      className="border-nordic-200 focus-visible:ring-nordic-400 font-light resize-none" 
+                    />
                   </div>
                   
-                  <Button type="submit" className="w-full md:w-auto px-8 py-2.5 h-auto bg-nordic-500 hover:bg-nordic-600 text-white font-light rounded-md transition-colors duration-500" disabled={isSubmitting}>
-                    {isSubmitting ? <span className="flex items-center">
+                  <Button 
+                    type="submit" 
+                    className="w-full md:w-auto px-8 py-2.5 h-auto bg-nordic-500 hover:bg-nordic-600 text-white font-light rounded-md transition-colors duration-500" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center">
                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                         {language === 'sv' ? "Skickar..." : "Sending..."}
-                      </span> : t('inquiry.form.submit')}
+                      </span>
+                    ) : (
+                      t('inquiry.form.submit')
+                    )}
                   </Button>
-                </form>}
+                </form>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default InquiryForm;

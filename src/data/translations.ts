@@ -23,6 +23,13 @@ export type TranslationKey =
   | 'services.process.step3.description'
   | 'services.process.step4.title'
   | 'services.process.step4.description'
+  | 'services.security.title'
+  | 'services.security.description'
+  | 'services.whyus.title'
+  | 'services.whyus.point1'
+  | 'services.whyus.point2'
+  | 'services.whyus.point3'
+  | 'services.whyus.point4'
   | 'references.title'
   | 'references.subtitle'
   | 'references.tagline'
@@ -50,9 +57,12 @@ export type TranslationKey =
   | 'inquiry.form.submit'
   | 'inquiry.form.success'
   | 'inquiry.form.error'
+  | 'inquiry.form.untilFurtherNotice'
+  | 'inquiry.contactInfo.title'
   | 'footer.rights'
   | 'footer.contact'
-  | 'footer.description';
+  | 'footer.description'
+  | 'footer.quickLinks';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {
@@ -79,6 +89,13 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'services.process.step3.description': 'Välj det alternativ som passar er bäst, och vi bokar det åt er',
     'services.process.step4.title': 'Inflyttning',
     'services.process.step4.description': 'Era arbetare får all information de behöver för en smidig inflyttning',
+    'services.security.title': 'Trygghet genom erfaren partner',
+    'services.security.description': 'Med över 10 års erfarenhet av att hjälpa byggbolag med boende, kan ni lita på att StayOnSite levererar boenden som uppfyller era behov, i tid och enligt överenskommelse. Vi har ett brett nätverk av boendealternativ över hela Sverige.',
+    'services.whyus.title': 'Varför välja oss?',
+    'services.whyus.point1': 'Snabba svar inom 24 timmar',
+    'services.whyus.point2': 'Boenden över hela Sverige',
+    'services.whyus.point3': 'Smidig process från start till mål',
+    'services.whyus.point4': 'Över 10 års erfarenhet',
     
     'references.title': 'Referenser',
     'references.subtitle': 'Vad våra kunder säger om oss',
@@ -108,10 +125,13 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.submit': 'Skicka förfrågan',
     'inquiry.form.success': 'Tack för din förfrågan! Vi återkommer så snart som möjligt.',
     'inquiry.form.error': 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.',
+    'inquiry.form.untilFurtherNotice': 'Tillsvidare',
+    'inquiry.contactInfo.title': 'Kontaktinformation',
     
     'footer.rights': 'Alla rättigheter förbehållna',
     'footer.contact': 'Kontakta oss',
-    'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.'
+    'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.',
+    'footer.quickLinks': 'Snabblänkar'
   },
   en: {
     'nav.home': 'Home',
@@ -137,6 +157,13 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'services.process.step3.description': 'Choose the option that suits you best, and we book it for you',
     'services.process.step4.title': 'Move in',
     'services.process.step4.description': 'Your workers get all the information they need for a smooth move-in',
+    'services.security.title': 'Security through an experienced partner',
+    'services.security.description': 'With over 10 years of experience helping construction companies with accommodation, you can trust that StayOnSite delivers accommodations that meet your needs, on time and as agreed. We have a wide network of housing options throughout Sweden.',
+    'services.whyus.title': 'Why choose us?',
+    'services.whyus.point1': 'Quick responses within 24 hours',
+    'services.whyus.point2': 'Accommodations throughout Sweden',
+    'services.whyus.point3': 'Smooth process from start to finish',
+    'services.whyus.point4': 'Over 10 years of experience',
     
     'references.title': 'References',
     'references.subtitle': 'What our customers say about us',
@@ -166,9 +193,12 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.submit': 'Submit Inquiry',
     'inquiry.form.success': 'Thank you for your inquiry! We will get back to you as soon as possible.',
     'inquiry.form.error': 'There was an error submitting the form. Please try again later.',
+    'inquiry.form.untilFurtherNotice': 'Until further notice',
+    'inquiry.contactInfo.title': 'Contact Information',
     
     'footer.rights': 'All rights reserved',
     'footer.contact': 'Contact us',
-    'footer.description': 'We help construction companies quickly find accommodations in other locations for their workers.'
+    'footer.description': 'We help construction companies quickly find accommodations in other locations for their workers.',
+    'footer.quickLinks': 'Quick Links'
   }
 };
