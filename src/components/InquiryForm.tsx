@@ -87,7 +87,7 @@ const InquiryForm = () => {
                   <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
                     <Mail className="h-5 w-5 text-nordic-500" />
                   </div>
-                  <span className="font-light">kajsa@stayonsite.se</span>
+                  <a href="mailto:kajsa@stayonsite.se" className="font-light hover:underline text-nordic-600 transition-colors">kajsa@stayonsite.se</a>
                 </div>
                 <div className="flex items-center">
                   <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
