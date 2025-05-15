@@ -22,6 +22,12 @@ const InquiryForm = () => {
       // Get form data
       const formData = new FormData(e.currentTarget);
       
+      // Add hidden fields required by FormSubmit
+      formData.append('_subject', 'Ny förfrågan från StayOnSite');
+      formData.append('_captcha', 'false');
+      formData.append('_template', 'table');
+      formData.append('_next', window.location.origin);
+      
       // Handle "until further notice" case
       if (isUntilFurtherNotice) {
         formData.set('endDate', t('inquiry.form.untilFurtherNotice'));
@@ -34,6 +40,7 @@ const InquiryForm = () => {
       });
       
       const result = await response.json();
+      console.log('Form submission result:', result);
       
       if (result.success === "true" || result.success === true) {
         setFormSuccess(true);
@@ -74,8 +81,6 @@ const InquiryForm = () => {
           ref={formRef} 
           onSubmit={handleSubmit} 
           className="space-y-7"
-          action="https://formsubmit.co/kajsa@stayonsite.se" 
-          method="POST"
         >
           <InquiryFormFields
             isSubmitting={isSubmitting}
