@@ -1,3 +1,4 @@
+
 export type AvailableLanguages = 'sv' | 'en';
 
 export type TranslationKey =
@@ -71,7 +72,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.contact': 'Kontakt',
     'nav.inquiryForm': 'Förfrågan',
     
-    'hero.title': 'Snabba boenden för er personal i hela Sverige',
+    'hero.title': 'Snabbt boende till era byggarbetare',
     'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
     'hero.cta': 'Skicka förfrågan',
     'hero.tagline': 'Lugnt. Enkelt. Effektivt.',
@@ -139,7 +140,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.contact': 'Contact',
     'nav.inquiryForm': 'Inquiry',
     
-    'hero.title': 'Fast accommodation for your staff throughout Sweden',
+    'hero.title': 'Fast accommodation for your construction workers',
     'hero.subtitle': 'We help construction companies quickly find accommodations in other locations for their workers',
     'hero.cta': 'Send Inquiry',
     'hero.tagline': 'Calm. Simple. Effective.',
