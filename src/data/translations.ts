@@ -77,7 +77,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.tagline': 'Lugnt. Enkelt. Effektivt.',
     
     'services.title': 'Våra tjänster',
-    'services.subtitle': 'Vi hjälper dig att snabbt hitta rätt boende när dina arbetare eller underentreprenörer är i behov av logi på annan ort. Vi erbjuder både longstay och shortstay-lösningar – över hela Sverige',
+    'services.subtitle': 'Vi hjälper dig att snabbt hitta rätt boenden när dina arbetare eller underentreprenörer är i behov av logi på annan ort. Vi erbjuder både longstay och shortstay lösningar över hela Sverige',
     'services.tagline': 'Enkelt och smidigt',
     'services.process.title': 'Så här fungerar det',
     'services.process.step1.title': 'Skicka förfrågan',
@@ -145,7 +145,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.tagline': 'Calm. Simple. Effective.',
     
     'services.title': 'Our Services',
-    'services.subtitle': 'We help you quickly find the right accommodation when your workers or subcontractors need lodging in another location. We offer both longstay and shortstay solutions – throughout Sweden',
+    'services.subtitle': 'We help you quickly find the right accommodations when your workers or subcontractors need lodging in another location. We offer both longstay and shortstay solutions throughout Sweden',
     'services.tagline': 'Simple and smooth',
     'services.process.title': 'How it works',
     'services.process.step1.title': 'Send inquiry',
