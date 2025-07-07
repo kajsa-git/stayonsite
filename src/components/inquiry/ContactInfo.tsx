@@ -1,19 +1,17 @@
-
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 const ContactInfo = () => {
-  const { t } = useLanguage();
-  
-  return (
-    <div>
+  const {
+    t
+  } = useLanguage();
+  return <div>
       <h3 className="text-xl font-normal mb-8 text-nordic-900">{t('inquiry.contactInfo.title')}</h3>
       <div className="space-y-6">
         <div className="flex items-center">
           <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
             <Mail className="h-5 w-5 text-nordic-500" />
           </div>
-          <a href="mailto:kajsa@stayonsite.se" className="font-light hover:underline text-nordic-600 transition-colors">kajsa@stayonsite.se</a>
+          <a href="mailto:kajsa@stayonsite.se" className="font-light hover:underline text-amber-900 transition-colors">kajsa@stayonsite.se</a>
         </div>
         <div className="flex items-center">
           <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
@@ -30,8 +28,6 @@ const ContactInfo = () => {
           </span>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ContactInfo;
