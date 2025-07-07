@@ -15,7 +15,7 @@ const ContactInfo = () => {
         </div>
         <div className="flex items-center">
           <div className="mr-4 bg-white w-10 h-10 rounded-full flex items-center justify-center">
-            <Phone className="h-5 w-5 text-nordic-500" />
+            <Phone className="h-5 w-5 text-amber-900" />
           </div>
           <a href="tel:+46762498486" className="font-light hover:underline text-nordic-600 transition-colors">+46 762 49 84 86</a>
         </div>
