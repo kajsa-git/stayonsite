@@ -1,18 +1,16 @@
-
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin } from 'lucide-react';
-
 const Footer = () => {
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const currentYear = new Date().getFullYear();
-  
-  return (
-    <footer id="contact" className="bg-nordic-100 text-nordic-800 nordic-texture">
+  return <footer id="contact" className="bg-nordic-100 text-nordic-800 nordic-texture">
       <div className="container mx-auto px-6 md:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
           <div>
             <h3 className="text-2xl font-display mb-8">Stay<span className="text-nordic-500">On</span>Site</h3>
-            <p className="mb-6 text-nordic-700 leading-relaxed font-light">
+            <p className="mb-6 leading-relaxed font-light text-[#9f7362]">
               {t('footer.description')}
             </p>
           </div>
@@ -76,8 +74,6 @@ const Footer = () => {
           <p className="font-light">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
