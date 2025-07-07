@@ -58,7 +58,7 @@ export default {
 					200: '#ebeae3', // Warm beige
 					300: '#dbd8cf', // Taupe
 					400: '#a8b6a8', // Sage
-					500: '#7d96a6', // Dusty blue
+					500: '#587282', // Updated from #7d96a6 to #587282
 					600: '#d0bbac', // Terracotta light
 					700: '#b89283', // Terracotta
 					800: '#5b6a6b', // Deep teal
