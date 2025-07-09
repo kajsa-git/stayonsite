@@ -69,7 +69,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.services': 'Tjänster',
     'nav.references': 'Referenser',
     'nav.contact': 'Kontakt',
-    'nav.inquiryForm': 'Förfrågan',
+    'nav.inquiryForm': 'Ring oss',
     
     'hero.title': 'Snabbt boende till era byggarbetare',
     'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
