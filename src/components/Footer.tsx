@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
           <div>
             <h3 className="text-2xl font-display mb-8 text-slate-700">Stay<span className="text-nordic-500">On</span>Site</h3>
-            <p className="mb-6 leading-relaxed font-light text-amber-900">
+            <p className="\xA7">
               {t('footer.description')}
             </p>
           </div>
