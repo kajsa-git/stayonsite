@@ -72,6 +72,7 @@ const Header = () => {
           <div className="flex items-center space-x-6">
             <LanguageSwitcher className={scrolled ? "text-nordic-800" : "text-nordic-900"} />
             <Button 
+              asChild
               variant={scrolled ? "default" : "outline"}
               className={cn(
                 "rounded-md border-nordic-200 px-5 py-2 h-auto font-light transition-all duration-500",
@@ -79,11 +80,10 @@ const Header = () => {
                   ? "bg-nordic-500 hover:bg-nordic-600 text-white"
                   : "bg-white/80 hover:bg-white text-nordic-800 hover:text-nordic-900"
               )}
-              onClick={() => {
-                document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
-              }}
             >
-              {t('nav.inquiryForm')}
+              <a href="tel:+46762498486">
+                {t('nav.inquiryForm')}
+              </a>
             </Button>
           </div>
         </nav>
@@ -123,13 +123,15 @@ const Header = () => {
               ))}
               <li className="pt-4">
                 <Button 
+                  asChild
                   className="w-full rounded-md bg-nordic-500 hover:bg-nordic-600 text-white font-light"
-                  onClick={() => {
-                    document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
-                    setIsMenuOpen(false);
-                  }}
                 >
-                  {t('nav.inquiryForm')}
+                  <a 
+                    href="tel:+46762498486"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('nav.inquiryForm')}
+                  </a>
                 </Button>
               </li>
             </ul>
