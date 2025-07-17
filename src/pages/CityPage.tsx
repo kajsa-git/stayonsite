@@ -10,8 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Users, Building, Phone, Mail } from 'lucide-react';
 
 const CityPage = () => {
+  console.log('CityPage component rendering');
   const { citySlug } = useParams<{ citySlug: string }>();
+  
+  console.log('About to call useLanguage');
   const { language, t } = useLanguage();
+  console.log('useLanguage called successfully', { language });
   
   if (!citySlug) {
     return <Navigate to="/" replace />;
