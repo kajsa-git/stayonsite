@@ -58,6 +58,19 @@ export type TranslationKey =
   | 'inquiry.form.error'
   | 'inquiry.form.untilFurtherNotice'
   | 'inquiry.contactInfo.title'
+  | 'faq.title'
+  | 'faq.subtitle'
+  | 'faq.tagline'
+  | 'faq.question1'
+  | 'faq.answer1'
+  | 'faq.question2'
+  | 'faq.answer2'
+  | 'faq.question3'
+  | 'faq.answer3'
+  | 'faq.question4'
+  | 'faq.answer4'
+  | 'faq.question5'
+  | 'faq.answer5'
   | 'footer.rights'
   | 'footer.contact'
   | 'footer.description'
@@ -127,6 +140,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.untilFurtherNotice': 'Tillsvidare',
     'inquiry.contactInfo.title': 'Kontaktinformation',
     
+    'faq.title': 'Vanliga frågor',
+    'faq.subtitle': 'Här hittar du svar på de vanligaste frågorna om våra tjänster och personalboende.',
+    'faq.tagline': 'Vanliga frågor',
+    'faq.question1': 'Hur snabbt kan ni ordna boende?',
+    'faq.answer1': 'Vi strävar efter att ge er alternativ inom 24 timmar efter att vi mottagit er förfrågan. I brådskande fall kan vi ofta ordna boende samma dag.',
+    'faq.question2': 'Vilka städer täcker ni?',
+    'faq.answer2': 'Vi har boenden i över 40 städer i Sverige, från Stockholm till Göteborg och Malmö samt många mindre orter. Kontakta oss för att höra om vi kan hjälpa er på den specifika ort ni behöver.',
+    'faq.question3': 'Vad kostar det att hyra boende genom er?',
+    'faq.answer3': 'Priserna varierar beroende på ort, typ av boende och längd på hyresperioden. Vi skickar alltid prisuppgifter tillsammans med våra förslag så ni kan ta ett informerat beslut.',
+    'faq.question4': 'Är boendet möblerat?',
+    'faq.answer4': 'Ja, alla våra boenden är fullt möblerade och utrustade med allt era arbetare behöver - sängar, kök, vardagsrum och ofta även wi-fi och parkering.',
+    'faq.question5': 'Kan vi göra ändringar i bokningen efter bekräftelse?',
+    'faq.answer5': 'Vi förstår att planer kan ändras i byggbranschen. Kontakta oss så snart som möjligt så hjälper vi er att göra nödvändiga ändringar, såsom förlängning eller förkortning av hyresperioden.',
+    
     'footer.rights': 'Alla rättigheter förbehållna',
     'footer.contact': 'Kontakta oss',
     'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.',
@@ -194,6 +221,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'There was an error submitting the form. Please try again later.',
     'inquiry.form.untilFurtherNotice': 'Until further notice',
     'inquiry.contactInfo.title': 'Contact Information',
+    
+    'faq.title': 'Frequently Asked Questions',
+    'faq.subtitle': 'Find answers to the most common questions about our services and staff accommodation.',
+    'faq.tagline': 'FAQ',
+    'faq.question1': 'How quickly can you arrange accommodation?',
+    'faq.answer1': 'We strive to provide you with options within 24 hours of receiving your inquiry. In urgent cases, we can often arrange accommodation the same day.',
+    'faq.question2': 'Which cities do you cover?',
+    'faq.answer2': 'We have accommodations in over 40 cities in Sweden, from Stockholm to Gothenburg and Malmö as well as many smaller towns. Contact us to hear if we can help you in the specific location you need.',
+    'faq.question3': 'What does it cost to rent accommodation through you?',
+    'faq.answer3': 'Prices vary depending on location, type of accommodation and length of rental period. We always send pricing information along with our suggestions so you can make an informed decision.',
+    'faq.question4': 'Is the accommodation furnished?',
+    'faq.answer4': 'Yes, all our accommodations are fully furnished and equipped with everything your workers need - beds, kitchen, living room and often also wi-fi and parking.',
+    'faq.question5': 'Can we make changes to the booking after confirmation?',
+    'faq.answer5': 'We understand that plans can change in the construction industry. Contact us as soon as possible and we will help you make necessary changes, such as extending or shortening the rental period.',
     
     'footer.rights': 'All rights reserved',
     'footer.contact': 'Contact us',

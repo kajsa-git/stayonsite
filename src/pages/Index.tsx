@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import CityLinks from '@/components/CityLinks';
 import References from '@/components/References';
+import FAQ from '@/components/FAQ';
 import InquiryForm from '@/components/InquiryForm';
 import Footer from '@/components/Footer';
 
@@ -16,6 +17,7 @@ const Index = () => {
           <Services />
           <CityLinks />
           <References />
+          <FAQ />
           <InquiryForm />
         </main>
         <Footer />

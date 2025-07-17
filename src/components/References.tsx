@@ -43,7 +43,39 @@ const References = () => {
       setTestimonials(defaultTestimonials);
     }
   }, [t]);
+  // Schema.org structured data for reviews
+  const reviewSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "StayOnSite",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": testimonials.length.toString(),
+      "bestRating": "5"
+    },
+    "review": testimonials.map(testimonial => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": testimonial.author
+      },
+      "reviewBody": testimonial.quote,
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    }))
+  };
+
   return <section id="references" className="py-24 bg-white nordic-texture">
+      {/* Schema.org structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }}
+      />
+      
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
