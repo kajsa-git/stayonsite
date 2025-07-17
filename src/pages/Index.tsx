@@ -7,6 +7,7 @@ import References from '@/components/References';
 import FAQ from '@/components/FAQ';
 import InquiryForm from '@/components/InquiryForm';
 import Footer from '@/components/Footer';
+import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 
 const Index = () => {
   return (
@@ -21,6 +22,7 @@ const Index = () => {
           <InquiryForm />
         </main>
         <Footer />
+        <FloatingPhoneButton />
       </div>
   );
 };

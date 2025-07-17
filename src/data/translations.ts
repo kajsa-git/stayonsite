@@ -74,7 +74,9 @@ export type TranslationKey =
   | 'footer.rights'
   | 'footer.contact'
   | 'footer.description'
-  | 'footer.quickLinks';
+  | 'footer.quickLinks'
+  | 'floatingPhone.call'
+  | 'floatingPhone.tooltip';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {
@@ -157,7 +159,10 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.rights': 'Alla rättigheter förbehållna',
     'footer.contact': 'Kontakta oss',
     'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.',
-    'footer.quickLinks': 'Snabblänkar'
+    'footer.quickLinks': 'Snabblänkar',
+    
+    'floatingPhone.call': 'Ring oss',
+    'floatingPhone.tooltip': 'Ring oss direkt på 076-249 84 86'
   },
   en: {
     'nav.home': 'Home',
@@ -239,6 +244,9 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.rights': 'All rights reserved',
     'footer.contact': 'Contact us',
     'footer.description': 'We help construction companies quickly find accommodations in other locations for their workers.',
-    'footer.quickLinks': 'Quick Links'
+    'footer.quickLinks': 'Quick Links',
+    
+    'floatingPhone.call': 'Call us',
+    'floatingPhone.tooltip': 'Call us directly at 076-249 84 86'
   }
 };

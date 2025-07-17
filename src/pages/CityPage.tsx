@@ -5,6 +5,7 @@ import { getCityBySlug } from '@/data/cities';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -355,6 +356,7 @@ const CityPage = () => {
       </main>
       
       <Footer />
+      <FloatingPhoneButton />
     </div>
   );
 };
