@@ -1,6 +1,7 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug } from '@/data/cities';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -30,18 +31,48 @@ const CityPage = () => {
     ? `Behöver ditt byggbolag boende för arbetare i ${city.name}? StayOnSite hjälper er att snabbt hitta kvalitetsbostäder för era projekt i ${city.region}.`
     : `Does your construction company need accommodation for workers in ${city.name}? StayOnSite helps you quickly find quality housing for your projects in ${city.region}.`;
 
-  // Update page title and meta description
+  // Update page title and meta description + schema
   if (typeof document !== 'undefined') {
     document.title = pageTitle;
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', pageDescription);
     }
+    
+    // Add LocalBusiness schema
+    const existingSchema = document.querySelector('script[type="application/ld+json"]');
+    if (existingSchema) {
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": `StayOnSite ${city.name}`,
+        "description": pageDescription,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": city.name,
+          "addressRegion": city.region,
+          "addressCountry": "SE"
+        },
+        "telephone": "+46762498486",
+        "url": `https://760b4757-b8ba-4bea-a67c-2d97c14b221d.lovableproject.com/stad/${city.slug}`,
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": city.coordinates[0],
+          "longitude": city.coordinates[1]
+        },
+        "serviceArea": {
+          "@type": "Place",
+          "name": city.region
+        }
+      };
+      existingSchema.textContent = JSON.stringify(schemaData);
+    }
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <Breadcrumbs />
       
       <main className="flex-grow">
         {/* Hero Section */}

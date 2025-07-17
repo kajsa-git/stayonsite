@@ -68,6 +68,14 @@ const Header = () => {
                 </a>
               </li>
             ))}
+            {/* Quick city links */}
+            <li className="border-l border-gray-300 pl-6 ml-6">
+              <div className="flex items-center space-x-4 text-sm">
+                <a href="/stad/stockholm" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Stockholm</a>
+                <a href="/stad/goteborg" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Göteborg</a>
+                <a href="/stad/malmo" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Malmö</a>
+              </div>
+            </li>
           </ul>
           <div className="flex items-center space-x-6">
             <LanguageSwitcher className={scrolled ? "text-nordic-800" : "text-nordic-900"} />
