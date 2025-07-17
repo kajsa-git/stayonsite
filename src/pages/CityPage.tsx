@@ -141,25 +141,62 @@ const CityPage = () => {
                 <div>
                   <h2 className="text-3xl font-bold text-nordic-900 mb-6">
                     {language === 'sv' 
-                      ? `Varför välja ${city.name}?`
-                      : `Why choose ${city.name}?`
+                      ? `Varför välja StayOnSite för personalboende i ${city.name}?`
+                      : `Why choose StayOnSite for staff housing in ${city.name}?`
                     }
                   </h2>
                   
-                  <p className="text-lg text-gray-700 mb-6">
-                    {city.description}
-                  </p>
-                  
-                  <div className="flex items-center mb-4">
-                    <Users className="h-5 w-5 mr-3 text-nordic-600" />
-                    <span className="text-gray-700">
-                      {language === 'sv' ? 'Befolkning' : 'Population'}: {city.population}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <MapPin className="h-5 w-5 mr-3 text-nordic-600" />
-                    <span className="text-gray-700">{city.region}</span>
+                  <div className="space-y-4">
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0 mt-1">
+                        <Users className="h-5 w-5 text-nordic-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? 'Lokal expertis' : 'Local expertise'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? `Vi känner ${city.name} och vet var de bästa bostäderna finns för er personal.`
+                            : `We know ${city.name} and where to find the best accommodation for your staff.`
+                          }
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0 mt-1">
+                        <Building className="h-5 w-5 text-nordic-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? 'Fullservice-lösning' : 'Full-service solution'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? 'Vi sköter allt från visning till uthyrning - ni behöver bara flytta in.'
+                            : 'We handle everything from viewing to rental - you just need to move in.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0 mt-1">
+                        <MapPin className="h-5 w-5 text-nordic-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? 'Trygg partner' : 'Safe partner'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? 'Etablerat företag med erfarenhet av personalboende och nöjda kunder.'
+                            : 'Established company with experience in staff housing and satisfied customers.'
+                          }
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
@@ -191,24 +228,74 @@ const CityPage = () => {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center text-nordic-900 mb-12">
                 {language === 'sv' 
-                  ? `Stora byggprojekt i ${city.name}`
-                  : `Major construction projects in ${city.name}`
+                  ? `Våra tjänster för personalboende i ${city.name}`
+                  : `Our staff housing services in ${city.name}`
                 }
               </h2>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {city.highlights.map((highlight, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start">
-                        <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0">
-                          <Building className="h-5 w-5 text-nordic-600" />
-                        </div>
-                        <p className="text-gray-700">{highlight}</p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0">
+                        <Users className="h-5 w-5 text-nordic-600" />
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? 'Snabb lösning' : 'Quick solution'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? 'Vi hittar boende åt er personal inom 24-48 timmar.'
+                            : 'We find accommodation for your staff within 24-48 hours.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0">
+                        <Building className="h-5 w-5 text-nordic-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? 'Kvalitetssäkrat' : 'Quality assured'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? 'Alla bostäder är kontrollerade och möblerade.'
+                            : 'All accommodations are inspected and furnished.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="bg-nordic-100 rounded-full p-2 mr-4 flex-shrink-0">
+                        <Phone className="h-5 w-5 text-nordic-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-nordic-900 mb-2">
+                          {language === 'sv' ? '24/7 support' : '24/7 support'}
+                        </h3>
+                        <p className="text-gray-700">
+                          {language === 'sv' 
+                            ? 'Alltid tillgänglig när ni behöver hjälp.'
+                            : 'Always available when you need assistance.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
