@@ -11,7 +11,7 @@ const Breadcrumbs = () => {
   if (pathSegments.length === 0) return null;
 
   return (
-    <nav className="bg-gray-50 border-b border-gray-200 py-3">
+    <nav className="bg-gray-50 border-b border-gray-200 py-3 mt-20 md:mt-24">
       <div className="container mx-auto px-4">
         <ol className="flex items-center space-x-2 text-sm">
           <li>
