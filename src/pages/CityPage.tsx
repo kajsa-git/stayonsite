@@ -1,4 +1,5 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug } from '@/data/cities';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -26,6 +27,11 @@ const CityPage = () => {
   if (!city) {
     return <Navigate to="/404" replace />;
   }
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [citySlug]);
 
   const pageTitle = language === 'sv' 
     ? `Personalboende ${city.name} - Enkel lösning för företag - StayOnSite`
