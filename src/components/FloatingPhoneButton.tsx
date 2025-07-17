@@ -12,7 +12,7 @@ const FloatingPhoneButton = () => {
           <TooltipTrigger asChild>
             <a
               href="tel:+46762498486"
-              className="group flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg hover:bg-primary/90 transition-all duration-300 hover:scale-110 animate-pulse hover:animate-none"
+              className="group flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg hover:bg-primary/90 transition-all duration-300 hover:scale-110"
               aria-label={t('floatingPhone.call')}
             >
               <Phone 
