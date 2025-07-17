@@ -28,12 +28,12 @@ const CityPage = () => {
   }
 
   const pageTitle = language === 'sv' 
-    ? `Företagsbostäder ${city.name} - StayOnSite`
-    : `Corporate Housing ${city.name} - StayOnSite`;
+    ? `Personalboende ${city.name} - Enkel lösning för företag - StayOnSite`
+    : `Staff Housing ${city.name} - Simple Solution for Companies - StayOnSite`;
     
   const pageDescription = language === 'sv'
-    ? `Behöver ditt byggbolag boende för arbetare i ${city.name}? StayOnSite hjälper er att snabbt hitta kvalitetsbostäder för era projekt i ${city.region}.`
-    : `Does your construction company need accommodation for workers in ${city.name}? StayOnSite helps you quickly find quality housing for your projects in ${city.region}.`;
+    ? `Behöver ert företag boende för personal i ${city.name}? StayOnSite erbjuder enkla och trygga boendelösningar för er personal. Vi sköter allt med lokal kunskap.`
+    : `Does your company need accommodation for staff in ${city.name}? StayOnSite offers simple and safe housing solutions for your personnel. We handle everything with local expertise.`;
 
   // Update page title and meta description + schema
   if (typeof document !== 'undefined') {
@@ -92,15 +92,15 @@ const CityPage = () => {
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
                 {language === 'sv' 
-                  ? `Företagsbostäder ${city.name}`
-                  : `Corporate Housing ${city.name}`
+                  ? `Personalboende ${city.name}`
+                  : `Staff Housing ${city.name}`
                 }
               </h1>
               
               <p className="text-xl md:text-2xl text-nordic-100 mb-8 leading-relaxed">
                 {language === 'sv'
-                  ? `Snabb och pålitlig lösning för era byggarbetares boende i ${city.name}. Vi hanterar allt från A till Ö.`
-                  : `Fast and reliable solution for your construction workers' accommodation in ${city.name}. We handle everything from A to Z.`
+                  ? `Enkel och trygg lösning för er personal i ${city.name}. Vi sköter allt och har lokal kunskap.`
+                  : `Simple and safe solution for your staff in ${city.name}. We handle everything with local expertise.`
                 }
               </p>
               
@@ -220,15 +220,15 @@ const CityPage = () => {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">
                 {language === 'sv' 
-                  ? `Behöver ni boende för era arbetare i ${city.name}?`
-                  : `Need accommodation for your workers in ${city.name}?`
+                  ? `Behöver ert företag boende för personal i ${city.name}?`
+                  : `Does your company need accommodation for staff in ${city.name}?`
                 }
               </h2>
               
               <p className="text-xl text-nordic-100 mb-8">
                 {language === 'sv'
-                  ? 'Vi hjälper er att snabbt hitta lämpliga bostäder för era byggprojekt. Kontakta oss idag för en kostnadsfri konsultation.'
-                  : 'We help you quickly find suitable accommodation for your construction projects. Contact us today for a free consultation.'
+                  ? 'Vi erbjuder enkla och trygga boendelösningar för er personal. Kontakta oss idag för en kostnadsfri konsultation.'
+                  : 'We offer simple and safe housing solutions for your staff. Contact us today for a free consultation.'
                 }
               </p>
               
