@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -42,14 +43,14 @@ const Header = () => {
     >
       <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
         <div className="flex items-center">
-          <a href="#" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <span className={cn(
               "text-2xl font-display transition-colors duration-500",
               scrolled ? "text-nordic-800" : "text-nordic-900"
             )}>
               Stay<span className="text-nordic-500">On</span>Site
             </span>
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
@@ -71,9 +72,9 @@ const Header = () => {
             {/* Quick city links */}
             <li className="border-l border-gray-300 pl-6 ml-6">
               <div className="flex items-center space-x-4 text-sm">
-                <a href="/stad/stockholm" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Stockholm</a>
-                <a href="/stad/goteborg" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Göteborg</a>
-                <a href="/stad/malmo" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Malmö</a>
+                <Link to="/stad/stockholm" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Stockholm</Link>
+                <Link to="/stad/goteborg" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Göteborg</Link>
+                <Link to="/stad/malmo" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Malmö</Link>
               </div>
             </li>
           </ul>

@@ -1,4 +1,4 @@
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug } from '@/data/cities';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -251,9 +251,9 @@ const CityPage = () => {
                   size="lg" 
                   className="text-lg px-8 py-3 bg-white/10 border-white/30 text-white hover:bg-white/20"
                 >
-                  <a href="/#inquiry">
+                  <Link to="/#inquiry">
                     {language === 'sv' ? 'Fyll i förfrågan' : 'Fill out inquiry'}
-                  </a>
+                  </Link>
                 </Button>
               </div>
             </div>
