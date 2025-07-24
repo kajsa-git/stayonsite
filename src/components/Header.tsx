@@ -98,7 +98,7 @@ const Header = () => {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center space-x-3">
+        <div className="md:hidden flex items-center space-x-4">
           <LanguageSwitcher className={scrolled ? "text-nordic-800" : "text-nordic-900"} />
           <Button
             variant="ghost" 
