@@ -259,7 +259,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.benefits.security.title': 'Trygghet och säkerhet',
     'homeowner.benefits.security.description': 'Endast verifierade hyresgäster från etablerade företag',
     'homeowner.benefits.hassle.title': 'Inga bekymmer',
-    'homeowner.benefits.hassle.description': 'Vi sköter allt - screening, kontrakt, kommunikation och betalningar',
+    'homeowner.benefits.hassle.description': 'Vi sköter allt - hitta hyresgäst, kontrakt, kommunikation och betalningar',
     'homeowner.benefits.flexibility.title': 'Full flexibilitet',
     'homeowner.benefits.flexibility.description': 'Du bestämmer vilka perioder som passar dig och dina villkor',
     
