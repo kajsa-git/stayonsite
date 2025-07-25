@@ -85,8 +85,8 @@ const Header = () => {
               <Link 
                 to="/for-husagare"
                 className={cn(
-                  "font-light tracking-wide transition-colors duration-500 hover:text-blue-500 relative after:absolute after:w-full after:h-px after:bg-blue-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap",
-                  scrolled ? "text-blue-700" : "text-blue-600"
+                  "font-light tracking-wide transition-colors duration-500 hover:text-blue-600 relative after:absolute after:w-full after:h-px after:bg-blue-600 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap",
+                  scrolled ? "text-blue-800" : "text-blue-700"
                 )}
               >
                 {t('nav.forCompanies')}
@@ -179,7 +179,7 @@ const Header = () => {
               <li>
                 <Link 
                   to="/for-husagare"
-                  className="block py-2 text-blue-600 hover:text-blue-700 transition-colors duration-300 font-medium tracking-wide"
+                  className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('nav.forCompanies')}
