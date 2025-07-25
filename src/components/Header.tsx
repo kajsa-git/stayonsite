@@ -109,14 +109,14 @@ const Header = () => {
               asChild
               variant={scrolled ? "default" : "outline"}
               className={cn(
-                "rounded-md border-nordic-200 px-5 py-2 h-auto font-light transition-all duration-500",
+                "rounded-md px-5 py-2 h-auto font-light transition-all duration-500 text-sm md:text-base border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50",
                 scrolled 
-                  ? "bg-nordic-500 hover:bg-nordic-600 text-white"
-                  : "bg-white/80 hover:bg-white text-nordic-800 hover:text-nordic-900"
+                  ? "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "bg-blue-50/80 hover:bg-blue-100 text-blue-700 hover:text-blue-800"
               )}
             >
               <a href="tel:+46762498486">
-                {t('nav.inquiryForm')}
+                {t('nav.forCompanies')}
               </a>
             </Button>
           </div>
@@ -177,13 +177,13 @@ const Header = () => {
               <li className="pt-4">
                 <Button 
                   asChild
-                  className="w-full rounded-md bg-nordic-500 hover:bg-nordic-600 text-white font-light"
+                  className="w-full rounded-md bg-blue-500 hover:bg-blue-600 text-white font-light"
                 >
                   <a 
                     href="tel:+46762498486"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {t('nav.inquiryForm')}
+                    {t('nav.forCompanies')}
                   </a>
                 </Button>
               </li>

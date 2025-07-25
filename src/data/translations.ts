@@ -7,6 +7,7 @@ export type TranslationKey =
   | 'nav.contact'
   | 'nav.inquiryForm'
   | 'nav.homeowner'
+  | 'nav.forCompanies'
   | 'hero.title'
   | 'hero.subtitle'
   | 'hero.cta'
@@ -165,6 +166,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.references': 'Referenser',
     'nav.contact': 'Kontakt',
     'nav.inquiryForm': 'Ring oss',
+    'nav.forCompanies': 'För byggbolag',
     
     'hero.title': 'Snabbt boende till era byggarbetare',
     'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
@@ -337,6 +339,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.references': 'References',
     'nav.contact': 'Contact',
     'nav.inquiryForm': 'Inquiry',
+    'nav.forCompanies': 'For Companies',
     
     'hero.title': 'Fast accommodation for your construction workers',
     'hero.subtitle': 'We help construction companies quickly find accommodations in other locations for their workers',
