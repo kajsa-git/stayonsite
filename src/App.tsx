@@ -8,7 +8,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import CityPage from "./pages/CityPage";
 import ForHusagare from "./pages/ForHusagare";
-import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,7 +26,6 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/stad/:citySlug" element={<CityPage />} />
               <Route path="/for-husagare" element={<ForHusagare />} />
-              <Route path="/admin" element={<Admin />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

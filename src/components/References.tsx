@@ -1,48 +1,33 @@
-import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Quote } from 'lucide-react';
-type Testimonial = {
-  id: string;
-  quote: string;
-  author: string;
-  company: string;
-  img: string;
-};
+
 const References = () => {
-  const {
-    t
-  } = useLanguage();
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  useEffect(() => {
-    // Load testimonials from localStorage if available
-    const savedTestimonials = localStorage.getItem('testimonials');
-    if (savedTestimonials) {
-      setTestimonials(JSON.parse(savedTestimonials));
-    } else {
-      // Use default testimonials from translations if none found in localStorage
-      const defaultTestimonials = [{
-        id: '1',
-        quote: t('references.testimonial1.quote'),
-        author: t('references.testimonial1.author'),
-        company: t('references.testimonial1.company'),
-        img: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-      }, {
-        id: '2',
-        quote: t('references.testimonial2.quote'),
-        author: t('references.testimonial2.author'),
-        company: t('references.testimonial2.company'),
-        img: 'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-      }, {
-        id: '3',
-        quote: t('references.testimonial3.quote'),
-        author: t('references.testimonial3.author'),
-        company: t('references.testimonial3.company'),
-        img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-      }];
-      setTestimonials(defaultTestimonials);
+  const { t } = useLanguage();
+  
+  const testimonials = [
+    {
+      id: '1',
+      quote: t('references.testimonial1.quote'),
+      author: t('references.testimonial1.author'),
+      company: t('references.testimonial1.company'),
+      img: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      id: '2',
+      quote: t('references.testimonial2.quote'),
+      author: t('references.testimonial2.author'),
+      company: t('references.testimonial2.company'),
+      img: 'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      id: '3',
+      quote: t('references.testimonial3.quote'),
+      author: t('references.testimonial3.author'),
+      company: t('references.testimonial3.company'),
+      img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
     }
-  }, [t]);
+  ];
   // Schema.org structured data for reviews
   const reviewSchema = {
     "@context": "https://schema.org",
