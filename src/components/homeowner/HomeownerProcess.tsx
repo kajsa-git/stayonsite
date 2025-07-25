@@ -68,7 +68,7 @@ const HomeownerProcess = () => {
             {steps.map((step, index) => (
               <div key={index} className="relative text-center">
                 {/* Step number */}
-                <div className="relative w-16 h-16 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg border-4 border-amber-200 z-10">
+                <div className="relative mx-auto mb-6 z-10">
                   <span className="text-2xl font-display font-medium text-amber-600">
                     {step.number}
                   </span>
