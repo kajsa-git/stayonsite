@@ -36,16 +36,21 @@ const HomeownerHero = () => {
           </p>
 
           {/* Income highlight */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 mb-12 max-w-2xl mx-auto border border-amber-200 shadow-lg">
-            <div className="flex items-center justify-center mb-4">
-              <svg className="w-12 h-12 text-amber-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-              <span className="text-2xl md:text-3xl font-display text-amber-600 font-medium">
+          <div className="relative bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-md rounded-3xl p-8 md:p-10 mb-12 max-w-2xl mx-auto border border-amber-300/40 shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/20 transition-all duration-500 transform hover:scale-[1.02]">
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-amber-50/50 to-orange-50/30 pointer-events-none"></div>
+            
+            <div className="relative z-10 flex items-center justify-center mb-6">
+              <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg mr-5">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <span className="text-3xl md:text-4xl font-display text-gradient bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent font-semibold">
                 {t('homeowner.hero.incomeRange')}
               </span>
             </div>
-            <p className="text-nordic-700 font-light">
+            <p className="relative z-10 text-nordic-700 font-light text-lg leading-relaxed text-center">
               {t('homeowner.hero.incomeDescription')}
             </p>
           </div>
