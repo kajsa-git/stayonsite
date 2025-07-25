@@ -120,7 +120,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-light text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-light text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
         >
           {isSubmitting ? (
             <div className="flex items-center">
