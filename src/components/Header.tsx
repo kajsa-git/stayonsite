@@ -74,7 +74,7 @@ const Header = () => {
               <Link 
                 to="/for-husagare"
                 className={cn(
-                  "font-light tracking-wide transition-colors duration-500 hover:text-amber-500 relative after:absolute after:w-full after:h-px after:bg-amber-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 px-3 py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200",
+                  "font-light tracking-wide transition-colors duration-500 hover:text-amber-500 relative after:absolute after:w-full after:h-px after:bg-amber-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 whitespace-nowrap",
                   scrolled ? "text-amber-700" : "text-amber-600"
                 )}
               >
