@@ -69,6 +69,19 @@ const Header = () => {
                 </a>
               </li>
             ))}
+            {/* För husägare link */}
+            <li>
+              <Link 
+                to="/for-husagare"
+                className={cn(
+                  "font-light tracking-wide transition-colors duration-500 hover:text-amber-500 relative after:absolute after:w-full after:h-px after:bg-amber-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 px-3 py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200",
+                  scrolled ? "text-amber-700" : "text-amber-600"
+                )}
+              >
+                {t('nav.homeowner')}
+              </Link>
+            </li>
+            
             {/* Quick city links */}
             <li className="border-l border-gray-300 pl-6 ml-6">
               <div className="flex items-center space-x-4 text-sm">
@@ -130,6 +143,15 @@ const Header = () => {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link 
+                  to="/for-husagare"
+                  className="block py-2 text-amber-600 hover:text-amber-700 transition-colors duration-300 font-medium tracking-wide"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('nav.homeowner')}
+                </Link>
+              </li>
               <li className="pt-4">
                 <Button 
                   asChild

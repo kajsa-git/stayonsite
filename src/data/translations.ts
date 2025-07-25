@@ -6,6 +6,7 @@ export type TranslationKey =
   | 'nav.references'
   | 'nav.contact'
   | 'nav.inquiryForm'
+  | 'nav.homeowner'
   | 'hero.title'
   | 'hero.subtitle'
   | 'hero.cta'
@@ -76,7 +77,86 @@ export type TranslationKey =
   | 'footer.description'
   | 'footer.quickLinks'
   | 'floatingPhone.call'
-  | 'floatingPhone.tooltip';
+  | 'floatingPhone.tooltip'
+  | 'homeowner.hero.title'
+  | 'homeowner.hero.subtitle'
+  | 'homeowner.hero.incomeRange'
+  | 'homeowner.hero.incomeDescription'
+  | 'homeowner.hero.cta'
+  | 'homeowner.benefits.title'
+  | 'homeowner.benefits.subtitle'
+  | 'homeowner.benefits.income.title'
+  | 'homeowner.benefits.income.description'
+  | 'homeowner.benefits.security.title'
+  | 'homeowner.benefits.security.description'
+  | 'homeowner.benefits.hassle.title'
+  | 'homeowner.benefits.hassle.description'
+  | 'homeowner.benefits.flexibility.title'
+  | 'homeowner.benefits.flexibility.description'
+  | 'homeowner.process.title'
+  | 'homeowner.process.subtitle'
+  | 'homeowner.process.step1.title'
+  | 'homeowner.process.step1.description'
+  | 'homeowner.process.step2.title'
+  | 'homeowner.process.step2.description'
+  | 'homeowner.process.step3.title'
+  | 'homeowner.process.step3.description'
+  | 'homeowner.process.step4.title'
+  | 'homeowner.process.step4.description'
+  | 'homeowner.testimonials.title'
+  | 'homeowner.testimonials.subtitle'
+  | 'homeowner.testimonials.testimonial1.quote'
+  | 'homeowner.testimonials.testimonial1.author'
+  | 'homeowner.testimonials.testimonial1.location'
+  | 'homeowner.testimonials.testimonial1.income'
+  | 'homeowner.testimonials.testimonial2.quote'
+  | 'homeowner.testimonials.testimonial2.author'
+  | 'homeowner.testimonials.testimonial2.location'
+  | 'homeowner.testimonials.testimonial2.income'
+  | 'homeowner.testimonials.testimonial3.quote'
+  | 'homeowner.testimonials.testimonial3.author'
+  | 'homeowner.testimonials.testimonial3.location'
+  | 'homeowner.testimonials.testimonial3.income'
+  | 'homeowner.testimonials.trustIndicator'
+  | 'homeowner.testimonials.trustDescription'
+  | 'homeowner.faq.title'
+  | 'homeowner.faq.subtitle'
+  | 'homeowner.faq.question1'
+  | 'homeowner.faq.answer1'
+  | 'homeowner.faq.question2'
+  | 'homeowner.faq.answer2'
+  | 'homeowner.faq.question3'
+  | 'homeowner.faq.answer3'
+  | 'homeowner.faq.question4'
+  | 'homeowner.faq.answer4'
+  | 'homeowner.faq.question5'
+  | 'homeowner.faq.answer5'
+  | 'homeowner.faq.question6'
+  | 'homeowner.faq.answer6'
+  | 'homeowner.faq.contactPrompt'
+  | 'homeowner.form.title'
+  | 'homeowner.form.subtitle'
+  | 'homeowner.form.promise'
+  | 'homeowner.form.promiseDescription'
+  | 'homeowner.form.fieldsTitle'
+  | 'homeowner.form.fieldsSubtitle'
+  | 'homeowner.form.firstName'
+  | 'homeowner.form.firstNamePlaceholder'
+  | 'homeowner.form.lastName'
+  | 'homeowner.form.lastNamePlaceholder'
+  | 'homeowner.form.email'
+  | 'homeowner.form.emailPlaceholder'
+  | 'homeowner.form.phone'
+  | 'homeowner.form.phonePlaceholder'
+  | 'homeowner.form.address'
+  | 'homeowner.form.addressPlaceholder'
+  | 'homeowner.form.city'
+  | 'homeowner.form.cityPlaceholder'
+  | 'homeowner.form.submit'
+  | 'homeowner.form.submitting'
+  | 'homeowner.form.success'
+  | 'homeowner.form.error'
+  | 'homeowner.form.disclaimer';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {
@@ -162,7 +242,94 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.quickLinks': 'Snabblänkar',
     
     'floatingPhone.call': 'Ring oss',
-    'floatingPhone.tooltip': 'Ring oss direkt på 076-249 84 86'
+    'floatingPhone.tooltip': 'Ring oss direkt på 076-249 84 86',
+    
+    'nav.homeowner': 'För husägare',
+    
+    'homeowner.hero.title': 'Förvandla ditt hem till en inkomstkälla',
+    'homeowner.hero.subtitle': 'Vi hjälper dig hyra ut till pålitliga byggarbetare - helt utan krångel',
+    'homeowner.hero.incomeRange': '3 000 - 8 000 kr/månad',
+    'homeowner.hero.incomeDescription': 'Säkra hyresintäkter från verifierade byggarbetare',
+    'homeowner.hero.cta': 'Registrera din bostad idag',
+    
+    'homeowner.benefits.title': 'Varför välja StayOnSite?',
+    'homeowner.benefits.subtitle': 'Få extra inkomst från ditt hem med trygghet och enkelhet',
+    'homeowner.benefits.income.title': 'Garanterad inkomst',
+    'homeowner.benefits.income.description': 'Säkra hyresintäkter från 3000-8000 kr/månad från verifierade byggarbetare',
+    'homeowner.benefits.security.title': 'Trygghet och säkerhet',
+    'homeowner.benefits.security.description': 'Endast verifierade byggarbetare från etablerade företag. Försäkring och skadeståndsgaranti ingår',
+    'homeowner.benefits.hassle.title': 'Inga bekymmer',
+    'homeowner.benefits.hassle.description': 'Vi sköter allt - screening, kontrakt, kommunikation och betalningar',
+    'homeowner.benefits.flexibility.title': 'Full flexibilitet',
+    'homeowner.benefits.flexibility.description': 'Du bestämmer vilka perioder som passar dig och dina villkor',
+    
+    'homeowner.process.title': 'Så här fungerar det',
+    'homeowner.process.subtitle': 'Enkel process från registrering till första hyresintäkt',
+    'homeowner.process.step1.title': 'Registrera din bostad',
+    'homeowner.process.step1.description': 'Fyll i vårt enkla formulär med information om din bostad',
+    'homeowner.process.step2.title': 'Vi kontaktar dig för besiktning',
+    'homeowner.process.step2.description': 'Vi bokar tid för en kostnadsfri besiktning och inkomstuppskattning',
+    'homeowner.process.step3.title': 'Vi matchar dig med hyresgäster',
+    'homeowner.process.step3.description': 'Vi hittar lämpliga byggarbetare som passar dina krav och tidsramar',
+    'homeowner.process.step4.title': 'Du får betalt varje månad',
+    'homeowner.process.step4.description': 'Säkra och punktliga hyresbetalningar direkt till ditt konto',
+    
+    'homeowner.testimonials.title': 'Vad våra husägare säger',
+    'homeowner.testimonials.subtitle': 'Över 200 familjer tjänar redan extra pengar genom StayOnSite',
+    'homeowner.testimonials.testimonial1.quote': 'Perfekt lösning! Vi tjänar 5000 kr extra varje månad och hyresgästerna är alltid artiga och städsamma.',
+    'homeowner.testimonials.testimonial1.author': 'Anna Eriksson',
+    'homeowner.testimonials.testimonial1.location': 'Stockholm',
+    'homeowner.testimonials.testimonial1.income': '+5 000 kr/månad',
+    'homeowner.testimonials.testimonial2.quote': 'StayOnSite sköter allt åt oss. Vi behöver inte ens träffa hyresgästerna om vi inte vill.',
+    'homeowner.testimonials.testimonial2.author': 'Lars Andersson',
+    'homeowner.testimonials.testimonial2.location': 'Göteborg',
+    'homeowner.testimonials.testimonial2.income': '+4 200 kr/månad',
+    'homeowner.testimonials.testimonial3.quote': 'Har hyrt ut i över ett år nu. Aldrig några problem och alltid i tid med betalningarna.',
+    'homeowner.testimonials.testimonial3.author': 'Maria Johansson',
+    'homeowner.testimonials.testimonial3.location': 'Malmö',
+    'homeowner.testimonials.testimonial3.income': '+6 500 kr/månad',
+    'homeowner.testimonials.trustIndicator': 'Över 200 familjer tjänar redan extra pengar',
+    'homeowner.testimonials.trustDescription': 'Gå med i vårt nätverk av nöjda husägare som tjänar säkra hyresintäkter varje månad',
+    
+    'homeowner.faq.title': 'Vanliga frågor för husägare',
+    'homeowner.faq.subtitle': 'Få svar på de vanligaste frågorna om att hyra ut till byggarbetare',
+    'homeowner.faq.question1': 'Vad händer om något går sönder?',
+    'homeowner.faq.answer1': 'Vi har full försäkring som täcker eventuella skador. Dessutom gör vi noggrann screening av alla hyresgäster för att minimera risker.',
+    'homeowner.faq.question2': 'Hur mycket kan jag tjäna?',
+    'homeowner.faq.answer2': 'Beroende på läge och typ av bostad tjänar våra husägare mellan 3000-8000 kr per månad. Vi ger dig en kostnadsfri inkomstuppskattning.',
+    'homeowner.faq.question3': 'Kan jag välja vilka som får hyra?',
+    'homeowner.faq.answer3': 'Ja, du har alltid sista ordet. Vi presenterar endast förverifierade kandidater och du bestämmer vem som passar dig bäst.',
+    'homeowner.faq.question4': 'Vad händer mellan uthyrningar?',
+    'homeowner.faq.answer4': 'Du får tillbaka full tillgång till din bostad. Vi hjälper också till att hitta nya hyresgäster så snabbt som möjligt.',
+    'homeowner.faq.question5': 'Behöver jag göra något speciellt med bostaden?',
+    'homeowner.faq.answer5': 'Nej, vi tar emot bostäder i befintligt skick. Vi kan dock ge tips på mindre förbättringar som kan öka hyresintäkten.',
+    'homeowner.faq.question6': 'Hur får jag betalt?',
+    'homeowner.faq.answer6': 'Hyran betalas direkt till ditt bankkonto den första varje månad. Vi hanterar all fakturering och administration.',
+    'homeowner.faq.contactPrompt': 'Har du fler frågor? Ring oss direkt!',
+    
+    'homeowner.form.title': 'Registrera din bostad',
+    'homeowner.form.subtitle': 'Det tar bara 2 minuter - få din kostnadsfria inkomstuppskattning redan idag',
+    'homeowner.form.promise': 'Vi kontaktar dig inom 24 timmar',
+    'homeowner.form.promiseDescription': 'Efter registrering kontaktar vi dig för en kostnadsfri konsultation om hur mycket du kan tjäna på din bostad',
+    'homeowner.form.fieldsTitle': 'Dina kontaktuppgifter',
+    'homeowner.form.fieldsSubtitle': 'Vi behöver bara grundläggande information för att komma igång',
+    'homeowner.form.firstName': 'Förnamn',
+    'homeowner.form.firstNamePlaceholder': 'Ange ditt förnamn',
+    'homeowner.form.lastName': 'Efternamn',
+    'homeowner.form.lastNamePlaceholder': 'Ange ditt efternamn',
+    'homeowner.form.email': 'E-post',
+    'homeowner.form.emailPlaceholder': 'din@email.se',
+    'homeowner.form.phone': 'Telefonnummer',
+    'homeowner.form.phonePlaceholder': '070-123 45 67',
+    'homeowner.form.address': 'Adress',
+    'homeowner.form.addressPlaceholder': 'Gatuadress och nummer',
+    'homeowner.form.city': 'Stad',
+    'homeowner.form.cityPlaceholder': 'Ange stad',
+    'homeowner.form.submit': 'Registrera bostad - Helt kostnadsfritt',
+    'homeowner.form.submitting': 'Registrerar...',
+    'homeowner.form.success': 'Tack för din registrering! Vi kontaktar dig inom 24 timmar.',
+    'homeowner.form.error': 'Det uppstod ett fel. Försök igen eller ring oss direkt.',
+    'homeowner.form.disclaimer': 'Genom att registrera dig godkänner du att vi kontaktar dig angående uthyrning av din bostad.'
   },
   en: {
     'nav.home': 'Home',
@@ -247,6 +414,93 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.quickLinks': 'Quick Links',
     
     'floatingPhone.call': 'Call us',
-    'floatingPhone.tooltip': 'Call us directly at 076-249 84 86'
+    'floatingPhone.tooltip': 'Call us directly at 076-249 84 86',
+    
+    'nav.homeowner': 'For Homeowners',
+    
+    'homeowner.hero.title': 'Turn your home into an income source',
+    'homeowner.hero.subtitle': 'We help you rent to reliable construction workers - completely hassle-free',
+    'homeowner.hero.incomeRange': '3,000 - 8,000 SEK/month',
+    'homeowner.hero.incomeDescription': 'Secure rental income from verified construction workers',
+    'homeowner.hero.cta': 'Register your property today',
+    
+    'homeowner.benefits.title': 'Why choose StayOnSite?',
+    'homeowner.benefits.subtitle': 'Get extra income from your home with security and simplicity',
+    'homeowner.benefits.income.title': 'Guaranteed income',
+    'homeowner.benefits.income.description': 'Secure rental income from 3,000-8,000 SEK/month from verified construction workers',
+    'homeowner.benefits.security.title': 'Safety and security',
+    'homeowner.benefits.security.description': 'Only verified construction workers from established companies. Insurance and damage guarantee included',
+    'homeowner.benefits.hassle.title': 'No worries',
+    'homeowner.benefits.hassle.description': 'We handle everything - screening, contracts, communication and payments',
+    'homeowner.benefits.flexibility.title': 'Full flexibility',
+    'homeowner.benefits.flexibility.description': 'You decide which periods suit you and your terms',
+    
+    'homeowner.process.title': 'How it works',
+    'homeowner.process.subtitle': 'Simple process from registration to first rental income',
+    'homeowner.process.step1.title': 'Register your property',
+    'homeowner.process.step1.description': 'Fill out our simple form with information about your property',
+    'homeowner.process.step2.title': 'We contact you for inspection',
+    'homeowner.process.step2.description': 'We schedule a free inspection and income estimate',
+    'homeowner.process.step3.title': 'We match you with tenants',
+    'homeowner.process.step3.description': 'We find suitable construction workers that meet your requirements and timeframes',
+    'homeowner.process.step4.title': 'You get paid every month',
+    'homeowner.process.step4.description': 'Secure and punctual rental payments directly to your account',
+    
+    'homeowner.testimonials.title': 'What our homeowners say',
+    'homeowner.testimonials.subtitle': 'Over 200 families already earn extra money through StayOnSite',
+    'homeowner.testimonials.testimonial1.quote': 'Perfect solution! We earn 5,000 SEK extra every month and the tenants are always polite and tidy.',
+    'homeowner.testimonials.testimonial1.author': 'Anna Eriksson',
+    'homeowner.testimonials.testimonial1.location': 'Stockholm',
+    'homeowner.testimonials.testimonial1.income': '+5,000 SEK/month',
+    'homeowner.testimonials.testimonial2.quote': 'StayOnSite handles everything for us. We don\'t even need to meet the tenants if we don\'t want to.',
+    'homeowner.testimonials.testimonial2.author': 'Lars Andersson',
+    'homeowner.testimonials.testimonial2.location': 'Gothenburg',
+    'homeowner.testimonials.testimonial2.income': '+4,200 SEK/month',
+    'homeowner.testimonials.testimonial3.quote': 'Have been renting out for over a year now. Never any problems and always on time with payments.',
+    'homeowner.testimonials.testimonial3.author': 'Maria Johansson',
+    'homeowner.testimonials.testimonial3.location': 'Malmö',
+    'homeowner.testimonials.testimonial3.income': '+6,500 SEK/month',
+    'homeowner.testimonials.trustIndicator': 'Over 200 families already earn extra money',
+    'homeowner.testimonials.trustDescription': 'Join our network of satisfied homeowners who earn secure rental income every month',
+    
+    'homeowner.faq.title': 'FAQ for homeowners',
+    'homeowner.faq.subtitle': 'Get answers to the most common questions about renting to construction workers',
+    'homeowner.faq.question1': 'What happens if something breaks?',
+    'homeowner.faq.answer1': 'We have full insurance that covers any damages. We also do thorough screening of all tenants to minimize risks.',
+    'homeowner.faq.question2': 'How much can I earn?',
+    'homeowner.faq.answer2': 'Depending on location and type of property, our homeowners earn between 3,000-8,000 SEK per month. We provide a free income estimate.',
+    'homeowner.faq.question3': 'Can I choose who gets to rent?',
+    'homeowner.faq.answer3': 'Yes, you always have the final say. We only present pre-verified candidates and you decide who suits you best.',
+    'homeowner.faq.question4': 'What happens between rentals?',
+    'homeowner.faq.answer4': 'You get full access back to your property. We also help find new tenants as quickly as possible.',
+    'homeowner.faq.question5': 'Do I need to do anything special with the property?',
+    'homeowner.faq.answer5': 'No, we accept properties in existing condition. However, we can give tips on minor improvements that could increase rental income.',
+    'homeowner.faq.question6': 'How do I get paid?',
+    'homeowner.faq.answer6': 'Rent is paid directly to your bank account on the first of each month. We handle all invoicing and administration.',
+    'homeowner.faq.contactPrompt': 'Have more questions? Call us directly!',
+    
+    'homeowner.form.title': 'Register your property',
+    'homeowner.form.subtitle': 'It only takes 2 minutes - get your free income estimate today',
+    'homeowner.form.promise': 'We contact you within 24 hours',
+    'homeowner.form.promiseDescription': 'After registration, we contact you for a free consultation about how much you can earn from your property',
+    'homeowner.form.fieldsTitle': 'Your contact information',
+    'homeowner.form.fieldsSubtitle': 'We only need basic information to get started',
+    'homeowner.form.firstName': 'First name',
+    'homeowner.form.firstNamePlaceholder': 'Enter your first name',
+    'homeowner.form.lastName': 'Last name',
+    'homeowner.form.lastNamePlaceholder': 'Enter your last name',
+    'homeowner.form.email': 'Email',
+    'homeowner.form.emailPlaceholder': 'your@email.com',
+    'homeowner.form.phone': 'Phone number',
+    'homeowner.form.phonePlaceholder': '070-123 45 67',
+    'homeowner.form.address': 'Address',
+    'homeowner.form.addressPlaceholder': 'Street address and number',
+    'homeowner.form.city': 'City',
+    'homeowner.form.cityPlaceholder': 'Enter city',
+    'homeowner.form.submit': 'Register property - Completely free',
+    'homeowner.form.submitting': 'Registering...',
+    'homeowner.form.success': 'Thank you for your registration! We will contact you within 24 hours.',
+    'homeowner.form.error': 'An error occurred. Please try again or call us directly.',
+    'homeowner.form.disclaimer': 'By registering, you agree that we may contact you regarding renting out your property.'
   }
 };
