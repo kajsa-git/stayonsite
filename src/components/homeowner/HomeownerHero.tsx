@@ -52,7 +52,7 @@ const HomeownerHero = () => {
           </div>
           
           {/* CTA Button */}
-          <Button onClick={scrollToForm} size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-light text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-light text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             {t('homeowner.hero.cta')}
           </Button>
         </div>
