@@ -16,7 +16,6 @@ const Header = () => {
     { label: t('nav.home'), href: '/', isRoute: true },
     { label: t('nav.services'), href: '#services', isRoute: false },
     { label: t('nav.references'), href: '#references', isRoute: false },
-    { label: t('nav.contact'), href: '#contact', isRoute: false },
   ];
 
   // Add scroll effect for the header
@@ -81,6 +80,18 @@ const Header = () => {
                 )}
               </li>
             ))}
+            {/* För byggbolag link */}
+            <li>
+              <Link 
+                to="/for-husagare"
+                className={cn(
+                  "font-light tracking-wide transition-colors duration-500 hover:text-blue-500 relative after:absolute after:w-full after:h-px after:bg-blue-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap",
+                  scrolled ? "text-blue-700" : "text-blue-600"
+                )}
+              >
+                {t('nav.forCompanies')}
+              </Link>
+            </li>
             {/* För husägare link */}
             <li>
               <Link 
@@ -109,14 +120,14 @@ const Header = () => {
               asChild
               variant={scrolled ? "default" : "outline"}
               className={cn(
-                "rounded-md px-5 py-2 h-auto font-light transition-all duration-500 text-sm md:text-base border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50",
+                "rounded-md border-nordic-200 px-5 py-2 h-auto font-light transition-all duration-500",
                 scrolled 
-                  ? "bg-blue-500 hover:bg-blue-600 text-white"
-                  : "bg-blue-50/80 hover:bg-blue-100 text-blue-700 hover:text-blue-800"
+                  ? "bg-nordic-500 hover:bg-nordic-600 text-white"
+                  : "bg-white/80 hover:bg-white text-nordic-800 hover:text-nordic-900"
               )}
             >
               <a href="tel:+46762498486">
-                {t('nav.forCompanies')}
+                {t('nav.inquiryForm')}
               </a>
             </Button>
           </div>
@@ -168,6 +179,15 @@ const Header = () => {
               <li>
                 <Link 
                   to="/for-husagare"
+                  className="block py-2 text-blue-600 hover:text-blue-700 transition-colors duration-300 font-medium tracking-wide"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('nav.forCompanies')}
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/for-husagare"
                   className="block py-2 text-amber-600 hover:text-amber-700 transition-colors duration-300 font-medium tracking-wide"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -177,13 +197,13 @@ const Header = () => {
               <li className="pt-4">
                 <Button 
                   asChild
-                  className="w-full rounded-md bg-blue-500 hover:bg-blue-600 text-white font-light"
+                  className="w-full rounded-md bg-nordic-500 hover:bg-nordic-600 text-white font-light"
                 >
                   <a 
                     href="tel:+46762498486"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {t('nav.forCompanies')}
+                    {t('nav.inquiryForm')}
                   </a>
                 </Button>
               </li>
