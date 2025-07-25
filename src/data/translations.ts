@@ -122,8 +122,6 @@ export type TranslationKey =
   | 'homeowner.testimonials.trustDescription'
   | 'homeowner.faq.title'
   | 'homeowner.faq.subtitle'
-  | 'homeowner.faq.question1'
-  | 'homeowner.faq.answer1'
   | 'homeowner.faq.question2'
   | 'homeowner.faq.answer2'
   | 'homeowner.faq.question3'
@@ -295,8 +293,6 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'homeowner.faq.title': 'Vanliga frågor för husägare',
     'homeowner.faq.subtitle': 'Få svar på de vanligaste frågorna om att hyra ut till hyresgäster',
-    'homeowner.faq.question1': 'Vad händer om något går sönder?',
-    'homeowner.faq.answer1': 'Vi har full försäkring som täcker eventuella skador. Dessutom gör vi noggrann screening av alla hyresgäster för att minimera risker.',
     'homeowner.faq.question2': 'Hur mycket kan jag tjäna?',
     'homeowner.faq.answer2': 'Beroende på läge och typ av bostad tjänar våra husägare mellan 3000-8000 kr per månad. Vi ger dig en kostnadsfri inkomstuppskattning.',
     'homeowner.faq.question3': 'Kan jag välja vilka som får hyra?',
@@ -468,8 +464,6 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'homeowner.faq.title': 'FAQ for homeowners',
     'homeowner.faq.subtitle': 'Get answers to the most common questions about renting to construction workers',
-    'homeowner.faq.question1': 'What happens if something breaks?',
-    'homeowner.faq.answer1': 'We have full insurance that covers any damages. We also do thorough screening of all tenants to minimize risks.',
     'homeowner.faq.question2': 'How much can I earn?',
     'homeowner.faq.answer2': 'Depending on location and type of property, our homeowners earn between 3,000-8,000 SEK per month. We provide a free income estimate.',
     'homeowner.faq.question3': 'Can I choose who gets to rent?',
