@@ -13,10 +13,10 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const navLinks = [
-    { label: t('nav.home'), href: '#home' },
-    { label: t('nav.services'), href: '#services' },
-    { label: t('nav.references'), href: '#references' },
-    { label: t('nav.contact'), href: '#contact' },
+    { label: t('nav.home'), href: '/', isRoute: true },
+    { label: t('nav.services'), href: '#services', isRoute: false },
+    { label: t('nav.references'), href: '#references', isRoute: false },
+    { label: t('nav.contact'), href: '#contact', isRoute: false },
   ];
 
   // Add scroll effect for the header
@@ -58,15 +58,27 @@ const Header = () => {
           <ul className="flex space-x-12">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a 
-                  href={link.href}
-                  className={cn(
-                    "font-light tracking-wide transition-colors duration-500 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300",
-                    scrolled ? "text-nordic-800" : "text-nordic-900"
-                  )}
-                >
-                  {link.label}
-                </a>
+                {link.isRoute ? (
+                  <Link 
+                    to={link.href}
+                    className={cn(
+                      "font-light tracking-wide transition-colors duration-500 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300",
+                      scrolled ? "text-nordic-800" : "text-nordic-900"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a 
+                    href={link.href}
+                    className={cn(
+                      "font-light tracking-wide transition-colors duration-500 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300",
+                      scrolled ? "text-nordic-800" : "text-nordic-900"
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                )}
               </li>
             ))}
             {/* För husägare link */}
@@ -134,13 +146,23 @@ const Header = () => {
             <ul className="flex flex-col space-y-6">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a 
-                    href={link.href}
-                    className="block py-2 text-nordic-800 hover:text-nordic-500 transition-colors duration-300 font-light tracking-wide"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link 
+                      to={link.href}
+                      className="block py-2 text-nordic-800 hover:text-nordic-500 transition-colors duration-300 font-light tracking-wide"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a 
+                      href={link.href}
+                      className="block py-2 text-nordic-800 hover:text-nordic-500 transition-colors duration-300 font-light tracking-wide"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
               <li>
