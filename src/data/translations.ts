@@ -246,7 +246,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'nav.homeowner': 'För husägare',
     
-    'homeowner.hero.title': 'Förvandla ditt hem till en inkomstkälla',
+    'homeowner.hero.title': 'Förvandla ditt boende till en inkomstkälla',
     'homeowner.hero.subtitle': 'Vi hjälper dig hyra ut - helt utan krångel',
     'homeowner.hero.incomeRange': '3 000 - 8 000 kr/månad',
     'homeowner.hero.incomeDescription': 'Säkra hyresintäkter varje månad',
