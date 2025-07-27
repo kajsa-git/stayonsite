@@ -276,7 +276,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'homeowner.testimonials.title': 'Vad våra husägare säger',
     'homeowner.testimonials.subtitle': 'Över 200 familjer tjänar redan extra pengar genom StayOnSite',
-    'homeowner.testimonials.testimonial1.quote': 'Perfekt lösning! Vi tjänar 5000 kr extra varje månad och hyresgästerna är alltid artiga och städsamma.',
+    'homeowner.testimonials.testimonial1.quote': 'Perfekt lösning! Vi tjänar 5000 kr extra varje månad och hyresgästerna är alltid trevliga och ordningsamma.',
     'homeowner.testimonials.testimonial1.author': 'Anna Eriksson',
     'homeowner.testimonials.testimonial1.location': 'Stockholm',
     'homeowner.testimonials.testimonial1.income': '+5 000 kr/månad',
