@@ -84,15 +84,15 @@ const Header = () => {
             ))}
             {/* För byggbolag link */}
             <li>
-              <a 
-                href="#inquiry"
+              <Link 
+                to="/#inquiry"
                 className={cn(
                   "font-light tracking-wide transition-colors duration-500 hover:text-blue-600 relative after:absolute after:w-full after:h-px after:bg-blue-600 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap",
                   scrolled ? "text-blue-800" : "text-blue-700"
                 )}
               >
                 {t('nav.forCompanies')}
-              </a>
+              </Link>
             </li>
             {/* För husägare link */}
             <li>
@@ -179,13 +179,13 @@ const Header = () => {
                 </li>
               ))}
               <li>
-                <a 
-                  href="#inquiry"
+                <Link 
+                  to="/#inquiry"
                   className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('nav.forCompanies')}
-                </a>
+                </Link>
               </li>
               <li>
                 <Link 
