@@ -53,7 +53,7 @@ const HomeownerProcess = () => {
           {/* Connection line - hidden on mobile */}
           <div className="hidden lg:block absolute top-24 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {steps.map((step, index) => (
               <div key={index} className="relative text-center">
                 {/* Step number removed */}
