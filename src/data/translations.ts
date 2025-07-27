@@ -296,7 +296,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.question1': 'Vad händer om något går sönder?',
     'homeowner.faq.answer1': 'Vi har full försäkring som täcker eventuella skador. Dessutom gör vi noggrann screening av alla hyresgäster för att minimera risker.',
     'homeowner.faq.question2': 'Hur mycket kan jag tjäna?',
-    'homeowner.faq.answer2': 'Beroende på läge och typ av bostad tjänar våra husägare mellan 3000-8000 kr per månad. Vi ger dig en kostnadsfri inkomstuppskattning.',
+    'homeowner.faq.answer2': 'Våra husägare tjänar vanligtvis mellan 3 000 och 8 000 kr per månad – beroende på läge och bostadstyp. Din faktiska vinst beror även på t.ex. lån och ränta. Vi erbjuder en kostnadsfri inkomstuppskattning.',
     'homeowner.faq.question4': 'Vad händer mellan uthyrningar?',
     'homeowner.faq.answer4': 'Du får tillbaka full tillgång till din bostad. Vi hjälper också till att hitta nya hyresgäster så snabbt som möjligt.',
     'homeowner.faq.question5': 'Behöver jag göra något speciellt med bostaden?',
