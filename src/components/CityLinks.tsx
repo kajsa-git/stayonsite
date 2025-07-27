@@ -13,7 +13,7 @@ const CityLinks = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-nordic-900 mb-4">
+            <h2 className="text-3xl font-bold text-nordic-900 mb-4 font-display">
               {language === 'sv' 
                 ? 'Vi täcker hela Sverige'
                 : 'We cover all of Sweden'
