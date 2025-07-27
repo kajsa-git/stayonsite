@@ -294,7 +294,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.title': 'Vanliga frågor för husägare',
     'homeowner.faq.subtitle': 'Få svar på de vanligaste frågorna om att hyra ut till hyresgäster',
     'homeowner.faq.question1': 'Vad händer om något går sönder?',
-    'homeowner.faq.answer1': 'Vi har full försäkring som täcker eventuella skador. Dessutom gör vi noggrann screening av alla hyresgäster för att minimera risker.',
+    'homeowner.faq.answer1': 'Om något mot förmodan går sönder täcks det vanligtvis av hemförsäkringen – antingen din eller hyresgästens. Vi finns självklart med och hjälper till om något händer.',
     'homeowner.faq.question2': 'Hur mycket kan jag tjäna?',
     'homeowner.faq.answer2': 'Du kan vanligtvis tjäna mellan 3 000 och 8 000 kr per månad, beroende på bostadens läge och typ. Din faktiska vinst påverkas även av t.ex. lån och ränta. Vi ger dig gärna kostnadsfri rådgivning.',
     'homeowner.faq.question4': 'Vad händer mellan uthyrningar?',
