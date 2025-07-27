@@ -302,7 +302,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.question5': 'Behöver jag göra något speciellt med bostaden?',
     'homeowner.faq.answer5': 'Nej, vi tar emot bostäder i befintligt skick. Vi kan dock ge tips på mindre förbättringar som kan öka hyresintäkten.',
     'homeowner.faq.question6': 'Hur får jag betalt?',
-    'homeowner.faq.answer6': 'Hyran betalas direkt till ditt bankkonto den första varje månad. Vi hanterar all fakturering och administration.',
+    'homeowner.faq.answer6': 'Hyran betalas alltid ut i förskott varje månad, direkt till ditt bankkonto.',
     'homeowner.faq.contactPrompt': 'Har du fler frågor? Ring oss direkt!',
     
     'homeowner.form.title': 'Registrera din bostad',
