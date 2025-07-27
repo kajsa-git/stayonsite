@@ -41,7 +41,11 @@ const Header = () => {
     >
       <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center">
+          <Link 
+            to="/" 
+            className="flex items-center"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <span className={cn(
               "text-2xl font-display transition-colors duration-500",
               scrolled ? "text-nordic-800" : "text-nordic-900"
