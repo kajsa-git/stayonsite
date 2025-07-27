@@ -13,7 +13,6 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const navLinks = [
-    { label: t('nav.services'), href: '#services', isRoute: false },
     { label: t('nav.references'), href: '#references', isRoute: false },
   ];
 
