@@ -257,7 +257,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.benefits.income.title': 'Garanterad inkomst',
     'homeowner.benefits.income.description': 'Säkra hyresintäkter från 3000-8000 kr/månad från hyresgäster',
     'homeowner.benefits.security.title': 'Trygghet och säkerhet',
-    'homeowner.benefits.security.description': 'Endast verifierade hyresgäster från etablerade företag',
+    'homeowner.benefits.security.description': 'Vi sköter allt - hyresgäster, kontrakt, kommunikation och betalningar',
     'homeowner.benefits.hassle.title': 'Inga bekymmer',
     'homeowner.benefits.hassle.description': 'Vi sköter allt - hitta hyresgäst, kontrakt, kommunikation och betalningar',
     'homeowner.benefits.flexibility.title': 'Full flexibilitet',
