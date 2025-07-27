@@ -86,7 +86,6 @@ const References = () => {
                     </div>
                     <div>
                       <p className="font-heading">{testimonial.author}</p>
-                      <p className="text-sm text-nordic-600">{testimonial.company}</p>
                     </div>
                   </div>
                 </CardContent>
