@@ -169,7 +169,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.title': 'Snabbt boende till era byggarbetare',
     'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
     'hero.cta': 'Skicka förfrågan',
-    'hero.tagline': 'Lugnt. Enkelt. Effektivt.',
+    'hero.tagline': 'Snabbt. Enkelt. Effektivt.',
     
     'services.title': 'Våra tjänster',
     'services.subtitle': 'Vi hjälper dig att snabbt hitta rätt boenden när dina arbetare eller underentreprenörer är i behov av logi på annan ort. Vi erbjuder både longstay och shortstay lösningar över hela Sverige',
