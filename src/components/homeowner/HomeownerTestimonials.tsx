@@ -70,7 +70,7 @@ const HomeownerTestimonials = () => {
         </div>
 
         {/* Trust indicator */}
-        <div className="text-center mt-16 p-8 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl">
+        <div className="text-center mt-16 p-8 bg-nordic-100 rounded-2xl">
           <div className="flex items-center justify-center mb-4">
             <svg className="w-8 h-8 text-emerald-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
