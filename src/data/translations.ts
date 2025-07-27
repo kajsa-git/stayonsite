@@ -255,7 +255,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.benefits.title': 'Varför välja StayOnSite?',
     'homeowner.benefits.subtitle': 'Få extra inkomst från ditt hem med trygghet och enkelhet',
     'homeowner.benefits.income.title': 'Garanterad inkomst',
-    'homeowner.benefits.income.description': 'Säkra hyresintäkter från 3000-8000 kr/månad från hyresgäster',
+    'homeowner.benefits.income.description': 'Säkra hyresintäkter från 3000-8000 kr/månad',
     'homeowner.benefits.security.title': 'Trygghet och säkerhet',
     'homeowner.benefits.security.description': 'Vi sköter allt - hyresgäster, kontrakt, kommunikation och betalningar',
     'homeowner.benefits.hassle.title': 'Inga bekymmer',
