@@ -15,16 +15,6 @@ const HomeownerProcess = () => {
       description: t('homeowner.process.step1.description')
     },
     {
-      number: "02",
-      icon: (
-        <svg className="w-10 h-10 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      ),
-      title: t('homeowner.process.step2.title'),
-      description: t('homeowner.process.step2.description')
-    },
-    {
       number: "03",
       icon: (
         <svg className="w-10 h-10 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
