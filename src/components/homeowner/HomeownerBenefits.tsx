@@ -47,7 +47,7 @@ const HomeownerBenefits = () => {
         </div>
 
         {/* Benefits grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center group">
               <div className="w-24 h-24 mx-auto mb-6 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
