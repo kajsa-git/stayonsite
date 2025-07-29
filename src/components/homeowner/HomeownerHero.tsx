@@ -22,7 +22,7 @@ const HomeownerHero = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
       
       <div className="container mx-auto px-6 md:px-8 relative">
-        <div className="max-w-2xl nordic-card p-8 md:p-10 border border-nordic-200">
+        <div className="max-w-2xl mx-auto nordic-card p-8 md:p-10 border border-nordic-200 text-center">
           <span className="inline-block text-nordic-500 mb-3 text-sm uppercase tracking-wider font-heading">
             Stuga • Lägenhet • Hus
           </span>
@@ -42,7 +42,7 @@ const HomeownerHero = () => {
             </p>
           </div>
           
-          <div className="flex flex-wrap gap-6">
+          <div className="flex justify-center">
             <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
               {t('homeowner.hero.cta')}
             </Button>
