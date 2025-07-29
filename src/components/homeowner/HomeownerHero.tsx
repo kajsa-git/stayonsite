@@ -22,7 +22,7 @@ const HomeownerHero = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
       
       <div className="container mx-auto px-6 md:px-8 relative">
-        <div className="max-w-2xl mx-auto nordic-card p-10 md:p-12 border border-nordic-200 text-center">
+        <div className="max-w-2xl mx-auto nordic-card pt-6 px-10 pb-10 md:pt-8 md:px-12 md:pb-12 border border-nordic-200 text-center">
           <span className="inline-block text-nordic-500 mb-4 text-xs uppercase tracking-widest font-heading">
             Stuga • Lägenhet • Hus
           </span>
