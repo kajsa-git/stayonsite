@@ -43,18 +43,6 @@ const Footer = () => {
             <h3 className="text-xl font-normal mb-8 font-display">{t('footer.quickLinks')}</h3>
             <ul className="grid grid-cols-1 gap-5">
               <li>
-                <a href="#home" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
-                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
-                  {t('nav.home')}
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
-                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
-                  {t('nav.services')}
-                </a>
-              </li>
-              <li>
                 <a href="#references" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
                   <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   {t('nav.references')}
