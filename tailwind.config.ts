@@ -60,7 +60,7 @@ export default {
 					400: '#a8b6a8', // Sage
 					500: '#587282', // Reverted back to previous color
 					600: '#d0bbac', // Terracotta light
-					700: '#b89283', // Terracotta
+					700: '#053c5e', // Dark blue
 					800: '#5b6a6b', // Deep teal
 					900: '#424343', // Charcoal
 				},
