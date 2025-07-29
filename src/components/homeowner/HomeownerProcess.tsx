@@ -67,7 +67,7 @@ const HomeownerProcess = () => {
                   {step.title}
                 </h3>
                 <p className="text-nordic-700 font-light leading-relaxed">
-                  Baserat på din bostad och tillgänglighet hittar vi en bra matchning.
+                  {step.description}
                 </p>
               </div>
             ))}
