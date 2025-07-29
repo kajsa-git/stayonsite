@@ -13,13 +13,13 @@ const HomeownerHero = () => {
     }
   };
   return <section id="hero" className="relative bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture" style={{
-    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6)), url('/lovable-uploads/8ccebe4e-fd48-4e9f-9769-13588d98face.png')`,
+    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)), url('/lovable-uploads/8ccebe4e-fd48-4e9f-9769-13588d98face.png')`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
   }}>
       {/* Subtle overlay for better text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/70 to-white/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
       
       <div className="container mx-auto px-6 md:px-8 relative">
         <div className="max-w-2xl nordic-card p-8 md:p-10 border border-nordic-200">
@@ -48,14 +48,6 @@ const HomeownerHero = () => {
             </Button>
           </div>
         </div>
-      </div>
-      
-      {/* Subtle wave effect at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" className="w-full">
-          <path fill="#ffffff" fillOpacity="1" d="M0,32L48,37.3C96,43,192,53,288,53.3C384,53,480,43,576,37.3C672,32,768,32,864,32C960,32,1056,32,1152,37.3C1248,43,1344,53,1392,58.7L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z">
-          </path>
-        </svg>
       </div>
     </section>;
 };
