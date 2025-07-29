@@ -46,7 +46,7 @@ const HomeownerHero = () => {
           </div>
           
           <div className="flex flex-wrap gap-6">
-            <Button onClick={scrollToForm} size="lg" className="bg-nordic-500 hover:bg-nordic-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
+            <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
               {t('homeowner.hero.cta')}
             </Button>
           </div>
