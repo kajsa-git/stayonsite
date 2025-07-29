@@ -33,6 +33,15 @@ const HomeownerHero = () => {
             {t('homeowner.hero.subtitle')}
           </p>
           
+          <div className="mb-8">
+            <p className="text-xl md:text-2xl font-semibold text-nordic-900 mb-2">
+              Tjäna 3 000 – 8 000 kr/månad
+            </p>
+            <p className="text-base md:text-lg text-nordic-800 leading-relaxed font-light">
+              Vi hjälper dig med uthyrningen, du får betalt
+            </p>
+          </div>
+          
           <div className="flex flex-wrap gap-6">
             <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
               {t('homeowner.hero.cta')}
