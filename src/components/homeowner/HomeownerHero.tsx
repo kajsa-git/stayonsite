@@ -22,22 +22,22 @@ const HomeownerHero = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
       
       <div className="container mx-auto px-6 md:px-8 relative">
-        <div className="max-w-2xl mx-auto nordic-card pt-6 px-10 pb-10 md:pt-8 md:px-12 md:pb-12 border border-nordic-200 text-center">
-          <span className="inline-block text-nordic-500 mb-6 text-xs uppercase tracking-widest font-heading">
+        <div className="max-w-2xl mx-auto nordic-card p-8 md:p-10 border border-nordic-200 text-center">
+          <span className="inline-block text-nordic-500 mb-3 text-sm uppercase tracking-wider font-heading">
             Stuga • Lägenhet • Hus
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 leading-tight text-nordic-900">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal mb-6 leading-tight text-nordic-900">
             {t('homeowner.hero.title')}
           </h1>
-          <p className="text-lg md:text-xl text-nordic-700 mb-10 leading-relaxed font-light max-w-xl mx-auto">
+          <p className="text-base md:text-lg text-nordic-800 mb-8 leading-relaxed font-light">
             {t('homeowner.hero.subtitle')}
           </p>
           
-          <div className="mb-10 bg-nordic-50 rounded-lg p-6 border border-nordic-100">
-            <p className="text-2xl md:text-3xl font-medium text-nordic-900 mb-3 leading-tight">
+          <div className="mb-8">
+            <p className="text-xl md:text-2xl font-semibold text-nordic-900 mb-2">
               Tjäna 3 000 – 8 000 kr/månad
             </p>
-            <p className="text-lg md:text-xl text-nordic-600 leading-relaxed font-light">
+            <p className="text-base md:text-lg text-nordic-800 leading-relaxed font-light">
               Vi hjälper dig med uthyrningen, du får betalt
             </p>
           </div>
