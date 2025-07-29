@@ -49,12 +49,6 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#inquiry" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
-                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
-                  {t('nav.inquiryForm')}
-                </a>
-              </li>
-              <li>
                 <a href="/for-husagare" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
                   <div className="h-px w-6 bg-nordic-400 mr-3"></div>
                   För husägare
