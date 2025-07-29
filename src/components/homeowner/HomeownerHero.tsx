@@ -32,7 +32,7 @@ const HomeownerHero = () => {
           </p>
 
           {/* Income highlight */}
-          <div className="relative bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-md p-8 md:p-10 mb-12 max-w-2xl mx-auto border border-amber-300/40 shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/20 transition-all duration-500 transform hover:scale-[1.02] bg-zinc-50 rounded-xl">
+          <div className="relative bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-md p-8 md:p-10 mb-12 max-w-2xl mx-auto shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/20 transition-all duration-500 transform hover:scale-[1.02] bg-zinc-50 rounded-xl">
             {/* Gradient overlay */}
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-amber-50/50 to-orange-50/30 pointer-events-none"></div>
             
