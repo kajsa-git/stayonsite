@@ -42,7 +42,7 @@ const HomeownerBenefits = () => {
             {t('homeowner.benefits.title')}
           </h2>
           <p className="text-xl text-nordic-800 font-light max-w-3xl mx-auto leading-relaxed">
-            {t('homeowner.benefits.subtitle')}
+            Få extra inkomst genom uthyrning – vi tar hand om allt det praktiska
           </p>
         </div>
 
