@@ -23,7 +23,7 @@ const HomeownerHero = () => {
       
       <div className="container mx-auto px-6 md:px-8 relative">
         <div className="max-w-2xl mx-auto nordic-card pt-6 px-10 pb-10 md:pt-8 md:px-12 md:pb-12 border border-nordic-200 text-center">
-          <span className="inline-block text-nordic-500 mb-4 text-xs uppercase tracking-widest font-heading">
+          <span className="inline-block text-nordic-500 mb-6 text-xs uppercase tracking-widest font-heading">
             Stuga • Lägenhet • Hus
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 leading-tight text-nordic-900">
