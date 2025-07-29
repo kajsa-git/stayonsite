@@ -29,21 +29,9 @@ const HomeownerHero = () => {
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal mb-6 leading-tight text-nordic-900">
             {t('homeowner.hero.title')}
           </h1>
-          <p className="text-base md:text-lg text-nordic-800 mb-6 leading-relaxed font-light">
+          <p className="text-base md:text-lg text-nordic-800 mb-8 leading-relaxed font-light">
             {t('homeowner.hero.subtitle')}
           </p>
-          
-          {/* Income highlight */}
-          <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/60 p-6 mb-8 rounded-lg border border-amber-200/30">
-            <div className="flex items-center justify-center mb-4">
-              <span className="text-2xl font-display text-gradient bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent font-semibold">
-                {t('homeowner.hero.incomeRange')}
-              </span>
-            </div>
-            <p className="text-nordic-700 font-light text-sm leading-relaxed text-center">
-              {t('homeowner.hero.incomeDescription')}
-            </p>
-          </div>
           
           <div className="flex flex-wrap gap-6">
             <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
