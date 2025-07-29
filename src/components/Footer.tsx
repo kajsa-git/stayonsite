@@ -66,6 +66,18 @@ const Footer = () => {
                   {t('nav.inquiryForm')}
                 </a>
               </li>
+              <li>
+                <a href="/for-husagare" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
+                  För husägare
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="font-light flex items-center hover:text-nordic-500 transition-colors duration-300">
+                  <div className="h-px w-6 bg-nordic-400 mr-3"></div>
+                  För byggbolag
+                </a>
+              </li>
             </ul>
           </div>
         </div>
