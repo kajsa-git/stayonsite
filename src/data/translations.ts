@@ -242,7 +242,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.quickLinks': 'Snabblänkar',
     
     'floatingPhone.call': 'Ring oss',
-    'floatingPhone.tooltip': 'Ring oss direkt på 076-249 84 86',
+    'floatingPhone.tooltip': 'Ring oss direkt på 073-628 77 09',
     
     'nav.homeowner': 'För husägare',
     
@@ -413,7 +413,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.quickLinks': 'Quick Links',
     
     'floatingPhone.call': 'Call us',
-    'floatingPhone.tooltip': 'Call us directly at 076-249 84 86',
+    'floatingPhone.tooltip': 'Call us directly at 073-628 77 09',
     
     'nav.homeowner': 'For Homeowners',
     
