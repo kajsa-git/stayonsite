@@ -64,7 +64,7 @@ const CityPage = () => {
           "addressRegion": city.region,
           "addressCountry": "SE"
         },
-        "telephone": "+46762498486",
+        "telephone": "+46736287709",
         "url": `https://760b4757-b8ba-4bea-a67c-2d97c14b221d.lovableproject.com/stad/${city.slug}`,
         "geo": {
           "@type": "GeoCoordinates",
@@ -118,7 +118,7 @@ const CityPage = () => {
                   size="lg" 
                   className="text-lg px-8 py-3"
                 >
-                  <a href="tel:+46762498486">
+                  <a href="tel:+46736287709">
                     <Phone className="mr-2 h-5 w-5" />
                     {language === 'sv' ? 'Ring oss direkt' : 'Call us now'}
                   </a>
@@ -333,9 +333,9 @@ const CityPage = () => {
                   size="lg" 
                   className="text-lg px-8 py-3"
                 >
-                  <a href="tel:+46762498486">
+                  <a href="tel:+46736287709">
                     <Phone className="mr-2 h-5 w-5" />
-                    076-249 84 86
+                    073-628 77 09
                   </a>
                 </Button>
                 

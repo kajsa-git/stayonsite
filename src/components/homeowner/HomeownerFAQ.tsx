@@ -71,7 +71,7 @@ const HomeownerFAQ = () => {
             {t('homeowner.faq.contactPrompt')}
           </p>
           <a 
-            href="tel:+46762498486" 
+            href="tel:+46736287709" 
             className="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

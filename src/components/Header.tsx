@@ -128,7 +128,7 @@ const Header = () => {
                   : "bg-white/80 hover:bg-white text-nordic-800 hover:text-nordic-900"
               )}
             >
-              <a href="tel:+46762498486">
+              <a href="tel:+46736287709">
                 {t('nav.inquiryForm')}
               </a>
             </Button>
@@ -202,7 +202,7 @@ const Header = () => {
                   className="w-full rounded-md bg-nordic-500 hover:bg-nordic-600 text-white font-light"
                 >
                   <a 
-                    href="tel:+46762498486"
+                    href="tel:+46736287709"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {t('nav.inquiryForm')}
