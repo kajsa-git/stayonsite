@@ -435,7 +435,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.submitting': 'Registrerar...',
     'homeowner.form.success': 'Tack för din registrering! Vi kontaktar dig inom 24 timmar.',
     'homeowner.form.error': 'Det uppstod ett fel. Försök igen eller ring oss direkt.',
-    'homeowner.form.disclaimer': 'Genom att registrera dig godkänner du att vi kontaktar dig angående uthyrning av din bostad.'
+    'homeowner.form.disclaimer': 'Genom att registrera dig godkänner du att vi kontaktar dig angående uthyrning av din bostad.',
+
+    'seo.home.title': 'Personalboende & Företagsbostäder i Sverige | StayOnSite',
+    'seo.home.description': 'Vi ordnar snabbt och effektivt boende för företag och deras personal i hela Sverige. Långsiktiga och flexibla hyreslösningar för bygg-, energi- och datacenterprojekt.',
+    'seo.homeowner.title': 'Hyr ut din bostad till företag | Garanterad hyra | StayOnSite',
+    'seo.homeowner.description': 'Hyr ut din bostad till stabila företag via StayOnSite. Vi erbjuder garanterade hyresintäkter, sköter all administration och hittar pålitliga hyresgäster. Registrera din bostad idag!',
+    'seo.city.title': 'Företagsboende i {cityName} | Hyr lägenhet till personal | StayOnSite',
+    'seo.city.description': 'Letar ditt företag efter boende till personal i {cityName}? StayOnSite erbjuder möblerade lägenheter och hus för kort- och långtidshyra. Kontakta oss för en snabb offert.',
+    'seo.notFound.title': '404: Sidan hittades inte | StayOnSite',
+    'seo.notFound.description': 'Sidan du letar efter verkar inte finnas. Gå tillbaka till startsidan för att hitta boende för ditt företags personal.'
   },
   en: {
     'nav.home': 'Home',
@@ -657,7 +666,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.submitting': 'Registering...',
     'homeowner.form.success': 'Thank you for your registration! We will contact you within 24 hours.',
     'homeowner.form.error': 'An error occurred. Please try again or call us directly.',
-    'homeowner.form.disclaimer': 'By registering, you agree that we may contact you regarding renting out your property.'
+    'homeowner.form.disclaimer': 'By registering, you agree that we may contact you regarding renting out your property.',
+
+    'seo.home.title': 'Staff Housing & Corporate Apartments in Sweden | StayOnSite',
+    'seo.home.description': 'We quickly and efficiently arrange housing for companies and their staff throughout Sweden. Long-term and flexible rental solutions for construction, energy, and data center projects.',
+    'seo.homeowner.title': 'Rent your property to companies | Guaranteed rent | StayOnSite',
+    'seo.homeowner.description': 'Rent out your property to stable companies via StayOnSite. We offer guaranteed rental income, handle all administration, and find reliable tenants. Register your property today!',
+    'seo.city.title': 'Corporate Housing in {cityName} | Rent Apartments for Staff | StayOnSite',
+    'seo.city.description': 'Is your company looking for staff housing in {cityName}? StayOnSite offers furnished apartments and houses for short and long-term rent. Contact us for a quick quote.',
+    'seo.notFound.title': '404: Page Not Found | StayOnSite',
+    'seo.notFound.description': 'The page you are looking for does not seem to exist. Go back to the homepage to find housing for your company\'s staff.'
   },
   pl: {
     'nav.home': 'Strona główna',
