@@ -46,7 +46,7 @@ const CaseStudy = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/40" />
             <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
               <p className="text-sm uppercase tracking-widest text-white/70 font-heading">{t('case.title')}</p>
-              <p className="text-3xl md:text-4xl text-white font-light mt-2">{t('case.subtitle')}</p>
+              <p className="text-3xl md:text-4xl text-white font-semibold mt-2">{t('case.subtitle')}</p>
 
               <ol className="mt-10 space-y-8">
                 {timeline.map(({ titleKey, descriptionKey }, index) => (
@@ -56,7 +56,7 @@ const CaseStudy = () => {
                       {index < timeline.length - 1 && <span className="flex-1 w-px bg-white/30 mt-1" />}
                     </div>
                     <div>
-                      <p className="text-lg font-medium text-white">{t(titleKey)}</p>
+                      <p className="text-lg font-semibold text-white">{t(titleKey)}</p>
                       <p className="text-sm text-white/80">{t(descriptionKey)}</p>
                     </div>
                   </li>

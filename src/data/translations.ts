@@ -204,7 +204,15 @@ export type TranslationKey =
   | 'references.stats.happyClients'
   | 'references.stats.accommodations'
   | 'references.stats.responseTime'
-  | 'references.stats.cities';
+  | 'references.stats.cities'
+  | 'seo.home.title'
+  | 'seo.home.description'
+  | 'seo.homeowner.title'
+  | 'seo.homeowner.description'
+  | 'seo.city.title'
+  | 'seo.city.description'
+  | 'seo.notFound.title'
+  | 'seo.notFound.description';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {

@@ -66,7 +66,7 @@ const References = () => {
           <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
             {t('references.tagline')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('references.title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 font-display">{t('references.title')}</h2>
           <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
             {t('references.subtitle')}
           </p>

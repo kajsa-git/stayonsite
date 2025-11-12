@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowUpRight, MessageCircle, Phone } from 'lucide-react';
+import { ArrowUpRight, MessageCircle, Phone } from 'lucide-react';
 
 const phoneHref = 'tel:+46736287709';
 const whatsappHref = 'https://wa.me/46736287709';
@@ -10,24 +10,6 @@ const chipLinks: Array<{ key: TranslationKey; href: string }> = [
   { key: 'hero.bullet1', href: '#why' },
   { key: 'hero.bullet2', href: '#case' },
   { key: 'hero.bullet3', href: '#inquiry' },
-];
-
-const heroMetrics = [
-  {
-    valueKey: 'hero.metrics.proposal.value' as TranslationKey,
-    descriptionKey: 'hero.metrics.proposal.description' as TranslationKey,
-    href: '#case',
-  },
-  {
-    valueKey: 'hero.metrics.moveIn.value' as TranslationKey,
-    descriptionKey: 'hero.metrics.moveIn.description' as TranslationKey,
-    href: '#case',
-  },
-  {
-    valueKey: 'hero.metrics.deployments.value' as TranslationKey,
-    descriptionKey: 'hero.metrics.deployments.description' as TranslationKey,
-    href: '#why',
-  },
 ];
 
 const Hero = () => {
@@ -49,7 +31,7 @@ const Hero = () => {
             <p className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-white/80">
               {t('hero.tagline')}
             </p>
-            <h1 className="text-4xl md:text-[44px] font-light leading-tight">{t('hero.title')}</h1>
+            <h1 className="text-4xl md:text-[44px] font-semibold leading-tight">{t('hero.title')}</h1>
             <p className="max-w-2xl text-base md:text-lg text-white/75">{t('hero.subtitle')}</p>
 
             <div className="flex flex-wrap gap-3">
@@ -69,9 +51,8 @@ const Hero = () => {
             <div className="rounded-2xl bg-white/95 text-nordic-900 shadow-lg border border-white/30 p-4 md:p-6 space-y-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-nordic-500">{t('hero.ctaSubtext')}</p>
-                  <p className="text-2xl font-light text-nordic-900 mt-1">+46 73-628 77 09</p>
-                  <p className="text-sm text-nordic-600">{t('hero.responseTime')}</p>
+                  <p className="text-2xl font-light text-nordic-900">+46 73-628 77 09</p>
+                  <p className="text-sm text-nordic-600 mt-1">{t('hero.responseTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-6" asChild>
@@ -89,23 +70,6 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white border-t border-b border-nordic-100" aria-label="Snabbvy">
-        <div className="container mx-auto px-6 md:px-8">
-          <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-nordic-100">
-            {heroMetrics.map(({ valueKey, descriptionKey, href }) => (
-              <a
-                key={valueKey}
-                href={href}
-                className="flex flex-col gap-2 py-6 md:py-8 md:px-8 text-nordic-900 hover:bg-nordic-50 transition-colors"
-              >
-                <span className="text-3xl font-light text-[#ff6300]">{t(valueKey)}</span>
-                <span className="text-sm uppercase tracking-wide text-nordic-500">{t(descriptionKey)}</span>
-              </a>
-            ))}
           </div>
         </div>
       </section>

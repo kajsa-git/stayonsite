@@ -40,14 +40,14 @@ const Services = () => {
           <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
             {t('services.tagline')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('services.title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 font-display">{t('services.title')}</h2>
           <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
             {t('services.subtitle')}
           </p>
         </div>
 
         <div>
-          <h3 className="text-xl md:text-2xl font-normal mb-12 text-center text-nordic-900 font-display">{t('services.process.title')}</h3>
+          <h3 className="text-xl md:text-2xl font-semibold mb-12 text-center text-nordic-900 font-display">{t('services.process.title')}</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {steps.map((step, index) => {

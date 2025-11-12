@@ -61,7 +61,7 @@ const WhyStayOnSite = () => {
                 </p>
               </div>
               <div className="space-y-3">
-                <h3 className="text-xl text-nordic-900 font-medium">{t(titleKey)}</h3>
+                <h3 className="text-xl text-nordic-900 font-semibold">{t(titleKey)}</h3>
                 <p className="text-sm text-nordic-700 leading-relaxed">{t(descriptionKey)}</p>
               </div>
               <Button

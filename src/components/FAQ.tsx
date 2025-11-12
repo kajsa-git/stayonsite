@@ -58,7 +58,7 @@ const FAQ = () => {
           <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
             {t('faq.tagline')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 font-display">
             {t('faq.title')}
           </h2>
           <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
