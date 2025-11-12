@@ -1,10 +1,9 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Card, CardContent } from '@/components/ui/card';
 import { Quote } from 'lucide-react';
 
 const References = () => {
   const { t } = useLanguage();
-  
+
   const testimonials = [
     {
       id: '1',
@@ -28,6 +27,7 @@ const References = () => {
       img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
     }
   ];
+
   // Schema.org structured data for reviews
   const reviewSchema = {
     "@context": "https://schema.org",
@@ -54,13 +54,14 @@ const References = () => {
     }))
   };
 
-  return <section id="references" className="section-spacing bg-white nordic-texture border-t border-nordic-100">
+  return (
+    <section id="references" className="section-spacing bg-nordic-50 border-t border-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }}
       />
-      
+
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
@@ -71,47 +72,57 @@ const References = () => {
             {t('references.subtitle')}
           </p>
         </div>
-        
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => <Card key={testimonial.id || index} className="overflow-hidden border border-nordic-200 shadow-none">
-                <CardContent className="p-8">
-                  <Quote size={24} className="text-[#ff6300] mb-6" />
-                  <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">"{testimonial.quote}"</p>
-                  <div className="flex items-center">
-                    <div className="mr-4">
-                      <div className="w-12 h-12 bg-nordic-200 rounded-full overflow-hidden">
-                        <img src={testimonial.img} alt={testimonial.author} className="w-full h-full object-cover" />
-                      </div>
-                    </div>
-                    <div>
-                      <p className="font-heading">{testimonial.author}</p>
-                    </div>
+
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={testimonial.id || index}
+                className="bg-white rounded-2xl p-8 transition-all duration-300 hover:shadow-lg"
+              >
+                <Quote size={24} className="text-[#ff6300] mb-6" />
+                <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">
+                  "{testimonial.quote}"
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-nordic-200 rounded-full overflow-hidden ring-2 ring-white">
+                    <img
+                      src={testimonial.img}
+                      alt={testimonial.author}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                </CardContent>
-              </Card>)}
+                  <div>
+                    <p className="font-semibold text-nordic-900">{testimonial.author}</p>
+                    <p className="text-sm text-nordic-600 font-light">{testimonial.company}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <div className="mt-20 flex flex-wrap justify-center gap-x-14 gap-y-8">
+
+        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">70+</div>
-            <p className="text-nordic-600 font-light">{t('references.stats.happyClients')}</p>
+            <div className="text-4xl font-semibold text-[#ff6300] mb-2">70+</div>
+            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.happyClients')}</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">100+</div>
-            <p className="text-nordic-600 font-light">{t('references.stats.accommodations')}</p>
+            <div className="text-4xl font-semibold text-[#ff6300] mb-2">100+</div>
+            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.accommodations')}</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">3h</div>
-            <p className="text-nordic-600 font-light">{t('references.stats.responseTime')}</p>
+            <div className="text-4xl font-semibold text-[#ff6300] mb-2">3h</div>
+            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.responseTime')}</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-light text-nordic-800 mb-2.5">40+</div>
-            <p className="text-nordic-600 font-light">{t('references.stats.cities')}</p>
+            <div className="text-4xl font-semibold text-[#ff6300] mb-2">40+</div>
+            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.cities')}</p>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default References;
