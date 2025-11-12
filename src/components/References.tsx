@@ -63,7 +63,7 @@ const References = () => {
       
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
+          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
             {t('references.tagline')}
           </span>
           <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('references.title')}</h2>
@@ -76,7 +76,7 @@ const References = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => <Card key={testimonial.id || index} className="overflow-hidden border border-nordic-200 shadow-none">
                 <CardContent className="p-8">
-                  <Quote size={24} className="text-nordic-400 mb-6" />
+                  <Quote size={24} className="text-[#ff6300] mb-6" />
                   <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">"{testimonial.quote}"</p>
                   <div className="flex items-center">
                     <div className="mr-4">

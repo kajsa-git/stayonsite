@@ -11,25 +11,25 @@ const Services = () => {
       title: t('services.process.step1.title'),
       description: t('services.process.step1.description'),
       icon: ClipboardList,
-      color: 'text-nordic-500'
+      color: 'text-[#ff6300]'
     },
     {
       title: t('services.process.step2.title'),
       description: t('services.process.step2.description'),
       icon: MessageSquare,
-      color: 'text-nordic-500'
+      color: 'text-[#ff6300]'
     },
     {
       title: t('services.process.step3.title'),
       description: t('services.process.step3.description'),
       icon: CheckCircle,
-      color: 'text-nordic-500'
+      color: 'text-[#ff6300]'
     },
     {
       title: t('services.process.step4.title'),
       description: t('services.process.step4.description'),
       icon: Home,
-      color: 'text-nordic-500'
+      color: 'text-[#ff6300]'
     }
   ];
 
@@ -37,7 +37,7 @@ const Services = () => {
     <section id="services" className="py-24 bg-white">
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-nordic-500 mb-2 text-sm uppercase tracking-wider font-heading">
+          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
             {t('services.tagline')}
           </span>
           <h2 className="text-3xl md:text-4xl font-normal mb-4 font-display">{t('services.title')}</h2>

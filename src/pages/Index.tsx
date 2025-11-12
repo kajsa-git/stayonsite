@@ -10,6 +10,7 @@ import FAQ from '@/components/FAQ';
 import InquiryForm from '@/components/InquiryForm';
 import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
+import StickyContact from '@/components/StickyContact';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -114,6 +115,7 @@ const Index = () => {
         </main>
         <Footer />
         <FloatingPhoneButton />
+        <StickyContact />
       </div>
   );
 };
