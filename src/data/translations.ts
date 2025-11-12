@@ -897,6 +897,15 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.submitting': 'Rejestrowanie...',
     'homeowner.form.success': 'Dziękujemy za rejestrację! Skontaktujemy się z Tobą w ciągu 24 godzin.',
     'homeowner.form.error': 'Wystąpił błąd. Spróbuj ponownie lub zadzwoń do nas bezpośrednio.',
-    'homeowner.form.disclaimer': 'Rejestrując się, wyrażasz zgodę na kontakt z naszej strony w sprawie wynajmu Twojej nieruchomości.'
+    'homeowner.form.disclaimer': 'Rejestrując się, wyrażasz zgodę na kontakt z naszej strony w sprawie wynajmu Twojej nieruchomości.',
+
+    'seo.home.title': 'Zakwaterowanie dla personelu i mieszkania służbowe w Szwecji | StayOnSite',
+    'seo.home.description': 'Szybko i sprawnie organizujemy zakwaterowanie dla firm i ich personelu w całej Szwecji. Długoterminowe i elastyczne rozwiązania wynajmu dla projektów budowlanych, energetycznych i centrów danych.',
+    'seo.homeowner.title': 'Wynajmij swoją nieruchomość firmom | Gwarantowany czynsz | StayOnSite',
+    'seo.homeowner.description': 'Wynajmij swoją nieruchomość stabilnym firmom przez StayOnSite. Oferujemy gwarantowany dochód z najmu, zajmujemy się całą administracją i znajdujemy wiarygodnych najemców. Zarejestruj swoją nieruchomość już dziś!',
+    'seo.city.title': 'Mieszkania służbowe w {cityName} | Wynajem dla personelu | StayOnSite',
+    'seo.city.description': 'Twoja firma szuka zakwaterowania dla personelu w {cityName}? StayOnSite oferuje umeblowane mieszkania i domy na wynajem krótko- i długoterminowy. Skontaktuj się z nami, aby otrzymać szybką ofertę.',
+    'seo.notFound.title': '404: Strona nie została znaleziona | StayOnSite',
+    'seo.notFound.description': 'Strona, której szukasz, nie istnieje. Wróć na stronę główną, aby znaleźć zakwaterowanie dla personelu Twojej firmy.'
   }
 };

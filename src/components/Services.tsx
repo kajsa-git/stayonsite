@@ -61,7 +61,7 @@ const Services = () => {
                     <div className="hidden lg:block absolute top-8 left-[calc(50%+2rem)] w-[calc(100%-4rem)] h-px bg-nordic-200" />
                   )}
 
-                  <div className="relative bg-white rounded-2xl p-6 transition-all duration-300 hover:shadow-lg">
+                  <div className="relative bg-white border border-nordic-100 rounded-2xl p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-nordic-200">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="relative">
                         <div className="w-16 h-16 rounded-full bg-[#ff6300]/10 flex items-center justify-center">
