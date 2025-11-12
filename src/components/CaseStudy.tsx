@@ -1,6 +1,9 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
 
+const CASE_IMAGE =
+  'https://images.unsplash.com/photo-1509398830099-9d5fd5893088?auto=format&fit=crop&w=1600&q=80';
+
 const timeline = [
   {
     titleKey: 'case.timeline.proposal.title' as TranslationKey,
@@ -35,14 +38,11 @@ const CaseStudy = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="case" className="py-16 md:py-24 bg-white">
+    <section id="case" className="section-spacing bg-white border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] items-stretch">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] items-stretch">
           <div className="relative overflow-hidden rounded-3xl min-h-[420px]">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('/images/solar-park-saffle.jpg')" }}
-            />
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${CASE_IMAGE}')` }} />
             <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/40" />
             <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
               <p className="text-sm uppercase tracking-widest text-white/70 font-heading">{t('case.title')}</p>

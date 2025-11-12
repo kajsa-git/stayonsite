@@ -5,6 +5,7 @@ export type TranslationKey =
   | 'nav.services'
   | 'nav.references'
   | 'nav.contact'
+  | 'nav.case'
   | 'nav.inquiryForm'
   | 'nav.homeowner'
   | 'nav.forCompanies'
@@ -211,13 +212,14 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.services': 'Tjänster',
     'nav.references': 'Referenser',
     'nav.contact': 'Kontakt',
+    'nav.case': 'Case Säffle',
     'nav.inquiryForm': 'Ring oss',
     'nav.forCompanies': 'För byggbolag',
     
     'hero.title': 'Vi tar hand om personalboendet när ni rullar ut ert projekt i Sverige',
     'hero.subtitle': 'Från första ingenjör till sista montör – vi planerar, hyr och koordinerar långtidshyreslösningar nära byggplatsen.',
     'hero.cta': 'Skicka förfrågan',
-    'hero.tagline': 'Långsiktigt boendestöd för etableringsteam',
+    'hero.tagline': 'Etableringspartner i Sverige',
     'hero.bullet1': 'Lokala bostadsnätverk runt datacenter och energikluster',
     'hero.bullet2': 'Tydliga villkor och kontrakt 3–36 månader',
     'hero.bullet3': 'En kontaktväg – telefon, SMS eller WhatsApp dygnet runt',
@@ -432,13 +434,14 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.services': 'Services',
     'nav.references': 'References',
     'nav.contact': 'Contact',
+    'nav.case': 'Case',
     'nav.inquiryForm': 'Inquiry',
     'nav.forCompanies': 'For Companies',
     
     'hero.title': 'Let us run your staff housing in Sweden',
     'hero.subtitle': 'Planning, contracts, and move-ins handled within 24–48 hours.',
     'hero.cta': 'Send Inquiry',
-    'hero.tagline': 'Long-term housing support for deployment teams',
+    'hero.tagline': 'Deployment partner in Sweden',
     'hero.bullet1': 'Local housing scouts near data centers and energy parks',
     'hero.bullet2': 'Clear 3–36 month agreements',
     'hero.bullet3': 'One contact line—phone, SMS, or WhatsApp',
@@ -653,13 +656,14 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.services': 'Usługi',
     'nav.references': 'Referencje',
     'nav.contact': 'Kontakt',
+    'nav.case': 'Case Säffle',
     'nav.inquiryForm': 'Zapytanie',
     'nav.forCompanies': 'Dla firm',
 
     'hero.title': 'Zajmiemy się zakwaterowaniem Twojego zespołu w Szwecji',
     'hero.subtitle': 'Planowanie, umowy i wprowadzki w 24–48 godzin.',
     'hero.cta': 'Wyślij zapytanie',
-    'hero.tagline': 'Długoterminowe wsparcie mieszkaniowe dla zespołów projektowych',
+    'hero.tagline': 'Partner ds. wdrożeń w Szwecji',
     'hero.bullet1': 'Lokalni specjaliści ds. zakwaterowania w pobliżu centrów danych i parków energetycznych',
     'hero.bullet2': 'Przejrzyste umowy na 3–36 miesięcy',
     'hero.bullet3': 'Jedna linia kontaktu — telefon, SMS lub WhatsApp',

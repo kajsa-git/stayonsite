@@ -88,7 +88,7 @@ export default {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				heading: ['Montserrat', 'sans-serif'],
-				display: ['Playfair Display', 'serif'],
+				display: ['Montserrat', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

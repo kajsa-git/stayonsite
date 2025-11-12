@@ -46,7 +46,7 @@ const FAQ = () => {
   };
 
   return (
-    <section id="faq" className="py-24 bg-gradient-to-b from-white to-nordic-50">
+    <section id="faq" className="section-spacing bg-gradient-to-b from-white to-nordic-50 border-t border-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"

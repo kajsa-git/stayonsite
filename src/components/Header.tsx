@@ -13,7 +13,10 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const navLinks = [
-    { label: t('nav.references'), href: '#references', isRoute: false },
+    { label: t('nav.services'), href: '#services' },
+    { label: t('nav.case'), href: '#case' },
+    { label: t('nav.references'), href: '#references' },
+    { label: t('nav.contact'), href: '#inquiry' },
   ];
 
   // Add scroll effect for the header
@@ -52,35 +55,23 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-12 ml-8">
-          <ul className="flex space-x-12">
+        <nav className="hidden md:flex items-center space-x-8 ml-6">
+          <ul className="flex items-center space-x-3 rounded-full bg-white/50 px-3 py-1 border border-nordic-100">
             {navLinks.map((link) => (
               <li key={link.href}>
-                {link.isRoute ? (
-                  <Link 
-                    to={link.href}
-                    className={cn(
-                      "font-light tracking-wide transition-colors duration-500 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300",
-                      scrolled ? "text-nordic-800" : "text-nordic-900"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    href={link.href}
-                    className="font-light tracking-wide transition-colors duration-300 hover:text-[#ff6300] relative after:absolute after:w-full after:h-px after:bg-[#ff6300] after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-nordic-800"
-                  >
-                    {link.label}
-                  </a>
-                )}
+                <a
+                  href={link.href}
+                  className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
+                >
+                  {link.label}
+                </a>
               </li>
             ))}
             {/* För byggbolag link */}
             <li>
               <Link
                 to="/#inquiry"
-                className="font-light tracking-wide transition-colors duration-300 hover:text-blue-700 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap text-blue-800"
+                className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
               >
                 {t('nav.forCompanies')}
               </Link>
@@ -89,7 +80,7 @@ const Header = () => {
             <li>
               <Link
                 to="/for-husagare"
-                className="font-light tracking-wide transition-colors duration-300 hover:text-amber-700 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 whitespace-nowrap text-amber-700"
+                className="inline-flex items-center rounded-full border border-amber-100 bg-amber-50/80 px-3 py-1.5 text-sm font-medium text-amber-700 hover:bg-amber-100 transition-colors"
               >
                 {t('nav.homeowner')}
               </Link>
@@ -97,10 +88,10 @@ const Header = () => {
             
             {/* Quick city links */}
             <li className="border-l border-gray-300 pl-6 ml-6">
-              <div className="flex items-center space-x-4 text-sm">
-                <Link to="/stad/stockholm" className="hover:text-[#ff6300] transition-colors text-nordic-700">Stockholm</Link>
-                <Link to="/stad/goteborg" className="hover:text-[#ff6300] transition-colors text-nordic-700">Göteborg</Link>
-                <Link to="/stad/malmo" className="hover:text-[#ff6300] transition-colors text-nordic-700">Malmö</Link>
+              <div className="flex items-center space-x-4 text-sm text-nordic-600">
+                <Link to="/stad/stockholm" className="hover:text-[#ff6300] transition-colors">Stockholm</Link>
+                <Link to="/stad/goteborg" className="hover:text-[#ff6300] transition-colors">Göteborg</Link>
+                <Link to="/stad/malmo" className="hover:text-[#ff6300] transition-colors">Malmö</Link>
               </div>
             </li>
           </ul>
@@ -137,27 +128,17 @@ const Header = () => {
         <div className="md:hidden bg-white border-t border-nordic-100 shadow-sm absolute top-full left-0 right-0 animate-in slide-in-from-top duration-300">
           <div className="container mx-auto px-6 py-6">
             <ul className="flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  {link.isRoute ? (
-                    <Link 
-                      to={link.href}
-                      className="block py-2 text-nordic-800 hover:text-nordic-500 transition-colors duration-300 font-light tracking-wide"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={link.href}
-                      className="block py-2 text-nordic-800 hover:text-[#ff6300] transition-colors duration-300 font-light tracking-wide"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.label}
-                    </a>
-                  )}
-                </li>
-              ))}
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
               <li>
                 <Link 
                   to="/#inquiry"

@@ -54,7 +54,7 @@ const References = () => {
     }))
   };
 
-  return <section id="references" className="py-24 bg-white nordic-texture">
+  return <section id="references" className="section-spacing bg-white nordic-texture border-t border-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"

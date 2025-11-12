@@ -46,6 +46,12 @@ const WhyStayOnSite = () => {
                   aria-hidden="true"
                 />
               )}
+              {index > 0 && (
+                <span
+                  className="md:hidden absolute top-0 left-8 -mt-6 h-6 w-px bg-nordic-200"
+                  aria-hidden="true"
+                />
+              )}
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">
                   <Icon className="h-5 w-5" />
