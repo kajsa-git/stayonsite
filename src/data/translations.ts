@@ -18,6 +18,13 @@ export type TranslationKey =
   | 'hero.ctaPhone'
   | 'hero.ctaWhatsapp'
   | 'hero.ctaSubtext'
+  | 'hero.responseTime'
+  | 'hero.metrics.proposal.value'
+  | 'hero.metrics.proposal.description'
+  | 'hero.metrics.moveIn.value'
+  | 'hero.metrics.moveIn.description'
+  | 'hero.metrics.deployments.value'
+  | 'hero.metrics.deployments.description'
   | 'services.title'
   | 'services.subtitle'
   | 'services.tagline'
@@ -200,6 +207,13 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.ctaPhone': 'Ring oss nu',
     'hero.ctaWhatsapp': 'Chatta på WhatsApp',
     'hero.ctaSubtext': '073-628 77 09 · Telefon / SMS / WhatsApp',
+    'hero.responseTime': 'Svar inom 15 minuter vardagar',
+    'hero.metrics.proposal.value': '24 h',
+    'hero.metrics.proposal.description': 'Första boendeförslaget',
+    'hero.metrics.moveIn.value': '48 h',
+    'hero.metrics.moveIn.description': 'Första inflytten klar',
+    'hero.metrics.deployments.value': '3 orter',
+    'hero.metrics.deployments.description': 'Per kund i snitt',
     
     'services.title': 'Våra tjänster',
     'services.subtitle': 'Vi hjälper dig att snabbt hitta rätt boenden när dina arbetare eller underentreprenörer är i behov av logi på annan ort. Vi erbjuder både longstay och shortstay lösningar över hela Sverige',
@@ -387,16 +401,23 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Inquiry',
     'nav.forCompanies': 'For Companies',
     
-    'hero.title': 'We handle staff housing while you roll out your project in Sweden',
-    'hero.subtitle': 'From the first engineer to the last installer—we plan, lease, and coordinate long-stay housing close to site.',
+    'hero.title': 'Let us run your staff housing in Sweden',
+    'hero.subtitle': 'Planning, contracts, and move-ins handled within 24–48 hours.',
     'hero.cta': 'Send Inquiry',
     'hero.tagline': 'Long-term housing support for deployment teams',
-    'hero.bullet1': 'Local housing networks around data centers and energy clusters',
-    'hero.bullet2': 'Clear terms and 3–36 month contracts',
-    'hero.bullet3': 'Single contact channel—phone, SMS, or WhatsApp around the clock',
+    'hero.bullet1': 'Local housing scouts near data centers and energy parks',
+    'hero.bullet2': 'Clear 3–36 month agreements',
+    'hero.bullet3': 'One contact line—phone, SMS, or WhatsApp',
     'hero.ctaPhone': 'Call us now',
     'hero.ctaWhatsapp': 'Chat on WhatsApp',
     'hero.ctaSubtext': '+46 73 628 77 09 · Phone / SMS / WhatsApp',
+    'hero.responseTime': 'Replies within 15 minutes on weekdays',
+    'hero.metrics.proposal.value': '24 h',
+    'hero.metrics.proposal.description': 'First housing proposal',
+    'hero.metrics.moveIn.value': '48 h',
+    'hero.metrics.moveIn.description': 'First move-in completed',
+    'hero.metrics.deployments.value': '3 sites',
+    'hero.metrics.deployments.description': 'Per client on average',
     
     'services.title': 'Our Services',
     'services.subtitle': 'We help you quickly find the right accommodations when your workers or subcontractors need lodging in another location. We offer both longstay and shortstay solutions throughout Sweden',
@@ -584,16 +605,23 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Zadzwoń do nas',
     'nav.forCompanies': 'Dla firm budowlanych',
 
-    'hero.title': 'Przejmujemy zakwaterowanie zespołów, gdy uruchamiacie projekt w Szwecji',
-    'hero.subtitle': 'Od pierwszego inżyniera po ostatniego montera – planujemy, wynajmujemy i koordynujemy długoterminowe zakwaterowanie blisko inwestycji.',
+    'hero.title': 'Przejmujemy zakwaterowanie zespołów w Szwecji',
+    'hero.subtitle': 'Planowanie, umowy i wprowadzenia w 24–48 godzin.',
     'hero.cta': 'Wyślij zapytanie',
     'hero.tagline': 'Długoterminowe wsparcie mieszkaniowe dla zespołów wdrożeniowych',
-    'hero.bullet1': 'Lokalne sieci mieszkań przy data center i parkach energetycznych',
-    'hero.bullet2': 'Przejrzyste warunki i umowy na 3–36 miesięcy',
-    'hero.bullet3': 'Jeden kontakt – telefon, SMS lub WhatsApp 24/7',
+    'hero.bullet1': 'Lokalni wyszukiwacze mieszkań przy data center i parkach energii',
+    'hero.bullet2': 'Przejrzyste umowy na 3–36 miesięcy',
+    'hero.bullet3': 'Jeden kontakt — telefon, SMS lub WhatsApp',
     'hero.ctaPhone': 'Zadzwoń teraz',
     'hero.ctaWhatsapp': 'Napisz na WhatsApp',
     'hero.ctaSubtext': '+46 73 628 77 09 · Telefon / SMS / WhatsApp',
+    'hero.responseTime': 'Odpowiadamy w 15 minut w dni robocze',
+    'hero.metrics.proposal.value': '24 h',
+    'hero.metrics.proposal.description': 'Pierwsza propozycja zakwaterowania',
+    'hero.metrics.moveIn.value': '48 h',
+    'hero.metrics.moveIn.description': 'Pierwsze wprowadzenie zakończone',
+    'hero.metrics.deployments.value': '3 lokalizacje',
+    'hero.metrics.deployments.description': 'Na klienta średnio',
 
     'services.title': 'Nasze usługi',
     'services.subtitle': 'Pomagamy szybko znaleźć odpowiednie zakwaterowanie, gdy Twoi pracownicy lub podwykonawcy potrzebują miejsca noclegowego w innej miejscowości. Oferujemy rozwiązania zarówno długo- jak i krótkoterminowe w całej Szwecji',
