@@ -22,7 +22,7 @@ const Footer = () => {
               <Button
                 asChild
                 variant="outline"
-                className="rounded-full border-white/40 text-white h-11 px-5"
+                className="rounded-full border-white/40 bg-white/10 hover:bg-white/20 text-white h-11 px-5"
               >
                 <a href="https://wa.me/46736287709" target="_blank" rel="noreferrer">
                   <MessageCircle size={16} className="mr-2" />
