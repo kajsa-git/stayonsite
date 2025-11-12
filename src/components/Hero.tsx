@@ -67,7 +67,7 @@ const Hero = () => {
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm uppercase text-nordic-500 font-heading">{t('hero.ctaSubtext')}</p>
-                  <p className="text-2xl font-light text-nordic-900 mt-1">073-628 77 09</p>
+                  <p className="text-2xl font-light text-nordic-900 mt-1">+46 73-628 77 09</p>
                   <p className="text-sm text-nordic-600">{t('hero.responseTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-3">

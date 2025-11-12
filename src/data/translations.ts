@@ -220,7 +220,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.bullet3': 'En kontaktväg – telefon, SMS eller WhatsApp dygnet runt',
     'hero.ctaPhone': 'Ring oss nu',
     'hero.ctaWhatsapp': 'Chatta på WhatsApp',
-    'hero.ctaSubtext': '073-628 77 09 · Telefon / SMS / WhatsApp',
+    'hero.ctaSubtext': '+46 73-628 77 09 · Telefon / SMS / WhatsApp',
     'hero.responseTime': 'Svar inom 15 minuter vardagar',
     'hero.metrics.proposal.value': '24 h',
     'hero.metrics.proposal.description': 'Första boendeförslaget',
@@ -301,7 +301,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.location': 'Stockholm, Sverige',
     
     'floatingPhone.call': 'Ring oss',
-    'floatingPhone.tooltip': 'Ring oss direkt på 073-628 77 09',
+    'floatingPhone.tooltip': 'Ring oss direkt på +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Skriv på WhatsApp',
     'floatingPhone.whatsappTooltip': 'Skriv till oss på WhatsApp – svar inom 15 minuter på vardagar',
 
@@ -519,7 +519,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.location': 'Stockholm, Sweden',
     
     'floatingPhone.call': 'Call us',
-    'floatingPhone.tooltip': 'Call us directly at 073-628 77 09',
+    'floatingPhone.tooltip': 'Call us directly at +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Message on WhatsApp',
     'floatingPhone.whatsappTooltip': 'Message us on WhatsApp—responses within 15 minutes on weekdays',
 
@@ -737,7 +737,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.location': 'Sztokholm, Szwecja',
 
     'floatingPhone.call': 'Zadzwoń do nas',
-    'floatingPhone.tooltip': 'Zadzwoń do nas bezpośrednio pod numer 073-628 77 09',
+    'floatingPhone.tooltip': 'Zadzwoń do nas bezpośrednio pod numer +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Napisz na WhatsApp',
     'floatingPhone.whatsappTooltip': 'Napisz do nas na WhatsApp – odpowiadamy w 15 minut w dni robocze',
 

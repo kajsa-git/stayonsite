@@ -16,17 +16,17 @@ const ForHusagare = () => {
   const seoContent = {
     sv: {
       title: 'Hyr ut ditt boende till byggarbetare - 3000-8000 kr/mån | StayOnSite',
-      description: 'Tjäna 3000-8000 kr/månad genom att hyra ut ditt boende till byggarbetare. StayOnSite sköter allt - kontrakt, hyresgäster och betalningar. Säkra hyresintäkter. Ring 073-628 77 09',
+      description: 'Tjäna 3000-8000 kr/månad genom att hyra ut ditt boende till byggarbetare. StayOnSite sköter allt - kontrakt, hyresgäster och betalningar. Säkra hyresintäkter. Ring +46 73-628 77 09',
       keywords: 'hyra ut boende, hyra ut stuga, hyra ut lägenhet, extra inkomst boende, företagsbostäder, byggarbetare hyresgäster, passiv inkomst, hyra ut hus, stayonsite husägare, montörboende uthyrning'
     },
     en: {
       title: 'Rent out your property to construction workers - 3000-8000 SEK/month | StayOnSite',
-      description: 'Earn 3000-8000 SEK/month by renting your property to construction workers. StayOnSite handles everything - contracts, tenants and payments. Secure rental income. Call 073-628 77 09',
+      description: 'Earn 3000-8000 SEK/month by renting your property to construction workers. StayOnSite handles everything - contracts, tenants and payments. Secure rental income. Call +46 73-628 77 09',
       keywords: 'rent out property, rent out cottage, rent out apartment, extra income property, corporate housing, construction worker tenants, passive income, rent out house, stayonsite homeowners'
     },
     pl: {
       title: 'Wynajmij swoją nieruchomość pracownikom budowlanym - 3000-8000 kr/mies | StayOnSite',
-      description: 'Zarabiaj 3000-8000 kr/miesiąc wynajmując swoją nieruchomość pracownikom budowlanym. StayOnSite zajmuje się wszystkim - umowy, najemcy i płatności. Pewny dochód z wynajmu. Zadzwoń 073-628 77 09',
+      description: 'Zarabiaj 3000-8000 kr/miesiąc wynajmując swoją nieruchomość pracownikom budowlanym. StayOnSite zajmuje się wszystkim - umowy, najemcy i płatności. Pewny dochód z wynajmu. Zadzwoń +46 73-628 77 09',
       keywords: 'wynajmij nieruchomość, wynajmij domek, wynajmij mieszkanie, dodatkowy dochód nieruchomość, mieszkania służbowe, najemcy pracownicy budowlani, pasywny dochód, wynajmij dom, stayonsite właściciele'
     }
   };

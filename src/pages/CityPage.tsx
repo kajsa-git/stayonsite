@@ -38,17 +38,17 @@ const CityPage = () => {
   const seoContent = {
     sv: {
       title: `Boende ${city.name} - Byggarbetare & Personal | StayOnSite`,
-      description: `Snabbt boende för byggarbetare i ${city.name}. StayOnSite erbjuder företagsbostäder och personalboende i ${city.region}. Över 10 års erfarenhet. Ring 073-628 77 09`,
+      description: `Snabbt boende för byggarbetare i ${city.name}. StayOnSite erbjuder företagsbostäder och personalboende i ${city.region}. Över 10 års erfarenhet. Ring +46 73-628 77 09`,
       keywords: `boende ${city.name}, byggarbetare ${city.name}, företagsbostäder ${city.name}, personalboende ${city.name}, montörboende ${city.name}, arbetarboende ${city.name}, ${city.region} boende, stayonsite ${city.name}`
     },
     en: {
       title: `Accommodation ${city.name} - Construction Workers & Staff | StayOnSite`,
-      description: `Fast accommodation for construction workers in ${city.name}. StayOnSite offers corporate housing and staff accommodation in ${city.region}. 10+ years experience. Call 073-628 77 09`,
+      description: `Fast accommodation for construction workers in ${city.name}. StayOnSite offers corporate housing and staff accommodation in ${city.region}. 10+ years experience. Call +46 73-628 77 09`,
       keywords: `accommodation ${city.name}, construction workers ${city.name}, corporate housing ${city.name}, staff accommodation ${city.name}, worker housing ${city.name}, ${city.region} accommodation, stayonsite ${city.name}`
     },
     pl: {
       title: `Zakwaterowanie ${city.name} - Pracownicy budowlani | StayOnSite`,
-      description: `Szybkie zakwaterowanie dla pracowników budowlanych w ${city.name}. StayOnSite oferuje mieszkania służbowe i zakwaterowanie personelu w ${city.region}. Ponad 10 lat doświadczenia. Zadzwoń 073-628 77 09`,
+      description: `Szybkie zakwaterowanie dla pracowników budowlanych w ${city.name}. StayOnSite oferuje mieszkania służbowe i zakwaterowanie personelu w ${city.region}. Ponad 10 lat doświadczenia. Zadzwoń +46 73-628 77 09`,
       keywords: `zakwaterowanie ${city.name}, pracownicy budowlani ${city.name}, mieszkania służbowe ${city.name}, zakwaterowanie personelu ${city.name}, ${city.region} zakwaterowanie, stayonsite ${city.name}`
     }
   };
@@ -350,7 +350,7 @@ const CityPage = () => {
                 >
                   <a href="tel:+46736287709">
                     <Phone className="mr-2 h-5 w-5" />
-                    073-628 77 09
+                    +46 73-628 77 09
                   </a>
                 </Button>
                 
