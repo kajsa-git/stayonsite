@@ -39,7 +39,7 @@ const Hero = () => {
                 <a
                   key={key}
                   href={href}
-                  className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-4 py-2 text-sm md:text-base font-semibold text-white/90 backdrop-blur hover:bg-white/15 hover:border-white/40 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-4 py-2 text-sm md:text-base font-light text-white/90 backdrop-blur hover:bg-white/15 hover:border-white/40 transition-all duration-300"
                 >
                   <span className="inline-flex h-2.5 w-2.5 items-center justify-center rounded-full bg-[#ff6300]" />
                   {t(key)}
