@@ -6,7 +6,7 @@ const Hero = () => {
     t
   } = useLanguage();
   return <section id="home" className="relative bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture" style={{
-    backgroundImage: "url('https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-4.0.3&auto=format&fit=crop&w=2670&q=80')"
+    backgroundImage: "url('/images/hero-kitchen-livingroom.jpg')"
   }}>
       {/* Subtle overlay for better text visibility */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
