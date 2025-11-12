@@ -13,7 +13,10 @@ const CityLinks = () => {
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-nordic-900 mb-3 font-display">
+            <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-[0.35em] font-heading">
+              {language === 'sv' ? 'Städer' : language === 'en' ? 'Cities' : 'Miasta'}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-3">
               {language === 'sv'
                 ? 'Vi täcker hela Sverige'
                 : 'We cover all of Sweden'

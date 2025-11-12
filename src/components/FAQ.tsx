@@ -55,10 +55,10 @@ const FAQ = () => {
       
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
+          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-[0.35em] font-heading">
             {t('faq.tagline')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 font-display">
+          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-4">
             {t('faq.title')}
           </h2>
           <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
