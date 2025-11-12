@@ -47,7 +47,7 @@ const Hero = () => {
         <div className="container mx-auto px-6 md:px-8 relative py-16 md:py-10">
           <div className="max-w-3xl space-y-6">
             <p className="text-sm uppercase tracking-[0.2em] text-white/70 font-heading">{t('hero.tagline')}</p>
-            <h1 className="text-4xl md:text-5xl font-light leading-tight">{t('hero.title')}</h1>
+            <h1 className="text-4xl md:text-5xl font-medium leading-tight">{t('hero.title')}</h1>
             <p className="text-lg md:text-xl text-white/80">{t('hero.subtitle')}</p>
 
             <div className="flex flex-wrap gap-3">
