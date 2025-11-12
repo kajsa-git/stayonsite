@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, MessageCircle, Phone, ChevronRight } from 'lucide-react';
 
 const phoneHref = 'tel:+46736287709';
 const whatsappHref = 'https://wa.me/46736287709';
@@ -37,7 +37,7 @@ const Hero = () => {
     <>
       <section
         id="home"
-        className="relative isolate flex items-end md:items-center bg-cover bg-center text-white min-h-[85vh] md:min-h-[600px] lg:min-h-[650px] overflow-hidden pt-20 md:pt-24"
+        className="relative isolate flex items-end md:items-center bg-cover bg-center text-white min-h-[70vh] md:min-h-[500px] lg:min-h-[550px] overflow-hidden pt-20 md:pt-24"
         style={{
           backgroundImage: "url('/images/hero-kitchen-livingroom.jpg')",
         }}
@@ -55,10 +55,11 @@ const Hero = () => {
                 <a
                   key={key}
                   href={href}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-4 py-2 text-sm md:text-base font-light text-white/90 backdrop-blur hover:bg-white/15 transition-colors"
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-4 py-2 text-sm md:text-base font-light text-white/90 backdrop-blur hover:bg-white/20 hover:border-white/50 transition-all duration-300"
                 >
                   <span className="inline-block h-2 w-2 rounded-full bg-[#ff6300]" />
                   {t(key)}
+                  <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </a>
               ))}
             </div>
