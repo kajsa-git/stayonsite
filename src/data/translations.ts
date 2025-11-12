@@ -95,17 +95,17 @@ export type TranslationKey =
   | 'floatingPhone.tooltip'
   | 'floatingPhone.whatsapp'
   | 'floatingPhone.whatsappTooltip'
-  | 'valueProps.title'
-  | 'valueProps.subtitle'
-  | 'valueProps.items.network.title'
-  | 'valueProps.items.network.description'
-  | 'valueProps.items.coordination.title'
-  | 'valueProps.items.coordination.description'
-  | 'valueProps.items.reporting.title'
-  | 'valueProps.items.reporting.description'
-  | 'valueProps.case.title'
-  | 'valueProps.case.description'
-  | 'valueProps.case.metrics'
+  | 'why.title'
+  | 'why.subtitle'
+  | 'why.steps.plan.title'
+  | 'why.steps.plan.description'
+  | 'why.steps.plan.cta'
+  | 'why.steps.contracts.title'
+  | 'why.steps.contracts.description'
+  | 'why.steps.contracts.cta'
+  | 'why.steps.operations.title'
+  | 'why.steps.operations.description'
+  | 'why.steps.operations.cta'
   | 'homeowner.hero.title'
   | 'homeowner.hero.subtitle'
   | 'homeowner.hero.incomeRange'
@@ -291,17 +291,17 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.whatsapp': 'Skriv på WhatsApp',
     'floatingPhone.whatsappTooltip': 'Skriv till oss på WhatsApp – svar inom 15 minuter på vardagar',
 
-    'valueProps.title': 'Vad ni får',
-    'valueProps.subtitle': 'Ni delegerar personalboendet till ett lokalt team som följer projektet hela vägen.',
-    'valueProps.items.network.title': 'Lokala bostadsspanare',
-    'valueProps.items.network.description': 'Etablerade värdar runt datahallar, vind- och solparker gör att vi hittar rätt lägenheter snabbt.',
-    'valueProps.items.coordination.title': 'Kontrakt & inflytt',
-    'valueProps.items.coordination.description': 'Vi sköter hyresavtal, nycklar, inventeringar och veckostädning efter vad teamet behöver.',
-    'valueProps.items.reporting.title': 'Rapportering till projektet',
-    'valueProps.items.reporting.description': 'Statusuppdateringar, beläggning och kostnadskontroll så att platschefen alltid vet läget.',
-    'valueProps.case.title': 'Case: Solcellspark i Säffle',
-    'valueProps.case.description': 'Ett polskt bolag behövde bostäder till hela montörsteamet. Vi skickade första förslaget inom 24 timmar och 48 timmar senare var de första på plats. Sedan dess har vi vuxit med kunden på tre orter i Sverige.',
-    'valueProps.case.metrics': 'Förslag inom 24 h · Inflytt efter 48 h · 3 etableringar',
+    'why.title': 'Varför StayOnSite',
+    'why.subtitle': 'Ett lokalt team följer projektet från planering till drift så att ni kan fokusera på bygget.',
+    'why.steps.plan.title': 'Planering på plats',
+    'why.steps.plan.description': 'Vi kartlägger bostadsmarknaden runt er site och säkrar värdar innan etableringen startar.',
+    'why.steps.plan.cta': 'Prata planering',
+    'why.steps.contracts.title': 'Kontrakt & inflytt',
+    'why.steps.contracts.description': 'Hyresavtal, nycklar, inventeringar och servicelistor hanteras av oss med tydliga 3–36 mån villkor.',
+    'why.steps.contracts.cta': 'Prata kontrakt',
+    'why.steps.operations.title': 'Drift & rapportering',
+    'why.steps.operations.description': 'Beläggning, veckostädning och avvikelser rapporteras direkt till projektledningen.',
+    'why.steps.operations.cta': 'Prata drift',
 
     'references.stats.happyClients': 'Nöjda kunder',
     'references.stats.accommodations': 'Ordnade boenden',
@@ -495,17 +495,17 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.whatsapp': 'Message on WhatsApp',
     'floatingPhone.whatsappTooltip': 'Message us on WhatsApp—responses within 15 minutes on weekdays',
 
-    'valueProps.title': 'What you get',
-    'valueProps.subtitle': 'You delegate staff housing to a local team that follows the project end to end.',
-    'valueProps.items.network.title': 'Local housing scouts',
-    'valueProps.items.network.description': 'Established landlords around data centers, wind, and solar sites mean we find the right units fast.',
-    'valueProps.items.coordination.title': 'Contracts & move-ins',
-    'valueProps.items.coordination.description': 'We manage leases, keys, inspections, and weekly cleaning to match what the crew needs.',
-    'valueProps.items.reporting.title': 'Reporting to the project',
-    'valueProps.items.reporting.description': 'Status updates, occupancy, and cost control so the site manager always knows the situation.',
-    'valueProps.case.title': 'Case: Solar park in Säffle',
-    'valueProps.case.description': 'A Polish contractor needed accommodation for their full installer crew. We sent the first proposal within 24 hours and had workers moving in 48 hours later. We now support the client at three Swedish rollouts.',
-    'valueProps.case.metrics': 'Proposal in 24 h · Move-in in 48 h · 3 deployments',
+    'why.title': 'Why StayOnSite',
+    'why.subtitle': 'A local housing team shadows your rollout from planning to operations so you can stay on schedule.',
+    'why.steps.plan.title': 'On-site planning',
+    'why.steps.plan.description': 'We map the housing market around your site and secure landlords before the crews arrive.',
+    'why.steps.plan.cta': 'Talk planning',
+    'why.steps.contracts.title': 'Contracts & move-ins',
+    'why.steps.contracts.description': 'We run leases, keys, inspections, and services with transparent 3–36 month terms.',
+    'why.steps.contracts.cta': 'Talk contracts',
+    'why.steps.operations.title': 'Operations & reporting',
+    'why.steps.operations.description': 'Occupancy, weekly cleaning, and incident reports go straight to the project manager.',
+    'why.steps.operations.cta': 'Talk operations',
 
     'references.stats.happyClients': 'Happy clients',
     'references.stats.accommodations': 'Accommodations arranged',
@@ -699,17 +699,17 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.whatsapp': 'Napisz na WhatsApp',
     'floatingPhone.whatsappTooltip': 'Napisz do nas na WhatsApp – odpowiadamy w 15 minut w dni robocze',
 
-    'valueProps.title': 'Co otrzymujecie',
-    'valueProps.subtitle': 'Przekazujecie temat zakwaterowania lokalnemu zespołowi, który prowadzi projekt od początku do końca.',
-    'valueProps.items.network.title': 'Lokalni wyszukiwacze mieszkań',
-    'valueProps.items.network.description': 'Sprawdzeni gospodarze przy data center oraz farmach wiatrowych i słonecznych pozwalają nam szybko znaleźć odpowiednie lokale.',
-    'valueProps.items.coordination.title': 'Umowy i wprowadzenia',
-    'valueProps.items.coordination.description': 'Obsługujemy najem, klucze, protokoły i cotygodniowe sprzątanie według potrzeb ekipy.',
-    'valueProps.items.reporting.title': 'Raportowanie do projektu',
-    'valueProps.items.reporting.description': 'Aktualizacje statusu, obłożenie i koszty, aby kierownik budowy zawsze znał sytuację.',
-    'valueProps.case.title': 'Case: Farma słoneczna w Säffle',
-    'valueProps.case.description': 'Polska firma potrzebowała zakwaterowania dla całej ekipy monterów. Pierwszą propozycję wysłaliśmy w 24 godziny, a po 48 godzinach pierwsi pracownicy się wprowadzili. Dziś wspieramy ich już na trzech lokalizacjach w Szwecji.',
-    'valueProps.case.metrics': 'Oferta w 24 h · Wprowadzenie po 48 h · 3 lokalizacje',
+    'why.title': 'Dlaczego StayOnSite',
+    'why.subtitle': 'Lokalny zespół mieszkaniowy prowadzi projekt od planowania po eksploatację, abyście mogli skupić się na budowie.',
+    'why.steps.plan.title': 'Planowanie na miejscu',
+    'why.steps.plan.description': 'Mapujemy rynek mieszkań wokół inwestycji i zabezpieczamy gospodarzy zanim ekipy przyjadą.',
+    'why.steps.plan.cta': 'Porozmawiaj o planie',
+    'why.steps.contracts.title': 'Umowy i wprowadzenia',
+    'why.steps.contracts.description': 'Zajmujemy się najmem, kluczami, protokołami i usługami przy przejrzystych warunkach na 3–36 miesięcy.',
+    'why.steps.contracts.cta': 'Porozmawiaj o umowach',
+    'why.steps.operations.title': 'Eksploatacja i raporty',
+    'why.steps.operations.description': 'Obłożenie, cotygodniowe sprzątanie i zgłoszenia trafiają prosto do kierownika projektu.',
+    'why.steps.operations.cta': 'Porozmawiaj o eksploatacji',
 
     'references.stats.happyClients': 'Zadowoleni klienci',
     'references.stats.accommodations': 'Zorganizowane zakwaterowanie',

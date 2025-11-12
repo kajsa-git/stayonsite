@@ -1,7 +1,7 @@
 
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import ValueProps from '@/components/ValueProps';
+import WhyStayOnSite from '@/components/WhyStayOnSite';
 import Services from '@/components/Services';
 import CityLinks from '@/components/CityLinks';
 import References from '@/components/References';
@@ -103,7 +103,7 @@ const Index = () => {
         <Header />
         <main className="flex-grow">
           <Hero />
-          <ValueProps />
+          <WhyStayOnSite />
           <Services />
           <InquiryForm />
           <References />
