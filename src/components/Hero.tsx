@@ -66,9 +66,8 @@ const Hero = () => {
             <div className="rounded-2xl bg-white/95 text-nordic-900 shadow-lg border border-white/30 p-4 md:p-6 space-y-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-sm uppercase text-nordic-500 font-heading">{t('hero.ctaSubtext')}</p>
-                  <p className="text-2xl font-light text-nordic-900 mt-1">+46 73-628 77 09</p>
-                  <p className="text-sm text-nordic-600">{t('hero.responseTime')}</p>
+                  <p className="text-2xl font-light text-nordic-900">+46 73-628 77 09</p>
+                  <p className="text-sm text-nordic-600 mt-1">{t('hero.responseTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-6" asChild>

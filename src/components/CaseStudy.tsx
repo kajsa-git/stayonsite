@@ -41,7 +41,7 @@ const CaseStudy = () => {
           <div className="relative overflow-hidden rounded-3xl min-h-[420px]">
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('/images/hero-kitchen-livingroom.jpg')" }}
+              style={{ backgroundImage: "url('/images/solar-park-saffle.jpg')" }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/40" />
             <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
