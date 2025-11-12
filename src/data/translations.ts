@@ -74,6 +74,7 @@ export type TranslationKey =
   | 'inquiry.form.error'
   | 'inquiry.form.untilFurtherNotice'
   | 'inquiry.contactInfo.title'
+  | 'inquiry.cta.meeting'
   | 'faq.title'
   | 'faq.subtitle'
   | 'faq.tagline'
@@ -292,6 +293,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.',
     'inquiry.form.untilFurtherNotice': 'Tillsvidare',
     'inquiry.contactInfo.title': 'Kontaktinformation',
+    'inquiry.cta.meeting': 'Boka 15 min',
     
     'faq.title': 'Vanliga frågor',
     'faq.subtitle': 'Här hittar du svar på de vanligaste frågorna om våra tjänster och personalboende.',
@@ -523,6 +525,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'There was an error submitting the form. Please try again later.',
     'inquiry.form.untilFurtherNotice': 'Until further notice',
     'inquiry.contactInfo.title': 'Contact Information',
+    'inquiry.cta.meeting': 'Schedule 15 min',
     
     'faq.title': 'Frequently Asked Questions',
     'faq.subtitle': 'Find answers to the most common questions about our services and staff accommodation.',
@@ -682,7 +685,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.services': 'Usługi',
     'nav.references': 'Referencje',
     'nav.contact': 'Kontakt',
-    'nav.case': 'Case Säffle',
+    'nav.case': 'Studium przypadku',
     'nav.inquiryForm': 'Zapytanie',
     'nav.forCompanies': 'Dla firm',
 
@@ -690,7 +693,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'hero.subtitle': 'Planowanie, umowy i wprowadzki w 24–48 godzin.',
     'hero.cta': 'Wyślij zapytanie',
     'hero.tagline': 'Partner ds. wdrożeń w Szwecji',
-    'hero.bullet1': 'Nasz lokalny zespół śledzi projekt od planowania do eksploatacji',
+    'hero.bullet1': 'Lokalni specjaliści ds. zakwaterowania w pobliżu centrów danych i parków energetycznych',
     'hero.bullet2': 'Przejrzyste umowy na 3–36 miesięcy',
     'hero.bullet3': 'Jedna linia kontaktu — telefon, SMS lub WhatsApp',
     'hero.ctaPhone': 'Zadzwoń teraz',
@@ -754,6 +757,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'inquiry.form.error': 'Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie później.',
     'inquiry.form.untilFurtherNotice': 'Do odwołania',
     'inquiry.contactInfo.title': 'Informacje kontaktowe',
+    'inquiry.cta.meeting': 'Umów 15 min',
 
     'faq.title': 'Najczęściej zadawane pytania',
     'faq.subtitle': 'Tutaj znajdziesz odpowiedzi na najczęstsze pytania dotyczące naszych usług i zakwaterowania dla pracowników.',

@@ -9,8 +9,8 @@ const CityLinks = () => {
   const { language } = useLanguage();
 
   return (
-    <section className="py-12 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
-      <div className="container mx-auto px-4">
+    <section className="section-spacing bg-white border-t border-nordic-100">
+      <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-nordic-900 mb-3 font-display">
@@ -32,11 +32,11 @@ const CityLinks = () => {
               <Link
                 key={city.slug}
                 to={`/stad/${city.slug}`}
-                className="group text-center p-4 rounded-lg border border-gray-200 bg-white hover:border-nordic-300 hover:shadow-md transition-all duration-200"
+                className="group text-center p-4 rounded-2xl border border-nordic-100 bg-nordic-50 hover:border-[#ff6300]/50 hover:bg-white hover:shadow-lg transition-all duration-300"
               >
                 <div className="flex flex-col items-center">
-                  <MapPin className="h-5 w-5 text-nordic-600 mb-2 group-hover:scale-110 transition-transform" />
-                  <h3 className="text-sm font-semibold text-nordic-900 group-hover:text-nordic-600 transition-colors">
+                  <MapPin className="h-5 w-5 text-[#ff6300] mb-2 group-hover:scale-110 transition-transform" />
+                  <h3 className="text-sm font-semibold text-nordic-900 group-hover:text-[#ff6300] transition-colors">
                     {city.name}
                   </h3>
                   <span className="text-xs text-gray-500 mt-1">{city.region}</span>
