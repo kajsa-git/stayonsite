@@ -13,27 +13,11 @@ import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import StickyContact from '@/components/StickyContact';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/hooks/use-translation';
 
 const Index = () => {
   const { language } = useLanguage();
-
-  const seoContent = {
-    sv: {
-      title: 'StayOnSite - Boende för byggarbetare | Företagsbostäder Sverige',
-      description: 'Snabbt boende för byggarbetare i hela Sverige. StayOnSite hjälper byggbolag hitta longstay och shortstay lösningar. 10+ års erfarenhet. Ring +46 73-628 77 09',
-      keywords: 'boende byggarbetare, företagsbostäder, personalboende, byggboende, montörboende, arbetarboende, longstay sverige, shortstay sverige, boende stockholm, boende göteborg, boende malmö, stayonsite, byggfirmor boende'
-    },
-    en: {
-      title: 'StayOnSite - Construction Worker Accommodation | Corporate Housing Sweden',
-      description: 'Fast accommodation for construction workers throughout Sweden. StayOnSite helps construction companies find longstay and shortstay solutions. 10+ years experience. Call +46 73-628 77 09',
-      keywords: 'construction worker accommodation, corporate housing, staff accommodation, construction housing, worker housing, longstay sweden, shortstay sweden, accommodation stockholm, accommodation gothenburg, accommodation malmö, stayonsite'
-    },
-    pl: {
-      title: 'StayOnSite - Zakwaterowanie dla pracowników budowlanych | Mieszkania służbowe Szwecja',
-      description: 'Szybkie zakwaterowanie dla pracowników budowlanych w całej Szwecji. StayOnSite pomaga firmom budowlanym znaleźć długo- i krótkoterminowe rozwiązania. Ponad 10 lat doświadczenia. Zadzwoń +46 73-628 77 09',
-      keywords: 'zakwaterowanie pracowników budowlanych, mieszkania służbowe, zakwaterowanie personelu, zakwaterowanie budowlane, długoterminowe szwecja, krótkoterminowe szwecja, zakwaterowanie sztokholm, zakwaterowanie göteborg, zakwaterowanie malmö, stayonsite'
-    }
-  };
+  const { t } = useTranslation();
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -97,9 +81,8 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
         <SEO
-          title={seoContent[language].title}
-          description={seoContent[language].description}
-          keywords={seoContent[language].keywords}
+          title={t('seo.home.title')}
+          description={t('seo.home.description')}
           structuredData={structuredData}
         />
         <Header />
