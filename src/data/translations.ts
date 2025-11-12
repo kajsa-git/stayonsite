@@ -225,7 +225,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Ring oss',
     'nav.forCompanies': 'För byggbolag',
     
-    'hero.title': 'Vi driver ert personalboende i Sverige',
+    'hero.title': 'Vi löser boendet när ni bygger i Sverige',
     'hero.subtitle': 'Från första ingenjör till sista montör – planering, kontrakt och inflytt på plats inom 48 timmar.',
     'hero.cta': 'Skicka förfrågan',
     'hero.tagline': 'Etableringspartner i Sverige',
@@ -457,7 +457,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Inquiry',
     'nav.forCompanies': 'For Companies',
     
-    'hero.title': 'We run your staff housing in Sweden',
+    'hero.title': 'We solve housing while you build in Sweden',
     'hero.subtitle': 'From the first engineer to the last installer—planning, contracts, and move-ins within 48 hours.',
     'hero.cta': 'Send Inquiry',
     'hero.tagline': 'Deployment partner in Sweden',
@@ -689,7 +689,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Zapytanie',
     'nav.forCompanies': 'Dla firm',
 
-    'hero.title': 'Prowadzimy zakwaterowanie waszych ekip w Szwecji',
+    'hero.title': 'Rozwiązujemy zakwaterowanie, gdy budujecie w Szwecji',
     'hero.subtitle': 'Od pierwszego inżyniera po ostatniego montera — planowanie, umowy i wprowadzki w 48 godzin.',
     'hero.cta': 'Wyślij zapytanie',
     'hero.tagline': 'Partner ds. wdrożeń w Szwecji',
