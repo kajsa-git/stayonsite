@@ -106,6 +106,20 @@ export type TranslationKey =
   | 'why.steps.operations.title'
   | 'why.steps.operations.description'
   | 'why.steps.operations.cta'
+  | 'case.title'
+  | 'case.subtitle'
+  | 'case.timeline.proposal.title'
+  | 'case.timeline.proposal.description'
+  | 'case.timeline.moveIn.title'
+  | 'case.timeline.moveIn.description'
+  | 'case.timeline.expand.title'
+  | 'case.timeline.expand.description'
+  | 'case.metrics.proposal.value'
+  | 'case.metrics.proposal.description'
+  | 'case.metrics.moveIn.value'
+  | 'case.metrics.moveIn.description'
+  | 'case.metrics.deployments.value'
+  | 'case.metrics.deployments.description'
   | 'homeowner.hero.title'
   | 'homeowner.hero.subtitle'
   | 'homeowner.hero.incomeRange'
@@ -302,6 +316,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'why.steps.operations.title': 'Drift & rapportering',
     'why.steps.operations.description': 'Beläggning, veckostädning och avvikelser rapporteras direkt till projektledningen.',
     'why.steps.operations.cta': 'Prata drift',
+    'case.title': 'Case: Solcellspark i Säffle',
+    'case.subtitle': 'Ett polskt bolag bad oss ordna boende till hela montörsteamet inför uppstarten i Säffle.',
+    'case.timeline.proposal.title': '24 h · Första förslaget klart',
+    'case.timeline.proposal.description': 'Vi säkrade kontakt med lokala värdar och skickade tre alternativ inom första dygnet.',
+    'case.timeline.moveIn.title': '48 h · Inflyttning startar',
+    'case.timeline.moveIn.description': 'Montörerna flyttade in med färdiga nyckelrutiner, veckostädning och journummer.',
+    'case.timeline.expand.title': '3 sajter · Fortsatt expansion',
+    'case.timeline.expand.description': 'Samma kund har anlitat oss för tre etableringar runt Sverige med samma team.',
+    'case.metrics.proposal.value': '24 h',
+    'case.metrics.proposal.description': 'Första boendeförslag',
+    'case.metrics.moveIn.value': '48 h',
+    'case.metrics.moveIn.description': 'Första inflytten',
+    'case.metrics.deployments.value': '3 sajter',
+    'case.metrics.deployments.description': 'Pågående etableringar',
 
     'references.stats.happyClients': 'Nöjda kunder',
     'references.stats.accommodations': 'Ordnade boenden',
@@ -506,6 +534,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'why.steps.operations.title': 'Operations & reporting',
     'why.steps.operations.description': 'Occupancy, weekly cleaning, and incident reports go straight to the project manager.',
     'why.steps.operations.cta': 'Talk operations',
+    'case.title': 'Case: Solar park in Säffle',
+    'case.subtitle': 'A Polish contractor asked us to house their entire installer crew ahead of the Säffle build.',
+    'case.timeline.proposal.title': '24 h · First proposal ready',
+    'case.timeline.proposal.description': 'We activated local landlords and delivered three options within the first day.',
+    'case.timeline.moveIn.title': '48 h · Crews moved in',
+    'case.timeline.moveIn.description': 'Installers received keys, weekly cleaning, and an on-call number before arrival.',
+    'case.timeline.expand.title': '3 sites · Ongoing rollout',
+    'case.timeline.expand.description': 'The same client now uses us on three Swedish deployments with the same housing playbook.',
+    'case.metrics.proposal.value': '24 h',
+    'case.metrics.proposal.description': 'First proposal',
+    'case.metrics.moveIn.value': '48 h',
+    'case.metrics.moveIn.description': 'First move-in',
+    'case.metrics.deployments.value': '3 sites',
+    'case.metrics.deployments.description': 'Active rollouts',
 
     'references.stats.happyClients': 'Happy clients',
     'references.stats.accommodations': 'Accommodations arranged',
@@ -710,6 +752,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'why.steps.operations.title': 'Eksploatacja i raporty',
     'why.steps.operations.description': 'Obłożenie, cotygodniowe sprzątanie i zgłoszenia trafiają prosto do kierownika projektu.',
     'why.steps.operations.cta': 'Porozmawiaj o eksploatacji',
+    'case.title': 'Case: Farma słoneczna w Säffle',
+    'case.subtitle': 'Polska firma poprosiła nas o zakwaterowanie całego zespołu monterów przed startem inwestycji w Säffle.',
+    'case.timeline.proposal.title': '24 h · Pierwsza oferta',
+    'case.timeline.proposal.description': 'Aktywowaliśmy lokalnych gospodarzy i w ciągu doby wysłaliśmy trzy opcje.',
+    'case.timeline.moveIn.title': '48 h · Wprowadzenie ekipy',
+    'case.timeline.moveIn.description': 'Monterzy otrzymali klucze, plan sprzątania i numer alarmowy jeszcze przed przyjazdem.',
+    'case.timeline.expand.title': '3 lokalizacje · Stała współpraca',
+    'case.timeline.expand.description': 'Ten sam klient korzysta dziś z naszego wsparcia przy trzech wdrożeniach w Szwecji.',
+    'case.metrics.proposal.value': '24 h',
+    'case.metrics.proposal.description': 'Pierwsza propozycja',
+    'case.metrics.moveIn.value': '48 h',
+    'case.metrics.moveIn.description': 'Pierwsze wprowadzenie',
+    'case.metrics.deployments.value': '3 lokalizacje',
+    'case.metrics.deployments.description': 'Aktywne wdrożenia',
 
     'references.stats.happyClients': 'Zadowoleni klienci',
     'references.stats.accommodations': 'Zorganizowane zakwaterowanie',
