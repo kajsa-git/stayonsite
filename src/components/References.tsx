@@ -96,19 +96,19 @@ const References = () => {
         <div className="mt-20 flex flex-wrap justify-center gap-x-14 gap-y-8">
           <div className="text-center">
             <div className="text-3xl font-light text-nordic-800 mb-2.5">70+</div>
-            <p className="text-nordic-600 font-light">Nöjda kunder</p>
+            <p className="text-nordic-600 font-light">{t('references.stats.happyClients')}</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-nordic-800 mb-2.5">100+</div>
-            <p className="text-nordic-600 font-light">Ordnade boenden</p>
+            <p className="text-nordic-600 font-light">{t('references.stats.accommodations')}</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-nordic-800 mb-2.5">3h</div>
-            <p className="text-nordic-600 font-light">Genomsnittlig svarstid</p>
+            <p className="text-nordic-600 font-light">{t('references.stats.responseTime')}</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-light text-nordic-800 mb-2.5">40+</div>
-            <p className="text-nordic-600 font-light">Städer i Sverige</p>
+            <p className="text-nordic-600 font-light">{t('references.stats.cities')}</p>
           </div>
         </div>
       </div>

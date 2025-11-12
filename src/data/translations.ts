@@ -77,6 +77,7 @@ export type TranslationKey =
   | 'footer.contact'
   | 'footer.description'
   | 'footer.quickLinks'
+  | 'footer.location'
   | 'floatingPhone.call'
   | 'floatingPhone.tooltip'
   | 'homeowner.hero.title'
@@ -155,7 +156,11 @@ export type TranslationKey =
   | 'homeowner.form.submitting'
   | 'homeowner.form.success'
   | 'homeowner.form.error'
-  | 'homeowner.form.disclaimer';
+  | 'homeowner.form.disclaimer'
+  | 'references.stats.happyClients'
+  | 'references.stats.accommodations'
+  | 'references.stats.responseTime'
+  | 'references.stats.cities';
 
 export const translations: Record<AvailableLanguages, Record<TranslationKey, string>> = {
   sv: {
@@ -240,10 +245,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.contact': 'Kontakta oss',
     'footer.description': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.',
     'footer.quickLinks': 'Snabblänkar',
+    'footer.location': 'Stockholm, Sverige',
     
     'floatingPhone.call': 'Ring oss',
     'floatingPhone.tooltip': 'Ring oss direkt på 073-628 77 09',
-    
+
+    'references.stats.happyClients': 'Nöjda kunder',
+    'references.stats.accommodations': 'Ordnade boenden',
+    'references.stats.responseTime': 'Genomsnittlig svarstid',
+    'references.stats.cities': 'Städer i Sverige',
+
     'nav.homeowner': 'För husägare',
     
     'homeowner.hero.title': 'Hyr ut ditt boende',
@@ -411,10 +422,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.contact': 'Contact us',
     'footer.description': 'We help construction companies quickly find accommodations in other locations for their workers.',
     'footer.quickLinks': 'Quick Links',
+    'footer.location': 'Stockholm, Sweden',
     
     'floatingPhone.call': 'Call us',
     'floatingPhone.tooltip': 'Call us directly at 073-628 77 09',
-    
+
+    'references.stats.happyClients': 'Happy clients',
+    'references.stats.accommodations': 'Accommodations arranged',
+    'references.stats.responseTime': 'Average response time',
+    'references.stats.cities': 'Cities in Sweden',
+
     'nav.homeowner': 'For Homeowners',
     
     'homeowner.hero.title': 'Turn your home into an income source',
@@ -582,9 +599,15 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'footer.contact': 'Skontaktuj się z nami',
     'footer.description': 'Pomagamy firmom budowlanym szybko znaleźć zakwaterowanie w innych miejscowościach dla ich pracowników.',
     'footer.quickLinks': 'Szybkie linki',
+    'footer.location': 'Sztokholm, Szwecja',
 
     'floatingPhone.call': 'Zadzwoń do nas',
     'floatingPhone.tooltip': 'Zadzwoń do nas bezpośrednio pod numer 073-628 77 09',
+
+    'references.stats.happyClients': 'Zadowoleni klienci',
+    'references.stats.accommodations': 'Zorganizowane zakwaterowanie',
+    'references.stats.responseTime': 'Średni czas odpowiedzi',
+    'references.stats.cities': 'Miasta w Szwecji',
 
     'nav.homeowner': 'Dla właścicieli',
 
