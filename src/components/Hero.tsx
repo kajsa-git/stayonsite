@@ -85,10 +85,6 @@ const Hero = () => {
                   </Button>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-nordic-600">
-                <ArrowRight className="h-4 w-4 text-[#ff6300]" />
-                <span>{t('hero.cta')}</span>
-              </div>
             </div>
           </div>
         </div>
