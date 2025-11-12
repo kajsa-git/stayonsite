@@ -317,7 +317,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.tooltip': 'Ring oss direkt på +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Skriv på WhatsApp',
     'floatingPhone.whatsappTooltip': 'Skriv till oss på WhatsApp – svar inom 15 minuter på vardagar',
-    'stickyContact.title': 'Behöver ni boende snabbt?',
+    'stickyContact.title': 'Behöver ni boende?',
     'stickyContact.subtitle': 'Tveka inte att höra av er – vi svarar inom 15 minuter på vardagar',
     'stickyContact.call': 'Ring nu',
 
@@ -539,7 +539,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.tooltip': 'Call us directly at +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Message on WhatsApp',
     'floatingPhone.whatsappTooltip': 'Message us on WhatsApp—responses within 15 minutes on weekdays',
-    'stickyContact.title': 'Need housing fast?',
+    'stickyContact.title': 'Need housing?',
     'stickyContact.subtitle': 'Don\'t hesitate to reach out – we respond within 15 minutes on weekdays',
     'stickyContact.call': 'Call now',
 
@@ -761,7 +761,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'floatingPhone.tooltip': 'Zadzwoń do nas bezpośrednio pod numer +46 73-628 77 09',
     'floatingPhone.whatsapp': 'Napisz na WhatsApp',
     'floatingPhone.whatsappTooltip': 'Napisz do nas na WhatsApp – odpowiadamy w 15 minut w dni robocze',
-    'stickyContact.title': 'Potrzebujesz szybko zakwaterowania?',
+    'stickyContact.title': 'Potrzebujesz zakwaterowania?',
     'stickyContact.subtitle': 'Nie wahaj się z nami skontaktować – odpowiadamy w 15 minut w dni robocze',
     'stickyContact.call': 'Zadzwoń teraz',
 
