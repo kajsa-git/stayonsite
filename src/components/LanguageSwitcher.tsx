@@ -1,8 +1,5 @@
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LanguageSwitcherProps {
@@ -11,61 +8,38 @@ interface LanguageSwitcherProps {
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const toggleLanguage = (lang: 'sv' | 'en' | 'pl') => {
-    setLanguage(lang);
-    setIsOpen(false);
-  };
-  
+
   return (
-    <div className="relative">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn("flex items-center gap-2 font-light rounded-md", className)}
+    <div className={cn("flex items-center gap-2 text-sm font-medium", className)}>
+      <button
+        onClick={() => setLanguage('sv')}
+        className={cn(
+          "transition-colors hover:text-[#ff6300]",
+          language === 'sv' ? "text-[#ff6300]" : "text-nordic-600"
+        )}
       >
-        <Globe size={16} />
-        <span className="uppercase">{language}</span>
-      </Button>
-      
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-32 rounded-md shadow-sm bg-white border border-nordic-200 z-50">
-          <div className="py-1">
-            <button
-              onClick={() => toggleLanguage('sv')}
-              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
-                language === 'sv'
-                  ? 'bg-nordic-100 text-nordic-800'
-                  : 'text-nordic-800 hover:bg-nordic-50'
-              }`}
-            >
-              Svenska
-            </button>
-            <button
-              onClick={() => toggleLanguage('en')}
-              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
-                language === 'en'
-                  ? 'bg-nordic-100 text-nordic-800'
-                  : 'text-nordic-800 hover:bg-nordic-50'
-              }`}
-            >
-              English
-            </button>
-            <button
-              onClick={() => toggleLanguage('pl')}
-              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
-                language === 'pl'
-                  ? 'bg-nordic-100 text-nordic-800'
-                  : 'text-nordic-800 hover:bg-nordic-50'
-              }`}
-            >
-              Polski
-            </button>
-          </div>
-        </div>
-      )}
+        SV
+      </button>
+      <span className="text-nordic-300">|</span>
+      <button
+        onClick={() => setLanguage('en')}
+        className={cn(
+          "transition-colors hover:text-[#ff6300]",
+          language === 'en' ? "text-[#ff6300]" : "text-nordic-600"
+        )}
+      >
+        EN
+      </button>
+      <span className="text-nordic-300">|</span>
+      <button
+        onClick={() => setLanguage('pl')}
+        className={cn(
+          "transition-colors hover:text-[#ff6300]",
+          language === 'pl' ? "text-[#ff6300]" : "text-nordic-600"
+        )}
+      >
+        PL
+      </button>
     </div>
   );
 };

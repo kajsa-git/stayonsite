@@ -84,15 +84,6 @@ const Header = () => {
                 {t('nav.homeowner')}
               </Link>
             </li>
-            
-            {/* Quick city links */}
-            <li className="border-l border-gray-300 pl-6 ml-6">
-              <div className="flex items-center space-x-4 text-sm text-nordic-600">
-                <Link to="/stad/stockholm" className="hover:text-[#ff6300] transition-colors">Stockholm</Link>
-                <Link to="/stad/goteborg" className="hover:text-[#ff6300] transition-colors">Göteborg</Link>
-                <Link to="/stad/malmo" className="hover:text-[#ff6300] transition-colors">Malmö</Link>
-              </div>
-            </li>
           </ul>
           <div className="flex items-center space-x-6">
             <LanguageSwitcher className="text-nordic-800" />
