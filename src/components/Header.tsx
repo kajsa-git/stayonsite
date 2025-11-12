@@ -46,7 +46,7 @@ const Header = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <span className="text-2xl font-display text-nordic-900">
-              Stay<span className="text-nordic-500">On</span>Site
+              Stay<span className="text-[#ff6300]">On</span>Site
             </span>
           </Link>
         </div>
@@ -69,7 +69,7 @@ const Header = () => {
                 ) : (
                   <a
                     href={link.href}
-                    className="font-light tracking-wide transition-colors duration-300 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-nordic-800"
+                    className="font-light tracking-wide transition-colors duration-300 hover:text-[#ff6300] relative after:absolute after:w-full after:h-px after:bg-[#ff6300] after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-nordic-800"
                   >
                     {link.label}
                   </a>
@@ -98,9 +98,9 @@ const Header = () => {
             {/* Quick city links */}
             <li className="border-l border-gray-300 pl-6 ml-6">
               <div className="flex items-center space-x-4 text-sm">
-                <Link to="/stad/stockholm" className="hover:text-nordic-500 transition-colors text-nordic-700">Stockholm</Link>
-                <Link to="/stad/goteborg" className="hover:text-nordic-500 transition-colors text-nordic-700">Göteborg</Link>
-                <Link to="/stad/malmo" className="hover:text-nordic-500 transition-colors text-nordic-700">Malmö</Link>
+                <Link to="/stad/stockholm" className="hover:text-[#ff6300] transition-colors text-nordic-700">Stockholm</Link>
+                <Link to="/stad/goteborg" className="hover:text-[#ff6300] transition-colors text-nordic-700">Göteborg</Link>
+                <Link to="/stad/malmo" className="hover:text-[#ff6300] transition-colors text-nordic-700">Malmö</Link>
               </div>
             </li>
           </ul>
@@ -109,7 +109,7 @@ const Header = () => {
             <Button
               asChild
               variant="default"
-              className="rounded-md px-5 py-2 h-auto font-light bg-nordic-500 hover:bg-nordic-600 text-white"
+              className="rounded-full px-6 py-2 h-auto font-light bg-[#ff6300] hover:bg-[#e25200] text-white shadow-sm"
             >
               <a href="tel:+46736287709">
                 {t('nav.inquiryForm')}
@@ -148,9 +148,9 @@ const Header = () => {
                       {link.label}
                     </Link>
                   ) : (
-                    <a 
+                    <a
                       href={link.href}
-                      className="block py-2 text-nordic-800 hover:text-nordic-500 transition-colors duration-300 font-light tracking-wide"
+                      className="block py-2 text-nordic-800 hover:text-[#ff6300] transition-colors duration-300 font-light tracking-wide"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}
@@ -177,11 +177,11 @@ const Header = () => {
                 </Link>
               </li>
               <li className="pt-4">
-                <Button 
+                <Button
                   asChild
-                  className="w-full rounded-md bg-nordic-500 hover:bg-nordic-600 text-white font-light"
+                  className="w-full rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white font-light shadow-sm"
                 >
-                  <a 
+                  <a
                     href="tel:+46736287709"
                     onClick={() => setIsMenuOpen(false)}
                   >

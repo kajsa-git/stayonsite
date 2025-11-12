@@ -37,7 +37,7 @@ const Hero = () => {
     <>
       <section
         id="home"
-        className="relative isolate flex items-end md:items-center bg-cover bg-center text-white min-h-[80vh] md:min-h-[480px] md:max-h-[540px] overflow-hidden"
+        className="relative isolate flex items-end md:items-center bg-cover bg-center text-white min-h-[80vh] md:min-h-[480px] md:max-h-[540px] overflow-hidden pt-20 md:pt-24"
         style={{
           backgroundImage: "url('/images/hero-kitchen-livingroom.jpg')",
         }}
