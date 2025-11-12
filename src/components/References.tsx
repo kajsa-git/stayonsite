@@ -55,7 +55,7 @@ const References = () => {
   };
 
   return (
-    <section id="references" className="section-spacing bg-nordic-50 border-t border-nordic-100">
+    <section id="references" className="section-spacing bg-gradient-to-b from-white to-nordic-50 border-t border-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"
@@ -64,11 +64,11 @@ const References = () => {
 
       <div className="container mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-wider font-heading">
+          <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-[0.35em] font-heading">
             {t('references.tagline')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 font-display">{t('references.title')}</h2>
-          <p className="text-base md:text-lg text-nordic-800 max-w-2xl mx-auto font-light">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4">{t('references.title')}</h2>
+          <p className="text-base md:text-lg text-nordic-700 max-w-2xl mx-auto font-light">
             {t('references.subtitle')}
           </p>
         </div>
@@ -78,7 +78,7 @@ const References = () => {
             {testimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id || index}
-                className="bg-white rounded-2xl p-8 transition-all duration-300 hover:shadow-lg"
+                className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300"
               >
                 <Quote size={24} className="text-[#ff6300] mb-6" />
                 <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">

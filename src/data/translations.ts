@@ -225,8 +225,8 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Ring oss',
     'nav.forCompanies': 'För byggbolag',
     
-    'hero.title': 'Vi tar hand om personalboendet när ni rullar ut ert projekt i Sverige',
-    'hero.subtitle': 'Från första ingenjör till sista montör – vi planerar, hyr och koordinerar långtidshyreslösningar nära byggplatsen.',
+    'hero.title': 'Vi driver ert personalboende i Sverige',
+    'hero.subtitle': 'Från första ingenjör till sista montör – planering, kontrakt och inflytt på plats inom 48 timmar.',
     'hero.cta': 'Skicka förfrågan',
     'hero.tagline': 'Etableringspartner i Sverige',
     'hero.bullet1': 'Vårt lokala team följer projektet från planering till drift',
@@ -457,8 +457,8 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Inquiry',
     'nav.forCompanies': 'For Companies',
     
-    'hero.title': 'Let us run your staff housing in Sweden',
-    'hero.subtitle': 'Planning, contracts, and move-ins handled within 24–48 hours.',
+    'hero.title': 'We run your staff housing in Sweden',
+    'hero.subtitle': 'From the first engineer to the last installer—planning, contracts, and move-ins within 48 hours.',
     'hero.cta': 'Send Inquiry',
     'hero.tagline': 'Deployment partner in Sweden',
     'hero.bullet1': 'Our local team follows the project from planning to operations',
@@ -689,8 +689,8 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Zapytanie',
     'nav.forCompanies': 'Dla firm',
 
-    'hero.title': 'Zajmiemy się zakwaterowaniem Twojego zespołu w Szwecji',
-    'hero.subtitle': 'Planowanie, umowy i wprowadzki w 24–48 godzin.',
+    'hero.title': 'Prowadzimy zakwaterowanie waszych ekip w Szwecji',
+    'hero.subtitle': 'Od pierwszego inżyniera po ostatniego montera — planowanie, umowy i wprowadzki w 48 godzin.',
     'hero.cta': 'Wyślij zapytanie',
     'hero.tagline': 'Partner ds. wdrożeń w Szwecji',
     'hero.bullet1': 'Lokalni specjaliści ds. zakwaterowania w pobliżu centrów danych i parków energetycznych',
