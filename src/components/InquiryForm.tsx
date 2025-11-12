@@ -11,7 +11,6 @@ const InquiryForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
-  const [isUntilFurtherNotice, setIsUntilFurtherNotice] = useState(false);
   const [needsActivation, setNeedsActivation] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   
@@ -29,10 +28,6 @@ const InquiryForm = () => {
       formData.append('_template', 'table');
       formData.append('_next', window.location.origin);
       
-      // Handle "until further notice" case
-      if (isUntilFurtherNotice) {
-        formData.set('endDate', t('inquiry.form.untilFurtherNotice'));
-      }
       
       // Submit the form manually using fetch to FormSubmit endpoint
       const response = await fetch('https://formsubmit.co/ajax/kajsa@stayonsite.se', {
@@ -56,7 +51,6 @@ const InquiryForm = () => {
           if (formRef.current) {
             formRef.current.reset();
           }
-          setIsUntilFurtherNotice(false);
         }, 3000);
       } else if (result.message && result.message.includes("Activation")) {
         // Handle activation needed case
@@ -116,8 +110,6 @@ const InquiryForm = () => {
         >
           <InquiryFormFields
             isSubmitting={isSubmitting}
-            isUntilFurtherNotice={isUntilFurtherNotice}
-            onUntilFurtherNoticeChange={setIsUntilFurtherNotice}
           />
         </form>
       )}

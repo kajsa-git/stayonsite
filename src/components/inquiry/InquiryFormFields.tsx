@@ -8,8 +8,6 @@ import { Mail, MessageSquare } from 'lucide-react';
 
 interface InquiryFormFieldsProps {
   isSubmitting: boolean;
-  isUntilFurtherNotice: boolean;
-  onUntilFurtherNoticeChange: (checked: boolean) => void;
 }
 
 const InquiryFormFields = ({
