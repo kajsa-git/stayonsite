@@ -12,6 +12,12 @@ export type TranslationKey =
   | 'hero.subtitle'
   | 'hero.cta'
   | 'hero.tagline'
+  | 'hero.bullet1'
+  | 'hero.bullet2'
+  | 'hero.bullet3'
+  | 'hero.ctaPhone'
+  | 'hero.ctaWhatsapp'
+  | 'hero.ctaSubtext'
   | 'services.title'
   | 'services.subtitle'
   | 'services.tagline'
@@ -80,6 +86,19 @@ export type TranslationKey =
   | 'footer.location'
   | 'floatingPhone.call'
   | 'floatingPhone.tooltip'
+  | 'floatingPhone.whatsapp'
+  | 'floatingPhone.whatsappTooltip'
+  | 'valueProps.title'
+  | 'valueProps.subtitle'
+  | 'valueProps.items.network.title'
+  | 'valueProps.items.network.description'
+  | 'valueProps.items.coordination.title'
+  | 'valueProps.items.coordination.description'
+  | 'valueProps.items.reporting.title'
+  | 'valueProps.items.reporting.description'
+  | 'valueProps.case.title'
+  | 'valueProps.case.description'
+  | 'valueProps.case.metrics'
   | 'homeowner.hero.title'
   | 'homeowner.hero.subtitle'
   | 'homeowner.hero.incomeRange'
@@ -171,10 +190,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Ring oss',
     'nav.forCompanies': 'För byggbolag',
     
-    'hero.title': 'Snabbt boende till era byggarbetare',
-    'hero.subtitle': 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare',
+    'hero.title': 'Vi tar hand om personalboendet när ni rullar ut ert projekt i Sverige',
+    'hero.subtitle': 'Från första ingenjör till sista montör – vi planerar, hyr och koordinerar långtidshyreslösningar nära byggplatsen.',
     'hero.cta': 'Skicka förfrågan',
-    'hero.tagline': 'Snabbt. Enkelt. Effektivt.',
+    'hero.tagline': 'Långsiktigt boendestöd för etableringsteam',
+    'hero.bullet1': 'Lokala bostadsnätverk runt datacenter och energikluster',
+    'hero.bullet2': 'Tydliga villkor och kontrakt 3–36 månader',
+    'hero.bullet3': 'En kontaktväg – telefon, SMS eller WhatsApp dygnet runt',
+    'hero.ctaPhone': 'Ring oss nu',
+    'hero.ctaWhatsapp': 'Chatta på WhatsApp',
+    'hero.ctaSubtext': '073-628 77 09 · Telefon / SMS / WhatsApp',
     
     'services.title': 'Våra tjänster',
     'services.subtitle': 'Vi hjälper dig att snabbt hitta rätt boenden när dina arbetare eller underentreprenörer är i behov av logi på annan ort. Vi erbjuder både longstay och shortstay lösningar över hela Sverige',
@@ -249,6 +274,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'floatingPhone.call': 'Ring oss',
     'floatingPhone.tooltip': 'Ring oss direkt på 073-628 77 09',
+    'floatingPhone.whatsapp': 'Skriv på WhatsApp',
+    'floatingPhone.whatsappTooltip': 'Skriv till oss på WhatsApp – svar inom 15 minuter på vardagar',
+
+    'valueProps.title': 'Vad ni får',
+    'valueProps.subtitle': 'Ni delegerar personalboendet till ett lokalt team som följer projektet hela vägen.',
+    'valueProps.items.network.title': 'Lokala bostadsspanare',
+    'valueProps.items.network.description': 'Etablerade värdar runt datahallar, vind- och solparker gör att vi hittar rätt lägenheter snabbt.',
+    'valueProps.items.coordination.title': 'Kontrakt & inflytt',
+    'valueProps.items.coordination.description': 'Vi sköter hyresavtal, nycklar, inventeringar och veckostädning efter vad teamet behöver.',
+    'valueProps.items.reporting.title': 'Rapportering till projektet',
+    'valueProps.items.reporting.description': 'Statusuppdateringar, beläggning och kostnadskontroll så att platschefen alltid vet läget.',
+    'valueProps.case.title': 'Case: Solcellspark i Säffle',
+    'valueProps.case.description': 'Ett polskt bolag behövde bostäder till hela montörsteamet. Vi skickade första förslaget inom 24 timmar och 48 timmar senare var de första på plats. Sedan dess har vi vuxit med kunden på tre orter i Sverige.',
+    'valueProps.case.metrics': 'Förslag inom 24 h · Inflytt efter 48 h · 3 etableringar',
 
     'references.stats.happyClients': 'Nöjda kunder',
     'references.stats.accommodations': 'Ordnade boenden',
@@ -348,10 +387,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Inquiry',
     'nav.forCompanies': 'For Companies',
     
-    'hero.title': 'Fast accommodation for your construction workers',
-    'hero.subtitle': 'We help construction companies quickly find accommodations in other locations for their workers',
+    'hero.title': 'We handle staff housing while you roll out your project in Sweden',
+    'hero.subtitle': 'From the first engineer to the last installer—we plan, lease, and coordinate long-stay housing close to site.',
     'hero.cta': 'Send Inquiry',
-    'hero.tagline': 'Calm. Simple. Effective.',
+    'hero.tagline': 'Long-term housing support for deployment teams',
+    'hero.bullet1': 'Local housing networks around data centers and energy clusters',
+    'hero.bullet2': 'Clear terms and 3–36 month contracts',
+    'hero.bullet3': 'Single contact channel—phone, SMS, or WhatsApp around the clock',
+    'hero.ctaPhone': 'Call us now',
+    'hero.ctaWhatsapp': 'Chat on WhatsApp',
+    'hero.ctaSubtext': '+46 73 628 77 09 · Phone / SMS / WhatsApp',
     
     'services.title': 'Our Services',
     'services.subtitle': 'We help you quickly find the right accommodations when your workers or subcontractors need lodging in another location. We offer both longstay and shortstay solutions throughout Sweden',
@@ -426,6 +471,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     
     'floatingPhone.call': 'Call us',
     'floatingPhone.tooltip': 'Call us directly at 073-628 77 09',
+    'floatingPhone.whatsapp': 'Message on WhatsApp',
+    'floatingPhone.whatsappTooltip': 'Message us on WhatsApp—responses within 15 minutes on weekdays',
+
+    'valueProps.title': 'What you get',
+    'valueProps.subtitle': 'You delegate staff housing to a local team that follows the project end to end.',
+    'valueProps.items.network.title': 'Local housing scouts',
+    'valueProps.items.network.description': 'Established landlords around data centers, wind, and solar sites mean we find the right units fast.',
+    'valueProps.items.coordination.title': 'Contracts & move-ins',
+    'valueProps.items.coordination.description': 'We manage leases, keys, inspections, and weekly cleaning to match what the crew needs.',
+    'valueProps.items.reporting.title': 'Reporting to the project',
+    'valueProps.items.reporting.description': 'Status updates, occupancy, and cost control so the site manager always knows the situation.',
+    'valueProps.case.title': 'Case: Solar park in Säffle',
+    'valueProps.case.description': 'A Polish contractor needed accommodation for their full installer crew. We sent the first proposal within 24 hours and had workers moving in 48 hours later. We now support the client at three Swedish rollouts.',
+    'valueProps.case.metrics': 'Proposal in 24 h · Move-in in 48 h · 3 deployments',
 
     'references.stats.happyClients': 'Happy clients',
     'references.stats.accommodations': 'Accommodations arranged',
@@ -525,10 +584,16 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'nav.inquiryForm': 'Zadzwoń do nas',
     'nav.forCompanies': 'Dla firm budowlanych',
 
-    'hero.title': 'Szybkie zakwaterowanie dla Twoich pracowników budowlanych',
-    'hero.subtitle': 'Pomagamy firmom budowlanym szybko znaleźć zakwaterowanie w innych miejscowościach dla ich pracowników',
+    'hero.title': 'Przejmujemy zakwaterowanie zespołów, gdy uruchamiacie projekt w Szwecji',
+    'hero.subtitle': 'Od pierwszego inżyniera po ostatniego montera – planujemy, wynajmujemy i koordynujemy długoterminowe zakwaterowanie blisko inwestycji.',
     'hero.cta': 'Wyślij zapytanie',
-    'hero.tagline': 'Szybko. Prosto. Efektywnie.',
+    'hero.tagline': 'Długoterminowe wsparcie mieszkaniowe dla zespołów wdrożeniowych',
+    'hero.bullet1': 'Lokalne sieci mieszkań przy data center i parkach energetycznych',
+    'hero.bullet2': 'Przejrzyste warunki i umowy na 3–36 miesięcy',
+    'hero.bullet3': 'Jeden kontakt – telefon, SMS lub WhatsApp 24/7',
+    'hero.ctaPhone': 'Zadzwoń teraz',
+    'hero.ctaWhatsapp': 'Napisz na WhatsApp',
+    'hero.ctaSubtext': '+46 73 628 77 09 · Telefon / SMS / WhatsApp',
 
     'services.title': 'Nasze usługi',
     'services.subtitle': 'Pomagamy szybko znaleźć odpowiednie zakwaterowanie, gdy Twoi pracownicy lub podwykonawcy potrzebują miejsca noclegowego w innej miejscowości. Oferujemy rozwiązania zarówno długo- jak i krótkoterminowe w całej Szwecji',
@@ -603,6 +668,20 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
 
     'floatingPhone.call': 'Zadzwoń do nas',
     'floatingPhone.tooltip': 'Zadzwoń do nas bezpośrednio pod numer 073-628 77 09',
+    'floatingPhone.whatsapp': 'Napisz na WhatsApp',
+    'floatingPhone.whatsappTooltip': 'Napisz do nas na WhatsApp – odpowiadamy w 15 minut w dni robocze',
+
+    'valueProps.title': 'Co otrzymujecie',
+    'valueProps.subtitle': 'Przekazujecie temat zakwaterowania lokalnemu zespołowi, który prowadzi projekt od początku do końca.',
+    'valueProps.items.network.title': 'Lokalni wyszukiwacze mieszkań',
+    'valueProps.items.network.description': 'Sprawdzeni gospodarze przy data center oraz farmach wiatrowych i słonecznych pozwalają nam szybko znaleźć odpowiednie lokale.',
+    'valueProps.items.coordination.title': 'Umowy i wprowadzenia',
+    'valueProps.items.coordination.description': 'Obsługujemy najem, klucze, protokoły i cotygodniowe sprzątanie według potrzeb ekipy.',
+    'valueProps.items.reporting.title': 'Raportowanie do projektu',
+    'valueProps.items.reporting.description': 'Aktualizacje statusu, obłożenie i koszty, aby kierownik budowy zawsze znał sytuację.',
+    'valueProps.case.title': 'Case: Farma słoneczna w Säffle',
+    'valueProps.case.description': 'Polska firma potrzebowała zakwaterowania dla całej ekipy monterów. Pierwszą propozycję wysłaliśmy w 24 godziny, a po 48 godzinach pierwsi pracownicy się wprowadzili. Dziś wspieramy ich już na trzech lokalizacjach w Szwecji.',
+    'valueProps.case.metrics': 'Oferta w 24 h · Wprowadzenie po 48 h · 3 lokalizacje',
 
     'references.stats.happyClients': 'Zadowoleni klienci',
     'references.stats.accommodations': 'Zorganizowane zakwaterowanie',
