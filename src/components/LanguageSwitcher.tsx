@@ -13,7 +13,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   
-  const toggleLanguage = (lang: 'sv' | 'en') => {
+  const toggleLanguage = (lang: 'sv' | 'en' | 'pl') => {
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -31,13 +31,13 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
       </Button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-28 rounded-md shadow-sm bg-white border border-nordic-200 z-50">
+        <div className="absolute right-0 mt-2 w-32 rounded-md shadow-sm bg-white border border-nordic-200 z-50">
           <div className="py-1">
             <button
               onClick={() => toggleLanguage('sv')}
               className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
-                language === 'sv' 
-                  ? 'bg-nordic-100 text-nordic-800' 
+                language === 'sv'
+                  ? 'bg-nordic-100 text-nordic-800'
                   : 'text-nordic-800 hover:bg-nordic-50'
               }`}
             >
@@ -46,12 +46,22 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             <button
               onClick={() => toggleLanguage('en')}
               className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
-                language === 'en' 
-                  ? 'bg-nordic-100 text-nordic-800' 
+                language === 'en'
+                  ? 'bg-nordic-100 text-nordic-800'
                   : 'text-nordic-800 hover:bg-nordic-50'
               }`}
             >
               English
+            </button>
+            <button
+              onClick={() => toggleLanguage('pl')}
+              className={`block px-4 py-2.5 text-sm w-full text-left font-light transition-colors duration-300 ${
+                language === 'pl'
+                  ? 'bg-nordic-100 text-nordic-800'
+                  : 'text-nordic-800 hover:bg-nordic-50'
+              }`}
+            >
+              Polski
             </button>
           </div>
         </div>

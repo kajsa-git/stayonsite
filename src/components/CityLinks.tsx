@@ -9,73 +9,44 @@ const CityLinks = () => {
   const { language } = useLanguage();
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-12 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-nordic-900 mb-4 font-display">
-              {language === 'sv' 
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-nordic-900 mb-3 font-display">
+              {language === 'sv'
                 ? 'Vi täcker hela Sverige'
                 : 'We cover all of Sweden'
               }
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-base text-gray-600">
               {language === 'sv'
                 ? 'Upptäck våra tjänster i Sveriges största städer'
                 : 'Discover our services in Sweden\'s largest cities'
               }
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cities.slice(0, 9).map((city) => (
-              <Link 
-                key={city.slug} 
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+            {cities.slice(0, 10).map((city) => (
+              <Link
+                key={city.slug}
                 to={`/stad/${city.slug}`}
-                className="group"
+                className="group text-center p-4 rounded-lg border border-gray-200 bg-white hover:border-nordic-300 hover:shadow-md transition-all duration-200"
               >
-                <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group-hover:border-nordic-300">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-nordic-900 mb-2 group-hover:text-nordic-600 transition-colors">
-                          {city.name}
-                        </h3>
-                        <div className="flex items-center text-gray-600 mb-2">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          <span className="text-sm">{city.region}</span>
-                        </div>
-                      </div>
-                      <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-nordic-600 transition-all duration-300 transform group-hover:translate-x-1" />
-                    </div>
-                    
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {language === 'sv'
-                        ? `Företagsbostäder och boendlösningar för byggarbetare i ${city.name}`
-                        : `Corporate housing and accommodation solutions for construction workers in ${city.name}`
-                      }
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {city.industries.slice(0, 2).map((industry, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {industry}
-                        </Badge>
-                      ))}
-                      {city.industries.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{city.industries.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="flex flex-col items-center">
+                  <MapPin className="h-5 w-5 text-nordic-600 mb-2 group-hover:scale-110 transition-transform" />
+                  <h3 className="text-sm font-semibold text-nordic-900 group-hover:text-nordic-600 transition-colors">
+                    {city.name}
+                  </h3>
+                  <span className="text-xs text-gray-500 mt-1">{city.region}</span>
+                </div>
               </Link>
             ))}
           </div>
-          
-          <div className="text-center mt-8">
-            <p className="text-gray-600">
+
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
               {language === 'sv'
                 ? 'Behöver ni boende i en annan stad? Kontakta oss så hjälper vi er!'
                 : 'Need accommodation in another city? Contact us and we\'ll help you!'

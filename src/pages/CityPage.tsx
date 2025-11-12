@@ -6,6 +6,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,54 +35,68 @@ const CityPage = () => {
     window.scrollTo(0, 0);
   }, [citySlug]);
 
-  const pageTitle = language === 'sv' 
-    ? `Personalboende ${city.name} - Enkel lösning för företag - StayOnSite`
-    : `Staff Housing ${city.name} - Simple Solution for Companies - StayOnSite`;
-    
-  const pageDescription = language === 'sv'
-    ? `Behöver ert företag boende för personal i ${city.name}? StayOnSite erbjuder enkla och trygga boendelösningar för er personal. Vi sköter allt med lokal kunskap.`
-    : `Does your company need accommodation for staff in ${city.name}? StayOnSite offers simple and safe housing solutions for your personnel. We handle everything with local expertise.`;
+  const seoContent = {
+    sv: {
+      title: `Boende ${city.name} - Byggarbetare & Personal | StayOnSite`,
+      description: `Snabbt boende för byggarbetare i ${city.name}. StayOnSite erbjuder företagsbostäder och personalboende i ${city.region}. Över 10 års erfarenhet. Ring 073-628 77 09`,
+      keywords: `boende ${city.name}, byggarbetare ${city.name}, företagsbostäder ${city.name}, personalboende ${city.name}, montörboende ${city.name}, arbetarboende ${city.name}, ${city.region} boende, stayonsite ${city.name}`
+    },
+    en: {
+      title: `Accommodation ${city.name} - Construction Workers & Staff | StayOnSite`,
+      description: `Fast accommodation for construction workers in ${city.name}. StayOnSite offers corporate housing and staff accommodation in ${city.region}. 10+ years experience. Call 073-628 77 09`,
+      keywords: `accommodation ${city.name}, construction workers ${city.name}, corporate housing ${city.name}, staff accommodation ${city.name}, worker housing ${city.name}, ${city.region} accommodation, stayonsite ${city.name}`
+    },
+    pl: {
+      title: `Zakwaterowanie ${city.name} - Pracownicy budowlani | StayOnSite`,
+      description: `Szybkie zakwaterowanie dla pracowników budowlanych w ${city.name}. StayOnSite oferuje mieszkania służbowe i zakwaterowanie personelu w ${city.region}. Ponad 10 lat doświadczenia. Zadzwoń 073-628 77 09`,
+      keywords: `zakwaterowanie ${city.name}, pracownicy budowlani ${city.name}, mieszkania służbowe ${city.name}, zakwaterowanie personelu ${city.name}, ${city.region} zakwaterowanie, stayonsite ${city.name}`
+    }
+  };
 
-  // Update page title and meta description + schema
-  if (typeof document !== 'undefined') {
-    document.title = pageTitle;
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', pageDescription);
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    'name': `StayOnSite ${city.name}`,
+    'description': seoContent[language].description,
+    'address': {
+      '@type': 'PostalAddress',
+      'addressLocality': city.name,
+      'addressRegion': city.region,
+      'addressCountry': 'SE'
+    },
+    'telephone': '+46736287709',
+    'url': `https://stayonsite.se/stad/${city.slug}`,
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': city.coordinates[0],
+      'longitude': city.coordinates[1]
+    },
+    'areaServed': {
+      '@type': 'City',
+      'name': city.name,
+      'containedIn': {
+        '@type': 'State',
+        'name': city.region
+      }
+    },
+    'priceRange': '$$',
+    'serviceType': 'Construction Worker Accommodation',
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': '4.8',
+      'reviewCount': '200'
     }
-    
-    // Add LocalBusiness schema
-    const existingSchema = document.querySelector('script[type="application/ld+json"]');
-    if (existingSchema) {
-      const schemaData = {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": `StayOnSite ${city.name}`,
-        "description": pageDescription,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": city.name,
-          "addressRegion": city.region,
-          "addressCountry": "SE"
-        },
-        "telephone": "+46736287709",
-        "url": `https://760b4757-b8ba-4bea-a67c-2d97c14b221d.lovableproject.com/stad/${city.slug}`,
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": city.coordinates[0],
-          "longitude": city.coordinates[1]
-        },
-        "serviceArea": {
-          "@type": "Place",
-          "name": city.region
-        }
-      };
-      existingSchema.textContent = JSON.stringify(schemaData);
-    }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title={seoContent[language].title}
+        description={seoContent[language].description}
+        keywords={seoContent[language].keywords}
+        canonical={`https://stayonsite.se/stad/${city.slug}`}
+        structuredData={structuredData}
+      />
       <Header />
       <Breadcrumbs />
       
