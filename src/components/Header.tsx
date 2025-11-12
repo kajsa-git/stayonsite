@@ -30,12 +30,12 @@ const Header = () => {
   }, [scrolled]);
 
   return (
-    <header 
+    <header
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-500",
-        scrolled 
-          ? "bg-white/95 backdrop-blur-sm border-b border-nordic-100 py-3" 
-          : "bg-transparent py-6"
+        "fixed top-0 w-full z-50 transition-all duration-500 bg-white/95 backdrop-blur-sm border-b border-nordic-100",
+        scrolled
+          ? "py-3 shadow-sm"
+          : "py-5"
       )}
     >
       <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
@@ -45,10 +45,7 @@ const Header = () => {
             className="flex items-center"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <span className={cn(
-              "text-2xl font-display transition-colors duration-500",
-              scrolled ? "text-nordic-800" : "text-nordic-900"
-            )}>
+            <span className="text-2xl font-display text-nordic-900">
               Stay<span className="text-nordic-500">On</span>Site
             </span>
           </Link>
@@ -70,12 +67,9 @@ const Header = () => {
                     {link.label}
                   </Link>
                 ) : (
-                  <a 
+                  <a
                     href={link.href}
-                    className={cn(
-                      "font-light tracking-wide transition-colors duration-500 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300",
-                      scrolled ? "text-nordic-800" : "text-nordic-900"
-                    )}
+                    className="font-light tracking-wide transition-colors duration-300 hover:text-nordic-500 relative after:absolute after:w-full after:h-px after:bg-nordic-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-nordic-800"
                   >
                     {link.label}
                   </a>
@@ -84,24 +78,18 @@ const Header = () => {
             ))}
             {/* För byggbolag link */}
             <li>
-              <Link 
+              <Link
                 to="/#inquiry"
-                className={cn(
-                  "font-light tracking-wide transition-colors duration-500 hover:text-blue-600 relative after:absolute after:w-full after:h-px after:bg-blue-600 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap",
-                  scrolled ? "text-blue-800" : "text-blue-700"
-                )}
+                className="font-light tracking-wide transition-colors duration-300 hover:text-blue-700 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 whitespace-nowrap text-blue-800"
               >
                 {t('nav.forCompanies')}
               </Link>
             </li>
             {/* För husägare link */}
             <li>
-              <Link 
+              <Link
                 to="/for-husagare"
-                className={cn(
-                  "font-light tracking-wide transition-colors duration-500 hover:text-amber-500 relative after:absolute after:w-full after:h-px after:bg-amber-500 after:bottom-[-4px] after:left-0 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 whitespace-nowrap",
-                  scrolled ? "text-amber-700" : "text-amber-600"
-                )}
+                className="font-light tracking-wide transition-colors duration-300 hover:text-amber-700 text-sm md:text-base px-2 md:px-3 py-1 md:py-2 rounded-md bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 whitespace-nowrap text-amber-700"
               >
                 {t('nav.homeowner')}
               </Link>
@@ -110,23 +98,18 @@ const Header = () => {
             {/* Quick city links */}
             <li className="border-l border-gray-300 pl-6 ml-6">
               <div className="flex items-center space-x-4 text-sm">
-                <Link to="/stad/stockholm" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Stockholm</Link>
-                <Link to="/stad/goteborg" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Göteborg</Link>
-                <Link to="/stad/malmo" className={cn("hover:text-nordic-500 transition-colors", scrolled ? "text-nordic-700" : "text-nordic-800")}>Malmö</Link>
+                <Link to="/stad/stockholm" className="hover:text-nordic-500 transition-colors text-nordic-700">Stockholm</Link>
+                <Link to="/stad/goteborg" className="hover:text-nordic-500 transition-colors text-nordic-700">Göteborg</Link>
+                <Link to="/stad/malmo" className="hover:text-nordic-500 transition-colors text-nordic-700">Malmö</Link>
               </div>
             </li>
           </ul>
           <div className="flex items-center space-x-6">
-            <LanguageSwitcher className={scrolled ? "text-nordic-800" : "text-nordic-900"} />
-            <Button 
+            <LanguageSwitcher className="text-nordic-800" />
+            <Button
               asChild
-              variant={scrolled ? "default" : "outline"}
-              className={cn(
-                "rounded-md border-nordic-200 px-5 py-2 h-auto font-light transition-all duration-500",
-                scrolled 
-                  ? "bg-nordic-500 hover:bg-nordic-600 text-white"
-                  : "bg-white/80 hover:bg-white text-nordic-800 hover:text-nordic-900"
-              )}
+              variant="default"
+              className="rounded-md px-5 py-2 h-auto font-light bg-nordic-500 hover:bg-nordic-600 text-white"
             >
               <a href="tel:+46736287709">
                 {t('nav.inquiryForm')}
@@ -137,15 +120,12 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-3">
-          <LanguageSwitcher className={scrolled ? "text-nordic-800" : "text-nordic-900"} />
+          <LanguageSwitcher className="text-nordic-800" />
           <Button
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setIsMenuOpen(!isMenuOpen)} 
-            className={cn(
-              "ml-2",
-              scrolled ? "text-nordic-800" : "text-nordic-900"
-            )}
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="ml-2 text-nordic-800"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
