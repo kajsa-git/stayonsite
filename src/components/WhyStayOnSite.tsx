@@ -1,77 +1,92 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
-import { ClipboardList, FileSignature, Headphones } from 'lucide-react';
-
-const stepsConfig = [
-  {
-    icon: ClipboardList,
-    titleKey: 'why.steps.plan.title',
-    descriptionKey: 'why.steps.plan.description',
-    ctaKey: 'why.steps.plan.cta',
-  },
-  {
-    icon: FileSignature,
-    titleKey: 'why.steps.contracts.title',
-    descriptionKey: 'why.steps.contracts.description',
-    ctaKey: 'why.steps.contracts.cta',
-  },
-  {
-    icon: Headphones,
-    titleKey: 'why.steps.operations.title',
-    descriptionKey: 'why.steps.operations.description',
-    ctaKey: 'why.steps.operations.cta',
-  },
-] as const;
+import { ClipboardList, KeyRound, RefreshCcw } from 'lucide-react';
 
 const WhyStayOnSite = () => {
   const { t } = useLanguage();
 
+  const serviceCards = [
+    {
+      id: 'planering',
+      icon: ClipboardList,
+      number: '01',
+      title: t('services.card1.title'),
+      highlight: t('services.card1.highlight'),
+      description: t('services.card1.description'),
+      bullets: [
+        t('services.card1.bullet1'),
+        t('services.card1.bullet2'),
+        t('services.card1.bullet3'),
+      ],
+      cta: { label: t('services.card1.cta'), href: '#inquiry' },
+    },
+    {
+      id: 'kontrakt',
+      icon: KeyRound,
+      number: '02',
+      title: t('services.card2.title'),
+      highlight: t('services.card2.highlight'),
+      description: t('services.card2.description'),
+      bullets: [
+        t('services.card2.bullet1'),
+        t('services.card2.bullet2'),
+        t('services.card2.bullet3'),
+      ],
+      cta: { label: t('services.card2.cta'), href: 'tel:+46736287709' },
+    },
+    {
+      id: 'drift',
+      icon: RefreshCcw,
+      number: '03',
+      title: t('services.card3.title'),
+      highlight: t('services.card3.highlight'),
+      description: t('services.card3.description'),
+      bullets: [
+        t('services.card3.bullet1'),
+        t('services.card3.bullet2'),
+        t('services.card3.bullet3'),
+      ],
+      cta: { label: t('services.card3.cta'), href: 'https://wa.me/46736287709' },
+    },
+  ];
+
   return (
     <section id="why" className="bg-nordic-100 py-16 md:py-20 border-b border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl mb-12">
           <p className="text-sm uppercase tracking-widest text-nordic-500 font-heading mb-3">{t('why.title')}</p>
           <p className="text-3xl md:text-4xl text-nordic-900 font-semibold leading-snug">{t('why.subtitle')}</p>
         </div>
 
-        <div className="relative mt-12 grid gap-6 md:grid-cols-3">
-          {stepsConfig.map(({ icon: Icon, titleKey, descriptionKey, ctaKey }, index) => (
-            <div
-              key={titleKey}
-              className="relative rounded-2xl bg-white shadow-sm border border-nordic-100 p-6 flex flex-col gap-4"
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {serviceCards.map(({ id, icon: Icon, number, title, highlight, description, bullets, cta }) => (
+            <article
+              key={id}
+              className="relative h-full rounded-3xl border border-nordic-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              {index < stepsConfig.length - 1 && (
-                <span
-                  className="hidden md:block absolute top-1/2 right-[-20px] h-px w-10 bg-nordic-200"
-                  aria-hidden="true"
-                />
-              )}
-              {index > 0 && (
-                <span
-                  className="md:hidden absolute top-0 left-8 -mt-6 h-6 w-px bg-nordic-200"
-                  aria-hidden="true"
-                />
-              )}
-              <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">
+              <div className="flex items-center gap-3 text-nordic-500 text-sm tracking-[0.35em] font-heading">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ff6300]/10 text-[#ff6300]">
                   <Icon className="h-5 w-5" />
                 </span>
-                <p className="text-sm uppercase tracking-wide text-nordic-500 font-heading">
-                  {String(index + 1).padStart(2, '0')}
-                </p>
+                {number}
               </div>
-              <div className="space-y-3">
-                <h3 className="text-xl text-nordic-900 font-semibold">{t(titleKey)}</h3>
-                <p className="text-sm text-nordic-700 leading-relaxed">{t(descriptionKey)}</p>
-              </div>
-              <Button
-                variant="ghost"
-                className="justify-start px-0 text-[#ff6300] hover:text-[#e25200]"
-                asChild
+              <h3 className="mt-6 text-2xl font-semibold text-nordic-900">{title}</h3>
+              <p className="text-sm uppercase tracking-wide text-[#ff6300] mt-2">{highlight}</p>
+              <p className="mt-4 text-sm text-nordic-700 leading-relaxed">{description}</p>
+              <ul className="mt-5 space-y-2 text-sm text-nordic-800">
+                {bullets.map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#ff6300]" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={cta.href}
+                className="mt-6 inline-flex items-center text-sm font-semibold text-[#ff6300] hover:text-[#e25200]"
               >
-                <a href="#contact">{t(ctaKey)}</a>
-              </Button>
-            </div>
+                {cta.label}
+              </a>
+            </article>
           ))}
         </div>
       </div>
