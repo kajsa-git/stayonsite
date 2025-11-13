@@ -2,56 +2,53 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ClipboardList, KeyRound, RefreshCcw } from 'lucide-react';
 
-const serviceCards = [
-  {
-    id: 'planering',
-    icon: ClipboardList,
-    number: '01',
-    title: 'Planering & förslag',
-    highlight: 'Besked inom 15 minuter',
-    description:
-      'Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar och återkommer med 2–3 passande alternativ – oftast inom 15 minuter, alltid inom ett dygn.',
-    bullets: [
-      'Sverigeomfattande nätverk av värdar',
-      'Alternativ med egna eller delade sovrum',
-      'Möblerade hem med gemensamma ytor',
-    ],
-    cta: { label: 'Skicka förfrågan →', href: '#inquiry' },
-  },
-  {
-    id: 'kontrakt',
-    icon: KeyRound,
-    number: '02',
-    title: 'Kontrakt & inflytt',
-    highlight: 'Smidiga 3–36 mån villkor',
-    description:
-      'Ni väljer det boende som passar teamet. Vi hanterar hyresavtal, nycklar och inventeringar och ser till att varje arbetare får praktisk info innan inflytt, på svenska eller engelska.',
-    bullets: [
-      'Hyresavtal redo för signering',
-      'Möbler, sänglinne och köksutrustning ingår',
-      'Support via telefon eller WhatsApp',
-    ],
-    cta: { label: 'Ring oss nu →', href: 'tel:+46736287709' },
-  },
-  {
-    id: 'drift',
-    icon: RefreshCcw,
-    number: '03',
-    title: 'Drift & rapportering',
-    highlight: 'Ni bygger – vi driver hemmet',
-    description:
-      'Vi följer projektet tills sista personen flyttar ut och underhåller boendet när det behövs. Ni får statusrapporter direkt och slipper mellanhänder.',
-    bullets: [
-      'Underhåll vid behov',
-      'Direktkontakt vid frågor eller byten',
-      'Slutstäd och överlämning',
-    ],
-    cta: { label: 'Fråga om drift →', href: 'https://wa.me/46736287709' },
-  },
-];
-
 const Services = () => {
   const { t } = useLanguage();
+
+  const serviceCards = [
+    {
+      id: 'planering',
+      icon: ClipboardList,
+      number: '01',
+      title: t('services.card1.title'),
+      highlight: t('services.card1.highlight'),
+      description: t('services.card1.description'),
+      bullets: [
+        t('services.card1.bullet1'),
+        t('services.card1.bullet2'),
+        t('services.card1.bullet3'),
+      ],
+      cta: { label: t('services.card1.cta'), href: '#inquiry' },
+    },
+    {
+      id: 'kontrakt',
+      icon: KeyRound,
+      number: '02',
+      title: t('services.card2.title'),
+      highlight: t('services.card2.highlight'),
+      description: t('services.card2.description'),
+      bullets: [
+        t('services.card2.bullet1'),
+        t('services.card2.bullet2'),
+        t('services.card2.bullet3'),
+      ],
+      cta: { label: t('services.card2.cta'), href: 'tel:+46736287709' },
+    },
+    {
+      id: 'drift',
+      icon: RefreshCcw,
+      number: '03',
+      title: t('services.card3.title'),
+      highlight: t('services.card3.highlight'),
+      description: t('services.card3.description'),
+      bullets: [
+        t('services.card3.bullet1'),
+        t('services.card3.bullet2'),
+        t('services.card3.bullet3'),
+      ],
+      cta: { label: t('services.card3.cta'), href: 'https://wa.me/46736287709' },
+    },
+  ];
 
   return (
     <section id="services" className="section-spacing bg-nordic-100">
