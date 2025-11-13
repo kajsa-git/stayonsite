@@ -5,7 +5,7 @@ const Services = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="services" className="section-spacing bg-white">
+    <section id="services" className="section-spacing bg-nordic-50">
       <div className="container mx-auto px-6 md:px-8">
         <div className="mb-14 max-w-3xl">
           <span className="inline-flex items-center rounded-full border border-[#ff6300]/30 bg-[#ff6300]/5 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-[#ff6300]">
