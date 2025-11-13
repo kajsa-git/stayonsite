@@ -27,7 +27,7 @@ const WhyStayOnSite = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="why" className="bg-nordic-50 py-16 md:py-20 border-b border-nordic-100">
+    <section id="why" className="bg-nordic-100 py-16 md:py-20 border-b border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-2xl">
           <p className="text-sm uppercase tracking-widest text-nordic-500 font-heading mb-3">{t('why.title')}</p>

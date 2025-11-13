@@ -55,7 +55,7 @@ const References = () => {
   };
 
   return (
-    <section id="references" className="section-spacing bg-gradient-to-b from-white to-nordic-50 border-t border-nordic-100">
+    <section id="references" className="section-spacing bg-gradient-to-b from-white to-nordic-100 border-t border-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"
