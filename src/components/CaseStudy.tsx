@@ -45,8 +45,11 @@ const CaseStudy = () => {
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${CASE_IMAGE}')` }} />
             <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/40" />
             <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
-              <p className="text-sm uppercase tracking-widest text-white/70 font-heading">{t('case.title')}</p>
-              <p className="text-3xl md:text-4xl text-white font-semibold mt-2">{t('case.subtitle')}</p>
+              <span className="inline-flex items-center rounded-full border border-[#ff6300]/40 bg-[#ff6300]/20 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-white w-fit mb-3">
+                {t('case.tagline')}
+              </span>
+              <p className="text-3xl md:text-4xl text-white font-semibold">{t('case.title')}</p>
+              <p className="text-base text-white/80 mt-2">{t('case.subtitle')}</p>
 
               <ol className="mt-10 space-y-8">
                 {timeline.map(({ titleKey, descriptionKey }, index) => (
