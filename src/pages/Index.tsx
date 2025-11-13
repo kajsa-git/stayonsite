@@ -91,9 +91,9 @@ const Index = () => {
           <WhyStayOnSite />
           <CaseStudy />
           <Services />
-          <InquiryForm />
           <References />
           <FAQ />
+          <InquiryForm />
           <CityLinks />
         </main>
         <Footer />
