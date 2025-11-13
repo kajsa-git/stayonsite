@@ -36,7 +36,7 @@ const HomeownerProcess = () => {
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-amber-50 to-orange-50">
+    <section className="section-spacing bg-gradient-to-br from-amber-50 to-orange-50 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">

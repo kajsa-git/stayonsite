@@ -12,7 +12,10 @@ const HomeownerHero = () => {
       });
     }
   };
-  return <section id="hero" className="relative bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture" style={{
+  return <section
+    id="hero"
+    className="relative section-spacing bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture border-t border-nordic-100"
+    style={{
     backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)), url('/lovable-uploads/8ccebe4e-fd48-4e9f-9769-13588d98face.png')`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',

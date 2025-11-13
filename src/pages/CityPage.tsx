@@ -15,13 +15,9 @@ import { MapPin, Users, Building, Phone, Mail } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
 
 const CityPage = () => {
-  console.log('CityPage component rendering');
   const { citySlug } = useParams<{ citySlug: string }>();
-  
-  console.log('About to call useLanguage');
   const { language } = useLanguage();
   const { t } = useTranslation();
-  console.log('useLanguage called successfully', { language });
   
   if (!citySlug) {
     return <Navigate to="/" replace />;
@@ -86,8 +82,9 @@ const CityPage = () => {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-nordic-600 to-nordic-800 text-white py-20">
-          <div className="container mx-auto px-4">
+        <section className="relative section-spacing bg-gradient-to-r from-nordic-600 to-nordic-800 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-black/10 pointer-events-none" aria-hidden="true" />
+          <div className="container mx-auto px-6 md:px-8 relative">
             <div className="max-w-4xl mx-auto text-center">
               <div className="flex items-center justify-center mb-4">
                 <MapPin className="h-8 w-8 mr-3" />
@@ -140,8 +137,8 @@ const CityPage = () => {
         </section>
 
         {/* City Info Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
+        <section className="section-spacing bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div>
@@ -229,8 +226,8 @@ const CityPage = () => {
         </section>
 
         {/* Highlights Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
+        <section className="section-spacing bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center text-nordic-900 mb-12">
                 {language === 'sv' 
@@ -308,8 +305,8 @@ const CityPage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-nordic-600 text-white">
-          <div className="container mx-auto px-4">
+        <section className="section-spacing bg-nordic-600 text-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">
                 {language === 'sv' 

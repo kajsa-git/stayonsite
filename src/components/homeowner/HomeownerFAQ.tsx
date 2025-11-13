@@ -33,7 +33,7 @@ const HomeownerFAQ = () => {
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-gray-50 to-gray-100">
+    <section className="section-spacing bg-gradient-to-br from-gray-50 to-gray-100 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">

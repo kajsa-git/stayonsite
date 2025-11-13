@@ -75,7 +75,7 @@ const HomeownerForm = () => {
   };
   
   return (
-    <section id="homeowner-form" className="py-20 md:py-32 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <section id="homeowner-form" className="section-spacing bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Section header */}
