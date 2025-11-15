@@ -138,7 +138,7 @@ export const cities: City[] = [
       ),
       author: 'Mikael Johansson',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'Implenia Sverige'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -224,7 +224,7 @@ export const cities: City[] = [
       quote: ls('Vi kunde flytta in 14 elektriker på Hisingen två dagar efter beställning – allt var möblerat och klart.', 'We moved 14 electricians onto Hisingen two days after ordering – everything was furnished and ready.', 'Wprowadziliśmy 14 elektryków na Hisingen dwa dni po zamówieniu – wszystko było umeblowane i gotowe.'),
       author: 'Helena Ström',
       role: ls('Site Manager', 'Site Manager', 'Kierownik budowy'),
-      company: 'AFRY Industrial'
+      company: 'Industri & Teknik'
     },
     faq: [
       {
@@ -310,7 +310,7 @@ export const cities: City[] = [
       quote: ls('StayOnSite lyckades samla vårt danska montagegäng i samma område så att pendlingen över bron blev enkel.', 'StayOnSite gathered our Danish crew in one district so the bridge commute stayed simple.', 'StayOnSite ulokowało naszą duńską ekipę w jednej dzielnicy, więc dojazdy przez most były łatwe.'),
       author: 'Peter Madsen',
       role: ls('Operations Manager', 'Operations Manager', 'Dyrektor operacyjny'),
-      company: 'Per Aarsleff'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -396,7 +396,7 @@ export const cities: City[] = [
       quote: ls('Vi fick en hel kedja radhus i Rosendal där projektledningen kunde bo vägg i vägg – sparade oss enormt med tid.', 'We received a whole row of townhouses in Rosendal so management could live door to door – it saved huge amounts of time.', 'Dostaliśmy cały szereg segmentów w Rosendalu, więc kierownictwo mieszkało drzwi w drzwi – oszczędziło nam to mnóstwo czasu.'),
       author: 'Anna Törnqvist',
       role: ls('Construction Manager', 'Construction Manager', 'Kierownik budowy'),
-      company: 'Peab'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -482,7 +482,7 @@ export const cities: City[] = [
       quote: ls('När vi stärkte bemanningen för batterilinan fick vi tre villor i Tunbytorp – samma dag som ordern kom.', 'When we ramped the battery line, we got three villas in Tunbytorp the same day we ordered them.', 'Gdy zwiększaliśmy obsadę linii baterii, tego samego dnia otrzymaliśmy trzy wille w Tunbytorp.'),
       author: 'Joakim Edlund',
       role: ls('Site Lead', 'Site Lead', 'Kierownik obiektu'),
-      company: 'Hitachi Energy'
+      company: 'Energi & Industri'
     },
     faq: [
       {
@@ -568,7 +568,7 @@ export const cities: City[] = [
       quote: ls('Istället för tre hotell löste vi radhus i Adolfsberg där teamet kunde leva normalt mellan passen.', 'Instead of three hotels we got townhouses in Adolfsberg so the crew lived normally between shifts.', 'Zamiast trzech hoteli dostaliśmy segmenty w Adolfsbergu, więc zespół żył normalnie między zmianami.'),
       author: 'Caroline Westin',
       role: ls('Projektledare', 'Project Lead', 'Kierownik projektu'),
-      company: 'NCC'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -654,7 +654,7 @@ export const cities: City[] = [
       quote: ls('Vi slapp hotell helt – StayOnSite ordnade studios i Vallastaden där teknikerna kunde jobba kvällar ostört.', 'We skipped hotels entirely – StayOnSite set up studios in Vallastaden so technicians could work evenings undisturbed.', 'Obeszło się bez hoteli – StayOnSite zorganizowało studia w Vallastaden, więc technicy mogli spokojnie pracować wieczorami.'),
       author: 'Daniel Krausz',
       role: ls('Program Manager', 'Program Manager', 'Kierownik programu'),
-      company: 'Saab'
+      company: 'Försvarsindustri'
     },
     faq: [
       {
@@ -740,7 +740,7 @@ export const cities: City[] = [
       quote: ls('Hamnen krävde nattbemanning och vi fick bo kvar i Oceanhamnen hela projektet utan att byta adress.', 'The harbour needed night staffing and we stayed in Oceanhamnen for the whole project without changing address.', 'Port wymagał nocnej obsady i mieszkaliśmy w Oceanhamnen przez cały projekt bez zmiany adresu.'),
       author: 'Linda Mogensen',
       role: ls('Operations Lead', 'Operations Lead', 'Lider operacyjny'),
-      company: 'NRC Group'
+      company: 'Järnväg & Infrastruktur'
     },
     faq: [
       {
@@ -826,7 +826,7 @@ export const cities: City[] = [
       quote: ls('Vi behövde både kontorsfolk och montörer och StayOnSite hittade lösningar så alla bodde max 10 min från Elmia.', 'We needed both office staff and installers and StayOnSite found setups so everyone lived within 10 minutes of Elmia.', 'Potrzebowaliśmy biura i monterów, a StayOnSite znalazł rozwiązania, dzięki którym wszyscy mieszkali maks 10 minut od Elmia.'),
       author: 'Erik Lundén',
       role: ls('Project Director', 'Project Director', 'Dyrektor projektu'),
-      company: 'Bravida'
+      company: 'El & Automation'
     },
     faq: [
       {
@@ -912,7 +912,7 @@ export const cities: City[] = [
       quote: ls('Med hela teamet i Saltängen kunde vi gå till bygget och slapp pendling helt.', 'With the whole crew in Saltängen we walked to the site and removed commuting entirely.', 'Cała ekipa w Saltängen mogła chodzić pieszo na budowę – zero dojazdów.'),
       author: 'Sara Blom',
       role: ls('Site Manager', 'Site Manager', 'Kierownik budowy'),
-      company: 'Skanska Industrial'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -1010,7 +1010,7 @@ export const cities: City[] = [
       ),
       author: 'Anders Lindqvist',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
-      company: 'Peab Anläggning'
+      company: 'Hamn & Logistik'
     },
     faq: [
       {
@@ -1120,7 +1120,7 @@ export const cities: City[] = [
       ),
       author: 'Magnus Nordin',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'JM Entreprenad'
+      company: 'Bygg & Anläggning'
     },
     faq: [
       {
@@ -1230,7 +1230,7 @@ export const cities: City[] = [
       ),
       author: 'Lars Bergström',
       role: ls('Produktionschef', 'Production Manager', 'Kierownik produkcji'),
-      company: 'Swedwood'
+      company: 'Möbelindustri'
     },
     faq: [
       {
@@ -1340,7 +1340,7 @@ export const cities: City[] = [
       ),
       author: 'Johan Svensson',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
-      company: 'PostNord Logistics'
+      company: 'Logistik & Distribution'
     },
     faq: [
       {
@@ -1450,7 +1450,7 @@ export const cities: City[] = [
       ),
       author: 'Per Andersson',
       role: ls('Produktionschef', 'Production Manager', 'Kierownik produkcji'),
-      company: 'Västervik Varv'
+      company: 'Skeppsbyggnad'
     },
     faq: [
       {
@@ -1560,7 +1560,7 @@ export const cities: City[] = [
       ),
       author: 'Karin Nilsson',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
-      company: 'Atlas Copco'
+      company: 'Verkstadsindustri'
     },
     faq: [
       {
@@ -1670,7 +1670,7 @@ export const cities: City[] = [
       ),
       author: 'Emma Lundqvist',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'Facebook Sweden'
+      company: 'Tech & Datacenter'
     },
     faq: [
       {
@@ -1780,7 +1780,7 @@ export const cities: City[] = [
       ),
       author: 'Stefan Karlsson',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'OKG AB'
+      company: 'Kärnkraft & Energi'
     },
     faq: [
       {
