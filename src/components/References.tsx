@@ -17,7 +17,7 @@ const References = () => {
       quote: t('references.testimonial2.quote'),
       author: t('references.testimonial2.author'),
       company: t('references.testimonial2.company'),
-      img: 'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      img: '/images/sara-testimonial.jpg'
     },
     {
       id: '3',

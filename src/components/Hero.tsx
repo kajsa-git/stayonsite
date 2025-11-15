@@ -1,5 +1,10 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
+import { Button } from '@/components/ui/button';
+import { MessageCircle, Phone } from 'lucide-react';
+
+const phoneHref = 'tel:+46736287709';
+const whatsappHref = 'https://wa.me/46736287709';
 
 const bulletPoints: Array<TranslationKey> = [
   'hero.bullet1',
@@ -38,8 +43,26 @@ const Hero = () => {
               ))}
             </div>
 
-            <div className="rounded-2xl bg-white/95 text-nordic-900 shadow-lg border border-white/30 p-4 md:p-6">
-              <p className="text-2xl font-light text-nordic-900">+46 73-628 77 09</p>
+            <div className="rounded-2xl bg-white/95 text-nordic-900 shadow-lg border border-white/30 p-4 md:p-6 space-y-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-2xl font-light text-nordic-900">+46 73-628 77 09</p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-6" asChild>
+                    <a href={phoneHref}>
+                      <Phone size={16} className="mr-2" />
+                      {t('hero.ctaPhone')}
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="rounded-full px-6" asChild>
+                    <a href={whatsappHref} target="_blank" rel="noreferrer">
+                      <MessageCircle size={16} className="mr-2" />
+                      {t('hero.ctaWhatsapp')}
+                    </a>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
