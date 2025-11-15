@@ -1,5 +1,4 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Quote } from 'lucide-react';
 
 const References = () => {
   const { t } = useLanguage();
@@ -55,7 +54,7 @@ const References = () => {
   };
 
   return (
-    <section id="references" className="section-spacing bg-gradient-to-b from-white to-nordic-100 border-t border-nordic-100">
+    <section id="references" className="section-spacing bg-gradient-to-b from-white to-nordic-100">
       {/* Schema.org structured data */}
       <script
         type="application/ld+json"
@@ -80,7 +79,6 @@ const References = () => {
                 key={testimonial.id || index}
                 className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300"
               >
-                <Quote size={24} className="text-[#ff6300] mb-6" />
                 <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">
                   {testimonial.quote}
                 </p>

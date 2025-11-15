@@ -38,7 +38,7 @@ const CaseStudy = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="case" className="section-spacing bg-white border-t border-nordic-100">
+    <section id="case" className="section-spacing bg-white">
       <div className="container mx-auto px-6 md:px-8">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] items-stretch">
           <div className="relative overflow-hidden rounded-3xl min-h-[420px]">
