@@ -17,7 +17,7 @@ const Header = () => {
   const isHomePage = location.pathname === '/';
 
   const navLinks = [
-    { label: t('nav.services'), href: isHomePage ? '#services' : '/#services' },
+    { label: t('nav.services'), href: isHomePage ? '#why' : '/#why' },
     { label: t('nav.references'), href: isHomePage ? '#references' : '/#references' },
     { label: t('nav.contact'), href: isHomePage ? '#inquiry' : '/#inquiry' },
   ];
