@@ -8,7 +8,7 @@ interface SEOProps {
   ogImage?: string;
   canonical?: string;
   type?: 'website' | 'article';
-  structuredData?: object;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const SEO = ({

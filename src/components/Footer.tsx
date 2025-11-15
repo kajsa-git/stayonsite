@@ -70,6 +70,12 @@ const Footer = () => {
                 </a>
               </li>
               <li>
+                <a href="#cities" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  {t('nav.services')} – Städer
+                </a>
+              </li>
+              <li>
                 <a href="/for-husagare" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.homeowner')}
