@@ -90,7 +90,7 @@ const HomeownerForm = () => {
             {/* Contact promise */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-12 border border-amber-200 shadow-lg max-w-2xl mx-auto">
               <div className="flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-emerald-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-[#ff6300] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span className="text-lg font-semibold text-nordic-900">

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -9,13 +9,17 @@ import { cn } from '@/lib/utils';
 
 const Header = () => {
   const { t } = useLanguage();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Check if we're on the homepage
+  const isHomePage = location.pathname === '/';
+
   const navLinks = [
-    { label: t('nav.services'), href: '#services' },
-    { label: t('nav.references'), href: '#references' },
-    { label: t('nav.contact'), href: '#inquiry' },
+    { label: t('nav.services'), href: isHomePage ? '#services' : '/#services' },
+    { label: t('nav.references'), href: isHomePage ? '#references' : '/#references' },
+    { label: t('nav.contact'), href: isHomePage ? '#inquiry' : '/#inquiry' },
   ];
 
   // Add scroll effect for the header
@@ -58,22 +62,40 @@ const Header = () => {
           <ul className="flex items-center space-x-3 rounded-full bg-white/50 px-3 py-1 border border-nordic-100">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
-                >
-                  {link.label}
-                </a>
+                {isHomePage ? (
+                  <a
+                    href={link.href}
+                    className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href}
+                    className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </li>
             ))}
             {/* För byggbolag link */}
             <li>
-              <a
-                href="#inquiry"
-                className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
-              >
-                {t('nav.forCompanies')}
-              </a>
+              {isHomePage ? (
+                <a
+                  href="#inquiry"
+                  className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
+                >
+                  {t('nav.forCompanies')}
+                </a>
+              ) : (
+                <Link
+                  to="/#inquiry"
+                  className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
+                >
+                  {t('nav.forCompanies')}
+                </Link>
+              )}
             </li>
             {/* För husägare link */}
             <li>
@@ -120,23 +142,43 @@ const Header = () => {
             <ul className="flex flex-col space-y-6">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
+                {isHomePage ? (
+                  <a
+                    href={link.href}
+                    className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href}
+                    className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </li>
             ))}
               <li>
-                <a
-                  href="#inquiry"
-                  className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('nav.forCompanies')}
-                </a>
+                {isHomePage ? (
+                  <a
+                    href="#inquiry"
+                    className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('nav.forCompanies')}
+                  </a>
+                ) : (
+                  <Link
+                    to="/#inquiry"
+                    className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('nav.forCompanies')}
+                  </Link>
+                )}
               </li>
               <li>
                 <Link 

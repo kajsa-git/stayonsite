@@ -34,7 +34,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="firstName"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.firstNamePlaceholder')}
           />
         </div>
@@ -49,7 +49,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="lastName"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.lastNamePlaceholder')}
           />
         </div>
@@ -64,7 +64,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="email"
             type="email"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.emailPlaceholder')}
           />
         </div>
@@ -79,7 +79,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="phone"
             type="tel"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.phonePlaceholder')}
           />
         </div>
@@ -94,7 +94,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="address"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.addressPlaceholder')}
           />
         </div>
@@ -109,7 +109,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="city"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500"
+            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
             placeholder={t('homeowner.form.cityPlaceholder')}
           />
         </div>
