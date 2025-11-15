@@ -206,7 +206,7 @@ const CityPage = () => {
                 <Button asChild size="lg" className="text-lg">
                   <a href="tel:+46736287709">
                     <Phone className="mr-2 h-5 w-5" />
-                    {translate('Ring Kajsa eller Natalie', 'Call Kajsa or Natalie', 'Zadzwoń do Kajsy lub Natalie')}
+                    {translate('Ring oss', 'Call us', 'Zadzwoń')}
                   </a>
                 </Button>
                 <Button
@@ -340,16 +340,16 @@ const CityPage = () => {
                 </span>
                 <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
                   {translate(
-                    'Kajsa och Natalie äger processen från första samtal',
-                    'Kajsa and Natalie own the process from the first call',
-                    'Kajsa i Natalie prowadzą cały proces od pierwszego telefonu'
+                    'Vi äger processen från första samtal',
+                    'We own the process from the first call',
+                    'Prowadzimy cały proces od pierwszego telefonu'
                   )}
                 </h2>
                 <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
                   {translate(
-                    `Ni ringer, mejlar eller skickar WhatsApp. Kajsa eller Natalie svarar inom 15 minuter och återkommer med boendeplan för ${city.name} inom 24 timmar.`,
-                    `Call, email or WhatsApp us. Kajsa or Natalie responds within 15 minutes and returns with a housing plan for ${city.name} within 24 hours.`,
-                    `Zadzwoń, napisz e-mail albo WhatsApp. Kajsa lub Natalie odezwie się w 15 minut i przygotuje plan zakwaterowania w ${city.name} w 24 godziny.`
+                    `Ring, mejla eller skicka WhatsApp. Vi svarar inom 15 minuter och återkommer med boendeplan för ${city.name} inom 24 timmar.`,
+                    `Call, email or WhatsApp us. We respond within 15 minutes and return with a housing plan for ${city.name} within 24 hours.`,
+                    `Zadzwoń, napisz e-mail albo WhatsApp. Odpowiadamy w 15 minut i przygotowujemy plan zakwaterowania w ${city.name} w 24 godziny.`
                   )}
                 </p>
               </div>
@@ -380,9 +380,9 @@ const CityPage = () => {
                           )}
                         {index === 1 &&
                           translate(
-                            `Kajsa eller Natalie skickar en lista med adresser i ${city.name}, planritningar och priser.`,
-                            `Kajsa or Natalie sends a list of addresses in ${city.name} with layouts and budgets.`,
-                            `Kajsa lub Natalie wysyła listę adresów w ${city.name} z rzutami i cenami.`
+                            `Vi skickar en lista med adresser i ${city.name}, planritningar och priser.`,
+                            `We send a list of addresses in ${city.name} with layouts and budgets.`,
+                            `Wysyłamy listę adresów w ${city.name} z rzutami i cenami.`
                           )}
                         {index === 2 &&
                           translate(

@@ -91,7 +91,7 @@ export const cities: City[] = [
       {
         value: '24 h',
         label: ls('till första offert', 'to first proposal', 'do pierwszej oferty'),
-        subtext: ls('Kajsa eller Natalie återkopplar direkt', 'Kajsa or Natalie replies immediately', 'Kajsa lub Natalie oddzwania od razu')
+        subtext: ls('Vi återkopplar direkt', 'We reply immediately', 'Odpowiadamy od razu')
       },
       {
         value: '12',

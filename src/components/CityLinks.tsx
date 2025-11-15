@@ -37,85 +37,38 @@ const CityLinks = () => {
   );
 
   return (
-    <section id="cities" className="section-spacing bg-white border-t border-nordic-100">
+    <section id="cities" className="py-12 bg-nordic-50 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <span className="inline-block text-[#ff6300] mb-2 text-sm uppercase tracking-[0.35em] font-heading">
-              {language === 'sv' ? 'Städer' : language === 'en' ? 'Cities' : 'Miasta'}
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-3">
-              {language === 'sv'
-                ? 'Vi täcker hela Sverige'
-                : 'We cover all of Sweden'
-              }
+            <h2 className="text-2xl md:text-3xl font-semibold text-nordic-900 mb-2">
+              {language === 'sv' ? 'Boende i hela Sverige' : 'Housing all over Sweden'}
             </h2>
-            <p className="text-base text-gray-600">
+            <p className="text-sm text-gray-600">
               {language === 'sv'
-                ? 'Upptäck våra tjänster i Sveriges största städer'
-                : 'Discover our services in Sweden\'s largest cities'
-              }
+                ? 'Vi täcker Sveriges största städer och industriknutpunkter'
+                : 'We cover Sweden\'s largest cities and industrial hubs'}
             </p>
           </div>
 
-          <div className="max-w-md mx-auto mb-10">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={
-                  language === 'sv'
-                    ? 'Sök efter stad eller region'
-                    : 'Search for a city or region'
-                }
-                className="pl-9"
-                aria-label="Filter cities"
-              />
-            </div>
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {cities.slice(0, 12).map((city) => (
+              <Link
+                key={city.slug}
+                to={`/stad/${city.slug}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-sm text-nordic-900 hover:text-[#ff6300]"
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                {city.name}
+              </Link>
+            ))}
           </div>
-
-          {sortedRegions.length === 0 ? (
-            <p className="text-center text-gray-500">
-              {language === 'sv'
-                ? 'Inga städer matchar din sökning just nu.'
-                : 'No cities match your search right now.'}
-            </p>
-          ) : (
-            sortedRegions.map((region) => (
-              <div key={region} className="mb-10">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-nordic-900">{region}</h3>
-                  <Badge variant="outline" className="text-xs">
-                    {groupedByRegion[region].length}
-                  </Badge>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {groupedByRegion[region].map((city) => (
-                    <Link
-                      key={city.slug}
-                      to={`/stad/${city.slug}`}
-                      className="group text-center p-4 rounded-2xl border border-nordic-100 bg-nordic-50 hover:border-[#ff6300]/50 hover:bg-white hover:shadow-lg transition-all duration-300"
-                    >
-                      <div className="flex flex-col items-center">
-                        <MapPin className="h-5 w-5 text-[#ff6300] mb-2 group-hover:scale-110 transition-transform" />
-                        <h4 className="text-sm font-semibold text-nordic-900 group-hover:text-[#ff6300] transition-colors">
-                          {city.name}
-                        </h4>
-                        <span className="text-xs text-gray-500 mt-1">{city.population}</span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))
-          )}
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
               {language === 'sv'
-                ? 'Hittar du inte staden du behöver? Kontakta oss så bygger vi boendeplanen ändå.'
-                : 'Cannot find the city you need? Contact us and we will map it for you.'}
+                ? 'Hittar du inte din stad? Vi löser boende var som helst i Sverige.'
+                : 'Cannot find your city? We arrange housing anywhere in Sweden.'}
             </p>
           </div>
         </div>
