@@ -64,13 +64,13 @@ const Footer = () => {
             <h3 className="text-xl font-semibold mb-6 text-white">{t('footer.quickLinks')}</h3>
             <ul className="grid grid-cols-1 gap-4">
               <li>
-                <a href="#references" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                <a href="/#references" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.references')}
                 </a>
               </li>
               <li>
-                <a href="#cities" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                <a href="/#cities" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.services')} – Städer
                 </a>
@@ -82,7 +82,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#services" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                <a href="/#inquiry" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.forCompanies')}
                 </a>
@@ -92,7 +92,6 @@ const Footer = () => {
         </div>
         
         <div className="mt-16 pt-8 text-center border-t border-white/10">
-          <p className="font-light text-white/60 mb-3">Med omsorg, Kajsa & Natalie</p>
           <p className="font-light text-white/50">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
         </div>
       </div>

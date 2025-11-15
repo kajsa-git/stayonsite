@@ -215,21 +215,10 @@ const CityPage = () => {
                   variant="outline"
                   className="text-lg border-white/40 text-white hover:bg-white/10"
                 >
-                  <a href="mailto:info@stayonsite.se">
-                    <Mail className="mr-2 h-5 w-5" />
-                    {translate('Skicka brief', 'Send brief', 'Wyślij brief')}
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="ghost"
-                  className="text-lg text-white hover:text-white"
-                >
-                  <Link to="/#inquiry">
+                  <a href="https://wa.me/46736287709">
                     <MessageCircle className="mr-2 h-5 w-5" />
-                    {translate('Boka återkoppling', 'Request callback', 'Poproś o kontakt')}
-                  </Link>
+                    {translate('Skicka WhatsApp', 'Send WhatsApp', 'Wyślij WhatsApp')}
+                  </a>
                 </Button>
               </div>
 
