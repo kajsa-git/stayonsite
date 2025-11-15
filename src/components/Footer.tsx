@@ -93,6 +93,7 @@ const Footer = () => {
         
         <div className="mt-16 pt-8 text-center border-t border-white/10">
           <p className="font-light text-white/50">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
+          <p className="font-light text-white/40 mt-2">Med omsorg, Kajsa & Natalie</p>
         </div>
       </div>
     </footer>;
