@@ -132,9 +132,9 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls(
-        'Vi behövde 18 montörer nära Frihamnen och StayOnSite löste tre lägenheter i samma hus på två dygn.',
-        'We needed 18 fitters near Frihamnen and StayOnSite secured three apartments in the same building within two days.',
-        'Potrzebowaliśmy 18 monterów przy Frihamnen i StayOnSite załatwiło trzy mieszkania w tym samym budynku w dwa dni.'
+        'Vi behövde plats för 18 montörer nära Frihamnen och StayOnSite löste tre lägenheter i samma hus på två dygn.',
+        'We needed housing for 18 fitters near Frihamnen and StayOnSite secured three apartments in the same building within two days.',
+        'Potrzebowaliśmy noclegów dla 18 monterów przy Frihamnen i StayOnSite załatwiło trzy mieszkania w tym samym budynku w dwa dni.'
       ),
       author: 'Mikael Johansson',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
