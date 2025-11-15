@@ -75,7 +75,7 @@ const HomeownerForm = () => {
   };
   
   return (
-    <section id="homeowner-form" className="section-spacing bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-t border-nordic-100">
+    <section id="homeowner-form" className="section-spacing bg-white border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Section header */}
@@ -88,7 +88,7 @@ const HomeownerForm = () => {
             </p>
             
             {/* Contact promise */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-12 border border-amber-200 shadow-lg max-w-2xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-12 border border-nordic-200 shadow-lg max-w-2xl mx-auto">
               <div className="flex items-center justify-center mb-4">
                 <svg className="w-8 h-8 text-[#ff6300] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -110,7 +110,7 @@ const HomeownerForm = () => {
                 <FormSuccess />
               ) : needsActivation ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>

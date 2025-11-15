@@ -36,7 +36,7 @@ const HomeownerProcess = () => {
   ];
 
   return (
-    <section className="section-spacing bg-gradient-to-br from-amber-50 to-orange-50 border-t border-nordic-100">
+    <section className="section-spacing bg-gradient-to-b from-white to-nordic-100 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">
@@ -51,7 +51,7 @@ const HomeownerProcess = () => {
         {/* Process steps */}
         <div className="relative">
           {/* Connection line - hidden on mobile */}
-          <div className="hidden lg:block absolute top-24 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
+          <div className="hidden lg:block absolute top-24 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nordic-200 to-transparent"></div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {steps.map((step, index) => (

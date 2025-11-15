@@ -40,9 +40,9 @@ const HomeownerTestimonials = () => {
         {/* Testimonials grid */}
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-nordic-100">
               {/* Quote icon */}
-              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-6">
+              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center mb-6">
                 <svg className="w-6 h-6 text-[#ff6300]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
                 </svg>
@@ -54,14 +54,14 @@ const HomeownerTestimonials = () => {
               </p>
               
               {/* Author info */}
-              <div className="border-t border-amber-200 pt-6">
+              <div className="border-t border-nordic-200 pt-6">
                 <p className="font-semibold text-nordic-900 mb-1">
                   {testimonial.author}
                 </p>
                 <p className="text-nordic-700 font-light text-sm mb-2">
                   {testimonial.location}
                 </p>
-                <div className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium inline-block">
+                <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium inline-block">
                   {testimonial.income}
                 </div>
               </div>

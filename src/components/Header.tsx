@@ -22,6 +22,15 @@ const Header = () => {
     { label: t('nav.contact'), href: isHomePage ? '#inquiry' : '/#inquiry' },
   ];
 
+  // Handle smooth scroll to section
+  const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   // Add scroll effect for the header
   useEffect(() => {
     const handleScroll = () => {
@@ -65,6 +74,7 @@ const Header = () => {
                 {isHomePage ? (
                   <a
                     href={link.href}
+                    onClick={(e) => handleSectionClick(e, link.href.replace('#', ''))}
                     className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
                   >
                     {link.label}
@@ -84,6 +94,7 @@ const Header = () => {
               {isHomePage ? (
                 <a
                   href="#inquiry"
+                  onClick={(e) => handleSectionClick(e, 'inquiry')}
                   className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
                 >
                   {t('nav.forCompanies')}
@@ -146,7 +157,10 @@ const Header = () => {
                   <a
                     href={link.href}
                     className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => {
+                      handleSectionClick(e, link.href.replace('#', ''));
+                      setIsMenuOpen(false);
+                    }}
                   >
                     {link.label}
                   </a>
@@ -166,7 +180,10 @@ const Header = () => {
                   <a
                     href="#inquiry"
                     className="block py-2 text-blue-700 hover:text-blue-800 transition-colors duration-300 font-medium tracking-wide"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => {
+                      handleSectionClick(e, 'inquiry');
+                      setIsMenuOpen(false);
+                    }}
                   >
                     {t('nav.forCompanies')}
                   </a>
