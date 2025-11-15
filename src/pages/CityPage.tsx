@@ -38,7 +38,7 @@ const CityPage = () => {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     'name': `StayOnSite ${city.name}`,
-    'description': t('seo.city.description', { cityName: city.name }),
+    'description': `${language === 'sv' ? `Letar ditt företag efter boende till personal i ${city.name}? StayOnSite erbjuder möblerade lägenheter och hus för kort- och långtidshyra. Kontakta oss för en snabb offert.` : `Is your company looking for staff housing in ${city.name}? StayOnSite offers furnished apartments and houses for short and long-term rent. Contact us for a quick quote.`}`,
     'address': {
       '@type': 'PostalAddress',
       'addressLocality': city.name,
@@ -72,8 +72,8 @@ const CityPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={t('seo.city.title', { cityName: city.name })}
-        description={t('seo.city.description', { cityName: city.name })}
+        title={language === 'sv' ? `Företagsboende i ${city.name} | Hyr lägenhet till personal | StayOnSite` : `Corporate Housing in ${city.name} | Rent Apartments for Staff | StayOnSite`}
+        description={language === 'sv' ? `Letar ditt företag efter boende till personal i ${city.name}? StayOnSite erbjuder möblerade lägenheter och hus för kort- och långtidshyra. Kontakta oss för en snabb offert.` : `Is your company looking for staff housing in ${city.name}? StayOnSite offers furnished apartments and houses for short and long-term rent. Contact us for a quick quote.`}
         canonical={`https://stayonsite.se/stad/${city.slug}`}
         structuredData={structuredData}
       />

@@ -45,6 +45,27 @@ export type TranslationKey =
   | 'services.whyus.point2'
   | 'services.whyus.point3'
   | 'services.whyus.point4'
+  | 'services.card1.title'
+  | 'services.card1.highlight'
+  | 'services.card1.description'
+  | 'services.card1.bullet1'
+  | 'services.card1.bullet2'
+  | 'services.card1.bullet3'
+  | 'services.card1.cta'
+  | 'services.card2.title'
+  | 'services.card2.highlight'
+  | 'services.card2.description'
+  | 'services.card2.bullet1'
+  | 'services.card2.bullet2'
+  | 'services.card2.bullet3'
+  | 'services.card2.cta'
+  | 'services.card3.title'
+  | 'services.card3.highlight'
+  | 'services.card3.description'
+  | 'services.card3.bullet1'
+  | 'services.card3.bullet2'
+  | 'services.card3.bullet3'
+  | 'services.card3.cta'
   | 'references.title'
   | 'references.subtitle'
   | 'references.tagline'
@@ -113,6 +134,7 @@ export type TranslationKey =
   | 'why.steps.operations.cta'
   | 'case.title'
   | 'case.subtitle'
+  | 'case.tagline'
   | 'case.timeline.proposal.title'
   | 'case.timeline.proposal.description'
   | 'case.timeline.moveIn.title'
@@ -455,7 +477,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.addressPlaceholder': 'Gatuadress och nummer',
     'homeowner.form.city': 'Stad',
     'homeowner.form.cityPlaceholder': 'Ange stad',
-    'homeowner.form.submit': 'Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst',
+    'homeowner.form.submit': 'Registrera bostad - Helt kostnadsfritt',
     'homeowner.form.submitting': 'Registrerar...',
     'homeowner.form.success': 'Tack för din registrering! Vi kontaktar dig inom 24 timmar.',
     'homeowner.form.error': 'Det uppstod ett fel. Försök igen eller ring oss direkt.',
@@ -709,7 +731,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.addressPlaceholder': 'Street address and number',
     'homeowner.form.city': 'City',
     'homeowner.form.cityPlaceholder': 'Enter city',
-    'homeowner.form.submit': 'It takes just two minutes - we help you find the right tenant',
+    'homeowner.form.submit': 'Register property - Completely free',
     'homeowner.form.submitting': 'Registering...',
     'homeowner.form.success': 'Thank you for your registration! We will contact you within 24 hours.',
     'homeowner.form.error': 'An error occurred. Please try again or call us directly.',
@@ -963,7 +985,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.form.addressPlaceholder': 'Ulica i numer',
     'homeowner.form.city': 'Miasto',
     'homeowner.form.cityPlaceholder': 'Wpisz miasto',
-    'homeowner.form.submit': 'To zajmie tylko dwie minuty - pomożemy Ci znaleźć odpowiedniego najemcę',
+    'homeowner.form.submit': 'Zarejestruj nieruchomość - Całkowicie bezpłatnie',
     'homeowner.form.submitting': 'Rejestrowanie...',
     'homeowner.form.success': 'Dziękujemy za rejestrację! Skontaktujemy się z Tobą w ciągu 24 godzin.',
     'homeowner.form.error': 'Wystąpił błąd. Spróbuj ponownie lub zadzwoń do nas bezpośrednio.',
