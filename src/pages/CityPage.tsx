@@ -212,8 +212,7 @@ const CityPage = () => {
                 <Button
                   asChild
                   size="lg"
-                  variant="outline"
-                  className="text-lg border-white/40 text-white hover:bg-white/10"
+                  className="text-lg bg-[#25D366] hover:bg-[#1fb855] text-white"
                 >
                   <a href="https://wa.me/46736287709">
                     <MessageCircle className="mr-2 h-5 w-5" />
