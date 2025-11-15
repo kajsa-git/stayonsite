@@ -14,7 +14,7 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
     <>
       {/* Form header */}
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-display text-nordic-900 mb-2">
+        <h3 className="text-2xl font-semibold text-nordic-900 mb-2">
           {t('homeowner.form.fieldsTitle')}
         </h3>
         <p className="text-nordic-700 font-light">

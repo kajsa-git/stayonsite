@@ -40,10 +40,10 @@ const HomeownerProcess = () => {
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-5xl font-display font-light text-nordic-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
             {t('homeowner.process.title')}
           </h2>
-          <p className="text-xl text-nordic-800 font-light max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
             {t('homeowner.process.subtitle')}
           </p>
         </div>
@@ -63,7 +63,7 @@ const HomeownerProcess = () => {
                   {step.icon}
                 </div>
                 
-                <h3 className="text-xl font-display text-nordic-900 mb-4">
+                <h3 className="text-xl font-semibold text-nordic-900 mb-4">
                   {step.title}
                 </h3>
                 <p className="text-nordic-700 font-light leading-relaxed">

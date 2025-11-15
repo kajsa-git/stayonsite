@@ -37,10 +37,10 @@ const HomeownerFAQ = () => {
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-5xl font-display font-light text-nordic-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
             {t('homeowner.faq.title')}
           </h2>
-          <p className="text-xl text-nordic-800 font-light max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
             {t('homeowner.faq.subtitle')}
           </p>
         </div>
@@ -54,7 +54,7 @@ const HomeownerFAQ = () => {
                 value={`item-${index}`}
                 className="bg-white rounded-2xl shadow-sm border border-gray-200 px-6"
               >
-                <AccordionTrigger className="text-left text-lg font-display text-nordic-900 hover:text-amber-600 transition-colors py-6">
+                <AccordionTrigger className="text-left text-lg font-semibold text-nordic-900 hover:text-amber-600 transition-colors py-6">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-nordic-700 font-light leading-relaxed pb-6">

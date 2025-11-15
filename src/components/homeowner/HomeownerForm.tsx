@@ -80,7 +80,7 @@ const HomeownerForm = () => {
         <div className="max-w-4xl mx-auto">
           {/* Section header */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-light text-nordic-900 mb-6">
+            <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
               {t('homeowner.form.title')}
             </h2>
             <p className="text-xl text-nordic-800 font-light leading-relaxed mb-8">
@@ -93,7 +93,7 @@ const HomeownerForm = () => {
                 <svg className="w-8 h-8 text-emerald-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-lg font-display text-nordic-900">
+                <span className="text-lg font-semibold text-nordic-900">
                   {t('homeowner.form.promise')}
                 </span>
               </div>

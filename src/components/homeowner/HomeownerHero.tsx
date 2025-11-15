@@ -22,9 +22,6 @@ const HomeownerHero = () => {
 
       <div className="container mx-auto px-6 md:px-8 relative py-16 md:py-10">
         <div className="max-w-3xl space-y-5">
-          <p className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-white/80">
-            Stuga • Lägenhet • Hus
-          </p>
           <h1 className="text-4xl md:text-[44px] font-semibold leading-tight">
             {t('homeowner.hero.title')}
           </h1>

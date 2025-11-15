@@ -29,10 +29,10 @@ const HomeownerTestimonials = () => {
       <div className="container mx-auto px-6 md:px-8">
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-5xl font-display font-light text-nordic-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
             {t('homeowner.testimonials.title')}
           </h2>
-          <p className="text-xl text-nordic-800 font-light max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
             {t('homeowner.testimonials.subtitle')}
           </p>
         </div>
@@ -55,7 +55,7 @@ const HomeownerTestimonials = () => {
               
               {/* Author info */}
               <div className="border-t border-amber-200 pt-6">
-                <p className="font-display text-nordic-900 mb-1">
+                <p className="font-semibold text-nordic-900 mb-1">
                   {testimonial.author}
                 </p>
                 <p className="text-nordic-700 font-light text-sm mb-2">
@@ -75,7 +75,7 @@ const HomeownerTestimonials = () => {
             <svg className="w-8 h-8 text-emerald-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-2xl font-display text-nordic-900">
+            <span className="text-2xl font-semibold text-nordic-900">
               {t('homeowner.testimonials.trustIndicator')}
             </span>
           </div>
