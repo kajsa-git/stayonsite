@@ -10,7 +10,7 @@ const References = () => {
       quote: t('references.testimonial1.quote'),
       author: t('references.testimonial1.author'),
       company: t('references.testimonial1.company'),
-      img: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      img: '/images/mats-testimonial.jpg'
     },
     {
       id: '2',
@@ -24,7 +24,7 @@ const References = () => {
       quote: t('references.testimonial3.quote'),
       author: t('references.testimonial3.author'),
       company: t('references.testimonial3.company'),
-      img: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+      img: '/images/erik-testimonial.jpg'
     }
   ];
 
@@ -82,7 +82,7 @@ const References = () => {
               >
                 <Quote size={24} className="text-[#ff6300] mb-6" />
                 <p className="text-nordic-800 mb-8 leading-relaxed font-light italic">
-                  "{testimonial.quote}"
+                  {testimonial.quote}
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-nordic-200 rounded-full overflow-hidden ring-2 ring-white">
@@ -102,22 +102,27 @@ const References = () => {
           </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="text-4xl font-semibold text-[#ff6300] mb-2">70+</div>
-            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.happyClients')}</p>
+        <div className="mt-20">
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-semibold text-nordic-900 mb-2">VÅRT TRACK RECORD</h3>
           </div>
-          <div className="text-center">
-            <div className="text-4xl font-semibold text-[#ff6300] mb-2">100+</div>
-            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.accommodations')}</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-semibold text-[#ff6300] mb-2">3h</div>
-            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.responseTime')}</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-semibold text-[#ff6300] mb-2">40+</div>
-            <p className="text-sm text-nordic-600 font-light uppercase tracking-wide">{t('references.stats.cities')}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">70+</div>
+              <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.happyClients')}</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">500+</div>
+              <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.accommodations')}</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">3h</div>
+              <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.responseTime')}</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">40+</div>
+              <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.cities')}</p>
+            </div>
           </div>
         </div>
       </div>

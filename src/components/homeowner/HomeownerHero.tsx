@@ -14,41 +14,36 @@ const HomeownerHero = () => {
   };
   return <section
     id="hero"
-    className="relative section-spacing bg-cover bg-center text-nordic-900 pt-36 pb-24 md:pb-36 overflow-hidden nordic-texture border-t border-nordic-100"
+    className="relative isolate flex items-end md:items-center bg-cover bg-center text-white min-h-[65vh] md:min-h-[480px] lg:min-h-[520px] overflow-hidden pt-20 md:pt-24"
     style={{
-    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)), url('/lovable-uploads/8ccebe4e-fd48-4e9f-9769-13588d98face.png')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
+    backgroundImage: `url('/lovable-uploads/8ccebe4e-fd48-4e9f-9769-13588d98face.png')`
   }}>
-      {/* Subtle overlay for better text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/10"></div>
-      
-      <div className="container mx-auto px-6 md:px-8 relative">
-        <div className="max-w-2xl mx-auto nordic-card p-8 md:p-10 border border-nordic-200 text-center">
-          <span className="inline-block text-nordic-500 mb-3 text-sm uppercase tracking-wider font-heading">
+      <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/65 to-black/25" />
+
+      <div className="container mx-auto px-6 md:px-8 relative py-16 md:py-10">
+        <div className="max-w-3xl space-y-5">
+          <p className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-white/80">
             Stuga • Lägenhet • Hus
-          </span>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal mb-6 leading-tight text-nordic-900">
+          </p>
+          <h1 className="text-4xl md:text-[44px] font-semibold leading-tight">
             {t('homeowner.hero.title')}
           </h1>
-          <p className="text-base md:text-lg text-nordic-800 mb-8 leading-relaxed font-light">
+          <p className="max-w-2xl text-base md:text-lg text-white/75">
             {t('homeowner.hero.subtitle')}
           </p>
-          
-          <div className="mb-8">
-            <p className="text-xl md:text-2xl font-semibold text-nordic-900 mb-2">
-              Tjäna 3 000 – 8 000 kr/månad
-            </p>
-            <p className="text-base md:text-lg text-nordic-800 leading-relaxed font-light">
-              Vi hjälper dig med uthyrningen, du får betalt
-            </p>
-          </div>
-          
-          <div className="flex justify-center">
-            <Button onClick={scrollToForm} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white rounded-md px-6 py-2.5 h-auto font-light transition-colors duration-500">
-              {t('homeowner.hero.cta')}
-            </Button>
+
+          <div className="rounded-2xl bg-white/95 text-nordic-900 shadow-lg border border-white/30 p-4 md:p-6 space-y-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-2xl font-light text-nordic-900">Tjäna 3 000 – 8 000 kr/månad</p>
+                <p className="text-sm text-nordic-600 mt-1">Vi hjälper dig hitta rätt hyresgäst</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button onClick={scrollToForm} className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-6">
+                  {t('homeowner.hero.cta')}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

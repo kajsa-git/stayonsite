@@ -13,9 +13,9 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const navLinks = [
-    { label: t('nav.services'), href: '#services' },
-    { label: t('nav.references'), href: '#references' },
-    { label: t('nav.contact'), href: '#inquiry' },
+    { label: t('nav.services'), href: '/#services' },
+    { label: t('nav.references'), href: '/#references' },
+    { label: t('nav.contact'), href: '/#inquiry' },
   ];
 
   // Add scroll effect for the header
@@ -58,12 +58,12 @@ const Header = () => {
           <ul className="flex items-center space-x-3 rounded-full bg-white/50 px-3 py-1 border border-nordic-100">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
+                <Link
+                  to={link.href}
                   className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
             {/* För byggbolag link */}
@@ -120,13 +120,13 @@ const Header = () => {
             <ul className="flex flex-col space-y-6">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
+                <Link
+                  to={link.href}
                   className="block rounded-full border border-nordic-200 px-4 py-2 text-nordic-800 hover:text-[#ff6300] hover:border-[#ff6300]/40 transition-colors font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
               <li>
