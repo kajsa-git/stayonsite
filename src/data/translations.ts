@@ -438,7 +438,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.contactPrompt': 'Har du fler frågor? Ring oss direkt!',
     
     'homeowner.form.title': 'Registrera din bostad',
-    'homeowner.form.subtitle': 'Det tar bara 2 minuter - få din kostnadsfria inkomstuppskattning redan idag',
+    'homeowner.form.subtitle': 'Det tar bara 2 minuter - Vi hjälper dig hitta rätt hyresgäst',
     'homeowner.form.promise': 'Vi kontaktar dig inom 24 timmar',
     'homeowner.form.promiseDescription': 'Efter registrering kontaktar vi dig för en kostnadsfri konsultation om hur mycket du kan tjäna på din bostad',
     'homeowner.form.fieldsTitle': 'Dina kontaktuppgifter',
@@ -692,7 +692,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.contactPrompt': 'Have more questions? Call us directly!',
     
     'homeowner.form.title': 'Register your property',
-    'homeowner.form.subtitle': 'It only takes 2 minutes - get your free income estimate today',
+    'homeowner.form.subtitle': 'It takes just 2 minutes - We help you find the right tenant',
     'homeowner.form.promise': 'We contact you within 24 hours',
     'homeowner.form.promiseDescription': 'After registration, we contact you for a free consultation about how much you can earn from your property',
     'homeowner.form.fieldsTitle': 'Your contact information',
@@ -946,7 +946,7 @@ export const translations: Record<AvailableLanguages, Record<TranslationKey, str
     'homeowner.faq.contactPrompt': 'Masz więcej pytań? Zadzwoń do nas bezpośrednio!',
 
     'homeowner.form.title': 'Zarejestruj swoją nieruchomość',
-    'homeowner.form.subtitle': 'To zajmuje tylko 2 minuty - otrzymaj bezpłatną wycenę dochodu już dziś.',
+    'homeowner.form.subtitle': 'To zajmuje tylko 2 minuty - Pomożemy Ci znaleźć odpowiedniego najemcę',
     'homeowner.form.promise': 'Skontaktujemy się z Tobą w ciągu 24 godzin',
     'homeowner.form.promiseDescription': 'Po rejestracji skontaktujemy się z Tobą w celu bezpłatnej konsultacji na temat tego, ile możesz zarobić na swojej nieruchomości.',
     'homeowner.form.fieldsTitle': 'Twoje dane kontaktowe',
