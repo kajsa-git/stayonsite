@@ -399,9 +399,9 @@ export const translations: Record<
     "stickyContact.subtitle": "Hör av dig via telefon eller SMS",
     "stickyContact.call": "Ring nu",
 
-    "why.title": "Varför välja StayOnSite för att ordna möblerade boenden i Stockholm",
+    "why.title": "Varför StayOnSite",
     "why.subtitle":
-      "Ett hjälpsamt och professionellt team som hjälper ert företag med fullt möblerade boenden i hela Sverige - från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara.",
+      "Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara.",
     "why.steps.plan.title": "Planering & förslag",
     "why.steps.plan.description":
       "Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar och svarar med alternativ – oftast inom 15 minuter, alltid inom ett dygn.",
