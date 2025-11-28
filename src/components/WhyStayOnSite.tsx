@@ -54,7 +54,7 @@ const WhyStayOnSite = () => {
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-2xl mb-12">
           <h2 className="text-3xl md:text-4xl text-nordic-900 font-semibold leading-snug mb-3">{t('why.title')}</h2>
-          <p className="text-base text-nordic-600 leading-relaxed">{t('why.subtitle')}</p>
+          <p className="text-base text-nordic-800 leading-relaxed">{t('why.subtitle')}</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
