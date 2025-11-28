@@ -80,12 +80,12 @@ const Header = () => {
                     {link.label}
                   </a>
                 ) : (
-                  <Link
-                    to={link.href}
+                  <a
+                    href={link.href}
                     className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 )}
               </li>
             ))}

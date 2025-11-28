@@ -187,14 +187,14 @@ const CityPage = () => {
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-wrap items-center gap-3 mb-6">
-                <Badge variant="secondary" className="text-base px-4 py-2">
+                <span className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-base px-4 py-2 pointer-events-none">
                   {city.region}
-                </Badge>
+                </span>
                 <span className="text-sm uppercase tracking-[0.3em] text-white/70">
                   {translate(
-                    `Personalboende i ${city.name}`,
-                    `Staff housing in ${city.name}`,
-                    `Zakwaterowanie w ${city.name}`
+                    `Möblerade boenden i ${city.name} för företag`,
+                    `Furnished corporate housing in ${city.name}`,
+                    `Umeblowane zakwaterowanie dla firm w ${city.name}`
                   )}
                 </span>
               </div>

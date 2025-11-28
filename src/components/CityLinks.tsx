@@ -1,14 +1,34 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { type AvailableLanguages } from '@/data/translations';
 import { cities, type City } from '@/data/cities';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { MapPin, ArrowRight, Search } from 'lucide-react';
 
+const translations: Record<AvailableLanguages, { title: string; subtitle: string; notFound: string }> = {
+  sv: {
+    title: 'Boende i hela Sverige',
+    subtitle: 'Vi täcker Sveriges största städer och industriknutpunkter',
+    notFound: 'Hittar du inte din stad? Vi löser boende var som helst i Sverige.',
+  },
+  en: {
+    title: 'Housing all over Sweden',
+    subtitle: "We cover Sweden's largest cities and industrial hubs",
+    notFound: 'Cannot find your city? We arrange housing anywhere in Sweden.',
+  },
+  pl: {
+    title: 'Zakwaterowanie w całej Szwecji',
+    subtitle: 'Obsługujemy największe miasta i węzły przemysłowe Szwecji',
+    notFound: 'Nie możesz znaleźć swojego miasta? Organizujemy zakwaterowanie w dowolnym miejscu w Szwecji.',
+  },
+};
+
 const CityLinks = () => {
   const { language } = useLanguage();
   const [query, setQuery] = useState('');
+  const t = translations[language];
 
   const filteredCities = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -42,13 +62,9 @@ const CityLinks = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-semibold text-nordic-900 mb-2">
-              {language === 'sv' ? 'Boende i hela Sverige' : 'Housing all over Sweden'}
+              {t.title}
             </h2>
-            <p className="text-sm text-gray-600">
-              {language === 'sv'
-                ? 'Vi täcker Sveriges största städer och industriknutpunkter'
-                : 'We cover Sweden\'s largest cities and industrial hubs'}
-            </p>
+            <p className="text-sm text-gray-600">{t.subtitle}</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 mb-6">
@@ -65,11 +81,7 @@ const CityLinks = () => {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
-              {language === 'sv'
-                ? 'Hittar du inte din stad? Vi löser boende var som helst i Sverige.'
-                : 'Cannot find your city? We arrange housing anywhere in Sweden.'}
-            </p>
+            <p className="text-sm text-gray-600">{t.notFound}</p>
           </div>
         </div>
       </div>

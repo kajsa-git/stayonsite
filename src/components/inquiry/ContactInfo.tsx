@@ -26,14 +26,14 @@ const ContactInfo = () => {
           </span>
           <span className="font-medium text-nordic-900">+46 736 28 77 09</span>
         </a>
-        <div className="flex items-start gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300] mt-1">
+        <div className="flex items-center gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">
             <MapPin className="h-5 w-5" />
           </span>
           <span className="text-nordic-800 font-light">
-            StayOnSite AB
+            StayOnSite
             <br />
-            11646 Stockholm
+            17165 Solna
           </span>
         </div>
       </div>

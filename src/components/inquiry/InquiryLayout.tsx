@@ -43,12 +43,7 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
               {t('hero.ctaWhatsapp')}
             </a>
           </Button>
-          <Button variant="ghost" className="rounded-full h-12 px-6 text-nordic-600 hover:text-[#ff6300]" asChild>
-            <a href="mailto:kajsa@stayonsite.se">
-              <Calendar size={16} className="mr-2" />
-              {t('inquiry.cta.meeting')}
-            </a>
-          </Button>
+
         </div>
 
         <div className="mt-12 max-w-5xl mx-auto bg-white rounded-3xl border border-nordic-100 shadow-lg overflow-hidden">

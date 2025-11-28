@@ -51,8 +51,8 @@ const Footer = () => {
                   info@stayonsite.se
                 </a>
               </li>
-              <li className="flex items-start">
-                <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40 mt-1">
+              <li className="flex items-center">
+                <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <MapPin size={18} className="text-[#ff6300]" />
                 </div>
                 <span className="font-light text-white/80">{t('footer.location')}</span>
@@ -93,7 +93,7 @@ const Footer = () => {
         
         <div className="mt-16 pt-8 text-center border-t border-white/10">
           <p className="font-light text-white/50">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
-          <p className="font-light text-white/40 mt-2">Med omsorg, Kajsa & Natalie</p>
+          <p className="font-light text-white/40 mt-2">{t('footer.care')}</p>
         </div>
       </div>
     </footer>;

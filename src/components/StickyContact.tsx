@@ -9,13 +9,21 @@ const StickyContact = () => {
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
+    if (isDismissed) {
+      setIsVisible(false);
+      return;
+    }
+
     const handleScroll = () => {
       // Show after scrolling past hero (approx 600px)
       const shouldShow = window.scrollY > 600;
-      setIsVisible(shouldShow && !isDismissed);
+      setIsVisible(shouldShow);
     };
 
     window.addEventListener('scroll', handleScroll);
+    // Check initial scroll position
+    handleScroll();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isDismissed]);
 
@@ -62,10 +70,6 @@ const StickyContact = () => {
               </a>
             </Button>
           </div>
-
-          <p className="text-xs text-nordic-500 text-center font-light">
-            {t('hero.responseTime')}
-          </p>
         </div>
       </div>
     </div>

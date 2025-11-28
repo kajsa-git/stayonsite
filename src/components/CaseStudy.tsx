@@ -19,21 +19,6 @@ const timeline = [
   },
 ];
 
-const metrics = [
-  {
-    valueKey: 'case.metrics.proposal.value' as TranslationKey,
-    descriptionKey: 'case.metrics.proposal.description' as TranslationKey,
-  },
-  {
-    valueKey: 'case.metrics.moveIn.value' as TranslationKey,
-    descriptionKey: 'case.metrics.moveIn.description' as TranslationKey,
-  },
-  {
-    valueKey: 'case.metrics.deployments.value' as TranslationKey,
-    descriptionKey: 'case.metrics.deployments.description' as TranslationKey,
-  },
-];
-
 const CaseStudy = () => {
   const { t } = useLanguage();
 
@@ -68,18 +53,15 @@ const CaseStudy = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-[#ff6300] text-white p-8 flex flex-col gap-6 justify-between">
-            {metrics.map(({ valueKey, descriptionKey }) => (
-              <div key={valueKey}>
-                <p className="text-4xl font-light">{t(valueKey)}</p>
-                <p className="text-sm uppercase tracking-wide text-white/80">{t(descriptionKey)}</p>
-              </div>
-            ))}
+          <div className="rounded-3xl bg-[#ff6300] text-white p-8 flex flex-col gap-6 justify-center items-center text-center">
+            <p className="text-2xl md:text-3xl font-semibold leading-snug">
+              {t('case.cta.question')}
+            </p>
             <a
-              href="#contact"
-              className="inline-flex items-center justify-center rounded-full bg-white/10 px-5 py-3 text-sm font-medium hover:bg-white/20 transition-colors"
+              href="sms:+46736287709"
+              className="inline-flex items-center justify-center rounded-full bg-white text-[#ff6300] px-6 py-3 text-sm font-semibold hover:bg-white/90 transition-colors"
             >
-              {t('hero.cta')}
+              {t('case.cta.button')}
             </a>
           </div>
         </div>

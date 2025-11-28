@@ -61,19 +61,18 @@ const WhyStayOnSite = () => {
           {serviceCards.map(({ id, icon: Icon, number, title, highlight, description, bullets, cta }) => (
             <article
               key={id}
-              className="relative h-full rounded-3xl border border-nordic-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="relative h-full rounded-3xl border border-nordic-100 bg-white p-6 shadow-sm transition hover:shadow-xl"
             >
               <div className="flex items-center gap-3 text-nordic-500 text-sm tracking-[0.35em] font-heading">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ff6300]/10 text-[#ff6300]">
-                  <Icon className="h-5 w-5" />
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ff6300]/10 text-[#ff6300] text-lg font-semibold">
+                  {number}
                 </span>
-                {number}
               </div>
               <h3 className="mt-6 text-2xl font-semibold text-nordic-900">{title}</h3>
               <p className="text-sm uppercase tracking-wide text-[#ff6300] mt-2">{highlight}</p>
               <p className="mt-4 text-sm text-nordic-700 leading-relaxed">{description}</p>
               <ul className="mt-5 space-y-2 text-sm text-nordic-800">
-                {bullets.map((bullet) => (
+                {bullets.filter(bullet => bullet).map((bullet) => (
                   <li key={bullet} className="flex items-start gap-2">
                     <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#ff6300]" />
                     <span>{bullet}</span>
