@@ -225,6 +225,8 @@ export type TranslationKey =
   | "homeowner.form.city"
   | "homeowner.form.cityPlaceholder"
   | "homeowner.form.submit"
+  | "homeowner.form.submitLine1"
+  | "homeowner.form.submitLine2"
   | "homeowner.form.submitting"
   | "homeowner.form.success"
   | "homeowner.form.error"
@@ -549,6 +551,8 @@ export const translations: Record<
     "homeowner.form.cityPlaceholder": "Ange stad",
     "homeowner.form.submit":
       "Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst",
+    "homeowner.form.submitLine1": "Det tar bara två minuter",
+    "homeowner.form.submitLine2": "Vi hjälper dig hitta rätt hyresgäst",
     "homeowner.form.submitting": "Registrerar...",
     "homeowner.form.success":
       "Tack för din registrering! Vi kontaktar dig inom 24 timmar.",
@@ -881,6 +885,8 @@ export const translations: Record<
     "homeowner.form.cityPlaceholder": "Enter city",
     "homeowner.form.submit":
       "It takes just two minutes - we help you find the right tenant",
+    "homeowner.form.submitLine1": "It takes just two minutes",
+    "homeowner.form.submitLine2": "We help you find the right tenant",
     "homeowner.form.submitting": "Registering...",
     "homeowner.form.success":
       "Thank you for your registration! We will contact you within 24 hours.",
@@ -1216,6 +1222,8 @@ export const translations: Record<
     "homeowner.form.cityPlaceholder": "Wpisz miasto",
     "homeowner.form.submit":
       "To zajmie tylko dwie minuty - pomożemy Ci znaleźć odpowiedniego najemcę",
+    "homeowner.form.submitLine1": "To zajmie tylko dwie minuty",
+    "homeowner.form.submitLine2": "Pomożemy Ci znaleźć odpowiedniego najemcę",
     "homeowner.form.submitting": "Rejestrowanie...",
     "homeowner.form.success":
       "Dziękujemy za rejestrację! Skontaktujemy się z Tobą w ciągu 24 godzin.",
