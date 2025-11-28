@@ -131,7 +131,11 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
               {t('homeowner.form.submitting')}
             </div>
           ) : (
-            t('homeowner.form.submit')
+            <>
+              Det tar bara två minuter
+              <br />
+              Vi hjälper dig hitta rätt hyresgäst
+            </>
           )}
         </Button>
       </div>
