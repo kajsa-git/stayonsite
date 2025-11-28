@@ -298,7 +298,7 @@ export const translations: Record<
     "services.whyus.point2": "Boenden över hela Sverige",
     "services.whyus.point3": "Smidig process från start till mål",
     "services.whyus.point4": "Över 10 års erfarenhet",
-    'services.card1.title': 'Hus, lägenheter eller delat boende',
+    'services.card1.title': 'Förfrågan och förslag',
     'services.card1.highlight': 'Besked inom 24 h',
     'services.card1.description': '',
     'services.card1.bullet1': 'Boenden i hela Sverige',
