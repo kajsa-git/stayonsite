@@ -300,7 +300,7 @@ export const translations: Record<
     "services.whyus.point4": "Över 10 års erfarenhet",
     'services.card1.title': 'Hus, lägenheter eller delat boende',
     'services.card1.highlight': 'Besked inom 24 h',
-    'services.card1.description': 'Vi har flera alternativ i Stockholm och kan möta era behov.',
+    'services.card1.description': '',
     'services.card1.bullet1': 'Boenden i hela Sverige',
     "services.card1.bullet2": "Alternativ med egna eller delade sovrum",
     'services.card1.bullet3': '',
