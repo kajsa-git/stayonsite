@@ -83,7 +83,7 @@ const References = () => {
                   {testimonial.quote}
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-nordic-200 rounded-full overflow-hidden ring-2 ring-white">
+                  <div className="w-16 h-16 bg-nordic-200 rounded-full overflow-hidden ring-4 ring-nordic-100 shadow-lg">
                     <img
                       src={testimonial.img}
                       alt={testimonial.author}
