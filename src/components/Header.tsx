@@ -67,63 +67,65 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 ml-6">
-          <ul className="flex items-center space-x-3 rounded-full bg-white/50 px-3 py-1 border border-nordic-100">
+        <nav className="hidden md:flex items-center gap-8">
+          <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <li key={link.href}>
                 {isHomePage ? (
                   <a
                     href={link.href}
                     onClick={(e) => handleSectionClick(e, link.href.replace('#', ''))}
-                    className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
+                    className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
                   >
                     {link.label}
                   </a>
                 ) : (
                   <a
                     href={link.href}
-                    className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-nordic-700 hover:text-[#ff6300] hover:bg-[#ff6300]/10 transition-colors"
+                    className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
                   >
                     {link.label}
                   </a>
                 )}
               </li>
             ))}
-            {/* För byggbolag link */}
-            <li>
-              {isHomePage ? (
-                <a
-                  href="#inquiry"
-                  onClick={(e) => handleSectionClick(e, 'inquiry')}
-                  className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
-                >
-                  {t('nav.forCompanies')}
-                </a>
-              ) : (
-                <Link
-                  to="/#inquiry"
-                  className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-sm font-medium text-blue-800 hover:bg-blue-100 transition-colors"
-                >
-                  {t('nav.forCompanies')}
-                </Link>
-              )}
-            </li>
-            {/* För husägare link */}
-            <li>
-              <Link
-                to="/for-husagare"
-                className="inline-flex items-center rounded-full border border-amber-100 bg-amber-50/80 px-3 py-1.5 text-sm font-medium text-amber-700 hover:bg-amber-100 transition-colors"
-              >
-                {t('nav.homeowner')}
-              </Link>
-            </li>
           </ul>
-          <div className="flex items-center space-x-6">
-            <LanguageSwitcher className="text-nordic-800" />
+
+          <div className="h-5 w-px bg-nordic-200" />
+
+          <div className="flex items-center gap-4">
+            {/* För byggbolag link */}
+            {isHomePage ? (
+              <a
+                href="#inquiry"
+                onClick={(e) => handleSectionClick(e, 'inquiry')}
+                className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+              >
+                {t('nav.forCompanies')}
+              </a>
+            ) : (
+              <Link
+                to="/#inquiry"
+                className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+              >
+                {t('nav.forCompanies')}
+              </Link>
+            )}
+            {/* För husägare link */}
+            <Link
+              to="/for-husagare"
+              className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+            >
+              {t('nav.homeowner')}
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher className="text-nordic-600" />
             <Button
               asChild
               variant="default"
-              className="rounded-full px-6 py-2 h-auto font-light bg-[#ff6300] hover:bg-[#e25200] text-white shadow-sm"
+              className="rounded-full px-5 h-10 font-medium bg-[#ff6300] hover:bg-[#e25200] text-white shadow-sm"
             >
               <a href="tel:+46736287709">
                 {t('nav.inquiryForm')}
