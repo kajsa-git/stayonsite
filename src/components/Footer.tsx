@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
-  return <footer id="contact" className="bg-nordic-900 text-white nordic-texture border-t border-nordic-800">
+  return <footer id="contact" className="bg-nordic-800 text-white nordic-texture border-t border-nordic-700">
       <div className="container mx-auto px-6 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
           <div className="space-y-6">

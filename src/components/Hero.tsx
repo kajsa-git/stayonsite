@@ -24,7 +24,7 @@ const Hero = () => {
           backgroundImage: "url('/images/hero-kitchen-livingroom.jpg')",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/65 to-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-transparent" />
 
         <div className="container mx-auto px-6 md:px-8 relative py-16 md:py-10">
           <div className="max-w-3xl space-y-5">

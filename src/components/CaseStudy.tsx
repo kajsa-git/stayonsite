@@ -28,7 +28,7 @@ const CaseStudy = () => {
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] items-stretch">
           <div className="relative overflow-hidden rounded-3xl min-h-[420px]">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${CASE_IMAGE}')` }} />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/20" />
             <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
               <span className="inline-flex items-center rounded-full border border-[#ff6300]/40 bg-[#ff6300]/20 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-white w-fit mb-3">
                 {t('case.tagline')}
