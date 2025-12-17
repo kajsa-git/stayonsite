@@ -61,7 +61,7 @@ const WhyStayOnSite = () => {
           {serviceCards.map(({ id, icon: Icon, number, title, highlight, description, bullets, cta }) => (
             <article
               key={id}
-              className="relative h-full rounded-3xl border border-nordic-100 bg-white p-6 shadow-sm transition hover:shadow-xl"
+              className="relative h-full rounded-3xl border border-nordic-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5"
             >
               <div className="flex items-center gap-3 text-nordic-500 text-sm tracking-[0.35em] font-heading">
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ff6300]/10 text-[#ff6300] text-lg font-semibold">
