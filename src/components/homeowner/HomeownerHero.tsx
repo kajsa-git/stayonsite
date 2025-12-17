@@ -22,7 +22,7 @@ const HomeownerHero = () => {
 
       <div className="container mx-auto px-6 md:px-8 relative py-16 md:py-10">
         <div className="max-w-3xl space-y-5">
-          <h1 className="text-4xl md:text-[44px] font-semibold leading-tight">
+          <h1 className="font-display text-5xl md:text-[56px] lg:text-[64px] font-semibold leading-[1.1] tracking-tight">
             {t('homeowner.hero.title')}
           </h1>
           <p className="max-w-2xl text-base md:text-lg text-white/75">
