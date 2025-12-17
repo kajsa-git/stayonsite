@@ -75,14 +75,14 @@ const Header = () => {
                   <a
                     href={link.href}
                     onClick={(e) => handleSectionClick(e, link.href.replace('#', ''))}
-                    className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+                    className="text-sm font-semibold text-nordic-800 hover:text-[#ff6300] transition-colors"
                   >
                     {link.label}
                   </a>
                 ) : (
                   <a
                     href={link.href}
-                    className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+                    className="text-sm font-semibold text-nordic-800 hover:text-[#ff6300] transition-colors"
                   >
                     {link.label}
                   </a>
@@ -99,14 +99,14 @@ const Header = () => {
               <a
                 href="#inquiry"
                 onClick={(e) => handleSectionClick(e, 'inquiry')}
-                className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+                className="text-sm font-semibold text-nordic-800 hover:text-[#ff6300] transition-colors"
               >
                 {t('nav.forCompanies')}
               </a>
             ) : (
               <Link
                 to="/#inquiry"
-                className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+                className="text-sm font-semibold text-nordic-800 hover:text-[#ff6300] transition-colors"
               >
                 {t('nav.forCompanies')}
               </Link>
@@ -114,7 +114,7 @@ const Header = () => {
             {/* För husägare link */}
             <Link
               to="/for-husagare"
-              className="text-sm font-medium text-nordic-600 hover:text-nordic-900 transition-colors"
+              className="text-sm font-semibold text-nordic-800 hover:text-[#ff6300] transition-colors"
             >
               {t('nav.homeowner')}
             </Link>
