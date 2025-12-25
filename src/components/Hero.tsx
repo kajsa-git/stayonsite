@@ -107,11 +107,11 @@ const Hero = () => {
           </motion.div>
 
           {/* Trust Indicators */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
-            className="pt-16 border-t border-white/10 mt-16"
+            className="pt-16 mt-16"
           >
             <div className="flex flex-wrap gap-x-12 gap-y-6">
                 {bulletPoints.map((key, index) => (

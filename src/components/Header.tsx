@@ -36,25 +36,33 @@ const Header = () => {
     }
   };
 
-  // Add scroll effect for the header
+  // Add scroll effect for the header with RAF for smooth performance
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 20;
+          if (isScrolled !== scrolled) {
+            setScrolled(isScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrolled]);
 
   return (
     <header
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-500",
-        scrolled 
-          ? "py-3 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-lg shadow-black/5" 
+        "fixed top-0 w-full z-50 transition-all duration-300 ease-out will-change-[background-color,padding,backdrop-filter]",
+        scrolled
+          ? "py-3 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg shadow-black/5"
           : "py-6 bg-transparent"
       )}
     >
@@ -67,7 +75,7 @@ const Header = () => {
           >
             <span
               className={cn(
-                "text-2xl md:text-3xl font-display tracking-tight transition-all duration-300",
+                "text-2xl md:text-3xl font-display tracking-tight transition-colors duration-300 ease-out",
                 scrolled
                   ? "text-primary"
                   : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
@@ -152,7 +160,7 @@ const Header = () => {
               <Button
                 asChild
                 className={cn(
-                  "rounded-full px-8 h-12 font-semibold text-white transition-all duration-500 hover:scale-105 active:scale-95 shadow-xl",
+                  "rounded-full px-8 h-12 font-semibold text-white transition-all duration-300 ease-out hover:scale-105 active:scale-95 shadow-xl",
                   "bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40"
                 )}
               >
