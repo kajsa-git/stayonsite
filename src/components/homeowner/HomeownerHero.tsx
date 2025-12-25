@@ -35,11 +35,12 @@ const HomeownerHero = () => {
                 <p className="text-2xl font-light text-nordic-900">Tjäna 3 000 – 8 000 kr/månad</p>
                 <p className="text-sm text-nordic-600 mt-1">Vi hjälper dig hitta rätt hyresgäst</p>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={scrollToForm} className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-6">
-                  {t('homeowner.hero.cta')}
-                </Button>
-              </div>
+              <Button 
+                onClick={scrollToForm} 
+                className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white px-8 py-3 h-auto text-base font-semibold shadow-md hover:shadow-lg transition-all"
+              >
+                {t('homeowner.hero.cta')}
+              </Button>
             </div>
           </div>
         </div>
