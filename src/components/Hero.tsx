@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { TranslationKey } from '@/data/translations';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Phone, ArrowRight } from 'lucide-react';
+import { MessageCircle, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const phoneHref = 'tel:+46762498486';
@@ -96,15 +96,13 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
-            className="pt-16 mt-16"
+            className="pt-16 mt-16 pb-12 md:pb-0"
           >
             <div className="flex flex-wrap gap-x-12 gap-y-6">
-                {bulletPoints.map((key, index) => (
-                <div key={key} className="flex items-center gap-4 text-white/70 font-medium group cursor-default">
-                  <div className="flex items-center justify-center h-7 w-7 rounded-full bg-accent/20 text-accent group-hover:bg-accent group-hover:text-white transition-all duration-300">
-                    <ArrowRight size={14} />
-                  </div>
-                  <span className="text-lg group-hover:text-white transition-colors">{t(key)}</span>
+                {bulletPoints.map((key) => (
+                <div key={key} className="flex items-center gap-3 text-white/80 font-medium">
+                  <div className="h-2 w-2 rounded-full bg-accent" />
+                  <span className="text-lg">{t(key)}</span>
                 </div>
               ))}
             </div>
