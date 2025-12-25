@@ -8,6 +8,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import CityPage from "./pages/CityPage";
 import ForHusagare from "./pages/ForHusagare";
+import CorporateHousingSweden from "./pages/en/CorporateHousingSweden";
+import ZakwaterowanieFirmowe from "./pages/pl/ZakwaterowanieFirmowe";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/stad/:citySlug" element={<CityPage />} />
               <Route path="/for-husagare" element={<ForHusagare />} />
+              <Route path="/en/corporate-housing-sweden" element={<CorporateHousingSweden />} />
+              <Route path="/pl/zakwaterowanie-firmowe" element={<ZakwaterowanieFirmowe />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
