@@ -39,7 +39,11 @@ const CaseStudy = () => {
             <img
               src={CASE_IMAGE}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute top-0 left-0 w-full h-full"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center 60%'
+              }}
             />
             {/* Stronger gradient overlay on mobile for text readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 md:bg-black/40" />
