@@ -39,7 +39,7 @@ const CaseStudy = () => {
             <img
               src={CASE_IMAGE}
               alt=""
-              className="absolute top-0 left-0 w-full h-full scale-[1.3] md:scale-100"
+              className="absolute top-0 left-0 w-full h-full scale-[1.6] md:scale-100"
               style={{
                 objectFit: 'cover',
                 objectPosition: 'center 50%'
