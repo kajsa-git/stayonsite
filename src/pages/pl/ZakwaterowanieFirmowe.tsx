@@ -50,7 +50,7 @@ const ZakwaterowanieFirmowe = () => {
     },
     {
       question: "Które miasta w Szwecji obsługujecie?",
-      answer: "Obsługujemy wszystkie główne szwedzkie miasta, w tym Sztokholm, Göteborg, Malmö, Uppsala, Linköping, Örebro i ponad 40 innych lokalizacji. Możemy znaleźć zakwaterowanie wszędzie tam, gdzie realizujesz projekt."
+      answer: "Specjalizujemy się w lokalizacjach w całej Szwecji, w tym Umeå, Luleå, Boden, Gävle, Västerås, Örebro, Linköping, Norrköping, Säffle i wiele innych. Możemy znaleźć zakwaterowanie wszędzie tam, gdzie realizujesz projekt."
     },
     {
       question: "Co jest wliczone w cenę?",
@@ -80,7 +80,7 @@ const ZakwaterowanieFirmowe = () => {
       <SEO
         title="Zakwaterowanie Firmowe Szwecja | Alternatywa Airbnb dla Firm"
         description="Szukasz Airbnb dla zespołu w Szwecji? Oferujemy w pełni umeblowane mieszkania z profesjonalnym fakturowaniem, elastyczne warunki od 30 dni. Lepsza alternatywa dla Airbnb dla firm."
-        keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, airbnb sztokholm firma, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, wynajem krótkoterminowy szwecja firma, airbnb dla pracowników, nocleg dla ekipy szwecja"
+        keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, nocleg dla ekipy szwecja, zakwaterowanie umeå, mieszkania luleå, nocleg örebro, zakwaterowanie gävle, mieszkania västerås, noclegi norrland polska ekipa"
         canonical="https://stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
       />

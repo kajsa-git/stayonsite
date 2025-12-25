@@ -51,7 +51,7 @@ const CorporateHousingSweden = () => {
     },
     {
       question: "What cities in Sweden do you cover?",
-      answer: "We cover all major Swedish cities including Stockholm, Gothenburg, Malmö, Uppsala, Linköping, Örebro, and over 40 other locations. We can find accommodation wherever your project is located."
+      answer: "We specialize in locations across Sweden including Umeå, Luleå, Boden, Gävle, Västerås, Örebro, Linköping, Norrköping, Säffle and many more. We can find accommodation wherever your project is located."
     },
     {
       question: "What's included in the price?",
@@ -81,7 +81,7 @@ const CorporateHousingSweden = () => {
       <SEO
         title="Corporate Housing Sweden | Airbnb Alternative for Business Teams"
         description="Looking for Airbnb for your business team in Sweden? We offer fully furnished apartments with professional invoicing, flexible 30+ day terms, and dedicated support. The smart Airbnb alternative."
-        keywords="airbnb sweden business, airbnb alternative sweden, airbnb stockholm business, corporate housing sweden, furnished apartments sweden business, short term rental sweden company, airbnb for companies sweden, business accommodation stockholm"
+        keywords="airbnb sweden business, airbnb alternative sweden, corporate housing sweden, furnished apartments sweden business, accommodation umeå, accommodation örebro, housing luleå, corporate housing norrland, airbnb gävle business, accommodation västerås company, housing linköping norrköping"
         canonical="https://stayonsite.se/en/corporate-housing-sweden"
         structuredData={[structuredData, faqSchema]}
       />
