@@ -191,7 +191,7 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden glass-panel border-t border-border absolute top-full left-0 right-0 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-border absolute top-full left-0 right-0 animate-in slide-in-from-top duration-300 shadow-lg">
           <div className="container mx-auto px-6 py-8">
             <ul className="flex flex-col space-y-4">
               {navLinks.map((link) => (
