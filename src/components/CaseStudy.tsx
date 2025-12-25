@@ -33,7 +33,7 @@ const CaseStudy = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col"
+            className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col bg-[#2a3d35]"
           >
             {/* Background image - use cover on mobile to fill entire container */}
             <div

@@ -36,24 +36,9 @@ const Hero = () => {
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-primary/90 via-primary/50 to-transparent" />
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary/95 via-transparent to-transparent opacity-90" />
 
-      {/* Animated Decorative Elements for Depth */}
+      {/* Static decorative elements - simplified for better Safari performance */}
       <div className="absolute inset-0 z-15 pointer-events-none overflow-hidden">
-        <motion.div 
-          animate={{ 
-            y: [0, -20, 0],
-            opacity: [0.1, 0.2, 0.1] 
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[120px]"
-        />
-        <motion.div 
-          animate={{ 
-            y: [0, 20, 0],
-            opacity: [0.05, 0.1, 0.05] 
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px]"
-        />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px]" />
       </div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-20 h-full flex items-center">
