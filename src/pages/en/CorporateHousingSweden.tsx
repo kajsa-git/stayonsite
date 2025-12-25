@@ -59,7 +59,7 @@ const CorporateHousingSweden = () => {
     },
     {
       question: "How quickly can you arrange accommodation?",
-      answer: "We typically respond within 3 hours and can have accommodation ready within 24-48 hours for urgent requests. For planned projects, we recommend booking 1-2 weeks in advance."
+      answer: "We typically respond the same day and can have accommodation ready within 24-48 hours for urgent requests. For planned projects, we recommend booking 1-2 weeks in advance."
     }
   ];
 
@@ -141,7 +141,7 @@ const CorporateHousingSweden = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-wrap gap-6 text-white/70"
               >
-                {['30+ day flexible terms', 'All-inclusive pricing', '3h response time'].map((item, i) => (
+                {['30+ day flexible terms', 'All-inclusive pricing', 'Same day response'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-accent" />
                     <span className="text-sm font-medium">{item}</span>
@@ -179,7 +179,7 @@ const CorporateHousingSweden = () => {
               {[
                 { value: '70+', label: 'Happy Clients' },
                 { value: '500+', label: 'Accommodations' },
-                { value: '3h', label: 'Avg. Response' },
+                { value: 'Same day', label: 'Response Time' },
                 { value: '40+', label: 'Cities Covered' }
               ].map((stat, i) => (
                 <motion.div
@@ -307,7 +307,7 @@ const CorporateHousingSweden = () => {
                 Ready to Find Housing for Your Team?
               </h2>
               <p className="text-xl text-white/80 mb-8">
-                Contact us now - we typically respond within 3 hours
+                Contact us now - we typically respond the same day
               </p>
               <DirectContact language="en" className="justify-center mb-12" />
             </div>

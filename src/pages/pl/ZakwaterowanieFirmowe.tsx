@@ -58,7 +58,7 @@ const ZakwaterowanieFirmowe = () => {
     },
     {
       question: "Jak szybko możecie zorganizować zakwaterowanie?",
-      answer: "Zazwyczaj odpowiadamy w ciągu 3 godzin i możemy przygotować zakwaterowanie w ciągu 24-48 godzin na pilne zapytania. Dla planowanych projektów zalecamy rezerwację z 1-2 tygodniowym wyprzedzeniem."
+      answer: "Zazwyczaj odpowiadamy tego samego dnia i możemy przygotować zakwaterowanie w ciągu 24-48 godzin na pilne zapytania. Dla planowanych projektów zalecamy rezerwację z 1-2 tygodniowym wyprzedzeniem."
     }
   ];
 
@@ -140,7 +140,7 @@ const ZakwaterowanieFirmowe = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-wrap gap-6 text-white/70"
               >
-                {['Od 30 dni', 'Cena all-inclusive', 'Odpowiedź w 3h'].map((item, i) => (
+                {['Od 30 dni', 'Cena all-inclusive', 'Odpowiedź tego samego dnia'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-accent" />
                     <span className="text-sm font-medium">{item}</span>
@@ -178,7 +178,7 @@ const ZakwaterowanieFirmowe = () => {
               {[
                 { value: '70+', label: 'Zadowolonych Klientów' },
                 { value: '500+', label: 'Mieszkań' },
-                { value: '3h', label: 'Czas Odpowiedzi' },
+                { value: 'Ten sam dzień', label: 'Czas Odpowiedzi' },
                 { value: '40+', label: 'Miast' }
               ].map((stat, i) => (
                 <motion.div
@@ -306,7 +306,7 @@ const ZakwaterowanieFirmowe = () => {
                 Gotowy Znaleźć Zakwaterowanie dla Twojego Zespołu?
               </h2>
               <p className="text-xl text-white/80 mb-8">
-                Skontaktuj się teraz - zazwyczaj odpowiadamy w ciągu 3 godzin
+                Skontaktuj się teraz - zazwyczaj odpowiadamy tego samego dnia
               </p>
               <DirectContact language="pl" className="justify-center mb-12" />
             </div>
