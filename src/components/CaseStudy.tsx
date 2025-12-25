@@ -35,12 +35,12 @@ const CaseStudy = () => {
             viewport={{ once: true }}
             className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col"
           >
-            {/* Background image - zoomed in more on mobile to avoid gray edges */}
+            {/* Background image - use cover on mobile to fill entire container */}
             <div
-              className="absolute inset-0 bg-no-repeat bg-[length:200%] md:bg-[length:140%]"
+              className="absolute inset-0 bg-no-repeat bg-cover md:bg-[length:140%]"
               style={{
                 backgroundImage: `url('${CASE_IMAGE}')`,
-                backgroundPosition: 'center 45%'
+                backgroundPosition: 'center 30%'
               }}
             />
             {/* Stronger gradient overlay on mobile for text readability */}
