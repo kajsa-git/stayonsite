@@ -15,7 +15,7 @@ const SEO = ({
   title,
   description,
   keywords,
-  ogImage = 'https://lovable.dev/opengraph-image-p98pqg.png',
+  ogImage = 'https://stayonsite.se/images/og-image.jpg',
   canonical,
   type = 'website',
   structuredData,

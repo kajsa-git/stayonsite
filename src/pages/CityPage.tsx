@@ -97,7 +97,9 @@ const CityPage = () => {
       '@type': 'PostalAddress',
       addressLocality: city.name,
       addressRegion: city.region,
-      telephone: '+46762498486',
+      addressCountry: 'SE'
+    },
+    telephone: '+46762498486',
     url: canonicalUrl,
     geo: {
       '@type': 'GeoCoordinates',
