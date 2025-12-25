@@ -35,14 +35,14 @@ const CaseStudy = () => {
             viewport={{ once: true }}
             className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col"
           >
-            {/* Background image - scaled up on mobile to ensure full coverage */}
+            {/* Background image - positioned to show solar panels, not sky */}
             <img
               src={CASE_IMAGE}
               alt=""
-              className="absolute top-0 left-0 w-full h-full scale-[1.6] md:scale-100"
+              className="absolute inset-0 w-full h-full"
               style={{
                 objectFit: 'cover',
-                objectPosition: 'center 50%'
+                objectPosition: 'center bottom'
               }}
             />
             {/* Stronger gradient overlay on mobile for text readability */}
