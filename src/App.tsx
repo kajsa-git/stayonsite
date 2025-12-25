@@ -27,6 +27,8 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/stad/:citySlug" element={<CityPage />} />
+              <Route path="/en/corporate-housing/:citySlug" element={<CityPage />} />
+              <Route path="/pl/zakwaterowanie/:citySlug" element={<CityPage />} />
               <Route path="/for-husagare" element={<ForHusagare />} />
               <Route path="/en/corporate-housing-sweden" element={<CorporateHousingSweden />} />
               <Route path="/pl/zakwaterowanie-firmowe" element={<ZakwaterowanieFirmowe />} />

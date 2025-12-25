@@ -1810,6 +1810,116 @@ export const cities: City[] = [
     ],
     nearby: ['vastervik', 'kalmar']
   },
+  {
+    slug: 'umea',
+    name: 'Umeå',
+    region: 'Västerbottens län',
+    population: '130 000',
+    description: 'Norrlands huvudstad med universitet, sjukhus och växande industri.',
+    highlights: ['Norrlands Universitetssjukhus', 'Umeå Universitet', 'Norrbotniabanan', 'Komatsu Forest'],
+    industries: ['Vård', 'Utbildning', 'Industri', 'Infrastruktur'],
+    coordinates: [63.8258, 20.2630],
+    heroHook: ls(
+      'Säkra boende i Umeå för team vid sjukhuset och industrin.',
+      'Secure housing in Umeå for crews at the hospital and industry.',
+      'Zapewnij noclegi w Umeå dla ekip przy szpitalu i w przemyśle.'
+    ),
+    intro: ls(
+      'Norrlands universitetssjukhus och industrin i Umeå driver stora projekt som kräver tillfälliga boenden. Vi har lägenheter och hus på Ersboda, Teg och Mariehem där era team bor bekvämt nära arbetsplatserna.',
+      'Norrlands University Hospital and the industry in Umeå drive large projects requiring temporary housing. We have apartments and houses in Ersboda, Teg and Mariehem where your teams live comfortably near the workplaces.',
+      'Szpital Uniwersytecki Norrlands i przemysł w Umeå napędzają duże projekty wymagające tymczasowych noclegów. Mamy mieszkania i domy na Ersboda, Teg i Mariehem, gdzie Twoje ekipy mieszkają wygodnie blisko pracy.'
+    ),
+    keywords: lk(
+      ['personalboende umeå', 'företagslägenheter sjukhus', 'byggboende norrbotniabanan'],
+      ['corporate housing umea', 'hospital staff apartments', 'norrbotniabanan construction housing'],
+      ['zakwaterowanie pracownicze umea', 'mieszkania szpitalne', 'noclegi norrbotniabanan']
+    ),
+    metrics: [
+      {
+        value: '40',
+        label: ls('platser nära sjukhuset', 'beds near hospital', 'miejsc blisko szpitala'),
+        subtext: ls('Mariehem och Ålidhem', 'Mariehem and Ålidhem', 'Mariehem i Ålidhem')
+      },
+      {
+        value: '6',
+        label: ls('industriprojekt', 'industry projects', 'projekty przemysłowe'),
+        subtext: ls('Västerslätt och hamnen', 'Västerslätt and harbor', 'Västerslätt i port')
+      },
+      {
+        value: '10',
+        label: ls('min till city', 'min to downtown', 'min do centrum'),
+        subtext: ls('Från våra områden', 'From our areas', 'Z naszych dzielnic')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Ersboda', 'Ersboda', 'Ersboda'),
+        description: ls('Nära handelsområden och industri.', 'Close to retail areas and industry.', 'Blisko handlu i przemysłu.'),
+        distance: ls('8 min till centrum', '8 min to downtown', '8 min do centrum')
+      },
+      {
+        name: ls('Teg', 'Teg', 'Teg'),
+        description: ls('Södra sidan älven, nära flygplatsen.', 'South side of river, near airport.', 'Południowa strona rzeki, blisko lotniska.'),
+        distance: ls('5 min till flyget', '5 min to airport', '5 min do lotniska')
+      },
+      {
+        name: ls('Mariehem', 'Mariehem', 'Mariehem'),
+        description: ls('Nära sjukhuset och universitetet.', 'Close to hospital and university.', 'Blisko szpitala i uniwersytetu.'),
+        distance: ls('Gångavstånd till NUS', 'Walking distance to NUS', 'Spacer do NUS')
+      }
+    ],
+    projects: [
+      {
+        name: ls('Norrlands Universitetssjukhus', 'University Hospital', 'Szpital Uniwersytecki'),
+        description: ls('Boende för vårdpersonal och byggteam vid utbyggnader.', 'Housing for healthcare staff and construction crews at expansions.', 'Noclegi dla personelu medycznego i ekip budowlanych przy rozbudowie.')
+      },
+      {
+        name: ls('Norrbotniabanan', 'North Botnia Line', 'Linia Norrbotniabanan'),
+        description: ls('Team nära järnvägsutbyggnaden.', 'Crews near railway expansion.', 'Ekipy blisko rozbudowy kolei.')
+      },
+      {
+        name: ls('Komatsu Forest', 'Komatsu Forest', 'Komatsu Forest'),
+        description: ls('Boende för installatörer vid fabriken.', 'Housing for installers at the factory.', 'Noclegi dla instalatorów w fabryce.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'Vi behövde boende för 8 personer vid sjukhusbygget och StayOnSite fixade lägenheter på Mariehem direkt.',
+        'We needed housing for 8 people at the hospital build and StayOnSite sorted apartments in Mariehem immediately.',
+        'Potrzebowaliśmy noclegów dla 8 osób przy budowie szpitala i StayOnSite załatwiło mieszkania na Mariehem od ręki.'
+      ),
+      author: 'Klara Wikström',
+      role: ls('HR-ansvarig', 'HR Manager', 'Kierownik HR'),
+      company: 'Vårdbyggarna'
+    },
+    faq: [
+      {
+        question: ls('Hur nära sjukhuset kan vi bo?', 'How close to the hospital can we stay?', 'Jak blisko szpitala możemy mieszkać?'),
+        answer: ls(
+          'Vi har lägenheter på Mariehem och Ålidhem, ca 5-10 minuters promenad från sjukhuset.',
+          'We have apartments in Mariehem and Ålidhem, about 5-10 minutes walk from the hospital.',
+          'Mamy mieszkania na Mariehem i Ålidhem, ok. 5-10 minut spacerem od szpitala.'
+        )
+      },
+      {
+        question: ls('Har ni parkering på Teg?', 'Do you have parking in Teg?', 'Czy macie parking na Teg?'),
+        answer: ls(
+          'Ja, våra villor på Teg har egna uppfarter med plats för flera bilar.',
+          'Yes, our houses in Teg have private driveways with space for multiple cars.',
+          'Tak, nasze domy na Teg mają prywatne podjazdy z miejscem na kilka aut.'
+        )
+      },
+      {
+        question: ls('Vad ingår?', 'What is included?', 'Co jest wliczone?'),
+        answer: ls(
+          'Möblerat, kök, sängkläder, wifi, el, värme och slutstädning.',
+          'Furnished, kitchen, linens, wifi, electricity, heating and final cleaning.',
+          'Umeblowane, kuchnia, pościel, wifi, prąd, ogrzewanie i sprzątanie końcowe.'
+        )
+      }
+    ],
+    nearby: ['lulea', 'sundsvall']
+  },
 ];
 
 export const citySlugs = cities.map((city) => city.slug);

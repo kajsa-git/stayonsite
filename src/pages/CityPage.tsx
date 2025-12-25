@@ -1,4 +1,4 @@
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, Navigate, Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug, getNearbyCities } from '@/data/cities';
@@ -31,20 +31,24 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { getLocalizedKeywords, getLocalizedText } from '@/lib/utils';
+import { AvailableLanguages } from '@/data/translations';
 
 const CityPage = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
-  const { language } = useLanguage();
-
-  const translate = (sv: string, en: string, pl: string) => {
-    if (language === 'en') return en;
-    if (language === 'pl') return pl;
-    return sv;
-  };
+  const { language, setLanguage } = useLanguage();
+  const location = useLocation();
 
   useEffect(() => {
+    // Detect language from URL
+    if (location.pathname.startsWith('/en/')) {
+      setLanguage('en');
+    } else if (location.pathname.startsWith('/pl/')) {
+      setLanguage('pl');
+    } else {
+      setLanguage('sv');
+    }
     window.scrollTo(0, 0);
-  }, [citySlug]);
+  }, [citySlug, location.pathname, setLanguage]);
 
   if (!citySlug) {
     return <Navigate to="/" replace />;
@@ -57,10 +61,32 @@ const CityPage = () => {
     return <Navigate to="/404" replace />;
   }
 
+  const translate = (sv: string, en: string, pl: string) => {
+    if (language === 'en') return en;
+    if (language === 'pl') return pl;
+    return sv;
+  };
+
   const heroHeading = getLocalizedText(city.heroHook, language);
   const heroDescription = getLocalizedText(city.intro, language);
   const localizedKeywords = getLocalizedKeywords(city.keywords, language);
-  const canonicalUrl = `https://stayonsite.se/stad/${city.slug}`;
+  
+  // Construct canonical and hreflang URLs
+  const baseUrl = 'https://stayonsite.se';
+  const svUrl = `${baseUrl}/stad/${city.slug}`;
+  const enUrl = `${baseUrl}/en/corporate-housing/${city.slug}`;
+  const plUrl = `${baseUrl}/pl/zakwaterowanie/${city.slug}`;
+  
+  let canonicalUrl = svUrl;
+  if (language === 'en') canonicalUrl = enUrl;
+  if (language === 'pl') canonicalUrl = plUrl;
+
+  const hreflangs = [
+    { lang: 'sv', href: svUrl },
+    { lang: 'en', href: enUrl },
+    { lang: 'pl', href: plUrl },
+    { lang: 'x-default', href: svUrl }
+  ];
 
   const localBusinessSchema = {
     '@context': 'https://schema.org',
@@ -71,9 +97,7 @@ const CityPage = () => {
       '@type': 'PostalAddress',
       addressLocality: city.name,
       addressRegion: city.region,
-      addressCountry: 'SE'
-    },
-    telephone: '+46736287709',
+      telephone: '+46762498486',
     url: canonicalUrl,
     geo: {
       '@type': 'GeoCoordinates',
@@ -97,7 +121,7 @@ const CityPage = () => {
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '4.8',
-      reviewCount: '200'
+      reviewCount: '70'
     }
   };
 
@@ -161,7 +185,7 @@ const CityPage = () => {
       '@type': 'ServiceChannel',
       servicePhone: {
         '@type': 'ContactPoint',
-        telephone: '+46736287709',
+        telephone: '+46762498486',
         contactType: 'sales'
       }
     }
@@ -181,6 +205,7 @@ const CityPage = () => {
         keywords={`${localizedKeywords.join(', ')}, StayOnSite`}
         canonical={canonicalUrl}
         structuredData={structuredData}
+        hreflangs={hreflangs}
       />
       <Header />
       <Breadcrumbs />
@@ -252,7 +277,7 @@ const CityPage = () => {
                   variant="outline"
                   className="group rounded-full h-16 px-10 text-lg border-white/25 bg-white/5 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95"
                 >
-                  <a href="https://wa.me/46736287709" className="flex items-center gap-3">
+                  <a href="https://wa.me/46762498486" className="flex items-center gap-3">
                     <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
                     {translate('WhatsApp', 'WhatsApp', 'WhatsApp')}
                   </a>
@@ -541,7 +566,7 @@ const CityPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="text-lg">
-                  <a href="tel:+46736287709">
+                  <a href="tel:+46762498486">
                     <Phone className="mr-2 h-5 w-5" /> +46 73-628 77 09
                   </a>
                 </Button>

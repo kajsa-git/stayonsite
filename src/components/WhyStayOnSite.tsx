@@ -45,7 +45,7 @@ const WhyStayOnSite = () => {
         t('services.card3.bullet2'),
         t('services.card3.bullet3'),
       ],
-      cta: { label: t('services.card3.cta'), href: 'https://wa.me/46736287709' },
+      cta: { label: t('services.card3.cta'), href: 'https://wa.me/46762498486' },
     },
   ];
 

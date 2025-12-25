@@ -106,8 +106,7 @@ const HomeownerFAQ = () => {
             {t('homeowner.faq.contactPrompt')}
           </p>
           <a 
-            href="tel:+46736287709" 
-            className="group inline-flex items-center gap-3 bg-white px-8 py-4 rounded-full shadow-lg border border-primary/5 text-primary font-bold transition-all duration-300 hover:shadow-xl hover:scale-105"
+                          href="tel:+46762498486"            className="group inline-flex items-center gap-3 bg-white px-8 py-4 rounded-full shadow-lg border border-primary/5 text-primary font-bold transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
             <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
               <Phone size={18} />

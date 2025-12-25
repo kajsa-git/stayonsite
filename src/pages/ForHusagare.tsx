@@ -43,7 +43,7 @@ const ForHusagare = () => {
     'aggregateRating': {
       '@type': 'AggregateRating',
       'ratingValue': '4.9',
-      'reviewCount': '200'
+      'reviewCount': '70'
     }
   };
 

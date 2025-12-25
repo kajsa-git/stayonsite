@@ -24,7 +24,7 @@ const Footer = () => {
                 variant="outline"
                 className="rounded-full border-white/40 bg-white/10 hover:bg-white/20 text-white h-11 px-5"
               >
-                <a href="https://wa.me/46736287709" target="_blank" rel="noreferrer">
+                <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
                   <MessageCircle size={16} className="mr-2" />
                   {t('hero.ctaWhatsapp')}
                 </a>

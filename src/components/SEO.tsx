@@ -18,8 +18,11 @@ const SEO = ({
   ogImage = 'https://lovable.dev/opengraph-image-p98pqg.png',
   canonical,
   type = 'website',
-  structuredData
-}: SEOProps) => {
+  structuredData,
+  hreflangs
+}: SEOProps & {
+  hreflangs?: Array<{ lang: string; href: string }>;
+}) => {
   const { language } = useLanguage();
 
   // Default content based on language
@@ -90,6 +93,29 @@ const SEO = ({
     }
     canonicalElement.href = finalCanonical;
 
+    // Update hreflang tags if provided
+    if (hreflangs) {
+      // Remove existing hreflang tags to avoid duplicates
+      document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+
+      hreflangs.forEach(({ lang, href }) => {
+        const link = document.createElement('link');
+        link.rel = 'alternate';
+        link.hreflang = lang;
+        link.href = href;
+        document.head.appendChild(link);
+      });
+      
+      // Add x-default if not present in hreflangs (usually sv or en)
+      if (!hreflangs.find(h => h.lang === 'x-default')) {
+         const defaultLink = document.createElement('link');
+         defaultLink.rel = 'alternate';
+         defaultLink.hreflang = 'x-default';
+         defaultLink.href = hreflangs.find(h => h.lang === 'sv')?.href || finalCanonical;
+         document.head.appendChild(defaultLink);
+      }
+    }
+
     // Update language attribute on html tag
     document.documentElement.lang = language === 'sv' ? 'sv' : language === 'en' ? 'en' : 'pl';
 
@@ -106,7 +132,7 @@ const SEO = ({
 
       scriptElement.textContent = JSON.stringify(structuredData);
     }
-  }, [finalTitle, finalDescription, finalKeywords, finalCanonical, ogImage, type, language, structuredData]);
+  }, [finalTitle, finalDescription, finalKeywords, finalCanonical, ogImage, type, language, structuredData, hreflangs]);
 
   return null;
 };

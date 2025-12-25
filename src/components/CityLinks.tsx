@@ -68,16 +68,22 @@ const CityLinks = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {cities.slice(0, 12).map((city) => (
-              <Link
-                key={city.slug}
-                to={`/stad/${city.slug}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-sm text-nordic-900 hover:text-[#ff6300]"
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                {city.name}
-              </Link>
-            ))}
+            {cities.slice(0, 12).map((city) => {
+              let cityLink = `/stad/${city.slug}`;
+              if (language === 'en') cityLink = `/en/corporate-housing/${city.slug}`;
+              if (language === 'pl') cityLink = `/pl/zakwaterowanie/${city.slug}`;
+
+              return (
+                <Link
+                  key={city.slug}
+                  to={cityLink}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-sm text-nordic-900 hover:text-[#ff6300]"
+                >
+                  <MapPin className="h-3.5 w-3.5" />
+                  {city.name}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="text-center">

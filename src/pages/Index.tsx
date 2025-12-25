@@ -49,7 +49,7 @@ const Index = () => {
     'aggregateRating': {
       '@type': 'AggregateRating',
       'ratingValue': '4.8',
-      'reviewCount': '200'
+      'reviewCount': '70'
     },
     'areaServed': [
       {
