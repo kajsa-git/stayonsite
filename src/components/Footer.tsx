@@ -87,6 +87,18 @@ const Footer = () => {
                   {t('nav.forCompanies')}
                 </a>
               </li>
+              <li>
+                <a href="/en/corporate-housing-sweden" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  Corporate Housing (EN)
+                </a>
+              </li>
+              <li>
+                <a href="/pl/zakwaterowanie-firmowe" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  Zakwaterowanie Firmowe (PL)
+                </a>
+              </li>
             </ul>
           </div>
         </div>
