@@ -78,9 +78,9 @@ const ZakwaterowanieFirmowe = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title="Zakwaterowanie Firmowe Szwecja | Mieszkania dla Firm"
-        description="W pełni umeblowane mieszkania dla Twojego zespołu w Szwecji. Elastyczne warunki od 30 dni, cena all-inclusive, profesjonalna obsługa. Alternatywa dla Airbnb dla firm."
-        keywords="zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, wynajem krótkoterminowy szwecja, mieszkania służbowe sztokholm, zakwaterowanie pracowników szwecja"
+        title="Zakwaterowanie Firmowe Szwecja | Alternatywa Airbnb dla Firm"
+        description="Szukasz Airbnb dla zespołu w Szwecji? Oferujemy w pełni umeblowane mieszkania z profesjonalnym fakturowaniem, elastyczne warunki od 30 dni. Lepsza alternatywa dla Airbnb dla firm."
+        keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, airbnb sztokholm firma, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, wynajem krótkoterminowy szwecja firma, airbnb dla pracowników, nocleg dla ekipy szwecja"
         canonical="https://stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
       />

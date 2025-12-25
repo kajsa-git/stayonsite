@@ -79,9 +79,9 @@ const CorporateHousingSweden = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title="Corporate Housing Sweden | Furnished Apartments for Business Teams"
-        description="Find fully furnished apartments for your team across Sweden. Flexible 30+ day terms, all-inclusive pricing, professional service. The Airbnb alternative for business."
-        keywords="corporate housing sweden, business accommodation sweden, furnished apartments sweden, short term rental sweden business, corporate apartments stockholm, business housing gothenburg"
+        title="Corporate Housing Sweden | Airbnb Alternative for Business Teams"
+        description="Looking for Airbnb for your business team in Sweden? We offer fully furnished apartments with professional invoicing, flexible 30+ day terms, and dedicated support. The smart Airbnb alternative."
+        keywords="airbnb sweden business, airbnb alternative sweden, airbnb stockholm business, corporate housing sweden, furnished apartments sweden business, short term rental sweden company, airbnb for companies sweden, business accommodation stockholm"
         canonical="https://stayonsite.se/en/corporate-housing-sweden"
         structuredData={[structuredData, faqSchema]}
       />
