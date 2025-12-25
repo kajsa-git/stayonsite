@@ -18,13 +18,13 @@ const ContactInfo = () => {
           <span className="font-medium text-nordic-900">kajsa@stayonsite.se</span>
         </a>
         <a
-          href="tel:+46736287709"
+          href="tel:+46762498486"
           className="flex items-center gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">
             <Phone className="h-5 w-5" />
           </span>
-          <span className="font-medium text-nordic-900">+46 736 28 77 09</span>
+          <span className="font-medium text-nordic-900">+46 76-249 84 86</span>
         </a>
         <div className="flex items-center gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">

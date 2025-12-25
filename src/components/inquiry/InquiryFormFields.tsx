@@ -60,7 +60,7 @@ const InquiryFormFields = ({
 
         <Button
           type="submit"
-          className="w-full px-8 py-2.5 h-auto bg-[#ff6300] hover:bg-[#e25200] text-white font-light rounded-full transition-colors duration-300 shadow-sm"
+          className="w-full px-8 h-14 bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold rounded-full transition-all duration-300 shadow-xl active:scale-[0.98]"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

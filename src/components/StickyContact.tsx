@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Phone, MessageCircle, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 const StickyContact = () => {
   const { t } = useLanguage();
@@ -30,29 +31,43 @@ const StickyContact = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="hidden lg:block fixed bottom-6 left-6 z-40 animate-in slide-in-from-bottom duration-500">
-      <div className="bg-white rounded-2xl shadow-lg border border-nordic-200 p-6 max-w-sm">
+    <div className="hidden lg:block fixed bottom-8 left-8 z-40">
+      <motion.div 
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-primary/5 p-7 max-w-[320px] relative overflow-hidden"
+      >
         <button
           onClick={() => setIsDismissed(true)}
-          className="absolute top-3 right-3 text-nordic-400 hover:text-nordic-600 transition-colors"
+          className="absolute top-4 right-4 text-primary/30 hover:text-primary/60 transition-colors z-20"
           aria-label="Stäng"
         >
           <X size={18} />
         </button>
 
-        <div className="space-y-4">
-          <div>
-            <p className="text-sm font-medium text-nordic-900 mb-1">{t('stickyContact.title')}</p>
-            <p className="text-xs text-nordic-600 font-light">{t('stickyContact.subtitle')}</p>
+        <div className="relative z-10 space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="flex -space-x-3">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden rotate-[-6deg]">
+                <img src="/images/nathalie.jpg" alt="Nathalie" className="w-full h-full object-cover" />
+              </div>
+              <div className="w-12 h-12 rounded-2xl overflow-hidden rotate-[6deg]">
+                <img src="/images/kajsa.jpg" alt="Kajsa" className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-primary leading-tight">{t('stickyContact.title')}</p>
+              <p className="text-[11px] text-primary/50 font-medium mt-1">Vi svarar oftast direkt!</p>
+            </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-3">
             <Button
               asChild
-              className="flex-1 rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white"
+              className="w-full rounded-xl bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold h-12 shadow-lg transition-all hover:scale-[1.02]"
               size="sm"
             >
-              <a href="tel:+46736287709">
+              <a href="tel:+46762498486">
                 <Phone size={16} className="mr-2" />
                 {t('stickyContact.call')}
               </a>
@@ -61,19 +76,20 @@ const StickyContact = () => {
             <Button
               asChild
               variant="outline"
-              className="flex-1 rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
+              className="w-full rounded-xl border-primary/10 text-primary/70 hover:bg-primary/5 hover:text-primary/70 font-bold h-12 transition-all"
               size="sm"
             >
-              <a href="https://wa.me/46736287709" target="_blank" rel="noreferrer">
+              <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
                 <MessageCircle size={16} className="mr-2" />
                 WhatsApp
               </a>
             </Button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
 export default StickyContact;
+

@@ -14,7 +14,7 @@ const Footer = () => {
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white h-11 px-5">
-                <a href="tel:+46736287709">
+                <a href="tel:+46762498486">
                   <Phone size={16} className="mr-2" />
                   {t('nav.inquiryForm')}
                 </a>
@@ -39,8 +39,8 @@ const Footer = () => {
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <Phone size={18} className="text-[#ff6300]" />
                 </div>
-                <a href="tel:+46736287709" className="font-medium hover:text-[#ff6300] transition-colors duration-300">
-                  +46 736 28 77 09
+                <a href="tel:+46762498486" className="font-medium hover:text-[#ff6300] transition-colors duration-300">
+                  +46 76-249 84 86
                 </a>
               </li>
               <li className="flex items-center">

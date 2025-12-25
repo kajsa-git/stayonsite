@@ -18,8 +18,12 @@ import {
   Building,
   Star,
   ArrowRight,
-  MessageCircle
+  MessageCircle,
+  Clock,
+  CheckCircle2,
+  ShieldCheck
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import {
   Accordion,
   AccordionContent,
@@ -183,59 +187,93 @@ const CityPage = () => {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="section-spacing bg-gradient-to-br from-nordic-900 via-nordic-800 to-nordic-700 text-white">
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-base px-4 py-2 pointer-events-none">
-                  {city.region}
-                </span>
-                <span className="text-sm uppercase tracking-[0.3em] text-white/70">
+        <section className="relative overflow-hidden bg-primary text-white min-h-[600px] flex items-center">
+           {/* Background Gradient/Pattern */}
+           <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-primary/90 z-0" />
+           <div className="absolute inset-0 opacity-20 bg-[url('/images/hero-nordic-high-res.jpg')] bg-cover bg-center mix-blend-overlay z-0"></div>
+           <div className="absolute inset-0 opacity-40 bg-gradient-to-t from-primary via-transparent to-transparent z-0"></div>
+           
+           {/* Glow Effect */}
+           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent opacity-10 blur-[150px] rounded-full pointer-events-none" />
+
+          <div className="container mx-auto px-6 md:px-12 relative z-10 pt-20">
+            <div className="max-w-4xl">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-wrap items-center gap-4 mb-8"
+              >
+                <Badge variant="outline" className="border-white/20 text-white bg-white/10 backdrop-blur-xl px-5 py-1.5 text-xs tracking-[0.2em] font-bold uppercase transition-all hover:bg-white/20">
+                   {city.region}
+                </Badge>
+                <span className="hidden md:block w-px h-4 bg-white/20"></span>
+                <span className="text-xs uppercase tracking-[0.25em] text-white/70 font-bold">
                   {translate(
-                    `Möblerade boenden i ${city.name} för företag`,
-                    `Furnished corporate housing in ${city.name}`,
-                    `Umeblowane zakwaterowanie dla firm w ${city.name}`
+                    `Möblerade boenden för företag`,
+                    `Furnished corporate housing`,
+                    `Umeblowane zakwaterowanie dla firm`
                   )}
                 </span>
-              </div>
+              </motion.div>
 
-              <h1 className="text-4xl md:text-5xl font-semibold leading-tight mb-4">{heroHeading}</h1>
-              <p className="text-lg md:text-xl text-white/80 mb-8">{heroDescription}</p>
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
+              >
+                {heroHeading}
+              </motion.h1>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-xl md:text-2xl text-white/80 mb-12 font-light leading-relaxed max-w-3xl"
+              >
+                {heroDescription}
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <Button asChild size="lg" className="text-lg">
-                  <a href="tel:+46736287709">
-                    <Phone className="mr-2 h-5 w-5" />
-                    {translate('Ring oss', 'Call us', 'Zadzwoń')}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-6 mb-16"
+              >
+                <Button asChild size="lg" className="group rounded-full h-16 px-10 text-lg bg-accent hover:bg-accent text-white shadow-2xl shadow-accent/30 transition-all duration-500 hover:scale-105 active:scale-95">
+                  <a href="tel:+46762498486" className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                    {translate('Ring oss nu', 'Call us now', 'Zadzwoń teraz')}
                   </a>
                 </Button>
                 <Button
                   asChild
                   size="lg"
-                  className="text-lg bg-[#25D366] hover:bg-[#1fb855] text-white"
+                  variant="outline"
+                  className="group rounded-full h-16 px-10 text-lg border-white/25 bg-white/5 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95"
                 >
-                  <a href="https://wa.me/46736287709">
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    {translate('Skicka WhatsApp', 'Send WhatsApp', 'Wyślij WhatsApp')}
+                  <a href="https://wa.me/46736287709" className="flex items-center gap-3">
+                    <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                    {translate('WhatsApp', 'WhatsApp', 'WhatsApp')}
                   </a>
                 </Button>
-              </div>
+              </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 1 }}
+                className="grid grid-cols-1 sm:grid-cols-3 gap-10 pt-10 border-t border-white/10"
+              >
                 {city.metrics.map((metric) => (
-                  <Card key={`${metric.value}-${metric.label.sv}`} className="bg-white/5 border-white/10 text-white">
-                    <CardContent className="pt-6">
-                      <span className="text-3xl font-semibold">{metric.value}</span>
-                      <p className="uppercase text-sm tracking-wide text-white/70 mt-1">
+                  <div key={`${metric.value}-${metric.label.sv}`} className="group cursor-default">
+                     <p className="text-4xl lg:text-5xl font-bold text-white mb-2 tracking-tight group-hover:text-accent transition-colors duration-300">{metric.value}</p>
+                     <p className="uppercase text-[10px] tracking-[0.2em] text-white/50 font-bold">
                         {getLocalizedText(metric.label, language)}
                       </p>
-                      <p className="text-white/70 text-sm mt-3">
-                        {getLocalizedText(metric.subtext, language)}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -253,21 +291,31 @@ const CityPage = () => {
                 </h2>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-3 gap-8">
                 {city.projects.map((project, index) => (
-                  <Card key={`${project.name.sv}-${index}`} className="h-full">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        <Building className="h-5 w-5 text-[#ff6300]" />
-                        {getLocalizedText(project.name, language)}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-700 leading-relaxed">
-                        {getLocalizedText(project.description, language)}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <motion.div
+                    key={`${project.name.sv}-${index}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="h-full border-primary/5 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 rounded-3xl overflow-hidden group">
+                      <CardHeader className="bg-primary/5 group-hover:bg-primary transition-colors duration-500">
+                        <CardTitle className="flex items-center gap-3 text-lg font-display font-bold group-hover:text-white transition-colors duration-500">
+                          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
+                            <Building size={20} />
+                          </div>
+                          {getLocalizedText(project.name, language)}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-8">
+                        <p className="text-primary/70 leading-relaxed font-medium">
+                          {getLocalizedText(project.description, language)}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
             </div>

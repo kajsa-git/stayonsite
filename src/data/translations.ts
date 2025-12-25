@@ -551,8 +551,8 @@ export const translations: Record<
     "homeowner.form.cityPlaceholder": "Ange stad",
     "homeowner.form.submit":
       "Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst",
-    "homeowner.form.submitLine1": "Det tar bara två minuter",
-    "homeowner.form.submitLine2": "Vi hjälper dig hitta rätt hyresgäst",
+    "homeowner.form.submitLine1": "Registrera din bostad",
+    "homeowner.form.submitLine2": "Säkra hyresintäkter idag",
     "homeowner.form.submitting": "Registrerar...",
     "homeowner.form.success":
       "Tack för din registrering! Vi kontaktar dig inom 24 timmar.",
@@ -885,8 +885,8 @@ export const translations: Record<
     "homeowner.form.cityPlaceholder": "Enter city",
     "homeowner.form.submit":
       "It takes just two minutes - we help you find the right tenant",
-    "homeowner.form.submitLine1": "It takes just two minutes",
-    "homeowner.form.submitLine2": "We help you find the right tenant",
+    "homeowner.form.submitLine1": "Register your property",
+    "homeowner.form.submitLine2": "Secure rental income today",
     "homeowner.form.submitting": "Registering...",
     "homeowner.form.success":
       "Thank you for your registration! We will contact you within 24 hours.",

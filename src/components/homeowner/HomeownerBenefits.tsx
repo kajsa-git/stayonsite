@@ -1,67 +1,100 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { motion } from 'framer-motion';
+import { DollarSign, ShieldCheck, Clock } from 'lucide-react';
 
 const HomeownerBenefits = () => {
   const { t } = useLanguage();
 
   const benefits = [
     {
-      icon: (
-        <svg className="w-12 h-12 text-[#ff6300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-        </svg>
-      ),
+      icon: <DollarSign size={32} className="text-accent" />,
       title: t('homeowner.benefits.income.title'),
       description: t('homeowner.benefits.income.description')
     },
     {
-      icon: (
-        <svg className="w-12 h-12 text-[#ff6300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
+      icon: <ShieldCheck size={32} className="text-accent" />,
       title: t('homeowner.benefits.security.title'),
       description: t('homeowner.benefits.security.description')
     },
     {
-      icon: (
-        <svg className="w-12 h-12 text-[#ff6300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <Clock size={32} className="text-accent" />,
       title: t('homeowner.benefits.flexibility.title'),
       description: t('homeowner.benefits.flexibility.description')
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 }
+    }
+  };
+
   return (
-    <section className="section-spacing bg-white border-t border-nordic-100">
-      <div className="container mx-auto px-6 md:px-8">
+    <section className="section-spacing bg-white relative overflow-hidden">
+      {/* Decorative background element */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-accent/5 -skew-x-12 transform origin-top translate-x-1/2" />
+      
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
+        <div className="mb-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-3 text-accent font-bold uppercase tracking-widest text-sm mb-4"
+          >
+            <span className="h-px w-8 bg-accent" />
+            Fördelar
+          </motion.div>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-display font-bold text-primary max-w-2xl"
+          >
             {t('homeowner.benefits.title')}
-          </h2>
-          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
-            Få extra inkomst genom uthyrning – vi tar hand om allt det praktiska
-          </p>
+          </motion.h2>
         </div>
 
         {/* Benefits grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {benefits.map((benefit, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <motion.div 
+              key={index} 
+              variants={itemVariants}
+              className="glass-card p-10 rounded-3xl"
+            >
+              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner">
                 {benefit.icon}
               </div>
-              <h3 className="text-xl font-semibold text-nordic-900 mb-4">
+              <h3 className="text-2xl font-display font-bold text-primary mb-4 leading-tight">
                 {benefit.title}
               </h3>
-              <p className="text-nordic-700 font-light leading-relaxed">
+              <p className="text-primary/70 font-medium leading-relaxed">
                 {benefit.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

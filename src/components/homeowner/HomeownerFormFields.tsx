@@ -2,6 +2,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { motion } from 'framer-motion';
+import { Send } from 'lucide-react';
 
 interface HomeownerFormFieldsProps {
   isSubmitting: boolean;
@@ -10,23 +12,32 @@ interface HomeownerFormFieldsProps {
 const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
   const { t } = useLanguage();
 
-  return (
-    <>
-      {/* Form header */}
-      <div className="text-center mb-8">
-        <h3 className="text-2xl font-semibold text-nordic-900 mb-2">
-          {t('homeowner.form.fieldsTitle')}
-        </h3>
-        <p className="text-nordic-700 font-light">
-          {t('homeowner.form.fieldsSubtitle')}
-        </p>
-      </div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
 
-      {/* Form fields */}
-      <div className="grid md:grid-cols-2 gap-6">
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0 }
+  };
+
+  return (
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8"
+    >
+      <div className="grid md:grid-cols-2 gap-8">
         {/* First Name */}
-        <div className="space-y-2">
-          <Label htmlFor="firstName" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="firstName" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.firstName')}
           </Label>
           <Input
@@ -34,14 +45,14 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="firstName"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.firstNamePlaceholder')}
           />
-        </div>
+        </motion.div>
 
         {/* Last Name */}
-        <div className="space-y-2">
-          <Label htmlFor="lastName" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="lastName" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.lastName')}
           </Label>
           <Input
@@ -49,14 +60,14 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="lastName"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.lastNamePlaceholder')}
           />
-        </div>
+        </motion.div>
 
         {/* Email */}
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="email" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.email')}
           </Label>
           <Input
@@ -64,14 +75,14 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="email"
             type="email"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.emailPlaceholder')}
           />
-        </div>
+        </motion.div>
 
         {/* Phone */}
-        <div className="space-y-2">
-          <Label htmlFor="phone" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="phone" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.phone')}
           </Label>
           <Input
@@ -79,14 +90,14 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="phone"
             type="tel"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.phonePlaceholder')}
           />
-        </div>
+        </motion.div>
 
         {/* Address */}
-        <div className="space-y-2">
-          <Label htmlFor="address" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="address" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.address')}
           </Label>
           <Input
@@ -94,14 +105,14 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="address"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.addressPlaceholder')}
           />
-        </div>
+        </motion.div>
 
         {/* City */}
-        <div className="space-y-2">
-          <Label htmlFor="city" className="text-nordic-800 font-medium">
+        <motion.div variants={itemVariants} className="space-y-3">
+          <Label htmlFor="city" className="text-primary/60 font-bold uppercase tracking-widest text-[10px] ml-1">
             {t('homeowner.form.city')}
           </Label>
           <Input
@@ -109,43 +120,45 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             name="city"
             type="text"
             required
-            className="bg-gray-50 border-gray-200 focus:border-[#ff6300] focus:ring-[#ff6300]"
+            className="h-14 px-4 rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-sm font-medium placeholder:text-primary/30"
             placeholder={t('homeowner.form.cityPlaceholder')}
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* Submit button */}
-      <div className="pt-6">
+      <motion.div variants={itemVariants} className="pt-6">
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full bg-[#ff6300] hover:bg-[#e25200] text-white font-semibold text-base md:text-lg py-4 h-auto rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+          className="w-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold h-18 rounded-2xl shadow-xl transition-all duration-500 hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-4 group overflow-hidden relative"
         >
           {isSubmitting ? (
-            <div className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3">
+              <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {t('homeowner.form.submitting')}
+              <span className="text-xl font-bold">{t('homeowner.form.submitting')}</span>
             </div>
           ) : (
-            <span className="flex flex-col leading-tight">
-              <span>{t('homeowner.form.submitLine1')}</span>
-              <span className="text-white/90 text-sm font-medium">{t('homeowner.form.submitLine2')}</span>
-            </span>
+            <>
+              <div className="flex flex-col items-center">
+                <span className="text-xl font-bold leading-tight">{t('homeowner.form.submitLine1')}</span>
+                <span className="text-sm font-medium text-white/80">{t('homeowner.form.submitLine2')}</span>
+              </div>
+              <Send size={22} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            </>
           )}
         </Button>
-      </div>
+      </motion.div>
 
       {/* Additional info */}
-      <div className="text-center pt-4">
-        <p className="text-sm text-nordic-600 font-light">
-          {t('homeowner.form.disclaimer')}
-        </p>
-      </div>
-    </>
+      <motion.p variants={itemVariants} className="text-center text-xs text-primary/40 font-medium">
+        {t('homeowner.form.disclaimer')}
+      </motion.p>
+    </motion.div>
   );
 };
 

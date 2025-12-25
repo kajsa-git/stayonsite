@@ -11,7 +11,7 @@ const FloatingPhoneButton = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <a
-              href="https://wa.me/46736287709"
+              href="https://wa.me/46762498486"
               target="_blank"
               rel="noreferrer"
               className="group flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] shadow-lg hover:bg-[#1EBE59] transition-all duration-300 hover:scale-110"

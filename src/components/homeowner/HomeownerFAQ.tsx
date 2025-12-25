@@ -1,10 +1,12 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { motion } from 'framer-motion';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Phone, HelpCircle } from 'lucide-react';
 
 const HomeownerFAQ = () => {
   const { t } = useLanguage();
@@ -33,53 +35,86 @@ const HomeownerFAQ = () => {
   ];
 
   return (
-    <section className="section-spacing bg-gradient-to-br from-gray-50 to-gray-100 border-t border-nordic-100">
-      <div className="container mx-auto px-6 md:px-8">
+    <section className="section-spacing bg-secondary/30 relative">
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
+        <div className="text-center mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 bg-primary/5 text-primary/60 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
+          >
+            <HelpCircle size={14} />
+            Vanliga frågor
+          </motion.div>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-display font-bold text-primary mb-6"
+          >
             {t('homeowner.faq.title')}
-          </h2>
-          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-primary/60 font-medium max-w-2xl mx-auto leading-relaxed"
+          >
             {t('homeowner.faq.subtitle')}
-          </p>
+          </motion.p>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem 
-                key={index} 
-                value={`item-${index}`}
-                className="bg-white rounded-2xl shadow-sm border border-gray-200 px-6"
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
               >
-                <AccordionTrigger className="text-left text-lg font-semibold text-nordic-900 hover:text-[#ff6300] transition-colors py-6">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-nordic-700 font-light leading-relaxed pb-6">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                <AccordionItem 
+                  value={`item-${index}`}
+                  className="bg-white rounded-3xl shadow-sm border border-primary/5 px-8 transition-all duration-300 hover:shadow-md overflow-hidden"
+                >
+                  <AccordionTrigger className="text-left text-lg md:text-xl font-display font-bold text-primary hover:text-accent transition-colors py-7 no-underline hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-primary/70 font-medium text-[16px] md:text-[17px] leading-relaxed pb-8">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
         </div>
 
         {/* Contact CTA */}
-        <div className="text-center mt-16">
-          <p className="text-nordic-700 font-light mb-4">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.8 }}
+          className="text-center mt-20"
+        >
+          <p className="text-primary/60 font-medium mb-6">
             {t('homeowner.faq.contactPrompt')}
           </p>
           <a 
             href="tel:+46736287709" 
-            className="inline-flex items-center text-[#ff6300] hover:text-[#e25200] font-medium transition-colors"
+            className="group inline-flex items-center gap-3 bg-white px-8 py-4 rounded-full shadow-lg border border-primary/5 text-primary font-bold transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            073-628 77 09
+            <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
+              <Phone size={18} />
+            </div>
+            <span className="text-lg">076-249 84 86</span>
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

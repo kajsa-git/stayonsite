@@ -23,7 +23,7 @@ const ForHusagare = () => {
     'provider': {
       '@type': 'Organization',
       'name': 'StayOnSite',
-      'telephone': '+46736287709',
+      'telephone': '+46 76-249 84 86',
       'url': 'https://stayonsite.se'
     },
     'areaServed': {

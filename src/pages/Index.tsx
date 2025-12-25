@@ -25,7 +25,7 @@ const Index = () => {
     'image': 'https://stayonsite.se/lovable-uploads/b7dae38c-843c-4240-bbc3-cc9acc2de55d.png',
     '@id': 'https://stayonsite.se',
     'url': 'https://stayonsite.se',
-    'telephone': '+46736287709',
+    'telephone': '+46 76-249 84 86',
     'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',

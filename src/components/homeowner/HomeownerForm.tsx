@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 import HomeownerFormFields from './HomeownerFormFields';
 import FormSuccess from '../inquiry/FormSuccess';
+import { ShieldCheck, Mail, AlertTriangle } from 'lucide-react';
 
 const HomeownerForm = () => {
   const { t, language } = useLanguage();
@@ -33,7 +35,6 @@ const HomeownerForm = () => {
       });
       
       const result = await response.json();
-      console.log('Homeowner form submission result:', result);
       
       if (result.success === "true" || result.success === true) {
         setFormSuccess(true);
@@ -50,23 +51,21 @@ const HomeownerForm = () => {
           }
         }, 3000);
       } else if (result.message && result.message.includes("Activation")) {
-        // Handle activation needed case
         setNeedsActivation(true);
         toast({
           title: language === 'sv' ? 'Aktivering krävs' : 'Activation required',
           description: language === 'sv' 
-            ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se. Klicka på aktiveringsknappen i mailet för att aktivera formuläret.' 
-            : 'An activation email has been sent to kajsa@stayonsite.se. Click the activation button in the email to activate the form.',
+            ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se.' 
+            : 'An activation email has been sent to kajsa@stayonsite.se.',
           duration: 10000
         });
       } else {
         throw new Error('Form submission failed');
       }
     } catch (error) {
-      console.error('Homeowner form submission error:', error);
       toast({
         title: t('homeowner.form.error') || 'Error',
-        description: language === 'sv' ? 'Det uppstod ett fel vid skickandet av formuläret. Försök igen senare.' : 'There was an error submitting the form. Please try again later.',
+        description: language === 'sv' ? 'Det uppstod ett fel. Försök igen senare.' : 'An error occurred. Please try again later.',
         variant: "destructive"
       });
     } finally {
@@ -75,70 +74,95 @@ const HomeownerForm = () => {
   };
   
   return (
-    <section id="homeowner-form" className="section-spacing bg-white border-t border-nordic-100">
-      <div className="container mx-auto px-6 md:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Section header */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
-              {t('homeowner.form.title')}
-            </h2>
-            <p className="text-xl text-nordic-800 font-light leading-relaxed mb-8">
-              {t('homeowner.form.subtitle')}
-            </p>
-            
-            {/* Contact promise */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-12 border border-nordic-200 shadow-lg max-w-2xl mx-auto">
-              <div className="flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-[#ff6300] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-lg font-semibold text-nordic-900">
-                  {t('homeowner.form.promise')}
-                </span>
+    <section id="homeowner-form" className="section-spacing bg-white relative overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50/50 -z-0" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -z-0" />
+      <div className="absolute top-1/4 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-0" />
+      
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Content side */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="inline-flex items-center gap-3 text-accent font-bold uppercase tracking-widest text-sm mb-6">
+                <span className="h-px w-8 bg-accent" />
+                Intresseanmälan
               </div>
-              <p className="text-nordic-700 font-light">
-                {t('homeowner.form.promiseDescription')}
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-8 leading-tight">
+                {t('homeowner.form.title')}
+              </h2>
+              <p className="text-xl text-primary/70 font-light leading-relaxed mb-12">
+                {t('homeowner.form.subtitle')}
               </p>
-            </div>
-          </div>
-
-          {/* Form container */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="p-8 md:p-12">
-              {formSuccess ? (
-                <FormSuccess />
-              ) : needsActivation ? (
-                <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+              
+              {/* Contact promise / Trust card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="glass-card p-10 rounded-[2.5rem] border-primary/5 shadow-2xl relative overflow-hidden group"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
+                
+                <div className="flex gap-8 items-start relative z-10">
+                  <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-white shadow-xl shadow-accent/20 shrink-0 group-hover:rotate-6 transition-transform">
+                    <ShieldCheck size={32} />
                   </div>
-                  <h3 className="text-2xl font-normal text-nordic-900 mb-2">
-                    {language === 'sv' ? 'Aktivering krävs' : 'Activation Required'}
-                  </h3>
-                  <p className="text-nordic-800 font-light mb-4">
-                    {language === 'sv' 
-                      ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se.' 
-                      : 'An activation email has been sent to kajsa@stayonsite.se.'}
-                  </p>
-                  <p className="text-nordic-800 font-light">
-                    {language === 'sv' 
-                      ? 'Klicka på aktiveringsknappen i mailet och försök sedan igen.' 
-                      : 'Click the activation button in the email and then try again.'}
-                  </p>
+                  <div>
+                    <h3 className="text-2xl font-display font-bold text-primary mb-4">
+                      {t('homeowner.form.promise')}
+                    </h3>
+                    <p className="text-primary/70 font-medium leading-relaxed">
+                      {t('homeowner.form.promiseDescription')}
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <form 
-                  ref={formRef} 
-                  onSubmit={handleSubmit} 
-                  className="space-y-7"
-                >
-                  <HomeownerFormFields isSubmitting={isSubmitting} />
-                </form>
-              )}
-            </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Form side */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-br from-accent to-accent/20 rounded-[3rem] blur-2xl opacity-10" />
+              <div className="relative bg-white rounded-[3.5rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.08)] border border-primary/5 p-8 md:p-14">
+                {formSuccess ? (
+                  <FormSuccess />
+                ) : needsActivation ? (
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-8 mx-auto text-amber-500">
+                      <AlertTriangle size={40} />
+                    </div>
+                    <h3 className="text-2xl font-display font-bold text-primary mb-4">
+                      {language === 'sv' ? 'Aktivering krävs' : 'Activation Required'}
+                    </h3>
+                    <p className="text-primary/70 font-medium mb-8">
+                      {language === 'sv' 
+                        ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se. Bekräfta via länken i mailet.' 
+                        : 'Please check your email and confirm the activation link.'}
+                    </p>
+                    <Mail size={40} className="mx-auto text-primary/20" />
+                  </div>
+                ) : (
+                  <form 
+                    ref={formRef} 
+                    onSubmit={handleSubmit} 
+                    className="space-y-8"
+                  >
+                    <HomeownerFormFields isSubmitting={isSubmitting} />
+                  </form>
+                )}
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>

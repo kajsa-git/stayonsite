@@ -31,7 +31,7 @@ const WhyStayOnSite = () => {
         t('services.card2.bullet2'),
         t('services.card2.bullet3'),
       ],
-      cta: { label: t('services.card2.cta'), href: 'tel:+46736287709' },
+      cta: { label: t('services.card2.cta'), href: 'tel:+46762498486' },
     },
     {
       id: 'drift',
@@ -50,7 +50,7 @@ const WhyStayOnSite = () => {
   ];
 
   return (
-    <section id="why" className="bg-nordic-100 py-16 md:py-20 border-b border-nordic-100">
+    <section id="why" className="section-spacing bg-nordic-100 border-b border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-2xl mb-12">
           <h2 className="text-3xl md:text-4xl text-nordic-900 font-semibold leading-snug mb-3">{t('why.title')}</h2>

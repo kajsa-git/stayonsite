@@ -1,74 +1,83 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { User } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Home, UserCheck, CreditCard } from 'lucide-react';
 
 const HomeownerProcess = () => {
   const { t } = useLanguage();
 
   const steps = [
     {
-      number: "01",
-      icon: (
-        <svg className="w-10 h-10 text-[#ff6300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      ),
+      icon: <Home size={32} className="text-accent" />,
       title: t('homeowner.process.step1.title'),
       description: t('homeowner.process.step1.description')
     },
     {
-      number: "03",
-      icon: (
-        <User className="w-10 h-10 text-[#ff6300]" />
-      ),
+      icon: <UserCheck size={32} className="text-accent" />,
       title: t('homeowner.process.step3.title'),
-      description: t('homeowner.process.step3.description')
+      description: "Baserat på din bostad och tillgänglighet hittar vi en perfekt matchning bland våra företagskunder."
     },
     {
-      number: "04",
-      icon: (
-        <svg className="w-10 h-10 text-[#ff6300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-        </svg>
-      ),
+      icon: <CreditCard size={32} className="text-accent" />,
       title: t('homeowner.process.step4.title'),
       description: t('homeowner.process.step4.description')
     }
   ];
 
   return (
-    <section className="section-spacing bg-gradient-to-b from-white to-nordic-100 border-t border-nordic-100">
-      <div className="container mx-auto px-6 md:px-8">
+    <section className="section-spacing bg-primary text-white overflow-hidden relative">
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mb-6">
+        <div className="text-center mb-20">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-display font-bold mb-6"
+          >
             {t('homeowner.process.title')}
-          </h2>
-          <p className="text-base md:text-lg text-nordic-700 font-light max-w-2xl mx-auto leading-relaxed">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-white/70 font-light max-w-2xl mx-auto leading-relaxed"
+          >
             {t('homeowner.process.subtitle')}
-          </p>
+          </motion.p>
         </div>
 
         {/* Process steps */}
-        <div className="relative">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-            {steps.map((step, index) => (
-              <div key={index} className="relative text-center">
-                {/* Step number removed */}
-                
-                {/* Icon */}
-                <div className="w-20 h-20 mx-auto mb-6 bg-white rounded-2xl flex items-center justify-center shadow-md">
+        <div className="grid lg:grid-cols-3 gap-12 relative">
+          {/* Connecting line for desktop */}
+          <div className="hidden lg:block absolute top-[60px] left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/10 to-transparent z-0" />
+          
+          {steps.map((step, index) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2 }}
+              className="relative flex flex-col items-center text-center group z-10"
+            >
+              <div className="w-24 h-24 mb-8 bg-white/10 border border-white/20 rounded-3xl flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:bg-accent/20 group-hover:border-accent/40">
+                <div className="relative">
                   {step.icon}
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg">
+                    {index + 1}
+                  </div>
                 </div>
-                
-                <h3 className="text-xl font-semibold text-nordic-900 mb-4">
-                  {step.title}
-                </h3>
-                <p className="text-nordic-700 font-light leading-relaxed">
-                  {index === 1 ? "Baserat på din bostad och tillgänglighet hittar vi en bra matchning." : step.description}
-                </p>
               </div>
-            ))}
-          </div>
+              
+              <h3 className="text-2xl font-display font-bold mb-4 tracking-tight">
+                {step.title}
+              </h3>
+              <p className="text-white/60 font-medium leading-relaxed max-w-xs mx-auto">
+                {step.description}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

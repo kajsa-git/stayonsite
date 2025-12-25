@@ -27,8 +27,8 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
         </div>
 
         <div className="mt-10 flex flex-col md:flex-row justify-center gap-3">
-          <Button asChild className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white h-12 px-6">
-            <a href="tel:+46736287709">
+          <Button asChild className="rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white h-12 px-6">
+            <a href="tel:+46762498486">
               <Phone size={16} className="mr-2" />
               {t('hero.ctaPhone')}
             </a>
@@ -36,14 +36,13 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
           <Button
             asChild
             variant="outline"
-            className="rounded-full border-nordic-200 bg-white text-nordic-900 h-12 px-6"
+            className="rounded-full border-nordic-200 bg-white text-nordic-900 hover:bg-nordic-50 h-12 px-6"
           >
-            <a href="https://wa.me/46736287709" target="_blank" rel="noreferrer">
+            <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
               <MessageCircle size={16} className="mr-2" />
               {t('hero.ctaWhatsapp')}
             </a>
           </Button>
-
         </div>
 
         <div className="mt-12 max-w-5xl mx-auto bg-white rounded-3xl border border-nordic-100 shadow-lg overflow-hidden">
