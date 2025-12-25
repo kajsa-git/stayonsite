@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MessageCircle, Phone } from 'lucide-react';
 import { Button } from './ui/button';
 
-const CASE_IMAGE = '/images/solar-park-saffle.jpg';
+const CASE_IMAGE = '/images/solar-park-saffle.webp';
 
 const timeline = [
   {
@@ -29,19 +29,22 @@ const CaseStudy = () => {
       <div className="container mx-auto px-6 md:px-12">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr,400px] items-stretch">
           {/* Case Content Side */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2.5rem] min-h-[500px] flex flex-col bg-no-repeat"
-            style={{ 
-              backgroundImage: `url('${CASE_IMAGE}')`,
-              backgroundSize: '140%',
-              backgroundPosition: 'center 55%' 
-            }}
+            className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col"
           >
-            {/* Simple dark overlay for text readability, no grey framing gradient */}
-            <div className="absolute inset-0 bg-black/40" />
+            {/* Background image - zoomed in more on mobile to avoid gray edges */}
+            <div
+              className="absolute inset-0 bg-no-repeat bg-[length:200%] md:bg-[length:140%]"
+              style={{
+                backgroundImage: `url('${CASE_IMAGE}')`,
+                backgroundPosition: 'center 45%'
+              }}
+            />
+            {/* Stronger gradient overlay on mobile for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 md:bg-black/40" />
             
             <div className="relative z-10 h-full p-8 md:p-14 flex flex-col">
               <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white w-fit mb-6">

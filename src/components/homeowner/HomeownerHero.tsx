@@ -27,7 +27,7 @@ const HomeownerHero = () => {
         transition={{ duration: 1.5 }}
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('/images/hero-main.jpg')`
+          backgroundImage: `url('/images/hero-main.webp')`
         }}
       />
       

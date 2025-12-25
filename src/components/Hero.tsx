@@ -28,7 +28,7 @@ const Hero = () => {
         transition={{ duration: 2, ease: "easeOut" }}
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/images/hero-main.jpg')",
+          backgroundImage: "url('/images/hero-main.webp')",
         }}
       />
       

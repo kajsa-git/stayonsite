@@ -96,7 +96,7 @@ const CorporateHousingSweden = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 2, ease: "easeOut" }}
             className="absolute inset-0 z-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/images/hero-main.jpg')" }}
+            style={{ backgroundImage: "url('/images/hero-main.webp')" }}
           />
 
           <div className="absolute inset-0 z-10 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent" />
