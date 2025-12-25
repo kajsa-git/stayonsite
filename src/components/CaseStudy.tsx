@@ -33,15 +33,13 @@ const CaseStudy = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col bg-[#2a3d35]"
+            className="relative overflow-hidden rounded-[2.5rem] min-h-[600px] md:min-h-[500px] flex flex-col"
           >
-            {/* Background image - use cover on mobile to fill entire container */}
-            <div
-              className="absolute inset-0 bg-no-repeat bg-cover md:bg-[length:140%]"
-              style={{
-                backgroundImage: `url('${CASE_IMAGE}')`,
-                backgroundPosition: 'center 30%'
-              }}
+            {/* Background image using img tag for better coverage */}
+            <img
+              src={CASE_IMAGE}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
             />
             {/* Stronger gradient overlay on mobile for text readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 md:bg-black/40" />
