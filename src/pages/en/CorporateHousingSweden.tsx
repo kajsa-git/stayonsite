@@ -84,6 +84,12 @@ const CorporateHousingSweden = () => {
         keywords="airbnb sweden business, airbnb alternative sweden, corporate housing sweden, furnished apartments sweden business, accommodation umeå, accommodation örebro, housing luleå, corporate housing norrland, airbnb gävle business, accommodation västerås company, housing linköping norrköping"
         canonical="https://stayonsite.se/en/corporate-housing-sweden"
         structuredData={[structuredData, faqSchema]}
+        hreflangs={[
+          { lang: 'sv', href: 'https://stayonsite.se/' },
+          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://stayonsite.se/' }
+        ]}
       />
 
       <Header />
@@ -174,7 +180,7 @@ const CorporateHousingSweden = () => {
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               {[
-                { value: '70+', label: 'Happy Clients' },
+                { value: '100+', label: 'Happy Clients' },
                 { value: '500+', label: 'Accommodations' },
                 { value: 'Same day', label: 'Response Time' },
                 { value: '40+', label: 'Cities Covered' }

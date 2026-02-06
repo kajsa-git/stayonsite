@@ -83,6 +83,12 @@ const ZakwaterowanieFirmowe = () => {
         keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, nocleg dla ekipy szwecja, zakwaterowanie umeå, mieszkania luleå, nocleg örebro, zakwaterowanie gävle, mieszkania västerås, noclegi norrland polska ekipa"
         canonical="https://stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
+        hreflangs={[
+          { lang: 'sv', href: 'https://stayonsite.se/' },
+          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://stayonsite.se/' }
+        ]}
       />
 
       <Header />
@@ -173,7 +179,7 @@ const ZakwaterowanieFirmowe = () => {
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               {[
-                { value: '70+', label: 'Zadowolonych Klientów' },
+                { value: '100+', label: 'Zadowolonych Klientów' },
                 { value: '500+', label: 'Mieszkań' },
                 { value: 'Ten sam dzień', label: 'Czas Odpowiedzi' },
                 { value: '40+', label: 'Miast' }

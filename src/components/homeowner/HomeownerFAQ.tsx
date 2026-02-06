@@ -43,14 +43,14 @@ const HomeownerFAQ = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Section header */}
         <div className="text-center mb-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 bg-primary/5 text-primary/60 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
           >
             <HelpCircle size={14} />
-            Vanliga frågor
+            {t('homeowner.faq.sectionLabel')}
           </motion.div>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}

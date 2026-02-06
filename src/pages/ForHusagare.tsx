@@ -14,41 +14,64 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import { useTranslation } from '@/hooks/use-translation';
+import type { TranslationKey } from '@/data/translations';
 
 const ForHusagare = () => {
   const { t } = useTranslation();
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    'name': 'StayOnSite Homeowner Service',
-    'description': t('seo.homeowner.description'),
-    'provider': {
-      '@type': 'Organization',
-      'name': 'StayOnSite',
-      'telephone': '+46 76-249 84 86',
-      'url': 'https://stayonsite.se'
-    },
-    'areaServed': {
-      '@type': 'Country',
-      'name': 'Sweden'
-    },
-    'serviceType': 'Property Rental Service',
-    'offers': {
-      '@type': 'Offer',
-      'priceSpecification': {
-        '@type': 'PriceSpecification',
-        'price': '8000-25000',
-        'priceCurrency': 'SEK',
-        'unitText': 'per month'
+  const structuredData = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      'name': 'StayOnSite Homeowner Service',
+      'description': t('seo.homeowner.description'),
+      'provider': {
+        '@type': 'Organization',
+        'name': 'StayOnSite',
+        'telephone': '+46 76-249 84 86',
+        'url': 'https://stayonsite.se'
+      },
+      'areaServed': {
+        '@type': 'Country',
+        'name': 'Sweden'
+      },
+      'serviceType': 'Property Rental Service',
+      'offers': {
+        '@type': 'Offer',
+        'priceSpecification': {
+          '@type': 'PriceSpecification',
+          'price': '8000-25000',
+          'priceCurrency': 'SEK',
+          'unitText': 'per month'
+        }
+      },
+      'aggregateRating': {
+        '@type': 'AggregateRating',
+        'ratingValue': '4.9',
+        'reviewCount': '100'
       }
     },
-    'aggregateRating': {
-      '@type': 'AggregateRating',
-      'ratingValue': '4.9',
-      'reviewCount': '70'
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': [1,2,3,4,5,6].map(i => ({
+        '@type': 'Question',
+        'name': t(`homeowner.faq.question${i}` as TranslationKey),
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': t(`homeowner.faq.answer${i}` as TranslationKey)
+        }
+      }))
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        { '@type': 'ListItem', 'position': 1, 'name': 'StayOnSite', 'item': 'https://stayonsite.se' },
+        { '@type': 'ListItem', 'position': 2, 'name': t('seo.homeowner.title'), 'item': 'https://stayonsite.se/for-husagare' }
+      ]
     }
-  };
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">

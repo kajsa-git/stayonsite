@@ -9,6 +9,7 @@ const rowLabels: Record<string, Record<string, string>> = {
     row3: 'Företagshyresgäster (ej privata)',
     row4: 'Inga avdrag från din hyra',
     row5: 'Besiktning & fotodokumentation',
+    row6: 'Avgift från din hyra',
     colSelf: 'Egen uthyrning',
     colOthers: 'Andra aktörer',
   },
@@ -18,6 +19,7 @@ const rowLabels: Record<string, Record<string, string>> = {
     row3: 'Corporate tenants (not private)',
     row4: 'No deductions from your rent',
     row5: 'Inspection & photo documentation',
+    row6: 'Fee from your rent',
     colSelf: 'DIY rental',
     colOthers: 'Other platforms',
   },
@@ -27,6 +29,7 @@ const rowLabels: Record<string, Record<string, string>> = {
     row3: 'Najemcy firmowi (nie prywatni)',
     row4: 'Brak potrąceń z czynszu',
     row5: 'Inspekcja i dokumentacja',
+    row6: 'Opłata z Twojego czynszu',
     colSelf: 'Samodzielny wynajem',
     colOthers: 'Inne platformy',
   },
@@ -42,12 +45,14 @@ const HomeownerComparison = () => {
     { label: labels.row3, self: false, stayonsite: true, others: 'partial' as const },
     { label: labels.row4, self: true, stayonsite: true, others: false },
     { label: labels.row5, self: false, stayonsite: true, others: 'partial' as const },
+    { label: labels.row6, self: '0 %' as const, stayonsite: '0 %' as const, others: '5–15 %' as const },
   ];
 
   const renderIcon = (value: boolean | string) => {
     if (value === true) return <CheckCircle2 size={22} className="text-green-500" />;
     if (value === 'partial') return <Minus size={22} className="text-primary/30" />;
-    return <X size={22} className="text-primary/20" />;
+    if (value === false) return <X size={22} className="text-primary/20" />;
+    return <span className="font-bold text-sm text-primary">{value}</span>;
   };
 
   return (

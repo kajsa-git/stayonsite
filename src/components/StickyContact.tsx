@@ -54,7 +54,7 @@ const StickyContact = () => {
             </div>
             <div>
               <p className="text-sm font-bold text-primary leading-tight">{t('stickyContact.title')}</p>
-              <p className="text-[11px] text-primary/50 font-medium mt-1">Vi svarar oftast direkt!</p>
+              <p className="text-[11px] text-primary/50 font-medium mt-1">{t('stickyContact.subtitle')}</p>
             </div>
           </div>
 

@@ -122,7 +122,7 @@ const CityPage = () => {
     ),
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '4.8',
+      ratingValue: '4.9',
       reviewCount: '70'
     }
   };
@@ -247,7 +247,7 @@ const CityPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
+                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
               >
                 {heroHeading}
               </motion.h1>

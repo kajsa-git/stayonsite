@@ -77,7 +77,7 @@ const HomeownerHero = () => {
             <div className="relative rounded-3xl bg-white/95 text-primary shadow-2xl border border-white/20 p-8 md:p-10 backdrop-blur-xl">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div className="space-y-2">
-                  <p className="text-sm font-bold text-accent uppercase tracking-widest">Beräknad intäkt</p>
+                  <p className="text-sm font-bold text-accent uppercase tracking-widest">{t('homeowner.hero.estimatedIncome')}</p>
                   <p className="text-3xl md:text-4xl font-display font-bold text-primary tracking-tight">
                     8 000 – 25 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
                   </p>
@@ -103,6 +103,27 @@ const HomeownerHero = () => {
           >
             {t('homeowner.hero.trustBadge')}
           </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.0 }}
+                className="mt-10 flex flex-wrap items-center gap-8 md:gap-12"
+              >
+                {[
+                  { value: t('homeowner.hero.stats.homeowners'), label: t('homeowner.hero.stats.homeownersLabel') },
+                  { value: t('homeowner.hero.stats.fee'), label: t('homeowner.hero.stats.feeLabel') },
+                  { value: t('homeowner.hero.stats.guarantee'), label: t('homeowner.hero.stats.guaranteeLabel') },
+                ].map((stat, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    {i > 0 && <div className="hidden md:block w-px h-10 bg-white/20" />}
+                    <div className={i > 0 ? 'md:pl-4' : ''}>
+                      <p className="text-2xl md:text-3xl font-display font-bold text-white">{stat.value}</p>
+                      <p className="text-white/50 text-sm font-medium">{stat.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
         </div>
       </div>
     </section>

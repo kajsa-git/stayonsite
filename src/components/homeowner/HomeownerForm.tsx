@@ -91,7 +91,7 @@ const HomeownerForm = () => {
             >
               <div className="inline-flex items-center gap-3 text-accent font-bold uppercase tracking-widest text-sm mb-6">
                 <span className="h-px w-8 bg-accent" />
-                Intresseanmälan
+                {t('homeowner.form.sectionLabel')}
               </div>
               <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-8 leading-tight">
                 {t('homeowner.form.title')}

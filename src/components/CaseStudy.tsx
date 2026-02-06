@@ -106,7 +106,7 @@ const CaseStudy = () => {
                   {t('case.cta.question')}
                 </h3>
                 <p className="text-primary/60 font-medium mb-10 text-lg">
-                  Vi hjälper dig hela vägen. Hör av dig till oss direkt för ett personligt svar!
+                  {t('case.cta.description')}
                 </p>
 
                 <div className="mt-auto space-y-4 w-full">
@@ -139,12 +139,12 @@ const CaseStudy = () => {
                   >
                     <a href="tel:+46762498486">
                       <Phone size={18} />
-                      Ring direkt: 076-249 84 86
+                      {t('case.cta.callDirect')}
                     </a>
                   </Button>
                   
                   <p className="text-[11px] font-bold text-primary/30 uppercase tracking-[0.2em] mt-6">
-                    Svar inom 15 minuter
+                    {t('case.cta.responseTime')}
                   </p>
                 </div>
               </div>

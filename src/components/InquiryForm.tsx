@@ -36,8 +36,7 @@ const InquiryForm = () => {
       });
       
       const result = await response.json();
-      console.log('Form submission result:', result);
-      
+
       if (result.success === "true" || result.success === true) {
         setFormSuccess(true);
         toast({

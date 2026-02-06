@@ -31,14 +31,14 @@ const HomeownerTestimonials = () => {
       <div className="container mx-auto px-6 md:px-12">
         {/* Section header */}
         <div className="mb-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="flex items-center gap-3 text-accent font-bold uppercase tracking-widest text-sm mb-4"
           >
             <span className="h-px w-8 bg-accent" />
-            Recensioner
+            {t('homeowner.testimonials.sectionLabel')}
           </motion.div>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}

@@ -106,7 +106,7 @@ const References = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-semibold text-[#ff6300] mb-2">70+</div>
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">100+</div>
               <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.happyClients')}</p>
             </div>
             <div className="text-center">
