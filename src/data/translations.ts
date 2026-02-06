@@ -449,7 +449,7 @@ export const translations: Record<
     "homeowner.hero.title": "Hyr ut ditt boende",
     "homeowner.hero.subtitle":
       "Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst.",
-    "homeowner.hero.incomeRange": "3 000 - 8 000 kr/månad",
+    "homeowner.hero.incomeRange": "8 000 - 25 000 kr/månad",
     "homeowner.hero.incomeDescription": "Säkra hyresintäkter varje månad",
     "homeowner.hero.cta": "Registrera din bostad idag",
 
@@ -458,7 +458,7 @@ export const translations: Record<
       "Få extra inkomst från ditt hem med trygghet och enkelhet",
     "homeowner.benefits.income.title": "Garanterad inkomst",
     "homeowner.benefits.income.description":
-      "Säkra hyresintäkter från 3000-8000 kr/månad",
+      "Säkra hyresintäkter från 8000-25000 kr/månad",
     "homeowner.benefits.security.title": "Trygghet och säkerhet",
     "homeowner.benefits.security.description":
       "Vi sköter allt - hyresgäster, kontrakt, kommunikation och betalningar",
@@ -492,17 +492,17 @@ export const translations: Record<
       "Perfekt lösning! Vi tjänar 5000 kr extra varje månad och hyresgästerna är alltid trevliga och ordningsamma.",
     "homeowner.testimonials.testimonial1.author": "Anna Eriksson",
     "homeowner.testimonials.testimonial1.location": "Stockholm",
-    "homeowner.testimonials.testimonial1.income": "+5 000 kr/månad",
+    "homeowner.testimonials.testimonial1.income": "+13 000 kr/månad",
     "homeowner.testimonials.testimonial2.quote":
       "StayOnSite sköter allt åt oss. Vi behöver inte ens träffa hyresgästerna om vi inte vill.",
     "homeowner.testimonials.testimonial2.author": "Lars Andersson",
     "homeowner.testimonials.testimonial2.location": "Göteborg",
-    "homeowner.testimonials.testimonial2.income": "+4 200 kr/månad",
+    "homeowner.testimonials.testimonial2.income": "+11 000 kr/månad",
     "homeowner.testimonials.testimonial3.quote":
       "Har hyrt ut i över ett år nu. Aldrig några problem och alltid i tid med betalningarna.",
     "homeowner.testimonials.testimonial3.author": "Maria Johansson",
     "homeowner.testimonials.testimonial3.location": "Malmö",
-    "homeowner.testimonials.testimonial3.income": "+6 500 kr/månad",
+    "homeowner.testimonials.testimonial3.income": "+17 000 kr/månad",
     "homeowner.testimonials.trustIndicator":
       "Över 200 familjer tjänar redan extra pengar",
     "homeowner.testimonials.trustDescription":
@@ -516,7 +516,7 @@ export const translations: Record<
       "Om något mot förmodan går sönder täcks det vanligtvis av hemförsäkringen – antingen din eller hyresgästens. Vi finns självklart med och hjälper till om något händer.",
     "homeowner.faq.question2": "Hur mycket kan jag tjäna?",
     "homeowner.faq.answer2":
-      "Du kan vanligtvis tjäna mellan 3 000 och 8 000 kr per månad, beroende på bostadens läge och typ. Din faktiska vinst påverkas även av t.ex. lån och ränta. Vi ger dig gärna kostnadsfri rådgivning.",
+      "Du kan vanligtvis tjäna mellan 8 000 och 25 000 kr per månad, beroende på bostadens läge och typ. Din faktiska vinst påverkas även av t.ex. lån och ränta. Vi ger dig gärna kostnadsfri rådgivning.",
     "homeowner.faq.question4": "Vad händer mellan uthyrningar?",
     "homeowner.faq.answer4":
       "Du får tillbaka full tillgång till din bostad. Vi hjälper också till att hitta nya hyresgäster så snabbt som möjligt.",
@@ -781,7 +781,7 @@ export const translations: Record<
     "homeowner.hero.title": "Turn your home into an income source",
     "homeowner.hero.subtitle":
       "We help you rent to reliable construction workers - completely hassle-free",
-    "homeowner.hero.incomeRange": "3,000 - 8,000 SEK/month",
+    "homeowner.hero.incomeRange": "8,000 - 25,000 SEK/month",
     "homeowner.hero.incomeDescription":
       "Secure rental income from verified construction workers",
     "homeowner.hero.cta": "Register your property today",
@@ -791,7 +791,7 @@ export const translations: Record<
       "Get extra income from your home with security and simplicity",
     "homeowner.benefits.income.title": "Guaranteed income",
     "homeowner.benefits.income.description":
-      "Secure rental income from 3,000-8,000 SEK/month from verified construction workers",
+      "Secure rental income from 8,000-25,000 SEK/month from verified construction workers",
     "homeowner.benefits.security.title": "Safety and security",
     "homeowner.benefits.security.description":
       "Only verified construction workers from established companies. Insurance and damage guarantee included",
@@ -825,17 +825,17 @@ export const translations: Record<
       "Perfect solution! We earn 5,000 SEK extra every month and the tenants are always polite and tidy.",
     "homeowner.testimonials.testimonial1.author": "Anna Eriksson",
     "homeowner.testimonials.testimonial1.location": "Stockholm",
-    "homeowner.testimonials.testimonial1.income": "+5,000 SEK/month",
+    "homeowner.testimonials.testimonial1.income": "+13,000 SEK/month",
     "homeowner.testimonials.testimonial2.quote":
       "StayOnSite handles everything for us. We don't even need to meet the tenants if we don't want to.",
     "homeowner.testimonials.testimonial2.author": "Lars Andersson",
     "homeowner.testimonials.testimonial2.location": "Gothenburg",
-    "homeowner.testimonials.testimonial2.income": "+4,200 SEK/month",
+    "homeowner.testimonials.testimonial2.income": "+11,000 SEK/month",
     "homeowner.testimonials.testimonial3.quote":
       "Have been renting out for over a year now. Never any problems and always on time with payments.",
     "homeowner.testimonials.testimonial3.author": "Maria Johansson",
     "homeowner.testimonials.testimonial3.location": "Malmö",
-    "homeowner.testimonials.testimonial3.income": "+6,500 SEK/month",
+    "homeowner.testimonials.testimonial3.income": "+17,000 SEK/month",
     "homeowner.testimonials.trustIndicator":
       "Over 200 families already earn extra money",
     "homeowner.testimonials.trustDescription":
@@ -849,7 +849,7 @@ export const translations: Record<
       "We have full insurance that covers any damages. We also do thorough screening of all tenants to minimize risks.",
     "homeowner.faq.question2": "How much can I earn?",
     "homeowner.faq.answer2":
-      "Depending on location and type of property, our homeowners earn between 3,000-8,000 SEK per month. We provide a free income estimate.",
+      "Depending on location and type of property, our homeowners earn between 8,000-25,000 SEK per month. We provide a free income estimate.",
     "homeowner.faq.question4": "What happens between rentals?",
     "homeowner.faq.answer4":
       "You get full access back to your property. We also help find new tenants as quickly as possible.",
@@ -1118,7 +1118,7 @@ export const translations: Record<
     "homeowner.hero.title": "Wynajmij swoją nieruchomość",
     "homeowner.hero.subtitle":
       "Masz domek, mieszkanie lub dom, który stoi pusty?",
-    "homeowner.hero.incomeRange": "3 000 - 8 000 SEK/miesiąc",
+    "homeowner.hero.incomeRange": "8 000 - 25 000 SEK/miesiąc",
     "homeowner.hero.incomeDescription": "Pewny dochód z wynajmu co miesiąc",
     "homeowner.hero.cta": "Zarejestruj swoją nieruchomość już dziś",
 
@@ -1127,7 +1127,7 @@ export const translations: Record<
       "Zyskaj dodatkowy dochód ze swojego domu – bezpiecznie i bez wysiłku.",
     "homeowner.benefits.income.title": "Gwarantowany dochód",
     "homeowner.benefits.income.description":
-      "Zapewnij sobie pewny dochód z wynajmu od 3 000 do 8 000 SEK miesięcznie od zweryfikowanych pracowników budowlanych.",
+      "Zapewnij sobie pewny dochód z wynajmu od 8 000 do 25 000 SEK miesięcznie od zweryfikowanych pracowników budowlanych.",
     "homeowner.benefits.security.title": "Bezpieczeństwo i pewność",
     "homeowner.benefits.security.description":
       "Tylko zweryfikowani pracownicy budowlani z renomowanych firm. Ubezpieczenie i gwarancja pokrycia szkód w cenie.",
@@ -1161,17 +1161,17 @@ export const translations: Record<
       "Idealne rozwiązanie! Zarabiamy 5000 SEK dodatkowo co miesiąc, a najemcy są zawsze uprzejmi i porządni.",
     "homeowner.testimonials.testimonial1.author": "Anna Eriksson",
     "homeowner.testimonials.testimonial1.location": "Sztokholm",
-    "homeowner.testimonials.testimonial1.income": "+5 000 SEK/miesiąc",
+    "homeowner.testimonials.testimonial1.income": "+13 000 SEK/miesiąc",
     "homeowner.testimonials.testimonial2.quote":
       "StayOnSite zajmuje się wszystkim za nas. Nie musimy nawet spotykać się z najemcami, jeśli nie chcemy.",
     "homeowner.testimonials.testimonial2.author": "Lars Andersson",
     "homeowner.testimonials.testimonial2.location": "Göteborg",
-    "homeowner.testimonials.testimonial2.income": "+4 200 SEK/miesiąc",
+    "homeowner.testimonials.testimonial2.income": "+11 000 SEK/miesiąc",
     "homeowner.testimonials.testimonial3.quote":
       "Wynajmuję od ponad roku. Nigdy żadnych problemów i płatności zawsze na czas.",
     "homeowner.testimonials.testimonial3.author": "Maria Johansson",
     "homeowner.testimonials.testimonial3.location": "Malmö",
-    "homeowner.testimonials.testimonial3.income": "+6 500 SEK/miesiąc",
+    "homeowner.testimonials.testimonial3.income": "+17 000 SEK/miesiąc",
     "homeowner.testimonials.trustIndicator":
       "Ponad 200 rodzin już zarabia dodatkowe pieniądze",
     "homeowner.testimonials.trustDescription":
@@ -1185,7 +1185,7 @@ export const translations: Record<
       "Posiadamy pełne ubezpieczenie, które pokrywa wszelkie szkody. Dodatkowo dokładnie weryfikujemy wszystkich najemców, aby minimalizować ryzyko.",
     "homeowner.faq.question2": "Ile mogę zarobić?",
     "homeowner.faq.answer2":
-      "W zależności od lokalizacji i rodzaju nieruchomości, nasi właściciele zarabiają od 3 000 do 8 000 SEK miesięcznie. Zapewniamy bezpłatną wycenę dochodu.",
+      "W zależności od lokalizacji i rodzaju nieruchomości, nasi właściciele zarabiają od 8 000 do 25 000 SEK miesięcznie. Zapewniamy bezpłatną wycenę dochodu.",
     "homeowner.faq.question4": "Co dzieje się między okresami wynajmu?",
     "homeowner.faq.answer4":
       "Odzyskujesz pełny dostęp do swojej nieruchomości. Pomagamy również jak najszybciej znaleźć nowych najemców.",

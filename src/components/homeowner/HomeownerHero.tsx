@@ -79,7 +79,7 @@ const HomeownerHero = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-bold text-accent uppercase tracking-widest">Beräknad intäkt</p>
                   <p className="text-3xl md:text-4xl font-display font-bold text-primary tracking-tight">
-                    3 000 – 8 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
+                    8 000 – 25 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
                   </p>
                   <p className="text-primary/70 font-medium italic">Garanterad hyra varje månad</p>
                 </div>
