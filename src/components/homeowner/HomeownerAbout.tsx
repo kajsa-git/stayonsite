@@ -21,22 +21,11 @@ const HomeownerAbout = () => {
               viewport={{ once: true }}
               className="flex flex-col items-center gap-8"
             >
-              <div className="flex gap-6">
-                {/* Kajsa placeholder */}
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center backdrop-blur-sm">
-                    <span className="text-4xl md:text-5xl font-display font-bold text-white/60">K</span>
-                  </div>
-                  <p className="text-sm font-bold text-white/80">{t('homeowner.about.kajsa')}</p>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
+                  <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
                 </div>
-
-                {/* Team placeholder */}
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center backdrop-blur-sm">
-                    <span className="text-4xl md:text-5xl font-display font-bold text-white/60">T</span>
-                  </div>
-                  <p className="text-sm font-bold text-white/80">{t('homeowner.about.nathalie')}</p>
-                </div>
+                <p className="text-sm font-bold text-white/80">{t('homeowner.about.kajsa')}</p>
               </div>
             </motion.div>
 
