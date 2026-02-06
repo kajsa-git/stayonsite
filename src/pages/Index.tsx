@@ -22,7 +22,7 @@ const Index = () => {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     'name': 'StayOnSite',
-    'image': 'https://stayonsite.se/lovable-uploads/b7dae38c-843c-4240-bbc3-cc9acc2de55d.png',
+    'image': 'https://stayonsite.se/images/og-image.jpg',
     '@id': 'https://stayonsite.se',
     'url': 'https://stayonsite.se',
     'telephone': '+46 76-249 84 86',
