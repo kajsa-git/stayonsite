@@ -47,12 +47,9 @@ const StickyContact = () => {
 
         <div className="relative z-10 space-y-6">
           <div className="flex items-center gap-4">
-            <div className="flex -space-x-3">
-              <div className="w-12 h-12 rounded-2xl overflow-hidden rotate-[-6deg]">
-                <img src="/images/nathalie.jpg" alt="Nathalie" className="w-full h-full object-cover" />
-              </div>
-              <div className="w-12 h-12 rounded-2xl overflow-hidden rotate-[6deg]">
-                <img src="/images/kajsa.jpg" alt="Kajsa" className="w-full h-full object-cover" />
+            <div className="flex">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden">
+                <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
               </div>
             </div>
             <div>

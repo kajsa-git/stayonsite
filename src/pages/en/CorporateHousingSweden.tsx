@@ -156,16 +156,13 @@ const CorporateHousingSweden = () => {
         <section className="py-12 bg-white border-b">
           <div className="container mx-auto px-6">
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-              <div className="flex -space-x-4">
+              <div className="flex">
                 <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
-                  <img src="/images/kajsa.jpg" alt="Kajsa" className="w-full h-full object-cover" />
-                </div>
-                <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
-                  <img src="/images/nathalie.jpg" alt="Nathalie" className="w-full h-full object-cover" />
+                  <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
                 </div>
               </div>
               <div className="text-center md:text-left">
-                <p className="text-lg font-semibold text-nordic-900">Meet Kajsa & Nathalie</p>
+                <p className="text-lg font-semibold text-nordic-900">Meet Kajsa & Team</p>
                 <p className="text-nordic-600">Your dedicated support team - we speak English!</p>
               </div>
             </div>
@@ -261,7 +258,7 @@ const CorporateHousingSweden = () => {
               </blockquote>
               <div className="flex items-center justify-center gap-4">
                 <div className="w-14 h-14 bg-nordic-200 rounded-full overflow-hidden">
-                  <img src="/images/mats-testimonial.jpg" alt="Client" className="w-full h-full object-cover" />
+                  <img src="/images/mats-testimonial.webp" alt="Client" className="w-full h-full object-cover" />
                 </div>
                 <div className="text-left">
                   <p className="font-semibold text-nordic-900">Project Manager</p>

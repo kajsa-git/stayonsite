@@ -43,13 +43,13 @@ const HomeownerForm = () => {
           description: new Date().toLocaleTimeString()
         });
         
-        // Reset form after 3 seconds
+        // Reset form after 8 seconds
         setTimeout(() => {
           setFormSuccess(false);
           if (formRef.current) {
             formRef.current.reset();
           }
-        }, 3000);
+        }, 8000);
       } else if (result.message && result.message.includes("Activation")) {
         setNeedsActivation(true);
         toast({

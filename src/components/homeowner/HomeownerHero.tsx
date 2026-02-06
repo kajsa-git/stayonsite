@@ -39,13 +39,13 @@ const HomeownerHero = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-20">
         <div className="max-w-4xl">
           {/* Tagline Pill */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-xl shadow-2xl mb-10"
           >
             <Sparkles size={16} className="text-accent animate-pulse" />
-            <span className="tracking-[0.1em] uppercase">FÖR DIG SOM ÄGER BOENDE</span>
+            <span className="tracking-[0.1em] uppercase">{t('homeowner.hero.pill')}</span>
           </motion.div>
 
           <motion.h1 
@@ -81,7 +81,7 @@ const HomeownerHero = () => {
                   <p className="text-3xl md:text-4xl font-display font-bold text-primary tracking-tight">
                     8 000 – 25 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
                   </p>
-                  <p className="text-primary/70 font-medium italic">Garanterad hyra varje månad</p>
+                  <p className="text-primary/70 font-medium italic">{t('homeowner.hero.incomeDescription')}</p>
                 </div>
                 <Button 
                   onClick={scrollToForm} 
@@ -93,6 +93,16 @@ const HomeownerHero = () => {
               </div>
             </div>
           </motion.div>
+
+          {/* Trust Badge */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-8 text-white/60 text-sm font-medium tracking-wide"
+          >
+            {t('homeowner.hero.trustBadge')}
+          </motion.p>
         </div>
       </div>
     </section>

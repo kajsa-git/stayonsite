@@ -94,13 +94,10 @@ const CaseStudy = () => {
               {/* Decorative top shape */}
               <div className="absolute top-0 left-0 w-full h-32 bg-accent/5 -z-0" />
               
-              {/* Profile Images */}
-              <div className="relative z-10 flex items-center justify-center mb-10 -space-x-4">
-                <div className="relative w-32 h-32 rounded-3xl overflow-hidden rotate-[-4deg]">
-                  <img src="/images/nathalie.jpg" alt="Nathalie" className="w-full h-full object-cover" />
-                </div>
-                <div className="relative w-32 h-32 rounded-3xl overflow-hidden rotate-[4deg]">
-                  <img src="/images/kajsa.jpg" alt="Kajsa" className="w-full h-full object-cover" />
+              {/* Profile Image */}
+              <div className="relative z-10 flex items-center justify-center mb-10">
+                <div className="relative w-32 h-32 rounded-3xl overflow-hidden">
+                  <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
                 </div>
               </div>
 

@@ -3,8 +3,11 @@ import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import HomeownerBenefits from '@/components/homeowner/HomeownerBenefits';
+import HomeownerGuarantee from '@/components/homeowner/HomeownerGuarantee';
 import HomeownerProcess from '@/components/homeowner/HomeownerProcess';
+import HomeownerComparison from '@/components/homeowner/HomeownerComparison';
 import HomeownerTestimonials from '@/components/homeowner/HomeownerTestimonials';
+import HomeownerAbout from '@/components/homeowner/HomeownerAbout';
 import HomeownerFAQ from '@/components/homeowner/HomeownerFAQ';
 import HomeownerForm from '@/components/homeowner/HomeownerForm';
 import SEO from '@/components/SEO';
@@ -59,8 +62,11 @@ const ForHusagare = () => {
       <main className="flex-grow">
         <HomeownerHero />
         <HomeownerBenefits />
+        <HomeownerGuarantee />
         <HomeownerProcess />
+        <HomeownerComparison />
         <HomeownerTestimonials />
+        <HomeownerAbout />
         <HomeownerFAQ />
         <HomeownerForm />
       </main>

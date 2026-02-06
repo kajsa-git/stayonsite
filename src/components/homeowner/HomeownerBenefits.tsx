@@ -1,6 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
-import { DollarSign, ShieldCheck, Clock } from 'lucide-react';
+import { DollarSign, ShieldCheck, Clock, HandCoins } from 'lucide-react';
 
 const HomeownerBenefits = () => {
   const { t } = useLanguage();
@@ -20,6 +20,11 @@ const HomeownerBenefits = () => {
       icon: <Clock size={32} className="text-accent" />,
       title: t('homeowner.benefits.flexibility.title'),
       description: t('homeowner.benefits.flexibility.description')
+    },
+    {
+      icon: <HandCoins size={32} className="text-accent" />,
+      title: t('homeowner.benefits.guarantee.title'),
+      description: t('homeowner.benefits.guarantee.description')
     }
   ];
 
@@ -75,7 +80,7 @@ const HomeownerBenefits = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid md:grid-cols-2 gap-8"
         >
           {benefits.map((benefit, index) => (
             <motion.div 

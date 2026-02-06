@@ -154,9 +154,11 @@ export type TranslationKey =
   | 'case.cta.button'
   | "homeowner.hero.title"
   | "homeowner.hero.subtitle"
+  | "homeowner.hero.pill"
   | "homeowner.hero.incomeRange"
   | "homeowner.hero.incomeDescription"
   | "homeowner.hero.cta"
+  | "homeowner.hero.trustBadge"
   | "homeowner.benefits.title"
   | "homeowner.benefits.subtitle"
   | "homeowner.benefits.income.title"
@@ -167,6 +169,18 @@ export type TranslationKey =
   | "homeowner.benefits.hassle.description"
   | "homeowner.benefits.flexibility.title"
   | "homeowner.benefits.flexibility.description"
+  | "homeowner.benefits.guarantee.title"
+  | "homeowner.benefits.guarantee.description"
+  | "homeowner.guarantee.title"
+  | "homeowner.guarantee.subtitle"
+  | "homeowner.guarantee.payment.title"
+  | "homeowner.guarantee.payment.description"
+  | "homeowner.guarantee.protection.title"
+  | "homeowner.guarantee.protection.description"
+  | "homeowner.guarantee.support.title"
+  | "homeowner.guarantee.support.description"
+  | "homeowner.guarantee.badge"
+  | "homeowner.guarantee.badgeDescription"
   | "homeowner.process.title"
   | "homeowner.process.subtitle"
   | "homeowner.process.step1.title"
@@ -177,6 +191,9 @@ export type TranslationKey =
   | "homeowner.process.step3.description"
   | "homeowner.process.step4.title"
   | "homeowner.process.step4.description"
+  | "homeowner.comparison.title"
+  | "homeowner.comparison.subtitle"
+  | "homeowner.comparison.note"
   | "homeowner.testimonials.title"
   | "homeowner.testimonials.subtitle"
   | "homeowner.testimonials.testimonial1.quote"
@@ -193,12 +210,20 @@ export type TranslationKey =
   | "homeowner.testimonials.testimonial3.income"
   | "homeowner.testimonials.trustIndicator"
   | "homeowner.testimonials.trustDescription"
+  | "homeowner.about.title"
+  | "homeowner.about.subtitle"
+  | "homeowner.about.message"
+  | "homeowner.about.kajsa"
+  | "homeowner.about.nathalie"
+  | "homeowner.about.cta"
   | "homeowner.faq.title"
   | "homeowner.faq.subtitle"
   | "homeowner.faq.question1"
   | "homeowner.faq.answer1"
   | "homeowner.faq.question2"
   | "homeowner.faq.answer2"
+  | "homeowner.faq.question3"
+  | "homeowner.faq.answer3"
   | "homeowner.faq.question4"
   | "homeowner.faq.answer4"
   | "homeowner.faq.question5"
@@ -390,7 +415,7 @@ export const translations: Record<
       "Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.",
     "footer.quickLinks": "Snabblänkar",
     "footer.location": "Solna, Sverige",
-    "footer.care": "Med omsorg, Kajsa & Nathalie",
+    "footer.care": "Med omsorg, Kajsa med Team",
 
     "floatingPhone.call": "Ring oss",
     "floatingPhone.tooltip": "Ring oss direkt på +46 73-628 77 09",
@@ -446,94 +471,124 @@ export const translations: Record<
 
     "nav.homeowner": "För husägare",
 
-    "homeowner.hero.title": "Hyr ut ditt boende",
+    "homeowner.hero.title": "Tjäna 8 000–25 000 kr/mån på ditt boende",
     "homeowner.hero.subtitle":
-      "Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst.",
-    "homeowner.hero.incomeRange": "8 000 - 25 000 kr/månad",
-    "homeowner.hero.incomeDescription": "Säkra hyresintäkter varje månad",
-    "homeowner.hero.cta": "Registrera din bostad idag",
+      "Vi hyr din bostad till en fast månadshyra – du får betalt utan avdrag, vi sköter resten.",
+    "homeowner.hero.pill": "PASSIV INKOMST UTAN KRÅNGEL",
+    "homeowner.hero.incomeRange": "8 000 – 25 000 kr/månad",
+    "homeowner.hero.incomeDescription": "Fast garanterad hyra – inga avdrag",
+    "homeowner.hero.cta": "Få gratis intäktsbedömning",
+    "homeowner.hero.trustBadge": "Betalning i förskott · Försäkring ingår · Inga tomgångsperioder",
 
-    "homeowner.benefits.title": "Varför välja StayOnSite?",
+    "homeowner.benefits.title": "Varför husägare väljer StayOnSite",
     "homeowner.benefits.subtitle":
-      "Få extra inkomst från ditt hem med trygghet och enkelhet",
-    "homeowner.benefits.income.title": "Garanterad inkomst",
+      "Vi hyr din bostad av dig och tar all risk – du får en trygg, fast inkomst varje månad",
+    "homeowner.benefits.income.title": "Garanterad hyra varje månad",
     "homeowner.benefits.income.description":
-      "Säkra hyresintäkter från 8000-25000 kr/månad",
-    "homeowner.benefits.security.title": "Trygghet och säkerhet",
+      "8 000–25 000 kr i passiv inkomst från stabila företag. Betalning alltid i förskott – inga tomgångsperioder.",
+    "homeowner.benefits.security.title": "Total trygghet för ditt boende",
     "homeowner.benefits.security.description":
-      "Vi sköter allt - hyresgäster, kontrakt, kommunikation och betalningar",
-    "homeowner.benefits.hassle.title": "Inga bekymmer",
+      "Endast verifierade företagshyresgäster från etablerade bolag. Försäkring och skadeskydd ingår.",
+    "homeowner.benefits.hassle.title": "Vi sköter allt",
     "homeowner.benefits.hassle.description":
-      "Vi sköter allt - hitta hyresgäst, kontrakt, kommunikation och betalningar",
-    "homeowner.benefits.flexibility.title": "Full flexibilitet",
+      "Kontrakt, nycklar, kommunikation, städning och betalningar – du behöver inte lyfta ett finger.",
+    "homeowner.benefits.flexibility.title": "Du bestämmer – helt och hållet",
     "homeowner.benefits.flexibility.description":
-      "Du bestämmer vilka perioder som passar dig och dina villkor",
+      "Välj vilka perioder som passar dig. Inga långa bindningstider. Du äger din kalender.",
+    "homeowner.benefits.guarantee.title": "Inga avdrag från din hyra",
+    "homeowner.benefits.guarantee.description":
+      "Andra aktörer tar 5–15 % av din hyra. Vi hyr direkt av dig till ett fast pris – du behåller varje krona.",
 
-    "homeowner.process.title": "Så här fungerar det",
+    "homeowner.guarantee.title": "Vårt löfte till dig",
+    "homeowner.guarantee.subtitle": "Vi tar risken – du får tryggheten",
+    "homeowner.guarantee.payment.title": "Betalningsgaranti",
+    "homeowner.guarantee.payment.description": "Vi hyr bostaden av dig till en fast månadshyra. Du får alltid betalt i förskott, oavsett om vår hyresgäst betalar eller inte.",
+    "homeowner.guarantee.protection.title": "Fullständigt skadeskydd",
+    "homeowner.guarantee.protection.description": "Noggrann besiktning med fotodokumentation vid in- och utflytt. Försäkring ingår. Vi hanterar alla eventuella skadeärenden.",
+    "homeowner.guarantee.support.title": "Personlig support dygnet runt",
+    "homeowner.guarantee.support.description": "Kajsa och hennes team äger processen. Ring eller skriv när du vill – inga vänteköer, inga mellanhänder.",
+    "homeowner.guarantee.badge": "100+ nöjda husägare",
+    "homeowner.guarantee.badgeDescription": "Vi har hjälpt hundratals husägare att tjäna passiv inkomst med trygghet – utan en enda tvist.",
+
+    "homeowner.process.title": "Så enkelt fungerar det",
     "homeowner.process.subtitle":
-      "Enkel process från registrering till första hyresintäkt",
+      "Från registrering till första betalningen – vi guidar dig hela vägen",
     "homeowner.process.step1.title": "Registrera din bostad",
     "homeowner.process.step1.description":
-      "Fyll i vårt enkla formulär med information om din bostad",
-    "homeowner.process.step2.title": "Vi kontaktar dig för besiktning",
+      "Fyll i vårt enkla formulär – det tar bara 2 minuter",
+    "homeowner.process.step2.title": "Vi kontaktar dig inom 24h",
     "homeowner.process.step2.description":
-      "Vi bokar tid för en kostnadsfri besiktning och inkomstuppskattning",
-    "homeowner.process.step3.title": "Vi matchar dig med hyresgäster",
+      "Kajsa eller teamet ringer dig för en kostnadsfri besiktning och intäktsbedömning",
+    "homeowner.process.step3.title": "Vi matchar dig med företag",
     "homeowner.process.step3.description":
-      "Vi hittar lämpliga hyresgäster som passar dina krav och tidsramar",
+      "Baserat på din bostad hittar vi en perfekt matchning bland våra etablerade företagskunder",
     "homeowner.process.step4.title": "Du får betalt varje månad",
     "homeowner.process.step4.description":
-      "Säkra och punktliga hyresbetalningar direkt till ditt konto",
+      "Fast hyra direkt till ditt konto – alltid i förskott, utan avdrag",
+
+    "homeowner.comparison.title": "StayOnSite vs andra alternativ",
+    "homeowner.comparison.subtitle": "Se varför husägare väljer oss framför att hyra ut själv eller via andra aktörer",
+    "homeowner.comparison.note": "Vi hyr din bostad direkt av dig till ett fast pris. Andra aktörer tar 5–15 % av hyran som provision.",
 
     "homeowner.testimonials.title": "Vad våra husägare säger",
     "homeowner.testimonials.subtitle":
-      "Över 200 familjer tjänar redan extra pengar genom StayOnSite",
+      "Husägare som tjänar passiv inkomst med trygghet genom StayOnSite",
     "homeowner.testimonials.testimonial1.quote":
-      "Perfekt lösning! Vi tjänar 5000 kr extra varje månad och hyresgästerna är alltid trevliga och ordningsamma.",
-    "homeowner.testimonials.testimonial1.author": "Anna Eriksson",
-    "homeowner.testimonials.testimonial1.location": "Stockholm",
-    "homeowner.testimonials.testimonial1.income": "+13 000 kr/månad",
+      "Vi hyrde ut vårt radhus till en ingenjör via StayOnSite. Professionell, städad, aldrig några problem. Nu har vi samma upplägg med en ny hyresgäst – det bara fungerar.",
+    "homeowner.testimonials.testimonial1.author": "Anna E.",
+    "homeowner.testimonials.testimonial1.location": "Älvsjö, Stockholm",
+    "homeowner.testimonials.testimonial1.income": "+13 000 kr/mån · 18 månader",
     "homeowner.testimonials.testimonial2.quote":
-      "StayOnSite sköter allt åt oss. Vi behöver inte ens träffa hyresgästerna om vi inte vill.",
-    "homeowner.testimonials.testimonial2.author": "Lars Andersson",
-    "homeowner.testimonials.testimonial2.location": "Göteborg",
-    "homeowner.testimonials.testimonial2.income": "+11 000 kr/månad",
+      "Kajsa skötte allt från besiktning till kontrakt. Hyresgästerna jobbar på ett 8-månaders projekt. Vi har inte behövt tänka på någonting – hyran bara trillar in varje månad.",
+    "homeowner.testimonials.testimonial2.author": "Lars A.",
+    "homeowner.testimonials.testimonial2.location": "Eriksberg, Göteborg",
+    "homeowner.testimonials.testimonial2.income": "+11 000 kr/mån · 12 månader",
     "homeowner.testimonials.testimonial3.quote":
-      "Har hyrt ut i över ett år nu. Aldrig några problem och alltid i tid med betalningarna.",
-    "homeowner.testimonials.testimonial3.author": "Maria Johansson",
-    "homeowner.testimonials.testimonial3.location": "Malmö",
-    "homeowner.testimonials.testimonial3.income": "+17 000 kr/månad",
+      "Först var jag skeptisk till att hyra ut vår lägenhet. Men företagshyresgäster är helt annorlunda. Äldre, ansvarstagande, här för jobb. Aldrig ett problem på 14 månader.",
+    "homeowner.testimonials.testimonial3.author": "Maria J.",
+    "homeowner.testimonials.testimonial3.location": "Limhamn, Malmö",
+    "homeowner.testimonials.testimonial3.income": "+17 000 kr/mån · 14 månader",
     "homeowner.testimonials.trustIndicator":
-      "Över 200 familjer tjänar redan extra pengar",
+      "100+ nöjda husägare litar på StayOnSite",
     "homeowner.testimonials.trustDescription":
-      "Gå med i vårt nätverk av nöjda husägare som tjänar säkra hyresintäkter varje månad",
+      "Gå med i vårt nätverk av husägare som tjänar trygga hyresintäkter varje månad – utan bekymmer",
 
-    "homeowner.faq.title": "Vanliga frågor för husägare",
+    "homeowner.about.title": "Möt teamet bakom StayOnSite",
+    "homeowner.about.subtitle": "Personlig service – inte en anonym plattform",
+    "homeowner.about.message": "Vi vet att det är en stor sak att hyra ut sitt hem. Därför är vi alltid personligt involverade – från första samtalet till sista dagen. Du pratar alltid med människor som faktiskt fattar besluten. Inga mellanhänder, inga köer.",
+    "homeowner.about.kajsa": "Kajsa – Grundare & VD",
+    "homeowner.about.nathalie": "Teamet – Dedikerad support",
+    "homeowner.about.cta": "Ring oss direkt",
+
+    "homeowner.faq.title": "Vanliga frågor från husägare",
     "homeowner.faq.subtitle":
-      "Få svar på de vanligaste frågorna om att hyra ut till hyresgäster",
-    "homeowner.faq.question1": "Vad händer om något går sönder?",
+      "Allt du behöver veta om att hyra ut tryggt med StayOnSite",
+    "homeowner.faq.question1": "Hur skyddar ni mitt boende mot skador?",
     "homeowner.faq.answer1":
-      "Om något mot förmodan går sönder täcks det vanligtvis av hemförsäkringen – antingen din eller hyresgästens. Vi finns självklart med och hjälper till om något händer.",
+      "Vi gör noggrann besiktning med fotodokumentation vid både in- och utflytt. Alla företagshyresgäster har hemförsäkring. Vid eventuell skada hanterar vi hela processen – du behöver inte göra något själv.",
     "homeowner.faq.question2": "Hur mycket kan jag tjäna?",
     "homeowner.faq.answer2":
-      "Du kan vanligtvis tjäna mellan 8 000 och 25 000 kr per månad, beroende på bostadens läge och typ. Din faktiska vinst påverkas även av t.ex. lån och ränta. Vi ger dig gärna kostnadsfri rådgivning.",
+      "Vanligtvis mellan 8 000 och 25 000 kr per månad beroende på bostadens läge, storlek och skick. Företag betalar ofta 20–30 % mer än privatpersoner. Vi ger dig en kostnadsfri intäktsbedömning.",
+    "homeowner.faq.question3": "Varför är företagshyresgäster bättre än privata?",
+    "homeowner.faq.answer3":
+      "Företagshyresgäster är här för jobb, inte för fest. De är vanligtvis 30–50 år, ansvarstagande och professionella. Företaget står för betalningen – noll risk för utebliven hyra. Dessutom innebär kortare hyresperioder att du alltid har kontroll.",
     "homeowner.faq.question4": "Vad händer mellan uthyrningar?",
     "homeowner.faq.answer4":
-      "Du får tillbaka full tillgång till din bostad. Vi hjälper också till att hitta nya hyresgäster så snabbt som möjligt.",
+      "Du får tillbaka full tillgång till din bostad. Vi arbetar aktivt med att hitta nästa företagshyresgäst så snabbt som möjligt för att minimera tomgångsperioder.",
     "homeowner.faq.question5": "Behöver jag göra något speciellt med bostaden?",
     "homeowner.faq.answer5":
-      "Nej, men bostaden behöver vara möblerad, ren och i fungerande skick.",
-    "homeowner.faq.question6": "Hur får jag betalt?",
+      "Bostaden behöver vara möblerad, ren och i fungerande skick. Vi hjälper gärna med råd om vad som behövs för att maximera din intäkt.",
+    "homeowner.faq.question6": "Hur fungerar betalningen?",
     "homeowner.faq.answer6":
-      "Hyran betalas alltid ut i förskott varje månad, direkt till ditt bankkonto.",
+      "Vi hyr bostaden av dig till en fast månadshyra som betalas i förskott, direkt till ditt bankkonto. Inga avdrag, inga dolda avgifter – du vet exakt vad du får varje månad.",
     "homeowner.faq.contactPrompt": "Har du fler frågor? Ring oss direkt!",
 
-    "homeowner.form.title": "Registrera din bostad",
+    "homeowner.form.title": "Få en gratis intäktsbedömning",
     "homeowner.form.subtitle":
-      "Det tar bara 2 minuter - Vi hjälper dig hitta rätt hyresgäst",
-    "homeowner.form.promise": "Vi kontaktar dig inom 24 timmar",
+      "Det tar bara 2 minuter – vi kontaktar dig inom 24 timmar",
+    "homeowner.form.promise": "Kajsa ringer dig inom 24 timmar",
     "homeowner.form.promiseDescription":
-      "Efter registrering kontaktar vi dig för en kostnadsfri konsultation om hur mycket du kan tjäna på din bostad",
+      "Efter registrering kontaktar vi dig för en kostnadsfri bedömning av hur mycket du kan tjäna på din bostad – helt utan förpliktelse",
     "homeowner.form.fieldsTitle": "Dina kontaktuppgifter",
     "homeowner.form.fieldsSubtitle":
       "Vi behöver bara grundläggande information för att komma igång",
@@ -550,25 +605,24 @@ export const translations: Record<
     "homeowner.form.city": "Stad",
     "homeowner.form.cityPlaceholder": "Ange stad",
     "homeowner.form.submit":
-      "Det tar bara två minuter - vi hjälper dig hitta rätt hyresgäst",
-    "homeowner.form.submitLine1": "Registrera din bostad",
-    "homeowner.form.submitLine2": "Säkra hyresintäkter idag",
+      "Få gratis intäktsbedömning – 2 minuter, ingen förpliktelse",
+    "homeowner.form.submitLine1": "Skicka intresseanmälan",
+    "homeowner.form.submitLine2": "Säkra din passiva inkomst idag",
     "homeowner.form.submitting": "Registrerar...",
     "homeowner.form.success":
       "Tack för din registrering! Vi kontaktar dig inom 24 timmar.",
     "homeowner.form.error":
       "Det uppstod ett fel. Försök igen eller ring oss direkt.",
-    "homeowner.form.disclaimer":
-      "Genom att registrera dig godkänner du att vi kontaktar dig angående uthyrning av din bostad.",
+    "homeowner.form.disclaimer": "eller ring oss direkt",
 
     "seo.home.title":
       "Personalboende & Företagsbostäder i Sverige | StayOnSite",
     "seo.home.description":
       "Vi ordnar snabbt och effektivt boende för företag och deras personal i hela Sverige. Långsiktiga och flexibla hyreslösningar för bygg-, energi- och datacenterprojekt.",
     "seo.homeowner.title":
-      "Hyr ut din bostad till företag | Garanterad hyra | StayOnSite",
+      "Hyr ut till företag – 8 000-25 000 kr/mån | Garanterad hyra | StayOnSite",
     "seo.homeowner.description":
-      "Hyr ut din bostad till stabila företag via StayOnSite. Vi erbjuder garanterade hyresintäkter, sköter all administration och hittar pålitliga hyresgäster. Registrera din bostad idag!",
+      "Tjäna passiv inkomst genom att hyra ut till professionella företagshyresgäster. Garanterad betalning i förskott, försäkring ingår, total trygghet. Inga avdrag från din hyra. 100+ nöjda husägare.",
     "seo.city.title":
       "Företagsboende i {cityName} | Hyr lägenhet till personal | StayOnSite",
     "seo.city.description":
@@ -721,7 +775,7 @@ export const translations: Record<
       "We help construction companies quickly find accommodations in other locations for their workers.",
     "footer.quickLinks": "Quick Links",
     "footer.location": "Solna, Sweden",
-    "footer.care": "With care, Kajsa & Nathalie",
+    "footer.care": "With care, Kajsa & Team",
 
     "floatingPhone.call": "Call us",
     "floatingPhone.tooltip": "Call us directly at +46 73-628 77 09",
@@ -778,96 +832,125 @@ export const translations: Record<
 
     "nav.homeowner": "For Homeowners",
 
-    "homeowner.hero.title": "Turn your home into an income source",
+    "homeowner.hero.title": "Earn 8,000–25,000 SEK/month from your property",
     "homeowner.hero.subtitle":
-      "We help you rent to reliable construction workers - completely hassle-free",
-    "homeowner.hero.incomeRange": "8,000 - 25,000 SEK/month",
-    "homeowner.hero.incomeDescription":
-      "Secure rental income from verified construction workers",
-    "homeowner.hero.cta": "Register your property today",
+      "We rent your property at a fixed monthly rate – you get paid without deductions, we handle the rest.",
+    "homeowner.hero.pill": "PASSIVE INCOME WITHOUT HASSLE",
+    "homeowner.hero.incomeRange": "8,000 – 25,000 SEK/month",
+    "homeowner.hero.incomeDescription": "Fixed guaranteed rent – no deductions",
+    "homeowner.hero.cta": "Get a free income estimate",
+    "homeowner.hero.trustBadge": "Upfront payment · Insurance included · No vacancy periods",
 
-    "homeowner.benefits.title": "Why choose StayOnSite?",
+    "homeowner.benefits.title": "Why homeowners choose StayOnSite",
     "homeowner.benefits.subtitle":
-      "Get extra income from your home with security and simplicity",
-    "homeowner.benefits.income.title": "Guaranteed income",
+      "We rent your property and take all the risk – you get a secure, fixed income every month",
+    "homeowner.benefits.income.title": "Guaranteed rent every month",
     "homeowner.benefits.income.description":
-      "Secure rental income from 8,000-25,000 SEK/month from verified construction workers",
-    "homeowner.benefits.security.title": "Safety and security",
+      "8,000–25,000 SEK in passive income from stable companies. Always paid upfront – no vacancy periods.",
+    "homeowner.benefits.security.title": "Total security for your property",
     "homeowner.benefits.security.description":
-      "Only verified construction workers from established companies. Insurance and damage guarantee included",
-    "homeowner.benefits.hassle.title": "No worries",
+      "Only verified corporate tenants from established companies. Insurance and damage protection included.",
+    "homeowner.benefits.hassle.title": "We handle everything",
     "homeowner.benefits.hassle.description":
-      "We handle everything - screening, contracts, communication and payments",
-    "homeowner.benefits.flexibility.title": "Full flexibility",
+      "Contracts, keys, communication, cleaning and payments – you don't need to lift a finger.",
+    "homeowner.benefits.flexibility.title": "You decide – completely",
     "homeowner.benefits.flexibility.description":
-      "You decide which periods suit you and your terms",
+      "Choose the periods that suit you. No long commitments. You own your calendar.",
+    "homeowner.benefits.guarantee.title": "No deductions from your rent",
+    "homeowner.benefits.guarantee.description":
+      "Other platforms take 5–15% of your rent as commission. We rent directly from you at a fixed price – you keep every krona.",
+
+    "homeowner.guarantee.title": "Our promise to you",
+    "homeowner.guarantee.subtitle": "We take the risk – you get the security",
+    "homeowner.guarantee.payment.title": "Payment guarantee",
+    "homeowner.guarantee.payment.description": "We rent your property at a fixed monthly rate. You always get paid upfront, regardless of whether our tenant pays or not.",
+    "homeowner.guarantee.protection.title": "Full damage protection",
+    "homeowner.guarantee.protection.description": "Thorough inspection with photo documentation at move-in and move-out. Insurance included. We handle all damage claims.",
+    "homeowner.guarantee.support.title": "Personal support around the clock",
+    "homeowner.guarantee.support.description": "Kajsa and her team own the process. Call or write whenever you want – no waiting queues, no middlemen.",
+    "homeowner.guarantee.badge": "100+ satisfied homeowners",
+    "homeowner.guarantee.badgeDescription": "We have helped hundreds of homeowners earn passive income with security – without a single dispute.",
 
     "homeowner.process.title": "How it works",
     "homeowner.process.subtitle":
-      "Simple process from registration to first rental income",
+      "From registration to first payment – we guide you all the way",
     "homeowner.process.step1.title": "Register your property",
     "homeowner.process.step1.description":
-      "Fill out our simple form with information about your property",
-    "homeowner.process.step2.title": "We contact you for inspection",
+      "Fill out our simple form – it takes just 2 minutes",
+    "homeowner.process.step2.title": "We contact you within 24h",
     "homeowner.process.step2.description":
-      "We schedule a free inspection and income estimate",
-    "homeowner.process.step3.title": "We match you with tenants",
+      "Kajsa or the team calls you for a free inspection and income estimate",
+    "homeowner.process.step3.title": "We match you with a company",
     "homeowner.process.step3.description":
-      "We find suitable construction workers that meet your requirements and timeframes",
+      "Based on your property, we find a perfect match among our established corporate clients",
     "homeowner.process.step4.title": "You get paid every month",
     "homeowner.process.step4.description":
-      "Secure and punctual rental payments directly to your account",
+      "Fixed rent directly to your account – always upfront, without deductions",
+
+    "homeowner.comparison.title": "StayOnSite vs other options",
+    "homeowner.comparison.subtitle": "See why homeowners choose us over renting out themselves or through other platforms",
+    "homeowner.comparison.note": "We rent your property directly from you at a fixed price. Other platforms take 5–15% of the rent as commission.",
 
     "homeowner.testimonials.title": "What our homeowners say",
     "homeowner.testimonials.subtitle":
-      "Over 200 families already earn extra money through StayOnSite",
+      "Homeowners earning passive income with security through StayOnSite",
     "homeowner.testimonials.testimonial1.quote":
-      "Perfect solution! We earn 5,000 SEK extra every month and the tenants are always polite and tidy.",
-    "homeowner.testimonials.testimonial1.author": "Anna Eriksson",
-    "homeowner.testimonials.testimonial1.location": "Stockholm",
-    "homeowner.testimonials.testimonial1.income": "+13,000 SEK/month",
+      "We rented out our townhouse to an engineer via StayOnSite. Professional, clean, never any problems. Now we have the same setup with a new tenant – it just works.",
+    "homeowner.testimonials.testimonial1.author": "Anna E.",
+    "homeowner.testimonials.testimonial1.location": "Älvsjö, Stockholm",
+    "homeowner.testimonials.testimonial1.income": "+13,000 SEK/mo · 18 months",
     "homeowner.testimonials.testimonial2.quote":
-      "StayOnSite handles everything for us. We don't even need to meet the tenants if we don't want to.",
-    "homeowner.testimonials.testimonial2.author": "Lars Andersson",
-    "homeowner.testimonials.testimonial2.location": "Gothenburg",
-    "homeowner.testimonials.testimonial2.income": "+11,000 SEK/month",
+      "Kajsa handled everything from inspection to contract. The tenants work on an 8-month project. We haven't had to think about anything – the rent just comes in every month.",
+    "homeowner.testimonials.testimonial2.author": "Lars A.",
+    "homeowner.testimonials.testimonial2.location": "Eriksberg, Gothenburg",
+    "homeowner.testimonials.testimonial2.income": "+11,000 SEK/mo · 12 months",
     "homeowner.testimonials.testimonial3.quote":
-      "Have been renting out for over a year now. Never any problems and always on time with payments.",
-    "homeowner.testimonials.testimonial3.author": "Maria Johansson",
-    "homeowner.testimonials.testimonial3.location": "Malmö",
-    "homeowner.testimonials.testimonial3.income": "+17,000 SEK/month",
+      "At first I was skeptical about renting out our apartment. But corporate tenants are completely different. Older, responsible, here for work. Never a problem in 14 months.",
+    "homeowner.testimonials.testimonial3.author": "Maria J.",
+    "homeowner.testimonials.testimonial3.location": "Limhamn, Malmö",
+    "homeowner.testimonials.testimonial3.income": "+17,000 SEK/mo · 14 months",
     "homeowner.testimonials.trustIndicator":
-      "Over 200 families already earn extra money",
+      "100+ satisfied homeowners trust StayOnSite",
     "homeowner.testimonials.trustDescription":
-      "Join our network of satisfied homeowners who earn secure rental income every month",
+      "Join our network of homeowners earning secure rental income every month – worry-free",
 
-    "homeowner.faq.title": "FAQ for homeowners",
+    "homeowner.about.title": "Meet the team behind StayOnSite",
+    "homeowner.about.subtitle": "Personal service – not an anonymous platform",
+    "homeowner.about.message": "We know renting out your home is a big deal. That's why we're always personally involved – from the first call to the last day. You always talk to people who actually make the decisions. No middlemen, no queues.",
+    "homeowner.about.kajsa": "Kajsa – Founder & CEO",
+    "homeowner.about.nathalie": "The Team – Dedicated support",
+    "homeowner.about.cta": "Call us directly",
+
+    "homeowner.faq.title": "Common questions from homeowners",
     "homeowner.faq.subtitle":
-      "Get answers to the most common questions about renting to construction workers",
-    "homeowner.faq.question1": "What happens if something breaks?",
+      "Everything you need to know about renting out safely with StayOnSite",
+    "homeowner.faq.question1": "How do you protect my property from damage?",
     "homeowner.faq.answer1":
-      "We have full insurance that covers any damages. We also do thorough screening of all tenants to minimize risks.",
+      "We do thorough inspections with photo documentation at both move-in and move-out. All corporate tenants have home insurance. If damage occurs, we handle the entire process – you don't need to do anything.",
     "homeowner.faq.question2": "How much can I earn?",
     "homeowner.faq.answer2":
-      "Depending on location and type of property, our homeowners earn between 8,000-25,000 SEK per month. We provide a free income estimate.",
+      "Typically between 8,000 and 25,000 SEK per month depending on location, size and condition. Companies often pay 20–30% more than private tenants. We provide a free income estimate.",
+    "homeowner.faq.question3": "Why are corporate tenants better than private ones?",
+    "homeowner.faq.answer3":
+      "Corporate tenants are here for work, not for parties. They are typically 30–50 years old, responsible and professional. The company pays the rent – zero risk of missed payments. Shorter rental periods also mean you always stay in control.",
     "homeowner.faq.question4": "What happens between rentals?",
     "homeowner.faq.answer4":
-      "You get full access back to your property. We also help find new tenants as quickly as possible.",
+      "You get full access to your property back. We actively work to find the next corporate tenant as quickly as possible to minimize vacancy periods.",
     "homeowner.faq.question5":
       "Do I need to do anything special with the property?",
     "homeowner.faq.answer5":
-      "No, we accept properties in existing condition. However, we can give tips on minor improvements that could increase rental income.",
-    "homeowner.faq.question6": "How do I get paid?",
+      "The property needs to be furnished, clean and in working condition. We're happy to advise on what's needed to maximize your income.",
+    "homeowner.faq.question6": "How does payment work?",
     "homeowner.faq.answer6":
-      "Rent is paid directly to your bank account on the first of each month. We handle all invoicing and administration.",
+      "We rent your property at a fixed monthly rate paid upfront, directly to your bank account. No deductions, no hidden fees – you know exactly what you get every month.",
     "homeowner.faq.contactPrompt": "Have more questions? Call us directly!",
 
-    "homeowner.form.title": "Register your property",
+    "homeowner.form.title": "Get a free income estimate",
     "homeowner.form.subtitle":
-      "It takes just 2 minutes - We help you find the right tenant",
-    "homeowner.form.promise": "We contact you within 24 hours",
+      "It takes just 2 minutes – we contact you within 24 hours",
+    "homeowner.form.promise": "Kajsa calls you within 24 hours",
     "homeowner.form.promiseDescription":
-      "After registration, we contact you for a free consultation about how much you can earn from your property",
+      "After registration, we contact you for a free assessment of how much you can earn from your property – no obligation",
     "homeowner.form.fieldsTitle": "Your contact information",
     "homeowner.form.fieldsSubtitle":
       "We only need basic information to get started",
@@ -884,25 +967,24 @@ export const translations: Record<
     "homeowner.form.city": "City",
     "homeowner.form.cityPlaceholder": "Enter city",
     "homeowner.form.submit":
-      "It takes just two minutes - we help you find the right tenant",
-    "homeowner.form.submitLine1": "Register your property",
-    "homeowner.form.submitLine2": "Secure rental income today",
+      "Get free income estimate – 2 minutes, no obligation",
+    "homeowner.form.submitLine1": "Send inquiry",
+    "homeowner.form.submitLine2": "Secure your passive income today",
     "homeowner.form.submitting": "Registering...",
     "homeowner.form.success":
       "Thank you for your registration! We will contact you within 24 hours.",
     "homeowner.form.error":
       "An error occurred. Please try again or call us directly.",
-    "homeowner.form.disclaimer":
-      "By registering, you agree that we may contact you regarding renting out your property.",
+    "homeowner.form.disclaimer": "or call us directly",
 
     "seo.home.title":
       "Staff Housing & Corporate Apartments in Sweden | StayOnSite",
     "seo.home.description":
       "We quickly and efficiently arrange housing for companies and their staff throughout Sweden. Long-term and flexible rental solutions for construction, energy, and data center projects.",
     "seo.homeowner.title":
-      "Rent your property to companies | Guaranteed rent | StayOnSite",
+      "Rent to companies – 8,000-25,000 SEK/mo | Guaranteed rent | StayOnSite",
     "seo.homeowner.description":
-      "Rent out your property to stable companies via StayOnSite. We offer guaranteed rental income, handle all administration, and find reliable tenants. Register your property today!",
+      "Earn passive income by renting to professional corporate tenants. Guaranteed upfront payment, insurance included, total security. No deductions from your rent. 100+ satisfied homeowners.",
     "seo.city.title":
       "Corporate Housing in {cityName} | Rent Apartments for Staff | StayOnSite",
     "seo.city.description":
@@ -1057,7 +1139,7 @@ export const translations: Record<
       "Pomagamy firmom budowlanym szybko znaleźć zakwaterowanie w innych miejscowościach dla ich pracowników.",
     "footer.quickLinks": "Szybkie linki",
     "footer.location": "Solna, Szwecja",
-    "footer.care": "Z troską, Kajsa i Nathalie",
+    "footer.care": "Z troską, Kajsa i Zespół",
 
     "floatingPhone.call": "Zadzwoń do nas",
     "floatingPhone.tooltip":
@@ -1118,9 +1200,11 @@ export const translations: Record<
     "homeowner.hero.title": "Wynajmij swoją nieruchomość",
     "homeowner.hero.subtitle":
       "Masz domek, mieszkanie lub dom, który stoi pusty?",
+    "homeowner.hero.pill": "PASYWNY DOCHÓD BEZ KŁOPOTÓW",
     "homeowner.hero.incomeRange": "8 000 - 25 000 SEK/miesiąc",
     "homeowner.hero.incomeDescription": "Pewny dochód z wynajmu co miesiąc",
     "homeowner.hero.cta": "Zarejestruj swoją nieruchomość już dziś",
+    "homeowner.hero.trustBadge": "Płatność z góry · Ubezpieczenie w cenie · Brak pustostanów",
 
     "homeowner.benefits.title": "Dlaczego warto wynajmować ze StayOnSite?",
     "homeowner.benefits.subtitle":
@@ -1137,6 +1221,20 @@ export const translations: Record<
     "homeowner.benefits.flexibility.title": "Pełna elastyczność",
     "homeowner.benefits.flexibility.description":
       "Ty decydujesz, które okresy Ci odpowiadają i na jakich warunkach.",
+    "homeowner.benefits.guarantee.title": "Brak potrąceń z czynszu",
+    "homeowner.benefits.guarantee.description":
+      "Inne platformy pobierają 5–15% czynszu jako prowizję. My wynajmujemy bezpośrednio od Ciebie po stałej cenie.",
+
+    "homeowner.guarantee.title": "Nasza obietnica",
+    "homeowner.guarantee.subtitle": "My ponosimy ryzyko – Ty zyskujesz bezpieczeństwo",
+    "homeowner.guarantee.payment.title": "Gwarancja płatności",
+    "homeowner.guarantee.payment.description": "Wynajmujemy Twoją nieruchomość po stałym miesięcznym czynszu. Zawsze dostajesz zapłatę z góry.",
+    "homeowner.guarantee.protection.title": "Pełna ochrona przed szkodami",
+    "homeowner.guarantee.protection.description": "Dokładna inspekcja z dokumentacją fotograficzną przy wprowadzce i wyprowadzce. Ubezpieczenie w cenie.",
+    "homeowner.guarantee.support.title": "Osobiste wsparcie całodobowe",
+    "homeowner.guarantee.support.description": "Kajsa i jej zespół zarządzają procesem. Zadzwoń lub napisz kiedy chcesz.",
+    "homeowner.guarantee.badge": "100+ zadowolonych właścicieli",
+    "homeowner.guarantee.badgeDescription": "Pomogliśmy setkom właścicieli zarabiać pasywny dochód bezpiecznie.",
 
     "homeowner.process.title": "Jak to działa",
     "homeowner.process.subtitle":
@@ -1153,6 +1251,10 @@ export const translations: Record<
     "homeowner.process.step4.title": "Otrzymujesz płatność co miesiąc",
     "homeowner.process.step4.description":
       "Bezpieczne i punktualne płatności czynszu bezpośrednio na Twoje konto.",
+
+    "homeowner.comparison.title": "StayOnSite vs inne opcje",
+    "homeowner.comparison.subtitle": "Zobacz dlaczego właściciele wybierają nas",
+    "homeowner.comparison.note": "Wynajmujemy Twoją nieruchomość bezpośrednio po stałej cenie. Inne platformy pobierają 5–15% prowizji.",
 
     "homeowner.testimonials.title": "Co mówią nasi właściciele",
     "homeowner.testimonials.subtitle":
@@ -1177,6 +1279,13 @@ export const translations: Record<
     "homeowner.testimonials.trustDescription":
       "Dołącz do naszej sieci zadowolonych właścicieli, którzy co miesiąc zyskują pewny dochód z wynajmu.",
 
+    "homeowner.about.title": "Poznaj zespół StayOnSite",
+    "homeowner.about.subtitle": "Osobista obsługa – nie anonimowa platforma",
+    "homeowner.about.message": "Wiemy, że wynajem domu to poważna sprawa. Dlatego zawsze jesteśmy osobiście zaangażowani. Rozmawiasz z ludźmi, którzy podejmują decyzje.",
+    "homeowner.about.kajsa": "Kajsa – Założycielka i CEO",
+    "homeowner.about.nathalie": "Zespół – Dedykowane wsparcie",
+    "homeowner.about.cta": "Zadzwoń bezpośrednio",
+
     "homeowner.faq.title": "Najczęściej zadawane pytania dla właścicieli",
     "homeowner.faq.subtitle":
       "Znajdź odpowiedzi na najczęstsze pytania dotyczące wynajmu Twojej nieruchomości.",
@@ -1186,6 +1295,9 @@ export const translations: Record<
     "homeowner.faq.question2": "Ile mogę zarobić?",
     "homeowner.faq.answer2":
       "W zależności od lokalizacji i rodzaju nieruchomości, nasi właściciele zarabiają od 8 000 do 25 000 SEK miesięcznie. Zapewniamy bezpłatną wycenę dochodu.",
+    "homeowner.faq.question3": "Dlaczego najemcy firmowi są lepsi od prywatnych?",
+    "homeowner.faq.answer3":
+      "Najemcy firmowi są tu do pracy, nie na imprezy. Są odpowiedzialni i profesjonalni. Firma płaci czynsz – zero ryzyka braku płatności.",
     "homeowner.faq.question4": "Co dzieje się między okresami wynajmu?",
     "homeowner.faq.answer4":
       "Odzyskujesz pełny dostęp do swojej nieruchomości. Pomagamy również jak najszybciej znaleźć nowych najemców.",
@@ -1229,8 +1341,7 @@ export const translations: Record<
       "Dziękujemy za rejestrację! Skontaktujemy się z Tobą w ciągu 24 godzin.",
     "homeowner.form.error":
       "Wystąpił błąd. Spróbuj ponownie lub zadzwoń do nas bezpośrednio.",
-    "homeowner.form.disclaimer":
-      "Rejestrując się, wyrażasz zgodę na kontakt z naszej strony w sprawie wynajmu Twojej nieruchomości.",
+    "homeowner.form.disclaimer": "lub zadzwoń bezpośrednio",
 
     "seo.home.title":
       "Zakwaterowanie dla personelu i mieszkania służbowe w Szwecji | StayOnSite",

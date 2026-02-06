@@ -21,6 +21,10 @@ const HomeownerFAQ = () => {
       answer: t('homeowner.faq.answer2')
     },
     {
+      question: t('homeowner.faq.question3'),
+      answer: t('homeowner.faq.answer3')
+    },
+    {
       question: t('homeowner.faq.question4'),
       answer: t('homeowner.faq.answer4')
     },
