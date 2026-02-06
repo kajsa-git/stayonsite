@@ -214,6 +214,7 @@ export type TranslationKey =
   | "homeowner.about.subtitle"
   | "homeowner.about.message"
   | "homeowner.about.kajsa"
+  | "homeowner.about.team"
   | "homeowner.about.nathalie"
   | "homeowner.about.cta"
   | "homeowner.faq.title"
@@ -557,6 +558,7 @@ export const translations: Record<
     "homeowner.about.subtitle": "Personlig service – inte en anonym plattform",
     "homeowner.about.message": "Vi vet att det är en stor sak att hyra ut sitt hem. Därför är vi alltid personligt involverade – från första samtalet till sista dagen. Du pratar alltid med människor som faktiskt fattar besluten. Inga mellanhänder, inga köer.",
     "homeowner.about.kajsa": "Kajsa – Grundare & VD",
+    "homeowner.about.team": "Kajsa med Team",
     "homeowner.about.nathalie": "Teamet – Dedikerad support",
     "homeowner.about.cta": "Ring oss direkt",
 
@@ -918,6 +920,7 @@ export const translations: Record<
     "homeowner.about.subtitle": "Personal service – not an anonymous platform",
     "homeowner.about.message": "We know renting out your home is a big deal. That's why we're always personally involved – from the first call to the last day. You always talk to people who actually make the decisions. No middlemen, no queues.",
     "homeowner.about.kajsa": "Kajsa – Founder & CEO",
+    "homeowner.about.team": "Kajsa & Team",
     "homeowner.about.nathalie": "The Team – Dedicated support",
     "homeowner.about.cta": "Call us directly",
 
@@ -1283,6 +1286,7 @@ export const translations: Record<
     "homeowner.about.subtitle": "Osobista obsługa – nie anonimowa platforma",
     "homeowner.about.message": "Wiemy, że wynajem domu to poważna sprawa. Dlatego zawsze jesteśmy osobiście zaangażowani. Rozmawiasz z ludźmi, którzy podejmują decyzje.",
     "homeowner.about.kajsa": "Kajsa – Założycielka i CEO",
+    "homeowner.about.team": "Kajsa i Zespół",
     "homeowner.about.nathalie": "Zespół – Dedykowane wsparcie",
     "homeowner.about.cta": "Zadzwoń bezpośrednio",
 

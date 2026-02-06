@@ -14,19 +14,34 @@ const HomeownerAbout = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Founder photos side */}
+            {/* Photos side */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col items-center gap-8"
+              className="flex flex-col items-center gap-6"
             >
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
+              {/* Kajsa portrait */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
                   <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
                 </div>
                 <p className="text-sm font-bold text-white/80">{t('homeowner.about.kajsa')}</p>
               </div>
+
+              {/* Team photo */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="w-full max-w-sm"
+              >
+                <div className="rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+                  <img src="/images/team.webp" alt="StayOnSite Team" className="w-full h-auto object-cover" />
+                </div>
+                <p className="text-center text-sm font-bold text-white/60 mt-3">{t('homeowner.about.team')}</p>
+              </motion.div>
             </motion.div>
 
             {/* Content side */}
