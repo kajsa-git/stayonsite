@@ -9,21 +9,21 @@ const References = () => {
       quote: t('references.testimonial1.quote'),
       author: t('references.testimonial1.author'),
       company: t('references.testimonial1.company'),
-      img: '/images/mats-testimonial.jpg'
+      img: '/images/mats-testimonial.webp'
     },
     {
       id: '2',
       quote: t('references.testimonial2.quote'),
       author: t('references.testimonial2.author'),
       company: t('references.testimonial2.company'),
-      img: '/images/sara-testimonial.jpg'
+      img: '/images/sara-testimonial.webp'
     },
     {
       id: '3',
       quote: t('references.testimonial3.quote'),
       author: t('references.testimonial3.author'),
       company: t('references.testimonial3.company'),
-      img: '/images/erik-testimonial.jpg'
+      img: '/images/erik-testimonial.webp'
     }
   ];
 

@@ -217,7 +217,7 @@ const CityPage = () => {
         <section className="relative overflow-hidden bg-primary text-white min-h-[600px] flex items-center">
            {/* Background Gradient/Pattern */}
            <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-primary/90 z-0" />
-           <div className="absolute inset-0 opacity-20 bg-[url('/images/hero-nordic-high-res.jpg')] bg-cover bg-center mix-blend-overlay z-0"></div>
+           <div className="absolute inset-0 opacity-20 bg-[url('/images/hero-nordic-high-res.webp')] bg-cover bg-center mix-blend-overlay z-0"></div>
            <div className="absolute inset-0 opacity-40 bg-gradient-to-t from-primary via-transparent to-transparent z-0"></div>
            
            {/* Glow Effect */}

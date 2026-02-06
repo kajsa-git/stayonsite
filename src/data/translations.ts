@@ -478,7 +478,7 @@ export const translations: Record<
     "homeowner.hero.incomeRange": "8 000 – 25 000 kr/månad",
     "homeowner.hero.incomeDescription": "Fast garanterad hyra – inga avdrag",
     "homeowner.hero.cta": "Få gratis intäktsbedömning",
-    "homeowner.hero.trustBadge": "Betalning i förskott · Försäkring ingår · Inga tomgångsperioder",
+    "homeowner.hero.trustBadge": "Fast hyra utan avdrag · Betalning i förskott · Vi sköter allt",
 
     "homeowner.benefits.title": "Varför husägare väljer StayOnSite",
     "homeowner.benefits.subtitle":
@@ -583,12 +583,12 @@ export const translations: Record<
       "Vi hyr bostaden av dig till en fast månadshyra som betalas i förskott, direkt till ditt bankkonto. Inga avdrag, inga dolda avgifter – du vet exakt vad du får varje månad.",
     "homeowner.faq.contactPrompt": "Har du fler frågor? Ring oss direkt!",
 
-    "homeowner.form.title": "Få en gratis intäktsbedömning",
+    "homeowner.form.title": "Hur mycket kan du tjäna?",
     "homeowner.form.subtitle":
-      "Det tar bara 2 minuter – vi kontaktar dig inom 24 timmar",
-    "homeowner.form.promise": "Kajsa ringer dig inom 24 timmar",
+      "Lämna ditt nummer så ringer Kajsa dig inom 24 timmar med en kostnadsfri bedömning",
+    "homeowner.form.promise": "Helt utan förpliktelse",
     "homeowner.form.promiseDescription":
-      "Efter registrering kontaktar vi dig för en kostnadsfri bedömning av hur mycket du kan tjäna på din bostad – helt utan förpliktelse",
+      "Vi berättar exakt vad du kan tjäna på din bostad. Du bestämmer själv om du vill gå vidare – ingen press, inga bindningstider.",
     "homeowner.form.fieldsTitle": "Dina kontaktuppgifter",
     "homeowner.form.fieldsSubtitle":
       "Vi behöver bara grundläggande information för att komma igång",
@@ -839,7 +839,7 @@ export const translations: Record<
     "homeowner.hero.incomeRange": "8,000 – 25,000 SEK/month",
     "homeowner.hero.incomeDescription": "Fixed guaranteed rent – no deductions",
     "homeowner.hero.cta": "Get a free income estimate",
-    "homeowner.hero.trustBadge": "Upfront payment · Insurance included · No vacancy periods",
+    "homeowner.hero.trustBadge": "Fixed rent, no deductions · Upfront payment · We handle everything",
 
     "homeowner.benefits.title": "Why homeowners choose StayOnSite",
     "homeowner.benefits.subtitle":
@@ -945,12 +945,12 @@ export const translations: Record<
       "We rent your property at a fixed monthly rate paid upfront, directly to your bank account. No deductions, no hidden fees – you know exactly what you get every month.",
     "homeowner.faq.contactPrompt": "Have more questions? Call us directly!",
 
-    "homeowner.form.title": "Get a free income estimate",
+    "homeowner.form.title": "How much can you earn?",
     "homeowner.form.subtitle":
-      "It takes just 2 minutes – we contact you within 24 hours",
-    "homeowner.form.promise": "Kajsa calls you within 24 hours",
+      "Leave your number and Kajsa will call you within 24 hours with a free estimate",
+    "homeowner.form.promise": "No obligation whatsoever",
     "homeowner.form.promiseDescription":
-      "After registration, we contact you for a free assessment of how much you can earn from your property – no obligation",
+      "We'll tell you exactly what you can earn from your property. You decide if you want to proceed – no pressure, no commitments.",
     "homeowner.form.fieldsTitle": "Your contact information",
     "homeowner.form.fieldsSubtitle":
       "We only need basic information to get started",
@@ -1204,7 +1204,7 @@ export const translations: Record<
     "homeowner.hero.incomeRange": "8 000 - 25 000 SEK/miesiąc",
     "homeowner.hero.incomeDescription": "Pewny dochód z wynajmu co miesiąc",
     "homeowner.hero.cta": "Zarejestruj swoją nieruchomość już dziś",
-    "homeowner.hero.trustBadge": "Płatność z góry · Ubezpieczenie w cenie · Brak pustostanów",
+    "homeowner.hero.trustBadge": "Stały czynsz bez potrąceń · Płatność z góry · Zajmujemy się wszystkim",
 
     "homeowner.benefits.title": "Dlaczego warto wynajmować ze StayOnSite?",
     "homeowner.benefits.subtitle":
@@ -1311,12 +1311,12 @@ export const translations: Record<
     "homeowner.faq.contactPrompt":
       "Masz więcej pytań? Zadzwoń do nas bezpośrednio!",
 
-    "homeowner.form.title": "Zarejestruj swoją nieruchomość",
+    "homeowner.form.title": "Ile możesz zarobić?",
     "homeowner.form.subtitle":
-      "To zajmuje tylko 2 minuty - Pomożemy Ci znaleźć odpowiedniego najemcę",
-    "homeowner.form.promise": "Skontaktujemy się z Tobą w ciągu 24 godzin",
+      "Zostaw numer – Kajsa oddzwoni w ciągu 24 godzin z bezpłatną wyceną",
+    "homeowner.form.promise": "Całkowicie bez zobowiązań",
     "homeowner.form.promiseDescription":
-      "Po rejestracji skontaktujemy się z Tobą w celu bezpłatnej konsultacji na temat tego, ile możesz zarobić na swojej nieruchomości.",
+      "Powiemy Ci dokładnie, ile możesz zarobić na swojej nieruchomości. Ty decydujesz, czy chcesz kontynuować – bez presji, bez zobowiązań.",
     "homeowner.form.fieldsTitle": "Twoje dane kontaktowe",
     "homeowner.form.fieldsSubtitle":
       "Potrzebujemy tylko podstawowych informacji, aby zacząć.",
