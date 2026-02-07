@@ -330,7 +330,7 @@ export const translations: Record<
     "nav.inquiryForm": "Ring oss",
     "nav.forCompanies": "För byggbolag",
 
-    "hero.title": "När ni har projekt i Sverige - så ordnar vi boendet",
+    "hero.title": "Personalboende i hela Sverige — vi ordnar boendet för ert projekt",
     "hero.subtitle": "Från första ingenjör till sista montör",
     "hero.cta": "Skicka förfrågan",
     "hero.tagline": "Etableringspartner i Sverige",
@@ -738,7 +738,7 @@ export const translations: Record<
     "nav.forCompanies": "For Companies",
 
     "hero.title":
-      "When you have projects in Sweden - we arrange the accommodation",
+      "Worker Accommodation Across Sweden — We Handle the Housing",
     "hero.subtitle": "From the first engineer to the last installer",
     "hero.cta": "Send Inquiry",
     "hero.tagline": "Deployment partner in Sweden",
@@ -1149,7 +1149,7 @@ export const translations: Record<
     "nav.forCompanies": "Dla firm",
 
     "hero.title":
-      "Kiedy macie projekty w Szwecji - my organizujemy zakwaterowanie",
+      "Zakwaterowanie pracownicze w Szwecji — organizujemy mieszkania",
     "hero.subtitle": "Od pierwszego inżyniera po ostatniego montera",
     "hero.cta": "Wyślij zapytanie",
     "hero.tagline": "Partner ds. wdrożeń w Szwecji",

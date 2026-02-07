@@ -18,21 +18,36 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const title = post.title[language] || post.title.sv;
   const description = post.description[language] || post.description.sv;
 
+  const articleUrl = `https://stayonsite.se/blogg/${post.slug}`;
+
   const structuredData = [
     {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: title,
       description: description,
+      image: {
+        '@type': 'ImageObject',
+        url: 'https://stayonsite.se/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
       author: { '@type': 'Person', name: post.author },
       publisher: {
         '@type': 'Organization',
         name: 'StayOnSite',
         url: 'https://stayonsite.se',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://stayonsite.se/images/og-image.jpg',
+        },
       },
       datePublished: post.publishedDate,
       dateModified: post.publishedDate,
-      mainEntityOfPage: `https://stayonsite.se/blogg/${post.slug}`,
+      mainEntityOfPage: articleUrl,
+      wordCount: post.readingTime * 250,
+      articleSection: post.category,
+      inLanguage: 'sv',
     },
     {
       '@context': 'https://schema.org',
@@ -50,9 +65,13 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       <SEO
         title={`${title} | StayOnSite`}
         description={description}
-        canonical={`https://stayonsite.se/blogg/${post.slug}`}
+        canonical={articleUrl}
         type="article"
         structuredData={structuredData}
+        hreflangs={[
+          { lang: 'sv', href: articleUrl },
+          { lang: 'x-default', href: articleUrl },
+        ]}
       />
       <Header />
       <main className="flex-grow">
