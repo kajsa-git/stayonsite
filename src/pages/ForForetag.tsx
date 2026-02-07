@@ -101,10 +101,8 @@ const ForForetag = () => {
   const comparisonLabels = {
     pricePerNight: t('Pris per person/mån', 'Price per person/month', 'Cena za osobę/mies.'),
     invoice: t('Företagsfaktura', 'Corporate invoice', 'Faktura firmowa'),
-    kitchen: t('Kök & tvätt', 'Kitchen & laundry', 'Kuchnia i pralnia'),
     contact: t('Fast kontaktperson', 'Dedicated contact', 'Stała osoba kontaktowa'),
     flexible: t('Flexibla avtal', 'Flexible contracts', 'Elastyczne umowy'),
-    guarantee: t('Boendegaranti', 'Housing guarantee', 'Gwarancja zakwaterowania'),
     colHotel: t('Hotell', 'Hotel', 'Hotel'),
     colAirbnb: 'Airbnb',
     colSelf: t('Egen hantering', 'Self-managed', 'Samodzielne'),
@@ -113,16 +111,14 @@ const ForForetag = () => {
   const comparisonRows = [
     {
       label: comparisonLabels.pricePerNight,
-      stayonsite: t('3 000–8 000 kr', 'SEK 3,000–8,000', '3 000–8 000 SEK'),
+      stayonsite: t('5 000–10 000 kr', 'SEK 5,000–10,000', '5 000–10 000 SEK'),
       hotel: t('15 000–30 000 kr', 'SEK 15,000–30,000', '15 000–30 000 SEK'),
       airbnb: t('8 000–15 000 kr', 'SEK 8,000–15,000', '8 000–15 000 SEK'),
       self: t('Varierar', 'Varies', 'Różnie'),
     },
     { label: comparisonLabels.invoice, stayonsite: true, hotel: true, airbnb: false, self: false },
-    { label: comparisonLabels.kitchen, stayonsite: true, hotel: false, airbnb: 'partial' as const, self: 'partial' as const },
     { label: comparisonLabels.contact, stayonsite: true, hotel: false, airbnb: false, self: false },
     { label: comparisonLabels.flexible, stayonsite: true, hotel: 'partial' as const, airbnb: false, self: true },
-    { label: comparisonLabels.guarantee, stayonsite: true, hotel: 'partial' as const, airbnb: false, self: false },
   ];
 
   const renderIcon = (value: boolean | string) => {
