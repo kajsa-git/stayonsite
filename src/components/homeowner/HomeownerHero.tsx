@@ -52,23 +52,17 @@ const HomeownerHero = () => {
             <span className="tracking-[0.1em] uppercase">{t('homeowner.hero.pill')}</span>
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+          <h1
             className="font-display text-5xl md:text-[72px] lg:text-[84px] font-bold leading-[1.1] tracking-tight text-white drop-shadow-2xl mb-8"
           >
             {t('homeowner.hero.title')}
-          </motion.h1>
+          </h1>
           
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+          <p
             className="max-w-2xl text-xl md:text-2xl text-white/80 font-light leading-relaxed mb-12"
           >
             {t('homeowner.hero.subtitle')}
-          </motion.p>
+          </p>
 
           {/* Income Calculator / CTA Box */}
           <motion.div 

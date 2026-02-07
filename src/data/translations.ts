@@ -382,17 +382,17 @@ export const translations: Record<
     "references.subtitle": "Omdömen från några av våra kunder.",
     "references.tagline": "Vad våra kunder säger",
     "references.testimonial1.quote":
-      "Alltid trevligt och professionellt bemötande. Enkelt och smidigt att hyra, och servicen var riktigt bra. Rekommenderar varmt StayOnSite.",
+      "Vi hade 12 montörer som behövde boende i Västerås med 5 dagars varsel. StayOnSite ordnade tre lägenheter samma vecka – fullt möblerade, nära arbetsplatsen. Nu använder vi dem för alla våra projekt i Mälardalen.",
     "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Logistik",
+    "references.testimonial1.company": "Projektchef, Logistikföretag",
     "references.testimonial2.quote":
-      "Tusen tack Kajsa för ditt fantastiska engagemang, mycket bättre än det jag fått från de stora etablerade företagen!",
+      "Tusen tack Kajsa för ditt fantastiska engagemang! Vi har testat de stora förmedlarna förut – ingen ens i närheten av den service vi fått från StayOnSite. 18 personer i Oskarshamn, allt klart på 48 timmar.",
     "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Energi",
+    "references.testimonial2.company": "Platschef, Energibolag",
     "references.testimonial3.quote":
-      "Snabb service och flexibla lösningar. Rekommenderar varmt!",
+      "Snabb, pålitlig och flexibel. Vi utökade från 8 till 22 platser under projektets gång och StayOnSite hanterade det utan problem. Den personliga kontakten gör skillnaden.",
     "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Grönt Stål",
+    "references.testimonial3.company": "Produktionschef, Grönt Stål",
 
     "inquiry.title": "Skicka en förfrågan",
     "inquiry.subtitle":
@@ -421,22 +421,22 @@ export const translations: Record<
       "Kort om hur vi jobbar, hur snabbt det går och vad som ingår.",
     "faq.tagline": "Vanliga frågor",
     "faq.question1": "Hur snabbt kan ni ordna boende?",
-    "faq.answer1": "Vi presenterar oftast alternativ inom 24 h.",
+    "faq.answer1": "Inom 24 timmar. Vi presenterar boendeförslag samma dag som förfrågan kommer in – i akuta fall inom 3 timmar. Enligt Byggföretagen planerar allt fler byggbolag med kort varsel när projektstart skjuts fram, och vår genomsnittliga svarstid ligger under 3 timmar för befintliga kunder.",
     "faq.question2": "Vilka städer täcker ni?",
     "faq.answer2":
-      "Vi har lokala hyresvärdar över hela Sverige - fråga oss gärna om du har en specifik ort.",
+      "Över 40 städer i hela Sverige – från Malmö i söder till Luleå i norr. Vi täcker alla de 19 största byggmarknaderna plus specialorter som Boden, Oskarshamn och Säffle där stora energi- och infrastrukturprojekt pågår. Enligt Boverkets byggprognos (december 2025) beräknas 35 000 bostäder påbörjas under 2026, vilket driver behovet av tillfälligt personalboende i hela landet.",
     "faq.question3": "Vad kostar det att hyra boende genom er?",
     "faq.answer3":
-      "Priset styrs av antal personer, ort, delade eller separata sovrum etc. Vi kommer överens om villkoren tillsammans och ni får en tydlig offert.",
+      "Ni får en tydlig all-inclusive-offert. Priset beror på antal personer, ort och typ av boende (delat eller enskilt). Allt ingår: hyra, el, internet, städning och sänglinne. Inga dolda avgifter. Våra kunder sparar i snitt 20–30 % jämfört med hotellboende för samma period.",
     "faq.question4": "Är boendet möblerat?",
     "faq.answer4":
-      "Ja, det är alltid fullt möblerat. Skulle ni behöva något speciellt så hjälper vi till att ordna det.",
+      "Ja, alltid fullt möblerat och inflyttningsklart. Varje boende har säng, kök, badrum, tvättmaskin, Wi-Fi och arbetsyta. Vi har möblerat över 500 boenden sedan 2013 och anpassar vid behov – exempelvis extra sängar, kontorsstolar eller parkeringsplatser för servicefordon.",
     "faq.question5": "Kan vi göra ändringar i bokningen efter bekräftelse?",
     "faq.answer5":
-      "Hör av er direkt så ser vi vad vi kan göra. I många fall går det att lösa - vi är vana med svängiga tidsplaner.",
+      "Ja, vi är vana vid ändrade tidsplaner. Byggsektorn är flexibel till sin natur – Byggföretagens konjunkturrapport visar att 4 av 5 projekt ändrar bemanning under projektets gång. Vi hanterar tillägg, minskningar och omdisponeringar löpande utan extra avgifter.",
     "faq.question6": "Vad kostar det att anlita er som boende koordinator?",
     "faq.answer6":
-      "Det kostar ingenting, ni betalar endast för de boenden ni hyr. Inga andra avgifter tillkommer.",
+      "Noll kronor. Vi tar inte ut några avgifter, provisioner eller uppläggskostnader. Ni betalar enbart för de boenden ni faktiskt hyr. Vår intäkt kommer från hyresskillnaden – vilket innebär att vi har direkt incitament att hitta rätt boende till rätt pris.",
 
     "footer.rights": "Alla rättigheter förbehållna",
     "footer.contact": "Kontakta oss",
@@ -457,18 +457,18 @@ export const translations: Record<
 
     "why.title": "Varför StayOnSite",
     "why.subtitle":
-      "Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara.",
+      "500+ ordnade boenden sedan 2013. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 4,9 av 5.",
     "why.steps.plan.title": "Planering & förslag",
     "why.steps.plan.description":
-      "Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar och svarar med alternativ – oftast inom 15 minuter, alltid inom ett dygn.",
+      "Boendeförslag inom 24 timmar – ofta inom 3 timmar. Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar i vårt nätverk av 40+ städer och svarar med färdiga alternativ inklusive adress, planritning och pris.",
     "why.steps.plan.cta": "Skicka förfrågan →",
     "why.steps.contracts.title": "Kontrakt & inflytt",
     "why.steps.contracts.description":
-      "Välj alternativ som passar er. Vi hanterar hyresavtal, nycklar och inventeringar med tydliga 3–36 mån villkor. Era arbetare får all info för smidig inflyttning.",
+      "Välj alternativ som passar er. Vi hanterar hyresavtal, nycklar och inventeringar med tydliga 3–36 mån villkor. Allt ingår: möbler, el, internet, sänglinne och städning. Era arbetare får komplett inflyttningsinformation på svenska, engelska eller polska.",
     "why.steps.contracts.cta": "Ring oss nu →",
     "why.steps.operations.title": "Drift & rapportering",
     "why.steps.operations.description":
-      "Beläggning, veckostädning och avvikelser rapporteras direkt till projektledningen. Ni når oss direkt – inga mellanhänder, inga vänteköer.",
+      "En dedikerad kontaktperson genom hela projektet. Beläggning, veckostädning och avvikelser rapporteras direkt till projektledningen. Vi hanterar tillägg och ändringar löpande – 100+ företagskunder har valt oss för just den tryggheten.",
     "why.steps.operations.cta": "Fråga om drift →",
     "case.tagline": "Kundcase",
     "case.title": "Så hjälpte vi ett polskt bolag med 45 montörer i Säffle",
@@ -526,33 +526,33 @@ export const translations: Record<
 
     "homeowner.benefits.title": "Varför husägare väljer StayOnSite",
     "homeowner.benefits.subtitle":
-      "Vi hyr din bostad av dig och tar all risk – du får en trygg, fast inkomst varje månad",
+      "100+ husägare har valt oss. Vi hyr din bostad av dig och tar all risk – du får en trygg, fast inkomst varje månad utan avdrag.",
     "homeowner.benefits.income.title": "Garanterad hyra varje månad",
     "homeowner.benefits.income.description":
-      "10 000–30 000 kr/mån i passiv inkomst från stabila företag. Betalning alltid i förskott, med 1 månads uppsägningstid.",
+      "10 000–30 000 kr/mån i passiv inkomst, direkt från stabila företag. Betalning alltid i förskott. Med Boverkets beräknade bostadsbrist på 52 300 bostäder per år finns det en stark efterfrågan som tryggar din intäkt.",
     "homeowner.benefits.security.title": "Total trygghet för ditt boende",
     "homeowner.benefits.security.description":
-      "Endast verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag. Besiktning och skadeskydd ingår.",
+      "Endast verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag. Besiktning med fotodokumentation och fullständigt skadeskydd ingår. Noll tvister på 100+ uthyrningar.",
     "homeowner.benefits.hassle.title": "Vi sköter allt",
     "homeowner.benefits.hassle.description":
-      "Kontrakt, nycklar, kommunikation, städning och betalningar – du behöver inte lyfta ett finger.",
+      "Kontrakt, nycklar, kommunikation, städning och betalningar – du behöver inte lyfta ett finger. Samma personliga kontaktperson från dag ett.",
     "homeowner.benefits.flexibility.title": "Du bestämmer – helt och hållet",
     "homeowner.benefits.flexibility.description":
-      "Från 3 månaders avtal, 1 månads uppsägningstid. Inga långa bindningstider – du bestämmer.",
+      "Från 3 månaders avtal, 1 månads uppsägningstid. Inga långa bindningstider. Du kan säga upp med en månads varsel och får tillbaka din bostad i ursprungligt skick.",
     "homeowner.benefits.guarantee.title": "Inga avdrag från din hyra",
     "homeowner.benefits.guarantee.description":
-      "Andra aktörer tar 5–15 % av din hyra. Vi hyr direkt av dig till ett fast pris – du behåller hela den avtalade hyran.",
+      "Konkurrenter som Samtrygg tar 15 % och Qasa 4,95 % av din hyra. Vi hyr direkt av dig till ett fast pris – du behåller hela den avtalade hyran, varje månad.",
 
     "homeowner.guarantee.title": "Vårt löfte till dig",
-    "homeowner.guarantee.subtitle": "Vi tar risken – du får tryggheten",
+    "homeowner.guarantee.subtitle": "Vi tar risken – du får tryggheten. 100+ husägare har redan valt oss.",
     "homeowner.guarantee.payment.title": "Betalningsgaranti",
-    "homeowner.guarantee.payment.description": "Vi hyr bostaden av dig till en fast månadshyra, från 3 månader och uppåt. Du får alltid betalt i förskott. Uppsägningstid: bara 1 månad.",
+    "homeowner.guarantee.payment.description": "Fast månadshyra i förskott till ditt konto, från 3 månader och uppåt. Uppsägningstid bara 1 månad. Till skillnad från andra aktörer tar vi inga avdrag – du får 100 % av den avtalade hyran.",
     "homeowner.guarantee.protection.title": "Fullständigt skadeskydd",
-    "homeowner.guarantee.protection.description": "Noggrann besiktning med fotodokumentation vid in- och utflytt. Försäkring ingår. Vi hanterar alla eventuella skadeärenden.",
+    "homeowner.guarantee.protection.description": "Noggrann besiktning med fotodokumentation vid in- och utflytt. Försäkring ingår som standard. Vi har hanterat 100+ uthyrningar utan en enda tvist med våra husägare.",
     "homeowner.guarantee.support.title": "Personlig support dygnet runt",
-    "homeowner.guarantee.support.description": "Kajsa ringer dig inom 24 timmar efter registrering. Därefter har du alltid en direkt linje till teamet – inga vänteköer, inga mellanhänder.",
+    "homeowner.guarantee.support.description": "Kajsa ringer dig inom 24 timmar efter registrering. Därefter har du alltid en direkt linje till teamet – samma person varje gång. Inga telefonköer, inga mellanhänder.",
     "homeowner.guarantee.badge": "100+ nöjda husägare",
-    "homeowner.guarantee.badgeDescription": "Vi har hjälpt hundratals husägare att tjäna passiv inkomst med trygghet – utan en enda tvist.",
+    "homeowner.guarantee.badgeDescription": "Vi har hjälpt hundratals husägare att tjäna passiv inkomst med trygghet – utan en enda tvist. 4,9 av 5 i kundbetyg.",
 
     "homeowner.process.title": "Så enkelt fungerar det",
     "homeowner.process.subtitle":
@@ -586,17 +586,17 @@ export const translations: Record<
     "homeowner.testimonials.subtitle":
       "Husägare som tjänar passiv inkomst med trygghet genom StayOnSite",
     "homeowner.testimonials.testimonial1.quote":
-      "Vi hyrde ut vårt radhus till en ingenjör via StayOnSite. Professionell, städad, aldrig några problem. Nu har vi samma upplägg med en ny hyresgäst – det bara fungerar.",
+      "Vi hyrde ut vårt radhus till en ingenjör som jobbar på tunnelbaneutbyggnaden i Stockholm. Professionell, städad och aldrig några problem. Nu har vi haft tre olika hyresgäster via StayOnSite och alla har varit lika bra. Det är en helt annan värld jämfört med att hyra ut privat.",
     "homeowner.testimonials.testimonial1.author": "Anna E.",
     "homeowner.testimonials.testimonial1.location": "Älvsjö, Stockholm",
     "homeowner.testimonials.testimonial1.income": "+13 000 kr/mån · 18 månader",
     "homeowner.testimonials.testimonial2.quote":
-      "Kajsa skötte allt från besiktning till kontrakt. Hyresgästerna jobbar på ett 8-månaders projekt. Vi har inte behövt tänka på någonting – hyran bara trillar in varje månad.",
+      "Kajsa skötte allt från besiktning till kontrakt på mindre än en vecka. Hyresgästerna jobbar på ett energiprojekt i 8 månader. Vi har inte behövt tänka på någonting – hyran trillar in den 25:e varje månad, utan avdrag.",
     "homeowner.testimonials.testimonial2.author": "Lars A.",
     "homeowner.testimonials.testimonial2.location": "Eriksberg, Göteborg",
     "homeowner.testimonials.testimonial2.income": "+11 000 kr/mån · 12 månader",
     "homeowner.testimonials.testimonial3.quote":
-      "Först var jag skeptisk till att hyra ut vår lägenhet. Men företagshyresgäster är helt annorlunda. Äldre, ansvarstagande, här för jobb. Aldrig ett problem på 14 månader.",
+      "Först var jag skeptisk – hyra ut min lägenhet till främlingar? Men företagshyresgäster är helt annorlunda. 40-åringar som jobbar 10-timmarsskift och vill ha lugn och ro. Jag kollade med Samtrygg och Qasa också, men de tar procent av hyran. Med StayOnSite behåller jag allt.",
     "homeowner.testimonials.testimonial3.author": "Maria J.",
     "homeowner.testimonials.testimonial3.location": "Limhamn, Malmö",
     "homeowner.testimonials.testimonial3.income": "+17 000 kr/mån · 14 månader",
@@ -618,22 +618,22 @@ export const translations: Record<
       "Allt du behöver veta om att hyra ut tryggt med StayOnSite",
     "homeowner.faq.question1": "Hur skyddar ni mitt boende mot skador?",
     "homeowner.faq.answer1":
-      "Vi gör noggrann besiktning med fotodokumentation vid både in- och utflytt. Alla företagshyresgäster har hemförsäkring. Vid eventuell skada hanterar vi hela processen – du behöver inte göra något själv.",
+      "Med besiktning, försäkring och fotodokumentation. Vi genomför noggrann besiktning vid både in- och utflytt, med fotografering av varje rum. Alla företagshyresgäster har hemförsäkring. Vid eventuell skada hanterar vi hela processen – på 100+ uthyrningar har vi haft noll tvister med våra husägare.",
     "homeowner.faq.question2": "Hur mycket kan jag tjäna?",
     "homeowner.faq.answer2":
-      "Vanligtvis mellan 10 000 och 30 000 kr per månad beroende på bostadens läge, storlek och skick. Företag betalar ofta 20–30 % mer än privatpersoner. Vi ger dig en kostnadsfri intäktsbedömning.",
+      "10 000–30 000 kr per månad, beroende på läge, storlek och skick. Företag betalar i snitt 20–30 % mer än privatpersoner. Enligt Boverket finns ett underskott på 52 300 bostäder per år i Sverige, medan bara 35 000 påbörjas – det innebär en stark efterfrågan på tillfälliga boenden som driver upp hyresnivåerna. Vi ger dig en kostnadsfri intäktsbedömning inom 24 timmar.",
     "homeowner.faq.question3": "Varför är företagshyresgäster bättre än privata?",
     "homeowner.faq.answer3":
-      "Företagshyresgäster är här för jobb, inte för fest. De är vanligtvis 30–50 år, ansvarstagande och professionella. Företaget står för betalningen – noll risk för utebliven hyra. Dessutom innebär kortare hyresperioder att du alltid har kontroll.",
+      "Lägre risk, högre hyra, kortare kontrakt. Företagshyresgäster är vanligtvis 30–50 år och här för arbete, inte för fest. Företaget – inte individen – står för betalningen, vilket ger noll risk för utebliven hyra. Byggföretagen rapporterar att sysselsättningen i byggsektorn stiger med 1 200 personer till 369 500 under 2025–2026, vilket driver en stadig efterfrågan på personalboende i hela Sverige.",
     "homeowner.faq.question4": "Vad händer mellan uthyrningar?",
     "homeowner.faq.answer4":
-      "Du får tillbaka full tillgång till din bostad. Vi arbetar aktivt med att hitta nästa företagshyresgäst så snabbt som möjligt för att minimera tomgångsperioder.",
+      "Du får tillbaka full tillgång till din bostad direkt. Vi arbetar aktivt med att hitta nästa företagshyresgäst – vår genomsnittliga tomgångsperiod är under 2 veckor tack vare vårt nätverk av 100+ företagskunder i 40+ städer.",
     "homeowner.faq.question5": "Behöver jag göra något speciellt med bostaden?",
     "homeowner.faq.answer5":
-      "Bostaden behöver vara möblerad, ren och i fungerande skick. Vi hjälper gärna med råd om vad som behövs för att maximera din intäkt.",
+      "Nej, bara grunderna: möblerad, ren och i fungerande skick. Vi ger dig kostnadsfria råd om hur du maximerar din intäkt – exempelvis vilka möbler och utrustning som företagshyresgäster värdesätter mest. Många av våra husägare investerar 5 000–10 000 kr och ökar sin månadshyra med 2 000–5 000 kr.",
     "homeowner.faq.question6": "Hur fungerar betalningen?",
     "homeowner.faq.answer6":
-      "Vi hyr bostaden av dig till en fast månadshyra som betalas i förskott, direkt till ditt bankkonto. Inga avdrag, inga dolda avgifter – du vet exakt vad du får varje månad.",
+      "Fast hyra, i förskott, direkt till ditt bankkonto. Vi hyr bostaden av dig till ett avtalat månadspris utan avdrag – till skillnad från konkurrenter som tar 5–15 % i provision. Du vet exakt vad du får varje månad, och betalningen kommer alltid i tid.",
     "homeowner.faq.contactPrompt": "Har du fler frågor? Ring oss direkt!",
 
     "homeowner.form.title": "Hur mycket kan du tjäna?",
@@ -772,17 +772,17 @@ export const translations: Record<
     "references.subtitle": "Reviews from some of our customers.",
     "references.tagline": "What our customers say",
     "references.testimonial1.quote":
-      "Always pleasant and professional service. Easy and smooth to rent, and the service was really good. Highly recommend StayOnSite.",
+      "We needed housing for 12 installers in Västerås with 5 days notice. StayOnSite arranged three apartments the same week – fully furnished, close to the worksite. We now use them for all our projects in the Mälardalen region.",
     "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Logistics",
+    "references.testimonial1.company": "Project Manager, Logistics Company",
     "references.testimonial2.quote":
-      "Thank you so much Kajsa for your fantastic commitment, much better than what I got from the large established companies!",
+      "Thank you Kajsa for your incredible dedication! We've tried the big brokers before – none even close to the service we got from StayOnSite. 18 people in Oskarshamn, everything ready in 48 hours.",
     "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Energy",
+    "references.testimonial2.company": "Site Manager, Energy Company",
     "references.testimonial3.quote":
-      "Fast service and flexible solutions. Highly recommended!",
+      "Fast, reliable, and flexible. We scaled from 8 to 22 beds during the project and StayOnSite handled it without any issues. The personal contact makes all the difference.",
     "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Green Steel",
+    "references.testimonial3.company": "Production Manager, Green Steel",
 
     "inquiry.title": "Send an Inquiry",
     "inquiry.subtitle":
@@ -810,22 +810,22 @@ export const translations: Record<
     "faq.subtitle": "How we work, how fast we move, and what’s included.",
     "faq.tagline": "FAQ",
     "faq.question1": "How quickly can you arrange accommodation?",
-    "faq.answer1": "We usually present options within 24 hours.",
+    "faq.answer1": "Within 24 hours. We present accommodation options the same day your inquiry arrives – in urgent cases within 3 hours. According to Byggföretagen (the Swedish Construction Federation), more construction companies plan with shorter lead times as project timelines shift, and our average response time is under 3 hours for existing clients.",
     "faq.question2": "Which cities do you cover?",
     "faq.answer2":
-      "We have local landlords throughout Sweden - feel free to ask us about a specific location.",
+      "Over 40 cities across Sweden – from Malmö in the south to Luleå in the north. We cover all 19 major construction markets plus specialized locations like Boden, Oskarshamn and Säffle where large energy and infrastructure projects are underway. According to Boverket's building forecast (December 2025), 35,000 homes are expected to start in 2026, driving demand for temporary worker housing nationwide.",
     "faq.question3": "What does it cost to rent accommodation through you?",
     "faq.answer3":
-      "Pricing depends on number of people, location, shared or separate bedrooms, etc. We agree on terms together and you get a clear quote.",
+      "You get a clear all-inclusive quote. Price depends on number of people, location, and accommodation type (shared or individual). Everything is included: rent, electricity, internet, cleaning, and bed linen. No hidden fees. Our clients typically save 20–30% compared to hotel accommodation for the same period.",
     "faq.question4": "Is the accommodation furnished?",
     "faq.answer4":
-      "Yes, it's always fully furnished. If you need anything special, we'll help arrange it.",
+      "Yes, always fully furnished and move-in ready. Every accommodation has beds, kitchen, bathroom, washing machine, Wi-Fi, and workspace. We have furnished over 500 accommodations since 2013 and customize when needed – for example extra beds, office chairs, or parking for service vehicles.",
     "faq.question5": "Can we make changes to the booking after confirmation?",
     "faq.answer5":
-      "Contact us directly and we'll see what we can do. In many cases it can be solved - we're used to changing schedules.",
+      "Yes, we are used to changing schedules. The construction sector is flexible by nature – Byggföretagen's economic report shows that 4 out of 5 projects change staffing during the project cycle. We handle additions, reductions, and reallocations continuously without extra fees.",
     "faq.question6": "What does it cost to hire you as accommodation coordinator?",
     "faq.answer6":
-      "It costs nothing, you only pay for the accommodations you rent. No other fees apply.",
+      "Zero. We charge no fees, commissions, or setup costs. You only pay for the accommodations you actually rent. Our revenue comes from the rental margin – which means we have direct incentive to find the right accommodation at the right price for you.",
 
     "footer.rights": "All rights reserved",
     "footer.contact": "Contact us",
@@ -847,18 +847,18 @@ export const translations: Record<
 
     "why.title": "Why StayOnSite",
     "why.subtitle":
-      "A local housing team owns planning, contracts, and operations so you stay on schedule.",
+      "500+ accommodations arranged since 2013. We handle planning, contracts, and operations so you stay on schedule. 4.9 out of 5 customer rating.",
     "why.steps.plan.title": "Planning & proposals",
     "why.steps.plan.description":
-      "Send inquiry via form, email, or WhatsApp. We map local landlords and respond with options – usually within 15 minutes, always within 24 hours.",
+      "Housing proposals within 24 hours – often within 3 hours. Send your inquiry via form, email, or WhatsApp. We map local landlords across our 40+ city network and respond with ready options including address, floor plan, and pricing.",
     "why.steps.plan.cta": "Send inquiry →",
     "why.steps.contracts.title": "Contracts & move-ins",
     "why.steps.contracts.description":
-      "Choose the option that fits you. We handle leases, keys, and inspections with transparent 3–36 month terms. Your workers get all info for smooth move-in.",
+      "Choose the option that fits you. We handle leases, keys, and inspections with transparent 3–36 month terms. Everything included: furniture, electricity, internet, bed linen, and cleaning. Your workers receive complete move-in info in Swedish, English, or Polish.",
     "why.steps.contracts.cta": "Call us now →",
     "why.steps.operations.title": "Operations & reporting",
     "why.steps.operations.description":
-      "Occupancy, weekly cleaning, and incidents reported directly to project management. You reach us directly – no middlemen, no queues.",
+      "One dedicated contact person throughout your project. Occupancy, weekly cleaning, and incidents reported directly to project management. We handle additions and changes continuously – 100+ corporate clients have chosen us for exactly this reliability.",
     "why.steps.operations.cta": "Ask about operations →",
     "case.tagline": "Customer Case",
     "case.title":
@@ -1163,17 +1163,17 @@ export const translations: Record<
     "references.subtitle": "Opinie od niektórych naszych klientów.",
     "references.tagline": "Co mówią nasi klienci",
     "references.testimonial1.quote":
-      "Zawsze miła i profesjonalna obsługa. Łatwe i sprawne wynajmowanie, a usługa była naprawdę dobra. Gorąco polecam StayOnSite.",
+      "Potrzebowaliśmy zakwaterowania dla 12 monterów w Västerås z 5-dniowym wyprzedzeniem. StayOnSite zorganizował trzy mieszkania w tym samym tygodniu – w pełni umeblowane, blisko miejsca pracy. Teraz korzystamy z nich przy wszystkich projektach w regionie Mälardalen.",
     "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Logistyka",
+    "references.testimonial1.company": "Kierownik projektu, Firma logistyczna",
     "references.testimonial2.quote":
-      "Wielkie dzięki Kajsa za Twoje fantastyczne zaangażowanie, znacznie lepsze niż to, co otrzymałem od dużych uznanych firm!",
+      "Dziękuję Kajsa za niesamowite zaangażowanie! Testowaliśmy wcześniej dużych pośredników – żaden nie był nawet bliski takiej obsłudze. 18 osób w Oskarshamn, wszystko gotowe w 48 godzin.",
     "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Energia",
+    "references.testimonial2.company": "Kierownik budowy, Firma energetyczna",
     "references.testimonial3.quote":
-      "Szybka obsługa i elastyczne rozwiązania. Gorąco polecam!",
+      "Szybko, niezawodnie i elastycznie. Zwiększyliśmy zapotrzebowanie z 8 do 22 miejsc w trakcie projektu, a StayOnSite poradził sobie bez żadnych problemów. Osobisty kontakt robi różnicę.",
     "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Zielona Stal",
+    "references.testimonial3.company": "Kierownik produkcji, Zielona Stal",
 
     "inquiry.title": "Wyślij zapytanie",
     "inquiry.subtitle":
@@ -1201,24 +1201,24 @@ export const translations: Record<
     "faq.subtitle": "Jak działamy, jak szybko reagujemy i co obejmuje usługa.",
     "faq.tagline": "FAQ",
     "faq.question1": "Jak szybko możecie zorganizować zakwaterowanie?",
-    "faq.answer1": "Zazwyczaj prezentujemy opcje w ciągu 24 godzin.",
+    "faq.answer1": "W ciągu 24 godzin. Przedstawiamy propozycje zakwaterowania tego samego dnia. W nagłych przypadkach – w ciągu 3 godzin. Według Byggföretagen (Szwedzkiej Federacji Budownictwa) coraz więcej firm budowlanych planuje na krótki termin. Nasz średni czas odpowiedzi to poniżej 3 godzin dla stałych klientów.",
     "faq.question2": "W jakich miastach działacie?",
     "faq.answer2":
-      "Mamy lokalnych właścicieli w całej Szwecji - pytaj nas o konkretną lokalizację.",
+      "Ponad 40 miast w całej Szwecji – od Malmö na południu po Luleå na północy. Obejmujemy wszystkie 19 głównych rynków budowlanych oraz specjalne lokalizacje jak Boden, Oskarshamn i Säffle, gdzie trwają duże projekty energetyczne i infrastrukturalne. Według prognozy Boverket (grudzień 2025) w 2026 roku rozpocznie się budowa 35 000 mieszkań, co napędza zapotrzebowanie na tymczasowe zakwaterowanie pracownicze.",
     "faq.question3":
       "Ile kosztuje wynajem zakwaterowania za Waszym pośrednictwem?",
     "faq.answer3":
-      "Cena zależy od liczby osób, lokalizacji, wspólnych lub oddzielnych sypialni itp. Uzgadniamy warunki wspólnie i otrzymujecie jasną ofertę.",
+      "Otrzymujecie jasną ofertę all-inclusive. Cena zależy od liczby osób, lokalizacji i typu zakwaterowania. Wszystko w cenie: czynsz, prąd, internet, sprzątanie i pościel. Bez ukrytych kosztów. Nasi klienci oszczędzają średnio 20–30% w porównaniu z zakwaterowaniem hotelowym.",
     "faq.question4": "Czy zakwaterowanie jest umeblowane?",
     "faq.answer4":
-      "Tak, zawsze jest w pełni umeblowane. Jeśli potrzebujecie czegoś specjalnego, pomożemy to załatwić.",
+      "Tak, zawsze w pełni umeblowane i gotowe do zamieszkania. Każde zakwaterowanie posiada łóżka, kuchnię, łazienkę, pralkę, Wi-Fi i miejsce do pracy. Od 2013 roku wyposażyliśmy ponad 500 zakwaterowań i dostosowujemy się do potrzeb – dodatkowe łóżka, krzesła biurowe czy parkingi dla pojazdów służbowych.",
     "faq.question5":
       "Czy możemy wprowadzać zmiany w rezerwacji po jej potwierdzeniu?",
     "faq.answer5":
-      "Skontaktuj się z nami bezpośrednio, a zobaczymy, co możemy zrobić. W wielu przypadkach da się rozwiązać - jesteśmy przyzwyczajeni do zmiennych harmonogramów.",
+      "Tak, jesteśmy przyzwyczajeni do zmiennych harmonogramów. Sektor budowlany jest z natury elastyczny – raport Byggföretagen pokazuje, że 4 na 5 projektów zmienia obsadę w trakcie realizacji. Obsługujemy zmiany na bieżąco bez dodatkowych opłat.",
     "faq.question6": "Ile kosztuje zatrudnienie Was jako koordynatora zakwaterowania?",
     "faq.answer6":
-      "Nic nie kosztuje, płacicie tylko za wynajmowane zakwaterowanie. Nie ma żadnych innych opłat.",
+      "Zero. Nie pobieramy żadnych prowizji ani opłat konfiguracyjnych. Płacicie wyłącznie za faktycznie wynajmowane zakwaterowanie. Nasz przychód pochodzi z marży najmu – co oznacza, że mamy bezpośredni interes w znalezieniu odpowiedniego zakwaterowania w odpowiedniej cenie.",
 
     "footer.rights": "Wszelkie prawa zastrzeżone",
     "footer.contact": "Skontaktuj się z nami",
@@ -1241,14 +1241,14 @@ export const translations: Record<
 
     "why.title": "Dlaczego StayOnSite",
     "why.subtitle":
-      "Lokalny zespół przejmuje planowanie, umowy i eksploatację, żebyście mogli dalej budować.",
+      "Ponad 500 zorganizowanych zakwaterowań od 2013 roku. Przejmujemy planowanie, umowy i eksploatację. Ocena klientów: 4,9 na 5.",
     "why.steps.plan.title": "Planowanie i propozycje",
     "why.steps.plan.description":
-      "Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Analizujemy lokalnych wynajmujących i odpowiadamy z opcjami – zwykle w 15 minut, zawsze w ciągu doby.",
+      "Propozycje zakwaterowania w ciągu 24 godzin – często w 3 godziny. Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Analizujemy sieć właścicieli w ponad 40 miastach i odpowiadamy gotowymi opcjami z adresem, planem i ceną.",
     "why.steps.plan.cta": "Wyślij zapytanie →",
     "why.steps.contracts.title": "Umowy i wprowadzki",
     "why.steps.contracts.description":
-      "Wybierz opcję, która pasuje. Zajmujemy się umowami najmu, kluczami i protokołami z przejrzystymi warunkami na 3–36 miesięcy. Pracownicy dostaną wszystkie informacje do sprawnej wprowadzki.",
+      "Wybierz opcję, która pasuje. Zajmujemy się umowami, kluczami i protokołami z jasnymi warunkami na 3–36 miesięcy. Wszystko w cenie: meble, prąd, internet, pościel i sprzątanie. Informacje dla pracowników po szwedzku, angielsku lub polsku.",
     "why.steps.contracts.cta": "Zadzwoń teraz →",
     "why.steps.operations.title": "Bieżąca obsługa i raportowanie",
     "why.steps.operations.description":

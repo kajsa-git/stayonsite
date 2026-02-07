@@ -43,14 +43,11 @@ const HomeownerProcess = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Section header */}
         <div className="text-center mb-20">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <h2
             className="text-4xl md:text-5xl font-display font-bold mb-6"
           >
             {t('homeowner.process.title')}
-          </motion.h2>
+          </h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

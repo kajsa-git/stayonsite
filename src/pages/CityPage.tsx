@@ -222,23 +222,17 @@ const CityPage = () => {
                 </span>
               </motion.div>
 
-              <motion.h1 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+              <h1
                 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
               >
                 {heroHeading}
-              </motion.h1>
+              </h1>
               
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+              <p
                 className="text-xl md:text-2xl text-white/80 mb-12 font-light leading-relaxed max-w-3xl"
               >
                 {heroDescription}
-              </motion.p>
+              </p>
 
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}

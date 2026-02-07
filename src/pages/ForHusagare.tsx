@@ -79,6 +79,12 @@ const ForHusagare = () => {
         description={t('seo.homeowner.description')}
         canonical="https://stayonsite.se/for-husagare"
         structuredData={structuredData}
+        hreflangs={[
+          { lang: 'sv', href: 'https://stayonsite.se/for-husagare' },
+          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://stayonsite.se/for-husagare' }
+        ]}
       />
       <Header />
       <main className="flex-grow">

@@ -28,14 +28,11 @@ const NotFound = () => {
         <div className="absolute inset-0 z-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none mix-blend-overlay"></div>
 
         <div className="container mx-auto px-6 md:px-8 relative z-10 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+          <h1
             className="font-display text-9xl md:text-[220px] font-bold text-primary/5 select-none"
           >
             404
-          </motion.h1>
+          </h1>
           
           <motion.div 
             initial={{ opacity: 0, y: 30 }}

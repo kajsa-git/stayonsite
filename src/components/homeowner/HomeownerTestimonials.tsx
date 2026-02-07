@@ -40,14 +40,11 @@ const HomeownerTestimonials = () => {
             <span className="h-px w-8 bg-accent" />
             {t('homeowner.testimonials.sectionLabel')}
           </motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <h2
             className="text-4xl md:text-5xl font-display font-bold text-primary max-w-2xl"
           >
             {t('homeowner.testimonials.title')}
-          </motion.h2>
+          </h2>
         </div>
 
         {/* Testimonials grid */}

@@ -44,23 +44,23 @@ const CorporateHousingSweden = () => {
   const faqData = [
     {
       question: "What is corporate housing?",
-      answer: "Corporate housing refers to fully furnished apartments or houses rented by companies for their employees on temporary assignments. Unlike hotels, these provide a home-like environment with full kitchens, living spaces, and flexible lease terms - typically from 30 days to several months."
+      answer: "Fully furnished apartments or houses rented by companies for employees on temporary assignments. Unlike hotels, corporate housing provides a home-like environment with full kitchens, living spaces, and flexible lease terms from 30 days to several years. According to Boverket (the Swedish National Board of Housing), Sweden has a housing deficit of 52,300 units per year – making dedicated corporate housing essential for companies with mobile workforces."
     },
     {
       question: "How is this different from Airbnb?",
-      answer: "While Airbnb focuses on short-term tourist stays, corporate housing is designed for business needs: guaranteed availability, professional invoicing, dedicated account management, and apartments vetted for working professionals. We handle all paperwork and provide consistent quality across all properties."
+      answer: "Corporate housing is designed for business, not tourism. Key differences: professional invoicing for corporate accounting, dedicated account manager, guaranteed long-term availability, consistent quality across all properties, and Swedish/English/Polish-speaking support. Our clients save 20–30% compared to hotel accommodation, and unlike Airbnb, you get one invoice, one contact person, and zero surprises."
     },
     {
       question: "What cities in Sweden do you cover?",
-      answer: "We specialize in locations across Sweden including Umeå, Luleå, Boden, Gävle, Västerås, Örebro, Linköping, Norrköping, Säffle and many more. We can find accommodation wherever your project is located."
+      answer: "Over 40 cities across Sweden. We cover all major construction and industrial markets: Stockholm, Gothenburg, Malmö, Uppsala, Västerås, Örebro, Linköping, Norrköping, and specialized locations like Boden, Luleå, and Oskarshamn where major energy and data center projects are underway. Byggföretagen (the Swedish Construction Federation) reports that energy-related investments are rising 18% in 2024–2026, driving demand in northern Sweden."
     },
     {
       question: "What's included in the price?",
-      answer: "All-inclusive pricing covers: fully furnished apartments, utilities (electricity, water, heating), high-speed internet, cleaning, linens, and kitchen equipment. No hidden fees or surprise costs."
+      answer: "Everything. All-inclusive pricing covers fully furnished apartments, utilities (electricity, water, heating), high-speed internet, weekly cleaning, bed linens, kitchen equipment, and a dedicated contact person. No hidden fees, no broker commissions. We have arranged over 500 all-inclusive accommodations since 2013 with a 4.9/5 customer rating."
     },
     {
       question: "How quickly can you arrange accommodation?",
-      answer: "We typically respond the same day and can have accommodation ready within 24-48 hours for urgent requests. For planned projects, we recommend booking 1-2 weeks in advance."
+      answer: "Within 24 hours – often within 3 hours for existing clients. We respond the same day and can have accommodation ready within 48 hours for urgent requests. Our fastest setup: 45 installers housed in Säffle within 48 hours for a solar park project. For planned projects, 1–2 weeks lead time ensures optimal location and pricing."
     }
   ];
 
@@ -122,23 +122,17 @@ const CorporateHousingSweden = () => {
                 </span>
               </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+              <h1
                 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-white mb-6"
               >
                 Corporate Housing Sweden
-              </motion.h1>
+              </h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+              <p
                 className="text-xl md:text-2xl text-white/80 font-light leading-relaxed mb-8 max-w-2xl"
               >
                 Fully furnished apartments for your business team. Flexible terms, all-inclusive pricing, dedicated support. Available across Sweden.
-              </motion.p>
+              </p>
 
               <DirectContact language="en" className="mb-10" />
 

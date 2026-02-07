@@ -121,23 +121,17 @@ const ZakwaterowanieFirmowe = () => {
                 </span>
               </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+              <h1
                 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-white mb-6"
               >
                 Zakwaterowanie Firmowe Szwecja
-              </motion.h1>
+              </h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+              <p
                 className="text-xl md:text-2xl text-white/80 font-light leading-relaxed mb-8 max-w-2xl"
               >
                 W pełni umeblowane mieszkania dla Twojego zespołu. Elastyczne warunki, cena all-inclusive, dedykowane wsparcie. Dostępne w całej Szwecji.
-              </motion.p>
+              </p>
 
               <DirectContact language="pl" className="mb-10" />
 

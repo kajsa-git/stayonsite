@@ -52,14 +52,11 @@ const HomeownerFAQ = () => {
             <HelpCircle size={14} />
             {t('homeowner.faq.sectionLabel')}
           </motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <h2
             className="text-4xl md:text-5xl font-display font-bold text-primary mb-6"
           >
             {t('homeowner.faq.title')}
-          </motion.h2>
+          </h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -49,23 +49,17 @@ const Hero = () => {
         <div className="max-w-[840px] pt-12">
           
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+          <h1
             className="font-display text-5xl md:text-[82px] lg:text-[96px] font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-8"
           >
             {t('hero.title')}
-          </motion.h1>
+          </h1>
           
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          <p
             className="max-w-2xl text-xl md:text-[24px] text-white/80 font-light leading-relaxed mb-12"
           >
             {t('hero.subtitle')}
-          </motion.p>
+          </p>
 
           {/* Premium CTA Area */}
           <motion.div 
