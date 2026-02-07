@@ -1,5 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { translations, TranslationKey, AvailableLanguages } from '../data/translations';
 
 interface LanguageContextType {
@@ -10,8 +11,17 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+function detectLanguageFromPath(pathname: string): AvailableLanguages {
+  if (pathname.startsWith('/en/')) return 'en';
+  if (pathname.startsWith('/pl/')) return 'pl';
+  return 'sv';
+}
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<AvailableLanguages>('sv');
+  const location = useLocation();
+  const [language, setLanguage] = useState<AvailableLanguages>(
+    () => detectLanguageFromPath(location.pathname)
+  );
 
   const t = (key: TranslationKey): string => {
     const value = translations[language][key];

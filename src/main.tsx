@@ -1,11 +1,12 @@
-import { createRoot } from 'react-dom/client'
-import { Analytics } from '@vercel/analytics/react'
-import App from './App.tsx'
+import { ViteReactSSG } from 'vite-react-ssg'
+import { routes } from './routes'
 import './index.css'
 
-createRoot(document.getElementById("root")!).render(
-  <>
-    <App />
-    <Analytics />
-  </>
-);
+export const createRoot = ViteReactSSG(
+  { routes },
+  ({ isClient }) => {
+    if (isClient) {
+      import('@vercel/analytics/react')
+    }
+  },
+)

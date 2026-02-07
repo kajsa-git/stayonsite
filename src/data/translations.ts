@@ -290,7 +290,12 @@ export type TranslationKey =
   | "seo.city.title"
   | "seo.city.description"
   | "seo.notFound.title"
-  | "seo.notFound.description";
+  | "seo.notFound.description"
+  | "lp.husagare.formTitle"
+  | "lp.husagare.formSubtitle"
+  | "lp.husagare.submitButton"
+  | "lp.husagare.bottomCta.title"
+  | "lp.husagare.bottomCta.button";
 
 export const translations: Record<
   AvailableLanguages,
@@ -676,6 +681,11 @@ export const translations: Record<
     "seo.notFound.title": "404: Sidan hittades inte | StayOnSite",
     "seo.notFound.description":
       "Sidan du letar efter verkar inte finnas. Gå tillbaka till startsidan för att hitta boende för ditt företags personal.",
+    "lp.husagare.formTitle": "Få en gratis intäktsbedömning",
+    "lp.husagare.formSubtitle": "Lämna ditt nummer – Kajsa ringer dig inom 24h",
+    "lp.husagare.submitButton": "Skicka – helt gratis & utan förpliktelse",
+    "lp.husagare.bottomCta.title": "Redo att börja tjäna på din bostad?",
+    "lp.husagare.bottomCta.button": "Registrera din bostad nu",
   },
   en: {
     "nav.home": "Home",
@@ -1061,6 +1071,11 @@ export const translations: Record<
     "seo.notFound.title": "404: Page Not Found | StayOnSite",
     "seo.notFound.description":
       "The page you are looking for does not seem to exist. Go back to the homepage to find housing for your company's staff.",
+    "lp.husagare.formTitle": "Get a free income estimate",
+    "lp.husagare.formSubtitle": "Leave your number – Kajsa will call you within 24h",
+    "lp.husagare.submitButton": "Send – completely free & no obligation",
+    "lp.husagare.bottomCta.title": "Ready to start earning from your property?",
+    "lp.husagare.bottomCta.button": "Register your property now",
   },
   pl: {
     "nav.home": "Strona główna",
@@ -1450,5 +1465,10 @@ export const translations: Record<
     "seo.notFound.title": "404: Strona nie została znaleziona | StayOnSite",
     "seo.notFound.description":
       "Strona, której szukasz, nie istnieje. Wróć na stronę główną, aby znaleźć zakwaterowanie dla personelu Twojej firmy.",
+    "lp.husagare.formTitle": "Uzyskaj bezpłatną wycenę dochodu",
+    "lp.husagare.formSubtitle": "Zostaw swój numer – Kajsa zadzwoni w ciągu 24h",
+    "lp.husagare.submitButton": "Wyślij – całkowicie za darmo i bez zobowiązań",
+    "lp.husagare.bottomCta.title": "Gotowy, aby zacząć zarabiać na swoim mieszkaniu?",
+    "lp.husagare.bottomCta.button": "Zarejestruj swoją nieruchomość teraz",
   },
 };
