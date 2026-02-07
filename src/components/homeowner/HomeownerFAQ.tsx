@@ -11,32 +11,10 @@ import { Phone, HelpCircle } from 'lucide-react';
 const HomeownerFAQ = () => {
   const { t } = useLanguage();
 
-  const faqs = [
-    {
-      question: t('homeowner.faq.question1'),
-      answer: t('homeowner.faq.answer1')
-    },
-    {
-      question: t('homeowner.faq.question2'),
-      answer: t('homeowner.faq.answer2')
-    },
-    {
-      question: t('homeowner.faq.question3'),
-      answer: t('homeowner.faq.answer3')
-    },
-    {
-      question: t('homeowner.faq.question4'),
-      answer: t('homeowner.faq.answer4')
-    },
-    {
-      question: t('homeowner.faq.question5'),
-      answer: t('homeowner.faq.answer5')
-    },
-    {
-      question: t('homeowner.faq.question6'),
-      answer: t('homeowner.faq.answer6')
-    }
-  ];
+  const faqs = [1, 2, 3, 4, 5, 6, 7, 8].map(i => ({
+    question: t(`homeowner.faq.question${i}`),
+    answer: t(`homeowner.faq.answer${i}`),
+  }));
 
   return (
     <section className="section-spacing bg-secondary/30 relative">

@@ -68,6 +68,7 @@ const SEO = ({
       <meta property="og:image" content={ogImage} />
       <meta property="og:url" content={finalCanonical} />
       <meta property="og:locale" content={ogLocale} />
+      <meta property="og:site_name" content="StayOnSite" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />

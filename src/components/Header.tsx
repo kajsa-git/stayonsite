@@ -126,11 +126,8 @@ const Header = () => {
 
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-8">
-              <a
-                href={isHomePage ? "#inquiry" : "/#inquiry"}
-                onClick={(e) =>
-                  isHomePage ? handleSectionClick(e, "inquiry") : null
-                }
+              <Link
+                to="/for-foretag"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
                   useScrolledStyle
@@ -140,7 +137,7 @@ const Header = () => {
               >
                 {t("nav.forCompanies")}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
               <Link
                 to="/for-husagare"
                 className={cn(
@@ -216,13 +213,13 @@ const Header = () => {
               ))}
               <div className="h-px bg-border my-2" />
               <li>
-                <a
-                  href={isHomePage ? "#inquiry" : "/#inquiry"}
+                <Link
+                  to="/for-foretag"
                   onClick={() => setIsMenuOpen(false)}
                   className="block px-4 py-2 text-primary font-medium"
                 >
                   {t("nav.forCompanies")}
-                </a>
+                </Link>
               </li>
               <li>
                 <Link

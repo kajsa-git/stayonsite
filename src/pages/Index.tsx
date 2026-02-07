@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import WhyStayOnSite from '@/components/WhyStayOnSite';
 import CaseStudy from '@/components/CaseStudy';
+import MarketContext from '@/components/MarketContext';
 import CityLinks from '@/components/CityLinks';
 import References from '@/components/References';
 import FAQ from '@/components/FAQ';
@@ -19,14 +20,22 @@ const Index = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const structuredData = {
+  const lodgingBusinessSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': 'LodgingBusiness',
     'name': 'StayOnSite',
+    'legalName': 'StayOnSite AB',
     'image': 'https://stayonsite.se/images/og-image.jpg',
     '@id': 'https://stayonsite.se',
     'url': 'https://stayonsite.se',
     'telephone': '+46 76-249 84 86',
+    'email': 'info@stayonsite.se',
+    'founder': {
+      '@type': 'Person',
+      'name': 'Kajsa Lindwall'
+    },
+    'foundingDate': '2013',
+    'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',
       'addressCountry': 'SE'
@@ -38,25 +47,17 @@ const Index = () => {
     'aggregateRating': {
       '@type': 'AggregateRating',
       'ratingValue': RATING_VALUE,
-      'reviewCount': REVIEW_COUNT
+      'reviewCount': REVIEW_COUNT,
+      'bestRating': '5'
     },
     'areaServed': [
-      {
-        '@type': 'City',
-        'name': 'Stockholm'
-      },
-      {
-        '@type': 'City',
-        'name': 'Göteborg'
-      },
-      {
-        '@type': 'City',
-        'name': 'Malmö'
-      },
-      {
-        '@type': 'Country',
-        'name': 'Sweden'
-      }
+      { '@type': 'City', 'name': 'Stockholm' },
+      { '@type': 'City', 'name': 'Göteborg' },
+      { '@type': 'City', 'name': 'Malmö' },
+      { '@type': 'City', 'name': 'Uppsala' },
+      { '@type': 'City', 'name': 'Luleå' },
+      { '@type': 'City', 'name': 'Umeå' },
+      { '@type': 'Country', 'name': 'Sweden' }
     ],
     'serviceType': 'Construction Worker Accommodation',
     'description': language === 'sv'
@@ -65,6 +66,20 @@ const Index = () => {
       ? 'We help construction companies quickly find accommodation in other locations for their workers with over 10 years of experience'
       : 'Pomagamy firmom budowlanym szybko znaleźć zakwaterowanie w innych lokalizacjach dla ich pracowników z ponad 10-letnim doświadczeniem'
   };
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'name': 'StayOnSite',
+    'url': 'https://stayonsite.se',
+    'potentialAction': {
+      '@type': 'SearchAction',
+      'target': 'https://stayonsite.se/stad/{search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
+
+  const structuredData = [lodgingBusinessSchema, websiteSchema];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -83,6 +98,7 @@ const Index = () => {
         <main className="flex-grow">
           <Hero />
           <WhyStayOnSite />
+          <MarketContext />
           <CaseStudy />
           <References />
           <FAQ />

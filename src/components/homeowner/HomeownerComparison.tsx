@@ -91,7 +91,8 @@ const HomeownerComparison = () => {
                 {labels.colSelf}
               </div>
               <div className="p-5 text-center font-display font-bold text-sm md:text-base bg-accent/20 border-x border-white/10">
-                StayOnSite
+                <span className="block">StayOnSite</span>
+                <span className="block text-xs font-medium text-white/70 mt-0.5">{t('brand.nollavgift.name')}</span>
               </div>
               <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
                 {labels.colOthers}

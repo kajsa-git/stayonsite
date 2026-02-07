@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import type { TranslationKey } from '@/data/translations';
 import {
   Accordion,
   AccordionContent,
@@ -9,28 +10,10 @@ import {
 const FAQ = () => {
   const { t } = useLanguage();
 
-  const faqData = [
-    {
-      question: t('faq.question1'),
-      answer: t('faq.answer1')
-    },
-    {
-      question: t('faq.question2'),
-      answer: t('faq.answer2')
-    },
-    {
-      question: t('faq.question3'),
-      answer: t('faq.answer3')
-    },
-    {
-      question: t('faq.question4'),
-      answer: t('faq.answer4')
-    },
-    {
-      question: t('faq.question5'),
-      answer: t('faq.answer5')
-    }
-  ];
+  const faqData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => ({
+    question: t(`faq.question${i}` as TranslationKey),
+    answer: t(`faq.answer${i}` as TranslationKey),
+  }));
 
   const faqSchema = {
     "@context": "https://schema.org",

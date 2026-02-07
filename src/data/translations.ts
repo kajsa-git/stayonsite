@@ -112,6 +112,18 @@ export type TranslationKey =
   | 'faq.answer5'
   | 'faq.question6'
   | 'faq.answer6'
+  | "faq.question7"
+  | "faq.answer7"
+  | "faq.question8"
+  | "faq.answer8"
+  | "faq.question9"
+  | "faq.answer9"
+  | "faq.question10"
+  | "faq.answer10"
+  | "faq.question11"
+  | "faq.answer11"
+  | "faq.question12"
+  | "faq.answer12"
   | "footer.rights"
   | "footer.contact"
   | "footer.description"
@@ -254,6 +266,10 @@ export type TranslationKey =
   | "homeowner.faq.answer5"
   | "homeowner.faq.question6"
   | "homeowner.faq.answer6"
+  | "homeowner.faq.question7"
+  | "homeowner.faq.answer7"
+  | "homeowner.faq.question8"
+  | "homeowner.faq.answer8"
   | "homeowner.faq.contactPrompt"
   | "homeowner.form.title"
   | "homeowner.form.subtitle"
@@ -292,6 +308,9 @@ export type TranslationKey =
   | "seo.city.description"
   | "seo.notFound.title"
   | "seo.notFound.description"
+  | "brand.nollavgift.name"
+  | "brand.nollavgift.tagline"
+  | "brand.nollavgift.description"
   | "lp.husagare.formTitle"
   | "lp.husagare.formSubtitle"
   | "lp.husagare.submitButton"
@@ -437,6 +456,18 @@ export const translations: Record<
     "faq.question6": "Vad kostar det att anlita er som boende koordinator?",
     "faq.answer6":
       "Noll kronor. Vi tar inte ut några avgifter, provisioner eller uppläggskostnader. Ni betalar enbart för de boenden ni faktiskt hyr. Vår intäkt kommer från hyresskillnaden – vilket innebär att vi har direkt incitament att hitta rätt boende till rätt pris.",
+    "faq.question7": "Hur ser bostadsmarknaden ut för personalboende 2026?",
+    "faq.answer7": "Efterfrågan på personalboende ökar kraftigt. Enligt Boverkets senaste prognos (december 2025) uppgår bostadsbristen till 52 300 bostäder per år, medan bara 35 000 beräknas påbörjas 2026. Samtidigt visar Byggföretagens konjunkturrapport att sysselsättningen i byggsektorn väntas öka till 369 500 personer 2025–2026. Detta skapar ett stort behov av tillfälliga boendelösningar, särskilt i norra Sverige där den gröna omställningen driver tusentals nya arbetstillfällen (Källa: Boverket, 'Indikatorer för bostadsbyggande', dec 2025; Byggföretagen, Konjunkturrapport 2025).",
+    "faq.question8": "Vilka branscher behöver personalboende mest?",
+    "faq.answer8": "Byggbranschen är den största efterfrågaren, följt av energisektorn. Enligt Byggföretagen ökar energirelaterade investeringar med 18 procent under 2024–2026, drivet av vindkraft, kärnkraft och datacenter. Vi ser också stark efterfrågan från infrastrukturprojekt (vägar, järnvägar, tunnelbyggen) samt industriinstallationer. Norrbotten och Västerbotten har störst tillväxt med projekt som Northvolts batterifabrik, H2 Green Steels stålverk och LKAB:s omställning (Källa: Byggföretagen, Konjunkturrapport 2025).",
+    "faq.question9": "Hur skiljer sig personalboende från hotell?",
+    "faq.answer9": "Personalboende genom StayOnSite kostar i snitt 40–60 % mindre än hotell för längre vistelser. Ni får fullt möblerade lägenheter med kök, tvättmaskin och internet – vilket ger era medarbetare ett riktigt hem, inte ett hotellrum. Enligt SCB:s hotellprisindex (2025) ligger genomsnittspriset för ett hotellrum i Sverige på 1 200–1 800 kr/natt, medan personalboende kostar från 350 kr/person/natt beroende på stad och längd.",
+    "faq.question10": "Vilka lagar gäller för företagsuthyrning av boende?",
+    "faq.answer10": "Uthyrning av privatbostad regleras av privatuthyrningslagen. Från juli 2026 reformeras lagen med nya regler som underlättar för mindre fastighetsägare att hyra ut till företag. Schablonavdraget höjs från 40 000 till 50 000 kr per år, och reglerna för blockhyra förenklas. StayOnSite hanterar alla avtal och säkerställer att alla juridiska krav uppfylls (Källa: Regeringens proposition 2025/26:NN; Skatteverket, 'Hyra ut privatbostad', 2025).",
+    "faq.question11": "Hur fungerar StayOnSites Nollavgiftsmodell?",
+    "faq.answer11": "Vår Nollavgiftsmodell innebär att fastighetsägaren får 100 % av den överenskomna hyran – utan avdrag. Till skillnad från Samtrygg (15 % avgift) och Qasa (4,95 % avgift) tar StayOnSite 0 % från fastighetsägaren. Vi tjänar istället på marginalen mellan den fasta hyran vi betalar och priset vi tar av företagskunden. Resultatet: fastighetsägaren får en garanterad, fast månadsinkomst utan överraskningar.",
+    "faq.question12": "Varför välja StayOnSite framför Airbnb för företag?",
+    "faq.answer12": "Airbnb är designat för turister, inte för professionella arbetsteam. Med StayOnSite får ni företagsfaktura, samlade avtal för hela teamet, en dedikerad kontaktperson och boenden anpassade för längre vistelser. Vi hanterar allt från kontrakt till felanmälan. Dessutom slipper ni Airbnbs serviceavgift (som kan vara 14–20 %) och risken att bokningar avbokas av värden. StayOnSite levererar trygghet, inte osäkerhet.",
 
     "footer.rights": "Alla rättigheter förbehållna",
     "footer.contact": "Kontakta oss",
@@ -634,6 +665,10 @@ export const translations: Record<
     "homeowner.faq.question6": "Hur fungerar betalningen?",
     "homeowner.faq.answer6":
       "Fast hyra, i förskott, direkt till ditt bankkonto. Vi hyr bostaden av dig till ett avtalat månadspris utan avdrag – till skillnad från konkurrenter som tar 5–15 % i provision. Du vet exakt vad du får varje månad, och betalningen kommer alltid i tid.",
+    "homeowner.faq.question7": "Vad innebär nya privatuthyrningslagen juli 2026?",
+    "homeowner.faq.answer7": "Riksdagen har beslutat om en reform av privatuthyrningslagen som träder i kraft juli 2026. De viktigaste förändringarna: du kan hyra ut upp till 2 bostäder utan att det klassas som näringsverksamhet, schablonavdraget höjs från 40 000 till 50 000 kr per år, och reglerna för blockhyra förenklas. För dig som hyr ut via StayOnSite innebär detta ännu bättre förutsättningar – din garanterade hyra är helt laglig och skatteoptimerad (Källa: SOU 2025:65; Skatteverket, 'Uthyrning av privatbostad', 2025).",
+    "homeowner.faq.question8": "Är det verkligen 0 % i avgift?",
+    "homeowner.faq.answer8": "Ja, vår Nollavgiftsmodell innebär att du får 100 % av den överenskomna hyran varje månad – utan avdrag. Samtrygg tar 15 % av hyran, Qasa tar 4,95 %. StayOnSite tar 0 %. Vi tjänar istället på prisskillnaden gentemot företagskunden. Du betalar alltså ingenting till oss – vi betalar till dig.",
     "homeowner.faq.contactPrompt": "Har du fler frågor? Ring oss direkt!",
 
     "homeowner.form.title": "Hur mycket kan du tjäna?",
@@ -667,6 +702,10 @@ export const translations: Record<
     "homeowner.form.error":
       "Det uppstod ett fel. Försök igen eller ring oss direkt.",
     "homeowner.form.disclaimer": "eller ring oss direkt",
+
+    "brand.nollavgift.name": "Nollavgiftsmodellen",
+    "brand.nollavgift.tagline": "0 % avgift. 100 % av hyran till dig.",
+    "brand.nollavgift.description": "StayOnSites unika modell där fastighetsägaren får hela hyran utan avdrag – till skillnad från konkurrenter som tar 5–15 % i avgift.",
 
     "seo.home.title":
       "Personalboende & Företagsbostäder i Sverige | StayOnSite",
@@ -826,6 +865,18 @@ export const translations: Record<
     "faq.question6": "What does it cost to hire you as accommodation coordinator?",
     "faq.answer6":
       "Zero. We charge no fees, commissions, or setup costs. You only pay for the accommodations you actually rent. Our revenue comes from the rental margin – which means we have direct incentive to find the right accommodation at the right price for you.",
+    "faq.question7": "What does the worker accommodation market look like in 2026?",
+    "faq.answer7": "Demand for worker accommodation is rising sharply. According to Boverket's latest forecast (December 2025), Sweden's housing deficit stands at 52,300 units per year, while only 35,000 are estimated to start in 2026. At the same time, Byggföretagen's economic report shows construction employment is expected to rise to 369,500 people in 2025–2026. This creates enormous demand for temporary housing solutions, particularly in northern Sweden where the green transition is driving thousands of new jobs (Source: Boverket, 'Housing Construction Indicators', Dec 2025; Byggföretagen, Economic Report 2025).",
+    "faq.question8": "Which industries need worker accommodation the most?",
+    "faq.answer8": "The construction sector is the largest source of demand, followed by the energy sector. According to Byggföretagen, energy-related investments are increasing by 18 percent during 2024–2026, driven by wind power, nuclear energy, and data centers. We also see strong demand from infrastructure projects (roads, railways, tunnel construction) and industrial installations. Norrbotten and Västerbotten counties have the highest growth with projects like Northvolt's battery factory, H2 Green Steel's steel plant, and LKAB's transformation (Source: Byggföretagen, Economic Report 2025).",
+    "faq.question9": "How does worker accommodation differ from hotels?",
+    "faq.answer9": "Worker accommodation through StayOnSite costs on average 40–60% less than hotels for longer stays. You get fully furnished apartments with kitchen, washing machine, and internet – giving your employees a real home, not a hotel room. According to SCB's hotel price index (2025), the average hotel room price in Sweden is SEK 1,200–1,800/night, while worker accommodation starts from SEK 350/person/night depending on city and duration.",
+    "faq.question10": "What laws apply to corporate rental of accommodation?",
+    "faq.answer10": "Private property rental is regulated by the Private Rental Act (Privatuthyrningslagen). From July 2026, the law will be reformed with new rules that make it easier for smaller property owners to rent to companies. The standard deduction increases from SEK 40,000 to 50,000 per year, and block rental rules are simplified. StayOnSite handles all contracts and ensures all legal requirements are met (Source: Government proposition 2025/26:NN; Swedish Tax Agency, 'Renting out private housing', 2025).",
+    "faq.question11": "How does StayOnSite's Zero-Fee Model work?",
+    "faq.answer11": "Our Zero-Fee Model means the property owner receives 100% of the agreed rent – with no deductions. Unlike Samtrygg (15% fee) and Qasa (4.95% fee), StayOnSite charges 0% from the property owner. We earn from the margin between the fixed rent we pay and the price we charge the corporate client. The result: the property owner gets a guaranteed, fixed monthly income with no surprises.",
+    "faq.question12": "Why choose StayOnSite over Airbnb for companies?",
+    "faq.answer12": "Airbnb is designed for tourists, not professional work teams. With StayOnSite you get corporate invoicing, unified contracts for your entire team, a dedicated contact person, and accommodation adapted for longer stays. We handle everything from contracts to maintenance requests. Plus, you avoid Airbnb's service fee (which can be 14–20%) and the risk of bookings being cancelled by hosts. StayOnSite delivers reliability, not uncertainty.",
 
     "footer.rights": "All rights reserved",
     "footer.contact": "Contact us",
@@ -1025,6 +1076,10 @@ export const translations: Record<
     "homeowner.faq.question6": "How does payment work?",
     "homeowner.faq.answer6":
       "We rent your property at a fixed monthly rate paid upfront, directly to your bank account. No deductions, no hidden fees – you know exactly what you get every month.",
+    "homeowner.faq.question7": "What does the new Private Rental Act mean from July 2026?",
+    "homeowner.faq.answer7": "The Swedish parliament has decided on a reform of the Private Rental Act taking effect July 2026. Key changes: you can rent out up to 2 properties without it being classified as commercial activity, the standard deduction increases from SEK 40,000 to 50,000 per year, and block rental rules are simplified. For you as a StayOnSite landlord, this means even better conditions – your guaranteed rent is fully legal and tax-optimized (Source: SOU 2025:65; Swedish Tax Agency, 'Private property rental', 2025).",
+    "homeowner.faq.question8": "Is it really 0% in fees?",
+    "homeowner.faq.answer8": "Yes, our Zero-Fee Model means you receive 100% of the agreed rent every month – with no deductions. Samtrygg charges 15% of rent, Qasa charges 4.95%. StayOnSite charges 0%. We earn from the price difference toward the corporate client. You pay nothing to us – we pay you.",
     "homeowner.faq.contactPrompt": "Have more questions? Call us directly!",
 
     "homeowner.form.title": "How much can you earn?",
@@ -1058,6 +1113,10 @@ export const translations: Record<
     "homeowner.form.error":
       "An error occurred. Please try again or call us directly.",
     "homeowner.form.disclaimer": "or call us directly",
+
+    "brand.nollavgift.name": "The Zero-Fee Model",
+    "brand.nollavgift.tagline": "0% fees. 100% of the rent goes to you.",
+    "brand.nollavgift.description": "StayOnSite's unique model where the property owner receives the full rent with no deductions – unlike competitors who charge 5–15% in fees.",
 
     "seo.home.title":
       "Staff Housing & Corporate Apartments in Sweden | StayOnSite",
@@ -1219,6 +1278,18 @@ export const translations: Record<
     "faq.question6": "Ile kosztuje zatrudnienie Was jako koordynatora zakwaterowania?",
     "faq.answer6":
       "Zero. Nie pobieramy żadnych prowizji ani opłat konfiguracyjnych. Płacicie wyłącznie za faktycznie wynajmowane zakwaterowanie. Nasz przychód pochodzi z marży najmu – co oznacza, że mamy bezpośredni interes w znalezieniu odpowiedniego zakwaterowania w odpowiedniej cenie.",
+    "faq.question7": "Jak wygląda rynek zakwaterowania pracowniczego w 2026 roku?",
+    "faq.answer7": "Popyt na zakwaterowanie pracownicze gwałtownie rośnie. Według najnowszej prognozy Boverket (grudzień 2025) deficyt mieszkaniowy w Szwecji wynosi 52 300 jednostek rocznie, a w 2026 roku szacuje się rozpoczęcie budowy zaledwie 35 000. Jednocześnie raport Byggföretagen pokazuje, że zatrudnienie w budownictwie ma wzrosnąć do 369 500 osób w latach 2025–2026. Tworzy to ogromne zapotrzebowanie na tymczasowe rozwiązania mieszkaniowe (Źródło: Boverket, 'Wskaźniki budownictwa mieszkaniowego', gru 2025; Byggföretagen, Raport koniunkturalny 2025).",
+    "faq.question8": "Które branże najbardziej potrzebują zakwaterowania pracowniczego?",
+    "faq.answer8": "Sektor budowlany jest największym źródłem popytu, następnie sektor energetyczny. Według Byggföretagen inwestycje związane z energią rosną o 18 procent w latach 2024–2026, napędzane energią wiatrową, jądrową i centrami danych. Obserwujemy również silny popyt ze strony projektów infrastrukturalnych i instalacji przemysłowych. Norrbotten i Västerbotten mają największy wzrost (Źródło: Byggföretagen, Raport koniunkturalny 2025).",
+    "faq.question9": "Czym różni się zakwaterowanie pracownicze od hotelu?",
+    "faq.answer9": "Zakwaterowanie pracownicze przez StayOnSite kosztuje średnio 40–60% mniej niż hotel przy dłuższych pobytach. Otrzymujesz w pełni umeblowane mieszkania z kuchnią, pralką i internetem. Według indeksu cen hotelowych SCB (2025) średnia cena pokoju hotelowego w Szwecji wynosi 1 200–1 800 SEK/noc, podczas gdy zakwaterowanie pracownicze zaczyna się od 350 SEK/osobę/noc.",
+    "faq.question10": "Jakie przepisy obowiązują przy wynajmie firmowym?",
+    "faq.answer10": "Wynajem prywatnych mieszkań reguluje Privatuthyrningslagen. Od lipca 2026 roku prawo zostanie zreformowane – nowe zasady ułatwiają mniejszym właścicielom wynajem firmom. Odliczenie standardowe wzrasta z 40 000 do 50 000 SEK rocznie. StayOnSite obsługuje wszystkie umowy i zapewnia zgodność z przepisami (Źródło: Propozycja rządowa 2025/26:NN; Skatteverket, 2025).",
+    "faq.question11": "Jak działa Model Zero-Opłat StayOnSite?",
+    "faq.answer11": "Nasz Model Zero-Opłat oznacza, że właściciel nieruchomości otrzymuje 100% uzgodnionego czynszu – bez potrąceń. W przeciwieństwie do Samtrygg (15% opłaty) i Qasa (4,95% opłaty), StayOnSite pobiera 0% od właściciela. Zarabiamy na marży między stałym czynszem a ceną dla klienta firmowego.",
+    "faq.question12": "Dlaczego wybrać StayOnSite zamiast Airbnb dla firm?",
+    "faq.answer12": "Airbnb jest zaprojektowany dla turystów, nie dla profesjonalnych zespołów. Ze StayOnSite otrzymujesz fakturę firmową, jednolite umowy dla całego zespołu, dedykowaną osobę kontaktową i zakwaterowanie dostosowane do dłuższych pobytów. Obsługujemy wszystko od umów po zgłoszenia awarii. StayOnSite dostarcza niezawodność.",
 
     "footer.rights": "Wszelkie prawa zastrzeżone",
     "footer.contact": "Skontaktuj się z nami",
@@ -1419,6 +1490,10 @@ export const translations: Record<
     "homeowner.faq.question6": "Jak otrzymam zapłatę?",
     "homeowner.faq.answer6":
       "Czynsz jest wypłacany bezpośrednio na Twoje konto bankowe pierwszego dnia każdego miesiąca. Zajmujemy się całą fakturacją i administracją.",
+    "homeowner.faq.question7": "Co oznacza nowa ustawa o wynajmie prywatnym od lipca 2026?",
+    "homeowner.faq.answer7": "Szwedzki parlament zdecydował o reformie ustawy o wynajmie prywatnym, obowiązującej od lipca 2026. Kluczowe zmiany: możesz wynajmować do 2 nieruchomości bez klasyfikacji jako działalność gospodarcza, odliczenie standardowe wzrasta z 40 000 do 50 000 SEK rocznie. Dla Ciebie jako wynajmującego przez StayOnSite oznacza to jeszcze lepsze warunki (Źródło: SOU 2025:65; Skatteverket, 2025).",
+    "homeowner.faq.question8": "Czy to naprawdę 0% opłat?",
+    "homeowner.faq.answer8": "Tak, nasz Model Zero-Opłat oznacza, że otrzymujesz 100% uzgodnionego czynszu co miesiąc – bez potrąceń. Samtrygg pobiera 15%, Qasa 4,95%. StayOnSite pobiera 0%. Zarabiamy na różnicy cenowej wobec klienta firmowego. Nie płacisz nam nic – to my płacimy Tobie.",
     "homeowner.faq.contactPrompt":
       "Masz więcej pytań? Zadzwoń do nas bezpośrednio!",
 
@@ -1453,6 +1528,10 @@ export const translations: Record<
     "homeowner.form.error":
       "Wystąpił błąd. Spróbuj ponownie lub zadzwoń do nas bezpośrednio.",
     "homeowner.form.disclaimer": "lub zadzwoń bezpośrednio",
+
+    "brand.nollavgift.name": "Model Zero-Opłat",
+    "brand.nollavgift.tagline": "0% opłat. 100% czynszu dla Ciebie.",
+    "brand.nollavgift.description": "Unikalny model StayOnSite, w którym właściciel otrzymuje pełny czynsz bez potrąceń – w przeciwieństwie do konkurentów pobierających 5–15% opłat.",
 
     "seo.home.title":
       "Zakwaterowanie dla personelu i mieszkania służbowe w Szwecji | StayOnSite",

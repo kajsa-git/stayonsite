@@ -82,7 +82,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/#inquiry" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                <a href="/for-foretag" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.forCompanies')}
                 </a>
@@ -91,6 +91,18 @@ const Footer = () => {
                 <a href="/om-oss" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.about') || 'Om oss'}
+                </a>
+              </li>
+              <li>
+                <a href="/kontakt" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  Kontakt
+                </a>
+              </li>
+              <li>
+                <a href="/blogg" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  Blogg
                 </a>
               </li>
               <li>

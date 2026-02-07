@@ -53,7 +53,7 @@ const ForHusagare = () => {
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': [1,2,3,4,5,6].map(i => ({
+      'mainEntity': [1,2,3,4,5,6,7,8].map(i => ({
         '@type': 'Question',
         'name': t(`homeowner.faq.question${i}` as TranslationKey),
         'acceptedAnswer': {

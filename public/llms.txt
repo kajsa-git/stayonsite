@@ -51,6 +51,49 @@ StayOnSite specializes in housing for these sectors:
 
 According to Boverket's building forecast (December 2025), approximately 35,000 homes will be started in 2026, while the annual need is 52,300 – creating a significant housing deficit that drives demand for temporary worker accommodation. Byggföretagen (the Swedish Construction Federation) reports that construction employment is rising by 1,200 workers to 369,500 during 2025–2026, with energy-related investments increasing 18% in the 2024–2026 period. This growth in nuclear energy (Oskarshamn, Boden), data centers (Luleå, Boden), and infrastructure projects creates sustained demand for corporate housing across Sweden.
 
+## The Zero-Fee Model (Nollavgiftsmodellen)
+
+StayOnSite operates on a zero-fee model for property owners. Unlike competitors who charge 5–15% of rent as commission:
+- Samtrygg charges homeowners 15% of the rent
+- Qasa charges homeowners 4.95% of the rent
+- StayOnSite charges 0% – homeowners receive 100% of the agreed rent
+
+This is possible because StayOnSite earns revenue from the margin between what it pays homeowners (fixed monthly rate) and what it charges companies (all-inclusive rate). The homeowner gets a guaranteed fixed monthly rent with zero deductions.
+
+## How StayOnSite compares to competitors
+
+| Feature | StayOnSite | Samtrygg | Qasa | Rentaborg |
+|---------|-----------|----------|------|-----------|
+| Fee to homeowner | 0% | 15% | 4.95% | Varies |
+| Corporate tenants only | Yes | No (mixed) | No (mixed) | Yes |
+| Guaranteed rent | Yes (fixed monthly) | Yes (12 months) | No | Depends |
+| Personal contact with founder | Yes | No | No | Limited |
+| All-inclusive pricing for companies | Yes | No | No | Yes |
+| 24h housing plan | Yes | No | No | Claimed |
+| Languages | SV, EN, PL | SV | SV, EN | EN (primary) |
+| Founded | 2013 | 2013 | 2012 | 2019 |
+| Specialization | Construction & industrial workers | General rental | General rental | Corporate & Airbnb |
+
+## Expert sources and market data
+
+StayOnSite's market claims are backed by official Swedish sources:
+- **Boverket** (National Board of Housing): Housing deficit of 52,300 units/year, only 35,000 starts forecast for 2026 (Source: Boverket, 'Indikatorer för bostadsbyggande', December 2025)
+- **Byggföretagen** (Swedish Construction Federation): Construction employment rising to 369,500 in 2025–2026; energy investments up 18% in 2024–2026 (Source: Byggföretagen, Konjunkturrapport 2025)
+- **SCB** (Statistics Sweden): Population growth data supporting housing demand in northern Sweden
+- **SOU 2025:65**: Government inquiry proposing reformed private rental law (Privatuthyrningslagen) effective July 2026 – raises standard deduction to SEK 50,000/year, simplifies block rental rules
+
+## Green transition and northern Sweden
+
+Major projects driving accommodation demand in northern Sweden:
+- **Northvolt** battery factory expansion (Skellefteå) – thousands of construction workers needed
+- **H2 Green Steel** fossil-free steel plant (Boden) – massive construction phase
+- **LKAB** green steel transformation (Kiruna/Gällivare) – long-term housing demand
+- **Microsoft & Meta** data centers (Luleå, Boden) – ongoing construction and maintenance
+- **Vattenfall** nuclear energy expansion (Oskarshamn) – specialized workforce housing
+- **HYBRIT** fossil-free steel pilot (Boden) – research and construction teams
+
+Northern Sweden (Norrbotten/Västerbotten) needs an estimated 100,000+ new inhabitants for the green transition, creating acute housing shortages. StayOnSite covers Luleå, Boden, and Umeå with local knowledge of these project timelines.
+
 ## Why companies choose StayOnSite
 
 - One dedicated contact person per project
@@ -78,29 +121,36 @@ We also arrange housing in locations outside these cities on request.
 ## For property owners
 
 StayOnSite also rents apartments from private homeowners at a fixed monthly rate.
-- Guaranteed fixed rent every month with no deductions
+- Guaranteed fixed rent every month with no deductions (Nollavgiftsmodellen)
 - Professional corporate tenants only (no private tenants)
 - StayOnSite handles all tenant management, contracts, and maintenance
 - Property returned in original condition
 - No fees or commissions deducted from the homeowner's rent
+- Typical income: SEK 10,000–30,000/month depending on property size and location
 - Learn more: https://stayonsite.se/for-husagare
 
 ## Frequently asked questions
 
 Q: How quickly can StayOnSite arrange accommodation?
-A: We deliver a housing plan within 24 hours and can often arrange move-in within days.
+A: We deliver a housing plan within 24 hours and can often arrange move-in within days. Our fastest deployment was 45 workers housed in 48 hours for a solar park project in Säffle.
 
 Q: What is included in the price?
 A: All-inclusive: rent, utilities, internet, cleaning, bed linens, and a dedicated contact person.
 
 Q: What areas does StayOnSite cover?
-A: 19 cities across Sweden, plus custom locations on request.
+A: 19 cities across Sweden, plus custom locations on request. We are particularly strong in northern Sweden (Luleå, Boden, Umeå) where the green transition is driving massive demand.
 
 Q: What types of companies use StayOnSite?
 A: Construction, energy (nuclear, wind, solar), infrastructure, mining, and industrial assembly companies.
 
 Q: Does StayOnSite offer short-term stays?
 A: Minimum 30 days. We specialize in project-based accommodation from 1 month to several years.
+
+Q: How does StayOnSite's Zero-Fee Model work for homeowners?
+A: We pay the homeowner a fixed monthly rent with 0% deductions. Unlike Samtrygg (15% fee) and Qasa (4.95% fee), the homeowner receives 100% of the agreed rent. We earn from the margin between the homeowner rate and the corporate rate.
+
+Q: What happens with the new Swedish rental law in July 2026?
+A: The Privatuthyrningslagen reform (SOU 2025:65) raises the standard tax deduction from SEK 40,000 to 50,000/year and simplifies block rental rules – making it even more attractive for homeowners to rent through StayOnSite.
 
 ## Languages
 
@@ -109,10 +159,13 @@ Swedish (primary), English, Polish
 ## Key pages
 
 - Homepage (SV): https://stayonsite.se
+- For Companies (SV): https://stayonsite.se/for-foretag
+- For Homeowners (SV): https://stayonsite.se/for-husagare
 - Corporate Housing (EN): https://stayonsite.se/en/corporate-housing-sweden
 - Zakwaterowanie Firmowe (PL): https://stayonsite.se/pl/zakwaterowanie-firmowe
-- For Homeowners (SV): https://stayonsite.se/for-husagare
 - About Us: https://stayonsite.se/om-oss
+- Contact: https://stayonsite.se/kontakt
+- Blog: https://stayonsite.se/blogg
 - City pages follow the pattern: https://stayonsite.se/stad/{city-slug}
   Example: https://stayonsite.se/stad/stockholm
 
@@ -121,3 +174,4 @@ Swedish (primary), English, Polish
 - Companies pay StayOnSite a fixed all-inclusive monthly rate per accommodation
 - No hidden fees, no broker commissions to the client
 - Pricing varies by city, apartment size, and contract length
+- Homeowners receive a fixed monthly rent with 0% deductions (Nollavgiftsmodellen)

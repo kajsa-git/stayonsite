@@ -33,9 +33,18 @@ const entries = [];
 // Static pages
 entries.push(url(`${BASE}/`, '1.0', 'weekly'));
 entries.push(url(`${BASE}/for-husagare`, '0.9', 'weekly'));
+entries.push(url(`${BASE}/for-foretag`, '0.9', 'weekly'));
 entries.push(url(`${BASE}/om-oss`, '0.8', 'monthly'));
+entries.push(url(`${BASE}/kontakt`, '0.8', 'monthly'));
 entries.push(url(`${BASE}/en/corporate-housing-sweden`, '0.8', 'monthly'));
 entries.push(url(`${BASE}/pl/zakwaterowanie-firmowe`, '0.8', 'monthly'));
+
+// Blog section
+entries.push(url(`${BASE}/blogg`, '0.8', 'weekly'));
+const blogSlugs = ['personalboende-guide-2026', 'privatuthyrningslagen-reform-2026', 'gron-omstallning-norr-boende'];
+for (const slug of blogSlugs) {
+  entries.push(url(`${BASE}/blogg/${slug}`, '0.7', 'monthly'));
+}
 
 // City pages – 3 languages per city with hreflang
 for (const slug of slugs) {

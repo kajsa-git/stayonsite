@@ -42,14 +42,19 @@ const HomeownerHero = () => {
 
       <div className="container mx-auto px-6 md:px-12 relative z-20">
         <div className="max-w-4xl">
-          {/* Tagline Pill */}
+          {/* Nollavgiftsmodellen Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-xl shadow-2xl mb-10"
+            className="flex flex-wrap items-center gap-3 mb-10"
           >
-            <Sparkles size={16} className="text-accent animate-pulse" />
-            <span className="tracking-[0.1em] uppercase">{t('homeowner.hero.pill')}</span>
+            <span className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-xl shadow-2xl">
+              <Sparkles size={16} className="text-accent animate-pulse" />
+              <span className="tracking-[0.1em] uppercase">{t('homeowner.hero.pill')}</span>
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent/90 px-5 py-2.5 text-sm font-bold text-white shadow-lg">
+              {t('brand.nollavgift.tagline')}
+            </span>
           </motion.div>
 
           <h1

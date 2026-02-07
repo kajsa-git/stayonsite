@@ -7,7 +7,13 @@ import ForHusagare from './pages/ForHusagare'
 import CorporateHousingSweden from './pages/en/CorporateHousingSweden'
 import ZakwaterowanieFirmowe from './pages/pl/ZakwaterowanieFirmowe'
 import LpHusagare from './pages/lp/LpHusagare'
+import ForForetag from './pages/ForForetag'
 import OmOss from './pages/OmOss'
+import Kontakt from './pages/Kontakt'
+import BlogIndex from './pages/blogg/BlogIndex'
+import PersonalboendGuide2026 from './pages/blogg/PersonalboendGuide2026'
+import PrivatuthyrningslagenReform2026 from './pages/blogg/PrivatuthyrningslagenReform2026'
+import GronOmstallningBoende from './pages/blogg/GronOmstallningBoende'
 import NotFound from './pages/NotFound'
 
 const citySlugs = cities.map((c) => c.slug)
@@ -36,9 +42,15 @@ export const routes: RouteRecord[] = [
           citySlugs.map((s) => `/pl/zakwaterowanie/${s}`),
       },
       { path: 'for-husagare', element: <ForHusagare /> },
+      { path: 'for-foretag', element: <ForForetag /> },
       { path: 'en/corporate-housing-sweden', element: <CorporateHousingSweden /> },
       { path: 'pl/zakwaterowanie-firmowe', element: <ZakwaterowanieFirmowe /> },
       { path: 'om-oss', element: <OmOss /> },
+      { path: 'kontakt', element: <Kontakt /> },
+      { path: 'blogg', element: <BlogIndex /> },
+      { path: 'blogg/personalboende-guide-2026', element: <PersonalboendGuide2026 /> },
+      { path: 'blogg/privatuthyrningslagen-reform-2026', element: <PrivatuthyrningslagenReform2026 /> },
+      { path: 'blogg/gron-omstallning-norr-boende', element: <GronOmstallningBoende /> },
       { path: 'lp/husagare', element: <LpHusagare /> },
       {
         path: '404',

@@ -33,8 +33,9 @@ const OmOss = () => {
   const structuredData = [
     {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
+      '@type': 'LodgingBusiness',
       name: 'StayOnSite',
+      legalName: 'StayOnSite AB',
       description: t(
         'StayOnSite erbjuder personalboende och företagsbostäder i hela Sverige för byggbolag och industriföretag.',
         'StayOnSite provides worker accommodation and corporate housing across Sweden for construction and industrial companies.',
@@ -43,6 +44,12 @@ const OmOss = () => {
       url: 'https://stayonsite.se',
       telephone: '+46762498486',
       email: 'info@stayonsite.se',
+      founder: {
+        '@type': 'Person',
+        name: 'Kajsa Lindwall',
+      },
+      foundingDate: '2013',
+      priceRange: '$$',
       address: {
         '@type': 'PostalAddress',
         addressCountry: 'SE',
@@ -61,6 +68,7 @@ const OmOss = () => {
         '@type': 'AggregateRating',
         ratingValue: RATING_VALUE,
         reviewCount: REVIEW_COUNT,
+        bestRating: '5',
       },
     },
   ];
