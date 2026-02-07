@@ -497,11 +497,11 @@ export const translations: Record<
 
     "nav.homeowner": "För husägare",
 
-    "homeowner.hero.title": "Tjäna 8 000–25 000 kr/mån på ditt boende",
+    "homeowner.hero.title": "Tjäna 10 000–30 000 kr/mån på ditt boende",
     "homeowner.hero.subtitle":
       "Vi hyr din bostad till en fast månadshyra – du får betalt utan avdrag, vi sköter resten.",
     "homeowner.hero.pill": "PASSIV INKOMST UTAN KRÅNGEL",
-    "homeowner.hero.incomeRange": "8 000 – 25 000 kr/månad",
+    "homeowner.hero.incomeRange": "10 000 – 30 000 kr/månad",
     "homeowner.hero.incomeDescription": "Fast garanterad hyra – inga avdrag",
     "homeowner.hero.cta": "Få gratis intäktsbedömning",
     "homeowner.hero.trustBadge": "Fast hyra utan avdrag · Betalning i förskott · Vi sköter allt",
@@ -522,7 +522,7 @@ export const translations: Record<
       "Vi hyr din bostad av dig och tar all risk – du får en trygg, fast inkomst varje månad",
     "homeowner.benefits.income.title": "Garanterad hyra varje månad",
     "homeowner.benefits.income.description":
-      "8 000–25 000 kr/mån i passiv inkomst från stabila företag. Betalning alltid i förskott, med 1 månads uppsägningstid.",
+      "10 000–30 000 kr/mån i passiv inkomst från stabila företag. Betalning alltid i förskott, med 1 månads uppsägningstid.",
     "homeowner.benefits.security.title": "Total trygghet för ditt boende",
     "homeowner.benefits.security.description":
       "Endast verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag. Besiktning och skadeskydd ingår.",
@@ -614,7 +614,7 @@ export const translations: Record<
       "Vi gör noggrann besiktning med fotodokumentation vid både in- och utflytt. Alla företagshyresgäster har hemförsäkring. Vid eventuell skada hanterar vi hela processen – du behöver inte göra något själv.",
     "homeowner.faq.question2": "Hur mycket kan jag tjäna?",
     "homeowner.faq.answer2":
-      "Vanligtvis mellan 8 000 och 25 000 kr per månad beroende på bostadens läge, storlek och skick. Företag betalar ofta 20–30 % mer än privatpersoner. Vi ger dig en kostnadsfri intäktsbedömning.",
+      "Vanligtvis mellan 10 000 och 30 000 kr per månad beroende på bostadens läge, storlek och skick. Företag betalar ofta 20–30 % mer än privatpersoner. Vi ger dig en kostnadsfri intäktsbedömning.",
     "homeowner.faq.question3": "Varför är företagshyresgäster bättre än privata?",
     "homeowner.faq.answer3":
       "Företagshyresgäster är här för jobb, inte för fest. De är vanligtvis 30–50 år, ansvarstagande och professionella. Företaget står för betalningen – noll risk för utebliven hyra. Dessutom innebär kortare hyresperioder att du alltid har kontroll.",
@@ -666,9 +666,9 @@ export const translations: Record<
     "seo.home.description":
       "Vi ordnar snabbt och effektivt boende för företag och deras personal i hela Sverige. Långsiktiga och flexibla hyreslösningar för bygg-, energi- och datacenterprojekt.",
     "seo.homeowner.title":
-      "Hyr ut till företag – 8 000-25 000 kr/mån | Garanterad hyra | StayOnSite",
+      "Hyr ut till företag – 10 000-30 000 kr/mån | Garanterad hyra | StayOnSite",
     "seo.homeowner.description":
-      "Hyr ut din bostad till företagshyresgäster och tjäna 8 000–25 000 kr/mån i garanterad hyra. Inga avdrag, betalning i förskott, 1 månads uppsägningstid. 100+ nöjda husägare.",
+      "Hyr ut din bostad till företagshyresgäster och tjäna 10 000–30 000 kr/mån i garanterad hyra. Inga avdrag, betalning i förskott, 1 månads uppsägningstid. 100+ nöjda husägare.",
     "seo.city.title":
       "Företagsboende i {cityName} | Hyr lägenhet till personal | StayOnSite",
     "seo.city.description":
@@ -881,11 +881,11 @@ export const translations: Record<
 
     "nav.homeowner": "For Homeowners",
 
-    "homeowner.hero.title": "Earn 8,000–25,000 SEK/month from your property",
+    "homeowner.hero.title": "Earn 10,000–30,000 SEK/month from your property",
     "homeowner.hero.subtitle":
       "We rent your property at a fixed monthly rate – you get paid without deductions, we handle the rest.",
     "homeowner.hero.pill": "PASSIVE INCOME WITHOUT HASSLE",
-    "homeowner.hero.incomeRange": "8,000 – 25,000 SEK/month",
+    "homeowner.hero.incomeRange": "10,000 – 30,000 SEK/month",
     "homeowner.hero.incomeDescription": "Fixed guaranteed rent – no deductions",
     "homeowner.hero.cta": "Get a free income estimate",
     "homeowner.hero.trustBadge": "Fixed rent, no deductions · Upfront payment · We handle everything",
@@ -906,7 +906,7 @@ export const translations: Record<
       "We rent your property and take all the risk – you get a secure, fixed income every month",
     "homeowner.benefits.income.title": "Guaranteed rent every month",
     "homeowner.benefits.income.description":
-      "8,000–25,000 SEK/month in passive income from stable companies. Always paid upfront, with 1 month notice period.",
+      "10,000–30,000 SEK/month in passive income from stable companies. Always paid upfront, with 1 month notice period.",
     "homeowner.benefits.security.title": "Total security for your property",
     "homeowner.benefits.security.description":
       "Only verified corporate tenants, typically aged 30–50, from established companies. Inspection and damage protection included.",
@@ -998,7 +998,7 @@ export const translations: Record<
       "We do thorough inspections with photo documentation at both move-in and move-out. All corporate tenants have home insurance. If damage occurs, we handle the entire process – you don't need to do anything.",
     "homeowner.faq.question2": "How much can I earn?",
     "homeowner.faq.answer2":
-      "Typically between 8,000 and 25,000 SEK per month depending on location, size and condition. Companies often pay 20–30% more than private tenants. We provide a free income estimate.",
+      "Typically between 10,000 and 30,000 SEK per month depending on location, size and condition. Companies often pay 20–30% more than private tenants. We provide a free income estimate.",
     "homeowner.faq.question3": "Why are corporate tenants better than private ones?",
     "homeowner.faq.answer3":
       "Corporate tenants are here for work, not for parties. They are typically 30–50 years old, responsible and professional. The company pays the rent – zero risk of missed payments. Shorter rental periods also mean you always stay in control.",
@@ -1051,9 +1051,9 @@ export const translations: Record<
     "seo.home.description":
       "We quickly and efficiently arrange housing for companies and their staff throughout Sweden. Long-term and flexible rental solutions for construction, energy, and data center projects.",
     "seo.homeowner.title":
-      "Rent to companies – 8,000-25,000 SEK/mo | Guaranteed rent | StayOnSite",
+      "Rent to companies – 10,000-30,000 SEK/mo | Guaranteed rent | StayOnSite",
     "seo.homeowner.description":
-      "Rent out your property to corporate tenants and earn 8,000–25,000 SEK/month in guaranteed rent. No deductions, upfront payment, 1 month notice period. 100+ satisfied homeowners.",
+      "Rent out your property to corporate tenants and earn 10,000–30,000 SEK/month in guaranteed rent. No deductions, upfront payment, 1 month notice period. 100+ satisfied homeowners.",
     "seo.city.title":
       "Corporate Housing in {cityName} | Rent Apartments for Staff | StayOnSite",
     "seo.city.description":
@@ -1273,7 +1273,7 @@ export const translations: Record<
     "homeowner.hero.subtitle":
       "Masz domek, mieszkanie lub dom, który stoi pusty?",
     "homeowner.hero.pill": "PASYWNY DOCHÓD BEZ KŁOPOTÓW",
-    "homeowner.hero.incomeRange": "8 000 - 25 000 SEK/miesiąc",
+    "homeowner.hero.incomeRange": "10 000 - 30 000 SEK/miesiąc",
     "homeowner.hero.incomeDescription": "Pewny dochód z wynajmu co miesiąc",
     "homeowner.hero.cta": "Zarejestruj swoją nieruchomość już dziś",
     "homeowner.hero.trustBadge": "Stały czynsz bez potrąceń · Płatność z góry · Zajmujemy się wszystkim",
@@ -1294,7 +1294,7 @@ export const translations: Record<
       "Zyskaj dodatkowy dochód ze swojego domu – bezpiecznie i bez wysiłku.",
     "homeowner.benefits.income.title": "Gwarantowany dochód",
     "homeowner.benefits.income.description":
-      "8 000–25 000 SEK/mies. pasywnego dochodu od stabilnych firm. Zawsze z góry, z 1-miesięcznym okresem wypowiedzenia.",
+      "10 000–30 000 SEK/mies. pasywnego dochodu od stabilnych firm. Zawsze z góry, z 1-miesięcznym okresem wypowiedzenia.",
     "homeowner.benefits.security.title": "Bezpieczeństwo i pewność",
     "homeowner.benefits.security.description":
       "Tylko zweryfikowani najemcy firmowi, zazwyczaj w wieku 30–50 lat, z renomowanych firm. Inspekcja i ochrona przed szkodami w cenie.",
@@ -1386,7 +1386,7 @@ export const translations: Record<
       "Posiadamy pełne ubezpieczenie, które pokrywa wszelkie szkody. Dodatkowo dokładnie weryfikujemy wszystkich najemców, aby minimalizować ryzyko.",
     "homeowner.faq.question2": "Ile mogę zarobić?",
     "homeowner.faq.answer2":
-      "W zależności od lokalizacji i rodzaju nieruchomości, nasi właściciele zarabiają od 8 000 do 25 000 SEK miesięcznie. Zapewniamy bezpłatną wycenę dochodu.",
+      "W zależności od lokalizacji i rodzaju nieruchomości, nasi właściciele zarabiają od 10 000 do 30 000 SEK miesięcznie. Zapewniamy bezpłatną wycenę dochodu.",
     "homeowner.faq.question3": "Dlaczego najemcy firmowi są lepsi od prywatnych?",
     "homeowner.faq.answer3":
       "Najemcy firmowi są tu do pracy, nie na imprezy. Są odpowiedzialni i profesjonalni. Firma płaci czynsz – zero ryzyka braku płatności.",
@@ -1442,7 +1442,7 @@ export const translations: Record<
     "seo.homeowner.title":
       "Wynajmij swoją nieruchomość firmom | Gwarantowany czynsz | StayOnSite",
     "seo.homeowner.description":
-      "Wynajmij nieruchomość najemcom firmowym i zarabiaj 8 000–25 000 SEK/mies. gwarantowanego czynszu. Bez potrąceń, płatność z góry, 1 miesiąc wypowiedzenia. 100+ zadowolonych właścicieli.",
+      "Wynajmij nieruchomość najemcom firmowym i zarabiaj 10 000–30 000 SEK/mies. gwarantowanego czynszu. Bez potrąceń, płatność z góry, 1 miesiąc wypowiedzenia. 100+ zadowolonych właścicieli.",
     "seo.city.title":
       "Mieszkania służbowe w {cityName} | Wynajem dla personelu | StayOnSite",
     "seo.city.description":

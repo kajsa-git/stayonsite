@@ -9,7 +9,11 @@ const HomeownerHero = () => {
   const scrollToForm = () => {
     const formElement = document.getElementById('homeowner-form');
     if (formElement) {
-      formElement.scrollIntoView({
+      const headerOffset = 80;
+      const elementPosition = formElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
         behavior: 'smooth'
       });
     }
@@ -79,7 +83,7 @@ const HomeownerHero = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-bold text-accent uppercase tracking-widest">{t('homeowner.hero.estimatedIncome')}</p>
                   <p className="text-3xl md:text-4xl font-display font-bold text-primary tracking-tight">
-                    8 000 – 25 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
+                    10 000 – 30 000 kr <span className="text-xl font-medium text-primary/60">/ mån</span>
                   </p>
                   <p className="text-primary/70 font-medium italic">{t('homeowner.hero.incomeDescription')}</p>
                 </div>

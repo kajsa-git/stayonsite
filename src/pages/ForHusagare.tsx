@@ -40,7 +40,7 @@ const ForHusagare = () => {
         '@type': 'Offer',
         'priceSpecification': {
           '@type': 'PriceSpecification',
-          'price': '8000-25000',
+          'price': '10000-30000',
           'priceCurrency': 'SEK',
           'unitText': 'per month'
         }
