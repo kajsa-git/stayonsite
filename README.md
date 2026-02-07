@@ -1,73 +1,79 @@
-# Welcome to your Lovable project
+# StayOnSite
 
-## Project info
+Quick lodgings finder for construction workers.
 
-**URL**: https://lovable.dev/projects/760b4757-b8ba-4bea-a67c-2d97c14b221d
+## About
 
-## How can I edit this code?
+StayOnSite helps construction companies find nearby accommodations for their workers. Built with modern web technologies for a fast, responsive experience.
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **React 18** + **TypeScript**
+- **Vite** - Fast build tool
+- **shadcn/ui** - Beautiful UI components
+- **Tailwind CSS** - Utility-first styling
+- **React Router** - Client-side routing
+- **React Query** - Data fetching
+- **Zod** - Schema validation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/760b4757-b8ba-4bea-a67c-2d97c14b221d) and start prompting.
+## Development
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 18+ (install via [nvm](https://github.com/nvm-sh/nvm))
+- npm or yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+# Clone the repository
+git clone https://github.com/Ac0AI/stayonsite.git
+cd stayonsite
 
-Follow these steps:
+# Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Available Scripts
 
-**Use GitHub Codespaces**
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm test` - Run tests
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Deployment
 
-## What technologies are used for this project?
+This project can be deployed to Vercel, Netlify, or any static hosting service.
 
-This project is built with:
+```bash
+npm run build
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The production build will be in the `dist/` directory.
 
-## How can I deploy this project?
+## Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/760b4757-b8ba-4bea-a67c-2d97c14b221d) and click on Share -> Publish.
+```
+src/
+├── components/     # Reusable UI components
+├── pages/          # Route pages
+├── hooks/          # Custom React hooks
+├── contexts/       # React contexts
+├── lib/            # Utility functions
+├── types/          # TypeScript types
+└── data/           # Static data
+```
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
+Private - All rights reserved
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Contact
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+For questions or support, contact [dave@flyttsmart.se](mailto:dave@flyttsmart.se)
