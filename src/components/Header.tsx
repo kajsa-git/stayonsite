@@ -15,6 +15,10 @@ const Header = () => {
   // Check if we're on the homepage
   const isHomePage = location.pathname === "/";
 
+  // On subpages, always use the "scrolled" look (solid white bg + dark text)
+  // because subpages have a light background behind the header
+  const useScrolledStyle = scrolled || !isHomePage;
+
   const navLinks = [
     { label: t("nav.services"), href: isHomePage ? "#why" : "/#why" },
     {
@@ -61,7 +65,7 @@ const Header = () => {
     <header
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300 ease-out will-change-[background-color,padding,backdrop-filter]",
-        scrolled
+        useScrolledStyle
           ? "py-3 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg shadow-black/5"
           : "py-6 bg-transparent"
       )}
@@ -76,7 +80,7 @@ const Header = () => {
             <span
               className={cn(
                 "text-2xl md:text-3xl font-display tracking-tight transition-colors duration-300 ease-out",
-                scrolled
+                useScrolledStyle
                   ? "text-primary"
                   : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
               )}
@@ -85,7 +89,7 @@ const Header = () => {
             </span>
             <div className={cn(
               "absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full",
-              scrolled ? "bg-[#ff6300]" : "bg-white"
+              useScrolledStyle ? "bg-[#ff6300]" : "bg-white"
             )} />
           </Link>
         </div>
@@ -104,7 +108,7 @@ const Header = () => {
                   }
                   className={cn(
                     "text-[15px] font-medium transition-all duration-300 relative group",
-                    scrolled
+                    useScrolledStyle
                       ? "text-primary/70 hover:text-primary"
                       : "text-white/80 hover:text-white"
                   )}
@@ -117,7 +121,7 @@ const Header = () => {
           </ul>
 
           <div
-            className={cn("h-6 w-px mx-2", scrolled ? "bg-primary/10" : "bg-white/20")}
+            className={cn("h-6 w-px mx-2", useScrolledStyle ? "bg-primary/10" : "bg-white/20")}
           />
 
           <div className="flex items-center gap-8">
@@ -129,7 +133,7 @@ const Header = () => {
                 }
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
-                  scrolled
+                  useScrolledStyle
                     ? "text-primary/70 hover:text-primary"
                     : "text-white/80 hover:text-white"
                 )}
@@ -141,7 +145,7 @@ const Header = () => {
                 to="/for-husagare"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
-                  scrolled
+                  useScrolledStyle
                     ? "text-primary/70 hover:text-primary"
                     : "text-white/80 hover:text-white"
                 )}
@@ -154,7 +158,7 @@ const Header = () => {
               <LanguageSwitcher
                 className={cn(
                   "transition-colors duration-300",
-                  scrolled ? "text-primary" : "text-white"
+                  useScrolledStyle ? "text-primary" : "text-white"
                 )}
               />
               <Button
@@ -175,13 +179,13 @@ const Header = () => {
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-4">
           <LanguageSwitcher
-            className={scrolled ? "text-primary" : "text-white"}
+            className={useScrolledStyle ? "text-primary" : "text-white"}
           />
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={cn(
               "p-2 rounded-xl transition-all duration-300",
-              scrolled ? "text-primary hover:bg-primary/5" : "text-white hover:bg-white/10"
+              useScrolledStyle ? "text-primary hover:bg-primary/5" : "text-white hover:bg-white/10"
             )}
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
