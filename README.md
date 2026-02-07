@@ -76,4 +76,4 @@ Private - All rights reserved
 
 ## Contact
 
-For questions or support, contact [dave@flyttsmart.se](mailto:dave@flyttsmart.se)
+For questions or support, contact [kajsa@stayonsite.se](mailto:kajsa@stayonsite.se)
