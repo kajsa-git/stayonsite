@@ -87,6 +87,7 @@ const References = () => {
                     <img
                       src={testimonial.img}
                       alt={testimonial.author}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   </div>

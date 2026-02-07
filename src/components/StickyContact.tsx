@@ -49,7 +49,7 @@ const StickyContact = () => {
           <div className="flex items-center gap-4">
             <div className="flex">
               <div className="w-12 h-12 rounded-2xl overflow-hidden">
-                <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
+                <img src="/images/kajsa.webp" alt="Kajsa - grundare StayOnSite" loading="lazy" className="w-full h-full object-cover" />
               </div>
             </div>
             <div>

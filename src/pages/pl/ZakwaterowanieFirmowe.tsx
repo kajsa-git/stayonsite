@@ -162,7 +162,7 @@ const ZakwaterowanieFirmowe = () => {
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
               <div className="flex">
                 <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
-                  <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
+                  <img src="/images/kajsa.webp" alt="Kajsa - założycielka StayOnSite" loading="lazy" className="w-full h-full object-cover" />
                 </div>
               </div>
               <div className="text-center md:text-left">
@@ -262,7 +262,7 @@ const ZakwaterowanieFirmowe = () => {
               </blockquote>
               <div className="flex items-center justify-center gap-4">
                 <div className="w-14 h-14 bg-nordic-200 rounded-full overflow-hidden">
-                  <img src="/images/mats-testimonial.webp" alt="Klient" className="w-full h-full object-cover" />
+                  <img src="/images/mats-testimonial.webp" alt="Opinia klienta" loading="lazy" className="w-full h-full object-cover" />
                 </div>
                 <div className="text-left">
                   <p className="font-semibold text-nordic-900">Kierownik Projektu</p>

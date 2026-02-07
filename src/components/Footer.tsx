@@ -34,30 +34,30 @@ const Footer = () => {
           
           <div>
             <h3 className="text-xl font-semibold mb-6 text-white">{t('footer.contact')}</h3>
-            <ul className="space-y-6">
-              <li className="flex items-center">
+            <address className="not-italic space-y-6">
+              <div className="flex items-center">
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <Phone size={18} className="text-[#ff6300]" />
                 </div>
                 <a href="tel:+46762498486" className="font-medium hover:text-[#ff6300] transition-colors duration-300">
                   +46 76-249 84 86
                 </a>
-              </li>
-              <li className="flex items-center">
+              </div>
+              <div className="flex items-center">
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <Mail size={18} className="text-[#ff6300]" />
                 </div>
                 <a href="mailto:info@stayonsite.se" className="font-medium hover:text-[#ff6300] transition-colors duration-300">
                   info@stayonsite.se
                 </a>
-              </li>
-              <li className="flex items-center">
+              </div>
+              <div className="flex items-center">
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <MapPin size={18} className="text-[#ff6300]" />
                 </div>
                 <span className="font-light text-white/80">{t('footer.location')}</span>
-              </li>
-            </ul>
+              </div>
+            </address>
           </div>
           
           <div>

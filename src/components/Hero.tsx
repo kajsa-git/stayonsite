@@ -21,16 +21,20 @@ const Hero = () => {
       id="home"
       className="relative isolate flex items-center min-h-[90vh] md:min-h-[900px] overflow-hidden pt-20 bg-primary"
     >
-      {/* Background Image with subtle parallax-like scale effect */}
-      <motion.div 
+      {/* Background Image - using <img> for SEO (alt text) and better LCP */}
+      <motion.div
         initial={{ scale: 1.1, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 2, ease: "easeOut" }}
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/images/hero-main.webp')",
-        }}
-      />
+        className="absolute inset-0 z-0"
+      >
+        <img
+          src="/images/hero-main.webp"
+          alt="Möblerat personalboende för byggarbetare i Sverige – StayOnSite"
+          {...{ fetchpriority: 'high' } as any}
+          className="w-full h-full object-cover object-center"
+        />
+      </motion.div>
       
       {/* Cinematic Overlays */}
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-primary/90 via-primary/50 to-transparent" />

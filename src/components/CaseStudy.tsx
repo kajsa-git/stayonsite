@@ -38,7 +38,8 @@ const CaseStudy = () => {
             {/* Background image - positioned to show solar panels, not sky */}
             <img
               src={CASE_IMAGE}
-              alt=""
+              alt="Solpark i Säffle - StayOnSite personalboende för energiprojekt"
+              loading="lazy"
               className="absolute inset-0 w-full h-full"
               style={{
                 objectFit: 'cover',
@@ -97,7 +98,7 @@ const CaseStudy = () => {
               {/* Profile Image */}
               <div className="relative z-10 flex items-center justify-center mb-10">
                 <div className="relative w-32 h-32 rounded-3xl overflow-hidden">
-                  <img src="/images/kajsa.webp" alt="Kajsa" className="w-full h-full object-cover" />
+                  <img src="/images/kajsa.webp" alt="Kajsa - grundare StayOnSite" loading="lazy" className="w-full h-full object-cover" />
                 </div>
               </div>
 
