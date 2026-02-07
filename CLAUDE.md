@@ -86,10 +86,73 @@ React Hook Form + Zod validation. See `src/components/inquiry/` and `src/compone
 - **`TEAM.md`** — Komplett teamstruktur, kanaler, budget och automationsplan
 - **`standups/`** — Veckoprotokoll sparas här automatiskt
 
+## SEO Intelligence (auto-genererad från keyword-analys)
+
+Senast uppdaterad: 2026-02-07
+Källa: `/Users/dpr/Documents/Project/Sem/data/seo_action_plan.md`
+
+### Affärskontext
+
+Kajsas fokus är **projekt utanför storstäderna** — bäst marginal i mindre städer där hon kan sourca boende billigt. Storstadssökord (Stockholm, Göteborg) är bra för trovärdighet men de mindre städerna (Boden, Oskarshamn, Säffle, Gävle, Luleå) är affärskritiska.
+
+All text på sajten måste vara **trovärdig och professionell** — inga generiska AI-formuleringar, inga överdrifter, ingen skojarton.
+
+### Konkurrenter (10 analyserade)
+
+- **forenom.com**: 965 sökord, snittpos 30 (dominant, lägenhetshotell-profil)
+- **guestit.se**: 835 sökord, snittpos 42 (stark bloggstrategi)
+- **foretagsbostader.se**: 344 sökord, snittpos 50 (äger "företagsbostäder", starkast i segmentet)
+- **swedenlongstay.se**: 133 sökord, snittpos 45
+- **corporate-apartments.se**: 128 sökord, snittpos 51 (bygg & entreprenad, direkt konkurrent)
+- **bostadstjanst.com**: 120 sökord, snittpos 58
+- **rentaborg.com**: 97 sökord, snittpos 49 (corporate housing)
+
+### Gap-sökord att arbeta in per sida
+
+När du redigerar en stadssida eller statisk sida, försök naturligt väva in dessa sökord. **Viktigast: mindre städer med hög affärsrelevans.**
+
+**Boden** (`/stad/boden`) — affärskritisk:
+  "lägenheter boden" (1300/mån), "boende boden" (320/mån), "hyreslägenheter boden" (170/mån)
+
+**Luleå** (`/stad/lulea`) — affärskritisk:
+  "boende luleå" (880/mån), "hyra lägenhet luleå" (880/mån), "korttidsboende luleå" (110/mån)
+
+**Oskarshamn** (`/stad/oskarshamn`):
+  "boende oskarshamn" (480/mån), "boende i oskarshamn" (480/mån)
+
+**Norrköping** (`/stad/norrkoping`):
+  "norrköping boende" (1000/mån), "boende norrköping" (1000/mån)
+
+**Gävle** (`/stad/gavle`):
+  "lägenhetshotell gävle" (50/mån), "korttidsboende gävle" (50/mån)
+
+**Linköping** (`/stad/linkoping`):
+  "lägenhetshotell linköping" (260/mån), "billigt boende linköping" (170/mån)
+
+**Stockholm** (`/stad/stockholm`) — för trovärdighet:
+  "boende stockholm" (2900/mån), "lägenhetshotell stockholm" (2400/mån)
+
+**Göteborg** (`/stad/goteborg`):
+  "korttidsboende göteborg" (480/mån), "lägenhetshotell göteborg" (720/mån)
+
+**För företag** (`/for-foretag`):
+  "företagsbostäder" (590/mån), "tillfälligt boende" (320/mån), "företagslägenheter" (140/mån), "projektboende" (70/mån)
+
+**För husägare** (`/for-husagare`):
+  "hyra ut hus till företag" (260/mån), "hyra ut bostadsrätt till företag" (70/mån)
+
+### Textriktlinjer (SEO + trovärdighet)
+
+- Använd sökord **naturligt** i text, inte stuffat
+- Undvik överdrifter ("bäst i Sverige", "garanterat billigast")
+- Skriv som ett seriöst B2B-bolag, inte en annons
+- Konkreta siffror > vaga löften ("svar inom 24h" > "snabb service")
+- Nämn specifika projekt/industrier per stad för trovärdighet
+
 ## Deployment
 
 - **Vercel project:** `stayonsite` (NOT `stayonsite-quick-lodgings-finder`)
-- **GitHub repo:** `Ac0AI/stayonsite-quick-lodgings-finder` (redirects from `Davidodpr/...`)
+- **GitHub repo:** `Ac0AI/stayonsite-quick-lodgings-finder`
 - Auto-deploys on push to `main`. SPA fallback rewrite in `vercel.json`.
 - Domain: **stayonsite.se** (redirects to www.stayonsite.se)
 - `npx vercel --prod` deploys to a separate project — always use `git push` for production deploys.

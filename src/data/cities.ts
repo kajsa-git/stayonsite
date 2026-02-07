@@ -78,7 +78,7 @@ export const cities: City[] = [
       'Budowy takie jak Slussen, rozbudowa metra czy centra danych wymagają elastycznych ekip. Mamy wynegocjowane mieszkania, dzięki czemu całe zespoły mieszkają blisko inwestycji i otrzymują pełny plan zakwaterowania w 24 godziny.'
     ),
     keywords: lk(
-      ['personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm'],
+      ['personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm', 'lägenhetshotell stockholm'],
       ['corporate housing stockholm', 'staff apartments stockholm', 'construction housing stockholm', 'worker accommodation stockholm sweden', 'temporary housing stockholm', 'construction crew accommodation stockholm'],
       ['zakwaterowanie pracownicze sztokholm', 'mieszkania firmowe sztokholm', 'noclegi dla ekip sztokholm', 'noclegi dla budowlańców sztokholm szwecja', 'kwatery pracownicze sztokholm', 'tymczasowe zakwaterowanie sztokholm szwecja']
     ),
@@ -168,7 +168,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Göteborg – nära hamnen och Hisingen', 'Worker Accommodation in Gothenburg – Near the Harbour & Hisingen', 'Noclegi Pracownicze w Göteborgu – Blisko Portu i Hisingen'),
     intro: ls('Från Hisingsbron till varvsrenoveringar behövs boenden med kort restid och enkel parkering. Vi har hus och större lägenheter på Hisingen, Majorna och Mölndal där hela lag kan dela kök och jobba skift dygnet runt.', 'From Hisingsbron to yard renovations you need housing with short travel time and easy parking. We run houses and large apartments on Hisingen, Majorna and Mölndal so whole crews share kitchens and run shifts 24/7.', 'Od mostu Hisingsbron po remonty stoczni potrzeba noclegów z krótkim dojazdem i parkingiem. Mamy domy i duże mieszkania na Hisingen, w Majornie i Mölndal, gdzie całe ekipy dzielą kuchnie i pracują na zmiany.'),
     keywords: lk(
-      ['personalboende göteborg', 'företagsboende göteborg', 'byggboende hisingen', 'boende byggarbetare göteborg', 'montörboende göteborg', 'tillfälligt boende företag göteborg'],
+      ['personalboende göteborg', 'företagsboende göteborg', 'byggboende hisingen', 'boende byggarbetare göteborg', 'montörboende göteborg', 'tillfälligt boende företag göteborg', 'lägenhetshotell göteborg', 'korttidsboende göteborg'],
       ['staff housing gothenburg', 'corporate housing gothenburg', 'construction housing hisingen', 'worker accommodation gothenburg sweden', 'temporary housing gothenburg', 'construction crew accommodation gothenburg'],
       ['zakwaterowanie pracownicze göteborg', 'noclegi firmowe göteborg', 'mieszkania hisingen', 'noclegi dla budowlańców göteborg szwecja', 'kwatery pracownicze göteborg', 'tymczasowe zakwaterowanie göteborg szwecja']
     ),
@@ -254,7 +254,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Malmö – nära Hyllie och Öresund', 'Worker Accommodation in Malmö – Near Hyllie & the Öresund Region', 'Noclegi Pracownicze w Malmö – Blisko Hyllie i Regionu Öresund'),
     intro: ls('När projekten rullar i Hyllie, Västra Hamnen eller utefter E6:an behöver ni flexibla kontrakt. Vi fyller hus i Limhamn, Fosie och centrala Malmö med komplett köksutrustning, veckostäd och tvättlösningar.', 'When projects run in Hyllie, Västra Hamnen or along the E6 you need flexible contracts. We fill houses in Limhamn, Fosie and central Malmö with full kitchens, weekly cleaning and laundry.', 'Gdy projekty toczą się w Hyllie, Västra Hamnen lub wzdłuż E6, potrzebujecie elastycznych umów. Zapewniamy domy w Limhamn, Fosie i centrum Malmö z pełnymi kuchniami, cotygodniowym sprzątaniem i praniem.'),
     keywords: lk(
-      ['personalboende malmö', 'företagsboende malmö', 'relocation malmö bygg', 'boende byggarbetare malmö', 'montörboende malmö', 'tillfälligt boende företag malmö'],
+      ['personalboende malmö', 'företagsboende malmö', 'relocation malmö bygg', 'boende byggarbetare malmö', 'montörboende malmö', 'tillfälligt boende företag malmö', 'boende malmö', 'lägenhetshotell malmö', 'korttidsboende malmö'],
       ['staff housing malmo', 'corporate apartments malmo', 'relocation malmo construction', 'worker accommodation malmo sweden', 'temporary housing malmo', 'construction crew accommodation malmo'],
       ['zakwaterowanie pracownicze malmo', 'mieszkania firmowe malmo', 'relokacja budowlana malmo', 'noclegi dla budowlańców malmö szwecja', 'kwatery pracownicze malmö', 'tymczasowe zakwaterowanie malmö szwecja']
     ),
@@ -340,7 +340,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Uppsala – för life science- och utbildningsprojekt', 'Worker Accommodation in Uppsala – For Life Science & Education Projects', 'Noclegi Pracownicze w Uppsali – Projekty Life Science i Edukacyjne'),
     intro: ls('Akademiska sjukhuset, nya campusytor och bostadsexpansion kräver boenden där installatörer kan dela vardag. Vi har kedjehus och större lägenheter i Gränby, Rosendal och Bäcklösa med kort restid till både city och industriområden.', 'The university hospital, new campuses and housing expansion need accommodation where installers can live comfortably. We run townhouses and larger flats in Gränby, Rosendal and Bäcklösa with short travel to both city and industrial zones.', 'Szpital uniwersytecki, nowe kampusy i rozbudowa mieszkaniowa wymagają zakwaterowania, w którym monterzy mogą normalnie żyć. Prowadzimy segmenty i większe mieszkania w Gränby, Rosendalu i Bäcklöse z krótkim dojazdem do centrum i stref przemysłowych.'),
     keywords: lk(
-      ['personalboende uppsala', 'företagslägenheter uppsala', 'byggboende life science', 'boende byggarbetare uppsala', 'montörboende uppsala', 'tillfälligt boende företag uppsala'],
+      ['personalboende uppsala', 'företagslägenheter uppsala', 'byggboende life science', 'boende byggarbetare uppsala', 'montörboende uppsala', 'tillfälligt boende företag uppsala', 'lägenhetshotell uppsala', 'boende uppsala'],
       ['staff housing uppsala', 'corporate apartments uppsala', 'life science housing uppsala', 'worker accommodation uppsala sweden', 'temporary housing uppsala', 'construction crew accommodation uppsala'],
       ['zakwaterowanie pracownicze uppsala', 'mieszkania firmowe uppsala', 'noclegi life science uppsala', 'noclegi dla budowlańców uppsala szwecja', 'kwatery pracownicze uppsala', 'tymczasowe zakwaterowanie uppsala szwecja']
     ),
@@ -426,7 +426,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Västerås – nära Mälarenergi och logistiknavet', 'Worker Accommodation in Västerås – Near Mälarenergi & Logistics Hub', 'Noclegi Pracownicze w Västerås – Blisko Mälarenergi i Centrum Logistycznego'),
     intro: ls('Västerås projekten drivs av batterifabriker, kraftverk och logistik. Vi placerar team i Tunbytorp, Gideonsberg och Köpingstrakten för snabb åtkomst till E18 och hamnen. Alltid möblerat, alltid slutstädat.', 'Local projects run on battery plants, power stations and logistics hubs. We place teams in Tunbytorp, Gideonsberg and Köping for fast access to the E18 and harbour. Always furnished and cleaned.', 'Projekty w Västerås to fabryki baterii, elektrownie i logistyczne huby. Ulokujemy ekipy w Tunbytorp, Gideonsbergu i okolicach Köping, z szybkim dojazdem do E18 i portu. Zawsze umeblowane, zawsze wysprzątane.'),
     keywords: lk(
-      ['personalboende västerås', 'företagsboende mälarenergi', 'byggboende batterifabrik', 'boende byggarbetare västerås', 'montörboende västerås', 'tillfälligt boende företag västerås'],
+      ['personalboende västerås', 'företagsboende mälarenergi', 'byggboende batterifabrik', 'boende byggarbetare västerås', 'montörboende västerås', 'tillfälligt boende företag västerås', 'korttidsboende västerås', 'lägenhetshotell västerås'],
       ['staff housing vasteras', 'corporate housing malarenergi', 'battery plant housing sweden', 'worker accommodation vasteras sweden', 'temporary housing vasteras', 'construction crew accommodation vasteras'],
       ['zakwaterowanie pracownicze vasteras', 'mieszkania firmowe malarenergi', 'noclegi fabryka baterii', 'noclegi dla budowlańców västerås szwecja', 'kwatery pracownicze västerås', 'tymczasowe zakwaterowanie västerås szwecja']
     ),
@@ -598,7 +598,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Linköping – nära Saab, universitetet och Mjärdevi', 'Worker Accommodation in Linköping – Near Saab, University & Mjärdevi', 'Noclegi Pracownicze w Linköping – Blisko Saaba, Uniwersytetu i Mjärdevi'),
     intro: ls('Linköping drivs av högteknologi och avancerade installationer. Vi placerar projektlag i Lambohov, Vallastaden och Mjärdevi så att resan till labb och hangarer tar under tio minuter.', 'Linköping runs on high-tech and advanced installs. We place crews in Lambohov, Vallastaden and Mjärdevi so trips to labs and hangars stay under ten minutes.', 'Linköping to wysokie technologie i zaawansowane instalacje. Umieszczamy ekipy w Lambohov, Vallastaden i Mjärdevi, aby dojazd do laboratoriów i hangarów zajmował mniej niż dziesięć minut.'),
     keywords: lk(
-      ['personalboende linköping', 'företagslägenheter mjärdevi', 'byggboende saab', 'boende byggarbetare linköping', 'montörboende linköping', 'tillfälligt boende företag linköping'],
+      ['personalboende linköping', 'företagslägenheter mjärdevi', 'byggboende saab', 'boende byggarbetare linköping', 'montörboende linköping', 'tillfälligt boende företag linköping', 'lägenhetshotell linköping'],
       ['staff housing linkoping', 'corporate apartments mjar devi', 'saab construction housing', 'worker accommodation linkoping sweden', 'temporary housing linkoping', 'construction crew accommodation linkoping'],
       ['zakwaterowanie pracownicze linkoping', 'mieszkania firmowe mjar devi', 'noclegi saab', 'noclegi dla budowlańców linköping szwecja', 'kwatery pracownicze linköping', 'tymczasowe zakwaterowanie linköping szwecja']
     ),
@@ -684,7 +684,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Helsingborg – nära hamnen och färjeläget', 'Worker Accommodation in Helsingborg – Near the Harbour & Ferry Terminal', 'Noclegi Pracownicze w Helsingborgu – Blisko Portu i Terminala Promowego'),
     intro: ls('Utvecklingen av Helsingborgs hamn, Oceanhamnen och logistikterminalerna kräver snabb access till färjor och E4. Vi har lägenheter och radhus i Oceanhamnen, Eneborg och Ättekulla med stora förråd och parkering.', 'The harbour, Oceanhamnen and logistics terminals need fast access to ferries and the E4. We offer apartments and townhouses in Oceanhamnen, Eneborg and Ättekulla with ample storage and parking.', 'Rozwój portu, Oceanhamnen i terminali logistycznych wymaga szybkiego dostępu do promów i E4. Zapewniamy mieszkania i segmenty w Oceanhamnen, Eneborgu i Ättekulli z dużymi magazynami i parkingami.'),
     keywords: lk(
-      ['personalboende helsingborg', 'hamnboende bygg', 'företagsboende öresund', 'boende byggarbetare helsingborg', 'montörboende helsingborg', 'tillfälligt boende företag helsingborg'],
+      ['personalboende helsingborg', 'hamnboende bygg', 'företagsboende öresund', 'boende byggarbetare helsingborg', 'montörboende helsingborg', 'tillfälligt boende företag helsingborg', 'lägenhetshotell helsingborg'],
       ['staff housing helsingborg', 'harbour construction housing', 'oresund corporate housing', 'worker accommodation helsingborg sweden', 'temporary housing helsingborg', 'construction crew accommodation helsingborg'],
       ['zakwaterowanie pracownicze helsingborg', 'noclegi przy porcie', 'mieszkania firmowe oresund', 'noclegi dla budowlańców helsingborg szwecja', 'kwatery pracownicze helsingborg', 'tymczasowe zakwaterowanie helsingborg szwecja']
     ),
@@ -770,7 +770,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Jönköping – nära Elmia och logistikparken', 'Worker Accommodation in Jönköping – Near Elmia & the Logistics Park', 'Noclegi Pracownicze w Jönköping – Blisko Elmii i Parku Logistycznego'),
     intro: ls('Elmia-mässor, logistiknavet Torsvik och nya bostadskvarter kräver boenden med plats för utrustning. Vi använder kedjehus i Huskvarna, lägenheter i centrum och villor söder om stan där servicebilar får plats.', 'Elmia fairs, the Torsvik logistics hub and new housing blocks need space for equipment. We use townhouses in Huskvarna, central apartments and villas south of town where service vans fit.', 'Targi Elmia, hub logistyczny Torsvik i nowe osiedla potrzebują miejsca na sprzęt. Korzystamy z segmentów w Huskvarnie, mieszkań w centrum i willi na południu miasta, gdzie mieszczą się auta serwisowe.'),
     keywords: lk(
-      ['personalboende jönköping', 'företagsboende torsvik', 'logistikboende elmia', 'boende byggarbetare jönköping', 'montörboende jönköping', 'tillfälligt boende företag jönköping'],
+      ['personalboende jönköping', 'företagsboende torsvik', 'logistikboende elmia', 'boende byggarbetare jönköping', 'montörboende jönköping', 'tillfälligt boende företag jönköping', 'lägenhetshotell jönköping'],
       ['staff housing jonkoping', 'corporate housing torsvik', 'elmia logistics housing', 'worker accommodation jonkoping sweden', 'temporary housing jonkoping', 'construction crew accommodation jonkoping'],
       ['zakwaterowanie pracownicze jonkoping', 'mieszkania firmowe torsvik', 'noclegi logistyka elmia', 'noclegi dla budowlańców jönköping szwecja', 'kwatery pracownicze jönköping', 'tymczasowe zakwaterowanie jönköping szwecja']
     ),
@@ -856,7 +856,7 @@ export const cities: City[] = [
     heroHook: ls('Personalboende i Norrköping – nära Inre hamnen och Ostlänken', 'Worker Accommodation in Norrköping – Near Inre Hamnen & Ostlänken', 'Noclegi Pracownicze w Norrköping – Blisko Inre Hamnen i Ostlänken'),
     intro: ls('Stora projekt som Ostlänken och Inre hamnen gör att många företag behöver personalboende i Norrköping. Vi ordnar möblerade lägenheter i Saltängen, Hageby och Åby med kort avstånd till era arbetsplatser.', 'Major projects like Ostlänken and Inre Hamnen mean many companies need worker accommodation in Norrköping. We arrange furnished apartments in Saltängen, Hageby and Åby close to your work sites.', 'Duże projekty jak Ostlänken i Inre Hamnen sprawiają, że wiele firm potrzebuje noclegów pracowniczych w Norrköping. Organizujemy umeblowane mieszkania w Saltängen, Hageby i Åby blisko Waszych budów.'),
     keywords: lk(
-      ['personalboende norrköping', 'företagsboende ostlänken', 'byggboende inre hamnen', 'boende byggarbetare norrköping', 'montörboende norrköping', 'tillfälligt boende företag norrköping'],
+      ['personalboende norrköping', 'företagsboende ostlänken', 'byggboende inre hamnen', 'boende byggarbetare norrköping', 'montörboende norrköping', 'tillfälligt boende företag norrköping', 'boende norrköping'],
       ['staff housing norrkoping', 'ostlanken corporate housing', 'inre hamnen construction housing', 'worker accommodation norrkoping sweden', 'temporary housing norrkoping', 'construction crew accommodation norrkoping'],
       ['zakwaterowanie pracownicze norrkoping', 'mieszkania firmowe ostlanken', 'noclegi inre hamnen', 'noclegi dla budowlańców norrköping szwecja', 'kwatery pracownicze norrköping', 'tymczasowe zakwaterowanie norrköping szwecja']
     ),
@@ -950,7 +950,7 @@ export const cities: City[] = [
       'Rozbudowa portu, nowe centra danych i projekty leśne wymagają, by całe ekipy mieszkały blisko inwestycji. Mamy mieszkania i szeregowce w Andersberg, Brynäs i Sätra z prywatnymi sypialniami i wspólnymi kuchniami.'
     ),
     keywords: lk(
-      ['personalboende gävle', 'företagslägenheter hamn', 'byggboende datacenter gävle', 'boende byggarbetare gävle', 'montörboende gävle', 'tillfälligt boende företag gävle'],
+      ['personalboende gävle', 'företagslägenheter hamn', 'byggboende datacenter gävle', 'boende byggarbetare gävle', 'montörboende gävle', 'tillfälligt boende företag gävle', 'lägenhetshotell gävle'],
       ['corporate housing gavle', 'harbor staff apartments', 'datacenter construction housing gavle', 'worker accommodation gavle sweden', 'temporary housing gavle', 'construction crew accommodation gavle'],
       ['zakwaterowanie pracownicze gavle', 'mieszkania portowe', 'noclegi datacenter gavle', 'noclegi dla budowlańców gävle szwecja', 'kwatery pracownicze gävle', 'tymczasowe zakwaterowanie gävle szwecja']
     ),
@@ -1060,8 +1060,8 @@ export const cities: City[] = [
       'Rozbudowa obronna i projekty wojskowe wymagają bezpiecznych i elastycznych noclegów. Mamy mieszkania i domy w centrum Boden i Svartbyträsk, gdzie Twoje ekipy odpoczną po długich zmianach na północy.'
     ),
     keywords: lk(
-      ['personalboende boden', 'företagslägenheter försvar', 'byggboende militär boden', 'boende byggarbetare boden', 'montörboende boden', 'tillfälligt boende företag boden'],
-      ['corporate housing boden', 'defense staff apartments', 'military construction housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'construction crew accommodation boden'],
+      ['personalboende boden', 'företagslägenheter försvar', 'byggboende militär boden', 'boende byggarbetare boden', 'lägenheter boden', 'boende boden', 'hyreslägenheter boden', 'tillfälligt boende företag boden'],
+      ['corporate housing boden', 'defense staff apartments', 'military construction housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'apartments boden sweden'],
       ['zakwaterowanie pracownicze boden', 'mieszkania obronne', 'noclegi wojskowe boden', 'noclegi dla budowlańców boden szwecja', 'kwatery pracownicze boden', 'tymczasowe zakwaterowanie boden szwecja']
     ),
     metrics: [
@@ -1610,8 +1610,8 @@ export const cities: City[] = [
       'Przemysł wydobywczy, Facebook i nowe centra danych czynią Luleå jednym z najbardziej rozwijających się miast Szwecji. Mamy mieszkania i domy w Luleå i Porsön, gdzie Twoje ekipy mieszkają blisko pracy z północnym komfortem.'
     ),
     keywords: lk(
-      ['personalboende luleå', 'företagslägenheter datacenter', 'byggboende gruva luleå', 'boende byggarbetare luleå', 'montörboende luleå', 'tillfälligt boende företag luleå'],
-      ['corporate housing lulea', 'datacenter staff apartments', 'mining construction housing lulea', 'worker accommodation lulea sweden', 'temporary housing lulea', 'construction crew accommodation lulea'],
+      ['personalboende luleå', 'företagslägenheter datacenter', 'boende luleå', 'hyra lägenhet luleå', 'korttidsboende luleå', 'boende byggarbetare luleå', 'montörboende luleå', 'tillfälligt boende företag luleå'],
+      ['corporate housing lulea', 'datacenter staff apartments', 'mining construction housing lulea', 'worker accommodation lulea sweden', 'temporary housing lulea', 'apartments lulea sweden'],
       ['zakwaterowanie pracownicze lulea', 'mieszkania datacenter', 'noclegi kopalnie lulea', 'noclegi dla budowlańców luleå szwecja', 'kwatery pracownicze luleå', 'tymczasowe zakwaterowanie luleå szwecja']
     ),
     metrics: [
@@ -1720,8 +1720,8 @@ export const cities: City[] = [
       'OKG i rozbudowa portu tworzą duże zapotrzebowanie na noclegi pracownicze w Oskarshamn. Mamy mieszkania i domy w Oskarshamn i Figeholm blisko miejsc pracy.'
     ),
     keywords: lk(
-      ['personalboende oskarshamn', 'företagslägenheter kärnkraft', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
-      ['corporate housing oskarshamn', 'nuclear power staff apartments', 'okg construction housing oskarshamn', 'worker accommodation oskarshamn sweden', 'temporary housing oskarshamn', 'construction crew accommodation oskarshamn'],
+      ['personalboende oskarshamn', 'företagslägenheter kärnkraft', 'boende oskarshamn', 'boende i oskarshamn', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
+      ['corporate housing oskarshamn', 'nuclear power staff apartments', 'accommodation oskarshamn', 'okg construction housing oskarshamn', 'worker accommodation oskarshamn sweden', 'temporary housing oskarshamn'],
       ['zakwaterowanie pracownicze oskarshamn', 'mieszkania energetyka jądrowa', 'noclegi okg oskarshamn', 'noclegi dla budowlańców oskarshamn szwecja', 'kwatery pracownicze oskarshamn', 'tymczasowe zakwaterowanie oskarshamn szwecja']
     ),
     metrics: [
@@ -1830,7 +1830,7 @@ export const cities: City[] = [
       'Szpital Uniwersytecki Norrlands i przemysł w Umeå napędzają duże projekty wymagające tymczasowych noclegów. Mamy mieszkania i domy na Ersboda, Teg i Mariehem, gdzie Twoje ekipy mieszkają wygodnie blisko pracy.'
     ),
     keywords: lk(
-      ['personalboende umeå', 'företagslägenheter sjukhus', 'byggboende norrbotniabanan', 'boende byggarbetare umeå', 'montörboende umeå', 'tillfälligt boende företag umeå'],
+      ['personalboende umeå', 'företagslägenheter sjukhus', 'byggboende norrbotniabanan', 'boende byggarbetare umeå', 'montörboende umeå', 'tillfälligt boende företag umeå', 'boende umeå'],
       ['corporate housing umea', 'hospital staff apartments', 'norrbotniabanan construction housing', 'worker accommodation umea sweden', 'temporary housing umea', 'construction crew accommodation umea'],
       ['zakwaterowanie pracownicze umea', 'mieszkania szpitalne', 'noclegi norrbotniabanan', 'noclegi dla budowlańców umeå szwecja', 'kwatery pracownicze umeå', 'tymczasowe zakwaterowanie umeå szwecja']
     ),
