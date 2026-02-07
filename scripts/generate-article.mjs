@@ -258,7 +258,7 @@ function updateBlogPosts(topic) {
       en: '${topic.descEn.replace(/'/g, "\\'")}',
       pl: '${topic.descPl.replace(/'/g, "\\'")}',
     },
-    author: 'Kajsa Lindwall',
+    author: 'StayOnSite',
     publishedDate: '${today}',
     category: '${topic.category}',
     tags: [${topic.tags.map(t => `'${t}'`).join(', ')}],

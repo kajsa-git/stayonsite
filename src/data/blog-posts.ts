@@ -22,7 +22,7 @@ export const blogPosts: BlogPost[] = [
       en: 'Everything you need to know about worker accommodation in Sweden 2026. Costs, regulations, cities and how to find the right housing solution.',
       pl: 'Wszystko o zakwaterowaniu pracowniczym w Szwecji 2026. Koszty, przepisy i rozwiązania.'
     },
-    author: 'Kajsa Lindwall',
+    author: 'StayOnSite',
     publishedDate: '2026-02-07',
     category: 'Guide',
     tags: ['personalboende', 'byggbolag', 'företagsboende'],
@@ -40,7 +40,7 @@ export const blogPosts: BlogPost[] = [
       en: 'Sweden reforms the Private Rental Act from July 2026. Higher deductions, new block rental rules and what it means for property owners.',
       pl: 'Reforma ustawy o wynajmie od lipca 2026. Wyższe odliczenia i nowe zasady.'
     },
-    author: 'Kajsa Lindwall',
+    author: 'StayOnSite',
     publishedDate: '2026-02-07',
     category: 'Lagstiftning',
     tags: ['privatuthyrningslagen', 'blockhyra', 'husägare', 'skatt'],
@@ -58,7 +58,7 @@ export const blogPosts: BlogPost[] = [
       en: 'H2 Green Steel, LKAB, data centers and the battery industry drive enormous demand for worker accommodation in northern Sweden.',
       pl: 'H2 Green Steel, LKAB, centra danych i przemysł bateryjny napędzają popyt na zakwaterowanie w północnej Szwecji.'
     },
-    author: 'Kajsa Lindwall',
+    author: 'StayOnSite',
     publishedDate: '2026-02-07',
     category: 'Marknad',
     tags: ['norrbotten', 'grön omställning', 'batteriindustri', 'datacenter', 'luleå', 'boden'],
