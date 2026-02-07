@@ -147,11 +147,11 @@ export const cities: City[] = [
       },
       {
         question: ls('Hur nära city kan ni placera större lag?', 'How close to downtown can you place larger crews?', 'Jak blisko centrum możecie ulokować większe ekipy?'),
-        answer: ls('För team över 10 personer använder vi Hammarby Sjöstad, Liljeholmen och Solna där vi kan blockhyra hela trapphus.', 'For teams above 10 people we use Hammarby Sjöstad, Liljeholmen and Solna where we can block-rent entire stairwells.', 'Dla ekip powyżej 10 osób korzystamy z Hammarby Sjöstad, Liljeholmen i Solny, gdzie możemy wynająć całe klatki.')
+        answer: ls('För team över 10 personer ordnar vi samlat boende i Hammarby Sjöstad, Liljeholmen och Solna – flera lägenheter i samma byggnad så teamet bor nära varandra.', 'For teams above 10 people we arrange clustered housing in Hammarby Sjöstad, Liljeholmen and Solna – multiple apartments in the same building so the team stays close together.', 'Dla ekip powyżej 10 osób organizujemy mieszkania w jednym budynku w Hammarby Sjöstad, Liljeholmen i Solna, tak by zespół mieszkał blisko siebie.')
       },
       {
         question: ls('Tar ni hand om städning mellan passen?', 'Do you handle cleaning between shifts?', 'Czy zajmujecie się sprzątaniem między zmianami?'),
-        answer: ls('Ja, slutstädning och månadsvis genomgång ingår alltid i Stockholm.', 'Yes, final cleaning and monthly inspections are always included in Stockholm.', 'Tak, sprzątanie końcowe i comiesięczne inspekcje są w cenie w Sztokholmie.')
+        answer: ls('Ja, slutstädning och regelbunden genomgång ingår i våra Stockholmsboenden.', 'Yes, final cleaning and regular inspections are included in our Stockholm housing.', 'Tak, sprzątanie końcowe i regularne przeglądy są wliczone w nasze noclegi w Sztokholmie.')
       }
     ],
     nearby: ['uppsala', 'vasteras']
@@ -267,7 +267,7 @@ export const cities: City[] = [
       {
         value: '90 min',
         label: ls('till Köpenhamn', 'to Copenhagen', 'do Kopenhagi'),
-        subtext: ls('BroBizz och transit på begäran', 'BroBizz and transit on request', 'BroBizz i przeprawy na życzenie')
+        subtext: ls('Nära Öresundsbron', 'Close to the Öresund Bridge', 'Blisko mostu Öresund')
       },
       {
         value: '8',
@@ -323,7 +323,7 @@ export const cities: City[] = [
       },
       {
         question: ls('Hur funkar pendling till Danmark?', 'How do you handle commuting to Denmark?', 'Jak wygląda dojazd do Danii?'),
-        answer: ls('Vi förser chaufförer med BroBizz och planerar lägenheter nära Hyllie för snabb passage.', 'We supply drivers with BroBizz and place apartments near Hyllie for fast passage.', 'Zapewniamy kierowcom BroBizz i wybieramy mieszkania blisko Hyllie, by szybko przekraczać most.')
+        answer: ls('Vi placerar boenden nära Hyllie station så teamet snabbt tar sig över Öresundsbron till projekt i Köpenhamn.', 'We place housing near Hyllie station so the team quickly reaches projects in Copenhagen via the Öresund Bridge.', 'Lokujemy noclegi blisko stacji Hyllie, by zespół szybko dotarł do projektów w Kopenhadze przez most Öresund.')
       }
     ],
     nearby: ['helsingborg', 'norrkoping']
@@ -401,11 +401,11 @@ export const cities: City[] = [
     faq: [
       {
         question: ls('Kan ni hantera arbetstillstånd hos Akademiska?', 'Can you handle site permits at the hospital?', 'Czy możecie zająć się przepustkami do szpitala?'),
-        answer: ls('Ja, vi har rutin för passerkort och introduktion när teamen jobbar i sjukhusmiljö.', 'Yes, we manage badges and onboarding when teams work inside the hospital.', 'Tak, organizujemy przepustki i szkolenia, gdy zespoły pracują w szpitalu.')
+        answer: ls('Ja, vi anpassar boendet efter era krav och placerar teamet nära Akademiska sjukhuset.', 'Yes, we adapt the housing to your requirements and place the team near the Academic Hospital.', 'Tak, dostosowujemy noclegi do Waszych wymagań i lokujemy zespół blisko szpitala Akademiska.')
       },
       {
         question: ls('Hur långt i förväg måste vi boka?', 'How far in advance must we book?', 'Z jakim wyprzedzeniem musimy rezerwować?'),
-        answer: ls('Med 5–7 dagars framförhållning kan vi blockhyra större ytor, men nödlösningar sker på 24 h.', 'With 5–7 days notice we can block-rent larger spaces, yet emergency moves happen within 24h.', 'Przy wyprzedzeniu 5–7 dni możemy zarezerwować większe powierzchnie, ale sytuacje awaryjne obsługujemy w 24 h.')
+        answer: ls('Med 5–7 dagars framförhållning kan vi ordna boende för större team. Vid akuta behov hjälper vi till så snabbt som möjligt.', 'With 5–7 days notice we can arrange housing for larger teams. For urgent needs we help as quickly as possible.', 'Przy wyprzedzeniu 5–7 dni organizujemy noclegi dla większych zespołów. W nagłych przypadkach pomagamy tak szybko, jak to możliwe.')
       },
       {
         question: ls('Får vi flexibla kontrakt vid schemaändring?', 'Do we get flexible contracts if the schedule shifts?', 'Czy kontrakty są elastyczne przy zmianach harmonogramu?'),
@@ -647,7 +647,7 @@ export const cities: City[] = [
       },
       {
         name: ls('US Linköping', 'Linköping University Hospital', 'Szpital uniwersytecki Linköping'),
-        description: ls('Boenden åt installatörer i sjukhusmiljö.', 'Housing for installers working inside the hospital.', 'Zakwaterowanie dla instalatorów pracujących w szpitalu.')
+        description: ls('Boenden åt installatörer nära sjukhuset.', 'Housing for installers near the hospital.', 'Zakwaterowanie dla instalatorów blisko szpitala.')
       }
     ],
     testimonial: {
@@ -659,7 +659,7 @@ export const cities: City[] = [
     faq: [
       {
         question: ls('Hur löser ni säkerhetsklassning?', 'How do you handle security clearance?', 'Jak zapewniacie dostęp z certyfikacją bezpieczeństwa?'),
-        answer: ls('Vi koordinerar med Saab och kommunen för bakgrundskrav och uppdaterar gäster innan inflytt.', 'We coordinate with Saab and the municipality for background checks and brief guests before move-in.', 'Koordynujemy z Saabem i gminą wymogi sprawdzeń i przygotowujemy gości przed wprowadzeniem.')
+        answer: ls('Vi är vana vid att ordna boende nära projekt med säkerhetskrav och förbereder allt inför inflyttning.', 'We are experienced arranging housing near projects with security requirements and prepare everything before move-in.', 'Mamy doświadczenie w organizacji noclegów blisko projektów z wymaganiami bezpieczeństwa i przygotowujemy wszystko przed zameldowaniem.')
       },
       {
         question: ls('Kan vi ha mix av enkelrum och delade rum?', 'Can we mix single and shared rooms?', 'Czy możemy łączyć pokoje jedno- i wieloosobowe?'),
@@ -745,7 +745,7 @@ export const cities: City[] = [
     faq: [
       {
         question: ls('Kan ni kombinera Helsingborg och Helsingör?', 'Can you combine Helsingborg and Helsingør?', 'Czy możecie łączyć Helsingborg i Helsingør?'),
-        answer: ls('Ja, vi ordnar passerkort och planerar boenden nära färjan för dagliga överfarter.', 'Yes, we arrange passes and place housing near the ferry for daily crossings.', 'Tak, organizujemy przepustki i lokujemy noclegi blisko promu na codzienne przeprawy.')
+        answer: ls('Ja, vi placerar boenden nära färjeterminalen i Helsingborg så teamet enkelt kan pendla till Helsingör.', 'Yes, we place housing near the ferry terminal in Helsingborg so the team can easily commute to Helsingør.', 'Tak, lokujemy noclegi blisko terminalu promowego w Helsingborg, by zespół łatwo dojeżdżał do Helsingør.')
       },
       {
         question: ls('Hur hanterar ni färjeförseningar?', 'How do you handle ferry delays?', 'Jak radzicie sobie z opóźnieniami promów?'),
@@ -854,7 +854,7 @@ export const cities: City[] = [
     industries: ['Industri', 'Utbildning', 'Stadsförnyelse', 'Teknik'],
     coordinates: [58.5942, 16.1826],
     heroHook: ls('Personalboende i Norrköping – nära Inre hamnen och Ostlänken', 'Worker Accommodation in Norrköping – Near Inre Hamnen & Ostlänken', 'Noclegi Pracownicze w Norrköping – Blisko Inre Hamnen i Ostlänken'),
-    intro: ls('Industrilandskapet, Ostlänken och Inre hamnen kräver att entreprenörer kan rotera team varje vecka. Vi hyr hela trapphus i Saltängen, Hageby och Åby så att ni får samlat boende med kort resa till byggena.', 'The industrial landscape, Ostlänken and Inre Hamnen demand weekly crew rotations. We lease entire stairwells in Saltängen, Hageby and Åby so you keep clustered housing with short rides to the sites.', 'Industrial Landscape, Ostlänken i Inre Hamnen wymagają cotygodniowych rotacji ekip. Wynajmujemy całe klatki schodowe w Saltängen, Hageby i Åby, aby zapewnić zwarte noclegi z krótkim dojazdem na budowę.'),
+    intro: ls('Stora projekt som Ostlänken och Inre hamnen gör att många företag behöver personalboende i Norrköping. Vi ordnar möblerade lägenheter i Saltängen, Hageby och Åby med kort avstånd till era arbetsplatser.', 'Major projects like Ostlänken and Inre Hamnen mean many companies need worker accommodation in Norrköping. We arrange furnished apartments in Saltängen, Hageby and Åby close to your work sites.', 'Duże projekty jak Ostlänken i Inre Hamnen sprawiają, że wiele firm potrzebuje noclegów pracowniczych w Norrköping. Organizujemy umeblowane mieszkania w Saltängen, Hageby i Åby blisko Waszych budów.'),
     keywords: lk(
       ['personalboende norrköping', 'företagsboende ostlänken', 'byggboende inre hamnen', 'boende byggarbetare norrköping', 'montörboende norrköping', 'tillfälligt boende företag norrköping'],
       ['staff housing norrkoping', 'ostlanken corporate housing', 'inre hamnen construction housing', 'worker accommodation norrkoping sweden', 'temporary housing norrkoping', 'construction crew accommodation norrkoping'],
@@ -925,7 +925,7 @@ export const cities: City[] = [
       },
       {
         question: ls('Ingår slutstädning när team roterar varje vecka?', 'Is final cleaning included when crews rotate weekly?', 'Czy sprzątanie końcowe jest w cenie przy cotygodniowych rotacjach?'),
-        answer: ls('Ja, mellan varje skift gör vi full genomgång så nästa lag kan flytta in direkt.', 'Yes, between each shift we do a full cleaning so the next crew moves in immediately.', 'Tak, między zmianami wykonujemy pełne sprzątanie, by kolejna ekipa mogła się od razu wprowadzić.')
+        answer: ls('Ja, vi städar mellan varje teamrotation så nästa lag kan flytta in i ett rent boende.', 'Yes, we clean between each crew rotation so the next team moves into fresh housing.', 'Tak, sprzątamy między zmianami, by kolejna ekipa wprowadzała się do czystego mieszkania.')
       }
     ],
     nearby: ['linkoping', 'stockholm']
@@ -1126,8 +1126,8 @@ export const cities: City[] = [
       {
         question: ls('Hur funkar säkerheten vid försvarsbyggen?', 'How does security work at defense builds?', 'Jak działa bezpieczeństwo przy obiektach obronnych?'),
         answer: ls(
-          'Vi följer alla säkerhetskrav och samarbetar med försvarsmakten för clearance och dokumentation.',
-          'We follow all security requirements and work with the armed forces for clearance and documentation.',
+          'Vi är vana vid projekt med höga säkerhetskrav och anpassar boenden efter era behov.',
+          'We are experienced with high-security projects and adapt housing to your requirements.',
           'Przestrzegamy wszystkich wymagań bezpieczeństwa i współpracujemy z siłami zbrojnymi przy zgodach i dokumentacji.'
         )
       },
@@ -1692,9 +1692,9 @@ export const cities: City[] = [
       {
         question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
         answer: ls(
-          'Fullt möblerat med kök, sängkläder, städ och el/värme/wifi. Extra viktigt i norr!',
-          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi. Extra important up north!',
-          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi. Szczególnie ważne na północy!'
+          'Fullt möblerat med kök, sängkläder, städning och el/värme/wifi – allt ingår i priset.',
+          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi – everything included in the price.',
+          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi – wszystko w cenie.'
         )
       }
     ],
@@ -1715,9 +1715,9 @@ export const cities: City[] = [
       'Noclegi Pracownicze w Oskarshamn – Blisko Elektrowni Jądrowej i Portu'
     ),
     intro: ls(
-      'Kärnkraftverket OKG och hamnutbyggnaden kräver specialkompetens med säkerhetsclearance. Vi har lägenheter och villor i Oskarshamn och Figeholm där era team får bo nära arbetsplatserna med högsta säkerhetskrav.',
-      'The OKG nuclear power plant and harbor expansion require specialist skills with security clearance. We have apartments and houses in Oskarshamn and Figeholm where your teams live near the workplaces with highest security requirements.',
-      'Elektrownia jądrowa OKG i rozbudowa portu wymagają specjalistów z dopuszczeniem bezpieczeństwa. Mamy mieszkania i domy w Oskarshamn i Figeholm, gdzie Twoje ekipy mieszkają blisko pracy z najwyższymi wymaganiami bezpieczeństwa.'
+      'OKG och hamnutbyggnaden skapar stort behov av personalboende i Oskarshamn. Vi har lägenheter och villor i Oskarshamn och Figeholm nära arbetsplatserna.',
+      'OKG and the harbor expansion create a big need for worker accommodation in Oskarshamn. We have apartments and houses in Oskarshamn and Figeholm near the work sites.',
+      'OKG i rozbudowa portu tworzą duże zapotrzebowanie na noclegi pracownicze w Oskarshamn. Mamy mieszkania i domy w Oskarshamn i Figeholm blisko miejsc pracy.'
     ),
     keywords: lk(
       ['personalboende oskarshamn', 'företagslägenheter kärnkraft', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
@@ -1728,7 +1728,7 @@ export const cities: City[] = [
       {
         value: '35',
         label: ls('platser nära OKG', 'beds near OKG', 'miejsc blisko OKG'),
-        subtext: ls('Säkerhetsclearade boenden', 'Security-cleared housing', 'Mieszkania z dopuszczeniem')
+        subtext: ls('Nära kärnkraftverket', 'Close to the power plant', 'Blisko elektrowni')
       },
       {
         value: '8',
@@ -1761,7 +1761,7 @@ export const cities: City[] = [
     projects: [
       {
         name: ls('OKG Kärnkraftverk', 'OKG Nuclear Power Plant', 'Elektrownia jądrowa OKG'),
-        description: ls('Boende för tekniker och ingenjörer med säkerhetsclearance.', 'Housing for technicians and engineers with security clearance.', 'Zakwaterowanie dla techników i inżynierów z dopuszczeniem bezpieczeństwa.')
+        description: ls('Boende för tekniker och ingenjörer vid kärnkraftverket.', 'Housing for technicians and engineers at the nuclear power plant.', 'Zakwaterowanie dla techników i inżynierów przy elektrowni jądrowej.')
       },
       {
         name: ls('Hamnutbyggnad', 'Harbor Expansion', 'Rozbudowa portu'),
@@ -1774,9 +1774,9 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls(
-        'Vi behövde plats för 15 tekniker vid OKG med säkerhetsclearance och StayOnSite löste lägenheter i Figeholm med 5 minuters resa till anläggningen.',
-        'We needed housing for 15 technicians at OKG with security clearance and StayOnSite arranged apartments in Figeholm with a 5-minute drive to the facility.',
-        'Potrzebowaliśmy noclegów dla 15 techników przy OKG z dopuszczeniem bezpieczeństwa i StayOnSite zorganizowało mieszkania w Figeholm – 5 minut jazdy do obiektu.'
+        'Vi behövde boende för 15 tekniker nära OKG och StayOnSite ordnade lägenheter i Figeholm med bara 5 minuters resa till anläggningen.',
+        'We needed housing for 15 technicians near OKG and StayOnSite arranged apartments in Figeholm with just a 5-minute drive to the facility.',
+        'Potrzebowaliśmy noclegów dla 15 techników blisko OKG i StayOnSite zorganizowało mieszkania w Figeholm – zaledwie 5 minut jazdy do obiektu.'
       ),
       author: 'Stefan Karlsson',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
@@ -1786,9 +1786,9 @@ export const cities: City[] = [
       {
         question: ls('Hur funkar säkerheten vid kärnkraftverket?', 'How does security work at the nuclear plant?', 'Jak działa bezpieczeństwo przy elektrowni?'),
         answer: ls(
-          'Vi samarbetar med OKG för clearance och dokumentation enligt alla säkerhetskrav.',
-          'We work with OKG for clearance and documentation according to all security requirements.',
-          'Współpracujemy z OKG przy dopuszczeniach i dokumentacji zgodnie z wszystkimi wymogami bezpieczeństwa.'
+          'Vi är vana vid att ordna boende åt team som jobbar vid OKG och anpassar oss efter era krav.',
+          'We are experienced arranging housing for teams working at OKG and adapt to your requirements.',
+          'Mamy doświadczenie w organizacji noclegów dla zespołów pracujących przy OKG i dostosowujemy się do Waszych wymagań.'
         )
       },
       {
