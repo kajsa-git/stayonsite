@@ -217,10 +217,18 @@ const ForForetag = () => {
       <main className="flex-grow">
         {/* Hero */}
         <section className="bg-primary text-white pt-32 pb-20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,99,0,0.15),transparent_60%)]" />
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/images/hero-main.webp"
+              alt=""
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-primary/95 via-primary/70 to-primary/40" />
+          <div className="absolute inset-0 z-[1] bg-gradient-to-t from-primary/80 via-transparent to-transparent" />
           <div className="container mx-auto px-6 md:px-12 relative z-10">
             <div className="max-w-3xl">
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 drop-shadow-2xl">
                 {t(
                   'Personalboende för ert byggteam — en kontakt, ett samtal',
                   'Worker housing for your construction team — one contact, one call',
