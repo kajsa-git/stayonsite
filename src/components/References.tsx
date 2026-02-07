@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { RATING_VALUE, REVIEW_COUNT, BEST_RATING } from '@/data/constants';
 
 const References = () => {
   const { t } = useLanguage();
@@ -34,9 +35,9 @@ const References = () => {
     "name": "StayOnSite",
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": testimonials.length.toString(),
-      "bestRating": "5"
+      "ratingValue": RATING_VALUE,
+      "reviewCount": REVIEW_COUNT,
+      "bestRating": BEST_RATING
     },
     "review": testimonials.map(testimonial => ({
       "@type": "Review",

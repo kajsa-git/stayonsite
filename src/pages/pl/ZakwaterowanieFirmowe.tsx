@@ -8,6 +8,7 @@ import InquiryForm from '@/components/InquiryForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Building2, FileCheck, Headphones, CheckCircle2, Star } from 'lucide-react';
+import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 
 const ZakwaterowanieFirmowe = () => {
   const { setLanguage } = useLanguage();
@@ -21,7 +22,7 @@ const ZakwaterowanieFirmowe = () => {
     '@type': 'Service',
     'name': 'Zakwaterowanie Firmowe Szwecja',
     'provider': {
-      '@type': 'LocalBusiness',
+      '@type': 'Organization',
       'name': 'StayOnSite',
       'telephone': '+46 76-249 84 86',
       'url': 'https://stayonsite.se'
@@ -34,8 +35,8 @@ const ZakwaterowanieFirmowe = () => {
     'serviceType': 'Corporate Housing',
     'aggregateRating': {
       '@type': 'AggregateRating',
-      'ratingValue': '4.8',
-      'reviewCount': '70'
+      'ratingValue': RATING_VALUE,
+      'reviewCount': REVIEW_COUNT
     }
   };
 
@@ -84,9 +85,10 @@ const ZakwaterowanieFirmowe = () => {
         canonical="https://stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
         hreflangs={[
+          { lang: 'sv', href: 'https://stayonsite.se/' },
           { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
           { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
-          { lang: 'x-default', href: 'https://stayonsite.se/en/corporate-housing-sweden' }
+          { lang: 'x-default', href: 'https://stayonsite.se/' }
         ]}
       />
 
@@ -262,7 +264,7 @@ const ZakwaterowanieFirmowe = () => {
               </blockquote>
               <div className="flex items-center justify-center gap-4">
                 <div className="w-14 h-14 bg-nordic-200 rounded-full overflow-hidden">
-                  <img src="/images/mats-testimonial.webp" alt="Opinia klienta" loading="lazy" className="w-full h-full object-cover" />
+                  <img src="/images/mats-testimonial.webp" alt="Mats Eriksson - opinia klienta StayOnSite" loading="lazy" className="w-full h-full object-cover" />
                 </div>
                 <div className="text-left">
                   <p className="font-semibold text-nordic-900">Kierownik Projektu</p>

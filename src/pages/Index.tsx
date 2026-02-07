@@ -13,6 +13,7 @@ import StickyContact from '@/components/StickyContact';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
+import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 
 const Index = () => {
   const { language } = useLanguage();
@@ -20,27 +21,15 @@ const Index = () => {
 
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': 'Organization',
     'name': 'StayOnSite',
     'image': 'https://stayonsite.se/images/og-image.jpg',
     '@id': 'https://stayonsite.se',
     'url': 'https://stayonsite.se',
     'telephone': '+46 76-249 84 86',
-    'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',
       'addressCountry': 'SE'
-    },
-    'geo': {
-      '@type': 'GeoCoordinates',
-      'latitude': 59.3293,
-      'longitude': 18.0686
-    },
-    'openingHoursSpecification': {
-      '@type': 'OpeningHoursSpecification',
-      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      'opens': '08:00',
-      'closes': '17:00'
     },
     'sameAs': [
       'https://www.facebook.com/stayonsite',
@@ -48,8 +37,8 @@ const Index = () => {
     ],
     'aggregateRating': {
       '@type': 'AggregateRating',
-      'ratingValue': '4.8',
-      'reviewCount': '70'
+      'ratingValue': RATING_VALUE,
+      'reviewCount': REVIEW_COUNT
     },
     'areaServed': [
       {
@@ -83,6 +72,12 @@ const Index = () => {
           title={t('seo.home.title')}
           description={t('seo.home.description')}
           structuredData={structuredData}
+          hreflangs={[
+            { lang: 'sv', href: 'https://stayonsite.se/' },
+            { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
+            { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
+            { lang: 'x-default', href: 'https://stayonsite.se/' }
+          ]}
         />
         <Header />
         <main className="flex-grow">

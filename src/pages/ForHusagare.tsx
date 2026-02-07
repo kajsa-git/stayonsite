@@ -14,6 +14,7 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import { useTranslation } from '@/hooks/use-translation';
+import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import type { TranslationKey } from '@/data/translations';
 
 const ForHusagare = () => {
@@ -37,18 +38,16 @@ const ForHusagare = () => {
       },
       'serviceType': 'Property Rental Service',
       'offers': {
-        '@type': 'Offer',
-        'priceSpecification': {
-          '@type': 'PriceSpecification',
-          'price': '10000-30000',
-          'priceCurrency': 'SEK',
-          'unitText': 'per month'
-        }
+        '@type': 'AggregateOffer',
+        'lowPrice': 10000,
+        'highPrice': 30000,
+        'priceCurrency': 'SEK',
+        'unitText': 'per month'
       },
       'aggregateRating': {
         '@type': 'AggregateRating',
-        'ratingValue': '4.9',
-        'reviewCount': '100'
+        'ratingValue': RATING_VALUE,
+        'reviewCount': REVIEW_COUNT
       }
     },
     {

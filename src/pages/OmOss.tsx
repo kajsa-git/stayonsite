@@ -5,6 +5,7 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { cities } from '@/data/cities';
+import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import {
   Phone,
   Mail,
@@ -32,7 +33,7 @@ const OmOss = () => {
   const structuredData = [
     {
       '@context': 'https://schema.org',
-      '@type': 'LocalBusiness',
+      '@type': 'Organization',
       name: 'StayOnSite',
       description: t(
         'StayOnSite erbjuder personalboende och företagsbostäder i hela Sverige för byggbolag och industriföretag.',
@@ -56,11 +57,10 @@ const OmOss = () => {
         'Worker Accommodation',
         'Corporate Housing',
       ],
-      priceRange: '$$',
       aggregateRating: {
         '@type': 'AggregateRating',
-        ratingValue: '4.9',
-        reviewCount: '70',
+        ratingValue: RATING_VALUE,
+        reviewCount: REVIEW_COUNT,
       },
     },
   ];

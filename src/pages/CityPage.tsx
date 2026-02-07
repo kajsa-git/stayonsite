@@ -2,6 +2,7 @@ import { useParams, Navigate, Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug, getNearbyCities } from '@/data/cities';
+import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -88,42 +89,47 @@ const CityPage = () => {
     { lang: 'x-default', href: svUrl }
   ];
 
-  const localBusinessSchema = {
+  const serviceSchema = {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': 'Service',
     name: `StayOnSite ${city.name}`,
     description: heroDescription,
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: city.name,
-      addressRegion: city.region,
-      addressCountry: 'SE'
-    },
-    telephone: '+46762498486',
-    url: canonicalUrl,
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: city.coordinates[0],
-      longitude: city.coordinates[1]
+    provider: {
+      '@type': 'Organization',
+      name: 'StayOnSite',
+      telephone: '+46762498486',
+      url: 'https://stayonsite.se'
     },
     areaServed: {
       '@type': 'City',
       name: city.name,
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: city.coordinates[0],
+        longitude: city.coordinates[1]
+      },
       containedIn: {
         '@type': 'State',
         name: city.region
       }
     },
-    priceRange: '$$',
     serviceType: translate(
-      'Personalboende för byggteam',
-      'Staff housing for construction teams',
-      'Zakwaterowanie ekip budowlanych'
+      `Personalboende i ${city.name}`,
+      `Staff accommodation in ${city.name}`,
+      `Zakwaterowanie w ${city.name}`
     ),
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      servicePhone: {
+        '@type': 'ContactPoint',
+        telephone: '+46762498486',
+        contactType: 'sales'
+      }
+    },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '70'
+      ratingValue: RATING_VALUE,
+      reviewCount: REVIEW_COUNT
     }
   };
 
@@ -166,34 +172,7 @@ const CityPage = () => {
     ]
   };
 
-  const serviceSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    serviceType: translate(
-      `Personalboende i ${city.name}`,
-      `Staff accommodation in ${city.name}`,
-      `Zakwaterowanie w ${city.name}`
-    ),
-    provider: {
-      '@type': 'Organization',
-      name: 'StayOnSite',
-      url: 'https://stayonsite.se'
-    },
-    areaServed: {
-      '@type': 'City',
-      name: city.name
-    },
-    availableChannel: {
-      '@type': 'ServiceChannel',
-      servicePhone: {
-        '@type': 'ContactPoint',
-        telephone: '+46762498486',
-        contactType: 'sales'
-      }
-    }
-  };
-
-  const structuredData = [localBusinessSchema, breadcrumbSchema, serviceSchema, faqSchema];
+  const structuredData = [serviceSchema, breadcrumbSchema, faqSchema];
 
   return (
     <div className="min-h-screen flex flex-col">
