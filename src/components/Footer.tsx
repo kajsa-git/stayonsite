@@ -88,6 +88,12 @@ const Footer = () => {
                 </a>
               </li>
               <li>
+                <a href="/om-oss" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  {t('nav.about') || 'Om oss'}
+                </a>
+              </li>
+              <li>
                 <a href="/en/corporate-housing-sweden" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   Corporate Housing (EN)

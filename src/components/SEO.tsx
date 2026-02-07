@@ -60,7 +60,7 @@ const SEO = ({
       <meta name="keywords" content={finalKeywords} />
       <link rel="canonical" href={finalCanonical} />
 
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
 
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />

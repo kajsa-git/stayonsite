@@ -7,37 +7,48 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
+// Explicit URL mappings for non-city pages
+const PAGE_MAP: Record<string, Record<string, string>> = {
+  '/': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
+  '/en/corporate-housing-sweden': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
+  '/pl/zakwaterowanie-firmowe': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
+  '/om-oss': { sv: '/om-oss', en: '/om-oss', pl: '/om-oss' },
+  '/for-husagare': { sv: '/for-husagare', en: '/', pl: '/' },
+  '/lp/husagare': { sv: '/lp/husagare', en: '/', pl: '/' },
+};
+
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleLanguageChange = (lang: 'sv' | 'en' | 'pl') => {
+    if (lang === language) return;
+
     const path = location.pathname;
-    
-    // Check if we are on a city page
-    const cityMatch = path.match(/\/(stad|corporate-housing|zakwaterowanie)\/([^/]+)/);
-    
+
+    // City pages: /stad/:slug, /en/corporate-housing/:slug, /pl/zakwaterowanie/:slug
+    const cityMatch = path.match(/\/(stad|en\/corporate-housing|pl\/zakwaterowanie)\/([^/]+)/);
     if (cityMatch) {
       const citySlug = cityMatch[2];
-      let newPath = '';
-      
-      if (lang === 'sv') {
-        newPath = `/stad/${citySlug}`;
-      } else if (lang === 'en') {
-        newPath = `/en/corporate-housing/${citySlug}`;
-      } else if (lang === 'pl') {
-        newPath = `/pl/zakwaterowanie/${citySlug}`;
-      }
-      
-      if (newPath) {
-        setLanguage(lang);
-        navigate(newPath);
-        return;
-      }
+      const newPath =
+        lang === 'sv' ? `/stad/${citySlug}` :
+        lang === 'en' ? `/en/corporate-housing/${citySlug}` :
+        `/pl/zakwaterowanie/${citySlug}`;
+      setLanguage(lang);
+      navigate(newPath);
+      return;
     }
 
-    // Default behavior for other pages
+    // Non-city pages: use explicit mapping
+    const mapped = PAGE_MAP[path];
+    if (mapped && mapped[lang]) {
+      setLanguage(lang);
+      navigate(mapped[lang]);
+      return;
+    }
+
+    // Fallback: change language context only (shouldn't happen with known routes)
     setLanguage(lang);
   };
 

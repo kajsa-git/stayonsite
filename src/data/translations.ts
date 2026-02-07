@@ -8,6 +8,7 @@ export type TranslationKey =
   | "nav.case"
   | "nav.inquiryForm"
   | "nav.homeowner"
+  | "nav.about"
   | "nav.forCompanies"
   | "hero.title"
   | "hero.subtitle"
@@ -501,6 +502,7 @@ export const translations: Record<
     "references.stats.cities": "Städer i Sverige",
 
     "nav.homeowner": "För husägare",
+    "nav.about": "Om oss",
 
     "homeowner.hero.title": "Tjäna 10 000–30 000 kr/mån på ditt boende",
     "homeowner.hero.subtitle":
@@ -890,6 +892,7 @@ export const translations: Record<
     "references.stats.cities": "Cities in Sweden",
 
     "nav.homeowner": "For Homeowners",
+    "nav.about": "About us",
 
     "homeowner.hero.title": "Earn 10,000–30,000 SEK/month from your property",
     "homeowner.hero.subtitle":
@@ -1283,6 +1286,7 @@ export const translations: Record<
     "references.stats.cities": "Miasta w Szwecji",
 
     "nav.homeowner": "Dla właścicieli",
+    "nav.about": "O nas",
 
     "homeowner.hero.title": "Wynajmij swoją nieruchomość",
     "homeowner.hero.subtitle":

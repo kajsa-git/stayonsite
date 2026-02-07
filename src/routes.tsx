@@ -7,6 +7,7 @@ import ForHusagare from './pages/ForHusagare'
 import CorporateHousingSweden from './pages/en/CorporateHousingSweden'
 import ZakwaterowanieFirmowe from './pages/pl/ZakwaterowanieFirmowe'
 import LpHusagare from './pages/lp/LpHusagare'
+import OmOss from './pages/OmOss'
 import NotFound from './pages/NotFound'
 
 const citySlugs = cities.map((c) => c.slug)
@@ -37,6 +38,7 @@ export const routes: RouteRecord[] = [
       { path: 'for-husagare', element: <ForHusagare /> },
       { path: 'en/corporate-housing-sweden', element: <CorporateHousingSweden /> },
       { path: 'pl/zakwaterowanie-firmowe', element: <ZakwaterowanieFirmowe /> },
+      { path: 'om-oss', element: <OmOss /> },
       { path: 'lp/husagare', element: <LpHusagare /> },
       {
         path: '404',

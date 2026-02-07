@@ -199,9 +199,9 @@ const CityPage = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title={translate(
-          `${localizedKeywords[0]} | StayOnSite`,
-          `Corporate housing in ${city.name} | StayOnSite`,
-          `Zakwaterowanie w ${city.name} | StayOnSite`
+          `Personalboende ${city.name} – Boende för Byggteam | StayOnSite`,
+          `Worker Accommodation ${city.name} – Housing for Crews | StayOnSite`,
+          `Noclegi Pracownicze ${city.name} – Kwatery dla Ekip | StayOnSite`
         )}
         description={heroDescription}
         keywords={`${localizedKeywords.join(', ')}, StayOnSite`}
@@ -236,9 +236,9 @@ const CityPage = () => {
                 <span className="hidden md:block w-px h-4 bg-white/20"></span>
                 <span className="text-xs uppercase tracking-[0.25em] text-white/70 font-bold">
                   {translate(
-                    `Möblerade boenden för företag`,
-                    `Furnished corporate housing`,
-                    `Umeblowane zakwaterowanie dla firm`
+                    `Personalboende & montörboende`,
+                    `Worker & crew accommodation`,
+                    `Noclegi pracownicze i montażowe`
                   )}
                 </span>
               </motion.div>
@@ -314,7 +314,11 @@ const CityPage = () => {
                   {translate('Pågående projekt', 'Active projects', 'Aktywne projekty')}
                 </span>
                 <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
-                  {translate('Därför behövs boendeplan i', 'Why you need a housing plan in', 'Dlaczego potrzebny jest plan zakwaterowania w')} {city.name}
+                  {translate(
+                    `Boende för byggarbetare nära projekten i ${city.name}`,
+                    `Worker housing near active projects in ${city.name}`,
+                    `Noclegi dla pracowników blisko budów w ${city.name}`
+                  )}
                 </h2>
               </div>
 
@@ -356,7 +360,11 @@ const CityPage = () => {
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                 <div>
                   <h2 className="text-3xl font-bold text-nordic-900">
-                    {translate('Områden vi placerar team i', 'Areas we place crews in', 'Dzielnice, w których lokujemy ekipy')}
+                    {translate(
+                      `Möblerade företagsboenden i ${city.name}`,
+                      `Furnished worker accommodation in ${city.name}`,
+                      `Umeblowane kwatery pracownicze w ${city.name}`
+                    )}
                   </h2>
                   <p className="text-gray-600 mt-2">
                     {translate(
@@ -403,9 +411,9 @@ const CityPage = () => {
                 </span>
                 <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
                   {translate(
-                    'Vi äger processen från första samtal',
-                    'We own the process from the first call',
-                    'Prowadzimy cały proces od pierwszego telefonu'
+                    `Så ordnar vi ert personalboende i ${city.name}`,
+                    `How we arrange worker accommodation in ${city.name}`,
+                    `Jak organizujemy noclegi pracownicze w ${city.name}`
                   )}
                 </h2>
                 <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
@@ -488,7 +496,11 @@ const CityPage = () => {
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-nordic-900 mb-6">
-                {translate('Vanliga frågor för projekt i', 'Common questions for projects in', 'Najczęstsze pytania dla projektów w')} {city.name}
+                {translate(
+                  `Vanliga frågor om personalboende i ${city.name}`,
+                  `FAQ about worker accommodation in ${city.name}`,
+                  `Najczęstsze pytania o noclegi pracownicze w ${city.name}`
+                )}
               </h2>
               <Accordion type="single" collapsible>
                 {city.faq.map((item, index) => (
@@ -514,7 +526,7 @@ const CityPage = () => {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h2 className="text-2xl font-semibold text-nordic-900">
-                      {translate('Behöver ni även boende i närliggande städer?', 'Need housing nearby as well?', 'Potrzebujecie też noclegów w okolicznych miastach?')}
+                      {translate('Personalboende i närliggande städer', 'Worker accommodation in nearby cities', 'Noclegi pracownicze w okolicznych miastach')}
                     </h2>
                     <p className="text-gray-600 mt-2">
                       {translate(
@@ -554,9 +566,9 @@ const CityPage = () => {
               </span>
               <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
                 {translate(
-                  `Ett samtal så har ni boendet i ${city.name}`,
-                  `One call and housing is ready in ${city.name}`,
-                  `Jedna rozmowa i macie noclegi w ${city.name}`
+                  `Boka personalboende i ${city.name} – svar inom 24h`,
+                  `Book worker accommodation in ${city.name} – reply within 24h`,
+                  `Zarezerwuj noclegi w ${city.name} – odpowiedź w 24h`
                 )}
               </h2>
               <p className="text-gray-600 mt-4 mb-8">

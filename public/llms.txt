@@ -1,0 +1,57 @@
+# StayOnSite
+
+> Personalboende och företagsbostäder i hela Sverige. Vi hjälper byggbolag och industriföretag att hitta möblerade boenden för sina team.
+
+## What we do
+
+StayOnSite provides furnished worker accommodation for construction companies and industrial teams across Sweden. We handle everything from finding apartments to contracts, furnishing, cleaning, and ongoing support. One contact person throughout the project.
+
+## Contact
+
+- Phone: +46 76-249 84 86
+- Email: info@stayonsite.se
+- Website: https://stayonsite.se
+- WhatsApp: https://wa.me/46762498486
+
+## Services
+
+- Furnished apartments for construction crews and industrial teams (30+ days)
+- All-inclusive pricing (utilities, internet, cleaning, linens)
+- Professional invoicing for corporate accounting
+- Housing plan delivered within 24 hours
+- Dedicated account manager for each project
+- Parking for service vehicles where available
+
+## Coverage
+
+19 cities across Sweden:
+Stockholm, Göteborg, Malmö, Uppsala, Västerås, Örebro, Linköping, Norrköping, Helsingborg, Jönköping, Gävle, Luleå, Umeå, Boden, Oskarshamn, Motala, Västervik, Vingåker, Säffle.
+
+We also arrange housing in locations outside these cities on request.
+
+## Target customers
+
+- Construction companies with workers on temporary assignments
+- Industrial and energy companies (nuclear, mining, data centers)
+- Infrastructure projects (roads, railways, tunnels)
+- Installation and assembly teams (montörer)
+
+## Languages
+
+Swedish (primary), English, Polish
+
+## Key pages
+
+- Homepage (SV): https://stayonsite.se
+- Corporate Housing (EN): https://stayonsite.se/en/corporate-housing-sweden
+- Zakwaterowanie Firmowe (PL): https://stayonsite.se/pl/zakwaterowanie-firmowe
+- For Homeowners (SV): https://stayonsite.se/for-husagare
+- About Us: https://stayonsite.se/om-oss
+- City pages follow the pattern: https://stayonsite.se/stad/{city-slug}
+  Example: https://stayonsite.se/stad/stockholm
+
+## Pricing model
+
+- Companies pay StayOnSite a fixed all-inclusive monthly rate per accommodation
+- No hidden fees, no broker commissions to the client
+- Pricing varies by city, apartment size, and contract length

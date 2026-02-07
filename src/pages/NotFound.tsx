@@ -16,6 +16,7 @@ const NotFound = () => {
       <SEO
         title={t('seo.notFound.title')}
         description={t('seo.notFound.description')}
+        noindex
       />
       <Header />
       
