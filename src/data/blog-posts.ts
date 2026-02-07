@@ -54,14 +54,14 @@ export const blogPosts: BlogPost[] = [
       pl: 'Zielona transformacja w p\u00f3\u0142nocnej Szwecji: Potrzeby mieszkaniowe 2026\u20132030'
     },
     description: {
-      sv: 'Northvolt, H2 Green Steel, LKAB och datacenter driver enorm efterfrågan på personalboende i Norrbotten och Västerbotten.',
-      en: 'Northvolt, H2 Green Steel, LKAB and data centers drive enormous demand for worker accommodation in northern Sweden.',
-      pl: 'Northvolt, H2 Green Steel i centra danych napędzają popyt na zakwaterowanie w północnej Szwecji.'
+      sv: 'H2 Green Steel, LKAB, datacenter och batteriindustrin driver enorm efterfrågan på personalboende i Norrbotten och Västerbotten.',
+      en: 'H2 Green Steel, LKAB, data centers and the battery industry drive enormous demand for worker accommodation in northern Sweden.',
+      pl: 'H2 Green Steel, LKAB, centra danych i przemysł bateryjny napędzają popyt na zakwaterowanie w północnej Szwecji.'
     },
     author: 'Kajsa Lindwall',
     publishedDate: '2026-02-07',
     category: 'Marknad',
-    tags: ['norrbotten', 'grön omställning', 'northvolt', 'datacenter', 'luleå', 'boden'],
+    tags: ['norrbotten', 'grön omställning', 'batteriindustri', 'datacenter', 'luleå', 'boden'],
     readingTime: 7
   }
 ];

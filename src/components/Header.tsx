@@ -150,6 +150,18 @@ const Header = () => {
                 {t("nav.homeowner")}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
+              <Link
+                to="/blogg"
+                className={cn(
+                  "text-[15px] font-medium transition-all duration-300 relative group",
+                  useScrolledStyle
+                    ? "text-primary/70 hover:text-primary"
+                    : "text-white/80 hover:text-white"
+                )}
+              >
+                Blogg
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
+              </Link>
             </div>
             <div className="flex items-center gap-6">
               <LanguageSwitcher
@@ -228,6 +240,15 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t("nav.homeowner")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blogg"
+                  className="block px-4 py-2 text-primary font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Blogg
                 </Link>
               </li>
               <li className="pt-4">

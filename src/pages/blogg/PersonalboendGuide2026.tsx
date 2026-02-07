@@ -74,7 +74,7 @@ const PersonalboendGuide2026 = () => {
           Tekniker som behöver bo nära anläggningsplatsen i 3&ndash;12 månader.
         </li>
         <li>
-          <strong>Industri och tillverkning:</strong> Northvolt i Skellefteå, H2 Green Steel i
+          <strong>Industri och tillverkning:</strong> Batteriindustrin i Skellefteå, H2 Green Steel i
           Boden, LKAB:s transformation i Kiruna &mdash; samtliga behöver tusentals
           specialistarbetare.
         </li>
@@ -224,8 +224,8 @@ const PersonalboendGuide2026 = () => {
           pilotanläggning. Kommunen planerar att fördubbla invånarantalet.
         </li>
         <li>
-          <strong><Link to="/stad/skelleftea">Skellefteå</Link></strong> &mdash; Northvolt
-          gigafabrik. Över 3 000 projektarbetare bor tillfälligt i staden.
+          <strong><Link to="/stad/skelleftea">Skellefteå</Link></strong> &mdash; Batteriindustrin
+          och underleverantörer. Över 3 000 projektarbetare bor tillfälligt i staden.
         </li>
         <li>
           <strong><Link to="/stad/kiruna">Kiruna</Link></strong> &mdash; LKAB:s

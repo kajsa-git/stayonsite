@@ -1,0 +1,58 @@
+name: Weekly Blog Article
+
+on:
+  # Every Wednesday at 09:00 CET (08:00 UTC)
+  schedule:
+    - cron: '0 8 * * 3'
+
+  # Manual trigger from GitHub or webhook
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Article topic (leave empty for auto-pick)'
+        required: false
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate article
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.topic }}" ]; then
+            node scripts/generate-article.mjs --topic "${{ inputs.topic }}"
+          else
+            node scripts/generate-article.mjs
+          fi
+
+      - name: Build to verify
+        run: |
+          npm install -g pnpm
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Commit and push
+        run: |
+          git config user.name "StayOnSite Bot"
+          git config user.email "bot@stayonsite.se"
+          git add -A
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "blogg: ny veckoartikel $(date +%Y-%m-%d)
+
+          Automatiskt genererad av article.yml
+
+          Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+          git push

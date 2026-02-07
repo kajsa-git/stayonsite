@@ -52,20 +52,23 @@ const GronOmstallningBoende = () => {
 
       <h2>Projekt för projekt: Vad som byggs och var</h2>
 
-      <h3>Northvolt &mdash; Skellefteå</h3>
+      <h3>Batteriindustrin &mdash; Skellefteå</h3>
 
       <p>
-        Europas största batterifabrik, Northvolt Ett, har varit i drift sedan 2024 och
-        expanderar kontinuerligt. Anläggningen sysselsätter i full drift cirka 4 000
-        personer, men under utbyggnadsfaserna finns ytterligare tusentals kontrakterade
-        byggnadsarbetare och specialister på plats.
+        Skellefteå blev synonymt med den gröna omställningen när Northvolt etablerade sin
+        batterifabrik i staden. I november 2024 ansökte Northvolt om rekonstruktion
+        (Chapter 11), vilket skapade osäkerhet kring fabrikens framtid. Oavsett utfall
+        &mdash; ny ägare, omstart eller nedtrappning &mdash; har Skellefteå redan
+        förvandlats permanent.
       </p>
 
       <p>
-        Skellefteå kommun har genomfört en massiv bostadssatsning, men efterfrågan överstiger
-        fortfarande utbudet med bred marginal. Bostadskön uppgår till över 10 000 personer.
-        Kommunen har byggt tillfälliga bostäder, men företag som behöver placera personal
-        på kort varsel tvingas ofta till hotell eller privata uthyrare.
+        Underleverantörer, teknikföretag och servicebolag som etablerats i kölvattnet
+        av Northvolt är kvar. Kommunen planerar fortfarande för tillväxt, och intresset
+        från andra batteriaktörer och industriinvesterare är fortsatt stort. Boendebehoven
+        i regionen drivs inte bara av en enskild fabrik utan av hela den ekosystemeffekt
+        som skapats. Bostadskön uppgår till över 10 000 personer, och företag som behöver
+        placera personal på kort varsel tvingas ofta till hotell eller privata uthyrare.
       </p>
 
       <h3>H2 Green Steel &mdash; Boden</h3>
@@ -279,8 +282,8 @@ const GronOmstallningBoende = () => {
 
       <p>
         Under 2026 befinner sig flera av de stora projekten i sin mest intensiva
-        byggnationsfas. H2 Green Steel i Boden driftsätts, Northvolts expansion
-        fortsätter, och LKAB:s omställningsprojekt accelererar. Det innebär att
+        byggnationsfas. H2 Green Steel i Boden driftsätts, LKAB:s omställningsprojekt
+        accelererar, och datacenterexpansionen i Norrbotten fortsätter. Det innebär att
         behovet av tillfällig byggpersonal &mdash; och därmed personalboende &mdash;
         når sin kulmen.
       </p>
@@ -297,10 +300,10 @@ const GronOmstallningBoende = () => {
       <h3>2029&ndash;2030: Nästa våg av investeringar</h3>
 
       <p>
-        Flera av de stora projekten har aviserat fas 2-expansioner. Northvolt planerar
-        ytterligare produktionslinjer, LKAB:s omställning fortsätter i Gällivare, och
-        nya aktörer väntas etablera sig i regionen. Det innebär att boendebehoven
-        kommer att vara höga under hela decenniet.
+        Flera av de stora projekten har aviserat fas 2-expansioner. LKAB:s omställning
+        fortsätter i Gällivare, H2 Green Steel planerar kapacitetsökning, och nya aktörer
+        inom batteri- och vätgasindustrin väntas etablera sig i regionen. Det innebär att
+        boendebehoven kommer att vara höga under hela decenniet.
       </p>
 
       <blockquote>
