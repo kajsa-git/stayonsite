@@ -136,7 +136,7 @@ export const cities: City[] = [
         'We needed housing for 18 fitters near Frihamnen and StayOnSite secured three apartments in the same building within two days.',
         'Potrzebowaliśmy noclegów dla 18 monterów przy Frihamnen i StayOnSite załatwiło trzy mieszkania w tym samym budynku w dwa dni.'
       ),
-      author: 'Mikael Johansson',
+      author: 'Mikael J.',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
       company: 'Bygg & Anläggning'
     },
@@ -222,7 +222,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Vi kunde flytta in 14 elektriker på Hisingen två dagar efter beställning – allt var möblerat och klart.', 'We moved 14 electricians onto Hisingen two days after ordering – everything was furnished and ready.', 'Wprowadziliśmy 14 elektryków na Hisingen dwa dni po zamówieniu – wszystko było umeblowane i gotowe.'),
-      author: 'Helena Ström',
+      author: 'Helena S.',
       role: ls('Site Manager', 'Site Manager', 'Kierownik budowy'),
       company: 'Industri & Teknik'
     },
@@ -308,7 +308,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('StayOnSite lyckades samla vårt danska montagegäng i samma område så att pendlingen över bron blev enkel.', 'StayOnSite gathered our Danish crew in one district so the bridge commute stayed simple.', 'StayOnSite ulokowało naszą duńską ekipę w jednej dzielnicy, więc dojazdy przez most były łatwe.'),
-      author: 'Peter Madsen',
+      author: 'Peter M.',
       role: ls('Operations Manager', 'Operations Manager', 'Dyrektor operacyjny'),
       company: 'Bygg & Anläggning'
     },
@@ -394,7 +394,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Vi fick en hel kedja radhus i Rosendal där projektledningen kunde bo vägg i vägg – sparade oss enormt med tid.', 'We received a whole row of townhouses in Rosendal so management could live door to door – it saved huge amounts of time.', 'Dostaliśmy cały szereg segmentów w Rosendalu, więc kierownictwo mieszkało drzwi w drzwi – oszczędziło nam to mnóstwo czasu.'),
-      author: 'Anna Törnqvist',
+      author: 'Anna T.',
       role: ls('Construction Manager', 'Construction Manager', 'Kierownik budowy'),
       company: 'Bygg & Anläggning'
     },
@@ -480,7 +480,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('När vi stärkte bemanningen för batterilinan fick vi tre villor i Tunbytorp – samma dag som ordern kom.', 'When we ramped the battery line, we got three villas in Tunbytorp the same day we ordered them.', 'Gdy zwiększaliśmy obsadę linii baterii, tego samego dnia otrzymaliśmy trzy wille w Tunbytorp.'),
-      author: 'Joakim Edlund',
+      author: 'Joakim E.',
       role: ls('Site Lead', 'Site Lead', 'Kierownik obiektu'),
       company: 'Energi & Industri'
     },
@@ -566,7 +566,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Istället för tre hotell löste vi radhus i Adolfsberg där teamet kunde leva normalt mellan passen.', 'Instead of three hotels we got townhouses in Adolfsberg so the crew lived normally between shifts.', 'Zamiast trzech hoteli dostaliśmy segmenty w Adolfsbergu, więc zespół żył normalnie między zmianami.'),
-      author: 'Caroline Westin',
+      author: 'Caroline W.',
       role: ls('Projektledare', 'Project Lead', 'Kierownik projektu'),
       company: 'Bygg & Anläggning'
     },
@@ -652,7 +652,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Vi slapp hotell helt – StayOnSite ordnade studios i Vallastaden där teknikerna kunde jobba kvällar ostört.', 'We skipped hotels entirely – StayOnSite set up studios in Vallastaden so technicians could work evenings undisturbed.', 'Obeszło się bez hoteli – StayOnSite zorganizowało studia w Vallastaden, więc technicy mogli spokojnie pracować wieczorami.'),
-      author: 'Daniel Krausz',
+      author: 'Daniel K.',
       role: ls('Program Manager', 'Program Manager', 'Kierownik programu'),
       company: 'Försvarsindustri'
     },
@@ -738,7 +738,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Hamnen krävde nattbemanning och vi fick bo kvar i Oceanhamnen hela projektet utan att byta adress.', 'The harbour needed night staffing and we stayed in Oceanhamnen for the whole project without changing address.', 'Port wymagał nocnej obsady i mieszkaliśmy w Oceanhamnen przez cały projekt bez zmiany adresu.'),
-      author: 'Linda Mogensen',
+      author: 'Linda M.',
       role: ls('Operations Lead', 'Operations Lead', 'Lider operacyjny'),
       company: 'Järnväg & Infrastruktur'
     },
@@ -824,7 +824,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Vi behövde både kontorsfolk och montörer och StayOnSite hittade lösningar så alla bodde max 10 min från Elmia.', 'We needed both office staff and installers and StayOnSite found setups so everyone lived within 10 minutes of Elmia.', 'Potrzebowaliśmy biura i monterów, a StayOnSite znalazł rozwiązania, dzięki którym wszyscy mieszkali maks 10 minut od Elmia.'),
-      author: 'Erik Lundén',
+      author: 'Erik L.',
       role: ls('Project Director', 'Project Director', 'Dyrektor projektu'),
       company: 'El & Automation'
     },
@@ -910,7 +910,7 @@ export const cities: City[] = [
     ],
     testimonial: {
       quote: ls('Med hela teamet i Saltängen kunde vi gå till bygget och slapp pendling helt.', 'With the whole crew in Saltängen we walked to the site and removed commuting entirely.', 'Cała ekipa w Saltängen mogła chodzić pieszo na budowę – zero dojazdów.'),
-      author: 'Sara Blom',
+      author: 'Sara B.',
       role: ls('Site Manager', 'Site Manager', 'Kierownik budowy'),
       company: 'Bygg & Anläggning'
     },
@@ -1008,7 +1008,7 @@ export const cities: City[] = [
         'We needed housing for 12 fitters at the harbor and StayOnSite arranged townhouses in Brynäs with a 5-minute drive to the quay.',
         'Potrzebowaliśmy noclegów dla 12 monterów w porcie i StayOnSite zorganizowało szeregowce w Brynäs – 5 minut jazdy do nabrzeża.'
       ),
-      author: 'Anders Lindqvist',
+      author: 'Anders L.',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
       company: 'Hamn & Logistik'
     },
@@ -1118,7 +1118,7 @@ export const cities: City[] = [
         'We needed housing for 15 fitters for six months and StayOnSite arranged houses in Sävast where the crew got peace between shifts.',
         'Potrzebowaliśmy noclegów dla 15 monterów przez pół roku i StayOnSite zorganizowało domy w Sävast, gdzie zespół miał spokój między zmianami.'
       ),
-      author: 'Magnus Nordin',
+      author: 'Magnus N.',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
       company: 'Bygg & Anläggning'
     },
@@ -1228,7 +1228,7 @@ export const cities: City[] = [
         'We needed housing for 8 assemblers for three months and StayOnSite arranged townhouses in Nysäter with a 10-minute drive to the factory.',
         'Potrzebowaliśmy noclegów dla 8 monterów przez trzy miesiące i StayOnSite zorganizowało szeregowce w Nysäter – 10 minut jazdy do fabryki.'
       ),
-      author: 'Lars Bergström',
+      author: 'Lars B.',
       role: ls('Produktionschef', 'Production Manager', 'Kierownik produkcji'),
       company: 'Möbelindustri'
     },
@@ -1338,7 +1338,7 @@ export const cities: City[] = [
         'We needed housing for 6 crane operators and StayOnSite arranged houses with a 5-minute drive to the terminal at E4.',
         'Potrzebowaliśmy noclegów dla 6 operatorów dźwigów i StayOnSite zorganizowało domy 5 minut jazdy do terminala przy E4.'
       ),
-      author: 'Johan Svensson',
+      author: 'Johan S.',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
       company: 'Logistik & Distribution'
     },
@@ -1448,7 +1448,7 @@ export const cities: City[] = [
         'We needed housing for 10 welding crews at the shipyard and StayOnSite arranged apartments with sea views 5 minutes from work.',
         'Potrzebowaliśmy noclegów dla 10 zespołów spawaczy w stoczni i StayOnSite zorganizowało mieszkania z widokiem na morze 5 minut od pracy.'
       ),
-      author: 'Per Andersson',
+      author: 'Per A.',
       role: ls('Produktionschef', 'Production Manager', 'Kierownik produkcji'),
       company: 'Skeppsbyggnad'
     },
@@ -1558,7 +1558,7 @@ export const cities: City[] = [
         'We needed housing for 12 welders at the workshop and StayOnSite arranged townhouses in Borensberg with a 15-minute drive to the factory.',
         'Potrzebowaliśmy noclegów dla 12 spawaczy w warsztacie i StayOnSite zorganizowało szeregowce w Borensberg – 15 minut jazdy do fabryki.'
       ),
-      author: 'Karin Nilsson',
+      author: 'Karin N.',
       role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
       company: 'Verkstadsindustri'
     },
@@ -1668,7 +1668,7 @@ export const cities: City[] = [
         'We needed housing for 20 technicians at the data center build and StayOnSite arranged apartments in Porsön with a 10-minute drive to the facility.',
         'Potrzebowaliśmy noclegów dla 20 techników przy budowie datacenter i StayOnSite zorganizowało mieszkania w Porsön – 10 minut jazdy do obiektu.'
       ),
-      author: 'Emma Lundqvist',
+      author: 'Emma L.',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
       company: 'Tech & Datacenter'
     },
@@ -1778,7 +1778,7 @@ export const cities: City[] = [
         'We needed housing for 15 technicians near OKG and StayOnSite arranged apartments in Figeholm with just a 5-minute drive to the facility.',
         'Potrzebowaliśmy noclegów dla 15 techników blisko OKG i StayOnSite zorganizowało mieszkania w Figeholm – zaledwie 5 minut jazdy do obiektu.'
       ),
-      author: 'Stefan Karlsson',
+      author: 'Stefan K.',
       role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
       company: 'Kärnkraft & Energi'
     },
@@ -1888,7 +1888,7 @@ export const cities: City[] = [
         'We needed housing for 8 people at the hospital build and StayOnSite sorted apartments in Mariehem immediately.',
         'Potrzebowaliśmy noclegów dla 8 osób przy budowie szpitala i StayOnSite załatwiło mieszkania na Mariehem od ręki.'
       ),
-      author: 'Klara Wikström',
+      author: 'Klara W.',
       role: ls('HR-ansvarig', 'HR Manager', 'Kierownik HR'),
       company: 'Vårdbyggarna'
     },
