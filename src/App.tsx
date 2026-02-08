@@ -5,6 +5,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LanguageProvider } from '@/contexts/LanguageContext'
+import { Analytics } from '@vercel/analytics/react'
 
 const queryClient = new QueryClient()
 
@@ -25,6 +26,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <Outlet />
+          <Analytics />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
