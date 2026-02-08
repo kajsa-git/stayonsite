@@ -144,7 +144,7 @@ const ForForetag = () => {
     colHotel: t('Hotell', 'Hotel', 'Hotel'),
     colAirbnb: 'Airbnb',
     colSelf: t('Egen hantering', 'Self-managed', 'Samodzielne'),
-    kitchen: t('Kök & tvätt i boendet', 'Kitchen & laundry in unit', 'Kuchnia i pralnia w lokalu'),
+
     multilingual: t('Flerspråkig service', 'Multilingual service', 'Obsługa wielojęzyczna'),
     projectInvoice: t('Projektfakturering', 'Project-based invoicing', 'Fakturowanie projektowe'),
   };
@@ -160,7 +160,7 @@ const ForForetag = () => {
     { label: comparisonLabels.invoice, stayonsite: true, hotel: true, airbnb: false, self: false },
     { label: comparisonLabels.contact, stayonsite: true, hotel: false, airbnb: false, self: false },
     { label: comparisonLabels.flexible, stayonsite: true, hotel: 'partial' as const, airbnb: false, self: true },
-    { label: comparisonLabels.kitchen, stayonsite: true, hotel: false, airbnb: 'partial' as const, self: 'partial' as const },
+
     { label: comparisonLabels.multilingual, stayonsite: true, hotel: false, airbnb: false, self: false },
     { label: comparisonLabels.projectInvoice, stayonsite: true, hotel: false, airbnb: false, self: false },
   ];
@@ -493,7 +493,7 @@ const ForForetag = () => {
                 )}
               </p>
             </div>
-            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div className="max-w-xl mx-auto">
               <div className="bg-nordic-50 rounded-2xl p-8 border border-nordic-100">
                 <h3 className="font-display font-bold text-nordic-900 text-lg mb-5">
                   {t('Ingår i boendet', 'Included', 'W cenie')}
@@ -510,23 +510,6 @@ const ForForetag = () => {
                     <li key={item} className="flex items-center gap-3">
                       <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
                       <span className="text-nordic-800">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-white rounded-2xl p-8 border border-nordic-100">
-                <h3 className="font-display font-bold text-nordic-900 text-lg mb-5">
-                  {t('Ingår ej', 'Not included', 'Nie w cenie')}
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    t('Löpande tvätt', 'Ongoing laundry', 'Bieżące pranie'),
-                    t('Mat & livsmedel', 'Food & groceries', 'Żywność i artykuły spożywcze'),
-                    t('Resor till/från arbetsplats', 'Transport to/from work', 'Transport do/z pracy'),
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-3">
-                      <X className="h-5 w-5 text-nordic-300 shrink-0" />
-                      <span className="text-nordic-500">{item}</span>
                     </li>
                   ))}
                 </ul>
