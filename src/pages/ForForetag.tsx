@@ -220,7 +220,7 @@ const ForForetag = () => {
           <div className="absolute inset-0 z-0">
             <img
               src="/images/hero-main.webp"
-              alt=""
+              alt="Personalboende för företag i Sverige – StayOnSite ordnar boende nära arbetsplatsen"
               className="w-full h-full object-cover object-center"
             />
           </div>

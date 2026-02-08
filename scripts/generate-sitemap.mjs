@@ -39,9 +39,10 @@ entries.push(url(`${BASE}/kontakt`, '0.8', 'monthly'));
 entries.push(url(`${BASE}/en/corporate-housing-sweden`, '0.8', 'monthly'));
 entries.push(url(`${BASE}/pl/zakwaterowanie-firmowe`, '0.8', 'monthly'));
 
-// Blog section
+// Blog section – read slugs dynamically from routes.tsx
 entries.push(url(`${BASE}/blogg`, '0.8', 'weekly'));
-const blogSlugs = ['personalboende-guide-2026', 'privatuthyrningslagen-reform-2026', 'gron-omstallning-norr-boende'];
+const routesSource = readFileSync(resolve(root, 'src/routes.tsx'), 'utf-8');
+const blogSlugs = [...routesSource.matchAll(/path:\s*'blogg\/([^']+)'/g)].map((m) => m[1]);
 for (const slug of blogSlugs) {
   entries.push(url(`${BASE}/blogg/${slug}`, '0.7', 'monthly'));
 }
