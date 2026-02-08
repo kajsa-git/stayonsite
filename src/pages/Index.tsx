@@ -1,9 +1,8 @@
 
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import WhyStayOnSite from '@/components/WhyStayOnSite';
+import TwoTrack from '@/components/TwoTrack';
 import CaseStudy from '@/components/CaseStudy';
-import MarketContext from '@/components/MarketContext';
 import CityLinks from '@/components/CityLinks';
 import References from '@/components/References';
 import FAQ from '@/components/FAQ';
@@ -97,11 +96,10 @@ const Index = () => {
         <Header />
         <main className="flex-grow">
           <Hero />
-          <WhyStayOnSite />
-          <MarketContext />
-          <CaseStudy />
+          <TwoTrack />
           <References />
-          <FAQ />
+          <CaseStudy />
+          <FAQ maxItems={5} />
           <InquiryForm />
           <CityLinks />
         </main>

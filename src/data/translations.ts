@@ -315,7 +315,15 @@ export type TranslationKey =
   | "lp.husagare.formSubtitle"
   | "lp.husagare.submitButton"
   | "lp.husagare.bottomCta.title"
-  | "lp.husagare.bottomCta.button";
+  | "lp.husagare.bottomCta.button"
+  | "twotrack.company.tagline"
+  | "twotrack.company.title"
+  | "twotrack.company.description"
+  | "twotrack.company.cta"
+  | "twotrack.homeowner.tagline"
+  | "twotrack.homeowner.title"
+  | "twotrack.homeowner.description"
+  | "twotrack.homeowner.cta";
 
 export const translations: Record<
   AvailableLanguages,
@@ -727,6 +735,14 @@ export const translations: Record<
     "lp.husagare.submitButton": "Skicka – helt gratis & utan förpliktelse",
     "lp.husagare.bottomCta.title": "Redo att börja tjäna på din bostad?",
     "lp.husagare.bottomCta.button": "Registrera din bostad nu",
+    "twotrack.company.tagline": "För företag",
+    "twotrack.company.title": "Behöver ni personalboende?",
+    "twotrack.company.description": "Vi ordnar allt — från avtal till inflyttning. En kontakt, en faktura, fullt möblerat.",
+    "twotrack.company.cta": "Se vad vi erbjuder",
+    "twotrack.homeowner.tagline": "För husägare",
+    "twotrack.homeowner.title": "Hyr ut din bostad till företag",
+    "twotrack.homeowner.description": "Garanterad hyra varje månad, inga avdrag, 0 % i avgift.",
+    "twotrack.homeowner.cta": "Så fungerar det",
   },
   en: {
     "nav.home": "Home",
@@ -1138,6 +1154,14 @@ export const translations: Record<
     "lp.husagare.submitButton": "Send – completely free & no obligation",
     "lp.husagare.bottomCta.title": "Ready to start earning from your property?",
     "lp.husagare.bottomCta.button": "Register your property now",
+    "twotrack.company.tagline": "For companies",
+    "twotrack.company.title": "Need worker accommodation?",
+    "twotrack.company.description": "We handle everything — from contracts to move-in. One contact, one invoice, fully furnished.",
+    "twotrack.company.cta": "See what we offer",
+    "twotrack.homeowner.tagline": "For property owners",
+    "twotrack.homeowner.title": "Rent your property to companies",
+    "twotrack.homeowner.description": "Guaranteed rent every month, no deductions, 0% fee.",
+    "twotrack.homeowner.cta": "How it works",
   },
   pl: {
     "nav.home": "Strona główna",
@@ -1553,5 +1577,13 @@ export const translations: Record<
     "lp.husagare.submitButton": "Wyślij – całkowicie za darmo i bez zobowiązań",
     "lp.husagare.bottomCta.title": "Gotowy, aby zacząć zarabiać na swoim mieszkaniu?",
     "lp.husagare.bottomCta.button": "Zarejestruj swoją nieruchomość teraz",
+    "twotrack.company.tagline": "Dla firm",
+    "twotrack.company.title": "Potrzebujecie zakwaterowania pracowniczego?",
+    "twotrack.company.description": "Zajmujemy się wszystkim — od umów po wprowadzenie. Jeden kontakt, jedna faktura, w pełni umeblowane.",
+    "twotrack.company.cta": "Zobacz naszą ofertę",
+    "twotrack.homeowner.tagline": "Dla właścicieli",
+    "twotrack.homeowner.title": "Wynajmij swoją nieruchomość firmom",
+    "twotrack.homeowner.description": "Gwarantowany czynsz co miesiąc, bez potrąceń, 0% opłat.",
+    "twotrack.homeowner.cta": "Jak to działa",
   },
 };

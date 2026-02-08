@@ -12,6 +12,7 @@ import {
   Zap,
   Building2,
   Factory,
+  TreePine,
   CheckCircle2,
   X,
   Minus,
@@ -20,6 +21,7 @@ import {
   Clock,
   Home,
   Quote,
+  FileCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -90,9 +92,45 @@ const ForForetag = () => {
         'Jak działa fakturowanie?'
       ),
       a: t(
-        'Ni får en samlad företagsfaktura varje månad med 30 dagars betalningsvillkor. Allt ingår — hyra, möbler, internet och löpande support. Inga dolda avgifter eller tilläggsdebitering.',
-        'You receive a consolidated corporate invoice every month with 30-day payment terms. Everything is included — rent, furniture, internet, and ongoing support. No hidden fees or surcharges.',
-        'Otrzymują Państwo zbiorczą fakturę firmową co miesiąc z 30-dniowym terminem płatności. Wszystko w cenie — czynsz, meble, internet i bieżące wsparcie. Bez ukrytych opłat.'
+        'Ni får en samlad företagsfaktura varje månad med 10 dagars betalningsvillkor. Varje projekt redovisas separat för enkel bokföring. Allt ingår — hyra, möblering, internet och löpande support.',
+        'You receive a consolidated corporate invoice every month with 10-day payment terms. Each project is reported separately for easy accounting. Everything is included — rent, furnishing, internet and ongoing support.',
+        'Otrzymują Państwo zbiorczą fakturę firmową co miesiąc z 10-dniowym terminem płatności. Każdy projekt jest rozliczany oddzielnie. Wszystko w cenie — czynsz, meble, internet i bieżące wsparcie.'
+      ),
+    },
+    {
+      q: t(
+        'Erbjuder ni ramavtal?',
+        'Do you offer framework agreements?',
+        'Czy oferujecie umowy ramowe?'
+      ),
+      a: t(
+        'Ja, för företag med återkommande boendebehov erbjuder vi ramavtal med förhandlade villkor. Ni får en prislista och avropar boende efter behov — "4 personer i Gävle" så fixar vi resten. Inga separata offertförfrågningar för varje nytt projekt.',
+        'Yes, for companies with recurring accommodation needs we offer framework agreements with pre-negotiated terms. You get a price list and order accommodation as needed — "4 people in Gävle" and we handle the rest. No separate quote requests for each new project.',
+        'Tak, dla firm z powtarzającymi się potrzebami zakwaterowania oferujemy umowy ramowe z wynegocjowanymi warunkami. Otrzymujecie cennik i zamawiacie zakwaterowanie w miarę potrzeb — żadnych oddzielnych zapytań ofertowych.'
+      ),
+    },
+    {
+      q: t(
+        'Kan ni kommunicera med våra utländska arbetslag?',
+        'Can you communicate with our foreign work crews?',
+        'Czy możecie komunikować się z naszymi zagranicznymi ekipami?'
+      ),
+      a: t(
+        'Ja, via WhatsApp hanterar vi kommunikation på alla språk med hjälp av AI-översättning. Era maskinlag och montörteam kan kontakta oss direkt — på sitt eget språk. Vi är er boendevärd, inte bara en bokningsfunktion.',
+        'Yes, via WhatsApp we handle communication in all languages using AI translation. Your crews and installation teams can contact us directly — in their own language. We are your accommodation host, not just a booking function.',
+        'Tak, przez WhatsApp obsługujemy komunikację we wszystkich językach dzięki tłumaczeniu AI. Wasze ekipy mogą kontaktować się z nami bezpośrednio — w swoim języku.'
+      ),
+    },
+    {
+      q: t(
+        'Vad är minsta avtalstid?',
+        'What is the minimum contract period?',
+        'Jaki jest minimalny okres umowy?'
+      ),
+      a: t(
+        'Minsta avtalstid är 3 månader per boende. För ramavtalskunder kan enskilda avrop vara kortare så länge ramavtalet gäller. Vi anpassar oss efter era projektcykler.',
+        'The minimum contract period is 3 months per accommodation. For framework agreement clients, individual call-offs can be shorter as long as the framework agreement is active. We adapt to your project cycles.',
+        'Minimalny okres umowy to 3 miesiące na zakwaterowanie. Dla klientów z umową ramową pojedyncze zamówienia mogą być krótsze. Dostosowujemy się do cykli Waszych projektów.'
       ),
     },
   ];
@@ -106,6 +144,9 @@ const ForForetag = () => {
     colHotel: t('Hotell', 'Hotel', 'Hotel'),
     colAirbnb: 'Airbnb',
     colSelf: t('Egen hantering', 'Self-managed', 'Samodzielne'),
+    kitchen: t('Kök & tvätt i boendet', 'Kitchen & laundry in unit', 'Kuchnia i pralnia w lokalu'),
+    multilingual: t('Flerspråkig service', 'Multilingual service', 'Obsługa wielojęzyczna'),
+    projectInvoice: t('Projektfakturering', 'Project-based invoicing', 'Fakturowanie projektowe'),
   };
 
   const comparisonRows = [
@@ -119,6 +160,9 @@ const ForForetag = () => {
     { label: comparisonLabels.invoice, stayonsite: true, hotel: true, airbnb: false, self: false },
     { label: comparisonLabels.contact, stayonsite: true, hotel: false, airbnb: false, self: false },
     { label: comparisonLabels.flexible, stayonsite: true, hotel: 'partial' as const, airbnb: false, self: true },
+    { label: comparisonLabels.kitchen, stayonsite: true, hotel: false, airbnb: 'partial' as const, self: 'partial' as const },
+    { label: comparisonLabels.multilingual, stayonsite: true, hotel: false, airbnb: false, self: false },
+    { label: comparisonLabels.projectInvoice, stayonsite: true, hotel: false, airbnb: false, self: false },
   ];
 
   const renderIcon = (value: boolean | string) => {
@@ -137,9 +181,9 @@ const ForForetag = () => {
       '@type': 'Service',
       name: 'StayOnSite Corporate Worker Accommodation',
       description: t(
-        'StayOnSite erbjuder personalboende och företagsbostäder i hela Sverige för byggbolag, energiföretag och industriteam.',
-        'StayOnSite provides corporate worker accommodation across Sweden for construction companies, energy firms and industrial teams.',
-        'StayOnSite oferuje zakwaterowanie pracownicze i mieszkania firmowe w całej Szwecji dla firm budowlanych, energetycznych i przemysłowych.'
+        'StayOnSite erbjuder personalboende och företagsbostäder i hela Sverige för bygg, energi, skog, infrastruktur och montörsteam. Ramavtal och projektfakturering.',
+        'StayOnSite provides corporate worker accommodation across Sweden for construction, energy, forestry, infrastructure and installation teams. Framework agreements and project invoicing.',
+        'StayOnSite oferuje zakwaterowanie pracownicze w całej Szwecji dla budownictwa, energetyki, leśnictwa, infrastruktury i montażu. Umowy ramowe i fakturowanie projektowe.'
       ),
       provider: {
         '@type': 'LodgingBusiness',
@@ -194,9 +238,9 @@ const ForForetag = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title={t(
-          'Personalboende för företag — Boende för byggteam i hela Sverige | StayOnSite',
-          'Worker Accommodation for Companies — Housing for Construction Teams across Sweden | StayOnSite',
-          'Zakwaterowanie pracownicze dla firm — Noclegi dla ekip budowlanych w Szwecji | StayOnSite'
+          'Personalboende för företag — Boende för alla era projekt i Sverige | StayOnSite',
+          'Worker Accommodation for Companies — Housing for All Your Projects in Sweden | StayOnSite',
+          'Zakwaterowanie pracownicze dla firm — Noclegi dla wszystkich projektów w Szwecji | StayOnSite'
         )}
         description={t(
           'StayOnSite ordnar personalboende för byggbolag och industriföretag i 40+ städer. Möblerade lägenheter, företagsfaktura, fast kontaktperson. Boendeplan inom 24h.',
@@ -230,16 +274,16 @@ const ForForetag = () => {
             <div className="max-w-3xl">
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 drop-shadow-2xl">
                 {t(
-                  'Personalboende för ert byggteam — en kontakt, ett samtal',
-                  'Worker housing for your construction team — one contact, one call',
-                  'Zakwaterowanie dla Twojej ekipy budowlanej — jeden kontakt, jeden telefon'
+                  'Personalboende för alla era projekt i hela Sverige',
+                  'Worker housing for all your projects across Sweden',
+                  'Zakwaterowanie dla wszystkich Waszych projektów w całej Szwecji'
                 )}
               </h1>
               <p className="text-xl text-white/80 font-light leading-relaxed max-w-2xl mb-10">
                 {t(
-                  'Vi ordnar möblerade boenden i 40+ städer med svarstid under 24 timmar. Över 10 års erfarenhet av personalboende för bygg, energi och infrastruktur.',
-                  'We arrange furnished accommodation in 40+ cities with response time under 24 hours. Over 10 years of experience with worker housing for construction, energy and infrastructure.',
-                  'Organizujemy umeblowane zakwaterowanie w ponad 40 miastach z czasem odpowiedzi poniżej 24 godzin. Ponad 10 lat doświadczenia w noclegach pracowniczych.'
+                  'En kontakt, en faktura. Vi ordnar möblerade boenden i 40+ städer med svarstid under 24 timmar — för bygg, energi, skog, infrastruktur och montörsteam.',
+                  'One contact, one invoice. We arrange furnished accommodation in 40+ cities with response time under 24 hours — for construction, energy, forestry, infrastructure and installation teams.',
+                  'Jeden kontakt, jedna faktura. Organizujemy umeblowane zakwaterowanie w ponad 40 miastach z czasem odpowiedzi poniżej 24 godzin — dla budownictwa, energetyki, leśnictwa i montażu.'
                 )}
               </p>
               <Button
@@ -295,7 +339,7 @@ const ForForetag = () => {
                 )}
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
                 {
                   icon: HardHat,
@@ -325,12 +369,21 @@ const ForForetag = () => {
                   ),
                 },
                 {
-                  icon: Factory,
-                  label: t('Montörer & Installatörer', 'Assembly & Installers', 'Monterzy i instalatorzy'),
+                  icon: TreePine,
+                  label: t('Skog & Maskin', 'Forestry & Machinery', 'Leśnictwo i maszyny'),
                   desc: t(
-                    'El, VVS, ventilation, maskinmontage och industriella installationsteam.',
-                    'Electrical, HVAC, ventilation, machinery assembly and industrial installation teams.',
-                    'Elektrycy, HVAC, wentylacja, montaż maszyn i ekipy instalacyjne.'
+                    'Maskinlag, timmeravverkning och skogsentreprenad. Vi ordnar boende nära avverkningsplatserna.',
+                    'Machine crews, timber harvesting and forestry contracting. We arrange accommodation near logging sites.',
+                    'Ekipy maszynowe, pozyskiwanie drewna i usługi leśne. Organizujemy zakwaterowanie blisko miejsc pracy.'
+                  ),
+                },
+                {
+                  icon: Factory,
+                  label: t('Montörer, Stål & Installation', 'Assembly, Steel & Installation', 'Montaż, stal i instalacje'),
+                  desc: t(
+                    'El, VVS, stålbyggnad, ventilation, maskinmontage och industriella installationsteam.',
+                    'Electrical, HVAC, steel construction, ventilation, machinery assembly and industrial installation teams.',
+                    'Elektrycy, HVAC, konstrukcje stalowe, wentylacja, montaż maszyn i ekipy instalacyjne.'
                   ),
                 },
               ].map((item) => (
@@ -398,11 +451,11 @@ const ForForetag = () => {
                 },
                 {
                   step: '4',
-                  title: t('Löpande support', 'Ongoing support', 'Bieżące wsparcie'),
+                  title: t('Dedikerad boendevärd', 'Dedicated accommodation host', 'Dedykowany opiekun zakwaterowania'),
                   desc: t(
-                    'Fast kontaktperson under hela boendeperioden. Vi löser allt som uppstår.',
-                    'Dedicated contact person throughout the stay. We handle everything that arises.',
-                    'Stała osoba kontaktowa przez cały pobyt. Zajmujemy się wszystkim, co się pojawi.'
+                    'Er kontaktperson under hela projektet. Allt boenderelaterat går genom oss — ni fokuserar på ert arbete.',
+                    'Your contact person throughout the project. All accommodation matters go through us — you focus on your work.',
+                    'Wasza osoba kontaktowa przez cały projekt. Wszystkie sprawy zakwaterowania przechodzą przez nas — Wy skupiacie się na pracy.'
                   ),
                 },
               ].map((item, index) => (
@@ -425,8 +478,65 @@ const ForForetag = () => {
           </div>
         </section>
 
+        {/* Vad ingår */}
+        <section className="py-20 bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                {t('Vad ingår?', 'What\'s included?', 'Co jest w cenie?')}
+              </h2>
+              <p className="text-nordic-600 max-w-2xl mx-auto">
+                {t(
+                  'Era medarbetare flyttar in i ett komplett boende — allt är förberett.',
+                  'Your employees move into a complete accommodation — everything is prepared.',
+                  'Wasi pracownicy wprowadzają się do kompletnego zakwaterowania — wszystko jest przygotowane.'
+                )}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+              <div className="bg-nordic-50 rounded-2xl p-8 border border-nordic-100">
+                <h3 className="font-display font-bold text-nordic-900 text-lg mb-5">
+                  {t('Ingår i boendet', 'Included', 'W cenie')}
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    t('Möblerade lägenheter', 'Furnished apartments', 'Umeblowane mieszkania'),
+                    t('Sänglinne & handdukar', 'Bed linen & towels', 'Pościel i ręczniki'),
+                    t('Fullt utrustat kök', 'Fully equipped kitchen', 'W pełni wyposażona kuchnia'),
+                    t('Internet & WiFi', 'Internet & WiFi', 'Internet i WiFi'),
+                    t('Fast kontaktperson', 'Dedicated contact person', 'Stała osoba kontaktowa'),
+                    t('Inflyttningsstädning', 'Move-in cleaning', 'Sprzątanie przed wprowadzeniem'),
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                      <span className="text-nordic-800">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white rounded-2xl p-8 border border-nordic-100">
+                <h3 className="font-display font-bold text-nordic-900 text-lg mb-5">
+                  {t('Ingår ej', 'Not included', 'Nie w cenie')}
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    t('Löpande tvätt', 'Ongoing laundry', 'Bieżące pranie'),
+                    t('Mat & livsmedel', 'Food & groceries', 'Żywność i artykuły spożywcze'),
+                    t('Resor till/från arbetsplats', 'Transport to/from work', 'Transport do/z pracy'),
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3">
+                      <X className="h-5 w-5 text-nordic-300 shrink-0" />
+                      <span className="text-nordic-500">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Comparison Table */}
-        <section className="section-spacing bg-white">
+        <section className="section-spacing bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
@@ -497,8 +607,103 @@ const ForForetag = () => {
           </div>
         </section>
 
-        {/* Market Context */}
+        {/* Kundcase */}
+        <section className="py-20 bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                  {t(
+                    'Från mängder av spridda kvitton till en faktura',
+                    'From scattered receipts to one invoice',
+                    'Od rozproszonych rachunków do jednej faktury'
+                  )}
+                </h2>
+              </div>
+              <div className="bg-nordic-50 rounded-2xl p-8 md:p-10 border border-nordic-100">
+                <Quote className="h-8 w-8 text-accent/40 mb-4" />
+                <p className="text-lg text-nordic-800 leading-relaxed mb-6">
+                  {t(
+                    'Ett skogsbolag med maskinlag spridda över hela Sverige lade mer tid på att koordinera boende än på sin kärnverksamhet. Separata Airbnb-bokningar, mängder av spridda kvitton och projektledaren blev en ofrivillig mellanhand. Med StayOnSites ramavtalsmodell gör de nu ett samtal — och allt är löst. Boende nära avverkningsplatsen, direktkontakt med maskinlagen och projektmärkta fakturor.',
+                    'A forestry company with crews across Sweden spent more time coordinating accommodation than on their core business. Separate Airbnb bookings, scattered receipts, and the project manager became an unwilling middleman. With StayOnSite\'s framework agreement model, they now make one call — and everything is handled. Accommodation near the logging site, direct communication with crews, and project-specific invoicing.',
+                    'Firma leśna z ekipami w całej Szwecji poświęcała więcej czasu na koordynację zakwaterowania niż na swoją podstawową działalność. Osobne rezerwacje Airbnb, rozproszone rachunki, a kierownik projektu stał się niechcianym pośrednikiem. Dzięki umowie ramowej StayOnSite wykonują teraz jeden telefon — i wszystko jest załatwione.'
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-4 text-sm">
+                  {[
+                    t('En faktura per månad', 'One invoice per month', 'Jedna faktura miesięcznie'),
+                    t('En kontaktperson', 'One contact person', 'Jedna osoba kontaktowa'),
+                    t('Inflyttningsklart inom 24h', 'Move-in ready within 24h', 'Gotowe w 24h'),
+                  ].map((tag) => (
+                    <span key={tag} className="bg-accent/10 text-accent px-4 py-1.5 rounded-full font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Ramavtal */}
         <section className="py-20 bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                    {t(
+                      'Ramavtal — för företag med återkommande behov',
+                      'Framework agreements — for companies with recurring needs',
+                      'Umowy ramowe — dla firm z powtarzającymi się potrzebami'
+                    )}
+                  </h2>
+                  <p className="text-nordic-600 mb-8">
+                    {t(
+                      'Istället för separata offertförfrågningar varje gång ni behöver boende — teckna ett ramavtal och avropas efter behov.',
+                      'Instead of separate quote requests every time you need accommodation — sign a framework agreement and order as needed.',
+                      'Zamiast oddzielnych zapytań ofertowych za każdym razem — podpisz umowę ramową i zamawiaj w miarę potrzeb.'
+                    )}
+                  </p>
+                  <ul className="space-y-4">
+                    {[
+                      { icon: FileCheck, text: t('Ett avtal, många projekt', 'One contract, many projects', 'Jedna umowa, wiele projektów') },
+                      { icon: ArrowRight, text: t('Avrop istället för offertförfrågningar', 'Call-offs instead of quote requests', 'Zamówienia zamiast zapytań ofertowych') },
+                      { icon: FileCheck, text: t('Projektmärkta fakturor', 'Project-specific invoicing', 'Faktury z oznaczeniem projektu') },
+                      { icon: ArrowRight, text: t('Direktkontakt mellan StayOnSite och era arbetslag', 'Direct contact between StayOnSite and your work crews', 'Bezpośredni kontakt między StayOnSite a Waszymi ekipami') },
+                    ].map((item) => (
+                      <li key={item.text} className="flex items-start gap-3">
+                        <item.icon className="h-5 w-5 text-accent mt-0.5 shrink-0" />
+                        <span className="text-nordic-800">{item.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="text-center">
+                  <Button
+                    asChild
+                    className="rounded-full px-10 h-14 text-lg font-semibold text-white bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl"
+                  >
+                    <a href="#inquiry">
+                      {t('Kontakta oss om ramavtal', 'Contact us about framework agreements', 'Skontaktuj się w sprawie umowy ramowej')}
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </a>
+                  </Button>
+                  <p className="text-sm text-nordic-500 mt-4">
+                    {t(
+                      'Vi återkommer inom 24 timmar med ett förslag.',
+                      'We get back to you within 24 hours with a proposal.',
+                      'Odpowiadamy w ciągu 24 godzin z propozycją.'
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Market Context */}
+        <section className="py-20 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-10">
               <div className="text-center mb-8">

@@ -7,10 +7,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const FAQ = () => {
+const FAQ = ({ maxItems }: { maxItems?: number }) => {
   const { t } = useLanguage();
 
-  const faqData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => ({
+  const allItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const faqData = (maxItems ? allItems.slice(0, maxItems) : allItems).map(i => ({
     question: t(`faq.question${i}` as TranslationKey),
     answer: t(`faq.answer${i}` as TranslationKey),
   }));
