@@ -50,7 +50,7 @@ const Hero = () => {
           
 
           <h1
-            className="font-display text-5xl md:text-[82px] lg:text-[96px] font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-8"
+            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-8"
           >
             {t('hero.title')}
           </h1>

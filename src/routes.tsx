@@ -4,8 +4,6 @@ import App from './App'
 import Index from './pages/Index'
 import CityPage from './pages/CityPage'
 import ForHusagare from './pages/ForHusagare'
-import CorporateHousingSweden from './pages/en/CorporateHousingSweden'
-import ZakwaterowanieFirmowe from './pages/pl/ZakwaterowanieFirmowe'
 import LpHusagare from './pages/lp/LpHusagare'
 import ForForetag from './pages/ForForetag'
 import OmOss from './pages/OmOss'
@@ -43,8 +41,8 @@ export const routes: RouteRecord[] = [
       },
       { path: 'for-husagare', element: <ForHusagare /> },
       { path: 'for-foretag', element: <ForForetag /> },
-      { path: 'en/corporate-housing-sweden', element: <CorporateHousingSweden /> },
-      { path: 'pl/zakwaterowanie-firmowe', element: <ZakwaterowanieFirmowe /> },
+      { path: 'en/corporate-housing-sweden', element: <Index /> },
+      { path: 'pl/zakwaterowanie-firmowe', element: <Index /> },
       { path: 'om-oss', element: <OmOss /> },
       { path: 'kontakt', element: <Kontakt /> },
       { path: 'blogg', element: <BlogIndex /> },
