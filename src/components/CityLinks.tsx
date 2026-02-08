@@ -57,20 +57,23 @@ const CityLinks = () => {
             <p className="text-sm text-gray-600">{t.subtitle}</p>
           </div>
 
-          <div className="space-y-6">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
             {sortedRegions.map((region) => (
-              <div key={region}>
-                <h3 className="text-xs uppercase tracking-widest text-nordic-500 font-semibold mb-3">
+              <div
+                key={region}
+                className="break-inside-avoid mb-4 bg-white rounded-2xl p-4 border border-nordic-200 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <h3 className="text-[10px] uppercase tracking-widest text-nordic-500 font-semibold mb-2.5">
                   {region}
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {groupedByRegion[region].map((city) => (
                     <Link
                       key={city.slug}
                       to={cityLink(city.slug)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-sm text-nordic-900 hover:text-[#ff6300]"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-nordic-50 border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-xs text-nordic-900 hover:text-[#ff6300]"
                     >
-                      <MapPin className="h-3.5 w-3.5" />
+                      <MapPin className="h-3 w-3" />
                       {city.name}
                     </Link>
                   ))}

@@ -22,6 +22,7 @@ import {
   Home,
   Quote,
   FileCheck,
+  Star,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -259,7 +260,7 @@ const ForForetag = () => {
       <Header />
 
       <main className="flex-grow">
-        {/* Hero */}
+        {/* 1. Hero */}
         <section className="bg-primary text-white pt-32 pb-20 relative overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
@@ -321,11 +322,272 @@ const ForForetag = () => {
                 </div>
               ))}
             </motion.div>
+
+            {/* Trust badge */}
+            <div className="flex items-center gap-3 mt-6 text-white/60 text-sm">
+              <Star className="h-4 w-4 text-[#ff6300] fill-[#ff6300]" />
+              <span className="text-white/80 font-medium">{RATING_VALUE}</span>
+              <span>({REVIEW_COUNT} {t('omdömen', 'reviews', 'opinii')})</span>
+              <span className="mx-1">&middot;</span>
+              <span>{t('Sedan 2013', 'Since 2013', 'Od 2013')}</span>
+            </div>
           </div>
         </section>
 
-        {/* Sectors */}
-        <section className="py-20 bg-white">
+        {/* 2. Market Context — problemvalidering */}
+        <section className="py-20 bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="max-w-3xl mx-auto space-y-10">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                  {t(
+                    'Bostadsbristen är en realitet',
+                    'The housing shortage is a reality',
+                    'Niedobór mieszkań jest faktem'
+                  )}
+                </h2>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-2xl p-8 shadow-sm border border-nordic-100"
+              >
+                <Quote className="h-8 w-8 text-accent/40 mb-4" />
+                <blockquote className="text-lg text-nordic-800 leading-relaxed mb-4 italic">
+                  {t(
+                    'Boverket bedömer att det behöver byggas 67 300 bostäder per år fram till 2030. Många regioner med stora bygg- och industriprojekt har akut bostadsbrist — särskilt tillfälliga boenden för projektanställd personal.',
+                    'Boverket estimates that 67,300 homes need to be built annually until 2030. Many regions with large construction and industrial projects face acute housing shortages — especially temporary accommodation for project-employed staff.',
+                    'Boverket szacuje, że rocznie do 2030 roku trzeba budować 67 300 mieszkań. Wiele regionów z dużymi projektami budowlanymi i przemysłowymi boryka się z ostrym niedoborem mieszkań.'
+                  )}
+                </blockquote>
+                <p className="text-sm text-nordic-500 font-medium">
+                  — Boverket, {t('Bostadsmarknadsenkäten', 'Housing Market Survey', 'Ankieta rynku mieszkaniowego')} 2025
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.15 }}
+                className="bg-white rounded-2xl p-8 shadow-sm border border-nordic-100"
+              >
+                <Quote className="h-8 w-8 text-accent/40 mb-4" />
+                <blockquote className="text-lg text-nordic-800 leading-relaxed mb-4 italic">
+                  {t(
+                    'Byggindustrin sysselsätter över 350 000 personer och prognoser visar på ett växande behov av arbetskraft. Samtidigt rapporterar 7 av 10 byggföretag svårigheter att hitta boenden för sin personal på projektort.',
+                    'The construction industry employs over 350,000 people and forecasts show a growing need for labour. At the same time, 7 out of 10 construction companies report difficulties finding accommodation for their staff at project locations.',
+                    'Branża budowlana zatrudnia ponad 350 000 osób, a prognozy wskazują na rosnące zapotrzebowanie na siłę roboczą. Jednocześnie 7 na 10 firm budowlanych zgłasza trudności ze znalezieniem noclegów.'
+                  )}
+                </blockquote>
+                <p className="text-sm text-nordic-500 font-medium">
+                  — Byggföretagen, 2025
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. Process */}
+        <section className="py-20 bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                {t('Så fungerar det', 'How it works', 'Jak to działa')}
+              </h2>
+              <p className="text-nordic-600 max-w-2xl mx-auto">
+                {t(
+                  'Från första samtal till inflyttning — vi gör det enkelt.',
+                  'From the first call to move-in — we make it simple.',
+                  'Od pierwszego telefonu do wprowadzenia — robimy to prosto.'
+                )}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+              {[
+                {
+                  step: '1',
+                  title: t('Berätta vad ni behöver', 'Tell us your needs', 'Opowiedz o potrzebach'),
+                  desc: t(
+                    'Antal personer, stad, datum och önskad standard. Ring eller fyll i formuläret.',
+                    'Number of people, city, dates and desired standard. Call or fill in the form.',
+                    'Liczba osób, miasto, daty i pożądany standard. Zadzwoń lub wypełnij formularz.'
+                  ),
+                },
+                {
+                  step: '2',
+                  title: t('Boendeplan inom 24h', 'Housing plan in 24h', 'Plan zakwaterowania w 24h'),
+                  desc: t(
+                    'Vi skickar en skräddarsydd boendeplan med adresser, bilder och priser.',
+                    'We send a tailored housing plan with addresses, photos and prices.',
+                    'Wysyłamy dopasowany plan zakwaterowania z adresami, zdjęciami i cenami.'
+                  ),
+                },
+                {
+                  step: '3',
+                  title: t('Kontrakt & inflyttning', 'Contract & move-in', 'Umowa i wprowadzenie'),
+                  desc: t(
+                    'Enkel företagsfakturering. Era medarbetare flyttar in i ett fullt möblerat boende.',
+                    'Simple corporate invoicing. Your employees move into a fully furnished accommodation.',
+                    'Proste fakturowanie firmowe. Pracownicy wprowadzają się do w pełni umeblowanego mieszkania.'
+                  ),
+                },
+                {
+                  step: '4',
+                  title: t('Dedikerad boendevärd', 'Dedicated accommodation host', 'Dedykowany opiekun zakwaterowania'),
+                  desc: t(
+                    'Er kontaktperson under hela projektet. Allt boenderelaterat går genom oss — ni fokuserar på ert arbete.',
+                    'Your contact person throughout the project. All accommodation matters go through us — you focus on your work.',
+                    'Wasza osoba kontaktowa przez cały projekt. Wszystkie sprawy zakwaterowania przechodzą przez nas — Wy skupiacie się na pracy.'
+                  ),
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.step}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="relative text-center"
+                >
+                  <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center mx-auto mb-5 font-display text-xl font-bold shadow-lg shadow-accent/30">
+                    {item.step}
+                  </div>
+                  <h3 className="font-semibold text-nordic-900 text-lg mb-2">{item.title}</h3>
+                  <p className="text-sm text-nordic-600 leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Kundcase */}
+        <section className="py-20 bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                  {t(
+                    'Från mängder av spridda kvitton till en faktura',
+                    'From scattered receipts to one invoice',
+                    'Od rozproszonych rachunków do jednej faktury'
+                  )}
+                </h2>
+              </div>
+              <div className="bg-nordic-50 rounded-2xl p-8 md:p-10 border border-nordic-100">
+                <Quote className="h-8 w-8 text-accent/40 mb-4" />
+                <p className="text-lg text-nordic-800 leading-relaxed mb-6">
+                  {t(
+                    'Ett skogsbolag med maskinlag spridda över hela Sverige lade mer tid på att koordinera boende än på sin kärnverksamhet. Separata Airbnb-bokningar, mängder av spridda kvitton och projektledaren blev en ofrivillig mellanhand. Med StayOnSites ramavtalsmodell gör de nu ett samtal — och allt är löst. Boende nära avverkningsplatsen, direktkontakt med maskinlagen och projektmärkta fakturor.',
+                    'A forestry company with crews across Sweden spent more time coordinating accommodation than on their core business. Separate Airbnb bookings, scattered receipts, and the project manager became an unwilling middleman. With StayOnSite\'s framework agreement model, they now make one call — and everything is handled. Accommodation near the logging site, direct communication with crews, and project-specific invoicing.',
+                    'Firma leśna z ekipami w całej Szwecji poświęcała więcej czasu na koordynację zakwaterowania niż na swoją podstawową działalność. Osobne rezerwacje Airbnb, rozproszone rachunki, a kierownik projektu stał się niechcianym pośrednikiem. Dzięki umowie ramowej StayOnSite wykonują teraz jeden telefon — i wszystko jest załatwione.'
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-4 text-sm">
+                  {[
+                    t('En faktura per månad', 'One invoice per month', 'Jedna faktura miesięcznie'),
+                    t('En kontaktperson', 'One contact person', 'Jedna osoba kontaktowa'),
+                    t('Inflyttningsklart inom 24h', 'Move-in ready within 24h', 'Gotowe w 24h'),
+                  ].map((tag) => (
+                    <span key={tag} className="bg-accent/10 text-accent px-4 py-1.5 rounded-full font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Comparison Table + CTA */}
+        <section className="section-spacing bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
+                {t(
+                  'Varför välja StayOnSite?',
+                  'Why choose StayOnSite?',
+                  'Dlaczego wybrać StayOnSite?'
+                )}
+              </h2>
+              <p className="text-nordic-600 max-w-2xl mx-auto">
+                {t(
+                  'Se hur vi jämför oss med alternativen — hotell, Airbnb och egen hantering.',
+                  'See how we compare to the alternatives — hotels, Airbnb and self-managed.',
+                  'Zobacz, jak wypadamy na tle alternatyw — hoteli, Airbnb i samodzielnego zarządzania.'
+                )}
+              </p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-5xl mx-auto"
+            >
+              <div className="rounded-3xl border border-primary/10 overflow-hidden shadow-lg">
+                {/* Table header */}
+                <div className="grid grid-cols-5 bg-primary text-white">
+                  <div className="p-5 font-display font-bold text-sm md:text-base" />
+                  <div className="p-5 text-center font-display font-bold text-sm md:text-base bg-accent/20 border-x border-white/10">
+                    StayOnSite
+                  </div>
+                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
+                    {comparisonLabels.colHotel}
+                  </div>
+                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
+                    {comparisonLabels.colAirbnb}
+                  </div>
+                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
+                    {comparisonLabels.colSelf}
+                  </div>
+                </div>
+
+                {/* Table rows */}
+                {comparisonRows.map((row, index) => (
+                  <div
+                    key={index}
+                    className={`grid grid-cols-5 ${index % 2 === 0 ? 'bg-white' : 'bg-secondary/20'} border-t border-primary/5`}
+                  >
+                    <div className="p-4 md:p-5 font-medium text-primary text-sm md:text-base flex items-center">
+                      {row.label}
+                    </div>
+                    <div className="p-4 md:p-5 flex items-center justify-center bg-accent/5 border-x border-primary/5">
+                      {renderIcon(row.stayonsite)}
+                    </div>
+                    <div className="p-4 md:p-5 flex items-center justify-center">
+                      {renderIcon(row.hotel)}
+                    </div>
+                    <div className="p-4 md:p-5 flex items-center justify-center">
+                      {renderIcon(row.airbnb)}
+                    </div>
+                    <div className="p-4 md:p-5 flex items-center justify-center">
+                      {renderIcon(row.self)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* CTA after comparison */}
+            <div className="text-center mt-10">
+              <Button
+                asChild
+                className="rounded-full px-10 h-14 text-lg font-semibold text-white bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl"
+              >
+                <a href="#inquiry">
+                  {t('Få en boendeplan', 'Get a housing plan', 'Uzyskaj plan zakwaterowania')}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. Sectors */}
+        <section className="py-20 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
@@ -405,81 +667,8 @@ const ForForetag = () => {
           </div>
         </section>
 
-        {/* Process */}
+        {/* 7. Vad ingår */}
         <section className="py-20 bg-nordic-50 border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
-                {t('Så fungerar det', 'How it works', 'Jak to działa')}
-              </h2>
-              <p className="text-nordic-600 max-w-2xl mx-auto">
-                {t(
-                  'Från första samtal till inflyttning — vi gör det enkelt.',
-                  'From the first call to move-in — we make it simple.',
-                  'Od pierwszego telefonu do wprowadzenia — robimy to prosto.'
-                )}
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-              {[
-                {
-                  step: '1',
-                  title: t('Berätta vad ni behöver', 'Tell us your needs', 'Opowiedz o potrzebach'),
-                  desc: t(
-                    'Antal personer, stad, datum och önskad standard. Ring eller fyll i formuläret.',
-                    'Number of people, city, dates and desired standard. Call or fill in the form.',
-                    'Liczba osób, miasto, daty i pożądany standard. Zadzwoń lub wypełnij formularz.'
-                  ),
-                },
-                {
-                  step: '2',
-                  title: t('Boendeplan inom 24h', 'Housing plan in 24h', 'Plan zakwaterowania w 24h'),
-                  desc: t(
-                    'Vi skickar en skräddarsydd boendeplan med adresser, bilder och priser.',
-                    'We send a tailored housing plan with addresses, photos and prices.',
-                    'Wysyłamy dopasowany plan zakwaterowania z adresami, zdjęciami i cenami.'
-                  ),
-                },
-                {
-                  step: '3',
-                  title: t('Kontrakt & inflyttning', 'Contract & move-in', 'Umowa i wprowadzenie'),
-                  desc: t(
-                    'Enkel företagsfakturering. Era medarbetare flyttar in i ett fullt möblerat boende.',
-                    'Simple corporate invoicing. Your employees move into a fully furnished accommodation.',
-                    'Proste fakturowanie firmowe. Pracownicy wprowadzają się do w pełni umeblowanego mieszkania.'
-                  ),
-                },
-                {
-                  step: '4',
-                  title: t('Dedikerad boendevärd', 'Dedicated accommodation host', 'Dedykowany opiekun zakwaterowania'),
-                  desc: t(
-                    'Er kontaktperson under hela projektet. Allt boenderelaterat går genom oss — ni fokuserar på ert arbete.',
-                    'Your contact person throughout the project. All accommodation matters go through us — you focus on your work.',
-                    'Wasza osoba kontaktowa przez cały projekt. Wszystkie sprawy zakwaterowania przechodzą przez nas — Wy skupiacie się na pracy.'
-                  ),
-                },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.step}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative text-center"
-                >
-                  <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center mx-auto mb-5 font-display text-xl font-bold shadow-lg shadow-accent/30">
-                    {item.step}
-                  </div>
-                  <h3 className="font-semibold text-nordic-900 text-lg mb-2">{item.title}</h3>
-                  <p className="text-sm text-nordic-600 leading-relaxed">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Vad ingår */}
-        <section className="py-20 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
@@ -494,7 +683,7 @@ const ForForetag = () => {
               </p>
             </div>
             <div className="max-w-xl mx-auto">
-              <div className="bg-nordic-50 rounded-2xl p-8 border border-nordic-100">
+              <div className="bg-white rounded-2xl p-8 border border-nordic-100">
                 <h3 className="font-display font-bold text-nordic-900 text-lg mb-5">
                   {t('Ingår i boendet', 'Included', 'W cenie')}
                 </h3>
@@ -518,118 +707,8 @@ const ForForetag = () => {
           </div>
         </section>
 
-        {/* Comparison Table */}
-        <section className="section-spacing bg-nordic-50 border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
-                {t(
-                  'Varför välja StayOnSite?',
-                  'Why choose StayOnSite?',
-                  'Dlaczego wybrać StayOnSite?'
-                )}
-              </h2>
-              <p className="text-nordic-600 max-w-2xl mx-auto">
-                {t(
-                  'Se hur vi jämför oss med alternativen — hotell, Airbnb och egen hantering.',
-                  'See how we compare to the alternatives — hotels, Airbnb and self-managed.',
-                  'Zobacz, jak wypadamy na tle alternatyw — hoteli, Airbnb i samodzielnego zarządzania.'
-                )}
-              </p>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="max-w-5xl mx-auto"
-            >
-              <div className="rounded-3xl border border-primary/10 overflow-hidden shadow-lg">
-                {/* Table header */}
-                <div className="grid grid-cols-5 bg-primary text-white">
-                  <div className="p-5 font-display font-bold text-sm md:text-base" />
-                  <div className="p-5 text-center font-display font-bold text-sm md:text-base bg-accent/20 border-x border-white/10">
-                    StayOnSite
-                  </div>
-                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
-                    {comparisonLabels.colHotel}
-                  </div>
-                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
-                    {comparisonLabels.colAirbnb}
-                  </div>
-                  <div className="p-5 text-center font-display font-bold text-sm md:text-base text-white/70">
-                    {comparisonLabels.colSelf}
-                  </div>
-                </div>
-
-                {/* Table rows */}
-                {comparisonRows.map((row, index) => (
-                  <div
-                    key={index}
-                    className={`grid grid-cols-5 ${index % 2 === 0 ? 'bg-white' : 'bg-secondary/20'} border-t border-primary/5`}
-                  >
-                    <div className="p-4 md:p-5 font-medium text-primary text-sm md:text-base flex items-center">
-                      {row.label}
-                    </div>
-                    <div className="p-4 md:p-5 flex items-center justify-center bg-accent/5 border-x border-primary/5">
-                      {renderIcon(row.stayonsite)}
-                    </div>
-                    <div className="p-4 md:p-5 flex items-center justify-center">
-                      {renderIcon(row.hotel)}
-                    </div>
-                    <div className="p-4 md:p-5 flex items-center justify-center">
-                      {renderIcon(row.airbnb)}
-                    </div>
-                    <div className="p-4 md:p-5 flex items-center justify-center">
-                      {renderIcon(row.self)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Kundcase */}
+        {/* 8. Ramavtal */}
         <section className="py-20 bg-white border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
-                  {t(
-                    'Från mängder av spridda kvitton till en faktura',
-                    'From scattered receipts to one invoice',
-                    'Od rozproszonych rachunków do jednej faktury'
-                  )}
-                </h2>
-              </div>
-              <div className="bg-nordic-50 rounded-2xl p-8 md:p-10 border border-nordic-100">
-                <Quote className="h-8 w-8 text-accent/40 mb-4" />
-                <p className="text-lg text-nordic-800 leading-relaxed mb-6">
-                  {t(
-                    'Ett skogsbolag med maskinlag spridda över hela Sverige lade mer tid på att koordinera boende än på sin kärnverksamhet. Separata Airbnb-bokningar, mängder av spridda kvitton och projektledaren blev en ofrivillig mellanhand. Med StayOnSites ramavtalsmodell gör de nu ett samtal — och allt är löst. Boende nära avverkningsplatsen, direktkontakt med maskinlagen och projektmärkta fakturor.',
-                    'A forestry company with crews across Sweden spent more time coordinating accommodation than on their core business. Separate Airbnb bookings, scattered receipts, and the project manager became an unwilling middleman. With StayOnSite\'s framework agreement model, they now make one call — and everything is handled. Accommodation near the logging site, direct communication with crews, and project-specific invoicing.',
-                    'Firma leśna z ekipami w całej Szwecji poświęcała więcej czasu na koordynację zakwaterowania niż na swoją podstawową działalność. Osobne rezerwacje Airbnb, rozproszone rachunki, a kierownik projektu stał się niechcianym pośrednikiem. Dzięki umowie ramowej StayOnSite wykonują teraz jeden telefon — i wszystko jest załatwione.'
-                  )}
-                </p>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  {[
-                    t('En faktura per månad', 'One invoice per month', 'Jedna faktura miesięcznie'),
-                    t('En kontaktperson', 'One contact person', 'Jedna osoba kontaktowa'),
-                    t('Inflyttningsklart inom 24h', 'Move-in ready within 24h', 'Gotowe w 24h'),
-                  ].map((tag) => (
-                    <span key={tag} className="bg-accent/10 text-accent px-4 py-1.5 rounded-full font-medium">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Ramavtal */}
-        <section className="py-20 bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -685,64 +764,8 @@ const ForForetag = () => {
           </div>
         </section>
 
-        {/* Market Context */}
-        <section className="py-20 bg-white border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="max-w-3xl mx-auto space-y-10">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
-                  {t(
-                    'Bostadsbristen är en realitet',
-                    'The housing shortage is a reality',
-                    'Niedobór mieszkań jest faktem'
-                  )}
-                </h2>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-2xl p-8 shadow-sm border border-nordic-100"
-              >
-                <Quote className="h-8 w-8 text-accent/40 mb-4" />
-                <blockquote className="text-lg text-nordic-800 leading-relaxed mb-4 italic">
-                  {t(
-                    'Boverket bedömer att det behöver byggas 67 300 bostäder per år fram till 2030. Många regioner med stora bygg- och industriprojekt har akut bostadsbrist — särskilt tillfälliga boenden för projektanställd personal.',
-                    'Boverket estimates that 67,300 homes need to be built annually until 2030. Many regions with large construction and industrial projects face acute housing shortages — especially temporary accommodation for project-employed staff.',
-                    'Boverket szacuje, że rocznie do 2030 roku trzeba budować 67 300 mieszkań. Wiele regionów z dużymi projektami budowlanymi i przemysłowymi boryka się z ostrym niedoborem mieszkań.'
-                  )}
-                </blockquote>
-                <p className="text-sm text-nordic-500 font-medium">
-                  — Boverket, {t('Bostadsmarknadsenkäten', 'Housing Market Survey', 'Ankieta rynku mieszkaniowego')} 2025
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.15 }}
-                className="bg-white rounded-2xl p-8 shadow-sm border border-nordic-100"
-              >
-                <Quote className="h-8 w-8 text-accent/40 mb-4" />
-                <blockquote className="text-lg text-nordic-800 leading-relaxed mb-4 italic">
-                  {t(
-                    'Byggindustrin sysselsätter över 350 000 personer och prognoser visar på ett växande behov av arbetskraft. Samtidigt rapporterar 7 av 10 byggföretag svårigheter att hitta boenden för sin personal på projektort.',
-                    'The construction industry employs over 350,000 people and forecasts show a growing need for labour. At the same time, 7 out of 10 construction companies report difficulties finding accommodation for their staff at project locations.',
-                    'Branża budowlana zatrudnia ponad 350 000 osób, a prognozy wskazują na rosnące zapotrzebowanie na siłę roboczą. Jednocześnie 7 na 10 firm budowlanych zgłasza trudności ze znalezieniem noclegów.'
-                  )}
-                </blockquote>
-                <p className="text-sm text-nordic-500 font-medium">
-                  — Byggföretagen, 2025
-                </p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-20 bg-white border-t border-nordic-100">
+        {/* 9. FAQ */}
+        <section className="py-20 bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-nordic-900 mb-4">
