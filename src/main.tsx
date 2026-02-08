@@ -3,10 +3,5 @@ import { routes } from './routes'
 import './index.css'
 
 export const createRoot = ViteReactSSG(
-  { routes },
-  ({ isClient }) => {
-    if (isClient) {
-      import('@vercel/analytics/react')
-    }
-  },
+  { routes }
 )
