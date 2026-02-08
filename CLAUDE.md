@@ -89,7 +89,7 @@ React Hook Form + Zod validation. See `src/components/inquiry/` and `src/compone
 ## SEO Intelligence (auto-genererad från keyword-analys)
 
 Senast uppdaterad: 2026-02-07
-Källa: `/Users/dpr/Documents/Project/Sem/data/seo_action_plan.md`
+Källa: Sem-projektet (SEO keyword pipeline)
 
 ### Affärskontext
 
