@@ -178,9 +178,9 @@ const CityPage = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title={translate(
-          `Personalboende ${city.name} – Boende för Byggteam | StayOnSite`,
-          `Worker Accommodation ${city.name} – Housing for Crews | StayOnSite`,
-          `Noclegi Pracownicze ${city.name} – Kwatery dla Ekip | StayOnSite`
+          `Personalboende & Lägenhetshotell ${city.name} | StayOnSite`,
+          `Corporate Housing & Aparthotel ${city.name} | StayOnSite`,
+          `Zakwaterowanie Firmowe & Aparthotel ${city.name} | StayOnSite`
         )}
         description={heroDescription}
         keywords={`${localizedKeywords.join(', ')}, StayOnSite`}
