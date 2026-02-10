@@ -2,73 +2,73 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://stayonsite.se/</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/for-husagare</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/for-foretag</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/om-oss</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/kontakt</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing-sweden</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie-firmowe</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/blogg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/blogg/personalboende-guide-2026</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/blogg/privatuthyrningslagen-reform-2026</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/blogg/gron-omstallning-norr-boende</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://stayonsite.se/stad/stockholm</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/stockholm" />
@@ -77,7 +77,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/stockholm</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/stockholm" />
@@ -86,7 +86,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/stockholm</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/stockholm" />
@@ -95,7 +95,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/goteborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/goteborg" />
@@ -104,7 +104,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/goteborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/goteborg" />
@@ -113,7 +113,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/goteborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/goteborg" />
@@ -122,7 +122,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/malmo</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/malmo" />
@@ -131,7 +131,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/malmo</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/malmo" />
@@ -140,7 +140,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/malmo</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/malmo" />
@@ -149,7 +149,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/uppsala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/uppsala" />
@@ -158,7 +158,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/uppsala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/uppsala" />
@@ -167,7 +167,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/uppsala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/uppsala" />
@@ -176,7 +176,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/vasteras</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vasteras" />
@@ -185,7 +185,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/vasteras</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vasteras" />
@@ -194,7 +194,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/vasteras</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vasteras" />
@@ -203,7 +203,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/orebro</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/orebro" />
@@ -212,7 +212,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/orebro</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/orebro" />
@@ -221,7 +221,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/orebro</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/orebro" />
@@ -230,7 +230,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/linkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/linkoping" />
@@ -239,7 +239,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/linkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/linkoping" />
@@ -248,7 +248,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/linkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/linkoping" />
@@ -257,7 +257,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/helsingborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/helsingborg" />
@@ -266,7 +266,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/helsingborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/helsingborg" />
@@ -275,7 +275,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/helsingborg</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/helsingborg" />
@@ -284,7 +284,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/jonkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/jonkoping" />
@@ -293,7 +293,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/jonkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/jonkoping" />
@@ -302,7 +302,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/jonkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/jonkoping" />
@@ -311,7 +311,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/norrkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/norrkoping" />
@@ -320,7 +320,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/norrkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/norrkoping" />
@@ -329,7 +329,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/norrkoping</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/norrkoping" />
@@ -338,7 +338,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/gavle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gavle" />
@@ -347,7 +347,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/gavle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gavle" />
@@ -356,7 +356,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/gavle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gavle" />
@@ -365,7 +365,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/boden</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/boden" />
@@ -374,7 +374,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/boden</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/boden" />
@@ -383,7 +383,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/boden</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/boden" />
@@ -392,7 +392,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/saffle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/saffle" />
@@ -401,7 +401,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/saffle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/saffle" />
@@ -410,7 +410,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/saffle</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/saffle" />
@@ -419,7 +419,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/vingaker</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vingaker" />
@@ -428,7 +428,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/vingaker</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vingaker" />
@@ -437,7 +437,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/vingaker</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vingaker" />
@@ -446,7 +446,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/vastervik</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vastervik" />
@@ -455,7 +455,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/vastervik</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vastervik" />
@@ -464,7 +464,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/vastervik</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/vastervik" />
@@ -473,7 +473,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/motala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/motala" />
@@ -482,7 +482,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/motala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/motala" />
@@ -491,7 +491,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/motala</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/motala" />
@@ -500,7 +500,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/lulea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lulea" />
@@ -509,7 +509,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/lulea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lulea" />
@@ -518,7 +518,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/lulea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lulea" />
@@ -527,7 +527,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/oskarshamn</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/oskarshamn" />
@@ -536,7 +536,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/oskarshamn</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/oskarshamn" />
@@ -545,7 +545,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/oskarshamn</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/oskarshamn" />
@@ -554,7 +554,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/umea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/umea" />
@@ -563,7 +563,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/umea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/umea" />
@@ -572,7 +572,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/umea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/umea" />
@@ -581,7 +581,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/skelleftea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/skelleftea" />
@@ -590,7 +590,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/skelleftea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/skelleftea" />
@@ -599,7 +599,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/skelleftea</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/skelleftea" />
@@ -608,7 +608,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/karlstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/karlstad" />
@@ -617,7 +617,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/karlstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/karlstad" />
@@ -626,7 +626,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/karlstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/karlstad" />
@@ -635,7 +635,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/ostersund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/ostersund" />
@@ -644,7 +644,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/ostersund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/ostersund" />
@@ -653,7 +653,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/ostersund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/ostersund" />
@@ -662,7 +662,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/eskilstuna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/eskilstuna" />
@@ -671,7 +671,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/eskilstuna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/eskilstuna" />
@@ -680,7 +680,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/eskilstuna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/eskilstuna" />
@@ -689,7 +689,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/lund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lund" />
@@ -698,7 +698,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/lund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lund" />
@@ -707,7 +707,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/lund</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/lund" />
@@ -716,7 +716,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/kiruna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/kiruna" />
@@ -725,7 +725,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/kiruna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/kiruna" />
@@ -734,7 +734,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/kiruna</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/kiruna" />
@@ -743,7 +743,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/gallivare</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gallivare" />
@@ -752,7 +752,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/gallivare</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gallivare" />
@@ -761,7 +761,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/gallivare</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/gallivare" />
@@ -770,7 +770,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/stad/halmstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/halmstad" />
@@ -779,7 +779,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/en/corporate-housing/halmstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/halmstad" />
@@ -788,7 +788,7 @@
   </url>
   <url>
     <loc>https://stayonsite.se/pl/zakwaterowanie/halmstad</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://stayonsite.se/stad/halmstad" />
