@@ -571,13 +571,13 @@ export const translations: Record<
       "10 000–30 000 kr/mån i passiv inkomst, direkt från stabila företag. Betalning alltid i förskott. Med Boverkets beräknade bostadsbrist på 52 300 bostäder per år finns det en stark efterfrågan som tryggar din intäkt.",
     "homeowner.benefits.security.title": "Total trygghet för ditt boende",
     "homeowner.benefits.security.description":
-      "Endast verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag. Besiktning med fotodokumentation och fullständigt skadeskydd ingår. Noll tvister på 100+ uthyrningar.",
+      "Endast verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag. Besiktning med fotodokumentation. Noll tvister på 100+ uthyrningar.",
     "homeowner.benefits.hassle.title": "Vi sköter allt",
     "homeowner.benefits.hassle.description":
       "Kontrakt, nycklar, kommunikation, städning och betalningar – du behöver inte lyfta ett finger. Samma personliga kontaktperson från dag ett.",
     "homeowner.benefits.flexibility.title": "Du bestämmer – helt och hållet",
     "homeowner.benefits.flexibility.description":
-      "Från 3 månaders avtal, 1 månads uppsägningstid. Inga långa bindningstider. Du kan säga upp med en månads varsel och får tillbaka din bostad i ursprungligt skick.",
+      "Från 1 månads avtal, 1 månads uppsägningstid. Inga långa bindningstider. Du kan säga upp med en månads varsel och får tillbaka din bostad i ursprungligt skick.",
     "homeowner.benefits.guarantee.title": "Inga avdrag från din hyra",
     "homeowner.benefits.guarantee.description":
       "Konkurrenter som Samtrygg tar 15 % och Qasa 4,95 % av din hyra. Vi hyr direkt av dig till ett fast pris – du behåller hela den avtalade hyran, varje månad.",
@@ -585,7 +585,7 @@ export const translations: Record<
     "homeowner.guarantee.title": "Vårt löfte till dig",
     "homeowner.guarantee.subtitle": "Vi tar risken – du får tryggheten. 100+ husägare har redan valt oss.",
     "homeowner.guarantee.payment.title": "Betalningsgaranti",
-    "homeowner.guarantee.payment.description": "Fast månadshyra i förskott till ditt konto, från 3 månader och uppåt. Uppsägningstid bara 1 månad. Till skillnad från andra aktörer tar vi inga avdrag – du får 100 % av den avtalade hyran.",
+    "homeowner.guarantee.payment.description": "Fast månadshyra i förskott till ditt konto, från 1 månad och uppåt. Uppsägningstid bara 1 månad. Till skillnad från andra aktörer tar vi inga avdrag – du får 100 % av den avtalade hyran.",
     "homeowner.guarantee.protection.title": "I trygga händer",
     "homeowner.guarantee.protection.description": "Noggrann besiktning med fotodokumentation vid in- och utflytt. Vi har hanterat 100+ uthyrningar utan en enda tvist med våra husägare.",
     "homeowner.guarantee.support.title": "Personlig support dygnet runt",
@@ -604,7 +604,7 @@ export const translations: Record<
       "Inom 24 timmar får du ett personligt samtal för att diskutera din bostad och få en kostnadsfri intäktsbedömning.",
     "homeowner.process.step3.title": "Besiktning & avtal",
     "homeowner.process.step3.description":
-      "Vi kommer till dig för en kostnadsfri besiktning med fotodokumentation. Avtal från 3 månader, 1 månads uppsägningstid.",
+      "Vi kommer till dig för en kostnadsfri besiktning med fotodokumentation. Avtal från 1 månad, 1 månads uppsägningstid.",
     "homeowner.process.step4.title": "Matchning med företag",
     "homeowner.process.step4.description":
       "Vi matchar din bostad med verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag.",
