@@ -22,4 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Standups (genereras automatiskt, finns i Notion)
+standups/
+
+# React app (eget repo, deployas separat via Vercel)
+stayonsite-quick-lodgings-finder/
+
+# Misc
+docs/
+competitor-research-*.md
 .vercel
+.env*.local
