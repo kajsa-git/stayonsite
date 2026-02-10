@@ -125,7 +125,8 @@ const InfrastrukturBoendeKarta2026 = () => {
         I{' '}<Link to="/stad/boden">Boden</Link>, med sina 28 000 invånare, innebär H2 Green
         Steels etablering en massiv ökning av boendebehovet. Liknande situationer uppstår
         i{' '}<Link to="/stad/kiruna">Kiruna</Link>,{' '}
-        <Link to="/stad/gallivare">Gällivare</Link> och Örnsköldsvik.
+        <Link to="/stad/gallivare">Gällivare</Link> och{' '}
+        <Link to="/stad/ornskoldsvik">Örnsköldsvik</Link>.
       </p>
 
       <h2>Tre regioner att bevaka extra noga</h2>
@@ -148,7 +149,8 @@ const InfrastrukturBoendeKarta2026 = () => {
         är ett av Sveriges största infrastrukturprojekt. Enligt Trafikverket uppskattas
         projektet sysselsätta 2 000&ndash;3 000 byggnadsarbetare under de mest intensiva
         faserna. Städer som{' '}<Link to="/stad/norrkoping">Norrköping</Link>,{' '}
-        <Link to="/stad/linkoping">Linköping</Link> och Nyköping påverkas direkt.
+        <Link to="/stad/linkoping">Linköping</Link> och{' '}
+        <Link to="/stad/nykoping">Nyköping</Link> påverkas direkt.
       </p>
 
       <h3>3. Värmland &ndash; Dalarna: Skog, energi och montörer</h3>
@@ -157,7 +159,9 @@ const InfrastrukturBoendeKarta2026 = () => {
         Utanför de största infrastrukturprojekten finns en stor men mindre synlig efterfrågan
         från skogsindustrin, energisektorn och montörföretag. Mobila maskinlag, elinstallatörer
         och underhållsteam behöver boende i{' '}<Link to="/stad/saffle">Säffle</Link>,{' '}
-        Ludvika,{' '}<Link to="/stad/karlstad">Karlstad</Link> och Falun &mdash; ofta med kort varsel.
+        <Link to="/stad/ludvika">Ludvika</Link>,{' '}
+        <Link to="/stad/karlstad">Karlstad</Link> och{' '}
+        <Link to="/stad/falun">Falun</Link> &mdash; ofta med kort varsel.
       </p>
 
       <blockquote>

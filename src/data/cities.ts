@@ -1038,7 +1038,7 @@ export const cities: City[] = [
         )
       }
     ],
-    nearby: ['uppsala', 'stockholm']
+    nearby: ['uppsala', 'stockholm', 'falun']
   },
   {
     slug: 'boden',
@@ -1918,7 +1918,7 @@ export const cities: City[] = [
         )
       }
     ],
-    nearby: ['skelleftea', 'lulea']
+    nearby: ['skelleftea', 'lulea', 'ornskoldsvik']
   },
   {
     slug: 'skelleftea',
@@ -2138,7 +2138,7 @@ export const cities: City[] = [
         )
       }
     ],
-    nearby: ['saffle', 'orebro']
+    nearby: ['saffle', 'orebro', 'ludvika']
   },
   {
     slug: 'ostersund',
@@ -2799,6 +2799,446 @@ export const cities: City[] = [
       }
     ],
     nearby: ['helsingborg', 'jonkoping']
+  },
+  {
+    slug: 'falun',
+    name: 'Falun',
+    region: 'Dalarnas län',
+    population: '60 000',
+    description: 'Universitetsstad och industricentrum med SSAB, gruvtradition och växande byggsektorn.',
+    highlights: ['SSAB stålverk', 'Högskolan Dalarna', 'Koppargruvan', 'Energiprojekt'],
+    industries: ['Stål & Metall', 'Utbildning', 'Bygg & Anläggning', 'Energi'],
+    coordinates: [60.6065, 15.6355],
+    heroHook: ls(
+      'Personalboende i Falun – nära SSAB, Högskolan och byggprojekten i Dalarna',
+      'Worker Housing in Falun – Near SSAB, University & Construction in Dalarna',
+      'Zakwaterowanie Pracownicze w Falun – Blisko SSAB, Uczelni i Budów w Dalarna'
+    ),
+    intro: ls(
+      'SSAB:s stålverk, Högskolan Dalarna och regionens bygg- och energiprojekt skapar ett stadigt behov av personalboende i Falun. Vi erbjuder möblerade lägenheter och hus i centrala Falun och Lugnet-området — flexibla avtal från en vecka.',
+      'SSAB\'s steelworks, Dalarna University and the region\'s construction and energy projects create a steady demand for worker housing in Falun. We offer furnished apartments and houses in central Falun and the Lugnet area — flexible contracts from one week.',
+      'Stalownia SSAB, Uniwersytet Dalarna oraz regionalne projekty budowlane i energetyczne tworzą stałe zapotrzebowanie na zakwaterowanie pracownicze w Falun. Oferujemy umeblowane mieszkania i domy w centrum Falun i okolicy Lugnet — elastyczne umowy od jednego tygodnia.'
+    ),
+    keywords: lk(
+      ['personalboende falun', 'företagsboende falun', 'boende falun', 'lägenheter falun', 'montörboende dalarna', 'tillfälligt boende falun', 'korttidsboende falun', 'byggboende falun'],
+      ['corporate housing falun', 'worker accommodation falun', 'apartments falun sweden', 'temporary housing falun', 'staff accommodation dalarna'],
+      ['zakwaterowanie pracownicze falun', 'mieszkania firmowe falun', 'noclegi dla budowlańców falun szwecja', 'kwatery pracownicze falun', 'tymczasowe zakwaterowanie falun']
+    ),
+    metrics: [
+      {
+        value: '24+',
+        label: ls('platser i Falun', 'beds in Falun', 'miejsc w Falun'),
+        subtext: ls('Lägenheter & villor', 'Apartments & houses', 'Mieszkania i domy')
+      },
+      {
+        value: '10',
+        label: ls('min till SSAB', 'min to SSAB', 'min do SSAB'),
+        subtext: ls('Från centrala boenden', 'From central housing', 'Z centralnych noclegów')
+      },
+      {
+        value: '24h',
+        label: ls('svar på förfrågan', 'response time', 'czas odpowiedzi'),
+        subtext: ls('Garanterad återkoppling', 'Guaranteed response', 'Gwarantowana odpowiedź')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Centrala Falun', 'Central Falun', 'Centrum Falun'),
+        description: ls('Nära service, restauranger och kollektivtrafik.', 'Close to services, restaurants and public transport.', 'Blisko usług, restauracji i transportu publicznego.'),
+        distance: ls('10 min till SSAB', '10 min to SSAB', '10 min do SSAB')
+      },
+      {
+        name: ls('Lugnet', 'Lugnet', 'Lugnet'),
+        description: ls('Nära skidstadion och friluftsområden.', 'Near the ski stadium and outdoor areas.', 'Blisko stadionu narciarskiego i terenów rekreacyjnych.'),
+        distance: ls('15 min till centrum', '15 min to downtown', '15 min do centrum')
+      },
+      {
+        name: ls('Domnarvets industriområde', 'Domnarvet industrial area', 'Domnarvet strefa przemysłowa'),
+        description: ls('Nära SSAB och industriparken.', 'Close to SSAB and the industrial park.', 'Blisko SSAB i parku przemysłowego.'),
+        distance: ls('5 min till stålverket', '5 min to steelworks', '5 min do stalowni')
+      }
+    ],
+    projects: [
+      {
+        name: ls('SSAB underhåll & expansion', 'SSAB Maintenance & Expansion', 'Konserwacja i rozbudowa SSAB'),
+        description: ls('Boende för montörer och tekniker vid stålverket.', 'Housing for fitters and technicians at the steelworks.', 'Zakwaterowanie dla monterów i techników przy stalowni.')
+      },
+      {
+        name: ls('Energiprojekt Dalarna', 'Energy Projects Dalarna', 'Projekty energetyczne Dalarna'),
+        description: ls('Team vid vindkraft- och nätutbyggnad i regionen.', 'Crews at wind power and grid expansion in the region.', 'Ekipy przy budowie farm wiatrowych i sieci w regionie.')
+      },
+      {
+        name: ls('Bygg & Renovering', 'Construction & Renovation', 'Budownictwo i renowacja'),
+        description: ls('Bostadsbyggen och infrastrukturprojekt i Falun.', 'Housing construction and infrastructure projects in Falun.', 'Budowa mieszkań i projekty infrastrukturalne w Falun.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'Vi hade 12 montörer som jobbade med underhållsstopp på SSAB i tre månader. StayOnSite ordnade lägenheter i centrum på två dagars varsel.',
+        'We had 12 fitters working on a maintenance shutdown at SSAB for three months. StayOnSite arranged apartments in the center at two days\' notice.',
+        'Mieliśmy 12 monterów pracujących przy przestoju konserwacyjnym w SSAB przez trzy miesiące. StayOnSite zorganizowało mieszkania w centrum w dwa dni.'
+      ),
+      author: 'Erik L.',
+      role: ls('Platschef', 'Site Manager', 'Kierownik budowy'),
+      company: 'Industriservice AB'
+    },
+    faq: [
+      {
+        question: ls('Finns boende nära SSAB?', 'Is there housing near SSAB?', 'Czy są noclegi blisko SSAB?'),
+        answer: ls(
+          'Ja, vi har lägenheter i Domnarvet och centrala Falun, 5–10 minuter från stålverket.',
+          'Yes, we have apartments in Domnarvet and central Falun, 5–10 minutes from the steelworks.',
+          'Tak, mamy mieszkania w Domnarvet i centrum Falun, 5–10 minut od stalowni.'
+        )
+      },
+      {
+        question: ls('Kan ni ta emot större grupper?', 'Can you accommodate larger groups?', 'Czy możecie przyjąć większe grupy?'),
+        answer: ls(
+          'Ja, vi har kapacitet för grupper upp till 20 personer i Falun-området.',
+          'Yes, we have capacity for groups up to 20 people in the Falun area.',
+          'Tak, mamy pojemność dla grup do 20 osób w rejonie Falun.'
+        )
+      },
+      {
+        question: ls('Vad ingår i boendet?', 'What is included?', 'Co jest wliczone?'),
+        answer: ls(
+          'Möblerat, kök, sängkläder, wifi, el, värme och slutstädning.',
+          'Furnished, kitchen, linens, wifi, electricity, heating and final cleaning.',
+          'Umeblowane, kuchnia, pościel, wifi, prąd, ogrzewanie i sprzątanie końcowe.'
+        )
+      }
+    ],
+    nearby: ['ludvika', 'gavle']
+  },
+  {
+    slug: 'ludvika',
+    name: 'Ludvika',
+    region: 'Dalarnas län',
+    population: '26 000',
+    description: 'Industristad med Hitachi Energy (fd ABB) och vattenkraftsprojekt i Bergslagen.',
+    highlights: ['Hitachi Energy', 'Vattenkraft', 'Bergslagen', 'Transformatortillverkning'],
+    industries: ['Energiteknik', 'Vattenkraft', 'Tillverkning', 'Bygg & Anläggning'],
+    coordinates: [60.1493, 15.1870],
+    heroHook: ls(
+      'Personalboende i Ludvika – nära Hitachi Energy och vattenkraftsprojekten',
+      'Worker Housing in Ludvika – Near Hitachi Energy & Hydropower Projects',
+      'Zakwaterowanie Pracownicze w Ludvika – Blisko Hitachi Energy i Hydroelektrowni'
+    ),
+    intro: ls(
+      'Hitachi Energys transformatorfabrik och de stora vattenkraftsprojekten i Bergslagen gör Ludvika till en nyckelort för tekniker och montörer. Vi erbjuder möblerade boenden nära fabriken och i centrala Ludvika — allt från enstaka veckor till årskontrakt.',
+      'Hitachi Energy\'s transformer factory and the major hydropower projects in Bergslagen make Ludvika a key location for technicians and fitters. We offer furnished housing near the factory and in central Ludvika — from single weeks to annual contracts.',
+      'Fabryka transformatorów Hitachi Energy i duże projekty hydroenergetyczne w Bergslagen czynią Ludvikę kluczową lokalizacją dla techników i monterów. Oferujemy umeblowane noclegi blisko fabryki i w centrum Ludviki — od pojedynczych tygodni po roczne kontrakty.'
+    ),
+    keywords: lk(
+      ['personalboende ludvika', 'företagsboende ludvika', 'boende ludvika', 'montörboende ludvika', 'tillfälligt boende ludvika', 'lägenheter ludvika', 'byggboende bergslagen', 'korttidsboende ludvika'],
+      ['corporate housing ludvika', 'worker accommodation ludvika', 'apartments ludvika sweden', 'temporary housing ludvika', 'staff accommodation bergslagen'],
+      ['zakwaterowanie pracownicze ludvika', 'mieszkania firmowe ludvika', 'noclegi dla budowlańców ludvika szwecja', 'kwatery pracownicze ludvika', 'tymczasowe zakwaterowanie ludvika']
+    ),
+    metrics: [
+      {
+        value: '18+',
+        label: ls('platser i Ludvika', 'beds in Ludvika', 'miejsc w Ludvika'),
+        subtext: ls('Lägenheter & villor', 'Apartments & houses', 'Mieszkania i domy')
+      },
+      {
+        value: '5',
+        label: ls('min till Hitachi Energy', 'min to Hitachi Energy', 'min do Hitachi Energy'),
+        subtext: ls('Från centrala boenden', 'From central housing', 'Z centralnych noclegów')
+      },
+      {
+        value: '0%',
+        label: ls('avgift för husägare', 'fee for homeowners', 'prowizja dla właścicieli'),
+        subtext: ls('Du behåller hela hyran', 'You keep the full rent', 'Zatrzymujesz cały czynsz')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Centrala Ludvika', 'Central Ludvika', 'Centrum Ludvika'),
+        description: ls('Nära tågstation, butiker och service.', 'Close to train station, shops and services.', 'Blisko dworca, sklepów i usług.'),
+        distance: ls('5 min till Hitachi Energy', '5 min to Hitachi Energy', '5 min do Hitachi Energy')
+      },
+      {
+        name: ls('Grängesberg', 'Grängesberg', 'Grängesberg'),
+        description: ls('Lugnt bostadsområde med villor nära naturen.', 'Quiet residential area with houses near nature.', 'Spokojna dzielnica mieszkalna z domami blisko natury.'),
+        distance: ls('20 min till centrum', '20 min to downtown', '20 min do centrum')
+      },
+      {
+        name: ls('Industriområdet', 'Industrial area', 'Strefa przemysłowa'),
+        description: ls('Intill Hitachi Energys fabrik.', 'Next to Hitachi Energy\'s factory.', 'Obok fabryki Hitachi Energy.'),
+        distance: ls('Gångavstånd till fabriken', 'Walking distance to factory', 'Pieszo do fabryki')
+      }
+    ],
+    projects: [
+      {
+        name: ls('Hitachi Energy', 'Hitachi Energy', 'Hitachi Energy'),
+        description: ls('Boende för montörer och tekniker vid transformatorfabriken.', 'Housing for fitters and technicians at the transformer factory.', 'Zakwaterowanie dla monterów i techników przy fabryce transformatorów.')
+      },
+      {
+        name: ls('Vattenkraftsprojekt', 'Hydropower Projects', 'Projekty hydroenergetyczne'),
+        description: ls('Team vid damm- och turbinrenovering i Bergslagen.', 'Crews at dam and turbine renovation in Bergslagen.', 'Ekipy przy renowacji zapór i turbin w Bergslagen.')
+      },
+      {
+        name: ls('Nätutbyggnad', 'Grid Expansion', 'Rozbudowa sieci'),
+        description: ls('Elnätsprojekt i Dalarna och Bergslagen.', 'Power grid projects in Dalarna and Bergslagen.', 'Projekty sieci energetycznych w Dalarna i Bergslagen.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'Våra tekniker pendlar hit för uppdrag på Hitachi Energy. StayOnSite fixade fyra lägenheter nära fabriken — smidigt och professionellt.',
+        'Our technicians commute here for assignments at Hitachi Energy. StayOnSite arranged four apartments near the factory — smooth and professional.',
+        'Nasi technicy dojeżdżają tu na zlecenia w Hitachi Energy. StayOnSite zorganizowało cztery mieszkania blisko fabryki — sprawnie i profesjonalnie.'
+      ),
+      author: 'Anders K.',
+      role: ls('Driftchef', 'Operations Manager', 'Kierownik operacyjny'),
+      company: 'Energimontage Nord'
+    },
+    faq: [
+      {
+        question: ls('Hur nära Hitachi Energy ligger boendena?', 'How close to Hitachi Energy are the accommodations?', 'Jak blisko Hitachi Energy są noclegi?'),
+        answer: ls(
+          'Våra boenden i centrala Ludvika ligger 5 minuter med bil från fabriken.',
+          'Our housing in central Ludvika is 5 minutes by car from the factory.',
+          'Nasze noclegi w centrum Ludviki są 5 minut samochodem od fabryki.'
+        )
+      },
+      {
+        question: ls('Kan ni ordna boende med kort varsel?', 'Can you arrange housing at short notice?', 'Czy możecie zorganizować noclegi na krótki termin?'),
+        answer: ls(
+          'Ja, vi har oftast tillgängliga boenden och kan ordna inflyttning inom 24–48 timmar.',
+          'Yes, we usually have available housing and can arrange move-in within 24–48 hours.',
+          'Tak, zwykle mamy dostępne noclegi i możemy zorganizować zakwaterowanie w ciągu 24–48 godzin.'
+        )
+      },
+      {
+        question: ls('Vad ingår i boendet?', 'What is included?', 'Co jest wliczone?'),
+        answer: ls(
+          'Möblerat, kök, sängkläder, wifi, el, värme och slutstädning.',
+          'Furnished, kitchen, linens, wifi, electricity, heating and final cleaning.',
+          'Umeblowane, kuchnia, pościel, wifi, prąd, ogrzewanie i sprzątanie końcowe.'
+        )
+      }
+    ],
+    nearby: ['falun', 'karlstad']
+  },
+  {
+    slug: 'nykoping',
+    name: 'Nyköping',
+    region: 'Södermanlands län',
+    population: '56 000',
+    description: 'Residensstad vid Ostlänken-korridoren med flygplats, industri och infrastrukturprojekt.',
+    highlights: ['Ostlänken', 'Stockholm Skavsta flygplats', 'Industri', 'Infrastruktur'],
+    industries: ['Bygg & Anläggning', 'Logistik', 'Tillverkning', 'Infrastruktur'],
+    coordinates: [58.7530, 17.0086],
+    heroHook: ls(
+      'Personalboende i Nyköping – nära Ostlänken, Skavsta och industrierna',
+      'Worker Housing in Nyköping – Near Ostlänken Railway, Skavsta & Industry',
+      'Zakwaterowanie Pracownicze w Nyköping – Blisko Ostlänken, Skavsta i Przemysłu'
+    ),
+    intro: ls(
+      'Ostlänken — Sveriges största järnvägsprojekt — passerar genom Nyköping och skapar ett enormt behov av personalboende de kommande åren. Tillsammans med Skavsta flygplats och regionens industriprojekt erbjuder vi möblerade lägenheter och hus med flexibla avtal.',
+      'Ostlänken — Sweden\'s largest railway project — passes through Nyköping, creating enormous demand for worker housing in coming years. Combined with Skavsta airport and the region\'s industrial projects, we offer furnished apartments and houses with flexible contracts.',
+      'Ostlänken — największy projekt kolejowy Szwecji — przechodzi przez Nyköping, tworząc ogromne zapotrzebowanie na zakwaterowanie pracownicze w nadchodzących latach. W połączeniu z lotniskiem Skavsta i projektami przemysłowymi regionu oferujemy umeblowane mieszkania i domy z elastycznymi umowami.'
+    ),
+    keywords: lk(
+      ['personalboende nyköping', 'företagsboende nyköping', 'boende nyköping', 'montörboende nyköping', 'tillfälligt boende nyköping', 'lägenheter nyköping', 'byggboende ostlänken', 'korttidsboende nyköping'],
+      ['corporate housing nykoping', 'worker accommodation nykoping', 'apartments nykoping sweden', 'temporary housing nykoping', 'ostlanken worker housing'],
+      ['zakwaterowanie pracownicze nykoping', 'mieszkania firmowe nykoping', 'noclegi dla budowlańców nykoping szwecja', 'kwatery pracownicze nykoping', 'tymczasowe zakwaterowanie nykoping']
+    ),
+    metrics: [
+      {
+        value: '20+',
+        label: ls('platser i Nyköping', 'beds in Nyköping', 'miejsc w Nyköping'),
+        subtext: ls('Lägenheter & villor', 'Apartments & houses', 'Mieszkania i domy')
+      },
+      {
+        value: '2026–35',
+        label: ls('Ostlänken byggtid', 'Ostlänken build period', 'okres budowy Ostlänken'),
+        subtext: ls('Långsiktigt boendebehov', 'Long-term housing need', 'Długoterminowe zapotrzebowanie')
+      },
+      {
+        value: '24h',
+        label: ls('svar på förfrågan', 'response time', 'czas odpowiedzi'),
+        subtext: ls('Garanterad återkoppling', 'Guaranteed response', 'Gwarantowana odpowiedź')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Centrala Nyköping', 'Central Nyköping', 'Centrum Nyköping'),
+        description: ls('Nära tågstation, service och restauranger.', 'Close to train station, services and restaurants.', 'Blisko dworca, usług i restauracji.'),
+        distance: ls('10 min till Ostlänken-bygget', '10 min to Ostlänken construction', '10 min do budowy Ostlänken')
+      },
+      {
+        name: ls('Arnö', 'Arnö', 'Arnö'),
+        description: ls('Bostadsområde med villor och lugn miljö.', 'Residential area with houses and quiet environment.', 'Dzielnica mieszkalna z domami i spokojnym otoczeniem.'),
+        distance: ls('8 min till centrum', '8 min to downtown', '8 min do centrum')
+      },
+      {
+        name: ls('Skavsta-området', 'Skavsta area', 'Okolica Skavsta'),
+        description: ls('Nära flygplatsen och logistikcentrum.', 'Near the airport and logistics center.', 'Blisko lotniska i centrum logistycznego.'),
+        distance: ls('5 min till flygplatsen', '5 min to airport', '5 min do lotniska')
+      }
+    ],
+    projects: [
+      {
+        name: ls('Ostlänken', 'Ostlänken Railway', 'Kolej Ostlänken'),
+        description: ls('Boende för byggnadsarbetare vid höghastighetsjärnvägen.', 'Housing for construction workers at the high-speed railway.', 'Zakwaterowanie dla budowlańców przy kolei dużych prędkości.')
+      },
+      {
+        name: ls('Skavsta utveckling', 'Skavsta Development', 'Rozwój Skavsta'),
+        description: ls('Team vid flygplats- och logistikprojekt.', 'Crews at airport and logistics projects.', 'Ekipy przy projektach lotniskowych i logistycznych.')
+      },
+      {
+        name: ls('Kommunal infrastruktur', 'Municipal Infrastructure', 'Infrastruktura komunalna'),
+        description: ls('VA-projekt och vägbyggen i Sörmland.', 'Water and road construction in Sörmland.', 'Projekty wod-kan i drogowe w Sörmland.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'Vi bygger en sträcka av Ostlänken och behövde 20 platser i Nyköping. StayOnSite ordnade allt på en vecka — vi kan fokusera på bygget.',
+        'We\'re building a section of Ostlänken and needed 20 beds in Nyköping. StayOnSite arranged everything in a week — we can focus on construction.',
+        'Budujemy odcinek Ostlänken i potrzebowaliśmy 20 miejsc w Nyköping. StayOnSite zorganizowało wszystko w tydzień — możemy skupić się na budowie.'
+      ),
+      author: 'Johan S.',
+      role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
+      company: 'Anläggning & Infrastruktur'
+    },
+    faq: [
+      {
+        question: ls('Har ni boende nära Ostlänken-bygget?', 'Do you have housing near the Ostlänken construction?', 'Czy macie noclegi blisko budowy Ostlänken?'),
+        answer: ls(
+          'Ja, våra boenden i centrala Nyköping ligger 10–15 minuter från de pågående byggplatserna.',
+          'Yes, our housing in central Nyköping is 10–15 minutes from the ongoing construction sites.',
+          'Tak, nasze noclegi w centrum Nyköping są 10–15 minut od trwających budów.'
+        )
+      },
+      {
+        question: ls('Hur lång tid kan vi boka?', 'How long can we book?', 'Na jak długo możemy zarezerwować?'),
+        answer: ls(
+          'Från en vecka till flera år — perfekt för långvariga infrastrukturprojekt.',
+          'From one week to several years — perfect for long-term infrastructure projects.',
+          'Od jednego tygodnia do kilku lat — idealne dla długoterminowych projektów infrastrukturalnych.'
+        )
+      },
+      {
+        question: ls('Vad ingår i boendet?', 'What is included?', 'Co jest wliczone?'),
+        answer: ls(
+          'Möblerat, kök, sängkläder, wifi, el, värme och slutstädning.',
+          'Furnished, kitchen, linens, wifi, electricity, heating and final cleaning.',
+          'Umeblowane, kuchnia, pościel, wifi, prąd, ogrzewanie i sprzątanie końcowe.'
+        )
+      }
+    ],
+    nearby: ['norrkoping', 'linkoping']
+  },
+  {
+    slug: 'ornskoldsvik',
+    name: 'Örnsköldsvik',
+    region: 'Västernorrlands län',
+    population: '56 000',
+    description: 'Industristad vid Höga Kusten med Domsjö bioraffinaderi och Nya Ostkustbanan.',
+    highlights: ['Domsjö bioraffinaderi', 'Nya Ostkustbanan', 'Höga Kusten', 'Skogsindustri'],
+    industries: ['Bioindustri', 'Skogsindustri', 'Bygg & Anläggning', 'Infrastruktur'],
+    coordinates: [63.2909, 18.7152],
+    heroHook: ls(
+      'Personalboende i Örnsköldsvik – nära Domsjö, Ostkustbanan och skogsindustrin',
+      'Worker Housing in Örnsköldsvik – Near Domsjö, East Coast Line & Forestry',
+      'Zakwaterowanie Pracownicze w Örnsköldsvik – Blisko Domsjö, Kolei Wschodniej i Leśnictwa'
+    ),
+    intro: ls(
+      'Domsjö bioraffinaderi, Nya Ostkustbanans utbyggnad och den starka skogsindustrin gör Örnsköldsvik till en viktig ort för personalboende. Vi erbjuder möblerade lägenheter och hus nära arbetsplatserna — flexibla avtal, allt inklusive.',
+      'The Domsjö biorefinery, expansion of the New East Coast Line and the strong forestry industry make Örnsköldsvik a key location for worker housing. We offer furnished apartments and houses near the worksites — flexible contracts, all-inclusive.',
+      'Biorafineria Domsjö, rozbudowa Nowej Kolei Wschodniej i silny przemysł leśny czynią Örnsköldsvik kluczową lokalizacją dla zakwaterowania pracowniczego. Oferujemy umeblowane mieszkania i domy blisko miejsc pracy — elastyczne umowy, all-inclusive.'
+    ),
+    keywords: lk(
+      ['personalboende örnsköldsvik', 'företagsboende örnsköldsvik', 'boende örnsköldsvik', 'montörboende örnsköldsvik', 'tillfälligt boende örnsköldsvik', 'lägenheter örnsköldsvik', 'byggboende norrland', 'korttidsboende örnsköldsvik'],
+      ['corporate housing ornskoldsvik', 'worker accommodation ornskoldsvik', 'apartments ornskoldsvik sweden', 'temporary housing ornskoldsvik', 'staff accommodation high coast'],
+      ['zakwaterowanie pracownicze ornskoldsvik', 'mieszkania firmowe ornskoldsvik', 'noclegi dla budowlańców ornskoldsvik szwecja', 'kwatery pracownicze ornskoldsvik', 'tymczasowe zakwaterowanie ornskoldsvik']
+    ),
+    metrics: [
+      {
+        value: '16+',
+        label: ls('platser i Örnsköldsvik', 'beds in Örnsköldsvik', 'miejsc w Örnsköldsvik'),
+        subtext: ls('Lägenheter & villor', 'Apartments & houses', 'Mieszkania i domy')
+      },
+      {
+        value: '10',
+        label: ls('min till Domsjö', 'min to Domsjö', 'min do Domsjö'),
+        subtext: ls('Från centrala boenden', 'From central housing', 'Z centralnych noclegów')
+      },
+      {
+        value: '0%',
+        label: ls('avgift för husägare', 'fee for homeowners', 'prowizja dla właścicieli'),
+        subtext: ls('Du behåller hela hyran', 'You keep the full rent', 'Zatrzymujesz cały czynsz')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Centrala Örnsköldsvik', 'Central Örnsköldsvik', 'Centrum Örnsköldsvik'),
+        description: ls('Nära tågstation, hamn och service.', 'Close to train station, port and services.', 'Blisko dworca, portu i usług.'),
+        distance: ls('10 min till Domsjö', '10 min to Domsjö', '10 min do Domsjö')
+      },
+      {
+        name: ls('Domsjö', 'Domsjö', 'Domsjö'),
+        description: ls('Intill bioraffinaderiet och industriområdet.', 'Next to the biorefinery and industrial area.', 'Obok biorafinerii i strefy przemysłowej.'),
+        distance: ls('5 min till fabriken', '5 min to factory', '5 min do fabryki')
+      },
+      {
+        name: ls('Själevad', 'Själevad', 'Själevad'),
+        description: ls('Lugnt villaområde söder om centrum.', 'Quiet residential area south of downtown.', 'Spokojna dzielnica na południe od centrum.'),
+        distance: ls('10 min till centrum', '10 min to downtown', '10 min do centrum')
+      }
+    ],
+    projects: [
+      {
+        name: ls('Domsjö bioraffinaderi', 'Domsjö Biorefinery', 'Biorafineria Domsjö'),
+        description: ls('Boende för processtekniker och underhållspersonal.', 'Housing for process technicians and maintenance staff.', 'Zakwaterowanie dla techników procesowych i personelu konserwacyjnego.')
+      },
+      {
+        name: ls('Nya Ostkustbanan', 'New East Coast Line', 'Nowa Kolej Wschodnia'),
+        description: ls('Byggnadsarbetare vid järnvägsutbyggnaden.', 'Construction workers at the railway expansion.', 'Budowlańcy przy rozbudowie kolei.')
+      },
+      {
+        name: ls('Skogsindustri', 'Forestry Industry', 'Przemysł leśny'),
+        description: ls('Montörer och maskinförare vid skogsbruk och sågverk.', 'Fitters and machine operators at forestry and sawmills.', 'Monterzy i operatorzy maszyn przy leśnictwie i tartakach.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'Vi hade ett team på 8 personer vid Domsjö i sex månader. StayOnSite hittade villor med kort avstånd till fabriken — teamet var nöjda.',
+        'We had a team of 8 at Domsjö for six months. StayOnSite found houses close to the factory — the team was happy.',
+        'Mieliśmy zespół 8 osób w Domsjö przez sześć miesięcy. StayOnSite znalazło domy blisko fabryki — zespół był zadowolony.'
+      ),
+      author: 'Maria J.',
+      role: ls('HR-ansvarig', 'HR Manager', 'Kierownik HR'),
+      company: 'Process & Teknik'
+    },
+    faq: [
+      {
+        question: ls('Finns boende nära Domsjö?', 'Is there housing near Domsjö?', 'Czy są noclegi blisko Domsjö?'),
+        answer: ls(
+          'Ja, vi har lägenheter i Domsjö-området och centrala Örnsköldsvik, 5–10 minuter från bioraffinaderiet.',
+          'Yes, we have apartments in the Domsjö area and central Örnsköldsvik, 5–10 minutes from the biorefinery.',
+          'Tak, mamy mieszkania w okolicy Domsjö i centrum Örnsköldsvik, 5–10 minut od biorafinerii.'
+        )
+      },
+      {
+        question: ls('Hur fungerar det med längre kontrakt?', 'How do longer contracts work?', 'Jak działają dłuższe umowy?'),
+        answer: ls(
+          'Vi erbjuder avtal från en vecka till flera år med fast månadskostnad.',
+          'We offer contracts from one week to several years with a fixed monthly cost.',
+          'Oferujemy umowy od jednego tygodnia do kilku lat ze stałym kosztem miesięcznym.'
+        )
+      },
+      {
+        question: ls('Vad ingår i boendet?', 'What is included?', 'Co jest wliczone?'),
+        answer: ls(
+          'Möblerat, kök, sängkläder, wifi, el, värme och slutstädning.',
+          'Furnished, kitchen, linens, wifi, electricity, heating and final cleaning.',
+          'Umeblowane, kuchnia, pościel, wifi, prąd, ogrzewanie i sprzątanie końcowe.'
+        )
+      }
+    ],
+    nearby: ['umea', 'skelleftea']
   },
 ];
 
