@@ -30,6 +30,7 @@ if (!API_KEY) {
 
 const MODEL = 'claude-sonnet-4-5-20250929';
 const MAX_TOKENS = 12000;
+const MAX_RETRIES = 3;
 
 // Parse --topic flag
 const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
@@ -80,17 +81,23 @@ async function callClaude(messages, tools = null) {
 
 // ---------- Step 1: Pick topic ----------
 async function pickTopic() {
-  if (topicArg) return topicArg;
 
-  console.log('[article] Picking topic with web search...');
+  if (topicArg) {
+    console.log(`[article] Custom topic: "${topicArg}" — generating metadata...`);
+  } else {
+    console.log('[article] Picking topic with web search...');
+  }
 
   const today = new Date().toISOString().split('T')[0];
+  const topicInstruction = topicArg
+    ? `\n\nANVÄNDAREN HAR VALT ÄMNE: "${topicArg}"\nGenerera metadata för detta specifika ämne. Sök på webben för att hitta aktuell info.\n`
+    : '';
 
   const res = await callClaude([
     {
       role: 'user',
       content: `Du är content-strateg för StayOnSite, ett svenskt B2B-boendebolag som hyr ut personalboende till byggföretag.
-
+${topicInstruction}
 Datum: ${today}
 
 EXISTERANDE ARTIKLAR (undvik överlapp):
@@ -148,15 +155,22 @@ Svara i EXAKT detta JSON-format (inget annat):
     }
   ], [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }]);
 
-  // Extract text from response
-  const textBlock = res.content.find(b => b.type === 'text');
-  if (!textBlock) throw new Error('No text in topic response');
+  // Extract JSON from response — try all text blocks, handle various formats
+  const textBlocks = res.content.filter(b => b.type === 'text');
+  if (textBlocks.length === 0) throw new Error('No text in topic response');
 
-  // Parse JSON from response (might be wrapped in ```json)
-  const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('No JSON in topic response: ' + textBlock.text.slice(0, 500));
+  const allText = textBlocks.map(b => b.text).join('\n');
 
-  return JSON.parse(jsonMatch[0]);
+  // Try: ```json block, then raw JSON object
+  const jsonBlockMatch = allText.match(/```(?:json)?\s*\n(\{[\s\S]*?\})\s*\n```/);
+  const rawJsonMatch = allText.match(/(\{[\s\S]*"slug"[\s\S]*"componentName"[\s\S]*\})/);
+  const jsonStr = jsonBlockMatch?.[1] || rawJsonMatch?.[1];
+
+  if (!jsonStr) {
+    throw new Error('No JSON in topic response. Full text:\n' + allText.slice(0, 1000));
+  }
+
+  return JSON.parse(jsonStr);
 }
 
 // ---------- Step 2: Generate article ----------
@@ -227,18 +241,28 @@ Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera
     }
   ], [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }]);
 
-  const textBlock = res.content.find(b => b.type === 'text');
-  if (!textBlock) throw new Error('No text in article response');
+  const textBlocks = res.content.filter(b => b.type === 'text');
+  if (textBlocks.length === 0) throw new Error('No text in article response');
 
-  // Extract TSX from response
-  const tsxMatch = textBlock.text.match(/```tsx\n([\s\S]*?)```/) || textBlock.text.match(/```\n([\s\S]*?)```/);
-  if (tsxMatch) return tsxMatch[1].trim();
+  const allText = textBlocks.map(b => b.text).join('\n');
 
-  // If no code block, try to find the component directly
-  const componentMatch = textBlock.text.match(/(import BlogLayout[\s\S]*export default \w+;)/);
+  // Strategy 1: ```tsx code block
+  const tsxBlock = allText.match(/```tsx\s*\n([\s\S]*?)```/);
+  if (tsxBlock) return tsxBlock[1].trim();
+
+  // Strategy 2: any code block
+  const anyBlock = allText.match(/```(?:jsx|javascript|js)?\s*\n([\s\S]*?)```/);
+  if (anyBlock && anyBlock[1].includes('BlogLayout')) return anyBlock[1].trim();
+
+  // Strategy 3: raw component without code blocks
+  const componentMatch = allText.match(/(import BlogLayout[\s\S]*?export default \w+;)/);
   if (componentMatch) return componentMatch[1].trim();
 
-  throw new Error('Could not extract TSX from response');
+  // Strategy 4: find anything that looks like a React component
+  const reactMatch = allText.match(/(import .+from .+BlogLayout[\s\S]*?export default \w+;)/);
+  if (reactMatch) return reactMatch[1].trim();
+
+  throw new Error('Could not extract TSX from response. Response starts with:\n' + allText.slice(0, 500));
 }
 
 // ---------- Step 3: Update files ----------
@@ -312,23 +336,77 @@ function updateSitemap(topic) {
   writeFileSync(sitemapPath, updated);
 }
 
+// ---------- Retry helper ----------
+async function withRetry(fn, label, retries = MAX_RETRIES) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      console.error(`[article] ${label} attempt ${attempt}/${retries} failed: ${err.message}`);
+      if (attempt === retries) throw err;
+      console.log(`[article] Retrying in 3s...`);
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+}
+
+// ---------- Notion error notification ----------
+async function notifyNotionError(errorMsg) {
+  try {
+    const envContent = readFileSync(resolve(root, '.env'), 'utf-8');
+    let notionToken, standupPageId;
+    for (const line of envContent.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx === -1) continue;
+      const key = trimmed.slice(0, eqIdx).trim();
+      const val = trimmed.slice(eqIdx + 1).trim();
+      if (key === 'NOTION_TOKEN') notionToken = val;
+      if (key === 'NOTION_STANDUPS_PAGE_ID') standupPageId = val;
+    }
+    if (!notionToken || !standupPageId) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        parent: { page_id: standupPageId },
+        icon: { type: 'emoji', emoji: '🚨' },
+        properties: { title: [{ text: { content: `OBS FEL — Artikelgenerering ${today}` } }] },
+        children: [
+          {
+            type: 'callout',
+            callout: {
+              rich_text: [{ type: 'text', text: { content: `OBS FEL — kontakta IT-support ❤️\n\nFelmeddelande: ${errorMsg}` } }],
+              icon: { type: 'emoji', emoji: '🚨' },
+              color: 'red_background',
+            },
+          },
+        ],
+      }),
+    });
+    console.log('[article] Error notification sent to Notion');
+  } catch (e) {
+    console.error('[article] Could not notify Notion:', e.message);
+  }
+}
+
 // ---------- Main ----------
 async function main() {
   console.log('[article] Starting article generation...');
 
-  // Step 1: Pick or parse topic
-  let topic;
-  if (topicArg) {
-    // If --topic is a string, we need to generate full topic metadata
-    console.log(`[article] Custom topic: "${topicArg}"`);
-    topic = await pickTopic(); // Will use topicArg
-  } else {
-    topic = await pickTopic();
-  }
+  // Step 1: Pick topic (with retry)
+  const topic = await withRetry(() => pickTopic(), 'Topic picking');
 
-  // Validate topic is an object (not a string)
+  // Validate topic
   if (typeof topic === 'string') {
-    throw new Error('Topic should be a JSON object, got string');
+    throw new Error('Topic should be a JSON object, got string. Check --topic usage.');
   }
 
   console.log(`[article] Topic: ${topic.titleSv}`);
@@ -340,8 +418,8 @@ async function main() {
     throw new Error(`Slug "${topic.slug}" already exists!`);
   }
 
-  // Step 2: Generate article TSX
-  const tsx = await generateArticle(topic);
+  // Step 2: Generate article TSX (with retry)
+  const tsx = await withRetry(() => generateArticle(topic), 'Article generation');
 
   // Step 3: Write article file
   const articlePath = resolve(blogDir, `${topic.componentName}.tsx`);
@@ -368,7 +446,8 @@ async function main() {
   return topic;
 }
 
-main().catch(err => {
-  console.error('[article] Error:', err.message);
+main().catch(async (err) => {
+  console.error('[article] FATAL:', err.message);
+  await notifyNotionError(err.message);
   process.exit(1);
 });

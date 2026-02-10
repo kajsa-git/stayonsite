@@ -63,6 +63,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Marknad',
     tags: ['norrbotten', 'grön omställning', 'batteriindustri', 'datacenter', 'luleå', 'boden'],
     readingTime: 7
+  },
+  {
+    slug: 'infrastruktur-personalboende-karta-2026',
+    title: {
+      sv: 'Var behövs personalboende 2026? Kartan över Sveriges största infrastrukturprojekt',
+      en: 'Where Is Worker Housing Needed in 2026? Sweden\'s Biggest Infrastructure Projects',
+      pl: 'Gdzie potrzebne zakwaterowanie w 2026? Największe projekty infrastrukturalne Szwecji'
+    },
+    description: {
+      sv: 'Vi kartlägger de största pågående infrastrukturprojekten i Sverige och analyserar var behovet av personalboende är störst under 2026.',
+      en: 'We map Sweden\'s largest ongoing infrastructure projects and analyze where the demand for worker accommodation is highest in 2026.',
+      pl: 'Mapujemy największe projekty infrastrukturalne w Szwecji i analizujemy zapotrzebowanie na zakwaterowanie pracownicze w 2026.'
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-02-10',
+    category: 'Analys',
+    tags: ['infrastruktur', 'personalboende', 'ostlänken', 'norrbotniabanan', 'byggprojekt'],
+    readingTime: 8
   }
 ];
 
