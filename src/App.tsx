@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const queryClient = new QueryClient()
 
@@ -27,6 +28,7 @@ const App = () => {
           <Sonner />
           <Outlet />
           <Analytics />
+          <SpeedInsights />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
