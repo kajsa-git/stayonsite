@@ -43,7 +43,7 @@ const BlogIndex = () => {
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-12">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {blogPosts.map((post) => {
+              {[...blogPosts].sort((a, b) => b.publishedDate.localeCompare(a.publishedDate)).map((post) => {
                 const title = post.title[language] || post.title.sv;
                 const desc = post.description[language] || post.description.sv;
                 return (

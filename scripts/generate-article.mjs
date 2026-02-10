@@ -48,9 +48,10 @@ const sitemapSource = readFileSync(sitemapPath, 'utf-8');
 // Extract existing slugs to avoid duplicates
 const existingSlugs = [...blogPostsSource.matchAll(/slug:\s*'([^']+)'/g)].map(m => m[1]);
 
-// City slugs for internal linking
+// City slugs for internal linking — ALL slugs, no slicing
 const citiesSource = readFileSync(resolve(root, 'src/data/cities.ts'), 'utf-8');
-const citySlugs = [...citiesSource.matchAll(/slug:\s*'([^']+)'/g)].map(m => m[1]).slice(0, 30);
+const citySlugs = [...citiesSource.matchAll(/slug:\s*'([^']+)'/g)].map(m => m[1]);
+const citySlugSet = new Set(citySlugs);
 
 // ---------- Claude API ----------
 async function callClaude(messages, tools = null) {
@@ -196,7 +197,7 @@ KRAV:
 1. Artikeln ska vara 1000-1500 ord, på SVENSKA
 2. Inkludera minst 2 <blockquote> med citat (från myndigheter, branschorganisationer, rapporter)
 3. Inkludera minst 1 tabell med data
-4. Använd <Link to="/stad/SLUG"> för att länka till stadssidor (tillgängliga: ${citySlugs.slice(0, 15).join(', ')})
+4. Använd <Link to="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
 5. Länka till andra artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
 6. Avsluta med en CTA som nämner StayOnSite, telefonnummer 076-249 84 86, och länkar till /for-foretag och /for-husagare
 7. Framhäv StayOnSites USP: 0% avgift, garanterad hyra, professionella hyresgäster, svar inom 24h
@@ -263,6 +264,38 @@ Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera
   if (reactMatch) return reactMatch[1].trim();
 
   throw new Error('Could not extract TSX from response. Response starts with:\n' + allText.slice(0, 500));
+}
+
+// ---------- Step 2b: Validate city links ----------
+function validateCityLinks(tsx) {
+  // Find all <Link to="/stad/SLUG"> references
+  const linkPattern = /<Link to="\/stad\/([^"]+)">/g;
+  let match;
+  let fixed = tsx;
+  const removed = [];
+
+  while ((match = linkPattern.exec(tsx)) !== null) {
+    const slug = match[1];
+    if (!citySlugSet.has(slug)) {
+      // Replace <Link to="/stad/bad-slug">Text</Link> with just Text
+      const linkRegex = new RegExp(
+        `\\{' '\\}\\s*<Link to="/stad/${slug}">([^<]+)</Link>`,
+        'g'
+      );
+      const linkRegex2 = new RegExp(
+        `<Link to="/stad/${slug}">([^<]+)</Link>`,
+        'g'
+      );
+      fixed = fixed.replace(linkRegex, (_, text) => text);
+      fixed = fixed.replace(linkRegex2, (_, text) => text);
+      removed.push(slug);
+    }
+  }
+
+  if (removed.length > 0) {
+    console.log(`[article] ⚠️  Removed ${removed.length} broken city link(s): ${removed.join(', ')}`);
+  }
+  return fixed;
 }
 
 // ---------- Step 3: Update files ----------
@@ -419,7 +452,10 @@ async function main() {
   }
 
   // Step 2: Generate article TSX (with retry)
-  const tsx = await withRetry(() => generateArticle(topic), 'Article generation');
+  const rawTsx = await withRetry(() => generateArticle(topic), 'Article generation');
+
+  // Step 2b: Validate and fix broken city links
+  const tsx = validateCityLinks(rawTsx);
 
   // Step 3: Write article file
   const articlePath = resolve(blogDir, `${topic.componentName}.tsx`);
