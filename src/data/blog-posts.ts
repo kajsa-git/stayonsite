@@ -81,6 +81,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Analys',
     tags: ['infrastruktur', 'personalboende', 'ostlänken', 'norrbotniabanan', 'byggprojekt'],
     readingTime: 8
+  },
+  {
+    slug: 'forsakring-ansvar-personalboende-guide-2026',
+    title: {
+      sv: 'Försäkring och ansvar vid personalboende – vad gäller?',
+      en: 'Insurance and liability for worker accommodation – what applies?',
+      pl: 'Ubezpieczenie i odpowiedzialność za zakwaterowanie pracowników – co obowiązuje?',
+    },
+    description: {
+      sv: 'Guide om försäkringar, ansvarsförsäkring och skydd vid uthyrning av personalboende till byggföretag och montörer.',
+      en: 'Guide on insurance, liability coverage and protection when renting accommodation to construction companies and contractors.',
+      pl: 'Przewodnik po ubezpieczeniach, odpowiedzialności i ochronie przy wynajmie zakwaterowania dla firm budowlanych.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-02-11',
+    category: 'Guide',
+    tags: ['försäkring', 'ansvar', 'uthyrning', 'husägare', 'riskhantering'],
+    readingTime: 8,
   }
 ];
 

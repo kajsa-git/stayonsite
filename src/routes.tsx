@@ -13,6 +13,7 @@ import PersonalboendGuide2026 from './pages/blogg/PersonalboendGuide2026'
 import PrivatuthyrningslagenReform2026 from './pages/blogg/PrivatuthyrningslagenReform2026'
 import GronOmstallningBoende from './pages/blogg/GronOmstallningBoende'
 import InfrastrukturBoendeKarta2026 from './pages/blogg/InfrastrukturBoendeKarta2026'
+import ForsakringPersonalboendeGuide2026 from './pages/blogg/ForsakringPersonalboendeGuide2026'
 import NotFound from './pages/NotFound'
 
 const citySlugs = cities.map((c) => c.slug)
@@ -51,6 +52,7 @@ export const routes: RouteRecord[] = [
       { path: 'blogg/privatuthyrningslagen-reform-2026', element: <PrivatuthyrningslagenReform2026 /> },
       { path: 'blogg/gron-omstallning-norr-boende', element: <GronOmstallningBoende /> },
       { path: 'blogg/infrastruktur-personalboende-karta-2026', element: <InfrastrukturBoendeKarta2026 /> },
+      { path: 'blogg/forsakring-ansvar-personalboende-guide-2026', element: <ForsakringPersonalboendeGuide2026 /> },
       { path: 'lp/husagare', element: <LpHusagare /> },
       {
         path: '404',
