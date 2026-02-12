@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -44,15 +45,35 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
 
-      - name: Commit and push
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "StayOnSite Bot"
-          git config user.email "bot@stayonsite.se"
+          BRANCH="blogg/artikel-$(date +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --staged --quiet && echo "No changes" && exit 0
+          git checkout -b "$BRANCH"
           git commit -m "blogg: ny veckoartikel $(date +%Y-%m-%d)
 
           Automatiskt genererad av article.yml
 
           Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-          git push
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "Ny bloggartikel $(date +%Y-%m-%d)" \
+            --body "$(cat <<'EOF'
+          ## Automatiskt genererad artikel
+
+          Skapad av article.yml workflow. Granska och mergea för att deploya.
+
+          **Checklista:**
+          - [ ] Artikeln ser bra ut
+          - [ ] Inga brutna länkar
+          - [ ] Bygg gick igenom (se Actions)
+
+          🤖 Generated with Claude API
+          EOF
+          )" \
+            --base main
