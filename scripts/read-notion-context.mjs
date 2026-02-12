@@ -274,8 +274,100 @@ async function getLatestStandup() {
   return { title, content: texts.join("\n").slice(0, 3000) };
 }
 
+// --- Compact text output (--compact flag) ---
+function formatCompact(leads, deals, properties, contactLog, tasks, companies, cities) {
+  const today = new Date();
+  const in7days = new Date(today);
+  in7days.setDate(in7days.getDate() + 7);
+  const todayStr = today.toISOString().slice(0, 10);
+
+  const lines = [];
+  lines.push(`STAYONSITE CRM (${todayStr})`);
+  lines.push(`Leads: ${leads.length} | Affärer: ${deals.length} | Objekt: ${properties.length} | Företag: ${companies.length} | Orter: ${cities.length}`);
+  if (warnings.length) lines.push(`Varningar: ${warnings.join("; ")}`);
+  lines.push("");
+
+  // Leads needing follow-up (next 7 days) — max 10
+  const urgent = leads.filter((l) => {
+    if (!l.nästaUppföljning) return false;
+    return l.nästaUppföljning <= in7days.toISOString().slice(0, 10);
+  });
+  if (urgent.length) {
+    lines.push(`UPPFÖLJNING (${urgent.length} st inom 7 dagar):`);
+    for (const l of urgent.slice(0, 10)) {
+      const note = l.anteckningar ? l.anteckningar.replace(/Kontaktad \S+\s*/g, "").replace(/Ej svar \S+\s*/g, "ej svar ").trim().slice(0, 40) : "";
+      lines.push(`  ${l.namn} | ${l.status || "-"} | ${l.nästaUppföljning}${note ? " | " + note : ""}`);
+    }
+    if (urgent.length > 10) lines.push(`  +${urgent.length - 10} till`);
+    lines.push("");
+  }
+
+  // Hot deals only
+  const hot = deals.filter((d) => d.status === "Heta affärer" || d.status === "Skickat förslag");
+  if (hot.length) {
+    lines.push(`HETA AFFÄRER (${hot.length} st):`);
+    for (const d of hot.slice(0, 8)) {
+      const desc = d.ort || d.företag || d.kontaktperson || d.id || "?";
+      const pers = d.antalPersoner ? ` (${d.antalPersoner}p)` : "";
+      lines.push(`  ${desc}${pers} — ${d.status}`);
+    }
+    lines.push("");
+  }
+
+  // Properties summary
+  if (properties.length) {
+    const totalBeds = properties.reduce((s, p) => s + (p.bäddar || 0), 0);
+    const available = properties.filter((p) => p.tillgänglighet && p.tillgänglighet !== "Uthyrd");
+    lines.push(`OBJEKT: ${properties.length} st, ${totalBeds} bäddar totalt, ${available.length} lediga`);
+    lines.push("");
+  }
+
+  // Cities
+  if (cities.length) {
+    lines.push(`ORTER: ${cities.map((c) => c.ort).filter(Boolean).join(", ")}`);
+    lines.push("");
+  }
+
+  // Recent contacts (last 5)
+  if (contactLog.length) {
+    lines.push(`SENASTE KONTAKTER:`);
+    for (const c of contactLog.slice(0, 5)) {
+      const note = c.notering ? ` "${c.notering.slice(0, 50)}"` : "";
+      lines.push(`  ${c.tidpunkt?.slice(0, 10) || "?"} ${c.kanal || "?"} → ${c.utfall || "?"}${note}`);
+    }
+    lines.push("");
+  }
+
+  // Open tasks (max 5)
+  if (tasks.length) {
+    lines.push(`UPPGIFTER (${tasks.length} st):`);
+    for (const t of tasks.slice(0, 5)) {
+      lines.push(`  ${t.uppgift}${t.prioritet ? " [" + t.prioritet + "]" : ""}`);
+    }
+    lines.push("");
+  }
+
+  // Lead sources + company categories (one-liners)
+  const sources = {};
+  for (const l of leads) sources[l.källa || "Okänd"] = (sources[l.källa || "Okänd"] || 0) + 1;
+  lines.push(`LEAD-KÄLLOR: ${Object.entries(sources).sort((a,b) => b[1]-a[1]).map(([k, v]) => `${k}(${v})`).join(", ")}`);
+
+  // Top 5 company categories only (skip composite labels)
+  const cats = {};
+  for (const c of companies) {
+    const cat = (c.kategori || "-").split(",")[0].trim();
+    cats[cat] = (cats[cat] || 0) + 1;
+  }
+  const topCats = Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0, 5);
+  lines.push(`BRANSCHER: ${topCats.map(([k, v]) => `${k}(${v})`).join(", ")}`);
+
+  return lines.join("\n");
+}
+
 // --- Main ---
 async function main() {
+  const isCompact = process.argv.includes("--compact");
+
   const [leads, deals, properties, contactLog, tasks, companies, cities, lastStandup] =
     await Promise.all([
       getLeads(),
@@ -285,8 +377,13 @@ async function main() {
       getTasks(),
       getCompanies(),
       getCities(),
-      getLatestStandup(),
+      isCompact ? Promise.resolve(null) : getLatestStandup(),
     ]);
+
+  if (isCompact) {
+    console.log(formatCompact(leads, deals, properties, contactLog, tasks, companies, cities));
+    return;
+  }
 
   const context = {
     genererat: new Date().toISOString(),

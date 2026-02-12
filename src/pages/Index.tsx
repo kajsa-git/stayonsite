@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import TwoTrack from '@/components/TwoTrack';
 import CaseStudy from '@/components/CaseStudy';
 import CityLinks from '@/components/CityLinks';
+import BlogTeasers from '@/components/BlogTeasers';
 import References from '@/components/References';
 import FAQ from '@/components/FAQ';
 import InquiryForm from '@/components/InquiryForm';
@@ -102,6 +103,7 @@ const Index = () => {
           <FAQ maxItems={5} />
           <InquiryForm />
           <CityLinks />
+          <BlogTeasers />
         </main>
         <Footer />
         <FloatingPhoneButton />
