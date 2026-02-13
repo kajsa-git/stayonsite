@@ -1,7 +1,6 @@
 
 import { ReactNode } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
 import { MessageCircle, Phone } from 'lucide-react';
 import ContactInfo from './ContactInfo';
 import WhyUs from './WhyUs';
@@ -26,23 +25,24 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
           </p>
         </div>
 
-        <div className="mt-8 md:mt-10 flex flex-col md:flex-row justify-center gap-3">
-          <Button asChild className="w-full md:w-auto rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white h-12 px-6">
-            <a href="tel:+46762498486">
-              <Phone size={16} className="mr-2" />
-              {t('hero.ctaPhone')}
-            </a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="w-full md:w-auto rounded-full border-nordic-200 bg-white text-nordic-900 hover:bg-nordic-50 h-12 px-6"
+        <div className="mt-6 md:mt-8 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-sm">
+          <a
+            href="tel:+46762498486"
+            className="inline-flex items-center gap-2 text-nordic-700 hover:text-nordic-900 transition-colors"
           >
-            <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
-              <MessageCircle size={16} className="mr-2" />
-              {t('hero.ctaWhatsapp')}
-            </a>
-          </Button>
+            <Phone size={15} />
+            {t('hero.ctaPhone')}
+          </a>
+          <span className="hidden sm:inline text-nordic-300">|</span>
+          <a
+            href="https://wa.me/46762498486"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-nordic-700 hover:text-nordic-900 transition-colors"
+          >
+            <MessageCircle size={15} />
+            {t('hero.ctaWhatsapp')}
+          </a>
         </div>
 
         <div className="mt-10 md:mt-12 max-w-5xl mx-auto bg-white rounded-2xl md:rounded-3xl border border-nordic-100 shadow-lg overflow-hidden">

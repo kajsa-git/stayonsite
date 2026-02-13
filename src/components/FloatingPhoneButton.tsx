@@ -1,9 +1,32 @@
+import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 const FloatingPhoneButton = () => {
   const { t } = useLanguage();
+  const [hideButton, setHideButton] = useState(false);
+
+  useEffect(() => {
+    const targets = ['inquiry', 'homeowner-form']
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setHideButton(entries.some((entry) => entry.isIntersecting));
+      },
+      { threshold: 0.2 }
+    );
+
+    targets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
+  }, []);
+
+  if (hideButton) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 xl:hidden">
