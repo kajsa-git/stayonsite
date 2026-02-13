@@ -1,6 +1,5 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import HomeownerBenefits from '@/components/homeowner/HomeownerBenefits';
 import HomeownerGuarantee from '@/components/homeowner/HomeownerGuarantee';
@@ -12,6 +11,7 @@ import HomeownerFAQ from '@/components/homeowner/HomeownerFAQ';
 import HomeownerForm from '@/components/homeowner/HomeownerForm';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
+import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
@@ -19,6 +19,7 @@ import type { TranslationKey } from '@/data/translations';
 
 const ForHusagare = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const structuredData = [
     {
@@ -81,7 +82,7 @@ const ForHusagare = () => {
         structuredData={structuredData}
       />
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow pb-24 md:pb-0">
         <HomeownerHero />
         <HomeownerBenefits />
         <HomeownerGuarantee />
@@ -93,7 +94,23 @@ const ForHusagare = () => {
         <HomeownerForm />
       </main>
       <Footer />
-      <FloatingPhoneButton />
+      <MobileStickyFormCTA
+        targetId="homeowner-form"
+        primaryLabel={
+          language === 'sv'
+            ? 'Fyll i formuläret'
+            : language === 'en'
+            ? 'Fill in the form'
+            : 'Wypelnij formularz'
+        }
+        phoneLabel={
+          language === 'sv'
+            ? 'Ring oss'
+            : language === 'en'
+            ? 'Call us'
+            : 'Zadzwon'
+        }
+      />
     </div>
   );
 };

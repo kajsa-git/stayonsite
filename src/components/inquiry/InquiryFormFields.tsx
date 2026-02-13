@@ -23,8 +23,8 @@ const InquiryFormFields = ({
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_template" value="table" />
 
-      <div className="space-y-6">
-        <div className="space-y-2.5">
+      <div className="space-y-5 md:space-y-6">
+        <div className="space-y-2">
           <Label htmlFor="email" className="font-light text-nordic-800">
             <span className="flex items-center gap-2">
               <Mail size={16} className="text-nordic-500" />
@@ -36,12 +36,14 @@ const InquiryFormFields = ({
             name="email"
             type="email"
             required
+            autoComplete="email"
+            inputMode="email"
             placeholder="email@example.com"
-            className="border-nordic-200 focus-visible:ring-nordic-400 font-light"
+            className="h-12 border-nordic-200 focus-visible:ring-nordic-400 font-light"
           />
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           <Label htmlFor="message" className="font-light text-nordic-800">
             <span className="flex items-center gap-2">
               <MessageSquare size={16} className="text-nordic-500" />
@@ -51,16 +53,18 @@ const InquiryFormFields = ({
           <Textarea
             id="message"
             name="message"
-            rows={8}
+            rows={5}
             required
+            minLength={10}
+            enterKeyHint="send"
             placeholder={language === 'sv' ? "Berätta om ert behov av boende..." : language === 'en' ? "Tell us about your accommodation needs..." : "Opowiedz nam o swoich potrzebach zakwaterowania..."}
-            className="border-nordic-200 focus-visible:ring-nordic-400 font-light resize-none"
+            className="min-h-[140px] md:min-h-[220px] border-nordic-200 focus-visible:ring-nordic-400 font-light resize-none"
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full px-8 h-14 bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold rounded-full transition-all duration-300 shadow-xl active:scale-[0.98]"
+          className="w-full px-8 h-12 md:h-14 bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold rounded-full transition-all duration-300 shadow-xl active:scale-[0.98]"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -75,6 +79,14 @@ const InquiryFormFields = ({
             t('inquiry.form.submit')
           )}
         </Button>
+
+        <p className="text-xs text-nordic-600 text-center">
+          {language === 'sv'
+            ? 'Kort formulär, snabbt svar. Ingen bindningstid.'
+            : language === 'en'
+            ? 'Short form, fast reply. No commitment.'
+            : 'Krotki formularz, szybka odpowiedz. Bez zobowiazan.'}
+        </p>
       </div>
     </>
   );

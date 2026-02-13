@@ -80,23 +80,24 @@ const HomeownerForm = () => {
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -z-0" />
       <div className="absolute top-1/4 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-0" />
       
-      <div className="container mx-auto px-6 md:px-12 relative z-10">
+      <div className="container mx-auto px-4 md:px-12 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* Content side */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="order-2 lg:order-1"
             >
               <div className="inline-flex items-center gap-3 text-accent font-bold uppercase tracking-widest text-sm mb-6">
                 <span className="h-px w-8 bg-accent" />
                 {t('homeowner.form.sectionLabel')}
               </div>
-              <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-8 leading-tight">
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-primary mb-5 md:mb-8 leading-tight">
                 {t('homeowner.form.title')}
               </h2>
-              <p className="text-xl text-primary/70 font-light leading-relaxed mb-12">
+              <p className="text-lg md:text-xl text-primary/70 font-light leading-relaxed mb-8 md:mb-12">
                 {t('homeowner.form.subtitle')}
               </p>
               
@@ -106,7 +107,7 @@ const HomeownerForm = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="glass-card p-10 rounded-[2.5rem] border-primary/5 shadow-2xl relative overflow-hidden group"
+                className="hidden md:block glass-card p-10 rounded-[2.5rem] border-primary/5 shadow-2xl relative overflow-hidden group"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
                 
@@ -131,10 +132,17 @@ const HomeownerForm = () => {
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative"
+              className="relative order-1 lg:order-2"
             >
               <div className="absolute -inset-1 bg-gradient-to-br from-accent to-accent/20 rounded-[3rem] blur-2xl opacity-10" />
-              <div className="relative bg-white rounded-[3.5rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.08)] border border-primary/5 p-8 md:p-14">
+              <div className="relative bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.08)] border border-primary/5 p-5 sm:p-6 md:p-14">
+                <div className="mb-4 rounded-xl border border-accent/20 bg-accent/5 px-3 py-2 text-sm text-primary/80 md:hidden">
+                  {language === 'sv'
+                    ? 'Fyll i formuläret. Vi återkommer inom 24 timmar.'
+                    : language === 'en'
+                    ? 'Fill in the form. We reply within 24 hours.'
+                    : 'Wypelnij formularz. Odpowiadamy w ciagu 24 godzin.'}
+                </div>
                 {formSuccess ? (
                   <FormSuccess />
                 ) : needsActivation ? (
@@ -156,7 +164,7 @@ const HomeownerForm = () => {
                   <form 
                     ref={formRef} 
                     onSubmit={handleSubmit} 
-                    className="space-y-8"
+                    className="space-y-6 md:space-y-8"
                   >
                     <HomeownerFormFields isSubmitting={isSubmitting} />
                   </form>

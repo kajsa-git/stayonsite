@@ -1,9 +1,9 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import SEO from '@/components/SEO';
 import InquiryForm from '@/components/InquiryForm';
 import CityLinks from '@/components/CityLinks';
+import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { motion } from 'framer-motion';
@@ -259,7 +259,7 @@ const ForForetag = () => {
       />
       <Header />
 
-      <main className="flex-grow">
+      <main className="flex-grow pb-24 md:pb-0">
         {/* 1. Hero */}
         <section className="bg-primary text-white pt-32 pb-20 relative overflow-hidden">
           <div className="absolute inset-0 z-0">
@@ -819,7 +819,11 @@ const ForForetag = () => {
       </main>
 
       <Footer />
-      <FloatingPhoneButton />
+      <MobileStickyFormCTA
+        targetId="inquiry"
+        primaryLabel={t('Fyll i formuläret', 'Fill in the form', 'Wypelnij formularz')}
+        phoneLabel={t('Ring oss', 'Call us', 'Zadzwon')}
+      />
     </div>
   );
 };
