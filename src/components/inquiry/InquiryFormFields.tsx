@@ -19,7 +19,7 @@ const InquiryFormFields = ({
     <>
       {/* FormSubmit.co configuration */}
       <input type="hidden" name="_subject" value="Ny förfrågan från StayOnSite" />
-      <input type="hidden" name="_next" value={typeof window !== 'undefined' ? window.location.origin : 'https://stayonsite.se'} />
+      <input type="hidden" name="_next" value={typeof window !== 'undefined' ? window.location.origin : 'https://www.stayonsite.se'} />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_template" value="table" />
 
@@ -80,13 +80,6 @@ const InquiryFormFields = ({
           )}
         </Button>
 
-        <p className="text-xs text-nordic-600 text-center">
-          {language === 'sv'
-            ? 'Kort formulär, snabbt svar. Ingen bindningstid.'
-            : language === 'en'
-            ? 'Short form, fast reply. No commitment.'
-            : 'Krotki formularz, szybka odpowiedz. Bez zobowiazan.'}
-        </p>
       </div>
     </>
   );
