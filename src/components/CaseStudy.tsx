@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, MessageCircle, Phone } from 'lucide-react';
 import { Button } from './ui/button';
 
-const CASE_IMAGE = '/images/solar-park-saffle.webp';
+const CASE_IMAGE = '/images/solar-park-saffle-1200.webp';
 
 const timeline = [
   {
@@ -38,8 +38,11 @@ const CaseStudy = () => {
             {/* Background image - positioned to show solar panels, not sky */}
             <img
               src={CASE_IMAGE}
+              srcSet="/images/solar-park-saffle-768.webp 768w, /images/solar-park-saffle-1200.webp 1200w, /images/solar-park-saffle.webp 1536w"
+              sizes="(max-width: 1024px) 100vw, 45vw"
               alt="Solpark i Säffle - StayOnSite personalboende för energiprojekt"
               loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-full"
               style={{
                 objectFit: 'cover',
