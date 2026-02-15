@@ -25,9 +25,9 @@ const Index = () => {
     '@type': 'LodgingBusiness',
     'name': 'StayOnSite',
     'legalName': 'StayOnSite AB',
-    'image': 'https://stayonsite.se/images/og-image.jpg',
-    '@id': 'https://stayonsite.se',
-    'url': 'https://stayonsite.se',
+    'image': 'https://www.stayonsite.se/images/og-image.jpg',
+    '@id': 'https://www.stayonsite.se',
+    'url': 'https://www.stayonsite.se',
     'telephone': '+46 76-249 84 86',
     'email': 'info@stayonsite.se',
     'founder': {
@@ -71,10 +71,10 @@ const Index = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     'name': 'StayOnSite',
-    'url': 'https://stayonsite.se',
+    'url': 'https://www.stayonsite.se',
     'potentialAction': {
       '@type': 'SearchAction',
-      'target': 'https://stayonsite.se/stad/{search_term_string}',
+      'target': 'https://www.stayonsite.se/stad/{search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   };
@@ -88,10 +88,10 @@ const Index = () => {
           description={t('seo.home.description')}
           structuredData={structuredData}
           hreflangs={[
-            { lang: 'sv', href: 'https://stayonsite.se/' },
-            { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
-            { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
-            { lang: 'x-default', href: 'https://stayonsite.se/' }
+            { lang: 'sv', href: 'https://www.stayonsite.se/' },
+            { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+            { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+            { lang: 'x-default', href: 'https://www.stayonsite.se/' }
           ]}
         />
         <Header />

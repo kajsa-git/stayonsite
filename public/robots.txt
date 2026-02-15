@@ -23,4 +23,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://stayonsite.se/sitemap.xml
+Sitemap: https://www.stayonsite.se/sitemap.xml

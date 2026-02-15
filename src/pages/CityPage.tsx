@@ -73,7 +73,7 @@ const CityPage = () => {
   const localizedKeywords = getLocalizedKeywords(city.keywords, language);
   
   // Construct canonical and hreflang URLs
-  const baseUrl = 'https://stayonsite.se';
+  const baseUrl = 'https://www.stayonsite.se';
   const svUrl = `${baseUrl}/stad/${city.slug}`;
   const enUrl = `${baseUrl}/en/corporate-housing/${city.slug}`;
   const plUrl = `${baseUrl}/pl/zakwaterowanie/${city.slug}`;
@@ -98,7 +98,7 @@ const CityPage = () => {
       '@type': 'Organization',
       name: 'StayOnSite',
       telephone: '+46762498486',
-      url: 'https://stayonsite.se'
+      url: 'https://www.stayonsite.se'
     },
     areaServed: {
       '@type': 'City',
@@ -155,13 +155,13 @@ const CityPage = () => {
         '@type': 'ListItem',
         position: 1,
         name: translate('Hem', 'Home', 'Strona główna'),
-        item: 'https://stayonsite.se/'
+        item: 'https://www.stayonsite.se/'
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: translate('Städer', 'Cities', 'Miasta'),
-        item: 'https://stayonsite.se/#cities'
+        item: 'https://www.stayonsite.se/#cities'
       },
       {
         '@type': 'ListItem',

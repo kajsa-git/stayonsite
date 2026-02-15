@@ -18,7 +18,7 @@ const SEO = ({
   title,
   description,
   keywords,
-  ogImage = 'https://stayonsite.se/images/og-image.jpg',
+  ogImage = 'https://www.stayonsite.se/images/og-image.jpg',
   canonical,
   type = 'website',
   structuredData,
@@ -49,7 +49,7 @@ const SEO = ({
   const finalTitle = title || defaultContent[language].title;
   const finalDescription = description || defaultContent[language].description;
   const finalKeywords = keywords || defaultContent[language].keywords;
-  const finalCanonical = canonical || `https://stayonsite.se${location.pathname}`;
+  const finalCanonical = canonical || `https://www.stayonsite.se${location.pathname}`;
   const ogLocale = language === 'sv' ? 'sv_SE' : language === 'en' ? 'en_US' : 'pl_PL';
 
   return (

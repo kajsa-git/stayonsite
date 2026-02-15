@@ -25,7 +25,7 @@ const ZakwaterowanieFirmowe = () => {
       '@type': 'Organization',
       'name': 'StayOnSite',
       'telephone': '+46 76-249 84 86',
-      'url': 'https://stayonsite.se'
+      'url': 'https://www.stayonsite.se'
     },
     'description': 'W pełni umeblowane mieszkania dla zespołów biznesowych w całej Szwecji. Elastyczne warunki, cena all-inclusive.',
     'areaServed': {
@@ -82,13 +82,13 @@ const ZakwaterowanieFirmowe = () => {
         title="Zakwaterowanie Firmowe Szwecja | Alternatywa Airbnb dla Firm"
         description="Szukasz Airbnb dla zespołu w Szwecji? Oferujemy w pełni umeblowane mieszkania z profesjonalnym fakturowaniem, elastyczne warunki od 30 dni. Lepsza alternatywa dla Airbnb dla firm."
         keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, nocleg dla ekipy szwecja, zakwaterowanie umeå, mieszkania luleå, nocleg örebro, zakwaterowanie gävle, mieszkania västerås, noclegi norrland polska ekipa"
-        canonical="https://stayonsite.se/pl/zakwaterowanie-firmowe"
+        canonical="https://www.stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
         hreflangs={[
-          { lang: 'sv', href: 'https://stayonsite.se/' },
-          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
-          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
-          { lang: 'x-default', href: 'https://stayonsite.se/' }
+          { lang: 'sv', href: 'https://www.stayonsite.se/' },
+          { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://www.stayonsite.se/' }
         ]}
       />
 

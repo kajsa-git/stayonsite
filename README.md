@@ -57,6 +57,21 @@ npm run build
 
 The production build will be in the `dist/` directory.
 
+### Production deploy (Vercel)
+
+Use the guarded command below to avoid deploying to the wrong Vercel project.
+
+```bash
+npm run deploy:check
+npm run deploy:prod
+```
+
+If the guard fails, re-link to the correct project and retry:
+
+```bash
+npx vercel link --project stayonsite --scope ac0 --yes
+```
+
 ## Project Structure
 
 ```

@@ -190,7 +190,7 @@ const ForForetag = () => {
         '@type': 'LodgingBusiness',
         name: 'StayOnSite',
         telephone: '+46 76-249 84 86',
-        url: 'https://stayonsite.se',
+        url: 'https://www.stayonsite.se',
       },
       areaServed: {
         '@type': 'Country',
@@ -223,13 +223,13 @@ const ForForetag = () => {
           '@type': 'ListItem',
           position: 1,
           name: 'StayOnSite',
-          item: 'https://stayonsite.se',
+          item: 'https://www.stayonsite.se',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: t('För företag', 'For companies', 'Dla firm'),
-          item: 'https://stayonsite.se/for-foretag',
+          item: 'https://www.stayonsite.se/for-foretag',
         },
       ],
     },
@@ -248,13 +248,13 @@ const ForForetag = () => {
           'StayOnSite arranges worker accommodation for construction and industrial companies in 40+ cities. Furnished apartments, corporate invoicing, dedicated contact. Housing plan within 24h.',
           'StayOnSite organizuje zakwaterowanie pracownicze dla firm budowlanych i przemysłowych w ponad 40 miastach. Umeblowane mieszkania, faktura firmowa, plan zakwaterowania w 24h.'
         )}
-        canonical="https://stayonsite.se/for-foretag"
+        canonical="https://www.stayonsite.se/for-foretag"
         structuredData={structuredData}
         hreflangs={[
-          { lang: 'sv', href: 'https://stayonsite.se/for-foretag' },
-          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
-          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
-          { lang: 'x-default', href: 'https://stayonsite.se/for-foretag' },
+          { lang: 'sv', href: 'https://www.stayonsite.se/for-foretag' },
+          { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://www.stayonsite.se/for-foretag' },
         ]}
       />
       <Header />

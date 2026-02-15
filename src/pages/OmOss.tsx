@@ -41,7 +41,7 @@ const OmOss = () => {
         'StayOnSite provides worker accommodation and corporate housing across Sweden for construction and industrial companies.',
         'StayOnSite oferuje zakwaterowanie pracownicze i mieszkania firmowe w całej Szwecji dla firm budowlanych i przemysłowych.'
       ),
-      url: 'https://stayonsite.se',
+      url: 'https://www.stayonsite.se',
       telephone: '+46762498486',
       email: 'info@stayonsite.se',
       founder: {
@@ -86,7 +86,7 @@ const OmOss = () => {
           'StayOnSite helps construction and industrial companies find furnished accommodation across Sweden. Contact us for worker housing, crew accommodation and corporate apartments.',
           'StayOnSite pomaga firmom budowlanym i przemysłowym znaleźć umeblowane zakwaterowanie w całej Szwecji. Skontaktuj się z nami w sprawie noclegów pracowniczych i mieszkań firmowych.'
         )}
-        canonical="https://stayonsite.se/om-oss"
+        canonical="https://www.stayonsite.se/om-oss"
         structuredData={structuredData}
       />
       <Header />

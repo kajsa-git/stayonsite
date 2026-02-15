@@ -12,7 +12,7 @@ StayOnSite provides furnished worker accommodation for construction companies an
 
 - Phone: +46 76-249 84 86
 - Email: info@stayonsite.se
-- Website: https://stayonsite.se
+- Website: https://www.stayonsite.se
 - WhatsApp: https://wa.me/46762498486
 
 ## Services
@@ -127,7 +127,7 @@ StayOnSite also rents apartments from private homeowners at a fixed monthly rate
 - Property returned in original condition
 - No fees or commissions deducted from the homeowner's rent
 - Typical income: SEK 10,000–30,000/month depending on property size and location
-- Learn more: https://stayonsite.se/for-husagare
+- Learn more: https://www.stayonsite.se/for-husagare
 
 ## Frequently asked questions
 
@@ -158,16 +158,16 @@ Swedish (primary), English, Polish
 
 ## Key pages
 
-- Homepage (SV): https://stayonsite.se
-- For Companies (SV): https://stayonsite.se/for-foretag
-- For Homeowners (SV): https://stayonsite.se/for-husagare
-- Corporate Housing (EN): https://stayonsite.se/en/corporate-housing-sweden
-- Zakwaterowanie Firmowe (PL): https://stayonsite.se/pl/zakwaterowanie-firmowe
-- About Us: https://stayonsite.se/om-oss
-- Contact: https://stayonsite.se/kontakt
-- Blog: https://stayonsite.se/blogg
-- City pages follow the pattern: https://stayonsite.se/stad/{city-slug}
-  Example: https://stayonsite.se/stad/stockholm
+- Homepage (SV): https://www.stayonsite.se
+- For Companies (SV): https://www.stayonsite.se/for-foretag
+- For Homeowners (SV): https://www.stayonsite.se/for-husagare
+- Corporate Housing (EN): https://www.stayonsite.se/en/corporate-housing-sweden
+- Zakwaterowanie Firmowe (PL): https://www.stayonsite.se/pl/zakwaterowanie-firmowe
+- About Us: https://www.stayonsite.se/om-oss
+- Contact: https://www.stayonsite.se/kontakt
+- Blog: https://www.stayonsite.se/blogg
+- City pages follow the pattern: https://www.stayonsite.se/stad/{city-slug}
+  Example: https://www.stayonsite.se/stad/stockholm
 
 ## Pricing model
 

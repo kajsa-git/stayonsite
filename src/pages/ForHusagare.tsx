@@ -31,7 +31,7 @@ const ForHusagare = () => {
         '@type': 'Organization',
         'name': 'StayOnSite',
         'telephone': '+46 76-249 84 86',
-        'url': 'https://stayonsite.se'
+        'url': 'https://www.stayonsite.se'
       },
       'areaServed': {
         '@type': 'Country',
@@ -67,8 +67,8 @@ const ForHusagare = () => {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       'itemListElement': [
-        { '@type': 'ListItem', 'position': 1, 'name': 'StayOnSite', 'item': 'https://stayonsite.se' },
-        { '@type': 'ListItem', 'position': 2, 'name': t('seo.homeowner.title'), 'item': 'https://stayonsite.se/for-husagare' }
+        { '@type': 'ListItem', 'position': 1, 'name': 'StayOnSite', 'item': 'https://www.stayonsite.se' },
+        { '@type': 'ListItem', 'position': 2, 'name': t('seo.homeowner.title'), 'item': 'https://www.stayonsite.se/for-husagare' }
       ]
     }
   ];
@@ -78,7 +78,7 @@ const ForHusagare = () => {
       <SEO
         title={t('seo.homeowner.title')}
         description={t('seo.homeowner.description')}
-        canonical="https://stayonsite.se/for-husagare"
+        canonical="https://www.stayonsite.se/for-husagare"
         structuredData={structuredData}
       />
       <Header />

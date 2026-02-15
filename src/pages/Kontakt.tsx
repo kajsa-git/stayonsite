@@ -24,7 +24,7 @@ const Kontakt = () => {
       legalName: 'StayOnSite AB',
       telephone: '+46762498486',
       email: 'info@stayonsite.se',
-      url: 'https://stayonsite.se',
+      url: 'https://www.stayonsite.se',
       address: {
         '@type': 'PostalAddress',
         addressCountry: 'SE',
@@ -56,13 +56,13 @@ const Kontakt = () => {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: 'https://stayonsite.se/',
+          item: 'https://www.stayonsite.se/',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: t('Kontakt', 'Contact', 'Kontakt'),
-          item: 'https://stayonsite.se/kontakt',
+          item: 'https://www.stayonsite.se/kontakt',
         },
       ],
     },
@@ -81,7 +81,7 @@ const Kontakt = () => {
           'Contact StayOnSite for worker accommodation and corporate housing across Sweden. Call, email or fill in the form — we reply within 3 hours on weekdays.',
           'Skontaktuj się ze StayOnSite w sprawie noclegów pracowniczych i mieszkań firmowych w całej Szwecji. Zadzwoń, napisz lub wypełnij formularz — odpowiadamy w ciągu 3 godzin w dni robocze.'
         )}
-        canonical="https://stayonsite.se/kontakt"
+        canonical="https://www.stayonsite.se/kontakt"
         structuredData={structuredData}
       />
       <Header />

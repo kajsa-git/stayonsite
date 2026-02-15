@@ -14,7 +14,7 @@ const root = resolve(__dirname, '..');
 const citiesSource = readFileSync(resolve(root, 'src/data/cities.ts'), 'utf-8');
 const slugs = [...citiesSource.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
 
-const BASE = 'https://stayonsite.se';
+const BASE = 'https://www.stayonsite.se';
 const today = new Date().toISOString().split('T')[0];
 
 function url(loc, priority, changefreq = 'monthly', hreflangs = null) {

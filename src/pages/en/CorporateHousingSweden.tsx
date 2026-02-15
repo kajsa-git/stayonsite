@@ -26,7 +26,7 @@ const CorporateHousingSweden = () => {
       '@type': 'Organization',
       'name': 'StayOnSite',
       'telephone': '+46 76-249 84 86',
-      'url': 'https://stayonsite.se'
+      'url': 'https://www.stayonsite.se'
     },
     'description': 'Fully furnished apartments for business teams across Sweden. Flexible terms, all-inclusive pricing. The professional Airbnb alternative.',
     'areaServed': {
@@ -83,13 +83,13 @@ const CorporateHousingSweden = () => {
         title="Corporate Housing Sweden | Airbnb Alternative for Business Teams"
         description="Looking for Airbnb for your business team in Sweden? We offer fully furnished apartments with professional invoicing, flexible 30+ day terms, and dedicated support. The smart Airbnb alternative."
         keywords="airbnb sweden business, airbnb alternative sweden, corporate housing sweden, furnished apartments sweden business, accommodation umeå, accommodation örebro, housing luleå, corporate housing norrland, airbnb gävle business, accommodation västerås company, housing linköping norrköping"
-        canonical="https://stayonsite.se/en/corporate-housing-sweden"
+        canonical="https://www.stayonsite.se/en/corporate-housing-sweden"
         structuredData={[structuredData, faqSchema]}
         hreflangs={[
-          { lang: 'sv', href: 'https://stayonsite.se/' },
-          { lang: 'en', href: 'https://stayonsite.se/en/corporate-housing-sweden' },
-          { lang: 'pl', href: 'https://stayonsite.se/pl/zakwaterowanie-firmowe' },
-          { lang: 'x-default', href: 'https://stayonsite.se/' }
+          { lang: 'sv', href: 'https://www.stayonsite.se/' },
+          { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+          { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+          { lang: 'x-default', href: 'https://www.stayonsite.se/' }
         ]}
       />
 

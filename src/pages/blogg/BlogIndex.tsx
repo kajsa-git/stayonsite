@@ -21,7 +21,7 @@ const BlogIndex = () => {
     '@type': 'CollectionPage',
     'name': t('Blogg \u2014 StayOnSite', 'Blog \u2014 StayOnSite', 'Blog \u2014 StayOnSite'),
     'description': t('Artiklar om personalboende, f\u00f6retagsbost\u00e4der, nya lagar och marknadstrender i Sverige.', 'Articles about worker accommodation, corporate housing, new regulations and market trends in Sweden.', 'Artyku\u0142y o zakwaterowaniu pracowniczym i trendach rynkowych w Szwecji.'),
-    'url': 'https://stayonsite.se/blogg',
+    'url': 'https://www.stayonsite.se/blogg',
     'mainEntity': {
       '@type': 'ItemList',
       'itemListElement': [...blogPosts]
@@ -29,7 +29,7 @@ const BlogIndex = () => {
         .map((post, i) => ({
           '@type': 'ListItem',
           'position': i + 1,
-          'url': `https://stayonsite.se/blogg/${post.slug}`,
+          'url': `https://www.stayonsite.se/blogg/${post.slug}`,
           'name': post.title[language] || post.title.sv,
         })),
     },
@@ -40,7 +40,7 @@ const BlogIndex = () => {
       <SEO
         title={t('Blogg \u2014 Personalboende & F\u00f6retagsbost\u00e4der | StayOnSite', 'Blog \u2014 Worker Accommodation & Corporate Housing | StayOnSite', 'Blog \u2014 Zakwaterowanie pracownicze | StayOnSite')}
         description={t('Artiklar om personalboende, f\u00f6retagsbost\u00e4der, nya lagar och marknadstrender i Sverige.', 'Articles about worker accommodation, corporate housing, new regulations and market trends in Sweden.', 'Artyku\u0142y o zakwaterowaniu pracowniczym i trendach rynkowych w Szwecji.')}
-        canonical="https://stayonsite.se/blogg"
+        canonical="https://www.stayonsite.se/blogg"
         structuredData={collectionSchema}
       />
       <Header />

@@ -18,7 +18,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const title = post.title[language] || post.title.sv;
   const description = post.description[language] || post.description.sv;
 
-  const articleUrl = `https://stayonsite.se/blogg/${post.slug}`;
+  const articleUrl = `https://www.stayonsite.se/blogg/${post.slug}`;
 
   const structuredData = [
     {
@@ -28,7 +28,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       description: description,
       image: {
         '@type': 'ImageObject',
-        url: 'https://stayonsite.se/images/og-image.jpg',
+        url: 'https://www.stayonsite.se/images/og-image.jpg',
         width: 1200,
         height: 630,
       },
@@ -36,10 +36,10 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       publisher: {
         '@type': 'Organization',
         name: 'StayOnSite',
-        url: 'https://stayonsite.se',
+        url: 'https://www.stayonsite.se',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://stayonsite.se/images/og-image.jpg',
+          url: 'https://www.stayonsite.se/images/og-image.jpg',
         },
       },
       datePublished: post.publishedDate,
@@ -53,9 +53,9 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'StayOnSite', item: 'https://stayonsite.se' },
-        { '@type': 'ListItem', position: 2, name: 'Blogg', item: 'https://stayonsite.se/blogg' },
-        { '@type': 'ListItem', position: 3, name: title, item: `https://stayonsite.se/blogg/${post.slug}` },
+        { '@type': 'ListItem', position: 1, name: 'StayOnSite', item: 'https://www.stayonsite.se' },
+        { '@type': 'ListItem', position: 2, name: 'Blogg', item: 'https://www.stayonsite.se/blogg' },
+        { '@type': 'ListItem', position: 3, name: title, item: `https://www.stayonsite.se/blogg/${post.slug}` },
       ],
     },
   ];
