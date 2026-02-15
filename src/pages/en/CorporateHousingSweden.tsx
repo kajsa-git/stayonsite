@@ -86,10 +86,10 @@ const CorporateHousingSweden = () => {
         canonical="https://www.stayonsite.se/en/corporate-housing-sweden"
         structuredData={[structuredData, faqSchema]}
         hreflangs={[
-          { lang: 'sv', href: 'https://www.stayonsite.se/' },
+          { lang: 'sv', href: 'https://www.stayonsite.se/for-foretag' },
           { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
           { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
-          { lang: 'x-default', href: 'https://www.stayonsite.se/' }
+          { lang: 'x-default', href: 'https://www.stayonsite.se/for-foretag' }
         ]}
       />
 
