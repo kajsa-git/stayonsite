@@ -15,10 +15,28 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
+import { useLocation } from 'react-router-dom';
 
 const Index = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
+  const location = useLocation();
+  const isCompanyLanding =
+    location.pathname === '/en/corporate-housing-sweden' ||
+    location.pathname === '/pl/zakwaterowanie-firmowe';
+  const hreflangs = isCompanyLanding
+    ? [
+        { lang: 'sv', href: 'https://www.stayonsite.se/for-foretag' },
+        { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+        { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+        { lang: 'x-default', href: 'https://www.stayonsite.se/for-foretag' }
+      ]
+    : [
+        { lang: 'sv', href: 'https://www.stayonsite.se/' },
+        { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
+        { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+        { lang: 'x-default', href: 'https://www.stayonsite.se/' }
+      ];
 
   const lodgingBusinessSchema = {
     '@context': 'https://schema.org',
@@ -87,12 +105,7 @@ const Index = () => {
           title={t('seo.home.title')}
           description={t('seo.home.description')}
           structuredData={structuredData}
-          hreflangs={[
-            { lang: 'sv', href: 'https://www.stayonsite.se/' },
-            { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
-            { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
-            { lang: 'x-default', href: 'https://www.stayonsite.se/' }
-          ]}
+          hreflangs={hreflangs}
         />
         <Header />
         <main className="flex-grow">
