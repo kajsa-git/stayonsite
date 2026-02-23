@@ -15,7 +15,11 @@ Kör:
 node "/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/scripts/read-notion-context.mjs" --compact
 ```
 
-Spara outputen som `CRM_DATA`. Den är ~2KB text med leads, heta affärer, objekt, orter m.m.
+Spara outputen som `CRM_DATA`. Den är ~2KB text med leads, heta affärer, uppgifter, orter m.m.
+
+**OBS om CRM-datan:**
+- **Objektsbanken** visas BARA om objekt har saknade fält (adress/uthyrare/hyra/ort). Ingen inventarie-sammanfattning.
+- **K daily doos** visar alla öppna uppgifter med ålder i dagar. Gamla (>7d) flaggas separat.
 
 Läs också `src/data/blog-posts.ts` för senaste bloggartikeln.
 
@@ -109,7 +113,7 @@ Skriv en rapport i detta format — **kort, konkret, inga floskler**:
 # StayOnSite Veckorapport [DATUM]
 
 ## Pipeline
-- Leads: X | Heta affärer: Y | Objekt: Z (W lediga)
+- Leads: X | Heta affärer: Y
 - [1-2 meningar om pipeline-status]
 
 ## Kajsas ringlista
@@ -122,6 +126,16 @@ Skriv en rapport i detta format — **kort, konkret, inga floskler**:
 ## Heta affärer — nästa steg
 - [Affär]: [vad Kajsa ska göra]
 - ...
+
+## K Daily Doos — rensning
+| Uppgift | Ålder | Förslag |
+|---------|-------|---------|
+| [uppgift] | Xd | genomför / pausa till [datum] / ta bort / bryt ner |
+...alla gamla uppgifter (>7 dagar)
+
+## Objektsbanken — saknade fält
+- [Objekt]: saknar [fält] ← fyll i!
+(Visas BARA om det finns ofullständiga objekt, annars hoppa över)
 
 ## Omvärld
 - [2-3 korta punkter: konkurrenter, möjligheter, risker]
@@ -151,5 +165,7 @@ node "/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/scripts/push-to-notion.mj
 Visa kort:
 1. Ringlistan (top 3)
 2. Heta affärer som kan stängas
-3. Viktigaste omvärldsnyhet
-4. Bekräfta att rapporten finns i Notion
+3. K daily doos som behöver rensas (gamla uppgifter)
+4. Objektsbanken — fält att fylla i (om några)
+5. Viktigaste omvärldsnyhet
+6. Bekräfta att rapporten finns i Notion

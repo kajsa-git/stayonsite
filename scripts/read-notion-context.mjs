@@ -168,6 +168,7 @@ async function getProperties() {
   return results.map((p) => ({
     adress: getProp(p, "Adress"),
     ort: getProp(p, "Ort"),
+    uthyrare: getProp(p, "Uthyrare"),
     sovrum: getProp(p, "Sovrum"),
     bäddar: getProp(p, "Bäddar"),
     badrum: getProp(p, "Badrum"),
@@ -205,6 +206,7 @@ async function getTasks() {
     prioritet: getProp(p, "Prioritet"),
     slutdatum: getProp(p, "Slutdatum"),
     anteckningar: getProp(p, "Anteckningar"),
+    skapad: p.created_time || "",
   }));
 }
 
@@ -274,8 +276,68 @@ async function getLatestStandup() {
   return { title, content: texts.join("\n").slice(0, 3000) };
 }
 
+// --- RSS news fetcher for omvärldsbevakning ---
+const NEWS_FEEDS = [
+  { name: "Fastighetstidningen", url: "https://fastighetstidningen.se/feed/" },
+  { name: "Dagens Fastigheter", url: "https://www.dagensfastigheter.se/rss" },
+  { name: "DI", url: "https://www.di.se/rss" },
+];
+
+// Only show news relevant to StayOnSite's market
+const NEWS_KEYWORDS = [
+  "bostad", "hyra", "hyres", "uthyr", "fastighet", "bygg", "bostads",
+  "infrastruktur", "entrepren", "projekt", "kommun", "region",
+  "energi", "industri", "etabler", "investering", "boverket",
+  "stål", "skog", "gruv", "vindkraft", "datacenter", "försvars",
+  "arbetskraft", "personal", "rekryter", "boende", "lägenhets",
+  "samtrygg", "qasa", "forenom", "corporate housing",
+  "privatuthyrning", "andrahand", "blockhyra",
+];
+
+async function fetchNews() {
+  const allNews = [];
+  for (const feed of NEWS_FEEDS) {
+    try {
+      const res = await fetch(feed.url, {
+        headers: { "User-Agent": "StayOnSite-CRM/1.0" },
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!res.ok) continue;
+      const xml = await res.text();
+      // Simple XML title extraction (no parser dependency)
+      const items = [...xml.matchAll(/<item[\s>][\s\S]*?<\/item>/gi)];
+      for (const item of items.slice(0, 5)) {
+        const titleMatch = item[0].match(/<title><!\[CDATA\[(.*?)\]\]>/i)
+          || item[0].match(/<title>(.*?)<\/title>/i)
+          || item[0].match(/<Title>(.*?)<\/Title>/i);
+        const dateMatch = item[0].match(/<pubDate>(.*?)<\/pubDate>/i);
+        let title = titleMatch ? (titleMatch[1] || "").trim() : null;
+        if (!title) continue;
+        // Decode common HTML/XML entities
+        title = title
+          .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+          .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
+          .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+          .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&ndash;/g, "–");
+        const date = dateMatch ? new Date(dateMatch[1]).toISOString().slice(0, 10) : "";
+        allNews.push({ source: feed.name, title, date });
+      }
+    } catch {
+      // Feed unavailable — skip silently
+    }
+  }
+  // Filter to only relevant news
+  const relevant = allNews.filter((n) => {
+    const text = n.title.toLowerCase();
+    return NEWS_KEYWORDS.some((kw) => text.includes(kw));
+  });
+  // Sort by date descending, take top 8
+  relevant.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  return relevant.slice(0, 8);
+}
+
 // --- Compact text output (--compact flag) ---
-function formatCompact(leads, deals, properties, contactLog, tasks, companies, cities) {
+function formatCompact(leads, deals, properties, contactLog, tasks, companies, cities, news) {
   const today = new Date();
   const in7days = new Date(today);
   in7days.setDate(in7days.getDate() + 7);
@@ -314,12 +376,24 @@ function formatCompact(leads, deals, properties, contactLog, tasks, companies, c
     lines.push("");
   }
 
-  // Properties summary
+  // Properties — only show entries with missing critical fields
   if (properties.length) {
-    const totalBeds = properties.reduce((s, p) => s + (p.bäddar || 0), 0);
-    const available = properties.filter((p) => p.tillgänglighet && p.tillgänglighet !== "Uthyrd");
-    lines.push(`OBJEKT: ${properties.length} st, ${totalBeds} bäddar totalt, ${available.length} lediga`);
-    lines.push("");
+    const requiredFields = ["adress", "ort", "uthyrare", "viHyrFör"];
+    const fieldLabels = { adress: "Adress", ort: "Ort", uthyrare: "Uthyrare", viHyrFör: "Hyra" };
+    const incomplete = properties
+      .map((p) => {
+        const missing = requiredFields.filter((f) => !p[f] || String(p[f]).trim() === "");
+        return missing.length ? { adress: p.adress || p.ort || "(namnlöst objekt)", missing } : null;
+      })
+      .filter(Boolean);
+    if (incomplete.length) {
+      lines.push(`OBJEKTSBANKEN — SAKNADE FÄLT (${incomplete.length} av ${properties.length} objekt):`);
+      for (const obj of incomplete) {
+        const missingLabels = obj.missing.map((f) => fieldLabels[f]).join(", ");
+        lines.push(`  ${obj.adress} — saknar: ${missingLabels}`);
+      }
+      lines.push("");
+    }
   }
 
   // Cities
@@ -338,13 +412,34 @@ function formatCompact(leads, deals, properties, contactLog, tasks, companies, c
     lines.push("");
   }
 
-  // Open tasks (max 5)
+  // K daily doos — all open tasks with age tracking
   if (tasks.length) {
-    lines.push(`UPPGIFTER (${tasks.length} st):`);
-    for (const t of tasks.slice(0, 5)) {
-      lines.push(`  ${t.uppgift}${t.prioritet ? " [" + t.prioritet + "]" : ""}`);
+    const STALE_DAYS = 7;
+    const tasksWithAge = tasks.map((t) => {
+      const created = t.skapad ? new Date(t.skapad) : null;
+      const ageDays = created ? Math.floor((today - created) / (1000 * 60 * 60 * 24)) : null;
+      return { ...t, ageDays };
+    });
+    const stale = tasksWithAge.filter((t) => t.ageDays !== null && t.ageDays >= STALE_DAYS);
+    const fresh = tasksWithAge.filter((t) => t.ageDays === null || t.ageDays < STALE_DAYS);
+
+    if (stale.length) {
+      lines.push(`K DAILY DOOS — GAMLA UPPGIFTER (${stale.length} st, >${STALE_DAYS} dagar):`);
+      lines.push(`  → Åtgärda: genomför | pausa till datum | ta bort | bryt ner i steg`);
+      for (const t of stale) {
+        const deadline = t.slutdatum ? ` deadline ${t.slutdatum}` : "";
+        lines.push(`  ${t.uppgift} [${t.ageDays}d]${t.prioritet ? " [" + t.prioritet + "]" : ""}${deadline}`);
+      }
+      lines.push("");
     }
-    lines.push("");
+    if (fresh.length) {
+      lines.push(`K DAILY DOOS — AKTUELLA (${fresh.length} st):`);
+      for (const t of fresh) {
+        const age = t.ageDays !== null ? ` [${t.ageDays}d]` : "";
+        lines.push(`  ${t.uppgift}${age}${t.prioritet ? " [" + t.prioritet + "]" : ""}`);
+      }
+      lines.push("");
+    }
   }
 
   // Lead sources + company categories (one-liners)
@@ -361,6 +456,15 @@ function formatCompact(leads, deals, properties, contactLog, tasks, companies, c
   const topCats = Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0, 5);
   lines.push(`BRANSCHER: ${topCats.map(([k, v]) => `${k}(${v})`).join(", ")}`);
 
+  // Omvärldsbevakning — RSS news
+  if (news && news.length) {
+    lines.push("");
+    lines.push(`OMVÄRLDSBEVAKNING (${news.length} nyheter):`);
+    for (const n of news) {
+      lines.push(`  ${n.date} [${n.source}] ${n.title}`);
+    }
+  }
+
   return lines.join("\n");
 }
 
@@ -368,7 +472,7 @@ function formatCompact(leads, deals, properties, contactLog, tasks, companies, c
 async function main() {
   const isCompact = process.argv.includes("--compact");
 
-  const [leads, deals, properties, contactLog, tasks, companies, cities, lastStandup] =
+  const [leads, deals, properties, contactLog, tasks, companies, cities, lastStandup, news] =
     await Promise.all([
       getLeads(),
       getDeals(),
@@ -378,10 +482,11 @@ async function main() {
       getCompanies(),
       getCities(),
       isCompact ? Promise.resolve(null) : getLatestStandup(),
+      isCompact ? fetchNews() : Promise.resolve([]),
     ]);
 
   if (isCompact) {
-    console.log(formatCompact(leads, deals, properties, contactLog, tasks, companies, cities));
+    console.log(formatCompact(leads, deals, properties, contactLog, tasks, companies, cities, news));
     return;
   }
 
