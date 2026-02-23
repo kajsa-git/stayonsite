@@ -44,7 +44,14 @@ const ForHusagare = () => {
         'highPrice': 30000,
         'priceCurrency': 'SEK',
         'unitText': 'per month'
-      },
+      }
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'StayOnSite',
+      'url': 'https://stayonsite.se',
+      'telephone': '+46 76-249 84 86',
       'aggregateRating': {
         '@type': 'AggregateRating',
         'ratingValue': RATING_VALUE,

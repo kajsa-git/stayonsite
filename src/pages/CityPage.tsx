@@ -126,6 +126,26 @@ const CityPage = () => {
         contactType: 'sales'
       }
     },
+  };
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LodgingBusiness',
+    name: `StayOnSite ${city.name}`,
+    description: heroDescription,
+    telephone: '+46762498486',
+    url: canonicalUrl,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: city.name,
+      addressRegion: city.region,
+      addressCountry: 'SE'
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: city.coordinates[0],
+      longitude: city.coordinates[1]
+    },
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: RATING_VALUE,
@@ -172,7 +192,7 @@ const CityPage = () => {
     ]
   };
 
-  const structuredData = [serviceSchema, breadcrumbSchema, faqSchema];
+  const structuredData = [serviceSchema, organizationSchema, breadcrumbSchema, faqSchema];
 
   return (
     <div className="min-h-screen flex flex-col">
