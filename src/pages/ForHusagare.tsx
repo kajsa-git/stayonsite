@@ -50,7 +50,7 @@ const ForHusagare = () => {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       'name': 'StayOnSite',
-      'url': 'https://stayonsite.se',
+      'url': 'https://www.stayonsite.se',
       'telephone': '+46 76-249 84 86',
       'aggregateRating': {
         '@type': 'AggregateRating',
