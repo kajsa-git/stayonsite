@@ -298,6 +298,98 @@ function validateCityLinks(tsx) {
   return fixed;
 }
 
+// ---------- Step 2c: Validate JSX ----------
+function validateJsx(tsx) {
+  const errors = [];
+
+  // Check matching tags — build a simple stack
+  // Match opening tags like <Tag or <Tag ... and self-closing <Tag />
+  const tagPattern = /<\/?([A-Za-z][A-Za-z0-9]*)[^>]*?\/?>/g;
+  const selfClosingTags = new Set([
+    'br', 'hr', 'img', 'input', 'meta', 'link', 'area', 'base', 'col', 'source', 'track', 'wbr',
+  ]);
+  const stack = [];
+  let m;
+
+  while ((m = tagPattern.exec(tsx)) !== null) {
+    const full = m[0];
+    const tagName = m[1];
+
+    // Skip self-closing tags (both HTML void elements and /> syntax)
+    if (selfClosingTags.has(tagName.toLowerCase()) || full.endsWith('/>')) continue;
+
+    if (full.startsWith('</')) {
+      // Closing tag
+      if (stack.length === 0) {
+        errors.push(`Unexpected closing </${tagName}> with no matching open tag`);
+      } else {
+        const last = stack.pop();
+        if (last !== tagName) {
+          errors.push(`Mismatched tags: <${last}> closed by </${tagName}>`);
+          // Put it back if it might match something else
+          stack.push(last);
+        }
+      }
+    } else {
+      // Opening tag
+      stack.push(tagName);
+    }
+  }
+
+  // Check for common JSX issues
+  // Unescaped quotes in attributes
+  if (tsx.includes('class=')) {
+    errors.push('Uses "class=" instead of "className="');
+  }
+
+  return errors;
+}
+
+async function fixJsxWithClaude(tsx, errors) {
+  console.log(`[article] 🔧 Fixing ${errors.length} JSX error(s) with Claude...`);
+
+  const res = await callClaude([
+    {
+      role: 'user',
+      content: `Fix the following JSX/TSX errors in this React component. Return ONLY the fixed TSX code, nothing else.
+
+ERRORS FOUND:
+${errors.map((e, i) => `${i + 1}. ${e}`).join('\n')}
+
+RULES:
+- All HTML tags must be properly nested and closed
+- Use className, not class
+- Self-closing tags must use />
+- <Link> components must have matching </Link>
+- <blockquote> must have matching </blockquote>
+- <cite> must have matching </cite>
+- Do NOT wrap the code in \`\`\`tsx code blocks
+
+SOURCE CODE:
+${tsx}`
+    }
+  ]);
+
+  const textBlocks = res.content.filter(b => b.type === 'text');
+  if (textBlocks.length === 0) throw new Error('No text in JSX fix response');
+
+  const allText = textBlocks.map(b => b.text).join('\n');
+
+  // Extract fixed code
+  const tsxBlock = allText.match(/```tsx\s*\n([\s\S]*?)```/);
+  if (tsxBlock) return tsxBlock[1].trim();
+
+  const anyBlock = allText.match(/```(?:jsx|javascript|js)?\s*\n([\s\S]*?)```/);
+  if (anyBlock && anyBlock[1].includes('BlogLayout')) return anyBlock[1].trim();
+
+  // If no code block, assume the whole response is the fixed code
+  if (allText.includes('BlogLayout') && allText.includes('export default')) {
+    return allText.trim();
+  }
+
+  throw new Error('Could not extract fixed TSX from Claude response');
+}
+
 // ---------- Step 3: Update files ----------
 function updateBlogPosts(topic) {
   console.log('[article] Updating blog-posts.ts...');
@@ -455,7 +547,26 @@ async function main() {
   const rawTsx = await withRetry(() => generateArticle(topic), 'Article generation');
 
   // Step 2b: Validate and fix broken city links
-  const tsx = validateCityLinks(rawTsx);
+  let tsx = validateCityLinks(rawTsx);
+
+  // Step 2c: Validate JSX and auto-fix if needed
+  const jsxErrors = validateJsx(tsx);
+  if (jsxErrors.length > 0) {
+    console.log(`[article] ⚠️  Found ${jsxErrors.length} JSX issue(s):`);
+    jsxErrors.forEach(e => console.log(`  - ${e}`));
+    tsx = await withRetry(() => fixJsxWithClaude(tsx, jsxErrors), 'JSX fix');
+    tsx = validateCityLinks(tsx); // re-validate city links after fix
+
+    const remainingErrors = validateJsx(tsx);
+    if (remainingErrors.length > 0) {
+      console.error('[article] ❌ JSX errors remain after fix attempt:');
+      remainingErrors.forEach(e => console.error(`  - ${e}`));
+      throw new Error(`JSX validation failed: ${remainingErrors.join('; ')}`);
+    }
+    console.log('[article] ✅ JSX errors fixed successfully');
+  } else {
+    console.log('[article] ✅ JSX validation passed');
+  }
 
   // Step 3: Write article file
   const articlePath = resolve(blogDir, `${topic.componentName}.tsx`);
