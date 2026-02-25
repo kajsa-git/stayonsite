@@ -117,6 +117,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['kollektivavtal', 'arbetsmiljö', 'montörboende', 'avtalskrav', 'byggföretag'],
     readingTime: 7,
+  },
+  {
+    slug: 'arbetskraftsinvandring-juni-2026-guide-byggforetag',
+    title: {
+      sv: 'Nya regler för arbetskraftsinvandring juni 2026 – vad byggföretag behöver veta',
+      en: 'New Labor Immigration Rules June 2026 – What Construction Companies Need to Know',
+      pl: 'Nowe przepisy dotyczące imigracji zarobkowej czerwiec 2026 – co firmy budowlane muszą wiedzieć',
+    },
+    description: {
+      sv: 'Från 1 juni 2026 skärps reglerna för arbetstillstånd. Byggföretag måste anpassa sig – här är din guide till lönekrav, sanktioner och boendekrav.',
+      en: 'From June 1, 2026, work permit rules tighten. Construction companies must adapt – here\'s your guide to salary requirements, sanctions and housing.',
+      pl: 'Od 1 czerwca 2026 zaostrzają się zasady pozwoleń na pracę. Firmy budowlane muszą dostosować się – przewodnik po wymaganiach płacowych i mieszkaniowych.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-02-25',
+    category: 'Lagstiftning',
+    tags: ['arbetskraftsinvandring', 'arbetstillstånd', 'byggbranschen', 'montörboende', 'lönekrav'],
+    readingTime: 8,
   }
 ];
 
