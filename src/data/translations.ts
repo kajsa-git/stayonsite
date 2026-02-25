@@ -72,13 +72,12 @@ export type TranslationKey =
   | "references.tagline"
   | "references.testimonial1.quote"
   | "references.testimonial1.author"
-  | "references.testimonial1.company"
   | "references.testimonial2.quote"
   | "references.testimonial2.author"
-  | "references.testimonial2.company"
   | "references.testimonial3.quote"
   | "references.testimonial3.author"
-  | "references.testimonial3.company"
+  | "references.testimonial4.quote"
+  | "references.testimonial4.author"
   | "inquiry.title"
   | "inquiry.subtitle"
   | "inquiry.tagline"
@@ -409,17 +408,17 @@ export const translations: Record<
     "references.subtitle": "Omdömen från några av våra kunder.",
     "references.tagline": "Vad våra kunder säger",
     "references.testimonial1.quote":
-      "Vi hade 12 montörer som behövde boende i Västerås med 5 dagars varsel. StayOnSite ordnade tre lägenheter samma vecka – fullt möblerade, nära arbetsplatsen. Nu använder vi dem för alla våra projekt i Mälardalen.",
-    "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Projektchef, Logistikföretag",
+      "Lätt, smidigt och enkelt. Dom tar hand om allt! Vi kan bara fokusera på vårt arbete.",
+    "references.testimonial1.author": "Frans Åberg",
     "references.testimonial2.quote":
-      "Tusen tack Kajsa för ditt fantastiska engagemang! Vi har testat de stora förmedlarna förut – ingen ens i närheten av den service vi fått från StayOnSite. 18 personer i Oskarshamn, allt klart på 48 timmar.",
-    "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Platschef, Energibolag",
+      "Bra och snabb service, hittar alltid lösningar. Tack för gott samarbete!",
+    "references.testimonial2.author": "Valle Jensen",
     "references.testimonial3.quote":
-      "Snabb, pålitlig och flexibel. Vi utökade från 8 till 22 platser under projektets gång och StayOnSite hanterade det utan problem. Den personliga kontakten gör skillnaden.",
-    "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Produktionschef, Grönt Stål",
+      "Ett samarbete som bara flyter på. Inga konstigheter, tydlig dialog och hög kvalitet i leveransen. Precis så som man vill att det ska fungera.",
+    "references.testimonial3.author": "Per Svensson",
+    "references.testimonial4.quote":
+      "Alltid lika professionella.",
+    "references.testimonial4.author": "Johanna Mårdh",
 
     "inquiry.title": "Skicka en förfrågan",
     "inquiry.subtitle":
@@ -827,17 +826,17 @@ export const translations: Record<
     "references.subtitle": "Reviews from some of our customers.",
     "references.tagline": "What our customers say",
     "references.testimonial1.quote":
-      "We needed housing for 12 installers in Västerås with 5 days notice. StayOnSite arranged three apartments the same week – fully furnished, close to the worksite. We now use them for all our projects in the Mälardalen region.",
-    "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Project Manager, Logistics Company",
+      "Easy, smooth and simple. They take care of everything! We can just focus on our work.",
+    "references.testimonial1.author": "Frans Åberg",
     "references.testimonial2.quote":
-      "Thank you Kajsa for your incredible dedication! We've tried the big brokers before – none even close to the service we got from StayOnSite. 18 people in Oskarshamn, everything ready in 48 hours.",
-    "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Site Manager, Energy Company",
+      "Great and fast service, always finds solutions. Thanks for the great collaboration!",
+    "references.testimonial2.author": "Valle Jensen",
     "references.testimonial3.quote":
-      "Fast, reliable, and flexible. We scaled from 8 to 22 beds during the project and StayOnSite handled it without any issues. The personal contact makes all the difference.",
-    "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Production Manager, Green Steel",
+      "A collaboration that just flows. No complications, clear dialogue and high quality delivery. Exactly how you want things to work.",
+    "references.testimonial3.author": "Per Svensson",
+    "references.testimonial4.quote":
+      "Always equally professional.",
+    "references.testimonial4.author": "Johanna Mårdh",
 
     "inquiry.title": "Send an Inquiry",
     "inquiry.subtitle":
@@ -1246,17 +1245,17 @@ export const translations: Record<
     "references.subtitle": "Opinie od niektórych naszych klientów.",
     "references.tagline": "Co mówią nasi klienci",
     "references.testimonial1.quote":
-      "Potrzebowaliśmy zakwaterowania dla 12 monterów w Västerås z 5-dniowym wyprzedzeniem. StayOnSite zorganizował trzy mieszkania w tym samym tygodniu – w pełni umeblowane, blisko miejsca pracy. Teraz korzystamy z nich przy wszystkich projektach w regionie Mälardalen.",
-    "references.testimonial1.author": "Mats Johansson",
-    "references.testimonial1.company": "Kierownik projektu, Firma logistyczna",
+      "Łatwo, sprawnie i prosto. Zajmują się wszystkim! Możemy skupić się na naszej pracy.",
+    "references.testimonial1.author": "Frans Åberg",
     "references.testimonial2.quote":
-      "Dziękuję Kajsa za niesamowite zaangażowanie! Testowaliśmy wcześniej dużych pośredników – żaden nie był nawet bliski takiej obsłudze. 18 osób w Oskarshamn, wszystko gotowe w 48 godzin.",
-    "references.testimonial2.author": "Sara Magnusson",
-    "references.testimonial2.company": "Kierownik budowy, Firma energetyczna",
+      "Świetna i szybka obsługa, zawsze znajdują rozwiązania. Dziękujemy za dobrą współpracę!",
+    "references.testimonial2.author": "Valle Jensen",
     "references.testimonial3.quote":
-      "Szybko, niezawodnie i elastycznie. Zwiększyliśmy zapotrzebowanie z 8 do 22 miejsc w trakcie projektu, a StayOnSite poradził sobie bez żadnych problemów. Osobisty kontakt robi różnicę.",
-    "references.testimonial3.author": "Erik Lindberg",
-    "references.testimonial3.company": "Kierownik produkcji, Zielona Stal",
+      "Współpraca, która po prostu płynie. Bez komplikacji, jasny dialog i wysoka jakość. Dokładnie tak, jak powinno to działać.",
+    "references.testimonial3.author": "Per Svensson",
+    "references.testimonial4.quote":
+      "Zawsze równie profesjonalni.",
+    "references.testimonial4.author": "Johanna Mårdh",
 
     "inquiry.title": "Wyślij zapytanie",
     "inquiry.subtitle":
