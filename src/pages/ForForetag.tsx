@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import HeroIntentForm from '@/components/HeroIntentForm';
 
 const ForForetag = () => {
   const { language } = useLanguage();
@@ -296,6 +297,8 @@ const ForForetag = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
               </Button>
+
+              <HeroIntentForm />
             </div>
 
             {/* Stat badges */}

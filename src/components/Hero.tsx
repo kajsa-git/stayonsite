@@ -3,6 +3,7 @@ import { TranslationKey } from '@/data/translations';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import HeroIntentForm from '@/components/HeroIntentForm';
 
 const phoneHref = 'tel:+46762498486';
 const whatsappHref = 'https://wa.me/46762498486';
@@ -88,6 +89,8 @@ const Hero = () => {
               </a>
             </Button>
           </motion.div>
+
+          <HeroIntentForm />
 
           {/* Trust Indicators */}
           <motion.div

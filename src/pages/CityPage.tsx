@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/accordion';
 import { getLocalizedKeywords, getLocalizedText } from '@/lib/utils';
 import { AvailableLanguages } from '@/data/translations';
+import HeroIntentForm from '@/components/HeroIntentForm';
 
 const CityPage = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
@@ -279,7 +280,9 @@ const CityPage = () => {
                 </Button>
               </motion.div>
 
-              <motion.div 
+              <HeroIntentForm defaultCity={city.name} />
+
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 1 }}
