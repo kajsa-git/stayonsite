@@ -99,6 +99,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['försäkring', 'ansvar', 'uthyrning', 'husägare', 'riskhantering'],
     readingTime: 8,
+  },
+  {
+    slug: 'avtalskrav-personalboende-guide-2026',
+    title: {
+      sv: 'Avtalskrav på personalboende 2026: Vad gäller för montörer och byggarbetare?',
+      en: 'Worker Accommodation Contract Requirements 2026: What Applies to Construction Workers?',
+      pl: 'Wymagania umowne dotyczące zakwaterowania pracowników 2026: Co obowiązuje?',
+    },
+    description: {
+      sv: 'Kollektivavtal kräver \'tillfredsställande boende\'. Vad betyder det? Guide till avtalskrav, arbetsmiljöregler och vad byggföretag måste erbjuda.',
+      en: 'Collective agreements require \'satisfactory accommodation\'. What does that mean? Guide to contract requirements for construction companies.',
+      pl: 'Układy zbiorowe wymagają \'odpowiedniego zakwaterowania\'. Co to oznacza? Przewodnik po wymaganiach dla firm budowlanych.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-02-18',
+    category: 'Guide',
+    tags: ['kollektivavtal', 'arbetsmiljö', 'montörboende', 'avtalskrav', 'byggföretag'],
+    readingTime: 7,
   }
 ];
 
