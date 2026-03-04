@@ -135,6 +135,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Lagstiftning',
     tags: ['arbetskraftsinvandring', 'arbetstillstånd', 'byggbranschen', 'montörboende', 'lönekrav'],
     readingTime: 8,
+  },
+  {
+    slug: 'datacenter-montorboende-guide-2026',
+    title: {
+      sv: 'Datacenterbyggen 2026: Varför montörboende blir flaskhalsen i svenska miljardsatsningar',
+      en: 'Data Center Construction 2026: Why Worker Housing Is the Bottleneck in Swedish Billion-Dollar Investments',
+      pl: 'Budowa centrów danych 2026: Dlaczego zakwaterowanie pracowników staje się wąskim gardłem szwedzkich inwestycji',
+    },
+    description: {
+      sv: 'Skellefteå, Borlänge, Gävle – datacenter för 100+ miljarder byggs 2026. Men var ska alla montörer bo? Guide för byggföretag och husägare.',
+      en: 'Skellefteå, Borlänge, Gävle – data centers worth 100+ billion SEK under construction in 2026. But where will workers live? Guide for companies & homeowners.',
+      pl: 'Skellefteå, Borlänge, Gävle – centra danych o wartości 100+ miliardów SEK budowane w 2026 roku. Ale gdzie będą mieszkać pracownicy?',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-03-04',
+    category: 'Marknad',
+    tags: ['datacenter', 'montörboende', 'byggprojekt', 'infrastruktur', 'norrland'],
+    readingTime: 8,
   }
 ];
 

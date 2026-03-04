@@ -16,6 +16,7 @@ import InfrastrukturBoendeKarta2026 from './pages/blogg/InfrastrukturBoendeKarta
 import ForsakringPersonalboendeGuide2026 from './pages/blogg/ForsakringPersonalboendeGuide2026'
 import AvtalskravPersonalboendeGuide2026 from './pages/blogg/AvtalskravPersonalboendeGuide2026'
 import ArbetstillstandJuni2026Guide from './pages/blogg/ArbetstillstandJuni2026Guide'
+import DatacenterMontorboendeGuide2026 from './pages/blogg/DatacenterMontorboendeGuide2026'
 import NotFound from './pages/NotFound'
 
 const citySlugs = cities.map((c) => c.slug)
@@ -57,6 +58,7 @@ export const routes: RouteRecord[] = [
       { path: 'blogg/forsakring-ansvar-personalboende-guide-2026', element: <ForsakringPersonalboendeGuide2026 /> },
       { path: 'blogg/avtalskrav-personalboende-guide-2026', element: <AvtalskravPersonalboendeGuide2026 /> },
       { path: 'blogg/arbetskraftsinvandring-juni-2026-guide-byggforetag', element: <ArbetstillstandJuni2026Guide /> },
+      { path: 'blogg/datacenter-montorboende-guide-2026', element: <DatacenterMontorboendeGuide2026 /> },
       { path: 'lp/husagare', element: <LpHusagare /> },
       {
         path: '404',
