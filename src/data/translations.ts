@@ -356,7 +356,7 @@ export const translations: Record<
     "nav.inquiryForm": "Ring oss",
     "nav.forCompanies": "För byggbolag",
 
-    "hero.title": "Personalboende i hela Sverige — vi ordnar boendet för ert projekt",
+    "hero.title": "Personalboende i hela Sverige - vi ordnar boendet för ert projekt",
     "hero.subtitle": "Från första ingenjör till sista montör",
     "hero.cta": "Skicka förfrågan",
     "hero.tagline": "Etableringspartner i Sverige",
