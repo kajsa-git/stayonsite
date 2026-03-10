@@ -78,6 +78,16 @@ export type TranslationKey =
   | "references.testimonial3.author"
   | "references.testimonial4.quote"
   | "references.testimonial4.author"
+  | "references.testimonial5.quote"
+  | "references.testimonial5.author"
+  | "references.testimonial6.quote"
+  | "references.testimonial6.author"
+  | "references.testimonial7.quote"
+  | "references.testimonial7.author"
+  | "references.testimonial8.quote"
+  | "references.testimonial8.author"
+  | "references.testimonial9.quote"
+  | "references.testimonial9.author"
   | "heroForm.city"
   | "heroForm.cityPlaceholder"
   | "heroForm.people"
@@ -428,6 +438,21 @@ export const translations: Record<
     "references.testimonial4.quote":
       "Alltid lika professionella.",
     "references.testimonial4.author": "Johanna Mårdh",
+    "references.testimonial5.quote":
+      "Stay On Site levererar med en nivå av kvalitet som märks i varje detalj. De har hjälpt mig med boende i både Stockholm och Mora, med en process som varit genomtänkt, smidig och välorganiserad.",
+    "references.testimonial5.author": "Tess Devlésa",
+    "references.testimonial6.quote":
+      "Snabb respons, tydlig kommunikation och ett professionellt bemötande. Rekommenderas!",
+    "references.testimonial6.author": "Philip Af Wetterstedt",
+    "references.testimonial7.quote":
+      "Kajsa är en pålitlig och affärsmässig kvinna med ett hjärtligt engagemang och en utpräglat god känsla för kvalité. Hennes leverans överträffar din förväntan!",
+    "references.testimonial7.author": "Charlotte Nilsson",
+    "references.testimonial8.quote":
+      "Vi är mycket nöjda med servicen. Snabb respons, bra erbjudande och all kommunikation gick mycket bra, väldigt mycket bra samarbete. Tack Kajsa för all vägledning.",
+    "references.testimonial8.author": "Iragi Kulimishi",
+    "references.testimonial9.quote":
+      "Vi är mycket nöjda med servicen. Snabb respons, bra erbjudande och all kommunikation gick mycket bra. Tack Kajsa för all hjälp.",
+    "references.testimonial9.author": "Gintarė Kedienė",
 
     "heroForm.city": "Ort",
     "heroForm.cityPlaceholder": "T.ex. Boden, Gävle, Luleå",
@@ -856,6 +881,21 @@ export const translations: Record<
     "references.testimonial4.quote":
       "Always equally professional.",
     "references.testimonial4.author": "Johanna Mårdh",
+    "references.testimonial5.quote":
+      "Stay On Site delivers with a level of quality that shows in every detail. They helped me with accommodation in both Stockholm and Mora, with a process that was well thought out, smooth and well organized.",
+    "references.testimonial5.author": "Tess Devlésa",
+    "references.testimonial6.quote":
+      "Quick response, clear communication and a professional approach. Highly recommended!",
+    "references.testimonial6.author": "Philip Af Wetterstedt",
+    "references.testimonial7.quote":
+      "Kajsa is a reliable and business-minded woman with a heartfelt commitment and an outstanding sense of quality. Her delivery exceeds your expectations!",
+    "references.testimonial7.author": "Charlotte Nilsson",
+    "references.testimonial8.quote":
+      "We are very satisfied with the service. Quick response, great offer and all communication went very well, excellent collaboration. Thanks Kajsa for all the guidance.",
+    "references.testimonial8.author": "Iragi Kulimishi",
+    "references.testimonial9.quote":
+      "We are very happy about the service. Quick reaction, good offer and all communication went very well. Thanks for Kajsa for all help.",
+    "references.testimonial9.author": "Gintarė Kedienė",
 
     "heroForm.city": "Location",
     "heroForm.cityPlaceholder": "e.g. Boden, Gävle, Luleå",
@@ -1285,6 +1325,21 @@ export const translations: Record<
     "references.testimonial4.quote":
       "Zawsze równie profesjonalni.",
     "references.testimonial4.author": "Johanna Mårdh",
+    "references.testimonial5.quote":
+      "Stay On Site dostarcza usługi na poziomie jakości, który widać w każdym szczególe. Pomogli mi ze zakwaterowaniem zarówno w Sztokholmie, jak i w Mora — proces był przemyślany, sprawny i dobrze zorganizowany.",
+    "references.testimonial5.author": "Tess Devlésa",
+    "references.testimonial6.quote":
+      "Szybka odpowiedź, jasna komunikacja i profesjonalne podejście. Polecam!",
+    "references.testimonial6.author": "Philip Af Wetterstedt",
+    "references.testimonial7.quote":
+      "Kajsa to niezawodna i profesjonalna kobieta z serdecznym zaangażowaniem i doskonałym wyczuciem jakości. Jej usługi przekraczają oczekiwania!",
+    "references.testimonial7.author": "Charlotte Nilsson",
+    "references.testimonial8.quote":
+      "Jesteśmy bardzo zadowoleni z usługi. Szybka odpowiedź, dobra oferta i cała komunikacja przebiegała bardzo dobrze, doskonała współpraca. Dziękujemy Kajsa za wszelkie wskazówki.",
+    "references.testimonial8.author": "Iragi Kulimishi",
+    "references.testimonial9.quote":
+      "Jesteśmy bardzo zadowoleni z usługi. Szybka reakcja, dobra oferta i cała komunikacja przebiegała bardzo dobrze. Dziękujemy Kajsa za całą pomoc.",
+    "references.testimonial9.author": "Gintarė Kedienė",
 
     "heroForm.city": "Miejscowość",
     "heroForm.cityPlaceholder": "np. Boden, Gävle, Luleå",

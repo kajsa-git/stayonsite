@@ -1,5 +1,4 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { TranslationKey } from '@/data/translations';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -7,12 +6,6 @@ import HeroIntentForm from '@/components/HeroIntentForm';
 
 const phoneHref = 'tel:+46762498486';
 const whatsappHref = 'https://wa.me/46762498486';
-
-const bulletPoints: Array<TranslationKey> = [
-  'hero.bullet1',
-  'hero.bullet2',
-  'hero.bullet3',
-];
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -91,23 +84,6 @@ const Hero = () => {
           </motion.div>
 
           <HeroIntentForm />
-
-          {/* Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-            className="pt-16 mt-16 pb-12 md:pb-0"
-          >
-            <div className="flex flex-wrap gap-x-12 gap-y-6">
-                {bulletPoints.map((key) => (
-                <div key={key} className="flex items-center gap-3 text-white/80 font-medium">
-                  <div className="h-2 w-2 rounded-full bg-accent" />
-                  <span className="text-lg">{t(key)}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
 
         </div>
       </div>

@@ -83,6 +83,9 @@ const Kontakt = () => {
         )}
         canonical="https://www.stayonsite.se/kontakt"
         structuredData={structuredData}
+        hreflangs={[
+          { lang: 'sv', href: 'https://www.stayonsite.se/kontakt' },
+        ]}
       />
       <Header />
 

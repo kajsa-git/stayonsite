@@ -88,6 +88,9 @@ const OmOss = () => {
         )}
         canonical="https://www.stayonsite.se/om-oss"
         structuredData={structuredData}
+        hreflangs={[
+          { lang: 'sv', href: 'https://www.stayonsite.se/om-oss' },
+        ]}
       />
       <Header />
 

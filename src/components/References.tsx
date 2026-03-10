@@ -1,9 +1,19 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RATING_VALUE, REVIEW_COUNT, BEST_RATING } from '@/data/constants';
 import { Star } from 'lucide-react';
+import Autoplay from 'embla-carousel-autoplay';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
 
 const GOOGLE_REVIEW_URL =
   'https://www.google.com/search?q=Stayonsite+AB';
+
+const REVIEW_KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -25,24 +35,10 @@ const StarRating = () => (
 const References = () => {
   const { t } = useLanguage();
 
-  const reviews = [
-    {
-      quote: t('references.testimonial1.quote'),
-      author: t('references.testimonial1.author'),
-    },
-    {
-      quote: t('references.testimonial2.quote'),
-      author: t('references.testimonial2.author'),
-    },
-    {
-      quote: t('references.testimonial3.quote'),
-      author: t('references.testimonial3.author'),
-    },
-    {
-      quote: t('references.testimonial4.quote'),
-      author: t('references.testimonial4.author'),
-    },
-  ];
+  const reviews = REVIEW_KEYS.map((n) => ({
+    quote: t(`references.testimonial${n}.quote` as any),
+    author: t(`references.testimonial${n}.author` as any),
+  }));
 
   // Schema.org structured data for reviews
   const reviewSchema = {
@@ -90,30 +86,40 @@ const References = () => {
         </div>
 
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((review, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
-              >
-                <StarRating />
-                <p className="text-nordic-800 mt-4 mb-8 leading-relaxed font-light italic flex-1">
-                  "{review.quote}"
-                </p>
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold text-nordic-900">{review.author}</p>
-                  <a
-                    href={GOOGLE_REVIEW_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Google-recension"
-                  >
-                    <GoogleIcon />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Carousel
+            opts={{ align: 'start', loop: true }}
+            plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {reviews.map((review, index) => (
+                <CarouselItem
+                  key={index}
+                  className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
+                >
+                  <div className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+                    <StarRating />
+                    <p className="text-nordic-800 mt-4 mb-8 leading-relaxed font-light italic flex-1">
+                      "{review.quote}"
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold text-nordic-900">{review.author}</p>
+                      <a
+                        href={GOOGLE_REVIEW_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Google-recension"
+                      >
+                        <GoogleIcon />
+                      </a>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-4 md:-left-12" />
+            <CarouselNext className="-right-4 md:-right-12" />
+          </Carousel>
 
           {/* Google review link */}
           <div className="text-center mt-8">

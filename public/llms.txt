@@ -2,7 +2,7 @@
 
 > Personalboende och företagsbostäder i hela Sverige. Vi hjälper byggbolag och industriföretag att hitta möblerade boenden för sina team.
 
-Last updated: 2026-02-07
+Last updated: 2026-02-25
 
 ## What we do
 
@@ -41,8 +41,8 @@ StayOnSite specializes in housing for these sectors:
 - 100+ satisfied corporate clients since 2013
 - 500+ accommodations arranged across Sweden
 - Average response time: under 3 hours
-- 40+ cities covered
-- 4.9/5 average customer rating (70+ verified reviews)
+- 31 cities covered (with dedicated city pages in Swedish, English, and Polish)
+- 5.0/5 average Google rating (4 verified Google reviews)
 - 10+ years of experience in corporate housing
 - Zero disputes with homeowners on 100+ rental agreements
 - Fastest deployment: 45 workers housed in 48 hours (Säffle solar park project)
@@ -106,8 +106,8 @@ Northern Sweden (Norrbotten/Västerbotten) needs an estimated 100,000+ new inhab
 
 ## Coverage
 
-19 cities across Sweden:
-Stockholm, Göteborg, Malmö, Uppsala, Västerås, Örebro, Linköping, Norrköping, Helsingborg, Jönköping, Gävle, Luleå, Umeå, Boden, Oskarshamn, Motala, Västervik, Vingåker, Säffle.
+31 cities across Sweden with dedicated pages:
+Stockholm, Göteborg, Malmö, Uppsala, Västerås, Örebro, Linköping, Norrköping, Helsingborg, Jönköping, Gävle, Luleå, Umeå, Boden, Oskarshamn, Motala, Västervik, Vingåker, Säffle, Skellefteå, Karlstad, Östersund, Eskilstuna, Lund, Kiruna, Gällivare, Halmstad, Falun, Ludvika, Nyköping, Örnsköldsvik.
 
 We also arrange housing in locations outside these cities on request.
 

@@ -12,6 +12,11 @@ interface SEOProps {
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
   hreflangs?: Array<{ lang: string; href: string }>;
   noindex?: boolean;
+  articlePublishedTime?: string;
+  articleModifiedTime?: string;
+  articleAuthor?: string;
+  articleSection?: string;
+  articleTags?: string[];
 }
 
 const SEO = ({
@@ -24,6 +29,11 @@ const SEO = ({
   structuredData,
   hreflangs,
   noindex,
+  articlePublishedTime,
+  articleModifiedTime,
+  articleAuthor,
+  articleSection,
+  articleTags,
 }: SEOProps) => {
   const { language } = useLanguage();
   const location = useLocation();
@@ -74,6 +84,22 @@ const SEO = ({
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
       <meta name="twitter:image" content={ogImage} />
+
+      {type === 'article' && articlePublishedTime && (
+        <meta property="article:published_time" content={articlePublishedTime} />
+      )}
+      {type === 'article' && articleModifiedTime && (
+        <meta property="article:modified_time" content={articleModifiedTime} />
+      )}
+      {type === 'article' && articleAuthor && (
+        <meta property="article:author" content={articleAuthor} />
+      )}
+      {type === 'article' && articleSection && (
+        <meta property="article:section" content={articleSection} />
+      )}
+      {type === 'article' && articleTags?.map(tag => (
+        <meta key={tag} property="article:tag" content={tag} />
+      ))}
 
       {hreflangs?.map(({ lang, href }) => (
         <link key={lang} rel="alternate" hreflang={lang} href={href} />

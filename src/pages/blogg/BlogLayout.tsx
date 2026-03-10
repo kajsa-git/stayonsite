@@ -68,6 +68,11 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         canonical={articleUrl}
         type="article"
         structuredData={structuredData}
+        articlePublishedTime={`${post.publishedDate}T00:00:00Z`}
+        articleModifiedTime={`${post.publishedDate}T00:00:00Z`}
+        articleAuthor="https://www.stayonsite.se"
+        articleSection={post.category}
+        articleTags={post.tags}
         hreflangs={[
           { lang: 'sv', href: articleUrl },
           { lang: 'x-default', href: articleUrl },

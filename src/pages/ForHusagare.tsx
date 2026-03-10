@@ -87,6 +87,9 @@ const ForHusagare = () => {
         description={t('seo.homeowner.description')}
         canonical="https://www.stayonsite.se/for-husagare"
         structuredData={structuredData}
+        hreflangs={[
+          { lang: 'sv', href: 'https://www.stayonsite.se/for-husagare' },
+        ]}
       />
       <Header />
       <main className="flex-grow pb-24 md:pb-0">

@@ -42,6 +42,9 @@ const BlogIndex = () => {
         description={t('Artiklar om personalboende, f\u00f6retagsbost\u00e4der, nya lagar och marknadstrender i Sverige.', 'Articles about worker accommodation, corporate housing, new regulations and market trends in Sweden.', 'Artyku\u0142y o zakwaterowaniu pracowniczym i trendach rynkowych w Szwecji.')}
         canonical="https://www.stayonsite.se/blogg"
         structuredData={collectionSchema}
+        hreflangs={[
+          { lang: 'sv', href: 'https://www.stayonsite.se/blogg' },
+        ]}
       />
       <Header />
       <main className="flex-grow">
