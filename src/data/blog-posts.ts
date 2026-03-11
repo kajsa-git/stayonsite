@@ -153,6 +153,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Marknad',
     tags: ['datacenter', 'montörboende', 'byggprojekt', 'infrastruktur', 'norrland'],
     readingTime: 8,
+  },
+  {
+    slug: 'regional-bostadsanalys-2026-var-finns-boende-montorer',
+    title: {
+      sv: 'Regional bostadsanalys 2026: Var finns boende till dina montörer?',
+      en: 'Regional Housing Analysis 2026: Where to Find Worker Accommodation',
+      pl: 'Regionalna analiza mieszkaniowa 2026: Gdzie znaleźć zakwaterowanie dla pracowników',
+    },
+    description: {
+      sv: 'Boverkets nya statistik visar var det finns överskott och brist på bostäder – och vad det betyder för ditt byggprojekt.',
+      en: 'New housing statistics reveal where accommodation is available – and what it means for your construction project.',
+      pl: 'Nowe statystyki pokazują, gdzie są mieszkania dostępne – i co to znaczy dla Twojego projektu budowlanego.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-03-11',
+    category: 'Analys',
+    tags: ['bostadsmarknad', 'regional-analys', 'infrastruktur', 'boverket'],
+    readingTime: 7,
   }
 ];
 
