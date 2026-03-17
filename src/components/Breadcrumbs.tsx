@@ -1,12 +1,15 @@
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChevronRight, Home } from 'lucide-react';
 import { getCityBySlug } from '@/data/cities';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Breadcrumbs = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const { language } = useLanguage();
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const pathSegments = pathname.split('/').filter(Boolean);
   
   if (pathSegments.length === 0) return null;
 
@@ -15,8 +18,8 @@ const Breadcrumbs = () => {
       <div className="container mx-auto px-4">
         <ol className="flex items-center space-x-2 text-sm">
           <li>
-            <Link 
-              to="/" 
+            <Link
+              href="/"
               className="flex items-center text-gray-600 hover:text-nordic-600 transition-colors"
             >
               <Home className="h-4 w-4 mr-1" />

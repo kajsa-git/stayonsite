@@ -1,6 +1,8 @@
+'use client';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight, Building2, Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const TwoTrack = () => {
   const { t } = useLanguage();
@@ -11,7 +13,7 @@ const TwoTrack = () => {
         <div className="grid md:grid-cols-5 gap-6 max-w-5xl mx-auto">
           {/* Företag - larger card */}
           <Link
-            to="/for-foretag"
+            href="/for-foretag"
             className="md:col-span-3 group bg-primary rounded-3xl p-10 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="flex items-center gap-2 mb-4">
@@ -34,7 +36,7 @@ const TwoTrack = () => {
 
           {/* Husägare - smaller card */}
           <Link
-            to="/for-husagare"
+            href="/for-husagare"
             className="md:col-span-2 group bg-nordic-50 rounded-3xl p-10 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-nordic-100"
           >
             <div className="flex items-center gap-2 mb-4">

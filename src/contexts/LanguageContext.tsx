@@ -1,6 +1,7 @@
+'use client'
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import { translations, TranslationKey, AvailableLanguages } from '../data/translations';
 
 interface LanguageContextType {
@@ -18,9 +19,9 @@ function detectLanguageFromPath(pathname: string): AvailableLanguages {
 }
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const location = useLocation();
+  const pathname = usePathname();
   const [language, setLanguage] = useState<AvailableLanguages>(
-    () => detectLanguageFromPath(location.pathname)
+    () => detectLanguageFromPath(pathname)
   );
 
   const t = (key: TranslationKey): string => {

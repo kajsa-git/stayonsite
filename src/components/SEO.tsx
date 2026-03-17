@@ -1,6 +1,9 @@
-import { Head } from 'vite-react-ssg';
-import { useLocation } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+/**
+ * SEO compatibility wrapper for Next.js migration.
+ * Meta tags (title, description, OG, etc.) are now handled by Next.js metadata exports in page.tsx files.
+ * This component only renders JSON-LD structured data.
+ * All other props are accepted but ignored for backwards compatibility.
+ */
 
 interface SEOProps {
   title?: string;
@@ -19,105 +22,14 @@ interface SEOProps {
   articleTags?: string[];
 }
 
-const SEO = ({
-  title,
-  description,
-  keywords,
-  ogImage = 'https://www.stayonsite.se/images/og-image.jpg',
-  canonical,
-  type = 'website',
-  structuredData,
-  hreflangs,
-  noindex,
-  articlePublishedTime,
-  articleModifiedTime,
-  articleAuthor,
-  articleSection,
-  articleTags,
-}: SEOProps) => {
-  const { language } = useLanguage();
-  const location = useLocation();
-
-  const defaultContent = {
-    sv: {
-      title: 'StayOnSite - Boende för byggarbetare | Företagsbostäder Sverige',
-      description: 'StayOnSite hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare. Över 10 års erfarenhet. Boenden i hela Sverige. Kontakta oss idag!',
-      keywords: 'boende byggarbetare, företagsbostäder, personalboende, byggboende, montörboende, arbetarboende, longstay, shortstay, boende stockholm, boende göteborg, boende malmö, stayonsite',
-    },
-    en: {
-      title: 'StayOnSite - Accommodation for Construction Workers | Corporate Housing Sweden',
-      description: 'StayOnSite helps construction companies quickly find accommodation in other locations for their workers. Over 10 years of experience. Housing throughout Sweden. Contact us today!',
-      keywords: 'construction worker accommodation, corporate housing, staff accommodation, construction housing, worker housing, longstay, shortstay, accommodation stockholm, accommodation gothenburg, accommodation malmö, stayonsite',
-    },
-    pl: {
-      title: 'StayOnSite - Zakwaterowanie dla pracowników budowlanych | Mieszkania służbowe Szwecja',
-      description: 'StayOnSite pomaga firmom budowlanym szybko znaleźć zakwaterowanie w innych lokalizacjach dla ich pracowników. Ponad 10 lat doświadczenia. Mieszkania w całej Szwecji. Skontaktuj się z nami już dziś!',
-      keywords: 'zakwaterowanie pracowników budowlanych, mieszkania służbowe, zakwaterowanie personelu, zakwaterowanie budowlane, zakwaterowanie pracowników, długoterminowe, krótkoterminowe, zakwaterowanie sztokholm, zakwaterowanie göteborg, zakwaterowanie malmö, stayonsite',
-    },
-  };
-
-  const finalTitle = title || defaultContent[language].title;
-  const finalDescription = description || defaultContent[language].description;
-  const finalKeywords = keywords || defaultContent[language].keywords;
-  const finalCanonical = canonical || `https://www.stayonsite.se${location.pathname}`;
-  const ogLocale = language === 'sv' ? 'sv_SE' : language === 'en' ? 'en_US' : 'pl_PL';
+const SEO = ({ structuredData }: SEOProps) => {
+  if (!structuredData) return null;
 
   return (
-    <Head>
-      <html lang={language} />
-      <title>{finalTitle}</title>
-      <meta name="description" content={finalDescription} />
-      <meta name="keywords" content={finalKeywords} />
-      <link rel="canonical" href={finalCanonical} />
-
-      <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
-
-      <meta property="og:title" content={finalTitle} />
-      <meta property="og:description" content={finalDescription} />
-      <meta property="og:type" content={type} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:url" content={finalCanonical} />
-      <meta property="og:locale" content={ogLocale} />
-      <meta property="og:site_name" content="StayOnSite" />
-
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={finalTitle} />
-      <meta name="twitter:description" content={finalDescription} />
-      <meta name="twitter:image" content={ogImage} />
-
-      {type === 'article' && articlePublishedTime && (
-        <meta property="article:published_time" content={articlePublishedTime} />
-      )}
-      {type === 'article' && articleModifiedTime && (
-        <meta property="article:modified_time" content={articleModifiedTime} />
-      )}
-      {type === 'article' && articleAuthor && (
-        <meta property="article:author" content={articleAuthor} />
-      )}
-      {type === 'article' && articleSection && (
-        <meta property="article:section" content={articleSection} />
-      )}
-      {type === 'article' && articleTags?.map(tag => (
-        <meta key={tag} property="article:tag" content={tag} />
-      ))}
-
-      {hreflangs?.map(({ lang, href }) => (
-        <link key={lang} rel="alternate" hreflang={lang} href={href} />
-      ))}
-      {hreflangs && !hreflangs.find((h) => h.lang === 'x-default') && (
-        <link
-          rel="alternate"
-          hreflang="x-default"
-          href={hreflangs.find((h) => h.lang === 'sv')?.href || finalCanonical}
-        />
-      )}
-
-      {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      )}
-    </Head>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    />
   );
 };
 

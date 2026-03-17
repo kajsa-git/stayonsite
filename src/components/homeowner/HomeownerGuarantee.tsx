@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { CreditCard, ShieldCheck, Headphones, CheckCircle2 } from 'lucide-react';

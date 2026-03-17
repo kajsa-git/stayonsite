@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Quote, CheckCircle2 } from 'lucide-react';

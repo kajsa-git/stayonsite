@@ -1,5 +1,7 @@
+'use client';
+
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { type AvailableLanguages } from '@/data/translations';
 import { cities, type City } from '@/data/cities';
@@ -70,7 +72,7 @@ const CityLinks = () => {
                   {groupedByRegion[region].map((city) => (
                     <Link
                       key={city.slug}
-                      to={cityLink(city.slug)}
+                      href={cityLink(city.slug)}
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-nordic-50 border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-xs text-nordic-900 hover:text-[#ff6300]"
                     >
                       <MapPin className="h-3 w-3" />

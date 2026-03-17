@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RATING_VALUE, REVIEW_COUNT, BEST_RATING } from '@/data/constants';
 import { Star } from 'lucide-react';

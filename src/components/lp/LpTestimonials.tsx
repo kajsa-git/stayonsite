@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Quote } from 'lucide-react';
 import type { TranslationKey } from '@/data/translations';

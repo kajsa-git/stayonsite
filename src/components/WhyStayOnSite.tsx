@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ClipboardList, KeyRound, RefreshCcw } from 'lucide-react';
 

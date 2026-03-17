@@ -1,7 +1,8 @@
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -19,16 +20,14 @@ const PAGE_MAP: Record<string, Record<string, string>> = {
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleLanguageChange = (lang: 'sv' | 'en' | 'pl') => {
     if (lang === language) return;
 
-    const path = location.pathname;
-
     // City pages: /stad/:slug, /en/corporate-housing/:slug, /pl/zakwaterowanie/:slug
-    const cityMatch = path.match(/\/(stad|en\/corporate-housing|pl\/zakwaterowanie)\/([^/]+)/);
+    const cityMatch = pathname.match(/\/(stad|en\/corporate-housing|pl\/zakwaterowanie)\/([^/]+)/);
     if (cityMatch) {
       const citySlug = cityMatch[2];
       const newPath =
@@ -36,15 +35,15 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         lang === 'en' ? `/en/corporate-housing/${citySlug}` :
         `/pl/zakwaterowanie/${citySlug}`;
       setLanguage(lang);
-      navigate(newPath);
+      router.push(newPath);
       return;
     }
 
     // Non-city pages: use explicit mapping
-    const mapped = PAGE_MAP[path];
+    const mapped = PAGE_MAP[pathname];
     if (mapped && mapped[lang]) {
       setLanguage(lang);
-      navigate(mapped[lang]);
+      router.push(mapped[lang]);
       return;
     }
 

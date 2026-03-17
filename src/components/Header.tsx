@@ -1,5 +1,8 @@
+'use client';
+
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -8,12 +11,12 @@ import { cn } from "@/lib/utils";
 
 const Header = () => {
   const { t } = useLanguage();
-  const location = useLocation();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   // Check if we're on the homepage
-  const isHomePage = location.pathname === "/";
+  const isHomePage = pathname === "/";
 
   // On subpages, always use the "scrolled" look (solid white bg + dark text)
   // because subpages have a light background behind the header
@@ -73,7 +76,7 @@ const Header = () => {
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center">
           <Link
-            to="/"
+            href="/"
             className="flex items-center group relative"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
@@ -127,7 +130,7 @@ const Header = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-8">
               <Link
-                to="/for-foretag"
+                href="/for-foretag"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
                   useScrolledStyle
@@ -139,7 +142,7 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
               <Link
-                to="/for-husagare"
+                href="/for-husagare"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
                   useScrolledStyle
@@ -151,7 +154,7 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
               <Link
-                to="/blogg"
+                href="/blogg"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
                   useScrolledStyle
@@ -226,7 +229,7 @@ const Header = () => {
               <div className="h-px bg-border my-2" />
               <li>
                 <Link
-                  to="/for-foretag"
+                  href="/for-foretag"
                   onClick={() => setIsMenuOpen(false)}
                   className="block px-4 py-2 text-primary font-medium"
                 >
@@ -235,7 +238,7 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  to="/for-husagare"
+                  href="/for-husagare"
                   className="block px-4 py-2 text-primary font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -244,7 +247,7 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  to="/blogg"
+                  href="/blogg"
                   className="block px-4 py-2 text-primary font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >

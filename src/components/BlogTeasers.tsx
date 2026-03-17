@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPosts } from '@/data/blog-posts';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
@@ -29,7 +31,7 @@ const BlogTeasers = () => {
               {heading}
             </h2>
             <Link
-              to="/blogg"
+              href="/blogg"
               className="hidden sm:flex items-center gap-2 text-sm font-medium text-accent hover:underline"
             >
               {readMore} <ArrowRight size={14} />
@@ -43,7 +45,7 @@ const BlogTeasers = () => {
               return (
                 <Link
                   key={post.slug}
-                  to={`/blogg/${post.slug}`}
+                  href={`/blogg/${post.slug}`}
                   className="group bg-nordic-50 rounded-2xl border border-nordic-100 p-6 hover:shadow-md hover:border-accent/30 transition-all duration-300 flex flex-col"
                 >
                   <span className="inline-block self-start bg-accent/10 text-accent px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider mb-3">
@@ -66,7 +68,7 @@ const BlogTeasers = () => {
 
           <div className="sm:hidden text-center mt-6">
             <Link
-              to="/blogg"
+              href="/blogg"
               className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
             >
               {readMore} <ArrowRight size={14} />

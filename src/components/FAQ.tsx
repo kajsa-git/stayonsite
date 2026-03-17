@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
 import {

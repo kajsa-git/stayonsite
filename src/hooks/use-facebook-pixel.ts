@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect } from 'react';
 
 declare global {
@@ -9,7 +11,7 @@ declare global {
 
 export const useFacebookPixel = () => {
   useEffect(() => {
-    const pixelId = import.meta.env.VITE_FB_PIXEL_ID as string | undefined;
+    const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID as string | undefined;
     if (!pixelId || typeof window === 'undefined') return;
     if (window.fbq) return; // already loaded
 

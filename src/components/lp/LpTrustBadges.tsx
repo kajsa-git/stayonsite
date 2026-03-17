@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Users, ShieldCheck, Clock, CreditCard } from 'lucide-react';
 

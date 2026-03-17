@@ -1,3 +1,5 @@
+'use client'
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import {
@@ -12,8 +14,8 @@ const HomeownerFAQ = () => {
   const { t } = useLanguage();
 
   const faqs = [1, 2, 3, 4, 5, 6, 7, 8].map(i => ({
-    question: t(`homeowner.faq.question${i}`),
-    answer: t(`homeowner.faq.answer${i}`),
+    question: t(`homeowner.faq.question${i}` as any),
+    answer: t(`homeowner.faq.answer${i}` as any),
   }));
 
   return (

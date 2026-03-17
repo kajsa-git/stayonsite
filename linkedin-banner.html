@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayOnSite LinkedIn Banner - 1584x396px</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #9e9e9e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .banner {
+            width: 1584px;
+            height: 396px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #3d8cab 0%, #2a5d7a 40%, #053c5e 100%);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Subtle texture overlay */
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.01) 2px,
+                    rgba(255, 255, 255, 0.01) 4px
+                );
+            pointer-events: none;
+        }
+
+        /* Geometric accent elements */
+        .geo-accent {
+            position: absolute;
+            opacity: 0.15;
+        }
+
+        .geo-1 {
+            width: 400px;
+            height: 400px;
+            border: 2px solid #ff6300;
+            border-radius: 50%;
+            top: -200px;
+            left: 300px;
+        }
+
+        .geo-2 {
+            width: 250px;
+            height: 250px;
+            border: 2px solid #ff6300;
+            transform: rotate(45deg);
+            bottom: -120px;
+            left: 100px;
+        }
+
+        .geo-3 {
+            width: 180px;
+            height: 180px;
+            border: 2px solid rgba(255, 99, 0, 0.5);
+            border-radius: 50%;
+            top: 50px;
+            left: 450px;
+        }
+
+        /* Orange accent dots */
+        .dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff6300;
+            border-radius: 50%;
+        }
+
+        .dot-1 { top: 80px; left: 550px; }
+        .dot-2 { top: 280px; left: 400px; width: 12px; height: 12px; }
+        .dot-3 { top: 160px; right: 200px; width: 6px; height: 6px; }
+        .dot-4 { top: 60px; left: 250px; width: 10px; height: 10px; opacity: 0.7; }
+
+        /* Vertical accent line - divider between city and content */
+        .accent-line {
+            position: absolute;
+            width: 3px;
+            height: 160px;
+            background: linear-gradient(to bottom, transparent, #ff6300, transparent);
+            top: 50%;
+            left: 680px;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+
+        /* Content container - right-aligned */
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 50px 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        /* Logo and tagline */
+        .branding {
+            max-width: 700px;
+            text-align: right;
+        }
+
+        .logo-svg {
+            display: block;
+            margin-bottom: 12px;
+            margin-left: auto;
+        }
+
+        .tagline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 300;
+            color: rgba(247, 247, 245, 0.85);
+            letter-spacing: 1px;
+        }
+
+        /* Flags */
+        .flags {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .flags .fi {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            opacity: 0.85;
+        }
+
+        /* Stats ribbon */
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 28px;
+            background: rgba(5, 60, 94, 0.5);
+            backdrop-filter: blur(10px);
+            border-right: 4px solid #ff6300;
+            border-radius: 4px;
+            max-width: fit-content;
+        }
+
+        .stat-item {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #f7f7f5;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 99, 0, 0.4);
+        }
+
+        .stat-number {
+            color: #ff6300;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        /* Subtle cityscape silhouette - left side */
+        .cityscape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 650px;
+            height: 200px;
+            opacity: 0.12;
+            z-index: 1;
+        }
+
+        .building {
+            position: absolute;
+            bottom: 0;
+            background: #f7f7f5;
+        }
+
+        .b1 { left: 50px; width: 60px; height: 120px; }
+        .b2 { left: 120px; width: 80px; height: 150px; }
+        .b3 { left: 210px; width: 50px; height: 90px; }
+        .b4 { left: 270px; width: 70px; height: 140px; }
+        .b5 { left: 350px; width: 90px; height: 110px; }
+        .b6 { left: 450px; width: 65px; height: 130px; }
+        .b7 { left: 525px; width: 55px; height: 100px; }
+
+        /* Windows on buildings */
+        .building::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 15px,
+                    rgba(61, 140, 171, 0.3) 15px,
+                    rgba(61, 140, 171, 0.3) 17px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 12px,
+                    rgba(61, 140, 171, 0.3) 12px,
+                    rgba(61, 140, 171, 0.3) 14px
+                );
+        }
+
+        /* Decorative corner element - top right instead of top left */
+        .corner-accent {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            border-top: 3px solid rgba(255, 99, 0, 0.2);
+            border-right: 3px solid rgba(255, 99, 0, 0.2);
+            border-radius: 0 0 0 100px;
+        }
+
+        /* Instructions below banner */
+        .instructions {
+            margin-top: 30px;
+            padding: 20px 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 1584px;
+        }
+
+        .instructions h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: #053c5e;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .instructions p {
+            font-family: 'Inter', sans-serif;
+            color: #424343;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .instructions strong {
+            color: #ff6300;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <!-- Background geometric accents -->
+        <div class="geo-accent geo-1"></div>
+        <div class="geo-accent geo-2"></div>
+        <div class="geo-accent geo-3"></div>
+
+        <!-- Accent dots -->
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+        <div class="dot dot-4"></div>
+
+        <!-- Vertical accent line -->
+        <div class="accent-line"></div>
+
+        <!-- Corner decorative element -->
+        <div class="corner-accent"></div>
+
+        <!-- Cityscape silhouette -->
+        <div class="cityscape">
+            <div class="building b1"></div>
+            <div class="building b2"></div>
+            <div class="building b3"></div>
+            <div class="building b4"></div>
+            <div class="building b5"></div>
+            <div class="building b6"></div>
+            <div class="building b7"></div>
+        </div>
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="branding">
+                <svg class="logo-svg" width="520" height="75" viewBox="0 0 520 75" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Clip that trims the bottom 5px of the "On" text to remove ball terminal -->
+                        <clipPath id="clip-on">
+                            <rect x="0" y="0" width="200" height="67" />
+                        </clipPath>
+                    </defs>
+                    <text font-family="'Playfair Display', serif" font-size="68" font-weight="400" letter-spacing="-1.5">
+                        <tspan fill="#f7f7f5" x="0" y="62">Stay</tspan>
+                    </text>
+                    <g clip-path="url(#clip-on)">
+                        <text font-family="'Playfair Display', serif" font-size="68" font-weight="400" letter-spacing="-1.5">
+                            <tspan fill="#ff6300" x="178" y="62">On</tspan>
+                        </text>
+                    </g>
+                    <text font-family="'Playfair Display', serif" font-size="68" font-weight="400" letter-spacing="-1.5">
+                        <tspan fill="#f7f7f5" x="283" y="62">Site</tspan>
+                    </text>
+                </svg>
+                <div class="tagline">
+                    Housing Europe's Workforce in Sweden
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">10+</span> years
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">70+</span> happy clients
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span> accommodations
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">40+</span> cities
+                </div>
+            </div>
+
+            <div class="flags">
+                <span class="fi fi-se fis"></span>
+                <span class="fi fi-ua fis"></span>
+                <span class="fi fi-pl fis"></span>
+                <span class="fi fi-cz fis"></span>
+                <span class="fi fi-hr fis"></span>
+                <span class="fi fi-ee fis"></span>
+                <span class="fi fi-lv fis"></span>
+                <span class="fi fi-lt fis"></span>
+                <span class="fi fi-no fis"></span>
+                <span class="fi fi-fi fis"></span>
+                <span class="fi fi-dk fis"></span>
+                <span class="fi fi-de fis"></span>
+                <span class="fi fi-es fis"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>Skärmdumpa bannern ovan för LinkedIn</h3>
+        <p>
+            Använd <strong>Cmd + Shift + 4</strong> (Mac) eller <strong>Snipping Tool</strong> (Windows) för att ta en exakt skärmdump av bannern.
+            <br>
+            Banner-dimensioner: <strong>1584 × 396 pixlar</strong> (LinkedIn personal profile banner standard)
+        </p>
+    </div>
+</body>
+</html>

@@ -5,7 +5,7 @@
  * Uses Claude API (with web search) to:
  * 1. Pick a timely topic relevant to worker housing / property rental
  * 2. Generate a full React TSX article component
- * 3. Update blog-posts.ts, routes.tsx, and generate-sitemap.mjs
+ * 3. Update blog-posts.ts and app/blogg/[slug]/page.tsx import map
  *
  * Usage:
  *   node scripts/generate-article.mjs                    # auto-pick topic
@@ -37,13 +37,11 @@ const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
 
 // ---------- Existing data ----------
 const blogPostsPath = resolve(root, 'src/data/blog-posts.ts');
-const routesPath = resolve(root, 'src/routes.tsx');
-const sitemapPath = resolve(root, 'scripts/generate-sitemap.mjs');
-const blogDir = resolve(root, 'src/pages/blogg');
+const blogPagePath = resolve(root, 'app/blogg/[slug]/page.tsx');
+const blogDir = resolve(root, 'src/views/blogg');
 
 const blogPostsSource = readFileSync(blogPostsPath, 'utf-8');
-const routesSource = readFileSync(routesPath, 'utf-8');
-const sitemapSource = readFileSync(sitemapPath, 'utf-8');
+const blogPageSource = readFileSync(blogPagePath, 'utf-8');
 
 // Extract existing slugs to avoid duplicates
 const existingSlugs = [...blogPostsSource.matchAll(/slug:\s*'([^']+)'/g)].map(m => m[1]);
@@ -197,7 +195,7 @@ KRAV:
 1. Artikeln ska vara 1000-1500 ord, på SVENSKA
 2. Inkludera minst 2 <blockquote> med citat (från myndigheter, branschorganisationer, rapporter)
 3. Inkludera minst 1 tabell med data
-4. Använd <Link to="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
+4. Använd <Link href="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
 5. Länka till andra artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
 6. Avsluta med en CTA som nämner StayOnSite, telefonnummer 076-249 84 86, och länkar till /for-foretag och /for-husagare
 7. Framhäv StayOnSites USP: 0% avgift, garanterad hyra, professionella hyresgäster, svar inom 24h
@@ -216,7 +214,7 @@ EXAKT TEMPLATE (följ denna):
 \`\`\`tsx
 import BlogLayout from './BlogLayout';
 import { getBlogPost } from '@/data/blog-posts';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const ${topic.componentName} = () => {
   const post = getBlogPost('${topic.slug}')!;
@@ -268,8 +266,8 @@ Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera
 
 // ---------- Step 2b: Validate city links ----------
 function validateCityLinks(tsx) {
-  // Find all <Link to="/stad/SLUG"> references
-  const linkPattern = /<Link to="\/stad\/([^"]+)">/g;
+  // Find all <Link href="/stad/SLUG"> references
+  const linkPattern = /<Link href="\/stad\/([^"]+)">/g;
   let match;
   let fixed = tsx;
   const removed = [];
@@ -277,13 +275,13 @@ function validateCityLinks(tsx) {
   while ((match = linkPattern.exec(tsx)) !== null) {
     const slug = match[1];
     if (!citySlugSet.has(slug)) {
-      // Replace <Link to="/stad/bad-slug">Text</Link> with just Text
+      // Replace <Link href="/stad/bad-slug">Text</Link> with just Text
       const linkRegex = new RegExp(
-        `\\{' '\\}\\s*<Link to="/stad/${slug}">([^<]+)</Link>`,
+        `\\{' '\\}\\s*<Link href="/stad/${slug}">([^<]+)</Link>`,
         'g'
       );
       const linkRegex2 = new RegExp(
-        `<Link to="/stad/${slug}">([^<]+)</Link>`,
+        `<Link href="/stad/${slug}">([^<]+)</Link>`,
         'g'
       );
       fixed = fixed.replace(linkRegex, (_, text) => text);
@@ -422,43 +420,29 @@ function updateBlogPosts(topic) {
   writeFileSync(blogPostsPath, updated);
 }
 
-function updateRoutes(topic) {
-  console.log('[article] Updating routes.tsx...');
+function updateBlogPage(topic) {
+  console.log('[article] Updating app/blogg/[slug]/page.tsx import map...');
 
-  // Add import
-  const lastBlogImport = routesSource.match(/import \w+ from '\.\/pages\/blogg\/\w+'/g);
-  const lastImport = lastBlogImport ? lastBlogImport[lastBlogImport.length - 1] : null;
+  let updated = readFileSync(blogPagePath, 'utf-8');
 
-  let updated = routesSource;
+  // Add import after the last blog article import
+  const lastImportMatch = updated.match(/import \w+ from '@\/pages\/blogg\/\w+'/g);
+  const lastImport = lastImportMatch ? lastImportMatch[lastImportMatch.length - 1] : null;
+
   if (lastImport) {
     updated = updated.replace(
       lastImport,
-      `${lastImport}\nimport ${topic.componentName} from './pages/blogg/${topic.componentName}'`
+      `${lastImport}\nimport ${topic.componentName} from '@/views/blogg/${topic.componentName}'`
     );
   }
 
-  // Add route (before lp/husagare)
+  // Add to componentMap (before the closing brace)
   updated = updated.replace(
-    "{ path: 'lp/husagare'",
-    `{ path: 'blogg/${topic.slug}', element: <${topic.componentName} /> },\n      { path: 'lp/husagare'`
+    /(\n\}\n)/,
+    `  '${topic.slug}': ${topic.componentName},\n}\n`
   );
 
-  writeFileSync(routesPath, updated);
-}
-
-function updateSitemap(topic) {
-  console.log('[article] Updating generate-sitemap.mjs...');
-
-  // Add slug to the blogSlugs array
-  const updated = sitemapSource.replace(
-    /const blogSlugs = \[([^\]]+)\];/,
-    (match, inner) => {
-      const trimmed = inner.trim();
-      return `const blogSlugs = [${trimmed}, '${topic.slug}'];`;
-    }
-  );
-
-  writeFileSync(sitemapPath, updated);
+  writeFileSync(blogPagePath, updated);
 }
 
 // ---------- Retry helper ----------
@@ -579,14 +563,11 @@ async function main() {
   // Step 4: Update blog-posts.ts
   updateBlogPosts(topic);
 
-  // Step 5: Update routes.tsx
-  updateRoutes(topic);
-
-  // Step 6: Update generate-sitemap.mjs
-  updateSitemap(topic);
+  // Step 5: Update blog page import map (sitemap auto-generates from blog-posts.ts)
+  updateBlogPage(topic);
 
   console.log('[article] Done! New article ready.');
-  console.log(`[article] File: src/pages/blogg/${topic.componentName}.tsx`);
+  console.log(`[article] File: src/views/blogg/${topic.componentName}.tsx`);
   console.log(`[article] URL: /blogg/${topic.slug}`);
   console.log('[article] Run "pnpm build" to generate static HTML.');
 
