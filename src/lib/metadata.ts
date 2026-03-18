@@ -19,7 +19,7 @@ interface BuildMetadataProps {
 
 const defaultContent = {
   sv: {
-    title: 'StayOnSite - Boende för byggarbetare | Företagsbostäder Sverige',
+    title: 'Personalboende & Företagsbostäder i Sverige | StayOnSite',
     description: 'StayOnSite hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare. Över 10 års erfarenhet. Boenden i hela Sverige. Kontakta oss idag!',
     keywords: 'boende byggarbetare, företagsbostäder, personalboende, byggboende, montörboende, arbetarboende, longstay, shortstay, stayonsite',
   },
