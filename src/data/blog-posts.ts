@@ -189,6 +189,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['infrastruktur', 'personalboende', 'anbudskalkyl', 'trafikverket', 'ostlänken'],
     readingTime: 9,
+  },
+  {
+    slug: 'kompetens-rekrytering-byggsektorn-guide-2026',
+    title: {
+      sv: 'Kompetensbrist möter arbetslöshet: Så matchar du rätt byggkompetens 2026',
+      en: 'Skills shortage meets unemployment: How to match construction talent in 2026',
+      pl: 'Niedobór kompetencji spotyka bezrobocie: Jak dopasować talenty budowlane w 2026',
+    },
+    description: {
+      sv: '76% av byggföretagen kämpar med rekrytering. Samtidigt finns tusentals lediga bygg arbetare. Lös matchningsproblemet med vår guide.',
+      en: '76% of construction firms struggle to recruit. Yet thousands of construction workers are available. Solve the matching problem.',
+      pl: '76% firm budowlanych ma problem z rekrutacją. Jednocześnie tysiące pracowników szuka pracy. Rozwiąż problem dopasowania.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-03-18',
+    category: 'Guide',
+    tags: ['rekrytering', 'kompetensförsörjning', 'arbetskraftsbrist', 'byggarbetsmarknad', 'personalplanering'],
+    readingTime: 8,
   }
 ];
 
