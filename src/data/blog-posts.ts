@@ -67,7 +67,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'infrastruktur-personalboende-karta-2026',
     title: {
-      sv: 'Var behövs personalboende 2026? Kartan över Sveriges största infrastrukturprojekt',
+      sv: 'Var behövs personalboende 2026? Infrastrukturkartan',
       en: 'Where Is Worker Housing Needed in 2026? Sweden\'s Biggest Infrastructure Projects',
       pl: 'Gdzie potrzebne zakwaterowanie w 2026? Największe projekty infrastrukturalne Szwecji'
     },
@@ -103,7 +103,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'avtalskrav-personalboende-guide-2026',
     title: {
-      sv: 'Avtalskrav på personalboende 2026: Vad gäller för montörer och byggarbetare?',
+      sv: 'Avtalskrav på personalboende 2026: Guide för företag',
       en: 'Worker Accommodation Contract Requirements 2026: What Applies to Construction Workers?',
       pl: 'Wymagania umowne dotyczące zakwaterowania pracowników 2026: Co obowiązuje?',
     },
@@ -121,7 +121,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'arbetskraftsinvandring-juni-2026-guide-byggforetag',
     title: {
-      sv: 'Nya regler för arbetskraftsinvandring juni 2026 – vad byggföretag behöver veta',
+      sv: 'Arbetskraftsinvandring juni 2026: Nya regler för bygg',
       en: 'New Labor Immigration Rules June 2026 – What Construction Companies Need to Know',
       pl: 'Nowe przepisy dotyczące imigracji zarobkowej czerwiec 2026 – co firmy budowlane muszą wiedzieć',
     },
@@ -139,7 +139,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'datacenter-montorboende-guide-2026',
     title: {
-      sv: 'Datacenterbyggen 2026: Varför montörboende blir flaskhalsen i svenska miljardsatsningar',
+      sv: 'Datacenterbyggen 2026: Montörboende som flaskhals',
       en: 'Data Center Construction 2026: Why Worker Housing Is the Bottleneck in Swedish Billion-Dollar Investments',
       pl: 'Budowa centrów danych 2026: Dlaczego zakwaterowanie pracowników staje się wąskim gardłem szwedzkich inwestycji',
     },

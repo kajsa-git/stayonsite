@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
 import { cities } from '@/data/cities'
 import { getLocalizedText, getLocalizedKeywords } from '@/lib/utils'
+import { truncateDescription } from '@/lib/seo-utils'
 import CityPage from '@/views/CityPage'
 
 export function generateStaticParams() {
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
 
   return buildMetadata({
     title: `Corporate Housing & Aparthotel ${city.name} | StayOnSite`,
-    description: getLocalizedText(city.intro, 'en'),
+    description: truncateDescription(getLocalizedText(city.intro, 'en')),
     keywords: getLocalizedKeywords(city.keywords, 'en').join(', ') + ', StayOnSite',
     canonical: en,
     hreflangs: [
