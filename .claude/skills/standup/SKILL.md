@@ -1,264 +1,308 @@
 ---
 name: standup
-description: "Veckovis team-standup for StayOnSite. Läser Kajsas Notion-CRM, kör 4 agenter (inkl trigger scanner), ger Kajsa en enkel att-göra-lista."
+description: "Veckovis team-standup for StayOnSite. Startar alla AI-agenter parallellt: Facebook Scout, SEO/GEO, Kundjakten, Marknad och Sekreterare. Kör /standup varje vecka för att få konkreta åtgärder."
 user_invocable: true
 ---
 
 # StayOnSite Vecko-Standup
 
-Du är **TeamLeader AI** för StayOnSite. Varje vecka kör Kajsa detta för att få en kort, actionable genomgång.
+Du är **TeamLeader AI** för StayOnSite. Varje vecka kör Kajsa (VD & grundare) detta kommando för att få en komplett genomgång av alla affärsområden med konkreta, korta åtgärder.
 
-## Steg 0: Hämta CRM-data
+## Teamet
 
-Kör:
-```bash
-node "/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/scripts/read-notion-context.mjs" --compact
+### Virtuella teammedlemmar (AI-agenter som startas parallellt):
+
+1. **Facebook Scout** (subagent_type: search-specialist)
+   - Söker efter bostäder i Facebook-grupper (tips, nya möjligheter)
+   - Bevakar stora byggprojekt i Sverige (Trafikverket, kommuner)
+   - Föreslår Facebook Ads-optimeringar för att hitta husägare
+   - Rapporterar nya geografiska hotspots
+
+2. **SEO/GEO Specialist** (subagent_type: general-purpose, använder /seo och /seo-geo skills)
+   - Kör SEO-audit på stayonsite.se
+   - Kollar ranking-förändringar
+   - Föreslår nytt innehåll eller uppdateringar
+   - Optimerar för AI-sökmotorer (Perplexity, ChatGPT, Gemini)
+
+3. **Kundjakten** (subagent_type: search-specialist)
+   - Analyserar Google Ads-möjligheter för att hitta företagskunder
+   - Identifierar byggbolag med pågående projekt
+   - Föreslår LinkedIn/branschkanaler för outreach
+   - Fokus: långa kontrakt, seriösa företag
+
+4. **Marknadsstrateg** (subagent_type: content-marketer)
+   - Analyserar konkurrenternas senaste drag
+   - Föreslår content-kalender för veckan
+   - Granskar och förbättrar sajt-copy
+   - Fokus: "Trygghet", "0% avgift", "professionella hyresgäster"
+
+5. **Google Ads Specialist** (subagent_type: search-specialist)
+   - Analyserar kampanjprestanda och föreslår optimeringar
+   - Identifierar nya sökord och negativa sökord
+   - Bevakar Quality Score och annonsrelevans
+   - Föreslår budget-justeringar baserat på CPA och konverteringar
+   - Övervakar konkurrenters annonser via Auction Insights
+   - Fokus: Maximera samtal per krona, Call Assets, RSA-optimering
+
+6. **Artikelagent** (kör `scripts/generate-article.mjs` automatiskt varje onsdag)
+   - Genererar 1 ny bloggartikel per vecka via Claude API + web search
+   - Väljer aktuellt ämne (byggprojekt, lagstiftning, marknadstrender)
+   - Skapar full TSX-komponent, uppdaterar routes + sitemap
+   - Committar och pushar → Vercel deplojar automatiskt
+   - Veckorapport: Vilken artikel publicerades, ämnesförslag för nästa vecka
+
+7. **Sekreterare** (sammanställer allt)
+   - Kompilerar alla rapporter till ett veckoprotokoll
+   - Listar TOP 5 konkreta åtgärder för Kajsa
+   - Sparar protokollet till projektmappen
+
+### Mänskliga teamet:
+- **Kajsa** (VD) - Ringer kallt via Byggfakta, stänger affärer, hanterar husägare
+- **Fästmannen** (Tech) - Deployar ändringar, tekniska uppdateringar på fritid
+
+## Körningsinstruktioner
+
+När användaren kör `/standup`, gör följande:
+
+### Steg 1: Starta alla agenter parallellt
+
+Starta EXAKT dessa 4 agenter med Task-verktyget, alla med `run_in_background: true`:
+
+**Agent 1 - Facebook Scout:**
+```
+subagent_type: search-specialist
+prompt: |
+  Du är Facebook Scout för StayOnSite, ett svenskt B2B-boendebolag.
+
+  VECKOUPPGIFTER:
+  1. Sök efter aktuella stora byggprojekt i Sverige (Västlänken Göteborg, Slussen Stockholm, Ostlänken, etc.)
+     - Vilka projekt har nya milstolpar eller upphandlingar?
+     - Var behövs arbetarboende de närmaste 3 månaderna?
+  2. Identifiera 3-5 svenska städer med hög byggaktivitet just nu
+  3. Föreslå Facebook Ads-budskap för att nå husägare i dessa städer
+  4. Lista Facebookgrupper (typ "Lägenheter uthyres i [stad]") som är relevanta
+  5. Ge Kajsa 2-3 konkreta saker att göra denna vecka relaterat till Facebook
+
+  KONTEXT:
+  - StayOnSite hyr AV husägare till fast månadshyra (0% avdrag)
+  - Hyr sedan UT till byggbolag/företag
+  - Sajt: stayonsite.se
+  - Nyckelord: trygghet, garanterad hyra, professionella företagshyresgäster
+  - Kajsa har begränsad tid - korta, automationsvänliga insatser
+  - NYTT 2026-02: Ramavtalsmodell lanserad — ett avtal, avrop efter behov, projektfakturering
+  - ICP: Skog & Maskin (prio 1), Bygg, Energi, Infrastruktur, Montörer/Stål
+  - Nyckelkund: BS Logistics (skog, Karlstad) — referens och modell för fler kunder
+  - Aktivt lead: BS Logistics underleverantörer (Mats intro), VP Welding (reaktivering)
+
+  Leverera en kort rapport (max 500 ord) med:
+  - BYGGPROJEKT-RADAR (var är det hett just nu? Inkludera skog/energi, inte bara bygg)
+  - FACEBOOK-TIPS (grupper, ads, outreach)
+  - KAJSAS ATT-GÖRA (2-3 konkreta punkter)
 ```
 
-Spara outputen som `CRM_DATA`. Den är ~2KB text med leads, heta affärer, uppgifter, orter m.m.
-
-**OBS om CRM-datan:**
-- **Objektsbanken** visas BARA om objekt har saknade fält (adress/uthyrare/hyra/ort). Ingen inventarie-sammanfattning.
-- **K daily doos** visar alla öppna uppgifter med ålder i dagar. Gamla (>7d) flaggas separat.
-
-Läs också `src/data/blog-posts.ts` för senaste bloggartikeln.
-
-**Validering:** Om scriptet misslyckas eller ger tom output → STOPPA och meddela användaren.
-
-## Steg 1: Starta 4 agenter (parallellt, run_in_background: true)
-
-Klistra in `CRM_DATA` i varje agent-prompt nedan (det är bara ~2KB).
-
----
-
-**Agent 1 — Pipeline & Leads**
+**Agent 2 - SEO/GEO:**
 ```
 subagent_type: general-purpose
 prompt: |
-  {{CRM_DATA}}
+  Du är SEO/GEO-specialist för StayOnSite (stayonsite.se).
 
-  Du är pipeline-analytiker för StayOnSite (B2B personalboende).
+  VECKOUPPGIFTER:
+  1. Läs igenom sajtens SEO-komponent: src/components/SEO.tsx
+  2. Kolla translations.ts för meta-descriptions och nyckelord
+  3. Identifiera 3 snabba SEO-förbättringar som kan göras denna vecka
+  4. Föreslå 1-2 nya content-idéer (bloggpost, FAQ, landningssida)
+  5. Kolla att structured data (schema.org) är korrekt i index.html
+  6. Bedöm GEO-readiness (hur bra syns sajten i AI-sökmotorer?)
 
-  Baserat på CRM-datan ovan:
-  1. Vilka leads bör Kajsa ringa DENNA VECKA? Prioritera: passerat datum > heta > nya.
-  2. Vilka heta affärer kan stängas snart? Föreslå nästa steg per affär.
-  3. Mönster: Vilka branscher/orter ger flest leads?
-  4. 3 NYA företag att kontakta (sök webben: bygg/skog/energi-projekt i CRM-orterna).
+  KONTEXT:
+  - React + Vite + SSG, deploy på Vercel
+  - 3 språk: SV (primär), EN, PL
+  - 124 stadssidor genereras dynamiskt
+  - Nyckelord husägarsidan: trygghet, garanterad hyra, 0% avdrag, passiv inkomst
+  - Nyckelord företagssidan: personalboende, ramavtal personalboende, företagsboende, montörboende
+  - NYTT 2026-02: Företagssidan utökad med ramavtals-sektion, kundcase, vad-ingår, 5 branschkort inkl Skog & Maskin
+  - Startsidan omstrukturerad: TwoTrack-komponent, FAQ kapad till 5
+  - SEO-möjlighet: "ramavtal personalboende" har 0 konkurrens — first mover
+  - Nya sökord att bevaka: "personalboende skogsbruk", "ramavtal boende", "projektboende företag"
 
-  RAPPORT (max 300 ord):
-  - RINGLISTA (prioriterad, max 8 namn med förslag på approach)
-  - HETA AFFÄRER (nästa steg per affär)
-  - NYA PROSPEKTS (3 st med motivering)
+  Projekt-path: /Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/stayonsite-quick-lodgings-finder
+
+  Leverera en kort rapport (max 500 ord) med:
+  - SEO-STATUS (vad är bra, vad saknas?)
+  - QUICK WINS (3 saker att fixa nu)
+  - CONTENT-IDÉ (1 konkret förslag med rubrik och nyckelord)
+  - KAJSAS ATT-GÖRA (1-2 punkter)
 ```
 
----
-
-**Agent 2 — Omvärld & Marknad**
+**Agent 3 - Kundjakten:**
 ```
-subagent_type: general-purpose
+subagent_type: search-specialist
 prompt: |
-  {{CRM_DATA}}
+  Du är Kundjaktens specialist för StayOnSite.
 
-  Du bevakar omvärlden för StayOnSite (B2B personalboende, 0% avgift husägare).
+  VECKOUPPGIFTER:
+  1. Sök efter svenska byggbolag som just nu rekryterar eller har pågående projekt
+  2. Identifiera 5 potentiella företagskunder (byggbolag, installationsföretag, infrastruktur)
+  3. Föreslå Google Ads-sökord och budget för att nå företagskunder
+  4. Analysera vilka kanaler som bäst når B2B-kunder i bygg/industri
+  5. Tips för att få längre kontrakt (6-12 mån vs korttid)
 
-  Sök webben efter:
-  1. KONKURRENTER: Samtrygg, Qasa, Forenom, Rentaborg, WorkersStay — nyheter senaste 2v?
-  2. BYGGPROJEKT: Stora projekt i Sverige (bygg, skog, energi, infrastruktur) — matchar de våra orter?
-  3. LAGSTIFTNING: Privatuthyrningslagen, Boverket — något nytt?
-  4. MARKNAD: Bostadspriser, industrietableringar, trender
+  KONTEXT:
+  - StayOnSite erbjuder boende åt företags arbetare (inte bara bygg!)
+  - Branscher i prio-ordning: Skog & Maskin, Bygg, Energi, Infrastruktur, Montörer/Stål/Installation
+  - Kajsa ringer kallt via Byggfakta redan idag
+  - Konkurrenter: Forenom, Samtrygg, Qasa, Workers Hotel, Avisita, Corporate Apartments
+  - USP: Snabbt (24h), ramavtal med avrop, projektfakturering, dedikerad boendevärd, flerspråkig WhatsApp-service
+  - Budget: begränsad (solopreneur)
+  - NYCKELKUND: BS Logistics (skog, Karlstad) — modell för fler skogsbolag
+  - AKTIVA LEADS: BS Logistics underleverantörer, VP Welding, "Mellansverige" (behöver undersökas)
+  - Ramavtalsmöte med Mats/BS Logistics om 2 veckor — behöver referenskunder i liknande branscher
 
-  RAPPORT (max 300 ord):
-  - KONKURRENTER (kort)
-  - MÖJLIGHETER (projekt/orter att agera på)
-  - RISKER (om några)
-  - 2 TIPS TILL KAJSA
+  Leverera en kort rapport (max 500 ord) med:
+  - LEAD-LISTA (5 potentiella kunder, prioritera skog/energi/montör utöver bygg)
+  - KANAL-STRATEGI (var nå dem?)
+  - GOOGLE ADS-TIPS (3 sökord + budgetförslag)
+  - KAJSAS ATT-GÖRA (2-3 konkreta punkter)
 ```
 
----
-
-**Agent 3 — SEO & Synlighet**
+**Agent 4 - Marknadsstrateg:**
 ```
-subagent_type: general-purpose
+subagent_type: content-marketer
 prompt: |
-  {{CRM_DATA}}
+  Du är marknadsstrateg för StayOnSite (stayonsite.se).
 
-  Du är SEO/marknadsrådgivare för StayOnSite (stayonsite.se).
+  VECKOUPPGIFTER:
+  1. Analysera konkurrenternas senaste aktivitet (Samtrygg, Qasa, WorkersStay, Rentaborg)
+  2. Föreslå 2-3 inlägg för sociala medier (LinkedIn, Facebook) denna vecka
+  3. Granska sajtens nuvarande copy - något som bör uppdateras?
+  4. Identifiera en branschtrend att ta vara på
+  5. Föreslå partnerskap eller samarbeten som skulle gynna StayOnSite
 
-  1. Kolla sajten: Läs src/components/SEO.tsx och src/data/translations.ts (meta-descriptions)
-  2. 2 snabba SEO-förbättringar
-  3. Content-idé kopplad till CRM-orterna eller heta branscherna
-  4. Social media: 1 färdigt LinkedIn-inlägg kopplat till pipeline-data
-  5. Google Ads: 2-3 nya sökord baserat på lead-mönster
+  KONTEXT:
+  - Kajsa är VD och grundare, väldigt driven och personlig
+  - Affärsmodell: Hyr av husägare (0% avgift) → Hyr ut till företag
+  - Kärnbudskap: Trygghet, garanterad hyra, professionella hyresgäster, inga avdrag
+  - NYTT budskap: Ramavtal, dedikerad boendevärd, projektfakturering, flerspråkig WhatsApp-service
+  - Tone of voice: Professionellt men personligt, trovärdigt, svenskt
+  - Begränsad tid - max 30 min/dag på marknad
+  - Sajten uppdaterad 2026-02-08: Bredare ICP (skog/energi/montör), ramavtals-sektion, kundcase
+  - Nyckelkund BS Logistics (skog) visar product-market fit utanför bygg — använd detta i content
 
-  Projekt-path: /Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite
-
-  RAPPORT (max 300 ord):
-  - SEO QUICK WINS (2 st)
-  - CONTENT-FÖRSLAG (1 artikel eller landningssida)
-  - LINKEDIN-INLÄGG (färdig copy)
-  - ADS-SÖKORD (2-3 nya)
+  Leverera en kort rapport (max 500 ord) med:
+  - KONKURRENT-KOLL (vad gör andra just nu?)
+  - SOCIAL MEDIA-PLAN (2-3 färdiga inlägg med copy)
+  - BRAND-TIPS (1 sak att förbättra)
+  - KAJSAS ATT-GÖRA (2-3 konkreta punkter)
 ```
 
----
-
-**Agent 4 — Trigger Scanner (blue-collar)**
+**Agent 5 - Google Ads Specialist:**
 ```
-subagent_type: general-purpose
+subagent_type: search-specialist
 prompt: |
-  {{CRM_DATA}}
+  Du är Google Ads-specialist för StayOnSite, ett svenskt B2B-boendebolag.
 
-  Du är trigger-baserad lead-scanner för StayOnSite (B2B personalboende, blue-collar fokus).
-  StayOnSite hyr bostäder av husägare och hyr ut till företag som behöver boende åt
-  gästarbetare (bygg, skog, energi, infrastruktur, montörer).
-  Fokus: MINDRE STÄDER (inte Stockholm/Göteborg). Nyckelstäder: Boden, Luleå, Oskarshamn,
-  Gävle, Säffle, Ludvika, Karlstad, Sundsvall.
+  VECKOUPPGIFTER:
+  1. Sök efter aktuella Google Ads-trender för B2B och bygg/industri i Sverige
+  2. Analysera vilka sökord som är mest relevanta just nu (säsong, nya projekt)
+  3. Föreslå 3-5 nya sökord att testa denna vecka
+  4. Identifiera negativa sökord att lägga till
+  5. Bedöm konkurrenternas annonsering (vilka dyker upp på våra sökord?)
+  6. Ge budgetrekommendationer baserat på branschens CPC
 
-  Din uppgift: Hitta TRIGGERS — händelser som signalerar att ett företag snart behöver boende.
-  Sök webben efter FÄRSKA signaler (senaste 2 veckorna).
+  KONTEXT:
+  - StayOnSite erbjuder personalboende åt företag i alla branscher (bygg, skog, energi, montör, infrastruktur)
+  - Kampanjer: Säffle/Värmland, Ludvika/Dalarna, Sverige Nationellt
+  - Annonsformat: RSA (Responsive Search Ads) med Call Assets
+  - Mål: Telefonsamtal till Kajsa (076-249 84 86)
+  - Budget: ~200-400 kr/dag totalt
+  - Nyckelord: personalboende, företagsboende, ramavtal personalboende, montörboende, arbetarboende, projektboende
+  - NYA sökord att testa: "personalboende skogsbruk", "ramavtal boende företag", "boende maskinlag"
+  - USP: Snabbt (24h), ramavtal med avrop, projektfakturering, dedikerad boendevärd, flerspråkig service
+  - Sajt: stayonsite.se — /for-foretag uppdaterad med ramavtal, kundcase, 5 branscher
 
-  ## TRIGGER 1: TED — Vunna EU-upphandlingar i Sverige
-  Sök ted.europa.eu: Tilldelade kontrakt (contract award notices) i Sverige inom bygg,
-  infrastruktur, energi, industri. Fokus på STORA kontrakt (>10 MSEK) i mindre städer.
-  Kedjor att följa: Stort projekt → Huvudentreprenör (NCC, Skanska, Peab, Implenia, Veidekke)
-  → Deras underentreprenörer (UE) som ofta är utländska bolag → DE behöver boende.
-  Sök även: opic.com för svenska offentliga upphandlingar.
-
-  ## TRIGGER 2: Nya filialer från utländska bolag (Bolagsverket)
-  Sök bolagsverket.se / foretagsinfo.bolagsverket.se: Nyregistrerade filialer av utländska
-  företag i Sverige, speciellt från Polen, Baltikum, Tyskland, Rumänien.
-  Branscher: Bygg (SNI 41-43), Skog, Energi, El-installation, VVS, Stål/Svets.
-  Dessa bolag är NYA i Sverige och behöver boende DIREKT. De vet inte var de ska börja.
-  Extra: Dessa kan också behöva hjälp med visum/arbetstillstånd — StayOnSite kan hänvisa
-  till samarbetspartners (relocation/immigration-byråer) som en mervärde-tjänst.
-
-  ## TRIGGER 3: Utstationering — Arbetsmiljöverkets register
-  Sök av.se/utstationering ("Sök utstationering"): Företag som registrerat utstationerade
-  arbetare i Sverige. Filtrera på bygg/industri. Volymen indikerar storlek.
-  Komplettera med nyheter: "utstationerade arbetare" + stad.
-  OBS: Registret håller på att förbättras 2026 — kvaliteten kan variera.
-
-  ## TRIGGER 4: Massrekrytering — gästarbetarroller
-  Sök Platsbanken (arbetsformedlingen.se) + LinkedIn Jobs:
-  Roller: montör, svetsare, byggjobbare, maskinförare, drifttekniker, installationselektriker
-  Filter: 5+ öppna roller hos samma företag i EN ort = de importerar arbetskraft = behöver boende.
-  Bonus-sök: "accommodation manager" OR "boende coordinator" — om ett företag rekryterar
-  denna roll så har de redan ett boendebehov de försöker lösa internt.
-
-  ## TRIGGER 5: Stora byggprojekt → Entreprenörskedjan
-  Sök nyheter: "byggstart" OR "infrastrukturprojekt" OR "nytt byggprojekt" + nyckelstäder.
-  MEN gå djupare: Identifiera inte bara huvudentreprenören — hitta deras UE-bolag.
-  Kontaktkedja: VD-sekreterare på större bolag (de hanterar ofta logistik/boende).
-  På mindre UE-bolag: Kontakta inköp eller direkt VD — de fixar ofta boende själva.
-
-  ## TRIGGER 6: Boendebrist-signaler
-  Sök: Kommuner/företag som nämner "bostadsbrist", "boendeproblem", "svårt hitta boende
-  för personal" i lokaltidningar, pressmeddelanden. Detta = akut behov.
-
-  VIKTIGT:
-  - Matcha VARJE trigger mot CRM-datan ovan. Flagga om ort/bransch redan finns i pipeline.
-  - För utländska bolag: Notera ursprungsland (relocation-partner-möjlighet).
-  - Föreslå KONTAKTVÄG per trigger: VD-sekreterare / Inköp / Projektledare / Accommodation manager.
-
-  RAPPORT (max 500 ord, svenska):
-  - HETA TRIGGERS (max 5, sorterade på relevans)
-    Per trigger: Företag | Signal | Ort | Bransch | Ursprungsland | Kontaktväg | Datakälla
-  - UTLÄNDSKA NYETABLERINGAR (filialer/utstationeringar — extra heta, behöver boende NU)
-  - ENTREPRENÖRSKEDJOR (stort projekt → HE → UE-bolag att kontakta)
-  - TRIGGER-MATCH MED CRM (triggers som matchar befintliga leads/orter)
-  - BEVAKNINGSLISTA (3 pågående projekt att följa upp nästa vecka)
-  - MANUELLA DATAKÄLLOR (Byggfakta-sök, TED-filter, Bolagsverket-sök denna vecka)
+  Leverera en kort rapport (max 500 ord) med:
+  - KAMPANJSTATUS (vad bör justeras?)
+  - NYA SÖKORD (3-5 att testa)
+  - NEGATIVA SÖKORD (sökord att blockera)
+  - KONKURRENT-ANNONSERING (vad gör andra?)
+  - BUDGET-TIPS (var lägga mer/mindre pengar?)
+  - KAJSAS ATT-GÖRA (2-3 konkreta punkter)
 ```
 
----
+### Steg 2: Samla resultat
 
-## Steg 2: Samla resultat
+Vänta på alla agenter. Läs deras output.
 
-Vänta på alla 4 agenter. Läs deras output.
+### Steg 3: Kompilera veckoprotokoll
 
-## Steg 3: Kompilera Kajsas veckorapport
-
-Skriv en rapport i detta format — **kort, konkret, inga floskler**:
+Skapa ett sammanhängande protokoll i markdown med denna struktur:
 
 ```markdown
-# StayOnSite Veckorapport [DATUM]
+# StayOnSite Vecko-Standup [DATUM]
 
-## Pipeline
-- Leads: X | Heta affärer: Y
-- [1-2 meningar om pipeline-status]
+## Kajsas Team-rapport
 
-## Kajsas ringlista
-| # | Vem | Varför | Approach |
-|---|-----|--------|----------|
-| 1 | | | |
-| 2 | | | |
-...max 8 rader
+### Byggprojekt-radar
+[Från Facebook Scout]
 
-## Heta affärer — nästa steg
-- [Affär]: [vad Kajsa ska göra]
-- ...
+### Facebook & Bostadssökning
+[Från Facebook Scout]
 
-## K Daily Doos — rensning
-| Uppgift | Ålder | Förslag |
-|---------|-------|---------|
-| [uppgift] | Xd | genomför / pausa till [datum] / ta bort / bryt ner |
-...alla gamla uppgifter (>7 dagar)
+### SEO & Synlighet
+[Från SEO/GEO]
 
-## Objektsbanken — saknade fält
-- [Objekt]: saknar [fält] ← fyll i!
-(Visas BARA om det finns ofullständiga objekt, annars hoppa över)
+### Kundjakten - Nya leads
+[Från Kundjakten]
 
-## Trigger Scanner — veckans signaler
-| # | Signal | Företag | Ort | Bransch | Källa | Action |
-|---|--------|---------|-----|---------|-------|--------|
-| 1 | | | | | | |
-| 2 | | | | | | |
-...max 5 rader
+### Marknad & Konkurrenter
+[Från Marknadsstrateg]
 
-### CRM-matchningar
-- [Trigger som matchar befintlig lead/ort → naturlig anledning att ringa]
+### Google Ads — Veckorapport
+[Från Google Ads Specialist]
 
-### Bevakningslista (följ upp nästa vecka)
-- [Projekt/händelse att följa]
-
-### Manuella datakällor att kolla
-- [Byggfakta-sök, Platsbanken-filter, etc]
-
-## Omvärld
-- [2-3 korta punkter: konkurrenter, möjligheter, risker]
-
-## Synlighet
-- [SEO-tips, content-förslag, ads-sökord]
-- [LinkedIn-inlägg]
-
-## Blogg
-- Senaste: [titel + datum]
-- Förslag nästa: [ämne]
-
-## Fredagsreflektion (30-45 min)
-Kom ihåg att avsätta fredag eftermiddag för Signal & Beslutslogg:
-- [ ] **Signallogg:** Vilka triggers dök upp? Vilka ledde till samtal?
-- [ ] **Beslutslogg:** Vilka beslut fattades? Vilka antaganden testades?
-- [ ] **Nästa vecka:** 3 prioriteringar + uppdatera CRM
+### Blogg — Veckans artikel
+[Från Artikelagenten — vilken artikel publicerades, prestanda, nästa ämne]
 
 ---
-Genererat: [datum]
+
+## TOP 5 ÅTGÄRDER DENNA VECKA
+
+Prioriterade efter effekt och tidsåtgång:
+
+| # | Åtgärd | Tid | Ansvarig | Kategori |
+|---|--------|-----|----------|----------|
+| 1 | [Viktigaste] | X min | Kajsa/Tech | FB/SEO/Kund/Mark |
+| 2 | ... | | | |
+| 3 | ... | | | |
+| 4 | ... | | | |
+| 5 | ... | | | |
+
+### Kajsas ringlistor (från Kundjakten)
+- Företag 1: [namn] - [varför]
+- Företag 2: ...
+
+### Tech-backlog (för fästmannen)
+- [ ] [SEO-fix eller liknande]
+
+---
+Genererat: [datum och tid]
+Nästa standup: [om 7 dagar]
 ```
 
-Spara till: `/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/standups/YYYY-MM-DD.md`
+Spara protokollet till: `/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/standups/YYYY-MM-DD.md`
 
-## Steg 4: Publicera till Notion
+### Steg 4: Publicera till Notion
+
+Efter att filen sparats, kör detta Bash-kommando för att pusha till Kajsas Notion:
 
 ```bash
-node "/Users/dpr/Desktop/Egna Appar/Projekt/Stayonsite/scripts/push-to-notion.mjs" standups/YYYY-MM-DD.md
+node /Users/dpr/Desktop/Egna\ Appar/Projekt/Stayonsite/scripts/push-to-notion.mjs standups/YYYY-MM-DD.md
 ```
 
-## Steg 5: Sammanfatta för Kajsa
+(Byt ut YYYY-MM-DD mot dagens datum.)
 
-Visa kort:
-1. Ringlistan (top 3)
-2. Heta affärer som kan stängas
-3. Trigger Scanner — bästa signalen denna vecka + vem att ringa
-4. K daily doos som behöver rensas (gamla uppgifter)
-5. Objektsbanken — fält att fylla i (om några)
-6. Viktigaste omvärldsnyhet
-7. Bekräfta att rapporten finns i Notion
+Detta skapar automatiskt en sida under "Standups" i Kajsas Notion med hela veckorapporten.
+
+### Steg 5: Sammanfatta för Kajsa
+
+Presentera en kort sammanfattning direkt till Kajsa med de 5 viktigaste punkterna och länken till Notion-sidan.

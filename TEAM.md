@@ -17,7 +17,6 @@
 | **SEO/GEO Specialist** | general-purpose | SEO-audit, content-förslag, AI-sökmotoroptimering | Veckovis |
 | **Kundjakten** | search-specialist | Hitta företagskunder, Google Ads, B2B-leads | Veckovis |
 | **Marknadsstrateg** | content-marketer | Konkurrentanalys, sociala medier, content-kalender | Veckovis |
-| **Trigger Scanner** | general-purpose | Trigger-baserad leadgen: byggprojekt, rekryteringar, utstationeringar, upphandlingar | Veckovis |
 | **Sekreterare** | (kompileras automatiskt) | Veckoprotokoll, TOP 5 åtgärder, mötesanteckningar | Veckovis |
 
 ---
@@ -73,103 +72,6 @@ Baserat på kundsamtal med Mats Johansson, BS Logistics (skogsbolag, Karlstad).
 
 ---
 
-## Trigger-baserad Leadgen (bootstrappad Growth Engine)
-
-Inspirerat av Forenoms Growth Engine-program (550k+ SEK), men anpassat för StayOnSites blue-collar nisch i mindre städer. Forenom fokuserar på white-collar/storstad — vi äger blue-collar/glesbygd.
-
-### Våra 6 triggers (blue-collar / gästarbetare-fokus)
-
-| # | Trigger | Signal | Datakälla | Kostnad | Frekvens |
-|---|---------|--------|-----------|---------|----------|
-| T1 | **TED — EU-upphandlingar** | Tilldelade kontrakt i Sverige (bygg/infra/energi >10 MSEK) | [ted.europa.eu](https://ted.europa.eu) + [opic.com](https://opic.com) | 0 kr | Veckovis |
-| T2 | **Nya utländska filialer** | Utländska bolag (PL/DE/LT/RO) registrerar filial i SE | [Bolagsverket](https://foretagsinfo.bolagsverket.se) (SNI 41-43 bygg, skog, energi) | 0 kr | Veckovis |
-| T3 | **Utstationeringsregistret** | Utländska företag registrerar arbetare i Sverige | [Arbetsmiljöverket](https://av.se/utstationering) — sök utstationering | 0 kr | Veckovis |
-| T4 | **Massrekrytering gästarbetarroller** | 5+ roller (montör/svetsare/maskinförare) hos ett bolag i en ort | Platsbanken + LinkedIn Jobs | 0 kr | Veckovis |
-| T5 | **Stora byggprojekt → UE-kedjan** | Byggstart/infrastrukturprojekt → HE → underentreprenörer | Byggfakta (befintlig), nyheter, Trafikverket | 0 kr | Veckovis |
-| T6 | **Boendebrist-signaler** | Kommuner/företag nämner bostadsproblem | Lokaltidningar, pressmeddelanden | 0 kr | Veckovis |
-
-### Kontaktkedja — vem ringer Kajsa?
-
-```
-Stort EU-projekt (TED)
-  → Huvudentreprenör (NCC/Skanska/Peab/Implenia/Veidekke)
-    → VD-sekreterare eller "Accommodation Manager" (stora bolag har denna roll)
-      → De vet vilka UE-bolag som jobbar på projektet
-        → UE-bolagens inköpsavdelning eller VD (mindre bolag)
-          → DESSA behöver boende mest akut
-```
-
-| Bolagsstorlek | Kontaktperson | Approach |
-|--------------|---------------|----------|
-| **Stort (500+)** | VD-sekreterare → Accommodation Manager → Inköp | "Vi samarbetar med flera av era UE i [stad]" |
-| **Mellanstort (50-500)** | Inköpsavdelning / Projektledare | "Jag såg att ni vann [upphandling] i [stad]" |
-| **Litet UE (<50)** | VD direkt | "Ni har registrerat filial/utstationering i [stad] — behöver ni boende?" |
-| **Utländskt nyetablerat** | VD / Kontaktperson i filialregistret | "Välkomna till Sverige — vi ordnar boende + kan hänvisa till [relocation-partner]" |
-
-### Mervärde: Relocation-partnerskap
-
-Utländska bolag som etablerar filial i Sverige behöver ofta mer än bara boende:
-- **Visum/arbetstillstånd** — samarbeta med relocation-byrå
-- **Skattregistrering** — F-skatt, moms
-- **Bankuppkoppling** — företagskonto i Sverige
-- **Språk** — StayOnSite har redan PL/EN-sidor
-
-**Taktik:** Hitta 1-2 relocation-/immigrationsbyråer och byt leads. De skickar boendebehov till oss, vi skickar nystartade som behöver visum till dem. Win-win utan kostnad.
-
-### Trigger → Action-flöde
-
-```
-Signal upptäcks (Agent 4 i /standup)
-  ↓
-Matcha mot CRM: Finns företaget/orten redan? → Varmt samtal
-  ↓
-Ny lead? → Lägg i Kajsas ringlista med kontext
-  ↓
-Kajsa ringer: "Jag såg att ni precis vann [projekt] i [stad].
-  Vi hjälper med boende åt era team — vill ni ha ett förslag?"
-  ↓
-Om intresse → Ramavtalspitch
-```
-
-### Forenoms approach vs StayOnSites bootstrap
-
-| Aspekt | Forenom (Growth Engine) | StayOnSite (Bootstrap) |
-|--------|------------------------|----------------------|
-| **Segment** | White-collar, internationella bolag | Blue-collar: bygg, skog, energi, montörer |
-| **Geografi** | Storstäder (Stockholm, Göteborg) | Mindre städer (Boden, Oskarshamn, Gävle, Säffle) |
-| **Kostnad** | 550 000+ SEK (6 mån) | 0 kr (AI-agenter + offentlig data) |
-| **Datakällor** | Proprietär databas, årsredovisningar | Byggfakta, Platsbanken, Arbetsmiljöverket, OPIC |
-| **Triggers** | Bolagsregistreringar, ledningsbyten, resekostnader | Byggprojekt, rekryteringar, utstationering, upphandlingar |
-| **Lead-kvalificering** | Manuell + proprietärt verktyg | CRM-matchning + Kajsas branschkunskap |
-| **Frekvens** | Bi-weekly meetings | Veckovis automatiskt via `/standup` |
-
-### Datakällor — manuell checklista för Kajsa (10-15 min/vecka)
-
-| # | Källa | URL | Vad du söker | Tid |
-|---|-------|-----|-------------|-----|
-| 1 | **TED** (EU-upphandlingar) | ted.europa.eu → Sök → Land: Sverige, Typ: Bygg/Infra, Status: Tilldelad | Vem vann stora kontrakt? → Kontakta deras UE | 3 min |
-| 2 | **Bolagsverket** | foretagsinfo.bolagsverket.se | Nya filialer av utländska bolag (PL/DE/LT/RO) i bygg/industri | 2 min |
-| 3 | **Arbetsmiljöverket** | av.se → Sök utstationering | Utländska företag med utstationerade arbetare i Sverige | 2 min |
-| 4 | **Platsbanken** | arbetsformedlingen.se/platsbanken | "montör" + "svetsare" + "maskinförare" i nyckelstäder, 5+ roller = signal | 3 min |
-| 5 | **OPIC** | opic.com | Upphandlingar: "boende" OR "personalboende" OR "tillfälligt boende" | 2 min |
-| 6 | **Byggfakta** | (befintlig licens) | Nya projekt i nyckelstäder — kolla entreprenör + UE-lista | 3 min |
-
-**Google Alerts att sätta upp (engångsjobb):**
-- "byggprojekt" + varje nyckelstad (Boden, Luleå, Oskarshamn, etc)
-- "utstationerade arbetare Sverige"
-- "bostadsbrist personal" + region
-- "nytt datacenter Sverige" OR "batterifabrik" OR "vindkraftspark"
-
-### Mål: Trigger-genererade leads
-
-| Tidshorisont | Mål | Mätning |
-|-------------|-----|---------|
-| Vecka 1-4 | 3-5 triggers/vecka → 1-2 samtal | Antal triggers i veckorapport |
-| Månad 2-3 | 5-10 triggers/vecka → 3-5 samtal | Träffprocent trigger → samtal |
-| Månad 4-6 | 10+ triggers/vecka → Pipeline | Andel affärer från triggers vs kalla samtal |
-
----
-
 ## Veckorutin
 
 ### Måndag: Standup (15 min)
@@ -195,26 +97,11 @@ Kajsa kör kommandot och får:
 | 13:00-14:00 | Uppföljning pågående konversationer | Telefon/Email |
 | 14:00-14:30 | 1 social media-inlägg (copy från Marknadsstrateg) | LinkedIn/FB |
 
-### Fredag: Reflektion & Signal/Beslutslogg (30-45 min)
+### Fredag: Reflektion
 
-| Tid | Aktivitet |
-|-----|-----------|
-| 14:00-14:15 | **Signallogg:** Vilka triggers/signaler dök upp denna vecka? Vilka ledde till samtal? Vilka missade vi? |
-| 14:15-14:30 | **Beslutslogg:** Vilka beslut fattades? Vad var resonemanget? Vilka antaganden testades? |
-| 14:30-14:45 | **Nästa vecka:** Uppdatera Notion-CRM med nya leads. Sätt 3 prioriteringar för nästa vecka. |
-
-**Signal & Beslutslogg** (fyll i i Notion eller i standups/):
-```
-## Signallogg v[XX]
-| Signal | Källa | Agerade vi? | Resultat |
-|--------|-------|-------------|----------|
-| [beskrivning] | Trigger Scanner / Byggfakta / Tips | Ja/Nej | Samtal / Lead / Inget |
-
-## Beslutslogg v[XX]
-| Beslut | Varför | Antagande | Uppföljning |
-|--------|--------|-----------|-------------|
-| [vad vi bestämde] | [resonemang] | [vad vi tror] | [hur vi verifierar] |
-```
+- Notera vad som funkade / inte funkade
+- Uppdatera Notion-CRM med nya leads
+- Förbereda nästa veckas focus
 
 ---
 
