@@ -37,7 +37,7 @@ const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
 
 // ---------- Existing data ----------
 const blogPostsPath = resolve(root, 'src/data/blog-posts.ts');
-const blogPagePath = resolve(root, 'app/blogg/[slug]/page.tsx');
+const blogPagePath = resolve(root, 'app/(sv)/blogg/[slug]/page.tsx');
 const blogDir = resolve(root, 'src/views/blogg');
 
 const blogPostsSource = readFileSync(blogPostsPath, 'utf-8');
@@ -426,7 +426,7 @@ function updateBlogPage(topic) {
   let updated = readFileSync(blogPagePath, 'utf-8');
 
   // Add import after the last blog article import
-  const lastImportMatch = updated.match(/import \w+ from '@\/pages\/blogg\/\w+'/g);
+  const lastImportMatch = updated.match(/import \w+ from '@\/views\/blogg\/\w+'/g);
   const lastImport = lastImportMatch ? lastImportMatch[lastImportMatch.length - 1] : null;
 
   if (lastImport) {
