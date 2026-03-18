@@ -171,6 +171,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Analys',
     tags: ['bostadsmarknad', 'regional-analys', 'infrastruktur', 'boverket'],
     readingTime: 7,
+  },
+  {
+    slug: 'infrastrukturkontrakt-personalboende-checklista-2026',
+    title: {
+      sv: 'Checklista: Så säkrar du personalboende inför stora infrastrukturkontrakt 2026-2028',
+      en: 'Checklist: Securing Worker Accommodation for Major Infrastructure Contracts 2026-2028',
+      pl: 'Lista kontrolna: Zapewnienie zakwaterowania dla pracowników przy dużych kontraktach infrastrukturalnych 2026-2028',
+    },
+    description: {
+      sv: 'Ostlänken, Norrbotniabanan och hundratals miljardprojekt startas 2026-2028. Guide för byggföretag som behöver planera personalboende.',
+      en: 'Ostlänken, Norrbotniabanan and billions in projects start 2026-2028. Guide for contractors planning worker accommodation.',
+      pl: 'Ostlänken, Norrbotniabanan i projekty za miliardy rozpoczynają się 2026-2028. Przewodnik dla firm budowlanych planujących zakwaterowanie.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-03-18',
+    category: 'Guide',
+    tags: ['infrastruktur', 'personalboende', 'anbudskalkyl', 'trafikverket', 'ostlänken'],
+    readingTime: 9,
   }
 ];
 
