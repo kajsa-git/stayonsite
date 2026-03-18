@@ -19,9 +19,9 @@ interface BuildMetadataProps {
 
 const defaultContent = {
   sv: {
-    title: 'StayOnSite - Boende for byggarbetare | Foretagsbostader Sverige',
-    description: 'StayOnSite hjalper byggbolag att snabbt hitta boenden pa annan ort for deras arbetare. Over 10 ars erfarenhet. Boenden i hela Sverige. Kontakta oss idag!',
-    keywords: 'boende byggarbetare, foretagsbostader, personalboende, byggboende, montorboende, arbetarboende, longstay, shortstay, stayonsite',
+    title: 'StayOnSite - Boende för byggarbetare | Företagsbostäder Sverige',
+    description: 'StayOnSite hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare. Över 10 års erfarenhet. Boenden i hela Sverige. Kontakta oss idag!',
+    keywords: 'boende byggarbetare, företagsbostäder, personalboende, byggboende, montörboende, arbetarboende, longstay, shortstay, stayonsite',
   },
   en: {
     title: 'StayOnSite - Accommodation for Construction Workers | Corporate Housing Sweden',
@@ -29,9 +29,9 @@ const defaultContent = {
     keywords: 'construction worker accommodation, corporate housing, staff accommodation, construction housing, worker housing, longstay, shortstay, stayonsite',
   },
   pl: {
-    title: 'StayOnSite - Zakwaterowanie dla pracownikow budowlanych | Mieszkania sluzbowe Szwecja',
-    description: 'StayOnSite pomaga firmom budowlanym szybko znalezc zakwaterowanie w innych lokalizacjach dla ich pracownikow. Ponad 10 lat doswiadczenia.',
-    keywords: 'zakwaterowanie pracownikow budowlanych, mieszkania sluzbowe, zakwaterowanie personelu, stayonsite',
+    title: 'StayOnSite - Zakwaterowanie dla pracowników budowlanych | Mieszkania służbowe Szwecja',
+    description: 'StayOnSite pomaga firmom budowlanym szybko znaleźć zakwaterowanie w innych lokalizacjach dla ich pracowników. Ponad 10 lat doświadczenia.',
+    keywords: 'zakwaterowanie pracowników budowlanych, mieszkania służbowe, zakwaterowanie personelu, stayonsite',
   },
 }
 

@@ -2,8 +2,8 @@ import { buildMetadata } from '@/lib/metadata'
 import ForHusagare from '@/views/ForHusagare'
 
 export const metadata = buildMetadata({
-  title: 'Hyr ut till foretag - 10 000-30 000 kr/man | Garanterad hyra | StayOnSite',
-  description: 'Hyr ut din bostad till foretagshyresgaster och tjana 10 000-30 000 kr/man i garanterad hyra. Inga avdrag, betalning i forskott, 1 manads uppsagningstid. 100+ nojda husagare.',
+  title: 'Hyr ut till företag - 10 000-30 000 kr/mån | Garanterad hyra | StayOnSite',
+  description: 'Hyr ut din bostad till företagshyresgäster och tjäna 10 000-30 000 kr/mån i garanterad hyra. Inga avdrag, betalning i förskott, 1 månads uppsägningstid. 100+ nöjda husägare.',
   canonical: 'https://www.stayonsite.se/for-husagare',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/for-husagare' },

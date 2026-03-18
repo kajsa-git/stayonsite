@@ -1,0 +1,29 @@
+import type { Metadata } from 'next'
+import { fontClassNames, SharedBody } from '../shared-layout'
+
+export const metadata: Metadata = {
+  title: 'StayOnSite - Boende för byggarbetare | Företagsbostäder Sverige',
+  description: 'StayOnSite hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare. Över 10 års erfarenhet. Boenden i hela Sverige.',
+  icons: [
+    { rel: 'icon', url: '/favicon.ico', sizes: 'any' },
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+  ],
+  other: {
+    'sitemap': '/sitemap.xml',
+  },
+}
+
+export default function SvLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="sv" className={fontClassNames}>
+      <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable version" />
+      </head>
+      <SharedBody>{children}</SharedBody>
+    </html>
+  )
+}

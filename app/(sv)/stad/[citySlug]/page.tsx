@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   const pl = `https://www.stayonsite.se/pl/zakwaterowanie/${city.slug}`
 
   return buildMetadata({
-    title: `Personalboende & Lagenhetshotell ${city.name} | StayOnSite`,
+    title: `Personalboende & Lägenhetshotell ${city.name} | StayOnSite`,
     description: getLocalizedText(city.intro, 'sv'),
     keywords: getLocalizedKeywords(city.keywords, 'sv').join(', ') + ', StayOnSite',
     canonical: sv,

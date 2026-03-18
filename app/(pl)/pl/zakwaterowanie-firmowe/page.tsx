@@ -2,8 +2,8 @@ import { buildMetadata } from '@/lib/metadata'
 import Index from '@/views/Index'
 
 export const metadata = buildMetadata({
-  title: 'Zakwaterowanie dla personelu i mieszkania sluzbowe w Szwecji | StayOnSite',
-  description: 'Szybko i sprawnie organizujemy zakwaterowanie dla firm i ich personelu w calej Szwecji. Dlugoterminowe i elastyczne rozwiazania wynajmu.',
+  title: 'Zakwaterowanie dla personelu i mieszkania służbowe w Szwecji | StayOnSite',
+  description: 'Szybko i sprawnie organizujemy zakwaterowanie dla firm i ich personelu w całej Szwecji. Długoterminowe i elastyczne rozwiązania wynajmu.',
   canonical: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/' },

@@ -2,8 +2,8 @@ import { buildMetadata } from '@/lib/metadata'
 import BlogIndex from '@/views/blogg/BlogIndex'
 
 export const metadata = buildMetadata({
-  title: 'Blogg - Personalboende & Foretagsbostader | StayOnSite',
-  description: 'Artiklar om personalboende, foretagsbostader, nya lagar och marknadstrender i Sverige.',
+  title: 'Blogg - Personalboende & Företagsbostäder | StayOnSite',
+  description: 'Artiklar om personalboende, företagsbostäder, nya lagar och marknadstrender i Sverige.',
   canonical: 'https://www.stayonsite.se/blogg',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/blogg' },
