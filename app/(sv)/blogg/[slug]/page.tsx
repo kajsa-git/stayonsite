@@ -14,6 +14,7 @@ import DatacenterMontorboendeGuide2026 from '@/views/blogg/DatacenterMontorboend
 import RegionalBostadsanalys2026 from '@/views/blogg/RegionalBostadsanalys2026'
 import InfrastrukturKontraktPersonalBoendeChecklista2026 from '@/views/blogg/InfrastrukturKontraktPersonalBoendeChecklista2026'
 import KompetensRekryteringByggsektornGuide2026 from '@/views/blogg/KompetensRekryteringByggsektornGuide2026'
+import BlockhyraForetagsbostaderRegler2026 from '@/views/blogg/BlockhyraForetagsbostaderRegler2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -24,7 +25,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'avtalskrav-personalboende-guide-2026': AvtalskravPersonalboendeGuide2026,
   'arbetskraftsinvandring-juni-2026-guide-byggforetag': ArbetstillstandJuni2026Guide,
   'datacenter-montorboende-guide-2026': DatacenterMontorboendeGuide2026,
-  'regional-bostadsanalys-2026-var-finns-boende-montorer': RegionalBostadsanalys2026,  'infrastrukturkontrakt-personalboende-checklista-2026': InfrastrukturKontraktPersonalBoendeChecklista2026,  'kompetens-rekrytering-byggsektorn-guide-2026': KompetensRekryteringByggsektornGuide2026,
+  'regional-bostadsanalys-2026-var-finns-boende-montorer': RegionalBostadsanalys2026,  'infrastrukturkontrakt-personalboende-checklista-2026': InfrastrukturKontraktPersonalBoendeChecklista2026,  'kompetens-rekrytering-byggsektorn-guide-2026': KompetensRekryteringByggsektornGuide2026,  'blockhyra-foretagsbostader-nya-regler-juli-2026': BlockhyraForetagsbostaderRegler2026,
 }
 
 export function generateStaticParams() {

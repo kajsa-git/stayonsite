@@ -207,6 +207,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['rekrytering', 'kompetensförsörjning', 'arbetskraftsbrist', 'byggarbetsmarknad', 'personalplanering'],
     readingTime: 8,
+  },
+  {
+    slug: 'blockhyra-foretagsbostader-nya-regler-juli-2026',
+    title: {
+      sv: 'Blockhyra och företagsbostäder: Nya regler från 1 juli 2026',
+      en: 'Block Rentals and Corporate Housing: New Rules from July 1, 2026',
+      pl: 'Wynajem blokowy i mieszkania służbowe: Nowe zasady od 1 lipca 2026',
+    },
+    description: {
+      sv: 'Nya regler för företagsbostäder och blockhyra från 1 juli 2026. Guide för byggföretag som hyr personalboende.',
+      en: 'New rules for corporate housing and block rentals from July 1, 2026. Guide for construction companies renting worker accommodation.',
+      pl: 'Nowe zasady dotyczące mieszkań służbowych i wynajmu blokowego od 1 lipca 2026. Przewodnik dla firm budowlanych.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-03-25',
+    category: 'Lagstiftning',
+    tags: ['blockhyra', 'företagsbostäder', 'privatuthyrningslagen', 'personalboende', 'lagändring-2026'],
+    readingTime: 9,
   }
 ];
 
