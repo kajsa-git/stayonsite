@@ -18,12 +18,6 @@ const InquiryFormFields = ({
 
   return (
     <>
-      {/* FormSubmit.co configuration */}
-      <input type="hidden" name="_subject" value="Ny förfrågan från StayOnSite" />
-      <input type="hidden" name="_next" value={typeof window !== 'undefined' ? window.location.origin : 'https://www.stayonsite.se'} />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_template" value="table" />
-
       <div className="space-y-5 md:space-y-6">
         <div className="space-y-2">
           <Label htmlFor="email" className="font-light text-nordic-800">

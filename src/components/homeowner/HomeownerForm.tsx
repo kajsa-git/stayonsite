@@ -4,70 +4,72 @@ import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
+import { isValidPhoneNumber } from '@/lib/contact';
+import {
+  getContactFormErrorMessage,
+  submitContactForm,
+} from '@/lib/contact-form';
 import HomeownerFormFields from './HomeownerFormFields';
 import FormSuccess from '../inquiry/FormSuccess';
-import { ShieldCheck, Mail, AlertTriangle } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 const HomeownerForm = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
-  const [needsActivation, setNeedsActivation] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const phone = String(formData.get('phone') ?? '');
+
+    setPhoneError('');
+
+    if (!isValidPhoneNumber(phone)) {
+      setPhoneError(t('homeowner.form.phoneError'));
+      const phoneInput = e.currentTarget.elements.namedItem('phone');
+      if (phoneInput instanceof HTMLInputElement) {
+        phoneInput.focus();
+      }
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // Get form data
-      const formData = new FormData(e.currentTarget);
-      
-      // Add hidden fields required by FormSubmit
-      formData.append('_subject', 'Ny husägare-registrering från StayOnSite');
-      formData.append('_captcha', 'false');
-      formData.append('_template', 'table');
-      formData.append('_next', window.location.origin);
-      
-      // Submit the form manually using fetch to FormSubmit endpoint
-      const response = await fetch('https://formsubmit.co/ajax/kajsa@stayonsite.se', {
-        method: 'POST',
-        body: formData
+      await submitContactForm({
+        formType: 'homeowner',
+        locale: language,
+        page: window.location.pathname,
+        source: 'homeowner-form',
+        fields: {
+          phone: phone.trim(),
+          city: String(formData.get('city') ?? '').trim(),
+        },
+      });
+      setFormSuccess(true);
+      toast({
+        title: t('homeowner.form.success'),
+        description: new Date().toLocaleTimeString()
       });
       
-      const result = await response.json();
-      
-      if (result.success === "true" || result.success === true) {
-        setFormSuccess(true);
-        toast({
-          title: t('homeowner.form.success'),
-          description: new Date().toLocaleTimeString()
-        });
-        
-        // Reset form after 8 seconds
-        setTimeout(() => {
-          setFormSuccess(false);
-          if (formRef.current) {
-            formRef.current.reset();
-          }
-        }, 8000);
-      } else if (result.message && result.message.includes("Activation")) {
-        setNeedsActivation(true);
-        toast({
-          title: language === 'sv' ? 'Aktivering krävs' : 'Activation required',
-          description: language === 'sv' 
-            ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se.' 
-            : 'An activation email has been sent to kajsa@stayonsite.se.',
-          duration: 10000
-        });
-      } else {
-        throw new Error('Form submission failed');
-      }
+      setTimeout(() => {
+        setFormSuccess(false);
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+      }, 8000);
     } catch (error) {
       toast({
         title: t('homeowner.form.error') || 'Error',
-        description: language === 'sv' ? 'Det uppstod ett fel. Försök igen senare.' : 'An error occurred. Please try again later.',
+        description: getContactFormErrorMessage(
+          error instanceof Error ? error.message : undefined,
+          language
+        ),
         variant: "destructive"
       });
     } finally {
@@ -147,28 +149,21 @@ const HomeownerForm = () => {
                 </div>
                 {formSuccess ? (
                   <FormSuccess />
-                ) : needsActivation ? (
-                  <div className="text-center py-12">
-                    <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-8 mx-auto text-amber-500">
-                      <AlertTriangle size={40} />
-                    </div>
-                    <h3 className="text-2xl font-display font-bold text-primary mb-4">
-                      {language === 'sv' ? 'Aktivering krävs' : 'Activation Required'}
-                    </h3>
-                    <p className="text-primary/70 font-medium mb-8">
-                      {language === 'sv' 
-                        ? 'Ett aktiveringsmail har skickats till kajsa@stayonsite.se. Bekräfta via länken i mailet.' 
-                        : 'Please check your email and confirm the activation link.'}
-                    </p>
-                    <Mail size={40} className="mx-auto text-primary/20" />
-                  </div>
                 ) : (
                   <form 
                     ref={formRef} 
                     onSubmit={handleSubmit} 
                     className="space-y-6 md:space-y-8"
                   >
-                    <HomeownerFormFields isSubmitting={isSubmitting} />
+                    <HomeownerFormFields
+                      isSubmitting={isSubmitting}
+                      phoneError={phoneError}
+                      onPhoneChange={() => {
+                        if (phoneError) {
+                          setPhoneError('');
+                        }
+                      }}
+                    />
                   </form>
                 )}
               </div>

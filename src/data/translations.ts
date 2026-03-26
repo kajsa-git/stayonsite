@@ -303,6 +303,7 @@ export type TranslationKey =
   | "homeowner.form.emailPlaceholder"
   | "homeowner.form.phone"
   | "homeowner.form.phonePlaceholder"
+  | "homeowner.form.phoneError"
   | "homeowner.form.address"
   | "homeowner.form.addressPlaceholder"
   | "homeowner.form.city"
@@ -739,6 +740,7 @@ export const translations: Record<
     "homeowner.form.emailPlaceholder": "din@email.se",
     "homeowner.form.phone": "Telefonnummer",
     "homeowner.form.phonePlaceholder": "070-123 45 67",
+    "homeowner.form.phoneError": "Ange ett giltigt telefonnummer. Utländska nummer ska börja med + eller 00",
     "homeowner.form.address": "Adress",
     "homeowner.form.addressPlaceholder": "Gatuadress och nummer",
     "homeowner.form.city": "Stad",
@@ -1183,6 +1185,7 @@ export const translations: Record<
     "homeowner.form.emailPlaceholder": "your@email.com",
     "homeowner.form.phone": "Phone number",
     "homeowner.form.phonePlaceholder": "070-123 45 67",
+    "homeowner.form.phoneError": "Enter a valid phone number. International numbers should start with + or 00",
     "homeowner.form.address": "Address",
     "homeowner.form.addressPlaceholder": "Street address and number",
     "homeowner.form.city": "City",
@@ -1631,6 +1634,7 @@ export const translations: Record<
     "homeowner.form.emailPlaceholder": "twoj@email.pl",
     "homeowner.form.phone": "Numer telefonu",
     "homeowner.form.phonePlaceholder": "070-123 45 67",
+    "homeowner.form.phoneError": "Podaj prawidłowy numer telefonu. Numery zagraniczne powinny zaczynać się od + lub 00",
     "homeowner.form.address": "Adres",
     "homeowner.form.addressPlaceholder": "Ulica i numer",
     "homeowner.form.city": "Miasto",

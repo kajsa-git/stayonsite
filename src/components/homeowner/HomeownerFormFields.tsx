@@ -1,5 +1,6 @@
 'use client'
 
+import type { ChangeEventHandler } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,9 +10,15 @@ import { Send, Phone } from 'lucide-react';
 
 interface HomeownerFormFieldsProps {
   isSubmitting: boolean;
+  phoneError: string;
+  onPhoneChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
+const HomeownerFormFields = ({
+  isSubmitting,
+  phoneError,
+  onPhoneChange,
+}: HomeownerFormFieldsProps) => {
   const { t } = useLanguage();
 
   const containerVariants = {
@@ -49,9 +56,17 @@ const HomeownerFormFields = ({ isSubmitting }: HomeownerFormFieldsProps) => {
             required
             autoComplete="tel"
             inputMode="tel"
-            className="h-[3.25rem] md:h-16 px-4 md:px-5 rounded-xl md:rounded-2xl bg-white border-primary/10 focus:border-accent shadow-sm transition-all duration-300 text-primary text-base md:text-lg font-medium placeholder:text-primary/30"
+            aria-invalid={Boolean(phoneError)}
+            aria-describedby={phoneError ? 'homeowner-phone-error' : undefined}
+            onChange={onPhoneChange}
+            className={`h-[3.25rem] md:h-16 px-4 md:px-5 rounded-xl md:rounded-2xl bg-white shadow-sm transition-all duration-300 text-primary text-base md:text-lg font-medium placeholder:text-primary/30 ${phoneError ? 'border-red-400 focus-visible:ring-red-400' : 'border-primary/10 focus:border-accent'}`}
             placeholder={t('homeowner.form.phonePlaceholder')}
           />
+          {phoneError && (
+            <p id="homeowner-phone-error" className="text-sm text-red-500">
+              {phoneError}
+            </p>
+          )}
         </motion.div>
 
         {/* City */}

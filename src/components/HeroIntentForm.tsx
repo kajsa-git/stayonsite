@@ -1,29 +1,24 @@
 'use client'
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { isValidContact } from '@/lib/contact';
+import {
+  getContactFormErrorMessage,
+  submitContactForm,
+} from '@/lib/contact-form';
 import { CheckCircle2, Send, Loader2 } from 'lucide-react';
 
 interface HeroIntentFormProps {
   defaultCity?: string;
 }
 
-function isValidContact(value: string): boolean {
-  const trimmed = value.trim();
-  if (trimmed.includes('@') && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-    return true;
-  }
-  const digits = trimmed.replace(/[\s\-()+ ]/g, '');
-  return /^\d{6,15}$/.test(digits);
-}
-
 const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
 
   const [city, setCity] = useState(defaultCity);
   const [people, setPeople] = useState('');
@@ -31,52 +26,58 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   const [contactError, setContactError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setContactError('');
 
-    if (!isValidContact(contact)) {
+    const formData = new FormData(e.currentTarget);
+    const cityValue = String(formData.get('ort') ?? city).trim();
+    const peopleValue = String(formData.get('antal_personer') ?? people).trim();
+    const contactValue = String(formData.get('kontakt') ?? contact).trim();
+
+    if (!isValidContact(contactValue)) {
       setContactError(t('heroForm.contactError'));
+      const contactInput = e.currentTarget.elements.namedItem('kontakt');
+      if (contactInput instanceof HTMLInputElement) {
+        contactInput.focus();
+      }
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-      formData.append('ort', city);
-      formData.append('antal_personer', people);
-      formData.append('kontakt', contact);
-      formData.append('_subject', `Snabbförfrågan: ${city} – ${people} pers`);
-      formData.append('_captcha', 'false');
-      formData.append('_template', 'table');
-      formData.append('_next', window.location.origin);
-      formData.append('_source', 'hero-intent-form');
-      formData.append('_page', window.location.pathname);
-
-      const response = await fetch('https://formsubmit.co/ajax/kajsa@stayonsite.se', {
-        method: 'POST',
-        body: formData,
+      await submitContactForm({
+        formType: 'hero-intent',
+        locale: language,
+        page: window.location.pathname,
+        source: 'hero-intent-form',
+        fields: {
+          ort: cityValue,
+          antal_personer: peopleValue,
+          kontakt: contactValue,
+        },
       });
-
-      const result = await response.json();
-
-      if (result.success === 'true' || result.success === true) {
-        setFormSuccess(true);
-        toast({ title: t('heroForm.success') });
-        setTimeout(() => {
-          setFormSuccess(false);
-          setCity(defaultCity);
-          setPeople('');
-          setContact('');
-        }, 5000);
-      } else {
-        throw new Error('Submission failed');
-      }
-    } catch {
+      setFormSuccess(true);
+      toast({ title: t('heroForm.success') });
+      setTimeout(() => {
+        setFormSuccess(false);
+        setCity(defaultCity);
+        setPeople('');
+        setContact('');
+      }, 5000);
+    } catch (error) {
       toast({
-        title: t('heroForm.contactError'),
+        title:
+          language === 'sv'
+            ? 'Kunde inte skicka formuläret'
+            : language === 'pl'
+            ? 'Nie udało się wysłać formularza'
+            : 'Could not send the form',
+        description: getContactFormErrorMessage(
+          error instanceof Error ? error.message : undefined,
+          language
+        ),
         variant: 'destructive',
       });
     } finally {
@@ -98,7 +99,6 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   return (
     <div className="mt-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
       <form
-        ref={formRef}
         onSubmit={handleSubmit}
         className="flex flex-col md:flex-row md:items-end gap-3"
       >
@@ -109,6 +109,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </label>
           <Input
             id="hero-city"
+            name="ort"
             type="text"
             required
             value={city}
@@ -125,6 +126,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </label>
           <Input
             id="hero-people"
+            name="antal_personer"
             type="number"
             required
             min={1}
@@ -142,8 +144,11 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </label>
           <Input
             id="hero-contact"
+            name="kontakt"
             type="text"
             required
+            aria-invalid={Boolean(contactError)}
+            aria-describedby={contactError ? 'hero-contact-error' : undefined}
             value={contact}
             onChange={(e) => {
               setContact(e.target.value);
@@ -153,7 +158,9 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
             className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${contactError ? 'ring-2 ring-red-400' : ''}`}
           />
           {contactError && (
-            <p className="text-red-300 text-xs mt-1 ml-1">{contactError}</p>
+            <p id="hero-contact-error" className="text-red-300 text-xs mt-1 ml-1">
+              {contactError}
+            </p>
           )}
         </div>
 

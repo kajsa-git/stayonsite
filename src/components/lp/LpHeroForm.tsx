@@ -7,6 +7,11 @@ import { trackFbEvent } from '@/hooks/use-facebook-pixel';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { isValidPhoneNumber } from '@/lib/contact';
+import {
+  getContactFormErrorMessage,
+  submitContactForm,
+} from '@/lib/contact-form';
 import { Send, Phone, CheckCircle2 } from 'lucide-react';
 
 interface LpHeroFormProps {
@@ -18,51 +23,53 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const phone = String(formData.get('phone') ?? '');
+
+    setPhoneError('');
+
+    if (!isValidPhoneNumber(phone)) {
+      setPhoneError(t('homeowner.form.phoneError'));
+      const phoneInput = e.currentTarget.elements.namedItem('phone');
+      if (phoneInput instanceof HTMLInputElement) {
+        phoneInput.focus();
+      }
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
-
-      // Hidden fields for FormSubmit
-      formData.append('_subject', 'Ny husägare via Facebook-annons');
-      formData.append('_captcha', 'false');
-      formData.append('_template', 'table');
-      formData.append('_next', window.location.origin);
-      formData.append('_source', 'facebook-landing');
-
-      // Append UTM params
-      Object.entries(utmParams).forEach(([key, value]) => {
-        formData.append(key, value);
+      await submitContactForm({
+        formType: 'lp-homeowner',
+        locale: language,
+        page: window.location.pathname,
+        source: 'facebook-landing',
+        fields: {
+          phone: phone.trim(),
+          city: String(formData.get('city') ?? '').trim(),
+        },
+        utmParams,
       });
-
-      const response = await fetch('https://formsubmit.co/ajax/kajsa@stayonsite.se', {
-        method: 'POST',
-        body: formData,
+      setFormSuccess(true);
+      trackFbEvent('Lead');
+      toast({
+        title: t('homeowner.form.success'),
+        description: new Date().toLocaleTimeString(),
       });
-
-      const result = await response.json();
-
-      if (result.success === 'true' || result.success === true) {
-        setFormSuccess(true);
-        trackFbEvent('Lead');
-        toast({
-          title: t('homeowner.form.success'),
-          description: new Date().toLocaleTimeString(),
-        });
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch {
+    } catch (error) {
       toast({
         title: t('homeowner.form.error') || 'Error',
-        description:
-          language === 'sv'
-            ? 'Det uppstod ett fel. Försök igen eller ring oss direkt.'
-            : 'An error occurred. Please try again later.',
+        description: getContactFormErrorMessage(
+          error instanceof Error ? error.message : undefined,
+          language
+        ),
         variant: 'destructive',
       });
     } finally {
@@ -127,9 +134,23 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
                           name="phone"
                           type="tel"
                           required
-                          className="h-12 px-4 rounded-xl bg-white border-primary/10 focus:border-accent shadow-sm text-primary text-base font-medium placeholder:text-primary/30"
+                          autoComplete="tel"
+                          inputMode="tel"
+                          aria-invalid={Boolean(phoneError)}
+                          aria-describedby={phoneError ? 'lp-phone-error' : undefined}
+                          onChange={() => {
+                            if (phoneError) {
+                              setPhoneError('');
+                            }
+                          }}
+                          className={`h-12 px-4 rounded-xl bg-white shadow-sm text-primary text-base font-medium placeholder:text-primary/30 ${phoneError ? 'border-red-400 focus-visible:ring-red-400' : 'border-primary/10 focus:border-accent'}`}
                           placeholder={t('homeowner.form.phonePlaceholder')}
                         />
+                        {phoneError && (
+                          <p id="lp-phone-error" className="mt-1 text-sm text-red-500">
+                            {phoneError}
+                          </p>
+                        )}
                       </div>
 
                       <div>
