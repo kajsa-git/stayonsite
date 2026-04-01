@@ -225,6 +225,24 @@ export const blogPosts: BlogPost[] = [
     category: 'Lagstiftning',
     tags: ['blockhyra', 'företagsbostäder', 'privatuthyrningslagen', 'personalboende', 'lagändring-2026'],
     readingTime: 9,
+  },
+  {
+    slug: 'nya-bolaneregler-april-2026-personalboende-guide',
+    title: {
+      sv: 'Nya bolånereglerna april 2026: Så påverkar de dig som hyr ut personalboende',
+      en: 'New mortgage rules April 2026: How they affect temporary accommodation landlords',
+      pl: 'Nowe zasady kredytów hipotecznych kwiecień 2026: Jak wpływają na wynajmujących zakwaterowanie',
+    },
+    description: {
+      sv: 'Från 1 april 2026 gäller nya bolåneregler. Här är vad fastighetsägare som hyr ut till byggföretag behöver veta.',
+      en: 'New mortgage rules from April 1, 2026. What property owners renting to construction companies need to know.',
+      pl: 'Nowe zasady kredytów od 1 kwietnia 2026. Co właściciele wynajmujący firmom budowlanym muszą wiedzieć.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-01',
+    category: 'Guide',
+    tags: ['bolåneregler', 'fastighetsägare', 'investering', 'personalboende'],
+    readingTime: 7,
   }
 ];
 
