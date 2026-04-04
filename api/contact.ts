@@ -130,16 +130,17 @@ function buildConfirmationEmail(s: Submission): { subject: string; text: string;
     : isPolish ? 'Pozdrawiam,\nKajsa z Zespołem\nStayOnSite'
     : 'Best regards,\nKajsa and Team\nStayOnSite';
 
-  const text = `${greeting}\n\n${body}\n\n${signoff}\n\n076-249 84 86\ninfo@stayonsite.se\nwww.stayonsite.se`;
+  const text = `${greeting}\n\n${body}\n\n${signoff}\n\n076-249 84 86\nkajsa@stayonsite.se\nwww.stayonsite.se`;
 
   const html = `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:600px;">
     <p style="font-size:16px;font-weight:600;">${greeting}</p>
     <p>${body}</p>
+    ${!isSwedish ? '' : `<p style="color:#6b7280;font-size:14px;margin-top:4px;"><em>Thank you for reaching out. We have received your inquiry and will get back to you within 24 hours.</em></p>`}
     <p style="margin-top:24px;">${signoff.replace(/\n/g, '<br>')}</p>
     <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
     <p style="font-size:13px;color:#6b7280;">
       <a href="tel:+46762498486" style="color:#ff6300;">076-249 84 86</a><br>
-      <a href="mailto:info@stayonsite.se" style="color:#ff6300;">info@stayonsite.se</a><br>
+      <a href="mailto:kajsa@stayonsite.se" style="color:#ff6300;">kajsa@stayonsite.se</a><br>
       <a href="https://www.stayonsite.se" style="color:#ff6300;">www.stayonsite.se</a>
     </p>
   </div>`;
