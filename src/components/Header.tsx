@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackPhoneClick } from '@/lib/gtag';
 
 const Header = () => {
   const { t } = useLanguage();
@@ -180,7 +181,7 @@ const Header = () => {
                   "bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40"
                 )}
               >
-                <a href="tel:+46762498486" className="flex items-center gap-2">
+                <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-2">
                   <span className="relative z-10">{t("nav.inquiryForm")}</span>
                 </a>
               </Button>
@@ -261,7 +262,7 @@ const Header = () => {
                 >
                   <a
                     href="tel:+46762498486"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => { trackPhoneClick(); setIsMenuOpen(false); }}
                   >
                     {t("nav.inquiryForm")}
                   </a>

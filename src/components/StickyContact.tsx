@@ -5,6 +5,7 @@ import { Phone, MessageCircle, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { trackPhoneClick } from '@/lib/gtag';
 
 const StickyContact = () => {
   const { t } = useLanguage();
@@ -66,7 +67,7 @@ const StickyContact = () => {
               className="w-full rounded-xl bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40 text-white font-bold h-12 shadow-lg transition-all hover:scale-[1.02]"
               size="sm"
             >
-              <a href="tel:+46762498486">
+              <a href="tel:+46762498486" onClick={trackPhoneClick}>
                 <Phone size={16} className="mr-2" />
                 {t('stickyContact.call')}
               </a>

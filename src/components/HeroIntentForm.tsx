@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { isValidContact } from '@/lib/contact';
+import { trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -59,6 +60,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         },
       });
       setFormSuccess(true);
+      trackFormSubmit();
       toast({ title: t('heroForm.success') });
       setTimeout(() => {
         setFormSuccess(false);

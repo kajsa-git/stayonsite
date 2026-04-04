@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
+import { trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -52,6 +53,7 @@ const HomeownerForm = () => {
         },
       });
       setFormSuccess(true);
+      trackFormSubmit();
       toast({
         title: t('homeowner.form.success'),
         description: new Date().toLocaleTimeString()

@@ -1,6 +1,7 @@
 import { Inter, Montserrat, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import GoogleAdsScript from '@/components/GoogleAdsScript'
 import Providers from './providers'
 import './globals.css'
 
@@ -33,6 +34,7 @@ export function SharedBody({ children }: { children: React.ReactNode }) {
       <Providers>
         {children}
       </Providers>
+      <GoogleAdsScript />
       <Analytics />
       <SpeedInsights />
     </body>

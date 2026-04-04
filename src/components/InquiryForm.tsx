@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
+import { trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -35,6 +36,7 @@ const InquiryForm = () => {
         },
       });
       setFormSuccess(true);
+      trackFormSubmit();
       toast({
         title: t('inquiry.form.success'),
         description: new Date().toLocaleTimeString()

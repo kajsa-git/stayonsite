@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { isValidPhoneNumber } from '@/lib/contact';
+import { trackPhoneClick, trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -58,6 +59,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
         utmParams,
       });
       setFormSuccess(true);
+      trackFormSubmit();
       trackFbEvent('Lead');
       toast({
         title: t('homeowner.form.success'),
@@ -201,6 +203,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
                     </div>
                     <a
                       href="tel:+46762498486"
+                      onClick={trackPhoneClick}
                       className="inline-flex items-center gap-2 text-primary/60 hover:text-accent font-bold transition-colors"
                     >
                       <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center text-accent">

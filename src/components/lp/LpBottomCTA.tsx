@@ -3,6 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, Phone } from 'lucide-react';
+import { trackPhoneClick } from '@/lib/gtag';
 
 const LpBottomCTA = () => {
   const { t } = useLanguage();
@@ -30,6 +31,7 @@ const LpBottomCTA = () => {
           <Phone size={14} className="text-white/50" />
           <a
             href="tel:+46762498486"
+            onClick={trackPhoneClick}
             className="text-sm text-white/60 hover:text-white transition-colors font-medium"
           >
             076-249 84 86
