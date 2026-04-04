@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 import {
   buildContactEmail,
   parseContactSubmission,
-} from '../src/lib/contact-server.js';
+} from '../src/lib/contact-server';
 
 const CONTACT_TO = process.env.CONTACT_FORM_TO || 'kajsa@stayonsite.se';
 
