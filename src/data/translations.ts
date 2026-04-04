@@ -342,7 +342,10 @@ export type TranslationKey =
   | "twotrack.homeowner.tagline"
   | "twotrack.homeowner.title"
   | "twotrack.homeowner.description"
-  | "twotrack.homeowner.cta";
+  | "twotrack.homeowner.cta"
+  | "cookie.text"
+  | "cookie.accept"
+  | "cookie.deny";
 
 export const translations: Record<
   AvailableLanguages,
@@ -788,6 +791,9 @@ export const translations: Record<
     "twotrack.homeowner.title": "Hyr ut din bostad till företag",
     "twotrack.homeowner.description": "Garanterad hyra varje månad, inga avdrag, 0 % i avgift.",
     "twotrack.homeowner.cta": "Så fungerar det",
+    "cookie.text": "Vi använder cookies för att mäta hur vår annonsering fungerar. Vi lovar att bjuda på riktiga kakor när du flyttar in.",
+    "cookie.accept": "Acceptera",
+    "cookie.deny": "Nej tack",
   },
   en: {
     "nav.home": "Home",
@@ -1233,6 +1239,9 @@ export const translations: Record<
     "twotrack.homeowner.title": "Rent your property to companies",
     "twotrack.homeowner.description": "Guaranteed rent every month, no deductions, 0% fee.",
     "twotrack.homeowner.cta": "How it works",
+    "cookie.text": "We use cookies to measure how our ads perform. We promise to serve real cookies when you move in.",
+    "cookie.accept": "Accept",
+    "cookie.deny": "No thanks",
   },
   pl: {
     "nav.home": "Strona główna",
@@ -1682,5 +1691,8 @@ export const translations: Record<
     "twotrack.homeowner.title": "Wynajmij swoją nieruchomość firmom",
     "twotrack.homeowner.description": "Gwarantowany czynsz co miesiąc, bez potrąceń, 0% opłat.",
     "twotrack.homeowner.cta": "Jak to działa",
+    "cookie.text": "Używamy plików cookie, aby mierzyć skuteczność naszych reklam. Obiecujemy prawdziwe ciasteczka przy wprowadzeniu.",
+    "cookie.accept": "Akceptuję",
+    "cookie.deny": "Nie, dziękuję",
   },
 };

@@ -8,6 +8,19 @@ export default function GoogleAdsScript() {
 
   return (
     <>
+      {/* Consent Mode v2 defaults — must run BEFORE gtag.js loads */}
+      <Script id="consent-defaults" strategy="beforeInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+          });
+        `}
+      </Script>
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ADS_ID}`}
         strategy="afterInteractive"
