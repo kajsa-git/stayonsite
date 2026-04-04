@@ -7,22 +7,17 @@ export default function GoogleAdsScript() {
   useEffect(() => {
     if (!GA_ADS_ID) return
 
-    // Set consent defaults before loading gtag
+    // dataLayer and gtag() are already initialized in <head> with consent defaults
+    // Just configure and load the script
     window.dataLayer = window.dataLayer || []
-    function gtag(...args: unknown[]) {
-      window.dataLayer.push(args)
+    if (!window.gtag) {
+      window.gtag = function (...args: unknown[]) {
+        window.dataLayer.push(args)
+      } as typeof window.gtag
     }
-    window.gtag = gtag as typeof window.gtag
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied',
-    })
-    gtag('js', new Date())
-    gtag('config', GA_ADS_ID)
+    window.gtag('js', new Date())
+    window.gtag('config', GA_ADS_ID)
 
-    // Load gtag.js
     const script = document.createElement('script')
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ADS_ID}`
     script.async = true
