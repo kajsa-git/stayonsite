@@ -1,3 +1,4 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 import {
   buildContactEmail,
@@ -6,27 +7,22 @@ import {
 
 const CONTACT_TO = process.env.CONTACT_FORM_TO || 'kajsa@stayonsite.se';
 
-function getHeader(headers: Headers, name: string): string | undefined {
-  const value = headers.get(name);
-  return value ? value.trim() : undefined;
+function getClientIp(req: VercelRequest): string | undefined {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string') return forwarded.split(',')[0]?.trim();
+  return undefined;
 }
 
-function getClientIp(headers: Headers): string | undefined {
-  const forwardedFor = getHeader(headers, 'x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0]?.trim();
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, error: 'method_not_allowed' });
   }
 
-  return getHeader(headers, 'x-real-ip');
-}
-
-export async function POST(request: Request) {
   try {
-    const payload = await request.json();
-    const submission = parseContactSubmission(payload);
+    const submission = parseContactSubmission(req.body);
     const email = buildContactEmail(submission, {
-      ip: getClientIp(request.headers),
-      userAgent: getHeader(request.headers, 'user-agent'),
+      ip: getClientIp(req),
+      userAgent: req.headers['user-agent'],
     });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -42,35 +38,17 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Resend error', error);
-      throw new Error(`resend_error:${error.message}`);
+      return res.status(502).json({ success: false, error: 'resend_error' });
     }
 
-    return Response.json({ success: true, provider: 'resend' });
-  } catch (error) {
-    const rawMessage =
-      error instanceof Error ? error.message : 'contact_form_submission_failed';
-    const [message, ...detailsParts] = rawMessage.split(':');
-    const details = detailsParts.join(':') || undefined;
+    return res.status(200).json({ success: true, provider: 'resend' });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'contact_form_submission_failed';
 
     const status =
-      message === 'spam_detected'
-        ? 400
-        : message === 'invalid_submission'
-        ? 400
-        : message === 'resend_error'
-        ? 502
-        : 500;
+      message === 'spam_detected' ? 400 :
+      message === 'invalid_submission' ? 400 : 500;
 
-    return Response.json(
-      {
-        success: false,
-        error: message,
-        details:
-          process.env.VERCEL_ENV === 'production'
-            ? undefined
-            : details,
-      },
-      { status }
-    );
+    return res.status(status).json({ success: false, error: message });
   }
 }
