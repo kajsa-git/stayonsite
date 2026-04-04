@@ -96,7 +96,55 @@ function buildEmail(s: Submission, ip?: string, ua?: string) {
 
   const replyTo = s.formType === 'inquiry' ? (s.fields as { email: string }).email : undefined;
 
-  return { subject, text, html, replyTo };
+  // Find customer email for confirmation
+  let customerEmail: string | undefined;
+  if (s.formType === 'inquiry') {
+    customerEmail = (s.fields as { email: string }).email;
+  } else if (s.formType === 'hero-intent') {
+    const kontakt = (s.fields as { kontakt: string }).kontakt;
+    if (isValidEmail(kontakt)) customerEmail = kontakt;
+  }
+
+  return { subject, text, html, replyTo, customerEmail };
+}
+
+function buildConfirmationEmail(s: Submission): { subject: string; text: string; html: string } {
+  const isSwedish = s.locale === 'sv';
+  const isPolish = s.locale === 'pl';
+
+  const subject = isSwedish ? 'Tack för din förfrågan - StayOnSite'
+    : isPolish ? 'Dziękujemy za zapytanie - StayOnSite'
+    : 'Thank you for your inquiry - StayOnSite';
+
+  const greeting = isSwedish ? 'Hej!'
+    : isPolish ? 'Cześć!'
+    : 'Hi!';
+
+  const body = isSwedish
+    ? 'Tack för att du kontaktade oss. Vi har tagit emot din förfrågan och återkommer inom 24 timmar.'
+    : isPolish
+    ? 'Dziękujemy za kontakt. Otrzymaliśmy Twoje zapytanie i odezwiemy się w ciągu 24 godzin.'
+    : 'Thank you for reaching out. We have received your inquiry and will get back to you within 24 hours.';
+
+  const signoff = isSwedish ? 'Vänliga hälsningar,\nKajsa med Team\nStayOnSite'
+    : isPolish ? 'Pozdrawiam,\nKajsa z Zespołem\nStayOnSite'
+    : 'Best regards,\nKajsa and Team\nStayOnSite';
+
+  const text = `${greeting}\n\n${body}\n\n${signoff}\n\n076-249 84 86\ninfo@stayonsite.se\nwww.stayonsite.se`;
+
+  const html = `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:600px;">
+    <p style="font-size:16px;font-weight:600;">${greeting}</p>
+    <p>${body}</p>
+    <p style="margin-top:24px;">${signoff.replace(/\n/g, '<br>')}</p>
+    <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+    <p style="font-size:13px;color:#6b7280;">
+      <a href="tel:+46762498486" style="color:#ff6300;">076-249 84 86</a><br>
+      <a href="mailto:info@stayonsite.se" style="color:#ff6300;">info@stayonsite.se</a><br>
+      <a href="https://www.stayonsite.se" style="color:#ff6300;">www.stayonsite.se</a>
+    </p>
+  </div>`;
+
+  return { subject, text, html };
 }
 
 // --- Handler ---
@@ -136,6 +184,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (error) {
       console.error('Resend error', error);
       return res.status(502).json({ success: false, error: 'resend_error' });
+    }
+
+    // Send confirmation to customer if we have their email
+    if (email.customerEmail) {
+      const confirmation = buildConfirmationEmail(submission);
+      await resend.emails.send({
+        from: process.env.RESEND_FROM || 'StayOnSite <onboarding@resend.dev>',
+        to: email.customerEmail,
+        subject: confirmation.subject,
+        text: confirmation.text,
+        html: confirmation.html,
+      }).catch((err) => console.error('Confirmation email failed', err));
     }
 
     return res.status(200).json({ success: true, provider: 'resend' });
