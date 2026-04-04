@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageCircle, Phone } from 'lucide-react';
+import { trackPhoneClick } from '@/lib/gtag';
 import ContactInfo from './ContactInfo';
 import WhyUs from './WhyUs';
 
@@ -37,6 +38,7 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
           <span className="hidden sm:inline text-nordic-300">|</span>
           <a
             href="https://wa.me/46762498486"
+            onClick={trackPhoneClick}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-nordic-700 hover:text-nordic-900 transition-colors"

@@ -79,7 +79,7 @@ const StickyContact = () => {
               className="w-full rounded-xl border-primary/10 text-primary/70 hover:bg-primary/5 hover:text-primary/70 font-bold h-12 transition-all"
               size="sm"
             >
-              <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
+              <a href="https://wa.me/46762498486" onClick={trackPhoneClick} target="_blank" rel="noreferrer">
                 <MessageCircle size={16} className="mr-2" />
                 WhatsApp
               </a>

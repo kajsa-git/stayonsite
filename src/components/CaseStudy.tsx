@@ -3,6 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { TranslationKey } from '@/data/translations';
 import { motion } from 'framer-motion';
+import { trackPhoneClick } from '@/lib/gtag';
 import { Mail, MessageCircle, Phone } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -122,7 +123,7 @@ const CaseStudy = () => {
                       className="rounded-2xl h-14 border-primary/10 hover:bg-primary/5 hover:text-primary/80 text-primary/80 font-bold text-base transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
                       asChild
                     >
-                      <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer">
+                      <a href="https://wa.me/46762498486" onClick={trackPhoneClick} target="_blank" rel="noreferrer">
                         <MessageCircle size={18} />
                         WhatsApp
                       </a>
