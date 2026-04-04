@@ -8,8 +8,11 @@ export default function GoogleAdsScript() {
 
   return (
     <>
-      {/* Consent Mode v2 defaults — must run BEFORE gtag.js loads */}
-      <Script id="consent-defaults" strategy="beforeInteractive">
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ADS_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="gtag-init" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -19,16 +22,6 @@ export default function GoogleAdsScript() {
             'ad_personalization': 'denied',
             'analytics_storage': 'denied'
           });
-        `}
-      </Script>
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ADS_ID}`}
-        strategy="afterInteractive"
-      />
-      <Script id="gtag-init" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${GA_ADS_ID}');
         `}
