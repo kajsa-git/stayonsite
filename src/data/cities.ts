@@ -69,17 +69,17 @@ export const cities: City[] = [
     coordinates: [59.3293, 18.0686],
     heroHook: ls(
       'Lägenhetshotell & Personalboende i Stockholm – nära Slussen och tunnelbanan',
-      'Aparthotel & Worker Accommodation in Stockholm – Near Slussen & the Metro',
+      'Corporate Housing Stockholm – Furnished Apartments Near Slussen & the Metro',
       'Aparthotel & Noclegi Pracownicze w Sztokholmie – Blisko Slussen i Metra'
     ),
     intro: ls(
       'Slussen, tunnelbaneutbyggnaden och datacenter runt Stockholm kräver bemanning som kan ändras varje vecka. Våra lägenhetshotell och företagslägenheter ligger nära arbetsplatsen — komplett boendeplan inom 24 timmar.',
-      'Projects like Slussen, the metro extension and new data centers change staffing needs weekly. Our aparthotels and corporate apartments sit close to the worksite — full housing plan within 24 hours.',
+      'Corporate housing for construction crews in Stockholm. Furnished apartments near Slussen, the metro extension and data center sites — full housing plan within 24 hours.',
       'Budowy takie jak Slussen, rozbudowa metra czy centra danych wymagają elastycznych ekip. Nasze aparthotele i mieszkania firmowe znajdują się blisko inwestycji — pełny plan zakwaterowania w 24 godziny.'
     ),
     keywords: lk(
       ['personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm', 'lägenhetshotell stockholm'],
-      ['corporate housing stockholm', 'staff apartments stockholm', 'construction housing stockholm', 'worker accommodation stockholm sweden', 'temporary housing stockholm', 'construction crew accommodation stockholm'],
+      ['corporate housing stockholm', 'corporate apartments stockholm', 'furnished apartments stockholm', 'staff housing stockholm', 'construction crew accommodation stockholm', 'temporary housing stockholm sweden'],
       ['zakwaterowanie pracownicze sztokholm', 'mieszkania firmowe sztokholm', 'noclegi dla ekip sztokholm', 'noclegi dla budowlańców sztokholm szwecja', 'kwatery pracownicze sztokholm', 'tymczasowe zakwaterowanie sztokholm szwecja']
     ),
     metrics: [
@@ -165,8 +165,8 @@ export const cities: City[] = [
     highlights: ['Stora hamnprojekt', 'Spårvagnsutbyggnad', 'Bostadsområden som Backaplan', 'Industribyggnation'],
     industries: ['Hamn & Logistik', 'Industri', 'Bostäder', 'Transport'],
     coordinates: [57.7089, 11.9746],
-    heroHook: ls('Lägenhetshotell & Personalboende i Göteborg – nära hamnen och Hisingen', 'Aparthotel & Worker Accommodation in Gothenburg – Near the Harbour & Hisingen', 'Aparthotel & Noclegi Pracownicze w Göteborgu – Blisko Portu i Hisingen'),
-    intro: ls('Från Hisingsbron till varvsrenoveringar behövs korttidsboende med kort restid och enkel parkering. Vi har lägenhetshotell och hus på Hisingen, Majorna och Mölndal där hela lag kan dela kök och jobba skift dygnet runt.', 'From Hisingsbron to yard renovations you need short-term housing with easy access and parking. Our aparthotels and houses on Hisingen, Majorna and Mölndal let whole crews share kitchens and run shifts 24/7.', 'Od mostu Hisingsbron po remonty stoczni potrzeba krótkoterminowych noclegów z dojazdem i parkingiem. Nasze aparthotele i domy na Hisingen, w Majornie i Mölndal pozwalają ekipom dzielić kuchnie i pracować na zmiany.'),
+    heroHook: ls('Personalboende Göteborg – företagslägenheter nära Västlänken, hamnen och Volvo', 'Corporate Housing Gothenburg – Apartments Near the West Link, Harbour & Volvo', 'Zakwaterowanie Firmowe Göteborg – Mieszkania Blisko Västlänken, Portu i Volvo'),
+    intro: ls('Västlänken, Backaplan och Volvos batterifabrik driver stor efterfrågan på personalboende i Göteborg. Våra företagslägenheter på Hisingen, i Majorna och Mölndal har parkering, delade kök och inflyttning inom 48 timmar.', 'The West Link, Backaplan and Volvo battery plant drive high demand for corporate housing in Gothenburg. Our apartments on Hisingen, in Majorna and Mölndal include parking, shared kitchens and 48-hour move-in.', 'Västlänken, Backaplan i fabryka baterii Volvo napędzają popyt na zakwaterowanie firmowe w Göteborgu. Nasze mieszkania na Hisingen, w Majornie i Mölndal mają parking, wspólne kuchnie i zameldowanie w 48 godzin.'),
     keywords: lk(
       ['personalboende göteborg', 'företagsboende göteborg', 'byggboende hisingen', 'boende byggarbetare göteborg', 'montörboende göteborg', 'tillfälligt boende företag göteborg', 'lägenhetshotell göteborg', 'korttidsboende göteborg'],
       ['staff housing gothenburg', 'corporate housing gothenburg', 'construction housing hisingen', 'worker accommodation gothenburg sweden', 'temporary housing gothenburg', 'construction crew accommodation gothenburg'],
