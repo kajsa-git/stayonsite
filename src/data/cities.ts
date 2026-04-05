@@ -1808,7 +1808,117 @@ export const cities: City[] = [
         )
       }
     ],
-    nearby: ['vastervik', 'kalmar']
+    nearby: ['monsteras', 'vastervik', 'kalmar']
+  },
+  {
+    slug: 'monsteras',
+    name: 'Mönsterås',
+    region: 'Kalmar län',
+    population: '13 000',
+    description: 'Industrisamhälle vid Östersjön med Södra Cell och hamn.',
+    highlights: ['Södra Cell massafabrik', 'Mönsterås hamn', 'Industriområden', 'Infrastrukturprojekt'],
+    industries: ['Skogsindustri', 'Massa & Papper', 'Hamn & Logistik', 'Industri'],
+    coordinates: [57.0444, 16.4450],
+    heroHook: ls(
+      'Personalboende i Mönsterås – nära Södra Cell och hamnen',
+      'Worker Housing in Mönsterås – Near Södra Cell & the Harbour',
+      'Zakwaterowanie Pracownicze w Mönsterås – Blisko Södra Cell i Portu'
+    ),
+    intro: ls(
+      'Södra Cell och hamnen driver behovet av personalboende i Mönsterås. Vi ordnar möblerade lägenheter och hus för montörer, tekniker och projektteam.',
+      'Södra Cell and the harbour drive the need for worker housing in Mönsterås. We arrange furnished apartments and houses for fitters, technicians and project teams.',
+      'Södra Cell i port napędzają zapotrzebowanie na noclegi pracownicze w Mönsterås. Organizujemy umeblowane mieszkania i domy dla monterów, techników i zespołów projektowych.'
+    ),
+    keywords: lk(
+      ['personalboende mönsterås', 'boende mönsterås', 'montörboende mönsterås', 'företagsboende kalmar län', 'boende södra cell mönsterås', 'tillfälligt boende mönsterås', 'byggboende mönsterås'],
+      ['worker housing monsteras', 'accommodation monsteras sweden', 'corporate housing monsteras', 'sodra cell worker accommodation'],
+      ['zakwaterowanie pracownicze monsteras', 'noclegi monsteras szwecja', 'kwatery pracownicze monsteras']
+    ),
+    metrics: [
+      {
+        value: '20',
+        label: ls('platser i Mönsterås', 'beds in Mönsterås', 'miejsc w Mönsterås'),
+        subtext: ls('Nära industrin', 'Close to industry', 'Blisko przemysłu')
+      },
+      {
+        value: '5',
+        label: ls('min till Södra Cell', 'min to Södra Cell', 'min do Södra Cell'),
+        subtext: ls('Från centrala boenden', 'From central housing', 'Z centralnych noclegów')
+      },
+      {
+        value: '25',
+        label: ls('min till Oskarshamn', 'min to Oskarshamn', 'min do Oskarshamn'),
+        subtext: ls('Regionalt samarbete', 'Regional collaboration', 'Współpraca regionalna')
+      }
+    ],
+    neighborhoods: [
+      {
+        name: ls('Centrala Mönsterås', 'Central Mönsterås', 'Centrum Mönsterås'),
+        description: ls('Nära service och kommunikationer. Kort avstånd till Södra Cell.', 'Near services and transit. Short distance to Södra Cell.', 'Blisko usług i komunikacji. Krótka odległość do Södra Cell.'),
+        distance: ls('5 min till Södra Cell', '5 min to Södra Cell', '5 min do Södra Cell')
+      },
+      {
+        name: ls('Ålem', 'Ålem', 'Ålem'),
+        description: ls('Lugnt samhälle söder om Mönsterås, nära E22.', 'Quiet community south of Mönsterås, near E22.', 'Spokojna miejscowość na południe od Mönsterås, blisko E22.'),
+        distance: ls('10 min till Mönsterås', '10 min to Mönsterås', '10 min do Mönsterås')
+      },
+      {
+        name: ls('Blomstermåla', 'Blomstermåla', 'Blomstermåla'),
+        description: ls('Bra läge mellan Mönsterås och Oskarshamn.', 'Good location between Mönsterås and Oskarshamn.', 'Dobra lokalizacja między Mönsterås a Oskarshamn.'),
+        distance: ls('15 min till Mönsterås', '15 min to Mönsterås', '15 min do Mönsterås')
+      }
+    ],
+    projects: [
+      {
+        name: ls('Södra Cell Massafabrik', 'Södra Cell Pulp Mill', 'Fabryka celulozy Södra Cell'),
+        description: ls('Boende för underhålls- och driftteam vid massafabriken.', 'Housing for maintenance and operations teams at the pulp mill.', 'Zakwaterowanie dla zespołów serwisowych i operacyjnych przy fabryce celulozy.')
+      },
+      {
+        name: ls('Mönsterås Hamn', 'Mönsterås Harbour', 'Port Mönsterås'),
+        description: ls('Logi nära hamnen för transport- och logistikpersonal.', 'Lodging near the harbour for transport and logistics staff.', 'Noclegi blisko portu dla personelu transportowego i logistycznego.')
+      },
+      {
+        name: ls('Industriområden', 'Industrial Zones', 'Strefy przemysłowe'),
+        description: ls('Långtidsboende för team vid lokala industriprojekt.', 'Long-term housing for teams at local industrial projects.', 'Długoterminowe noclegi dla zespołów przy lokalnych projektach przemysłowych.')
+      }
+    ],
+    testimonial: {
+      quote: ls(
+        'StayOnSite fixade boende för vårt team på två dagar. Perfekt läge nära fabriken och allt var klart vid inflytt.',
+        'StayOnSite arranged housing for our team in two days. Perfect location near the mill and everything was ready at move-in.',
+        'StayOnSite zorganizowało noclegi dla naszego zespołu w dwa dni. Idealna lokalizacja blisko fabryki i wszystko było gotowe przy wprowadzeniu.'
+      ),
+      author: 'Magnus L.',
+      role: ls('Platschef', 'Site Manager', 'Kierownik budowy'),
+      company: 'Industriservice AB'
+    },
+    faq: [
+      {
+        question: ls('Hur nära Södra Cell kan ni ordna boende?', 'How close to Södra Cell can you arrange housing?', 'Jak blisko Södra Cell możecie zorganizować noclegi?'),
+        answer: ls(
+          'Vi har boenden inom 5 minuters bilresa från massafabriken i centrala Mönsterås.',
+          'We have housing within a 5-minute drive from the pulp mill in central Mönsterås.',
+          'Mamy noclegi w odległości 5 minut jazdy od fabryki celulozy w centrum Mönsterås.'
+        )
+      },
+      {
+        question: ls('Kan ni ordna boende för stora team?', 'Can you arrange housing for large teams?', 'Czy możecie zorganizować noclegi dla dużych zespołów?'),
+        answer: ls(
+          'Ja, vi har erfarenhet av att ordna boende för upp till 30 personer i Mönsterås och omnejd.',
+          'Yes, we have experience arranging housing for up to 30 people in Mönsterås and surroundings.',
+          'Tak, mamy doświadczenie w organizacji noclegów dla nawet 30 osób w Mönsterås i okolicach.'
+        )
+      },
+      {
+        question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
+        answer: ls(
+          'Fullt möblerat med kök, sängkläder, städ och el/värme/wifi. Parkering ingår.',
+          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi. Parking included.',
+          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi. Parking w cenie.'
+        )
+      }
+    ],
+    nearby: ['oskarshamn', 'kalmar', 'vastervik']
   },
   {
     slug: 'umea',
