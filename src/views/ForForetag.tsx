@@ -60,9 +60,9 @@ const ForForetag = () => {
         'Ile kosztuje zakwaterowanie pracownicze?'
       ),
       a: t(
-        'Priset beror på stad, antal personer och boendets standard. Generellt ligger personalboende på 3 000–8 000 kr per person och månad — betydligt billigare än hotell. Ni får en detaljerad offert anpassad efter era behov.',
-        'The price depends on the city, number of people, and accommodation standard. Generally, worker housing costs SEK 3,000–8,000 per person per month — significantly cheaper than hotels. You receive a detailed quote tailored to your needs.',
-        'Cena zależy od miasta, liczby osób i standardu zakwaterowania. Zazwyczaj noclegi pracownicze kosztują 3 000–8 000 SEK na osobę miesięcznie — znacznie taniej niż hotel. Otrzymają Państwo szczegółową ofertę.'
+        'Personalboende börjar från 6 900 kr per person och månad. Exakt pris beror på stad, antal personer och boendets standard — men alltid betydligt billigare än hotell. Ni får en detaljerad offert anpassad efter era behov.',
+        'Worker housing starts from SEK 6,900 per person per month. The exact price depends on the city, number of people, and accommodation standard — but always significantly cheaper than hotels. You receive a detailed quote tailored to your needs.',
+        'Noclegi pracownicze zaczynają się od 6 900 SEK na osobę miesięcznie. Dokładna cena zależy od miasta, liczby osób i standardu — ale zawsze znacznie taniej niż hotel. Otrzymają Państwo szczegółową ofertę.'
       ),
     },
     {
@@ -156,7 +156,7 @@ const ForForetag = () => {
   const comparisonRows = [
     {
       label: comparisonLabels.pricePerNight,
-      stayonsite: t('5 000–10 000 kr', 'SEK 5,000–10,000', '5 000–10 000 SEK'),
+      stayonsite: t('Från 6 900 kr', 'From SEK 6,900', 'Od 6 900 SEK'),
       hotel: t('15 000–30 000 kr', 'SEK 15,000–30,000', '15 000–30 000 SEK'),
       airbnb: t('8 000–15 000 kr', 'SEK 8,000–15,000', '8 000–15 000 SEK'),
       self: t('Varierar', 'Varies', 'Różnie'),
