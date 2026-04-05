@@ -114,6 +114,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
             name="ort"
             type="text"
             required
+            autoComplete="address-level2"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             placeholder={t('heroForm.cityPlaceholder')}
@@ -149,6 +150,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
             name="kontakt"
             type="text"
             required
+            autoComplete="email"
             aria-invalid={Boolean(contactError)}
             aria-describedby={contactError ? 'hero-contact-error' : undefined}
             value={contact}
