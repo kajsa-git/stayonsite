@@ -2,7 +2,8 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Phone } from 'lucide-react';
+import { MessageCircle, Phone, Star } from 'lucide-react';
+import { RATING_VALUE } from '@/data/constants';
 import { motion } from 'framer-motion';
 import HeroIntentForm from '@/components/HeroIntentForm';
 
@@ -52,10 +53,20 @@ const Hero = () => {
           </h1>
           
           <p
-            className="max-w-2xl text-xl md:text-[24px] text-white/80 font-light leading-relaxed mb-12"
+            className="max-w-2xl text-xl md:text-[24px] text-white/80 font-light leading-relaxed mb-6"
           >
             {t('hero.subtitle')}
           </p>
+
+          <div className="flex items-center gap-2 mb-10">
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-[#ff6300] text-[#ff6300]" />
+              ))}
+            </div>
+            <span className="text-sm font-semibold text-white">{RATING_VALUE}</span>
+            <span className="text-sm text-white/50">Google</span>
+          </div>
 
           {/* Premium CTA Area */}
           <motion.div 
