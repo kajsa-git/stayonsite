@@ -37,6 +37,10 @@ import {
 import { getLocalizedKeywords, getLocalizedText } from '@/lib/utils';
 import { AvailableLanguages } from '@/data/translations';
 import HeroIntentForm from '@/components/HeroIntentForm';
+import InquiryForm from '@/components/InquiryForm';
+import StickyContact from '@/components/StickyContact';
+import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
+import { trackPhoneClick } from '@/lib/gtag';
 
 interface CityPageProps {
   citySlug: string;
@@ -245,12 +249,24 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
               </h1>
               
               <p
-                className="text-xl md:text-2xl text-white/80 mb-12 font-light leading-relaxed max-w-3xl"
+                className="text-xl md:text-2xl text-white/80 mb-6 font-light leading-relaxed max-w-3xl"
               >
                 {heroDescription}
               </p>
 
-              <motion.div 
+              <div className="flex items-center gap-3 mb-10 text-white/70 text-sm">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-[#ff6300] text-[#ff6300]" />
+                  ))}
+                </div>
+                <span className="font-semibold text-white">{RATING_VALUE}</span>
+                <span>({REVIEW_COUNT} {translate('recensioner', 'reviews', 'recenzji')})</span>
+                <span className="hidden sm:inline text-white/30">·</span>
+                <span className="hidden sm:inline">{translate('Sedan 2013', 'Since 2013', 'Od 2013')}</span>
+              </div>
+
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
@@ -548,50 +564,17 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
           </section>
         )}
 
-        {/* CTA */}
-        <section id="contact" className="section-spacing bg-white border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <span className="inline-block text-[#ff6300] text-sm uppercase tracking-[0.35em] font-heading">
-                {translate('Nästa steg', 'Next steps', 'Następne kroki')}
-              </span>
-              <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
-                {translate(
-                  `Boka personalboende i ${city.name} – svar inom 24h`,
-                  `Book worker accommodation in ${city.name} – reply within 24h`,
-                  `Zarezerwuj noclegi w ${city.name} – odpowiedź w 24h`
-                )}
-              </h2>
-              <p className="text-gray-600 mt-4 mb-8">
-                {translate(
-                  'Ring oss eller fyll i formuläret så återkommer vi inom 24 timmar med adresser, priser och inflyttningsdatum.',
-                  'Call us or fill in the form and we reply within 24 hours with addresses, budgets and move-in dates.',
-                  'Zadzwoń lub wypełnij formularz – w 24 godziny wracamy z adresami, cenami i terminami wprowadzenia.'
-                )}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="text-lg">
-                  <a href="tel:+46762498486">
-                    <Phone className="mr-2 h-5 w-5" /> +46 73-628 77 09
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="text-lg border-nordic-200 text-nordic-900"
-                >
-                  <Link href="/#inquiry">
-                    {translate('Fyll i förfrågan', 'Send inquiry', 'Wyślij zapytanie')}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Inquiry Form */}
+        <InquiryForm />
       </main>
 
       <Footer />
+      <StickyContact />
+      <MobileStickyFormCTA
+        targetId="inquiry"
+        primaryLabel={translate('Skicka förfrågan', 'Send inquiry', 'Wyślij zapytanie')}
+        phoneLabel={translate('Ring oss', 'Call us', 'Zadzwoń')}
+      />
       <FloatingPhoneButton />
     </div>
   );
