@@ -42,6 +42,48 @@ const ForForetag = () => {
         reviewCount: REVIEW_COUNT,
       },
     },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: t('Vad kostar personalboende?', 'What does worker accommodation cost?', 'Ile kosztuje zakwaterowanie?'),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: t(
+              'Från 6 900 kr per person och månad. Priset beror på stad, antal personer och standard - men alltid betydligt billigare än hotell. Ni får en detaljerad offert anpassad efter era behov.',
+              'From SEK 6,900 per person per month. Price depends on city, number of people and standard - but always significantly cheaper than hotels. You receive a detailed quote tailored to your needs.',
+              'Od 6 900 SEK za osobę miesięcznie. Cena zależy od miasta, liczby osób i standardu - ale zawsze znacznie taniej niż hotel.'
+            ),
+          },
+        },
+        {
+          '@type': 'Question',
+          name: t('Hur snabbt kan ni ordna boende?', 'How quickly can you arrange accommodation?', 'Jak szybko mogą Państwo zorganizować zakwaterowanie?'),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: t(
+              'Vi skickar en boendeplan inom 24 timmar. Vid akuta behov kan vi ofta ordna inflyttning samma vecka.',
+              'We send a housing plan within 24 hours. For urgent needs, we can often arrange move-in the same week.',
+              'Wysyłamy plan zakwaterowania w ciągu 24 godzin. W nagłych przypadkach - wprowadzenie w tym samym tygodniu.'
+            ),
+          },
+        },
+        {
+          '@type': 'Question',
+          name: t('Är boendet möblerat?', 'Is the accommodation furnished?', 'Czy zakwaterowanie jest umeblowane?'),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: t(
+              'Ja, alla boenden är fullt möblerade med sängar, kök, tvättutrustning och internet. Era medarbetare kan flytta in direkt.',
+              'Yes, all accommodations are fully furnished with beds, kitchen, laundry facilities and internet. Your employees can move in directly.',
+              'Tak, wszystkie zakwaterowania są w pełni umeblowane. Pracownicy mogą się wprowadzić od razu.'
+            ),
+          },
+        },
+      ],
+    },
   ];
 
   return (

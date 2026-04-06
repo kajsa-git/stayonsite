@@ -13,6 +13,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Send, Star } from 'lucide-react';
 
 type Lang = 'sv' | 'en' | 'pl';
@@ -289,6 +295,60 @@ const ForForetagHero = () => {
             <TrustStat value="24h" label={t('Svar', 'Reply', 'Odp.')} />
           </div>
         </div>
+
+        {/* FAQ — below fold */}
+        {(() => {
+          const faqItems = [
+            {
+              q: t('Vad kostar personalboende?', 'What does worker accommodation cost?', 'Ile kosztuje zakwaterowanie?'),
+              a: t(
+                'Från 6 900 kr per person och månad. Priset beror på stad, antal personer och standard - men alltid betydligt billigare än hotell. Ni får en detaljerad offert anpassad efter era behov.',
+                'From SEK 6,900 per person per month. Price depends on city, number of people and standard - but always significantly cheaper than hotels. You receive a detailed quote tailored to your needs.',
+                'Od 6 900 SEK za osobę miesięcznie. Cena zależy od miasta, liczby osób i standardu - ale zawsze znacznie taniej niż hotel.'
+              ),
+            },
+            {
+              q: t('Hur snabbt kan ni ordna boende?', 'How quickly can you arrange accommodation?', 'Jak szybko mogą Państwo zorganizować zakwaterowanie?'),
+              a: t(
+                'Vi skickar en boendeplan inom 24 timmar. Vid akuta behov kan vi ofta ordna inflyttning samma vecka.',
+                'We send a housing plan within 24 hours. For urgent needs, we can often arrange move-in the same week.',
+                'Wysyłamy plan zakwaterowania w ciągu 24 godzin. W nagłych przypadkach - wprowadzenie w tym samym tygodniu.'
+              ),
+            },
+            {
+              q: t('Är boendet möblerat?', 'Is the accommodation furnished?', 'Czy zakwaterowanie jest umeblowane?'),
+              a: t(
+                'Ja, alla boenden är fullt möblerade med sängar, kök, tvättutrustning och internet. Era medarbetare kan flytta in direkt.',
+                'Yes, all accommodations are fully furnished with beds, kitchen, laundry facilities and internet. Your employees can move in directly.',
+                'Tak, wszystkie zakwaterowania są w pełni umeblowane. Pracownicy mogą się wprowadzić od razu.'
+              ),
+            },
+          ];
+
+          return (
+            <div className="mt-12 md:mt-16 max-w-2xl mx-auto lg:mx-0">
+              <h2 className="text-lg font-bold text-white/80 mb-4">
+                {t('Vanliga frågor', 'Common questions', 'Najczęstsze pytania')}
+              </h2>
+              <Accordion type="single" collapsible className="space-y-2">
+                {faqItems.map((item, i) => (
+                  <AccordionItem
+                    key={i}
+                    value={`faq-${i}`}
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 overflow-hidden"
+                  >
+                    <AccordionTrigger className="text-sm font-medium text-white/90 hover:text-white py-3 no-underline hover:no-underline">
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm text-white/60 pb-3">
+                      {item.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          );
+        })()}
       </div>
     </section>
   );
