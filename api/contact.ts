@@ -23,19 +23,39 @@ const base = {
 };
 
 const submissionSchema = z.discriminatedUnion('formType', [
-  z.object({ ...base, formType: z.literal('hero-intent'), fields: z.object({
-    ort: z.string().min(2).max(100),
-    antal_personer: z.string().regex(/^\d{1,3}$/),
-    kontakt: z.string().min(3).max(200).refine(isValidContact),
-  })}),
+  // Legacy hero-intent: ort + antal_personer + kontakt (used by Index, CityPage)
+  z.object({ ...base, formType: z.literal('hero-intent'), fields: z.union([
+    z.object({
+      ort: z.string().min(2).max(100),
+      antal_personer: z.string().regex(/^\d{1,3}$/),
+      kontakt: z.string().min(3).max(200).refine(isValidContact),
+    }),
+    // New foretag conversion form: city + people + email + phone
+    z.object({
+      city: z.string().min(2).max(100),
+      people: z.string().regex(/^\d{1,4}$/),
+      email: z.string().min(3).max(200).refine(isValidEmail),
+      phone: z.string().min(6).max(50).refine(isValidPhone),
+    }),
+  ])}),
   z.object({ ...base, formType: z.literal('inquiry'), fields: z.object({
     email: z.string().min(3).max(200).refine(isValidEmail),
     message: z.string().min(10).max(4000),
   })}),
-  z.object({ ...base, formType: z.literal('homeowner'), fields: z.object({
-    phone: z.string().min(6).max(50).refine(isValidPhone),
-    city: z.string().min(2).max(100),
-  })}),
+  // Homeowner: supports both old (phone+city) and new (name+email+phone+bedrooms+postalCode)
+  z.object({ ...base, formType: z.literal('homeowner'), fields: z.union([
+    z.object({
+      phone: z.string().min(6).max(50).refine(isValidPhone),
+      city: z.string().min(2).max(100),
+    }),
+    z.object({
+      name: z.string().min(1).max(200),
+      email: z.string().min(3).max(200).refine(isValidEmail),
+      phone: z.string().min(6).max(50).refine(isValidPhone),
+      bedrooms: z.string().regex(/^\d{1,2}$/),
+      postalCode: z.string().min(3).max(10),
+    }),
+  ])}),
   z.object({ ...base, formType: z.literal('lp-homeowner'), fields: z.object({
     phone: z.string().min(6).max(50).refine(isValidPhone),
     city: z.string().min(2).max(100),
@@ -54,7 +74,12 @@ const FORM_LABELS: Record<string, string> = {
 };
 
 function getSubject(s: Submission): string {
-  if (s.formType === 'hero-intent') return `Snabbförfrågan: ${s.fields.ort} – ${(s.fields as { antal_personer: string }).antal_personer} pers`;
+  if (s.formType === 'hero-intent') {
+    const f = s.fields as Record<string, string>;
+    const city = f.ort || f.city || '';
+    const people = f.antal_personer || f.people || '';
+    return `Snabbförfrågan: ${city} – ${people} pers`;
+  }
   if (s.formType === 'inquiry') return 'Ny förfrågan från StayOnSite';
   if (s.formType === 'lp-homeowner') return 'Ny husägare via Facebook-annons';
   return 'Ny husägare-registrering från StayOnSite';
@@ -98,11 +123,11 @@ function buildEmail(s: Submission, ip?: string, ua?: string) {
 
   // Find customer email for confirmation
   let customerEmail: string | undefined;
-  if (s.formType === 'inquiry') {
-    customerEmail = (s.fields as { email: string }).email;
-  } else if (s.formType === 'hero-intent') {
-    const kontakt = (s.fields as { kontakt: string }).kontakt;
-    if (isValidEmail(kontakt)) customerEmail = kontakt;
+  const f = s.fields as Record<string, string>;
+  if (f.email && isValidEmail(f.email)) {
+    customerEmail = f.email;
+  } else if (s.formType === 'hero-intent' && f.kontakt && isValidEmail(f.kontakt)) {
+    customerEmail = f.kontakt;
   }
 
   return { subject, text, html, replyTo, customerEmail };
