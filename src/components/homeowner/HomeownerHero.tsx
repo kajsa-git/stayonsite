@@ -146,7 +146,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5 }}
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('${heroImage || '/images/hero-main.webp'}')` }}
+        style={{ backgroundImage: `url('${heroImage || '/images/hero-husagare.webp'}')` }}
       />
 
       {/* Overlays */}

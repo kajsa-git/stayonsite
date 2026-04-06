@@ -115,7 +115,7 @@ const ForForetagHero = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5 }}
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/images/hero-main.webp')` }}
+        style={{ backgroundImage: `url('/images/hero-foretag.webp')` }}
       />
 
       {/* Overlays */}
