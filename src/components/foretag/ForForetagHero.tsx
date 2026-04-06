@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
@@ -20,6 +21,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Send, Star } from 'lucide-react';
+import { cities } from '@/data/cities';
 
 type Lang = 'sv' | 'en' | 'pl';
 
@@ -114,9 +116,14 @@ const ForForetagHero = () => {
         initial={{ scale: 1.1, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5 }}
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/images/hero-foretag.webp')` }}
-      />
+        className="absolute inset-0 z-0"
+      >
+        <img
+          src="/images/hero-foretag.webp"
+          alt={t('Möblerat personalboende för företag i Sverige - StayOnSite', 'Furnished worker accommodation for companies in Sweden - StayOnSite', 'Umeblowane zakwaterowanie pracownicze dla firm w Szwecji - StayOnSite')}
+          className="w-full h-full object-cover object-center"
+        />
+      </motion.div>
 
       {/* Overlays */}
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-primary/95 via-primary/60 to-transparent" />
@@ -349,6 +356,24 @@ const ForForetagHero = () => {
             </div>
           );
         })()}
+
+        {/* City links — SEO internal linking */}
+        <div className="mt-10 md:mt-14 max-w-4xl mx-auto lg:mx-0">
+          <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">
+            {t('Personalboende i hela Sverige', 'Worker accommodation across Sweden', 'Zakwaterowanie w całej Szwecji')}
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {cities.slice(0, 16).map((city) => (
+              <Link
+                key={city.slug}
+                href={`/stad/${city.slug}`}
+                className="text-xs text-white/40 hover:text-accent transition-colors"
+              >
+                {city.name}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
@@ -20,6 +21,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Send, Star } from 'lucide-react';
+import { cities } from '@/data/cities';
 import { RATING_VALUE } from '@/data/constants';
 import type { TranslationKey } from '@/data/translations';
 
@@ -145,9 +147,16 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
         initial={{ scale: 1.1, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5 }}
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('${heroImage || '/images/hero-husagare.webp'}')` }}
-      />
+        className="absolute inset-0 z-0"
+      >
+        <img
+          src={heroImage || '/images/hero-husagare.webp'}
+          alt={cityName
+            ? tr(`Hyr ut bostad i ${cityName} till företag via StayOnSite`, `Rent out property in ${cityName} to companies via StayOnSite`, `Wynajmij nieruchomość w ${cityName} firmom przez StayOnSite`)
+            : tr('Hyr ut din bostad till företagshyresgäster via StayOnSite', 'Rent out your property to corporate tenants via StayOnSite', 'Wynajmij nieruchomość najemcom firmowym przez StayOnSite')}
+          className="w-full h-full object-cover object-center"
+        />
+      </motion.div>
 
       {/* Overlays */}
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-primary/95 via-primary/60 to-transparent" />
@@ -390,6 +399,26 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
             ))}
           </Accordion>
         </div>
+
+        {/* City links — SEO internal linking (only on main page) */}
+        {!cityName && (
+          <div className="mt-10 md:mt-14 max-w-4xl mx-auto lg:mx-0">
+            <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">
+              {tr('Hyr ut i din stad', 'Rent out in your city', 'Wynajmij w swoim mieście')}
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {cities.slice(0, 16).map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/for-husagare/${city.slug}`}
+                  className="text-xs text-white/40 hover:text-accent transition-colors"
+                >
+                  {city.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
