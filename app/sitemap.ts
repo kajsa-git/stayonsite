@@ -105,5 +105,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ]
   })
 
-  return [...staticPages, ...blogPages, ...cityPages]
+  const homeownerCityPages: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${BASE}/for-husagare/${city.slug}`,
+    lastModified: today,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
+  return [...staticPages, ...blogPages, ...cityPages, ...homeownerCityPages]
 }
