@@ -23,7 +23,14 @@ import { Send, Star } from 'lucide-react';
 import { RATING_VALUE } from '@/data/constants';
 import type { TranslationKey } from '@/data/translations';
 
-const HomeownerHero = () => {
+interface HomeownerHeroProps {
+  cityName?: string;
+  heroImage?: string;
+  subtitle?: { sv: string; en: string; pl: string };
+  extraFaqItems?: Array<{ q: string; a: string }>;
+}
+
+const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: HomeownerHeroProps = {}) => {
   const { t, language } = useLanguage();
 
   const tr = (sv: string, en: string, pl: string) => {
@@ -32,7 +39,7 @@ const HomeownerHero = () => {
     return sv;
   };
 
-  const faqItems = [
+  const baseFaqItems = [
     {
       q: tr('Kostar det något?', 'Does it cost anything?', 'Czy to coś kosztuje?'),
       a: tr(
@@ -58,6 +65,9 @@ const HomeownerHero = () => {
       ),
     },
   ];
+
+  const faqItems = extraFaqItems ? [...baseFaqItems, ...extraFaqItems] : baseFaqItems;
+
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
@@ -87,13 +97,14 @@ const HomeownerHero = () => {
         formType: 'homeowner',
         locale: language,
         page: window.location.pathname,
-        source: 'homeowner-conversion',
+        source: cityName ? `homeowner-city-${cityName}` : 'homeowner-conversion',
         fields: {
           name: String(formData.get('name') ?? '').trim(),
           email: String(formData.get('email') ?? '').trim(),
           phone: phone.trim(),
           bedrooms: String(formData.get('bedrooms') ?? '').trim(),
           postalCode: String(formData.get('postalCode') ?? '').trim(),
+          ...(cityName ? { city: cityName } : {}),
         },
       });
       setFormSuccess(true);
@@ -135,7 +146,7 @@ const HomeownerHero = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5 }}
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/images/hero-main.webp')` }}
+        style={{ backgroundImage: `url('${heroImage || '/images/hero-main.webp'}')` }}
       />
 
       {/* Overlays */}
@@ -149,11 +160,19 @@ const HomeownerHero = () => {
           <div className="flex-1 mb-3 lg:mb-0">
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
-              {t('homeowner.conversion.title' as TranslationKey)}
+              {cityName
+                ? tr(
+                    `Hyr ut din bostad i ${cityName} till företag`,
+                    `Rent out your property in ${cityName} to companies`,
+                    `Wynajmij nieruchomość w ${cityName} firmom`
+                  )
+                : t('homeowner.conversion.title' as TranslationKey)}
             </h1>
 
             <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-2 md:mb-10">
-              {t('homeowner.conversion.subtitle' as TranslationKey)}
+              {subtitle
+                ? tr(subtitle.sv, subtitle.en, subtitle.pl)
+                : t('homeowner.conversion.subtitle' as TranslationKey)}
             </p>
 
             {/* Trust bar — desktop only (mobile version is below form) */}
