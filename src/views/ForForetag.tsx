@@ -334,7 +334,7 @@ const ForForetag = () => {
               <span className="text-white/80 font-medium">{RATING_VALUE}</span>
               <span>({REVIEW_COUNT} {t('omdömen', 'reviews', 'opinii')})</span>
               <span className="mx-1">&middot;</span>
-              <span>{t('Sedan 2013', 'Since 2013', 'Od 2013')}</span>
+              <span>{t('Sedan 2016', 'Since 2016', 'Od 2016')}</span>
             </div>
           </div>
         </section>

@@ -58,7 +58,7 @@ const CorporateHousingSweden = () => {
     },
     {
       question: "What's included in the price?",
-      answer: "Everything. All-inclusive pricing covers fully furnished apartments, utilities (electricity, water, heating), high-speed internet, weekly cleaning, bed linens, kitchen equipment, and a dedicated contact person. No hidden fees, no broker commissions. We have arranged over 500 all-inclusive accommodations since 2013 with a 4.9/5 customer rating."
+      answer: "Everything. All-inclusive pricing covers fully furnished apartments, utilities (electricity, water, heating), high-speed internet, weekly cleaning, bed linens, kitchen equipment, and a dedicated contact person. No hidden fees, no broker commissions. We have arranged over 500 all-inclusive accommodations since 2016 with a 4.9/5 customer rating."
     },
     {
       question: "How quickly can you arrange accommodation?",

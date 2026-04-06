@@ -263,7 +263,7 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
                 <span className="font-semibold text-white">{RATING_VALUE}</span>
                 <span>({REVIEW_COUNT} {translate('recensioner', 'reviews', 'recenzji')})</span>
                 <span className="hidden sm:inline text-white/30">·</span>
-                <span className="hidden sm:inline">{translate('Sedan 2013', 'Since 2013', 'Od 2013')}</span>
+                <span className="hidden sm:inline">{translate('Sedan 2016', 'Since 2016', 'Od 2016')}</span>
               </div>
 
               <motion.div

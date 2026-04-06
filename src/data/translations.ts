@@ -526,7 +526,7 @@ export const translations: Record<
       "Ni får en tydlig all-inclusive-offert. Priset beror på antal personer, ort och typ av boende (delat eller enskilt). Allt ingår: hyra, el, internet, städning och sänglinne. Inga dolda avgifter. Våra kunder sparar i snitt 20–30 % jämfört med hotellboende för samma period.",
     "faq.question4": "Är boendet möblerat?",
     "faq.answer4":
-      "Ja, alltid fullt möblerat och inflyttningsklart. Varje boende har säng, kök, badrum, tvättmaskin, Wi-Fi och arbetsyta. Vi har möblerat över 500 boenden sedan 2013 och anpassar vid behov – exempelvis extra sängar, kontorsstolar eller parkeringsplatser för servicefordon.",
+      "Ja, alltid fullt möblerat och inflyttningsklart. Varje boende har säng, kök, badrum, tvättmaskin, Wi-Fi och arbetsyta. Vi har möblerat över 500 boenden sedan 2016 och anpassar vid behov – exempelvis extra sängar, kontorsstolar eller parkeringsplatser för servicefordon.",
     "faq.question5": "Kan vi göra ändringar i bokningen efter bekräftelse?",
     "faq.answer5":
       "Ja, vi är vana vid ändrade tidsplaner. Byggsektorn är flexibel till sin natur – Byggföretagens konjunkturrapport visar att 4 av 5 projekt ändrar bemanning under projektets gång. Vi hanterar tillägg, minskningar och omdisponeringar löpande utan extra avgifter.",
@@ -565,7 +565,7 @@ export const translations: Record<
 
     "why.title": "Varför StayOnSite",
     "why.subtitle":
-      "500+ ordnade boenden sedan 2013. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 4,9 av 5.",
+      "500+ ordnade boenden sedan 2016. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 4,9 av 5.",
     "why.steps.plan.title": "Planering & förslag",
     "why.steps.plan.description":
       "Boendeförslag inom 24 timmar – ofta inom 3 timmar. Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar i vårt nätverk av 40+ städer och svarar med färdiga alternativ inklusive adress, planritning och pris.",
@@ -995,7 +995,7 @@ export const translations: Record<
       "You get a clear all-inclusive quote. Price depends on number of people, location, and accommodation type (shared or individual). Everything is included: rent, electricity, internet, cleaning, and bed linen. No hidden fees. Our clients typically save 20–30% compared to hotel accommodation for the same period.",
     "faq.question4": "Is the accommodation furnished?",
     "faq.answer4":
-      "Yes, always fully furnished and move-in ready. Every accommodation has beds, kitchen, bathroom, washing machine, Wi-Fi, and workspace. We have furnished over 500 accommodations since 2013 and customize when needed – for example extra beds, office chairs, or parking for service vehicles.",
+      "Yes, always fully furnished and move-in ready. Every accommodation has beds, kitchen, bathroom, washing machine, Wi-Fi, and workspace. We have furnished over 500 accommodations since 2016 and customize when needed – for example extra beds, office chairs, or parking for service vehicles.",
     "faq.question5": "Can we make changes to the booking after confirmation?",
     "faq.answer5":
       "Yes, we are used to changing schedules. The construction sector is flexible by nature – Byggföretagen's economic report shows that 4 out of 5 projects change staffing during the project cycle. We handle additions, reductions, and reallocations continuously without extra fees.",
@@ -1035,7 +1035,7 @@ export const translations: Record<
 
     "why.title": "Why StayOnSite",
     "why.subtitle":
-      "500+ accommodations arranged since 2013. We handle planning, contracts, and operations so you stay on schedule. 4.9 out of 5 customer rating.",
+      "500+ accommodations arranged since 2016. We handle planning, contracts, and operations so you stay on schedule. 4.9 out of 5 customer rating.",
     "why.steps.plan.title": "Planning & proposals",
     "why.steps.plan.description":
       "Housing proposals within 24 hours – often within 3 hours. Send your inquiry via form, email, or WhatsApp. We map local landlords across our 40+ city network and respond with ready options including address, floor plan, and pricing.",
@@ -1467,7 +1467,7 @@ export const translations: Record<
       "Otrzymujecie jasną ofertę all-inclusive. Cena zależy od liczby osób, lokalizacji i typu zakwaterowania. Wszystko w cenie: czynsz, prąd, internet, sprzątanie i pościel. Bez ukrytych kosztów. Nasi klienci oszczędzają średnio 20–30% w porównaniu z zakwaterowaniem hotelowym.",
     "faq.question4": "Czy zakwaterowanie jest umeblowane?",
     "faq.answer4":
-      "Tak, zawsze w pełni umeblowane i gotowe do zamieszkania. Każde zakwaterowanie posiada łóżka, kuchnię, łazienkę, pralkę, Wi-Fi i miejsce do pracy. Od 2013 roku wyposażyliśmy ponad 500 zakwaterowań i dostosowujemy się do potrzeb – dodatkowe łóżka, krzesła biurowe czy parkingi dla pojazdów służbowych.",
+      "Tak, zawsze w pełni umeblowane i gotowe do zamieszkania. Każde zakwaterowanie posiada łóżka, kuchnię, łazienkę, pralkę, Wi-Fi i miejsce do pracy. Od 2016 roku wyposażyliśmy ponad 500 zakwaterowań i dostosowujemy się do potrzeb – dodatkowe łóżka, krzesła biurowe czy parkingi dla pojazdów służbowych.",
     "faq.question5":
       "Czy możemy wprowadzać zmiany w rezerwacji po jej potwierdzeniu?",
     "faq.answer5":

@@ -53,7 +53,7 @@ const Index = () => {
       '@type': 'Person',
       'name': 'Kajsa Lindwall'
     },
-    'foundingDate': '2013',
+    'foundingDate': '2016',
     'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',
