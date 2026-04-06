@@ -89,7 +89,7 @@ const HomeownerHero = () => {
     'text-[10px] font-bold uppercase tracking-widest text-white/50 ml-1';
 
   return (
-    <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-20 pb-12 md:pt-28 md:pb-16 bg-primary">
+    <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-16 pb-8 md:pt-28 md:pb-16 bg-primary">
       {/* Background image */}
       <motion.div
         initial={{ scale: 1.1, opacity: 0 }}
@@ -112,17 +112,17 @@ const HomeownerHero = () => {
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-block rounded-full border border-accent/20 bg-accent/10 px-5 py-2 text-sm font-semibold text-accent mb-6"
+              className="inline-block rounded-full border border-accent/20 bg-accent/10 px-5 py-2 text-sm font-semibold text-accent mb-4 md:mb-6"
             >
               {t('homeowner.conversion.badge' as TranslationKey)}
             </motion.span>
 
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
-            <h1 className="font-display text-4xl sm:text-5xl md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white drop-shadow-2xl mb-6">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white drop-shadow-2xl mb-3 md:mb-6">
               {t('homeowner.conversion.title' as TranslationKey)}
             </h1>
 
-            <p className="max-w-xl text-lg md:text-xl text-white/70 font-light leading-relaxed mb-10">
+            <p className="max-w-xl text-base md:text-xl text-white/70 font-light leading-relaxed mb-6 md:mb-10">
               {t('homeowner.conversion.subtitle' as TranslationKey)}
             </p>
 
@@ -154,7 +154,7 @@ const HomeownerHero = () => {
             transition={{ delay: 0.3 }}
             className="w-full lg:w-[440px] lg:flex-shrink-0"
           >
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[20px] p-6 md:p-8 shadow-2xl">
+            <div className="bg-white/[0.15] backdrop-blur-xl border border-white/25 rounded-[20px] p-6 md:p-8 shadow-2xl">
               {formSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center py-8">
                   <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
