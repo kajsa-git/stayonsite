@@ -243,7 +243,43 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['bolåneregler', 'fastighetsägare', 'investering', 'personalboende'],
     readingTime: 7,
-  }
+  },
+  {
+    slug: 'sa-fungerar-det-fran-intresse-till-forsta-hyran',
+    title: {
+      sv: 'Så fungerar det: Från intresseanmälan till första hyran',
+      en: 'How It Works: From Sign-Up to Your First Rent Payment',
+      pl: 'Jak to działa: Od zgłoszenia do pierwszego czynszu',
+    },
+    description: {
+      sv: 'Steg för steg genom processen att hyra ut ditt hus till företag via StayOnSite. Från anmälan till att pengarna landar på kontot.',
+      en: 'Step by step through the process of renting out your property to companies via StayOnSite.',
+      pl: 'Krok po kroku przez proces wynajmu nieruchomości firmom przez StayOnSite.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-06',
+    category: 'Guide',
+    tags: ['husägare', 'uthyrning', 'process', 'onboarding', 'garanterad hyra'],
+    readingTime: 6,
+  },
+  {
+    slug: 'hyra-ut-jamforelse-stayonsite-vs-andra-2026',
+    title: {
+      sv: 'Hyra ut hus till företag: StayOnSite vs egen uthyrning vs andra plattformar',
+      en: 'Renting Out Your Property: StayOnSite vs DIY vs Other Platforms',
+      pl: 'Wynajem nieruchomości: StayOnSite vs samodzielny wynajem vs inne platformy',
+    },
+    description: {
+      sv: 'Jämförelse av alternativ för husägare som vill hyra ut till företag. Avgifter, garantier och trygghet - så skiljer sig StayOnSite från Samtrygg, Qasa och egen uthyrning.',
+      en: 'Comparison of options for homeowners renting to companies. Fees, guarantees and security - how StayOnSite differs from other platforms.',
+      pl: 'Porównanie opcji dla właścicieli wynajmujących firmom. Opłaty, gwarancje i bezpieczeństwo.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-06',
+    category: 'Guide',
+    tags: ['husägare', 'uthyrning', 'jämförelse', 'samtrygg', 'qasa', 'företagsboende'],
+    readingTime: 7,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
