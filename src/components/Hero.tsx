@@ -26,7 +26,7 @@ const Hero = () => {
         className="absolute inset-0 z-0"
       >
         <img
-          src="/images/hero-main.webp"
+          src="/images/hero-home.webp"
           alt="Möblerat personalboende för byggarbetare i Sverige – StayOnSite"
           {...{ fetchpriority: 'high' } as any}
           className="w-full h-full object-cover object-center"
