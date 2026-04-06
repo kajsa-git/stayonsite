@@ -107,22 +107,13 @@ const HomeownerHero = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14 max-w-6xl mx-auto">
           {/* Left: copy + trust bar (desktop) */}
-          <div className="flex-1 mb-8 lg:mb-0">
-            {/* Badge */}
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-block rounded-full border border-accent/20 bg-accent/10 px-5 py-2 text-sm font-semibold text-accent mb-4 md:mb-6"
-            >
-              {t('homeowner.conversion.badge' as TranslationKey)}
-            </motion.span>
-
+          <div className="flex-1 mb-6 lg:mb-0">
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
-            <h1 className="font-display text-3xl sm:text-4xl md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white drop-shadow-2xl mb-3 md:mb-6">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {t('homeowner.conversion.title' as TranslationKey)}
             </h1>
 
-            <p className="max-w-xl text-base md:text-xl text-white/70 font-light leading-relaxed mb-6 md:mb-10">
+            <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-4 md:mb-10">
               {t('homeowner.conversion.subtitle' as TranslationKey)}
             </p>
 
@@ -154,7 +145,7 @@ const HomeownerHero = () => {
             transition={{ delay: 0.3 }}
             className="w-full lg:w-[440px] lg:flex-shrink-0"
           >
-            <div className="bg-white/[0.15] backdrop-blur-xl border border-white/25 rounded-[20px] p-6 md:p-8 shadow-2xl">
+            <div className="bg-white/[0.15] backdrop-blur-xl border border-white/25 rounded-[20px] p-5 md:p-8 shadow-2xl">
               {formSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center py-8">
                   <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
@@ -174,11 +165,11 @@ const HomeownerHero = () => {
                   <h2 className="text-lg md:text-xl font-bold text-white mb-1">
                     {t('homeowner.conversion.formTitle' as TranslationKey)}
                   </h2>
-                  <p className="text-sm text-white/50 mb-6">
+                  <p className="text-sm text-white/50 mb-4">
                     {t('homeowner.conversion.formSubtitle' as TranslationKey)}
                   </p>
 
-                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                     {/* Name */}
                     <div className="space-y-1.5">
                       <Label htmlFor="ho-name" className={labelClass}>
