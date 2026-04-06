@@ -782,8 +782,8 @@ export const translations: Record<
     "homeowner.form.disclaimer": "eller ring oss direkt",
 
     "homeowner.conversion.badge": "0% avgift. Alltid.",
-    "homeowner.conversion.title": "Registrera din bostad",
-    "homeowner.conversion.subtitle": "Företagshyresgäster som betalar i förskott. Vi sköter kontraktet, tillstånden och kontakten - du får pengarna på kontot.",
+    "homeowner.conversion.title": "Låt oss bedöma din bostad",
+    "homeowner.conversion.subtitle": "Vi kontaktar dig personligen för en första genomgång och berättar mer om potentialen med företagsuthyrning.",
     "homeowner.conversion.formTitle": "Få förslag på hur mycket ditt boende kan ge",
     "homeowner.conversion.formSubtitle": "Vi återkommer inom 24 timmar",
     "homeowner.conversion.cta": "Få ett hyreserbjudande",
@@ -1253,8 +1253,8 @@ export const translations: Record<
     "homeowner.form.disclaimer": "or call us directly",
 
     "homeowner.conversion.badge": "0% fee. Always.",
-    "homeowner.conversion.title": "Register your property",
-    "homeowner.conversion.subtitle": "Corporate tenants who pay in advance. We handle contracts, permits and communication - you get the money in your account.",
+    "homeowner.conversion.title": "Let us assess your property",
+    "homeowner.conversion.subtitle": "We'll contact you personally for an initial review and tell you more about the potential of corporate rental.",
     "homeowner.conversion.formTitle": "Get an estimate of what your property can earn",
     "homeowner.conversion.formSubtitle": "We'll get back to you within 24 hours",
     "homeowner.conversion.cta": "Get a rental offer",
@@ -1728,8 +1728,8 @@ export const translations: Record<
     "homeowner.form.disclaimer": "lub zadzwoń bezpośrednio",
 
     "homeowner.conversion.badge": "0% prowizji. Zawsze.",
-    "homeowner.conversion.title": "Zarejestruj swoją nieruchomość",
-    "homeowner.conversion.subtitle": "Najemcy firmowi, którzy płacą z góry. Zajmujemy się umowami, pozwoleniami i komunikacją - Ty dostajesz pieniądze na konto.",
+    "homeowner.conversion.title": "Pozwól nam ocenić Twoją nieruchomość",
+    "homeowner.conversion.subtitle": "Skontaktujemy się z Tobą osobiście, aby omówić potencjał wynajmu firmowego.",
     "homeowner.conversion.formTitle": "Sprawdź, ile może zarobić Twoja nieruchomość",
     "homeowner.conversion.formSubtitle": "Skontaktujemy się w ciągu 24 godzin",
     "homeowner.conversion.cta": "Otrzymaj ofertę najmu",
