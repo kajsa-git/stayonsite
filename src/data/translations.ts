@@ -315,6 +315,28 @@ export type TranslationKey =
   | "homeowner.form.success"
   | "homeowner.form.error"
   | "homeowner.form.disclaimer"
+  | "homeowner.conversion.badge"
+  | "homeowner.conversion.title"
+  | "homeowner.conversion.subtitle"
+  | "homeowner.conversion.formTitle"
+  | "homeowner.conversion.formSubtitle"
+  | "homeowner.conversion.cta"
+  | "homeowner.conversion.name"
+  | "homeowner.conversion.namePlaceholder"
+  | "homeowner.conversion.email"
+  | "homeowner.conversion.emailPlaceholder"
+  | "homeowner.conversion.bedrooms"
+  | "homeowner.conversion.bedroomsPlaceholder"
+  | "homeowner.conversion.postalCode"
+  | "homeowner.conversion.postalCodePlaceholder"
+  | "homeowner.conversion.trustFee"
+  | "homeowner.conversion.trustFeeLabel"
+  | "homeowner.conversion.trustGoogle"
+  | "homeowner.conversion.trustGoogleLabel"
+  | "homeowner.conversion.trustResponse"
+  | "homeowner.conversion.trustResponseLabel"
+  | "homeowner.conversion.successTitle"
+  | "homeowner.conversion.successText"
   | "references.stats.happyClients"
   | "references.stats.accommodations"
   | "references.stats.responseTime"
@@ -758,6 +780,29 @@ export const translations: Record<
     "homeowner.form.error":
       "Det uppstod ett fel. Försök igen eller ring oss direkt.",
     "homeowner.form.disclaimer": "eller ring oss direkt",
+
+    "homeowner.conversion.badge": "0% avgift. Alltid.",
+    "homeowner.conversion.title": "Fast månadshyra. Utan avdrag.",
+    "homeowner.conversion.subtitle": "Företagshyresgäster som betalar i förskott. Vi sköter kontraktet, tillstånden och kontakten - du får pengarna på kontot.",
+    "homeowner.conversion.formTitle": "Hur mycket kan ditt hus ge?",
+    "homeowner.conversion.formSubtitle": "Vi återkommer med besked inom 24 timmar",
+    "homeowner.conversion.cta": "Få ett hyreserbjudande",
+    "homeowner.conversion.name": "Namn",
+    "homeowner.conversion.namePlaceholder": "Ditt namn",
+    "homeowner.conversion.email": "E-post",
+    "homeowner.conversion.emailPlaceholder": "din@epost.se",
+    "homeowner.conversion.bedrooms": "Sovrum",
+    "homeowner.conversion.bedroomsPlaceholder": "3",
+    "homeowner.conversion.postalCode": "Postnummer",
+    "homeowner.conversion.postalCodePlaceholder": "123 45",
+    "homeowner.conversion.trustFee": "0%",
+    "homeowner.conversion.trustFeeLabel": "Avgift alltid",
+    "homeowner.conversion.trustGoogle": "5.0",
+    "homeowner.conversion.trustGoogleLabel": "Google Reviews",
+    "homeowner.conversion.trustResponse": "24h",
+    "homeowner.conversion.trustResponseLabel": "Svarstid",
+    "homeowner.conversion.successTitle": "Tack!",
+    "homeowner.conversion.successText": "Vi återkommer inom 24 timmar med ett hyreserbjudande.",
 
     "brand.nollavgift.name": "Nollavgiftsmodellen",
     "brand.nollavgift.tagline": "0 % avgift. 100 % av hyran till dig.",
@@ -1206,6 +1251,29 @@ export const translations: Record<
     "homeowner.form.error":
       "An error occurred. Please try again or call us directly.",
     "homeowner.form.disclaimer": "or call us directly",
+
+    "homeowner.conversion.badge": "0% fee. Always.",
+    "homeowner.conversion.title": "Fixed monthly rent. No deductions.",
+    "homeowner.conversion.subtitle": "Corporate tenants who pay in advance. We handle contracts, permits and communication - you get the money in your account.",
+    "homeowner.conversion.formTitle": "How much can your property earn?",
+    "homeowner.conversion.formSubtitle": "We'll get back to you within 24 hours",
+    "homeowner.conversion.cta": "Get a rental offer",
+    "homeowner.conversion.name": "Name",
+    "homeowner.conversion.namePlaceholder": "Your name",
+    "homeowner.conversion.email": "Email",
+    "homeowner.conversion.emailPlaceholder": "your@email.com",
+    "homeowner.conversion.bedrooms": "Bedrooms",
+    "homeowner.conversion.bedroomsPlaceholder": "3",
+    "homeowner.conversion.postalCode": "Postal code",
+    "homeowner.conversion.postalCodePlaceholder": "123 45",
+    "homeowner.conversion.trustFee": "0%",
+    "homeowner.conversion.trustFeeLabel": "Fee always",
+    "homeowner.conversion.trustGoogle": "5.0",
+    "homeowner.conversion.trustGoogleLabel": "Google Reviews",
+    "homeowner.conversion.trustResponse": "24h",
+    "homeowner.conversion.trustResponseLabel": "Response time",
+    "homeowner.conversion.successTitle": "Thank you!",
+    "homeowner.conversion.successText": "We'll get back to you within 24 hours with a rental offer.",
 
     "brand.nollavgift.name": "The Zero-Fee Model",
     "brand.nollavgift.tagline": "0% fees. 100% of the rent goes to you.",
@@ -1658,6 +1726,29 @@ export const translations: Record<
     "homeowner.form.error":
       "Wystąpił błąd. Spróbuj ponownie lub zadzwoń do nas bezpośrednio.",
     "homeowner.form.disclaimer": "lub zadzwoń bezpośrednio",
+
+    "homeowner.conversion.badge": "0% prowizji. Zawsze.",
+    "homeowner.conversion.title": "Stały czynsz miesięczny. Bez potrąceń.",
+    "homeowner.conversion.subtitle": "Najemcy firmowi, którzy płacą z góry. Zajmujemy się umowami, pozwoleniami i komunikacją - Ty dostajesz pieniądze na konto.",
+    "homeowner.conversion.formTitle": "Ile może zarobić Twoja nieruchomość?",
+    "homeowner.conversion.formSubtitle": "Skontaktujemy się w ciągu 24 godzin",
+    "homeowner.conversion.cta": "Otrzymaj ofertę najmu",
+    "homeowner.conversion.name": "Imię",
+    "homeowner.conversion.namePlaceholder": "Twoje imię",
+    "homeowner.conversion.email": "E-mail",
+    "homeowner.conversion.emailPlaceholder": "twoj@email.pl",
+    "homeowner.conversion.bedrooms": "Sypialnie",
+    "homeowner.conversion.bedroomsPlaceholder": "3",
+    "homeowner.conversion.postalCode": "Kod pocztowy",
+    "homeowner.conversion.postalCodePlaceholder": "123 45",
+    "homeowner.conversion.trustFee": "0%",
+    "homeowner.conversion.trustFeeLabel": "Prowizja zawsze",
+    "homeowner.conversion.trustGoogle": "5.0",
+    "homeowner.conversion.trustGoogleLabel": "Google Reviews",
+    "homeowner.conversion.trustResponse": "24h",
+    "homeowner.conversion.trustResponseLabel": "Czas odpowiedzi",
+    "homeowner.conversion.successTitle": "Dziękujemy!",
+    "homeowner.conversion.successText": "Skontaktujemy się w ciągu 24 godzin z ofertą najmu.",
 
     "brand.nollavgift.name": "Model Zero-Opłat",
     "brand.nollavgift.tagline": "0% opłat. 100% czynszu dla Ciebie.",
