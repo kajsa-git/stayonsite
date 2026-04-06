@@ -280,6 +280,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['husägare', 'uthyrning', 'jämförelse', 'samtrygg', 'qasa', 'företagsboende'],
     readingTime: 7,
   },
+  {
+    slug: 'personalboende-vanliga-fragor-byggforetag',
+    title: {
+      sv: 'Personalboende: 8 vanliga frågor från byggföretag',
+      en: 'Worker Accommodation: 8 Common Questions from Construction Companies',
+      pl: 'Zakwaterowanie pracownicze: 8 najczęstszych pytań firm budowlanych',
+    },
+    description: {
+      sv: 'Svar på de vanligaste frågorna om personalboende - pris, leveranstid, fakturering, ramavtal och vad som ingår.',
+      en: 'Answers to the most common questions about worker accommodation - pricing, delivery time, invoicing, framework agreements.',
+      pl: 'Odpowiedzi na najczęstsze pytania o zakwaterowanie pracownicze - ceny, czas realizacji, fakturowanie.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-06',
+    category: 'Guide',
+    tags: ['personalboende', 'byggföretag', 'FAQ', 'fakturering', 'ramavtal'],
+    readingTime: 6,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

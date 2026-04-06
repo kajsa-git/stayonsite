@@ -18,6 +18,7 @@ import BlockhyraForetagsbostaderRegler2026 from '@/views/blogg/BlockhyraForetags
 import NewMortgageRulesGuide2026 from '@/views/blogg/NewMortgageRulesGuide2026'
 import SaFungerarDetHusagare2026 from '@/views/blogg/SaFungerarDetHusagare2026'
 import HyraUtJamforelse2026 from '@/views/blogg/HyraUtJamforelse2026'
+import PersonalboendeVanligaFragor2026 from '@/views/blogg/PersonalboendeVanligaFragor2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -31,6 +32,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'regional-bostadsanalys-2026-var-finns-boende-montorer': RegionalBostadsanalys2026,  'infrastrukturkontrakt-personalboende-checklista-2026': InfrastrukturKontraktPersonalBoendeChecklista2026,  'kompetens-rekrytering-byggsektorn-guide-2026': KompetensRekryteringByggsektornGuide2026,  'blockhyra-foretagsbostader-nya-regler-juli-2026': BlockhyraForetagsbostaderRegler2026,  'nya-bolaneregler-april-2026-personalboende-guide': NewMortgageRulesGuide2026,
   'sa-fungerar-det-fran-intresse-till-forsta-hyran': SaFungerarDetHusagare2026,
   'hyra-ut-jamforelse-stayonsite-vs-andra-2026': HyraUtJamforelse2026,
+  'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
 }
 
 export function generateStaticParams() {
