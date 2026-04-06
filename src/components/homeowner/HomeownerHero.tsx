@@ -109,7 +109,7 @@ const HomeownerHero = () => {
           {/* Left: copy + trust bar (desktop) */}
           <div className="flex-1 mb-6 lg:mb-0">
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
-            <h1 className="font-display text-3xl sm:text-4xl md:text-[64px] lg:text-[72px] font-bold leading-[1.08] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {t('homeowner.conversion.title' as TranslationKey)}
             </h1>
 
