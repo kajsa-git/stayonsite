@@ -13,12 +13,51 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Send, Star } from 'lucide-react';
 import { RATING_VALUE } from '@/data/constants';
 import type { TranslationKey } from '@/data/translations';
 
 const HomeownerHero = () => {
   const { t, language } = useLanguage();
+
+  const tr = (sv: string, en: string, pl: string) => {
+    if (language === 'en') return en;
+    if (language === 'pl') return pl;
+    return sv;
+  };
+
+  const faqItems = [
+    {
+      q: tr('Kostar det något?', 'Does it cost anything?', 'Czy to coś kosztuje?'),
+      a: tr(
+        'Nej. Du betalar ingenting till oss. Vi hyr din bostad till ett fast belopp varje månad - utan avdrag. Vi tjänar på prisskillnaden gentemot företagskunden.',
+        'No. You pay nothing to us. We rent your property at a fixed amount every month - no deductions. We earn from the price difference with the corporate client.',
+        'Nie. Nie płacisz nam nic. Wynajmujemy Twoją nieruchomość za stałą kwotę co miesiąc - bez potrąceń.'
+      ),
+    },
+    {
+      q: tr('Vilka bor i mitt hus?', 'Who lives in my house?', 'Kto mieszka w moim domu?'),
+      a: tr(
+        'Professionella företagshyresgäster - montörer, ingenjörer och projektteam som arbetar tillfälligt i området. Aldrig privatpersoner.',
+        'Professional corporate tenants - installers, engineers and project teams working temporarily in the area. Never private individuals.',
+        'Profesjonalni najemcy firmowi - monterzy, inżynierowie i zespoły projektowe.'
+      ),
+    },
+    {
+      q: tr('Hur lång är avtalstiden?', 'How long is the contract?', 'Jak długi jest kontrakt?'),
+      a: tr(
+        'Minst 3 månader, men de flesta samarbeten löper längre. Du kan säga upp med 1 månads uppsägningstid.',
+        "Minimum 3 months, but most partnerships run longer. You can cancel with 1 month's notice.",
+        'Minimum 3 miesiące. Możesz wypowiedzieć z 1-miesięcznym wypowiedzeniem.'
+      ),
+    },
+  ];
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
@@ -308,6 +347,29 @@ const HomeownerHero = () => {
               label={t('homeowner.conversion.trustResponseLabel' as TranslationKey)}
             />
           </div>
+        </div>
+
+        {/* FAQ — below fold */}
+        <div className="mt-12 md:mt-16 max-w-2xl mx-auto lg:mx-0">
+          <h2 className="text-lg font-bold text-white/80 mb-4">
+            {tr('Vanliga frågor', 'Common questions', 'Najczęstsze pytania')}
+          </h2>
+          <Accordion type="single" collapsible className="space-y-2">
+            {faqItems.map((item, i) => (
+              <AccordionItem
+                key={i}
+                value={`faq-${i}`}
+                className="bg-white/5 border border-white/10 rounded-xl px-4 overflow-hidden"
+              >
+                <AccordionTrigger className="text-sm font-medium text-white/90 hover:text-white py-3 no-underline hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-white/60 pb-3">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </div>
     </section>
