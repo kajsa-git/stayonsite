@@ -107,13 +107,13 @@ const HomeownerHero = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14 max-w-6xl mx-auto">
           {/* Left: copy + trust bar (desktop) */}
-          <div className="flex-1 mb-6 lg:mb-0">
+          <div className="flex-1 mb-3 lg:mb-0">
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {t('homeowner.conversion.title' as TranslationKey)}
             </h1>
 
-            <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-4 md:mb-10">
+            <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-2 md:mb-10">
               {t('homeowner.conversion.subtitle' as TranslationKey)}
             </p>
 
