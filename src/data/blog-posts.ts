@@ -298,6 +298,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['personalboende', 'byggföretag', 'FAQ', 'fakturering', 'ramavtal'],
     readingTime: 6,
   },
+  {
+    slug: 'personalboende-vs-hotell-kostnad-jamforelse',
+    title: {
+      sv: 'Personalboende vs hotell: Vad kostar det egentligen?',
+      en: 'Worker Accommodation vs Hotel: What Does It Actually Cost?',
+      pl: 'Zakwaterowanie pracownicze vs hotel: Ile to naprawdę kosztuje?',
+    },
+    description: {
+      sv: 'Jämförelse av kostnader för personalboende, hotell, Airbnb och egen hantering. Konkreta siffror och räkneexempel för byggföretag.',
+      en: 'Cost comparison of worker accommodation, hotels, Airbnb and self-managed housing. Concrete figures for construction companies.',
+      pl: 'Porównanie kosztów zakwaterowania pracowniczego, hoteli, Airbnb i samodzielnego zarządzania.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-06',
+    category: 'Guide',
+    tags: ['personalboende', 'hotell', 'kostnadsjämförelse', 'byggföretag', 'budget'],
+    readingTime: 7,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
