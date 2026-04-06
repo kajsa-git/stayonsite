@@ -33,8 +33,8 @@ const SaFungerarDetHusagare2026 = () => {
 
       <p>
         Till skillnad från plattformar som Samtrygg (15 % avgift) och Qasa (4,95 %) tar
-        StayOnSite <strong>0 procent i avgift av husägaren</strong>. Det du avtalar om är
-        det du får.
+        StayOnSite <strong>0 procent i avgift av husägaren</strong>. Det vi kommer överens
+        om får du alltid helt utan avdrag.
       </p>
 
       <h2>De fem stegen - från intresse till hyra</h2>
@@ -56,17 +56,17 @@ const SaFungerarDetHusagare2026 = () => {
       <h3>Steg 2: Vi ringer dig</h3>
 
       <p>
-        Inom 24 timmar på vardagar ringer vi upp. Det är ett kort samtal - vanligtvis
-        10 till 20 minuter - där vi ställer några frågor om bostaden och berättar vad
-        vi kan erbjuda.
+        Inom 24 timmar på vardagar ringer Kajsa, som ansvarar för uthyrningarna, upp dig.
+        Det är ett kort samtal - ofta inte mer än 10 minuter - där vi ställer några
+        frågor om bostaden och berättar vad vi kan erbjuda.
       </p>
 
       <p>Vi vill veta:</p>
 
       <ul>
         <li>Bostadens storlek och antal sovrum</li>
-        <li>Läge och avstånd till arbetsplatser i närheten</li>
-        <li>Möblerad eller omöblerad</li>
+        <li>Adress - så vi kan bedöma läge och avstånd till arbetsplatser</li>
+        <li>Om bostaden är komplett möblerad (sängar, kök, tvättutrustning, internet) och vad som eventuellt saknas</li>
         <li>Dina förväntningar på hyra och avtalstid</li>
       </ul>
 
@@ -79,9 +79,9 @@ const SaFungerarDetHusagare2026 = () => {
       <h3>Steg 3: Besiktning och avtal</h3>
 
       <p>
-        Om telefontalet pekar mot ett samarbete bokar vi en besiktning av bostaden. En
-        representant från StayOnSite kommer hem till dig, går igenom bostaden och
-        fotograferar den.
+        Om samtalet pekar mot ett samarbete bokar vi en besiktning av bostaden. Antingen
+        kommer vi hem till dig, eller så kan besiktningen ske via video om det är
+        smidigare. Vi går igenom bostaden och dokumenterar med foton eller video.
       </p>
 
       <p>Besiktningen fyller tre syften:</p>
@@ -195,9 +195,9 @@ const SaFungerarDetHusagare2026 = () => {
 
       <h3>Måste jag vara tillgänglig under uthyrningsperioden?</h3>
       <p>
-        Nej. Det är en av poängerna med att hyra ut via StayOnSite. Du behöver inte vara
-        tillgänglig för felanmälningar, nyckelbyten eller löpande frågor. Allt det sköter
-        vi. Många husägare hos oss bor utomlands eller har ett annat boende under perioden.
+        Ja, om det inte avtalas om annat. Du behöver inte hantera felanmälningar,
+        nyckelbyten eller löpande frågor - det sköter vi. Men vi behöver kunna nå dig
+        vid behov, exempelvis om något behöver åtgärdas i bostaden.
       </p>
 
       <h3>Vad händer om bostaden skadas?</h3>
@@ -215,12 +215,17 @@ const SaFungerarDetHusagare2026 = () => {
         och vi diskuterar detta öppet under avtalsprocessen.
       </p>
 
-      <h3>Behöver jag informera min bank eller försäkringsbolag?</h3>
+      <h3>Behöver jag informera min bank?</h3>
       <p>
-        Ja. Om du har bolån bör du informera din bank om att bostaden hyrs ut. Ditt
-        försäkringsbolag bör också informeras så att du har rätt försäkringsskydd under
-        uthyrningsperioden. Vi rekommenderar att du hör av dig till dem innan avtalet
-        tecknas.
+        Nej, du behöver inte informera din bank om att bostaden hyrs ut. Ditt bolån
+        påverkas inte av uthyrningen.
+      </p>
+
+      <h3>Vad gäller angående försäkring?</h3>
+      <p>
+        Du bör informera ditt försäkringsbolag om att bostaden hyrs ut till företag så
+        att du har rätt försäkringsskydd. De flesta hemförsäkringar täcker uthyrning, men
+        det kan krävas ett tillägg. Kontrollera med ditt bolag innan avtalet tecknas.
       </p>
 
       <h3>Vilka orter är aktuella?</h3>
@@ -229,7 +234,7 @@ const SaFungerarDetHusagare2026 = () => {
         infrastrukturprojekt, industrisatsningar eller annan verksamhet som kräver
         tillfälligt boende för personal. Orter som <Link href="/stad/lulea">Luleå</Link>,{' '}
         <Link href="/stad/boden">Boden</Link>, <Link href="/stad/oskarshamn">Oskarshamn</Link>,{' '}
-        <Link href="/stad/ludvika">Ludvika</Link> och{' '}
+        <Link href="/stad/gavle">Gävle</Link>, <Link href="/stad/ludvika">Ludvika</Link> och{' '}
         <Link href="/stad/saffle">Säffle</Link> är exempel på platser med hög efterfrågan.
         Men hör av dig oavsett ort, så berättar vi vad som gäller hos dig.
       </p>
@@ -248,16 +253,36 @@ const SaFungerarDetHusagare2026 = () => {
         återlämnas bostaden i dokumenterat skick efter avflyttningsbesiktning.
       </p>
 
+      <h2>Vad kan din bostad ge?</h2>
+
+      <p>Här är två exempel på vad husägare tjänar via StayOnSite:</p>
+
+      <h3>Scenario A: Villa med 3 sovrum i mindre stad</h3>
+      <p>
+        En möblerad villa i exempelvis <Link href="/stad/oskarshamn">Oskarshamn</Link> eller{' '}
+        <Link href="/stad/ludvika">Ludvika</Link> med 3 sovrum, fullt kök och internet.
+        Fast månadshyra: <strong>25 000 kr</strong>. Inga avdrag, inga avgifter.
+        Det ger 300 000 kr per år i garanterad inkomst.
+      </p>
+
+      <h3>Scenario B: Större hus med 5+ sovrum nära industriprojekt</h3>
+      <p>
+        Ett rymligt hus i <Link href="/stad/lulea">Luleå</Link> eller{' '}
+        <Link href="/stad/boden">Boden</Link> nära pågående industrisatsningar,
+        med plats för ett helt projektteam. Fast månadshyra:{' '}
+        <strong>40 000 kr</strong>. Det ger nästan en halv miljon per år.
+      </p>
+
       <h2>Nästa steg</h2>
 
       <p>
-        Är du nyfiken på vad din bostad kan ge i fast månadshyra?{' '}
+        Är du nyfiken på vad just din bostad kan ge i fast månadshyra?{' '}
         <Link href="/for-husagare">Gå till husägarsidan</Link> och fyll i ett kort
         formulär. Det binder inte, och du får svar inom 24 timmar på vardag.
       </p>
 
       <p>
-        Du kan också ringa Kajsa direkt på{' '}
+        Du kan också ringa Kajsa, som ansvarar för uthyrningarna, direkt på{' '}
         <a href="tel:+46762498486">076-249 84 86</a> om du hellre vill prata innan
         du fyller i något.
       </p>
