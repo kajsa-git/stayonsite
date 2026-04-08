@@ -530,8 +530,13 @@ async function main() {
   // Step 2: Generate article TSX (with retry)
   const rawTsx = await withRetry(() => generateArticle(topic), 'Article generation');
 
+  // Step 2a: Normalize imports (fix case-sensitivity bugs that break Linux CI)
+  let tsx = rawTsx
+    .replace(/from\s+['"]next\/Link['"]/g, "from 'next/link'")
+    .replace(/from\s+['"]next\/Image['"]/g, "from 'next/image'");
+
   // Step 2b: Validate and fix broken city links
-  let tsx = validateCityLinks(rawTsx);
+  tsx = validateCityLinks(tsx);
 
   // Step 2c: Validate JSX and auto-fix if needed
   const jsxErrors = validateJsx(tsx);
