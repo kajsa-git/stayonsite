@@ -39,10 +39,22 @@ jobs:
           fi
 
       - name: Build to verify
+        id: build
         run: |
           npm install -g pnpm
           pnpm install --frozen-lockfile
           pnpm build
+
+      - name: Upload generated files on failure
+        if: failure() && steps.build.conclusion == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-article-debug
+          path: |
+            src/views/blogg/
+            src/data/blog-posts.ts
+            app/(sv)/blogg/[slug]/page.tsx
+          retention-days: 7
 
       - name: Push to main
         run: |
