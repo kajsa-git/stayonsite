@@ -36,3 +36,4 @@ docs/
 competitor-research-*.md
 .vercel
 .env*.local
+.env
