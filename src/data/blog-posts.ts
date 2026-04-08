@@ -36,7 +36,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Ustawa o wynajmie 2026: Wyższe odliczenia i nowe zasady od lipca'
     },
     description: {
-      sv: 'Schablonavdraget höjs till 50 000 kr och blockhyra blir enklare. Så påverkas du som hyr ut din bostad från 1 juli 2026.',
+      sv: 'Höjt schablonavdrag till 50 000 kr, enklare blockhyra och nya regler från 1 juli 2026. Allt du som husägare behöver veta — och hur du tjänar mest på reformen.',
       en: 'The standard deduction rises to SEK 50,000 and block rentals get simpler. How the changes affect you as a landlord from 1 July 2026.',
       pl: 'Odliczenie ryczałtowe rośnie do 50 000 SEK, a wynajem blokowy staje się prostszy. Co zmienia się od 1 lipca 2026.'
     },

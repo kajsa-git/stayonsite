@@ -19,6 +19,30 @@ const PrivatuthyrningslagenReform2026 = () => {
         StayOnSite kan hjälpa dig att maximera din hyresintäkt utan avgifter.
       </p>
 
+      <div className="my-8 rounded-2xl border-2 border-accent bg-accent/5 p-6">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-accent">
+          Vill du hyra ut redan nu?
+        </p>
+        <p className="mb-4 text-base text-nordic-800">
+          StayOnSite hyr ut din bostad till företag — <strong>0 % avgift</strong>, fast
+          månadshyra och allt skött för dig. Få en kostnadsfri värdering av din bostad.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/for-husagare"
+            className="inline-flex items-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent/90"
+          >
+            Få värdering →
+          </Link>
+          <a
+            href="tel:+46762498486"
+            className="inline-flex items-center rounded-full border border-accent px-6 py-3 text-sm font-semibold text-accent hover:bg-accent/5"
+          >
+            Ring 076-249 84 86
+          </a>
+        </div>
+      </div>
+
       <h2>Bakgrund: Privatuthyrningslagen i korthet</h2>
 
       <p>
