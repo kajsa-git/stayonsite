@@ -413,9 +413,10 @@ function updateBlogPosts(topic) {
   }`;
 
   // Insert before the closing ];
+  // Existing last entry already ends with a trailing comma, so don't add one.
   const updated = blogPostsSource.replace(
     /\n\];/,
-    `,\n${newEntry}\n];`
+    `\n${newEntry},\n];`
   );
   writeFileSync(blogPostsPath, updated);
 }
