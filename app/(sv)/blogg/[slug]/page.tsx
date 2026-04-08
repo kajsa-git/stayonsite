@@ -21,6 +21,7 @@ import HyraUtJamforelse2026 from '@/views/blogg/HyraUtJamforelse2026'
 import PersonalboendeVanligaFragor2026 from '@/views/blogg/PersonalboendeVanligaFragor2026'
 import PersonalboendeVsHotellKostnad2026 from '@/views/blogg/PersonalboendeVsHotellKostnad2026'
 import BlockhyraRegler2026 from '@/views/blogg/BlockhyraRegler2026'
+import BlockhyraInfrastrukturprojekt2026 from '@/views/blogg/BlockhyraInfrastrukturprojekt2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -35,7 +36,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'sa-fungerar-det-fran-intresse-till-forsta-hyran': SaFungerarDetHusagare2026,
   'hyra-ut-jamforelse-stayonsite-vs-andra-2026': HyraUtJamforelse2026,
   'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
-  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-nya-regler-juli-2026-guide-foretag': BlockhyraRegler2026,
+  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-nya-regler-juli-2026-guide-foretag': BlockhyraRegler2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,
 }
 
 export function generateStaticParams() {

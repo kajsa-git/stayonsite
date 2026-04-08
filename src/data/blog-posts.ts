@@ -334,6 +334,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['blockhyra', 'lagstiftning', 'företagsbostäder', '2026'],
     readingTime: 8,
   },
+  {
+    slug: 'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026',
+    title: {
+      sv: 'Så fungerar blockhyra för Ostlänken och Norrbotniabanan 2026',
+      en: 'How block rental works for Ostlänken and Norrbotniabanan 2026',
+      pl: 'Jak działa wynajem zbiorczy dla projektów Ostlänken i Norrbotniabanan 2026',
+    },
+    description: {
+      sv: 'Stora infrastrukturkontrakt kräver personalboende. Så utnyttjar byggföretag de nya blockhyresreglerna från juli 2026.',
+      en: 'Major infrastructure contracts require staff accommodation. How construction firms use the new block rental rules from July 2026.',
+      pl: 'Duże kontrakty infrastrukturalne wymagają zakwaterowania personelu. Jak firmy budowlane używają nowych zasad wynajmu od lipca 2026.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-08',
+    category: 'Guide',
+    tags: ['blockhyra', 'infrastruktur', 'ostlänken', 'byggsektorn'],
+    readingTime: 8,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
