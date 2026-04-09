@@ -5,14 +5,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Mail, MessageSquare } from 'lucide-react';
+import { Mail, MessageSquare, Phone } from 'lucide-react';
 
 interface InquiryFormFieldsProps {
   isSubmitting: boolean;
+  phoneError?: string;
+  onPhoneChange?: () => void;
 }
 
 const InquiryFormFields = ({
-  isSubmitting
+  isSubmitting,
+  phoneError,
+  onPhoneChange,
 }: InquiryFormFieldsProps) => {
   const { t, language } = useLanguage();
 
@@ -36,6 +40,35 @@ const InquiryFormFields = ({
             placeholder="email@example.com"
             className="h-12 border-nordic-200 focus-visible:ring-nordic-400 font-light"
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="font-light text-nordic-800">
+            <span className="flex items-center gap-2">
+              <Phone size={16} className="text-nordic-500" />
+              {t('inquiry.form.phone')}
+            </span>
+          </Label>
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            required
+            autoComplete="tel"
+            inputMode="tel"
+            aria-invalid={Boolean(phoneError)}
+            aria-describedby={phoneError ? 'inquiry-phone-error' : undefined}
+            onChange={() => {
+              if (phoneError && onPhoneChange) onPhoneChange();
+            }}
+            placeholder={t('homeowner.form.phonePlaceholder')}
+            className={`h-12 border-nordic-200 focus-visible:ring-nordic-400 font-light ${phoneError ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
+          />
+          {phoneError && (
+            <p id="inquiry-phone-error" className="text-xs text-red-500">
+              {phoneError}
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">

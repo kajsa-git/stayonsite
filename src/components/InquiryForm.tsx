@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { trackFormSubmit } from '@/lib/gtag';
+import { isValidPhoneNumber } from '@/lib/contact';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -17,14 +18,28 @@ const InquiryForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPhoneError('');
+
+    const formData = new FormData(e.currentTarget);
+    const phone = String(formData.get('phone') ?? '').trim();
+
+    if (!isValidPhoneNumber(phone)) {
+      setPhoneError(t('homeowner.form.phoneError'));
+      const phoneInput = e.currentTarget.elements.namedItem('phone');
+      if (phoneInput instanceof HTMLInputElement) {
+        phoneInput.focus();
+      }
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     try {
-      const formData = new FormData(e.currentTarget);
       await submitContactForm({
         formType: 'inquiry',
         locale: language,
@@ -32,6 +47,7 @@ const InquiryForm = () => {
         source: 'inquiry-form',
         fields: {
           email: String(formData.get('email') ?? '').trim(),
+          phone,
           message: String(formData.get('message') ?? '').trim(),
         },
       });
@@ -75,6 +91,8 @@ const InquiryForm = () => {
         >
           <InquiryFormFields
             isSubmitting={isSubmitting}
+            phoneError={phoneError}
+            onPhoneChange={() => setPhoneError('')}
           />
         </form>
       )}

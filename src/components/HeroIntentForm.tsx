@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { isValidContact } from '@/lib/contact';
+import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
 import { trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
@@ -23,24 +23,37 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
 
   const [city, setCity] = useState(defaultCity);
   const [people, setPeople] = useState('');
-  const [contact, setContact] = useState('');
-  const [contactError, setContactError] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setContactError('');
+    setEmailError('');
+    setPhoneError('');
 
     const formData = new FormData(e.currentTarget);
     const cityValue = String(formData.get('ort') ?? city).trim();
     const peopleValue = String(formData.get('antal_personer') ?? people).trim();
-    const contactValue = String(formData.get('kontakt') ?? contact).trim();
+    const emailValue = String(formData.get('email') ?? email).trim();
+    const phoneValue = String(formData.get('phone') ?? phone).trim();
 
-    if (!isValidContact(contactValue)) {
-      setContactError(t('heroForm.contactError'));
-      const contactInput = e.currentTarget.elements.namedItem('kontakt');
-      if (contactInput instanceof HTMLInputElement) {
-        contactInput.focus();
+    let hasError = false;
+    if (!isValidEmail(emailValue)) {
+      setEmailError(t('heroForm.emailError'));
+      hasError = true;
+    }
+    if (!isValidPhoneNumber(phoneValue)) {
+      setPhoneError(t('homeowner.form.phoneError'));
+      hasError = true;
+    }
+    if (hasError) {
+      const focusName = !isValidEmail(emailValue) ? 'email' : 'phone';
+      const focusInput = e.currentTarget.elements.namedItem(focusName);
+      if (focusInput instanceof HTMLInputElement) {
+        focusInput.focus();
       }
       return;
     }
@@ -56,7 +69,8 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         fields: {
           ort: cityValue,
           antal_personer: peopleValue,
-          kontakt: contactValue,
+          email: emailValue,
+          phone: phoneValue,
         },
       });
       setFormSuccess(true);
@@ -66,7 +80,8 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         setFormSuccess(false);
         setCity(defaultCity);
         setPeople('');
-        setContact('');
+        setEmail('');
+        setPhone('');
       }, 5000);
     } catch (error) {
       toast({
@@ -102,70 +117,104 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
     <div className="mt-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col md:flex-row md:items-end gap-3"
+        className="flex flex-col gap-3"
       >
-        {/* Ort */}
-        <div className="flex-1">
-          <label htmlFor="hero-city" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
-            {t('heroForm.city')}
-          </label>
-          <Input
-            id="hero-city"
-            name="ort"
-            type="text"
-            required
-            autoComplete="address-level2"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder={t('heroForm.cityPlaceholder')}
-            className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
-          />
+        <div className="flex flex-col md:flex-row md:items-end gap-3">
+          {/* Ort */}
+          <div className="flex-1">
+            <label htmlFor="hero-city" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
+              {t('heroForm.city')}
+            </label>
+            <Input
+              id="hero-city"
+              name="ort"
+              type="text"
+              required
+              autoComplete="address-level2"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder={t('heroForm.cityPlaceholder')}
+              className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
+            />
+          </div>
+
+          {/* Antal */}
+          <div className="flex-1 md:max-w-[140px]">
+            <label htmlFor="hero-people" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
+              {t('heroForm.people')}
+            </label>
+            <Input
+              id="hero-people"
+              name="antal_personer"
+              type="number"
+              required
+              min={1}
+              value={people}
+              onChange={(e) => setPeople(e.target.value)}
+              placeholder={t('heroForm.peoplePlaceholder')}
+              className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
+            />
+          </div>
         </div>
 
-        {/* Antal */}
-        <div className="flex-1 md:max-w-[140px]">
-          <label htmlFor="hero-people" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
-            {t('heroForm.people')}
-          </label>
-          <Input
-            id="hero-people"
-            name="antal_personer"
-            type="number"
-            required
-            min={1}
-            value={people}
-            onChange={(e) => setPeople(e.target.value)}
-            placeholder={t('heroForm.peoplePlaceholder')}
-            className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
-          />
-        </div>
+        <div className="flex flex-col md:flex-row md:items-end gap-3">
+          {/* E-post */}
+          <div className="flex-1">
+            <label htmlFor="hero-email" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
+              {t('heroForm.email')}
+            </label>
+            <Input
+              id="hero-email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              inputMode="email"
+              aria-invalid={Boolean(emailError)}
+              aria-describedby={emailError ? 'hero-email-error' : undefined}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailError) setEmailError('');
+              }}
+              placeholder={t('heroForm.emailPlaceholder')}
+              className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${emailError ? 'ring-2 ring-red-400' : ''}`}
+            />
+            {emailError && (
+              <p id="hero-email-error" className="text-red-300 text-xs mt-1 ml-1">
+                {emailError}
+              </p>
+            )}
+          </div>
 
-        {/* Kontakt */}
-        <div className="flex-1">
-          <label htmlFor="hero-contact" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
-            {t('heroForm.contact')}
-          </label>
-          <Input
-            id="hero-contact"
-            name="kontakt"
-            type="text"
-            required
-            autoComplete="email"
-            aria-invalid={Boolean(contactError)}
-            aria-describedby={contactError ? 'hero-contact-error' : undefined}
-            value={contact}
-            onChange={(e) => {
-              setContact(e.target.value);
-              if (contactError) setContactError('');
-            }}
-            placeholder={t('heroForm.contactPlaceholder')}
-            className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${contactError ? 'ring-2 ring-red-400' : ''}`}
-          />
-          {contactError && (
-            <p id="hero-contact-error" className="text-red-300 text-xs mt-1 ml-1">
-              {contactError}
-            </p>
-          )}
+          {/* Telefon */}
+          <div className="flex-1">
+            <label htmlFor="hero-phone" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
+              {t('heroForm.phone')}
+            </label>
+            <Input
+              id="hero-phone"
+              name="phone"
+              type="tel"
+              required
+              autoComplete="tel"
+              inputMode="tel"
+              aria-invalid={Boolean(phoneError)}
+              aria-describedby={phoneError ? 'hero-phone-error' : undefined}
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                if (phoneError) setPhoneError('');
+              }}
+              placeholder={t('heroForm.phonePlaceholder')}
+              className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${phoneError ? 'ring-2 ring-red-400' : ''}`}
+            />
+            {phoneError && (
+              <p id="hero-phone-error" className="text-red-300 text-xs mt-1 ml-1">
+                {phoneError}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Submit */}

@@ -92,11 +92,13 @@ export type TranslationKey =
   | "heroForm.cityPlaceholder"
   | "heroForm.people"
   | "heroForm.peoplePlaceholder"
-  | "heroForm.contact"
-  | "heroForm.contactPlaceholder"
+  | "heroForm.email"
+  | "heroForm.emailPlaceholder"
+  | "heroForm.emailError"
+  | "heroForm.phone"
+  | "heroForm.phonePlaceholder"
   | "heroForm.submit"
   | "heroForm.success"
-  | "heroForm.contactError"
   | "inquiry.title"
   | "inquiry.subtitle"
   | "inquiry.tagline"
@@ -484,11 +486,13 @@ export const translations: Record<
     "heroForm.cityPlaceholder": "T.ex. Boden, Gävle, Luleå",
     "heroForm.people": "Antal personer",
     "heroForm.peoplePlaceholder": "Antal",
-    "heroForm.contact": "Telefon eller e-post",
-    "heroForm.contactPlaceholder": "073-123 45 67 eller namn@foretag.se",
+    "heroForm.email": "E-post",
+    "heroForm.emailPlaceholder": "namn@foretag.se",
+    "heroForm.emailError": "Ange giltig e-postadress",
+    "heroForm.phone": "Telefon",
+    "heroForm.phonePlaceholder": "070-123 45 67",
     "heroForm.submit": "Få boendeförslag",
     "heroForm.success": "Tack! Vi återkommer inom 24 timmar.",
-    "heroForm.contactError": "Ange giltigt telefonnummer eller e-post",
 
     "inquiry.title": "Skicka en förfrågan",
     "inquiry.subtitle":
@@ -954,11 +958,13 @@ export const translations: Record<
     "heroForm.cityPlaceholder": "e.g. Boden, Gävle, Luleå",
     "heroForm.people": "Number of people",
     "heroForm.peoplePlaceholder": "Count",
-    "heroForm.contact": "Phone or email",
-    "heroForm.contactPlaceholder": "073-123 45 67 or name@company.com",
+    "heroForm.email": "Email",
+    "heroForm.emailPlaceholder": "name@company.com",
+    "heroForm.emailError": "Enter a valid email address",
+    "heroForm.phone": "Phone",
+    "heroForm.phonePlaceholder": "070-123 45 67",
     "heroForm.submit": "Get housing proposal",
     "heroForm.success": "Thanks! We'll get back within 24 hours.",
-    "heroForm.contactError": "Enter a valid phone number or email",
 
     "inquiry.title": "Send an Inquiry",
     "inquiry.subtitle":
@@ -1425,11 +1431,13 @@ export const translations: Record<
     "heroForm.cityPlaceholder": "np. Boden, Gävle, Luleå",
     "heroForm.people": "Liczba osób",
     "heroForm.peoplePlaceholder": "Liczba",
-    "heroForm.contact": "Telefon lub e-mail",
-    "heroForm.contactPlaceholder": "073-123 45 67 lub nazwa@firma.pl",
+    "heroForm.email": "E-mail",
+    "heroForm.emailPlaceholder": "nazwa@firma.pl",
+    "heroForm.emailError": "Podaj prawidłowy adres e-mail",
+    "heroForm.phone": "Telefon",
+    "heroForm.phonePlaceholder": "070-123 45 67",
     "heroForm.submit": "Uzyskaj propozycję",
     "heroForm.success": "Dziękujemy! Odezwiemy się w ciągu 24 godzin.",
-    "heroForm.contactError": "Podaj prawidłowy numer telefonu lub e-mail",
 
     "inquiry.title": "Wyślij zapytanie",
     "inquiry.subtitle":
