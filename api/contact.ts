@@ -40,6 +40,7 @@ const submissionSchema = z.discriminatedUnion('formType', [
   ])}),
   z.object({ ...base, formType: z.literal('inquiry'), fields: z.object({
     email: z.string().min(3).max(200).refine(isValidEmail),
+    phone: z.string().min(6).max(50).refine(isValidPhone),
     message: z.string().min(10).max(4000),
   })}),
   // Homeowner: supports both old (phone+city) and new (name+email+phone+bedrooms+postalCode)
@@ -134,41 +135,106 @@ function buildEmail(s: Submission, ip?: string, ua?: string) {
 }
 
 function buildConfirmationEmail(s: Submission): { subject: string; text: string; html: string } {
-  const isSwedish = s.locale === 'sv';
-  const isPolish = s.locale === 'pl';
+  const sv = s.locale === 'sv';
+  const pl = s.locale === 'pl';
 
-  const subject = isSwedish ? 'Tack för din förfrågan - StayOnSite'
-    : isPolish ? 'Dziękujemy za zapytanie - StayOnSite'
-    : 'Thank you for your inquiry - StayOnSite';
+  const subject = sv ? 'Vi har fått din förfrågan – StayOnSite'
+    : pl ? 'Otrzymaliśmy Twoje zapytanie – StayOnSite'
+    : 'We received your inquiry – StayOnSite';
 
-  const greeting = isSwedish ? 'Hej!'
-    : isPolish ? 'Cześć!'
-    : 'Hi!';
+  const t = {
+    greeting:   sv ? 'Hej!'                          : pl ? 'Cześć!'                           : 'Hi!',
+    body1:      sv ? 'Tack för att du hörde av dig. Vi har tagit emot din förfrågan och återkommer till dig <strong>inom 24 timmar</strong> med ett konkret förslag.'
+                   : pl ? 'Dziękujemy za kontakt. Otrzymaliśmy Twoje zapytanie i odezwiemy się w ciągu <strong>24 godzin</strong> z konkretną propozycją.'
+                   : 'Thank you for reaching out. We have received your inquiry and will get back to you <strong>within 24 hours</strong> with a concrete proposal.',
+    urgent:     sv ? 'Behöver du svar snabbare? Ring oss direkt:'
+                   : pl ? 'Potrzebujesz szybszej odpowiedzi? Zadzwoń bezpośrednio:'
+                   : 'Need a faster response? Call us directly:',
+    signoff:    sv ? 'Med vänliga hälsningar'         : pl ? 'Pozdrawiam'                       : 'Best regards',
+    name:       'Kajsa Lindqvist',
+    title:      sv ? 'Grundare, StayOnSite'           : pl ? 'Założycielka, StayOnSite'         : 'Founder, StayOnSite',
+    tagline:    sv ? 'Personalboende i hela Sverige'  : pl ? 'Zakwaterowanie w całej Szwecji'   : 'Worker accommodation across Sweden',
+  };
 
-  const body = isSwedish
-    ? 'Tack för att du kontaktade oss. Vi har tagit emot din förfrågan och återkommer inom 24 timmar.'
-    : isPolish
-    ? 'Dziękujemy za kontakt. Otrzymaliśmy Twoje zapytanie i odezwiemy się w ciągu 24 godzin.'
-    : 'Thank you for reaching out. We have received your inquiry and will get back to you within 24 hours.';
+  const text = [
+    t.greeting, '',
+    t.body1.replace(/<[^>]+>/g, ''), '',
+    t.urgent, '076-249 84 86', '',
+    `${t.signoff},\n${t.name}\n${t.title}`, '',
+    '076-249 84 86',
+    'kajsa@stayonsite.se',
+    'www.stayonsite.se',
+  ].join('\n');
 
-  const signoff = isSwedish ? 'Vänliga hälsningar,\nKajsa med Team\nStayOnSite'
-    : isPolish ? 'Pozdrawiam,\nKajsa z Zespołem\nStayOnSite'
-    : 'Best regards,\nKajsa and Team\nStayOnSite';
+  const html = `<!DOCTYPE html>
+<html lang="${s.locale}">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 16px;">
+  <tr><td align="center">
+    <table role="presentation" width="100%" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
 
-  const text = `${greeting}\n\n${body}\n\n${signoff}\n\n076-249 84 86\nkajsa@stayonsite.se\nwww.stayonsite.se`;
+      <!-- Header -->
+      <tr>
+        <td style="background:#0f1c2e;padding:28px 40px;">
+          <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;">Stay<span style="color:#ff6300;">On</span>Site</span>
+          <p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase;">${esc(t.tagline)}</p>
+        </td>
+      </tr>
 
-  const html = `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:600px;">
-    <p style="font-size:16px;font-weight:600;">${greeting}</p>
-    <p>${body}</p>
-    ${!isSwedish ? '' : `<p style="color:#6b7280;font-size:14px;margin-top:4px;"><em>Thank you for reaching out. We have received your inquiry and will get back to you within 24 hours.</em></p>`}
-    <p style="margin-top:24px;">${signoff.replace(/\n/g, '<br>')}</p>
-    <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-    <p style="font-size:13px;color:#6b7280;">
-      <a href="tel:+46762498486" style="color:#ff6300;">076-249 84 86</a><br>
-      <a href="mailto:kajsa@stayonsite.se" style="color:#ff6300;">kajsa@stayonsite.se</a><br>
-      <a href="https://www.stayonsite.se" style="color:#ff6300;">www.stayonsite.se</a>
-    </p>
-  </div>`;
+      <!-- Orange accent bar -->
+      <tr><td style="background:#ff6300;height:4px;font-size:0;line-height:0;">&nbsp;</td></tr>
+
+      <!-- Body -->
+      <tr>
+        <td style="padding:40px 40px 32px;">
+          <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#0f1c2e;">${esc(t.greeting)}</p>
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#374151;">${t.body1}</p>
+
+          <!-- 24h badge -->
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+            <tr>
+              <td style="background:#fff7f0;border:1px solid #fed7aa;border-radius:8px;padding:14px 20px;">
+                <span style="font-size:14px;color:#92400e;font-weight:600;">⏱ ${sv ? 'Svarstid: inom 24 timmar' : pl ? 'Czas odpowiedzi: do 24 godzin' : 'Response time: within 24 hours'}</span>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Urgent CTA -->
+          <p style="margin:0 0 10px;font-size:14px;color:#6b7280;">${esc(t.urgent)}</p>
+          <a href="tel:+46762498486" style="display:inline-block;background:#ff6300;color:#ffffff;font-size:15px;font-weight:700;padding:12px 28px;border-radius:50px;text-decoration:none;">📞 076-249 84 86</a>
+        </td>
+      </tr>
+
+      <!-- Divider -->
+      <tr><td style="padding:0 40px;"><hr style="border:none;border-top:1px solid #e5e7eb;margin:0;"></td></tr>
+
+      <!-- Signoff -->
+      <tr>
+        <td style="padding:28px 40px 36px;">
+          <p style="margin:0 0 4px;font-size:14px;color:#6b7280;">${esc(t.signoff)},</p>
+          <p style="margin:0 0 2px;font-size:15px;font-weight:700;color:#0f1c2e;">${esc(t.name)}</p>
+          <p style="margin:0 0 16px;font-size:13px;color:#9ca3af;">${esc(t.title)}</p>
+          <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.8;">
+            <a href="tel:+46762498486" style="color:#ff6300;text-decoration:none;">076-249 84 86</a><br>
+            <a href="mailto:kajsa@stayonsite.se" style="color:#ff6300;text-decoration:none;">kajsa@stayonsite.se</a><br>
+            <a href="https://www.stayonsite.se" style="color:#ff6300;text-decoration:none;">www.stayonsite.se</a>
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="background:#f9fafb;padding:16px 40px;border-top:1px solid #e5e7eb;">
+          <p style="margin:0;font-size:11px;color:#9ca3af;text-align:center;">StayOnSite · 17165 Solna · ${sv ? 'Du fick detta mejl för att du fyllt i ett formulär på stayonsite.se' : pl ? 'Otrzymałeś ten e-mail, ponieważ wypełniłeś formularz na stayonsite.se' : 'You received this email because you filled out a form on stayonsite.se'}</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
 
   return { subject, text, html };
 }
