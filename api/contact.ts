@@ -151,9 +151,9 @@ function buildConfirmationEmail(s: Submission): { subject: string; text: string;
                    : pl ? 'Potrzebujesz szybszej odpowiedzi? Zadzwoń bezpośrednio:'
                    : 'Need a faster response? Call us directly:',
     signoff:    sv ? 'Med vänliga hälsningar'         : pl ? 'Pozdrawiam'                       : 'Best regards',
-    name:       'Kajsa Lindqvist',
+    name:       'Kajsa Sihlén',
     title:      sv ? 'Grundare, StayOnSite'           : pl ? 'Założycielka, StayOnSite'         : 'Founder, StayOnSite',
-    tagline:    sv ? 'Personalboende i hela Sverige'  : pl ? 'Zakwaterowanie w całej Szwecji'   : 'Worker accommodation across Sweden',
+    tagline:    'Worker accommodation across Sweden',
   };
 
   const text = [
