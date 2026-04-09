@@ -116,9 +116,9 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   return (
     <div className="mt-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 md:gap-4">
           {/* Ort */}
-          <div>
+          <div className="sm:col-span-8">
             <label htmlFor="hero-city" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.city')}
             </label>
@@ -136,7 +136,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </div>
 
           {/* Antal */}
-          <div>
+          <div className="sm:col-span-4">
             <label htmlFor="hero-people" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.people')}
             </label>
@@ -155,7 +155,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </div>
 
           {/* E-post */}
-          <div>
+          <div className="sm:col-span-8">
             <label htmlFor="hero-email" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.email')}
             </label>
@@ -184,7 +184,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </div>
 
           {/* Telefon */}
-          <div>
+          <div className="sm:col-span-4">
             <label htmlFor="hero-phone" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.phone')}
             </label>
