@@ -115,13 +115,10 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
 
   return (
     <div className="mt-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-3"
-      >
-        <div className="flex flex-col md:flex-row md:items-end gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           {/* Ort */}
-          <div className="flex-1">
+          <div>
             <label htmlFor="hero-city" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.city')}
             </label>
@@ -134,12 +131,12 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder={t('heroForm.cityPlaceholder')}
-              className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
+              className="h-12 w-full bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
             />
           </div>
 
           {/* Antal */}
-          <div className="flex-1 md:max-w-[140px]">
+          <div>
             <label htmlFor="hero-people" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.people')}
             </label>
@@ -149,17 +146,16 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
               type="number"
               required
               min={1}
+              inputMode="numeric"
               value={people}
               onChange={(e) => setPeople(e.target.value)}
               placeholder={t('heroForm.peoplePlaceholder')}
-              className="h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
+              className="h-12 w-full bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium"
             />
           </div>
-        </div>
 
-        <div className="flex flex-col md:flex-row md:items-end gap-3">
           {/* E-post */}
-          <div className="flex-1">
+          <div>
             <label htmlFor="hero-email" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.email')}
             </label>
@@ -178,7 +174,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
                 if (emailError) setEmailError('');
               }}
               placeholder={t('heroForm.emailPlaceholder')}
-              className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${emailError ? 'ring-2 ring-red-400' : ''}`}
+              className={`h-12 w-full bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${emailError ? 'ring-2 ring-red-400' : ''}`}
             />
             {emailError && (
               <p id="hero-email-error" className="text-red-300 text-xs mt-1 ml-1">
@@ -188,7 +184,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           </div>
 
           {/* Telefon */}
-          <div className="flex-1">
+          <div>
             <label htmlFor="hero-phone" className="block text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5 ml-1">
               {t('heroForm.phone')}
             </label>
@@ -207,7 +203,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
                 if (phoneError) setPhoneError('');
               }}
               placeholder={t('heroForm.phonePlaceholder')}
-              className={`h-12 bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${phoneError ? 'ring-2 ring-red-400' : ''}`}
+              className={`h-12 w-full bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${phoneError ? 'ring-2 ring-red-400' : ''}`}
             />
             {phoneError && (
               <p id="hero-phone-error" className="text-red-300 text-xs mt-1 ml-1">
@@ -221,7 +217,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-12 px-8 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg shadow-accent/30 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+          className="h-12 w-full bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg shadow-accent/30 transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
         >
           {isSubmitting ? (
             <Loader2 size={18} className="animate-spin" />
