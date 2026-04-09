@@ -47,18 +47,18 @@ const Hero = () => {
           
 
           <h1
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-8"
+            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-4 md:mb-8"
           >
             {t('hero.title')}
           </h1>
           
           <p
-            className="max-w-2xl text-xl md:text-[24px] text-white/80 font-light leading-relaxed mb-6"
+            className="max-w-2xl text-xl md:text-[24px] text-white/80 font-light leading-relaxed mb-3 md:mb-6"
           >
             {t('hero.subtitle')}
           </p>
 
-          <div className="flex items-center gap-2 mb-10">
+          <div className="flex items-center gap-2 mb-5 md:mb-10">
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="h-4 w-4 fill-[#ff6300] text-[#ff6300]" />
@@ -73,7 +73,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-6"
+            className="hidden md:flex flex-row gap-6"
           >
             <Button 
               className="group rounded-full h-16 px-10 bg-accent hover:bg-accent text-white text-lg font-bold shadow-2xl shadow-accent/40 transition-all duration-500 hover:scale-105 active:scale-95" 
