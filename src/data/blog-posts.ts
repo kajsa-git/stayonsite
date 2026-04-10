@@ -317,24 +317,6 @@ export const blogPosts: BlogPost[] = [
     readingTime: 7,
   },
   {
-    slug: 'blockhyra-nya-regler-juli-2026-guide-foretag',
-    title: {
-      sv: 'Blockhyra 2026: Nya regler från 1 juli – så påverkas ditt företags personalboende',
-      en: 'Block rental 2026: New rules from July 1st – how your company accommodation is affected',
-      pl: 'Wynajem blokowy 2026: Nowe zasady od 1 lipca – jak wpływa na zakwaterowanie pracowników',
-    },
-    description: {
-      sv: 'Nya blockhyreregler 1 juli 2026 gör det enklare att hyra personalboende. Guide för företag som behöver tillfälliga bostäder till anställda.',
-      en: 'New block rental rules July 1, 2026 make employee housing easier. Guide for companies needing temporary accommodation.',
-      pl: 'Nowe zasady wynajmu blokowego od 1 lipca 2026 ułatwiają zakwaterowanie pracowników. Przewodnik dla firm.',
-    },
-    author: 'StayOnSite',
-    publishedDate: '2026-04-08',
-    category: 'Lagstiftning',
-    tags: ['blockhyra', 'lagstiftning', 'företagsbostäder', '2026'],
-    readingTime: 8,
-  },
-  {
     slug: 'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026',
     title: {
       sv: 'Så fungerar blockhyra för Ostlänken och Norrbotniabanan 2026',
