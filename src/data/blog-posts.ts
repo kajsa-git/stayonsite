@@ -334,6 +334,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['blockhyra', 'infrastruktur', 'ostlänken', 'byggsektorn'],
     readingTime: 8,
   },
+  {
+    slug: 'sommaruthyrning-montorer-guide-2026',
+    title: {
+      sv: 'Sommaruthyrning till montörer 2026 – Komplett guide för husägare',
+      en: 'Summer rental to contractors 2026 – Complete guide for homeowners',
+      pl: 'Wynajem letni dla monterów 2026 – Kompleksowy przewodnik dla właścicieli domów',
+    },
+    description: {
+      sv: 'Praktisk guide för dig som vill hyra ut din bostad till montörer sommaren 2026. Sätt rätt pris, förbered bostaden och hitta hyresgäster.',
+      en: 'Practical guide for renting out your property to contractors in summer 2026. Set the right price, prepare your home and find tenants.',
+      pl: 'Praktyczny przewodnik dla wynajmujących mieszkanie monterom latem 2026. Ustal odpowiednią cenę i przygotuj nieruchomość.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-15',
+    category: 'Guide',
+    tags: ['uthyrning', 'montörboende', 'sommaruthyrning', 'privatuthyrning', 'ROT-avdrag'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
