@@ -14,7 +14,7 @@ import DatacenterMontorboendeGuide2026 from '@/views/blogg/DatacenterMontorboend
 import RegionalBostadsanalys2026 from '@/views/blogg/RegionalBostadsanalys2026'
 import InfrastrukturKontraktPersonalBoendeChecklista2026 from '@/views/blogg/InfrastrukturKontraktPersonalBoendeChecklista2026'
 import KompetensRekryteringByggsektornGuide2026 from '@/views/blogg/KompetensRekryteringByggsektornGuide2026'
-import BlockhyraForetagsbostaderRegler2026 from '@/views/blogg/BlockhyraForetagsbostaderRegler2026'
+import BlockhyraRegler2026 from '@/views/blogg/BlockhyraRegler2026'
 import NewMortgageRulesGuide2026 from '@/views/blogg/NewMortgageRulesGuide2026'
 import SaFungerarDetHusagare2026 from '@/views/blogg/SaFungerarDetHusagare2026'
 import HyraUtJamforelse2026 from '@/views/blogg/HyraUtJamforelse2026'
@@ -32,7 +32,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'avtalskrav-personalboende-guide-2026': AvtalskravPersonalboendeGuide2026,
   'arbetskraftsinvandring-juni-2026-guide-byggforetag': ArbetstillstandJuni2026Guide,
   'datacenter-montorboende-guide-2026': DatacenterMontorboendeGuide2026,
-  'regional-bostadsanalys-2026-var-finns-boende-montorer': RegionalBostadsanalys2026,  'infrastrukturkontrakt-personalboende-checklista-2026': InfrastrukturKontraktPersonalBoendeChecklista2026,  'kompetens-rekrytering-byggsektorn-guide-2026': KompetensRekryteringByggsektornGuide2026,  'blockhyra-foretagsbostader-nya-regler-juli-2026': BlockhyraForetagsbostaderRegler2026,  'nya-bolaneregler-april-2026-personalboende-guide': NewMortgageRulesGuide2026,
+  'regional-bostadsanalys-2026-var-finns-boende-montorer': RegionalBostadsanalys2026,  'infrastrukturkontrakt-personalboende-checklista-2026': InfrastrukturKontraktPersonalBoendeChecklista2026,  'kompetens-rekrytering-byggsektorn-guide-2026': KompetensRekryteringByggsektornGuide2026,  'blockhyra-nya-regler-juli-2026-guide-foretag': BlockhyraRegler2026,  'nya-bolaneregler-april-2026-personalboende-guide': NewMortgageRulesGuide2026,
   'sa-fungerar-det-fran-intresse-till-forsta-hyran': SaFungerarDetHusagare2026,
   'hyra-ut-jamforelse-stayonsite-vs-andra-2026': HyraUtJamforelse2026,
   'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
