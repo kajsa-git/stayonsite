@@ -31,14 +31,14 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'privatuthyrningslagen-reform-2026',
     title: {
-      sv: 'Privatuthyrningslagen 2026: Höjt avdrag & nya regler från juli',
-      en: 'Swedish Private Rental Act 2026: Higher Deductions & New Rules from July',
-      pl: 'Ustawa o wynajmie 2026: Wyższe odliczenia i nowe zasady od lipca'
+      sv: 'Privatuthyrningslagen 2026: Nya regler från 1 juli – vad du tjänar på det',
+      en: 'Swedish Private Rental Act 2026: New Rules from 1 July – What You Gain',
+      pl: 'Ustawa o wynajmie 2026: Nowe zasady od 1 lipca – co zyskujesz'
     },
     description: {
-      sv: 'Höjt schablonavdrag till 50 000 kr, enklare blockhyra och nya regler från 1 juli 2026. Allt du som husägare behöver veta — och hur du tjänar mest på reformen.',
-      en: 'The standard deduction rises to SEK 50,000 and block rentals get simpler. How the changes affect you as a landlord from 1 July 2026.',
-      pl: 'Odliczenie ryczałtowe rośnie do 50 000 SEK, a wynajem blokowy staje się prostszy. Co zmienia się od 1 lipca 2026.'
+      sv: 'Riksdagen röstade igenom den största reformen sedan 2012. Schablonavdraget höjs till 50 000 kr och blockhyra förenklas. Så här maximerar du din hyresintäkt från 1 juli.',
+      en: 'Parliament passed the biggest reform since 2012. The standard deduction rises to SEK 50,000 and block rentals get simpler. How to maximise your rental income from 1 July.',
+      pl: 'Sejm uchwalił największą reformę od 2012 r. Odliczenie rośnie do 50 000 SEK. Jak zmaksymalizować dochód z najmu od 1 lipca.'
     },
     author: 'StayOnSite',
     publishedDate: '2026-02-07',
