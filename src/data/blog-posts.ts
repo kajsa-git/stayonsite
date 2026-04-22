@@ -352,6 +352,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['uthyrning', 'montörboende', 'sommaruthyrning', 'privatuthyrning', 'ROT-avdrag'],
     readingTime: 9,
   },
+  {
+    slug: 'schablonavdrag-skatt-blockhyra-husagare-2026',
+    title: {
+      sv: 'Schablonavdrag och skatt vid blockhyra: Guide för husägare 2026',
+      en: 'Tax deductions and block rental: Landlord guide 2026',
+      pl: 'Odliczenia podatkowe i wynajem blokowy: Przewodnik dla właścicieli 2026',
+    },
+    description: {
+      sv: 'Hur beskattas blockhyra till företag 2026? Guide till schablonavdrag, ROT/RUT-avdrag och vad den nya lagen betyder för dig som husägare.',
+      en: 'How is block rental taxed in 2026? Guide to deductions, ROT/RUT and what the new law means for property owners.',
+      pl: 'Jak opodatkowany jest wynajem blokowy w 2026 roku? Przewodnik po odliczeniach i nowej ustawie dla właścicieli nieruchomości.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-22',
+    category: 'Guide',
+    tags: ['skatt', 'blockhyra', 'schablonavdrag', 'husägare', 'privatuthyrningslagen'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
