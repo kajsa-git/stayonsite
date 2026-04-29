@@ -370,6 +370,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['skatt', 'blockhyra', 'schablonavdrag', 'husägare', 'privatuthyrningslagen'],
     readingTime: 9,
   },
+  {
+    slug: 'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026',
+    title: {
+      sv: 'Var återhämtar sig bostadsbyggandet? Prognos för montörboende 2026-2027',
+      en: 'Where is housing construction recovering? Forecast for worker accommodation 2026-2027',
+      pl: 'Gdzie budownictwo mieszkaniowe się odradza? Prognoza dla zakwaterowania pracowników 2026-2027',
+    },
+    description: {
+      sv: 'Bostadsbyggandet vänder uppåt 2026. Se vilka regioner som får mest aktivitet och var byggföretag behöver montörboende.',
+      en: 'Housing construction rebounds in 2026. See which regions will see most activity and where companies need worker accommodation.',
+      pl: 'Budownictwo mieszkaniowe rośnie w 2026 r. Zobacz, które regiony będą najbardziej aktywne i gdzie potrzebne będzie zakwaterowanie.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-04-29',
+    category: 'Analys',
+    tags: ['bostadsbyggande', 'byggprognos', 'regional-analys', 'montörboende-2026'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
