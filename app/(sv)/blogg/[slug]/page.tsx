@@ -24,6 +24,7 @@ import BlockhyraInfrastrukturprojekt2026 from '@/views/blogg/BlockhyraInfrastruk
 import SommaruthyrningMontorerGuide2026 from '@/views/blogg/SommaruthyrningMontorerGuide2026'
 import SchablonavdragSkattBlockhyraHusagare2026 from '@/views/blogg/SchablonavdragSkattBlockhyraHusagare2026'
 import BostadsbyggandeAterhamtningPrognosArtikel from '@/views/blogg/BostadsbyggandeAterhamtningPrognosArtikel'
+import BlockhyraPrivatuthyrningJuli2026 from '@/views/blogg/BlockhyraPrivatuthyrningJuli2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -38,7 +39,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'sa-fungerar-det-fran-intresse-till-forsta-hyran': SaFungerarDetHusagare2026,
   'hyra-ut-jamforelse-stayonsite-vs-andra-2026': HyraUtJamforelse2026,
   'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
-  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,  'sommaruthyrning-montorer-guide-2026': SommaruthyrningMontorerGuide2026,  'schablonavdrag-skatt-blockhyra-husagare-2026': SchablonavdragSkattBlockhyraHusagare2026,  'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026': BostadsbyggandeAterhamtningPrognosArtikel,
+  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,  'sommaruthyrning-montorer-guide-2026': SommaruthyrningMontorerGuide2026,  'schablonavdrag-skatt-blockhyra-husagare-2026': SchablonavdragSkattBlockhyraHusagare2026,  'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026': BostadsbyggandeAterhamtningPrognosArtikel,  'hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare': BlockhyraPrivatuthyrningJuli2026,
 }
 
 export function generateStaticParams() {

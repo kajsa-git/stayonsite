@@ -388,6 +388,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['bostadsbyggande', 'byggprognos', 'regional-analys', 'montörboende-2026'],
     readingTime: 9,
   },
+  {
+    slug: 'hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare',
+    title: {
+      sv: 'Nya blockhyra-reglerna från 1 juli 2026: Guide för husägare som vill hyra ut',
+      en: 'New Block Rental Rules from July 1, 2026: Guide for Property Owners',
+      pl: 'Nowe zasady wynajmu blokowego od 1 lipca 2026: Przewodnik dla właścicieli',
+    },
+    description: {
+      sv: 'Från 1 juli 2026 ändras reglerna för blockhyra och privatuthyrning. Vad innebär det för dig som vill hyra ut till företag?',
+      en: 'From July 1, 2026, rules for block rental and private leasing change. What does it mean for property owners?',
+      pl: 'Od 1 lipca 2026 r. zmieniają się zasady wynajmu grupowego. Co to oznacza dla właścicieli nieruchomości?',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-05-06',
+    category: 'Lagstiftning',
+    tags: ['privatuthyrningslagen', 'blockhyra', 'lagändring 2026', 'skattefrågor uthyrning', 'hyra ut till företag'],
+    readingTime: 8,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
