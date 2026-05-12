@@ -25,11 +25,18 @@ interface SEOProps {
 const SEO = ({ structuredData }: SEOProps) => {
   if (!structuredData) return null;
 
+  const items = Array.isArray(structuredData) ? structuredData : [structuredData];
+
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <>
+      {items.map((item, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
+        />
+      ))}
+    </>
   );
 };
 
