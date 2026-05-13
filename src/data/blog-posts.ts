@@ -406,6 +406,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['privatuthyrningslagen', 'blockhyra', 'lagändring 2026', 'skattefrågor uthyrning', 'hyra ut till företag'],
     readingTime: 8,
   },
+  {
+    slug: 'infrastrukturplan-2026-2037-personalboende-guide',
+    title: {
+      sv: 'Regeringens nya infrastrukturplan 2026-2037: Vad betyder den för personalboende?',
+      en: 'Sweden\'s National Infrastructure Plan 2026-2037: What It Means for Worker Accommodation',
+      pl: 'Krajowy plan infrastruktury Szwecji 2026-2037: Co oznacza dla zakwaterowania pracowników?',
+    },
+    description: {
+      sv: 'Ny infrastrukturplan med byggstartsbeslut för Ostlänken, Norrbotniabanan och fler projekt. Guide för byggföretag.',
+      en: 'New infrastructure plan with construction decisions. Guide for contractors on accommodation needs 2026-2037.',
+      pl: 'Nowy plan infrastruktury ze startem budowy. Przewodnik dla firm budowlanych o potrzebach zakwaterowania.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-05-13',
+    category: 'Analys',
+    tags: ['infrastruktur', 'ostlänken', 'norrbotniabanan', 'personalboende', 'trafikverket'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
