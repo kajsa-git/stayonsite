@@ -247,7 +247,7 @@ const KompetensRekryteringByggsektornGuide2026 = () => {
             076-249 84 86
           </a>
           {' '}eller besök{' '}
-          <a href="https://stayonsite.se" className="text-blue-600 hover:underline">
+          <a href="https://www.stayonsite.se" className="text-blue-600 hover:underline">
             stayonsite.se
           </a>
         </p>
