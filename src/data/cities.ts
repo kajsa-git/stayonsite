@@ -251,7 +251,7 @@ export const cities: City[] = [
     highlights: ['Västra Hamnen-projektet', 'Citytunnel-underhåll', 'Moderna bostadsområden', 'Öresundsbron-relaterade projekt'],
     industries: ['Bostäder', 'Infrastruktur', 'Kommersiellt', 'Transport'],
     coordinates: [55.605, 13.0038],
-    heroHook: ls('Lägenhetshotell & Personalboende i Malmö – nära Hyllie och Öresund', 'Aparthotel & Worker Accommodation in Malmö – Near Hyllie & Öresund', 'Aparthotel & Noclegi Pracownicze w Malmö – Blisko Hyllie i Öresund'),
+    heroHook: ls('Företagsboende & Personalboende i Malmö – nära Hyllie och Öresund', 'Aparthotel & Worker Accommodation in Malmö – Near Hyllie & Öresund', 'Aparthotel & Noclegi Pracownicze w Malmö – Blisko Hyllie i Öresund'),
     intro: ls('När projekten rullar i Hyllie, Västra Hamnen eller utefter E6:an behöver ni flexibla korttidsboenden. Våra lägenhetshotell i Limhamn, Fosie och centrala Malmö har komplett köksutrustning, veckostäd och tvättlösningar.', 'When projects run in Hyllie, Västra Hamnen or along the E6 you need flexible short-term housing. Our aparthotels in Limhamn, Fosie and central Malmö come with full kitchens, weekly cleaning and laundry.', 'Gdy projekty toczą się w Hyllie, Västra Hamnen lub wzdłuż E6, potrzebujecie elastycznych noclegów krótkoterminowych. Nasze aparthotele w Limhamn, Fosie i centrum Malmö mają pełne kuchnie, cotygodniowe sprzątanie i pranie.'),
     keywords: lk(
       ['personalboende malmö', 'företagsboende malmö', 'relocation malmö bygg', 'boende byggarbetare malmö', 'montörboende malmö', 'tillfälligt boende företag malmö', 'boende malmö', 'lägenhetshotell malmö', 'korttidsboende malmö'],
