@@ -224,7 +224,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
     'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
 
   const labelClass =
-    'text-[10px] font-bold uppercase tracking-widest text-white/50 ml-1';
+    'text-[10px] font-bold uppercase tracking-widest text-white/75 ml-1';
 
   return (
     <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-16 pb-8 md:pt-28 md:pb-16 bg-primary">
@@ -298,7 +298,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
             transition={{ delay: 0.3 }}
             className="w-full lg:w-[440px] lg:flex-shrink-0"
           >
-            <div className="bg-white/[0.15] backdrop-blur-xl border border-white/25 rounded-[20px] p-5 md:p-8 shadow-2xl">
+            <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
               {formSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center py-8">
                   <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
@@ -318,7 +318,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
                   <h2 className="text-lg md:text-xl font-bold text-white mb-1">
                     {t('homeowner.conversion.formTitle' as TranslationKey)}
                   </h2>
-                  <p className="text-sm text-white/50 mb-4">
+                  <p className="text-sm text-white/75 mb-4">
                     {t('homeowner.conversion.formSubtitle' as TranslationKey)}
                   </p>
 
@@ -440,7 +440,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
                     href={GOOGLE_REVIEW_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 mt-3 text-xs text-white/50 hover:text-white/80 transition-colors"
+                    className="flex items-center justify-center gap-2 mt-3 text-xs text-white/70 hover:text-white transition-colors"
                   >
                     <GoogleIcon />
                     <span>5.0 på Google</span>
