@@ -25,8 +25,7 @@ export async function generateMetadata({
     canonical: `https://www.stayonsite.se/for-husagare/${city.slug}`,
     hreflangs: [
       { lang: 'sv', href: `https://www.stayonsite.se/for-husagare/${city.slug}` },
-      { lang: 'en', href: 'https://www.stayonsite.se/en/corporate-housing-sweden' },
-      { lang: 'pl', href: 'https://www.stayonsite.se/pl/zakwaterowanie-firmowe' },
+      { lang: 'x-default', href: `https://www.stayonsite.se/for-husagare/${city.slug}` },
     ],
     locale: 'sv',
   })
