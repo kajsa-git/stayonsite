@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'] as const;
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'] as const;
 const STORAGE_KEY = 'stayonsite_utm';
 
 export const useUtmCapture = () => {
