@@ -111,7 +111,7 @@ const PersonalboendeVanligaFragor2026 = () => {
         <li>
           <Link href="/stad/malmo">Malmö</Link>,{' '}
           <Link href="/stad/goteborg">Göteborg</Link> och{' '}
-          <Link href="/stad/stockholm">Stockholm</Link> - brett projektunderlag
+          <Link href="/stad/stockholm">företagsboende Stockholm</Link> - brett projektunderlag
         </li>
       </ul>
 

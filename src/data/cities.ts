@@ -73,9 +73,9 @@ export const cities: City[] = [
       'Aparthotel & Noclegi Pracownicze w Sztokholmie – Blisko Slussen i Metra'
     ),
     intro: ls(
-      'Slussen, tunnelbaneutbyggnaden och datacenter runt Stockholm kräver bemanning som kan ändras varje vecka. Våra lägenhetshotell och företagslägenheter ligger nära arbetsplatsen — komplett boendeplan inom 24 timmar.',
-      'Corporate housing for construction crews in Stockholm. Furnished apartments near Slussen, the metro extension and data center sites — full housing plan within 24 hours.',
-      'Budowy takie jak Slussen, rozbudowa metra czy centra danych wymagają elastycznych ekip. Nasze aparthotele i mieszkania firmowe znajdują się blisko inwestycji — pełny plan zakwaterowania w 24 godziny.'
+      'Slussen, tunnelbaneutbyggnaden och Förbifart Stockholm driver fortsatt hög efterfrågan på företagsboende i Stockholm. Vi erbjuder möblerade företagslägenheter och personalboende i Hammarby Sjöstad, Solna, Liljeholmen och Sundbyberg — alltid nära arbetsplatsen och med parkering för servicebilar. Fast månadskontrakt, komplett boendeplan inom 24 timmar och en dedikerad kontaktperson under hela projektet.',
+      'Slussen, the metro extension and the Western Bypass keep demand for corporate housing in Stockholm consistently high. We provide furnished corporate apartments and staff accommodation in Hammarby Sjöstad, Solna, Liljeholmen and Sundbyberg — always close to the worksite, with van parking included. Fixed monthly contracts, a full housing plan within 24 hours and a dedicated contact person throughout your project.',
+      'Slussen, rozbudowa metra i Trasa Zachodnia utrzymują stały wysoki popyt na zakwaterowanie firmowe w Sztokholmie. Oferujemy umeblowane mieszkania firmowe i noclegi pracownicze w Hammarby Sjöstad, Solna, Liljeholmen i Sundbyberg — zawsze blisko placu budowy, z parkingiem dla aut serwisowych. Stałe umowy miesięczne, pełny plan zakwaterowania w 24 godziny i dedykowany opiekun przez cały projekt.'
     ),
     keywords: lk(
       ['personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm', 'lägenhetshotell stockholm'],
@@ -102,32 +102,32 @@ export const cities: City[] = [
     neighborhoods: [
       {
         name: ls('Hammarby Sjöstad', 'Hammarby Sjöstad', 'Hammarby Sjöstad'),
-        description: ls('Perfekt för lag som bygger Slussen, Sickla och Nacka tunnelbana.', 'Perfect for crews working on Slussen, Sickla and the Nacka metro line.', 'Idealne dla ekip pracujących przy Slussen, Sickli i linii metra do Nacka.'),
+        description: ls('Perfekt läge för lag som arbetar med Slussen, Sickla och Nacka tunnelbana. Flera av våra företagslägenheter i Stockholm ligger i samma trappuppgång — viktigt när ni roterar team varannan vecka.', 'Ideal for crews working on Slussen, Sickla and the Nacka metro line. Several of our Stockholm corporate apartments share the same stairwell — critical when rotating teams every other week.', 'Idealne dla ekip przy Slussen, Sickli i linii metra do Nacka. Kilka naszych mieszkań firmowych w Sztokholmie jest w tej samej klatce schodowej — ważne przy rotacji ekip co dwa tygodnie.'),
         distance: ls('12 min bil till Slussen', '12 min drive to Slussen', '12 min samochodem do Slussen')
       },
       {
         name: ls('Solna & Sundbyberg', 'Solna & Sundbyberg', 'Solna i Sundbyberg'),
-        description: ls('Närhet till Arenastaden, kontor och datacenter i norra Stockholm.', 'Close to Arenastaden, offices and data centers in northern Stockholm.', 'Blisko Arenastaden, biur i centrów danych na północy Sztokholmu.'),
+        description: ls('Nära Arenastaden, kontorsklustren i norra Stockholm och flera aktiva datacenteretableringar. Reserverade parkeringsplatser för skåpbilar ingår i de flesta objekt här.', 'Close to Arenastaden, office clusters in northern Stockholm and several active data center installations. Reserved van parking is included at most properties here.', 'Blisko Arenastaden, biur w północnym Sztokholmie i kilku aktywnych inwestycji centrum danych. W większości nieruchomości dostępne są zarezerwowane miejsca dla samochodów dostawczych.'),
         distance: ls('8 min till E4/E18', '8 min to E4/E18', '8 min do E4/E18')
       },
       {
         name: ls('Älvsjö & Årsta', 'Älvsjö & Årsta', 'Älvsjö i Årsta'),
-        description: ls('Goda pendlarlägen för södra projekten och Stockholmsmässan.', 'Great commuter spots for southern projects and the exhibition center.', 'Dogodne lokalizacje dla projektów na południu i targów Stockholmsmässan.'),
+        description: ls('Kostnadseffektivt personalboende i Stockholm för lag som arbetar söderut — Stockholmsmässan, Huddinge och Flemingsberg. Direktbuss och pendeltåg till Södra station på under 15 minuter.', 'Cost-effective staff housing in Stockholm for crews working south — the exhibition centre, Huddinge and Flemingsberg. Direct bus and commuter rail to Södra station in under 15 minutes.', 'Ekonomiczne noclegi pracownicze w Sztokholmie dla ekip pracujących na południu — centrum targowe, Huddinge i Flemingsberg. Bezpośredni autobus i kolej podmiejska do stacji Södra w niecałe 15 minut.'),
         distance: ls('10 min till Södermalm', '10 min to Södermalm', '10 min do Södermalm')
       }
     ],
     projects: [
       {
         name: ls('Nya Slussen', 'New Slussen', 'Nowe Slussen'),
-        description: ls('Vi roterar montörer i boenden runt Södermalm för nattpass.', 'We rotate crews through apartments around Södermalm for night shifts.', 'Rotujemy zespoły w mieszkaniach na Södermalmie na nocne zmiany.')
+        description: ls('Vi roterar montörer och installationsteam i boenden runt Södermalm och Hammarby för nattpass och tidig morgonstart. Genomsnittliga avtalstider på 4–8 månader för betong- och installationslag.', 'We rotate installers and construction teams through apartments around Södermalm and Hammarby for night shifts and early starts. Average contract lengths of 4–8 months for concrete and installation crews.', 'Rotujemy monterów i ekipy instalacyjne w mieszkaniach przy Södermalmie i Hammarby na nocne zmiany i wczesne starty. Średni czas trwania umów 4–8 miesięcy dla ekip betoniarskich i instalacyjnych.')
       },
       {
         name: ls('Tunnelbaneutbyggnaden', 'Metro extension', 'Rozbudowa metra'),
-        description: ls('Boendekluster nära Hagastaden och Nacka för spränglag.', 'Housing clusters near Hagastaden and Nacka for tunnel teams.', 'Klastry mieszkaniowe przy Hagastaden i Nacka dla ekip tunelowych.')
+        description: ls('Boendekluster nära Hagastaden, Barkarby och Nacka för spränglag och tunnelarbetare. Vi hanterar löpande teamrotationer och kan korta ned till 1 månads avtal när projektfaser skiftar.', 'Housing clusters near Hagastaden, Barkarby and Nacka for tunnel and blasting teams. We manage ongoing crew rotations and can go down to 1-month contracts when project phases shift.', 'Klastry mieszkaniowe przy Hagastaden, Barkarby i Nacka dla ekip tunelowych i strzałowych. Obsługujemy bieżące rotacje ekip i możemy skrócić umowę do 1 miesiąca przy zmianie faz projektu.')
       },
       {
         name: ls('Norra Djurgårdsstaden', 'Norra Djurgårdsstaden', 'Norra Djurgårdsstaden'),
-        description: ls('Långtidsuthyrningar till fasad- och installationsbolag.', 'Long-term rentals for façade and installation contractors.', 'Długoterminowe wynajmy dla firm fasadowych i instalacyjnych.')
+        description: ls('Långtidsuthyrningar till fasad-, VVS- och installationsbolag. Boenden i Gärdet och Östermalm med direktförbindelser till byggarbetsplatsen och plats för verktygsförvaring.', 'Long-term rentals for façade, plumbing and installation contractors. Housing in Gärdet and Östermalm with direct connections to the worksite and space for tool storage.', 'Długoterminowe wynajmy dla firm fasadowych, hydraulicznych i instalacyjnych. Mieszkania w Gärdet i Östermalm z bezpośrednim połączeniem z placem budowy i miejscem na przechowywanie narzędzi.')
       }
     ],
     testimonial: {
@@ -152,6 +152,18 @@ export const cities: City[] = [
       {
         question: ls('Tar ni hand om städning mellan passen?', 'Do you handle cleaning between shifts?', 'Czy zajmujecie się sprzątaniem między zmianami?'),
         answer: ls('Ja, slutstädning och regelbunden genomgång ingår i våra Stockholmsboenden.', 'Yes, final cleaning and regular inspections are included in our Stockholm housing.', 'Tak, sprzątanie końcowe i regularne przeglądy są wliczone w nasze noclegi w Sztokholmie.')
+      },
+      {
+        question: ls('Vad kostar företagsboende i Stockholm?', 'What does corporate housing in Stockholm cost?', 'Ile kosztuje zakwaterowanie firmowe w Sztokholmie?'),
+        answer: ls('Priset varierar beroende på läge, storlek och avtalslängd. Typiska priser för möblerat personalboende i Stockholm ligger på 12 000–22 000 kr per lägenhet och månad. Boenden i Solna och Sundbyberg är generellt 15–20 % billigare än motsvarande i innerstan. Kontakta oss för en offert anpassad till ert team och er budget.', 'Prices vary depending on location, size and contract length. Typical prices for furnished staff housing in Stockholm range from SEK 12,000–22,000 per apartment per month. Properties in Solna and Sundbyberg are generally 15–20% cheaper than equivalent inner-city options. Contact us for a quote tailored to your team and budget.', 'Ceny różnią się w zależności od lokalizacji, wielkości i długości umowy. Typowe ceny umeblowanych noclegów pracowniczych w Sztokholmie wynoszą 12 000–22 000 SEK za mieszkanie miesięcznie. Nieruchomości w Solna i Sundbyberg są zazwyczaj 15–20% tańsze niż w centrum. Skontaktuj się z nami po ofertę dopasowaną do Twojego zespołu.')
+      },
+      {
+        question: ls('Hur snabbt kan ni lösa boende för ett team i Stockholm?', 'How quickly can you arrange housing for a team in Stockholm?', 'Jak szybko możecie zorganizować noclegi dla ekipy w Sztokholmie?'),
+        answer: ls('Vi återkopplar inom 15 minuter och skickar en boendeplan med adresser och priser inom 24 timmar. För akuta behov – exempelvis vid projektstart med kort varsel – kan vi i många fall ordna inflyttning inom 48 timmar. Stockholm är vår mest aktiva marknad med störst utbud av tillgängliga objekt.', 'We get back to you within 15 minutes and send a housing plan with addresses and prices within 24 hours. For urgent needs — such as a project start at short notice — we can often arrange move-in within 48 hours. Stockholm is our most active market with the largest pool of available properties.', 'Odpowiadamy w ciągu 15 minut i wysyłamy plan zakwaterowania z adresami i cenami w 24 godziny. W pilnych przypadkach — np. przy krótkim terminie rozpoczęcia projektu — możemy często zorganizować zameldowanie w 48 godzin. Sztokholm to nasz najbardziej aktywny rynek z największą liczbą dostępnych nieruchomości.')
+      },
+      {
+        question: ls('Vilka typer av projekt har ni erfarenhet av i Stockholm?', 'What types of projects do you have experience with in Stockholm?', 'Jakie rodzaje projektów obsługujecie w Sztokholmie?'),
+        answer: ls('Vi har ordnat personalboende i Stockholm åt bland annat tunnelbyggare (tunnelbaneutbyggnaden), VVS- och elinstallatörer (Slussen, Norra Djurgårdsstaden), datacentertekniker (Norrtälje, Upplands Väsby), fasadbolag och betongentreprenörer. Kortaste uppdraget vi hanterat var 3 veckor, längsta pågår fortfarande efter 26 månader.', 'We have arranged staff accommodation in Stockholm for tunnel construction (metro extension), plumbing and electrical installers (Slussen, Norra Djurgårdsstaden), data centre technicians, façade contractors and concrete firms. Our shortest assignment was 3 weeks, our longest is still ongoing after 26 months.', 'Organizowaliśmy noclegi pracownicze w Sztokholmie m.in. dla budowniczych tuneli (rozbudowa metra), instalatorów hydrauliki i elektryki (Slussen, Norra Djurgårdsstaden), techników centrów danych, firm fasadowych i betoniarzy. Najkrótsze zlecenie trwało 3 tygodnie, najdłuższe trwa nadal po 26 miesiącach.')
       }
     ],
     nearby: ['uppsala', 'vasteras']

@@ -285,7 +285,7 @@ I hemförsäkringen ingår ansvarsskydd och rättsskydd och det innebär att du 
       </ul>
 
       <p>
-        När det gäller personalboende i {' '}<Link href="/stad/stockholm">Stockholm</Link>, {' '}<Link href="/stad/goteborg">Göteborg</Link>, {' '}<Link href="/stad/malmo">Malmö</Link>{' '} och andra stora städer är efterfrågan ofta hög, vilket gör det extra viktigt att ha ordning på alla praktiska och juridiska aspekter.
+        När det gäller <Link href="/stad/stockholm">personalboende i Stockholm</Link>, <Link href="/stad/goteborg">Göteborg</Link>, <Link href="/stad/malmo">Malmö</Link>{' '} och andra stora städer är efterfrågan ofta hög, vilket gör det extra viktigt att ha ordning på alla praktiska och juridiska aspekter.
       </p>
 
       <p>

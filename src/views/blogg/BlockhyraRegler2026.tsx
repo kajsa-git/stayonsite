@@ -318,11 +318,7 @@ const BlockhyraRegler2026 = () => {
       <h2>Kom igång idag</h2>
 
       <p>
-        De nya reglerna träder i kraft den 1 juli 2026 &mdash; nu är det dags att förbereda er. Oavsett om ni behöver boende i {' '}
-        <Link href="/stad/stockholm">Stockholm</Link>, {' '}
-        <Link href="/stad/goteborg">Göteborg</Link>, {' '}
-        <Link href="/stad/norrkoping">Norrköping</Link>, {' '}
-        <Link href="/stad/lulea">Luleå</Link> eller någon annan ort hjälper vi er att hitta rätt lösning.
+        De nya reglerna träder i kraft den 1 juli 2026 &mdash; nu är det dags att förbereda er. Oavsett om ni behöver <Link href="/stad/stockholm">företagsboende i Stockholm</Link>, <Link href="/stad/goteborg">Göteborg</Link>, <Link href="/stad/norrkoping">Norrköping</Link>, <Link href="/stad/lulea">Luleå</Link> eller någon annan ort hjälper vi er att hitta rätt lösning.
       </p>
 
       <p>
