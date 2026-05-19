@@ -251,10 +251,10 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
 
       <div className="container mx-auto px-6 md:px-12 relative z-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14 max-w-6xl mx-auto">
-          {/* Left: copy + trust bar (desktop) */}
-          <div className="flex-1 mb-3 lg:mb-0">
+          {/* Left: copy + trust bar (desktop) / below form on mobile */}
+          <div className="flex-1 order-2 lg:order-1 mt-6 lg:mt-0">
             {/* H1 — plain element, no motion wrapper (SSG/SEO) */}
-            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
+            <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {cityName
                 ? tr(
                     `Hyr ut din bostad i ${cityName} till företag`,
@@ -296,7 +296,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="w-full lg:w-[440px] lg:flex-shrink-0"
+            className="w-full lg:w-[440px] lg:flex-shrink-0 order-1 lg:order-2"
           >
             <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
               {formSuccess ? (
