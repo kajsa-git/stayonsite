@@ -786,7 +786,7 @@ export const translations: Record<
     "homeowner.form.disclaimer": "eller ring oss direkt",
 
     "homeowner.conversion.badge": "0% avgift. Alltid.",
-    "homeowner.conversion.title": "Hyr ut till företag – en av Sveriges mest anlitade",
+    "homeowner.conversion.title": "Hyr ut till företag – fast hyra utan avdrag",
     "homeowner.conversion.subtitle": "Över 100 nöjda fastighetsägare. 5,0 på Google. Vi betalar fast hyra varje månad utan avdrag – du bestämmer om du vill gå vidare.",
     "homeowner.conversion.formTitle": "Få ett hyreserbjudande idag",
     "homeowner.conversion.formSubtitle": "Helt gratis och utan bindning. De flesta får sitt första förslag inom några dagar.",
@@ -1259,7 +1259,7 @@ export const translations: Record<
     "homeowner.form.disclaimer": "or call us directly",
 
     "homeowner.conversion.badge": "0% fee. Always.",
-    "homeowner.conversion.title": "Rent to companies – one of Sweden's most trusted",
+    "homeowner.conversion.title": "Rent to companies – fixed rent, no deductions",
     "homeowner.conversion.subtitle": "Over 100 satisfied property owners. 5.0 on Google. We pay a fixed monthly rent with no deductions – you decide if you want to proceed.",
     "homeowner.conversion.formTitle": "Get a rental offer today",
     "homeowner.conversion.formSubtitle": "Completely free and without commitment. Most owners receive their first proposal within a few days.",
