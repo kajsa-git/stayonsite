@@ -66,6 +66,78 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
         'Minimum 3 miesiące. Możesz wypowiedzieć z 1-miesięcznym wypowiedzeniem.'
       ),
     },
+    {
+      q: tr(
+        'Kan hyresgästen sitta kvar mot min vilja?',
+        'Can the tenant stay against my wishes?',
+        'Czy najemca może zostać bez mojej zgody?'
+      ),
+      a: tr(
+        'Nej. Vid uthyrning av ett hus har hyresgästen inget besittningsskydd. Du kan säga upp avtalet med 3 månaders varsel utan att ange skäl – och utan domstolsförfarande. Vi använder alltid tidsbegränsade avtal kopplade till projektets längd, så avslutsdatumet är tydligt från dag ett.',
+        'No. When renting out a house, the tenant has no security of tenure. You can terminate the contract with 3 months notice without giving reasons – no court proceedings needed. We always use fixed-term contracts tied to the project duration.',
+        'Nie. Przy wynajmie domu najemca nie ma prawa do ochrony posiadania. Zawsze używamy umów terminowych powiązanych z czasem trwania projektu.'
+      ),
+    },
+    {
+      q: tr(
+        'Vad händer med min villaförsäkring?',
+        'What happens to my home insurance?',
+        'Co z moim ubezpieczeniem domu?'
+      ),
+      a: tr(
+        'Standardförsäkringen täcker normalt inte skador orsakade av hyresgäster. Du bör teckna ett uthyringstillägg hos ditt försäkringsbolag – kostar typiskt 500–1 000 kr/år och täcker skadegörelse upp till 200 000 kr. Vi kräver dessutom att det företag som hyr tecknar ansvarsförsäkring för sina anställda.',
+        'Standard home insurance typically does not cover damage caused by tenants. You should add a rental supplement with your insurer – typically SEK 500–1,000/year. We also require the renting company to have liability insurance for their employees.',
+        'Standardowe ubezpieczenie zazwyczaj nie pokrywa szkód wyrządzonych przez najemców. Zalecamy wykupienie rozszerzenia najmu. Wymagamy również od wynajmującej firmy posiadania ubezpieczenia OC.'
+      ),
+    },
+    {
+      q: tr(
+        'Vad betalar jag i skatt på hyresintäkten?',
+        'How much tax do I pay on rental income?',
+        'Ile podatku płacę od dochodu z wynajmu?'
+      ),
+      a: tr(
+        'Du betalar 30% kapitalskatt på överskottet. Avdragen är generösa: schablonavdrag 50 000 kr/år (från 1 juli 2026) plus 20% av hyresintäkten. Exempel: 15 000 kr/mån i hyra (180 000 kr/år) → avdrag 86 000 kr → skatt ca 28 200 kr → netto i fickan ca 152 000 kr/år. Vi kan hjälpa dig räkna på just din bostad.',
+        'You pay 30% capital gains tax on the surplus. Deductions are generous: standard deduction SEK 50,000/year (from 1 July 2026) plus 20% of rental income. Example: SEK 15,000/month → approx. SEK 28,200 in tax → approx. SEK 152,000 net per year.',
+        'Płacisz 30% podatku od zysku. Odliczenia są hojne: ryczałtowe 50 000 SEK/rok plus 20% dochodu z najmu. Możemy pomóc Ci obliczyć konkretną kwotę dla Twojej nieruchomości.'
+      ),
+    },
+    {
+      q: tr(
+        'Sliter inte montörer mer på huset?',
+        'Do workers cause more wear and tear?',
+        'Czy pracownicy bardziej niszczą dom?'
+      ),
+      a: tr(
+        'Tvärtom – veckopendlare sliter i regel mindre på en bostad än permanent boende. De är på jobbet 10 timmar om dagen och hemma bara på nätterna, utan barn, husdjur eller storhelger hemma. Vi tar alltid in- och utflyttbesiktning med foton som skydd för dig.',
+        'Quite the opposite – weekly commuters generally cause less wear than permanent residents. They are at work 10 hours a day and only home at night, without children, pets or parties. We always conduct move-in and move-out inspections with photos.',
+        'Wręcz przeciwnie – pracownicy tygodniowi zwykle mniej niszczą mieszkanie niż stali lokatorzy. Są w pracy 10 godzin dziennie. Zawsze przeprowadzamy protokoły zdawczo-odbiorcze ze zdjęciami.'
+      ),
+    },
+    {
+      q: tr(
+        'Behöver jag tillstånd för att hyra ut?',
+        'Do I need a permit to rent out?',
+        'Czy potrzebuję zezwolenia na wynajem?'
+      ),
+      a: tr(
+        'Nej. Inget kommunalt, statligt eller annat tillstånd krävs för att hyra ut ett hus (villa/enfamiljshus) till ett företag. Har du en bostadsrätt krävs styrelsens godkännande – vi hjälper dig med den processen.',
+        'No. No municipal, government or other permit is required to rent out a house to a company. If you have a tenant-owned apartment (bostadsrätt), board approval is required.',
+        'Nie. Nie jest wymagane żadne zezwolenie na wynajem domu firmie. W przypadku spółdzielczego mieszkania własnościowego wymagana jest zgoda zarządu.'
+      ),
+    },
+    {
+      q: tr(
+        'Hur sätts hyran?',
+        'How is the rent set?',
+        'Jak ustalana jest czynsz?'
+      ),
+      a: tr(
+        'Hyran ska vara skälig. En bra tumregel: 4% av fastighetens marknadsvärde per år, delat på 12, plus löpande driftkostnader. Möblerat ger vanligtvis 10–30% påslag. Från 1 juli 2026 gäller fri hyressättning som utgångspunkt. Vi hjälper dig sätta rätt nivå baserat på faktisk efterfrågan i ditt område – utan att du behöver gissa.',
+        'The rent should be reasonable. A good rule of thumb: 4% of the property market value per year, divided by 12, plus running costs. Furnished adds 10–30%. From 1 July 2026, free rent-setting applies as the starting point. We help you set the right level based on actual demand in your area.',
+        'Czynsz powinien być rozsądny. Dobra zasada: 4% wartości rynkowej nieruchomości rocznie, podzielone przez 12, plus koszty eksploatacji. Pomagamy ustalić właściwą stawkę na podstawie rzeczywistego popytu w Twoim regionie.'
+      ),
+    },
   ];
 
   const faqItems = extraFaqItems ? [...baseFaqItems, ...extraFaqItems] : baseFaqItems;

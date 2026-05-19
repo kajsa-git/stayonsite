@@ -109,6 +109,47 @@ const ForHusagare = () => {
       <Header />
       <main className="flex-grow">
         <HomeownerHero />
+        <section className="py-16 bg-white border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-8 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-semibold text-nordic-900 mb-4">
+              Hyra ut till företag – hur funkar det?
+            </h2>
+            <p className="text-nordic-700 mb-8 text-base leading-relaxed max-w-2xl">
+              Att hyra ut sin bostad till ett byggföretag, energibolag eller infrastrukturprojekt kallas ofta <strong>blockhyra</strong> eller <strong>personalboende</strong>. Istället för privatpersoner är det ett seriöst företag som betalar hyran – varje månad, i förskott, utan avdrag.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
+                <div className="text-2xl font-bold text-[#ff6300] mb-2">1.</div>
+                <h3 className="font-semibold text-nordic-900 mb-2">Du skickar en intresseanmälan</h3>
+                <p className="text-sm text-nordic-600">Vi kontaktar dig och går igenom din bostad – läge, storlek och vad du kan förvänta dig i hyra. Ingen bindning.</p>
+              </div>
+              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
+                <div className="text-2xl font-bold text-[#ff6300] mb-2">2.</div>
+                <h3 className="font-semibold text-nordic-900 mb-2">Vi matchar dig med ett företag</h3>
+                <p className="text-sm text-nordic-600">Vi letar i vårt nätverk av byggbolag och projektledare efter en hyresgäst som passar din bostad och ditt område.</p>
+              </div>
+              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
+                <div className="text-2xl font-bold text-[#ff6300] mb-2">3.</div>
+                <h3 className="font-semibold text-nordic-900 mb-2">Fast hyra varje månad</h3>
+                <p className="text-sm text-nordic-600">Kontraktet skrivs direkt med företaget. Du får fast månadshyra utan avdrag – vi tjänar på mellanskillnaden mot vad företaget betalar.</p>
+              </div>
+            </div>
+
+            <div className="bg-nordic-900 text-white rounded-2xl p-6 md:p-8">
+              <h3 className="text-lg font-semibold mb-4">Varför hyra ut till företag istället för privatperson?</h3>
+              <div className="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-white/80">
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Företag betalar alltid i tid – bättre betalningshistorik än privatpersoner</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Inget besittningsskydd – du får tillbaka huset när projektet är klart</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Lägre slitage – veckopendlare är på jobbet 10 timmar om dagen</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Längre kontrakt – typiskt 3–18 månader, förutsägbar inkomst</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>0% avgift till oss – du får full hyra, vi fakturerar företaget separat</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Ny lag från 1 juli 2026 gör blockhyra enklare och tryggare</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="py-12 bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8 max-w-5xl">
             <h2 className="text-xl font-semibold text-nordic-900 mb-2 text-center">
