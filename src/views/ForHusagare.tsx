@@ -139,7 +139,7 @@ const ForHusagare = () => {
             <div className="bg-nordic-900 text-white rounded-2xl p-6 md:p-8">
               <h3 className="text-lg font-semibold mb-4">Varför hyra ut till företag istället för privatperson?</h3>
               <div className="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-white/80">
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Företag betalar alltid i tid – bättre betalningshistorik än privatpersoner</span></div>
+                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Vi betalar alltid i tid – StayOnSite är din motpart och garanterar hyran varje månad</span></div>
                 <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Inget besittningsskydd – du får tillbaka huset när projektet är klart</span></div>
                 <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Lägre slitage – veckopendlare är på jobbet 10 timmar om dagen</span></div>
                 <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Längre kontrakt – typiskt 3–18 månader, förutsägbar inkomst</span></div>
