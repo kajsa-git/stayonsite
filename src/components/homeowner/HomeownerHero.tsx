@@ -459,12 +459,12 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 overflow-hidden"
+                className="bg-black/40 border border-white/15 rounded-xl px-4 overflow-hidden"
               >
                 <AccordionTrigger className="text-sm font-medium text-white/90 hover:text-white py-3 no-underline hover:no-underline">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-white/60 pb-3">
+                <AccordionContent className="text-sm text-white/90 pb-3">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
