@@ -1,11 +1,14 @@
 'use client'
 
+import Link from 'next/link';
 import Header from '@/components/Header';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
+import { cities } from '@/data/cities';
+import { MapPin } from 'lucide-react';
 
 const ForHusagare = () => {
   const { t } = useTranslation();
@@ -106,6 +109,28 @@ const ForHusagare = () => {
       <Header />
       <main className="flex-grow">
         <HomeownerHero />
+        <section className="py-12 bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-8 max-w-5xl">
+            <h2 className="text-xl font-semibold text-nordic-900 mb-2 text-center">
+              Hyr ut i din stad
+            </h2>
+            <p className="text-sm text-gray-600 text-center mb-8">
+              Vi har aktiv efterfrågan från företag i hela Sverige
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {cities.map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/for-husagare/${city.slug}`}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-nordic-200 hover:border-[#ff6300] hover:bg-[#ff6300]/5 transition-colors text-sm text-nordic-900 hover:text-[#ff6300]"
+                >
+                  <MapPin className="h-3 w-3" />
+                  {city.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

@@ -101,7 +101,7 @@ const PersonalboendeVanligaFragor2026 = () => {
         </li>
         <li>
           <Link href="/stad/gavle">Gävle</Link> och{' '}
-          <Link href="/stad/borlange">Borlänge</Link> - datacenteretablering och
+          <Link href="/stad/falun">Falun</Link> - datacenteretablering och
           logistikutbyggnad
         </li>
         <li>

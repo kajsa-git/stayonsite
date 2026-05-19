@@ -302,7 +302,7 @@ const BlockhyraRegler2026 = () => {
 
       <p>
         Vill du veta mer om hur blockhyra fungerar i praktiken? Läs vår {' '}
-        <Link href="/blogg/blockhyra-foretagsbostader-nya-regler-juli-2026">detaljerade guide till blockhyra och företagsbostäder</Link> {' '}
+        <Link href="/blogg/hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare">detaljerade guide till blockhyra och företagsbostäder</Link> {' '}
         eller vår artikel om {' '}
         <Link href="/blogg/sa-fungerar-det-fran-intresse-till-forsta-hyran">hur processen ser ut från intresse till första hyran</Link>.
       </p>

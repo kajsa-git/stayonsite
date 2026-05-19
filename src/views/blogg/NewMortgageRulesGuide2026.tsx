@@ -159,7 +159,7 @@ Det skattefria beloppet för privatuthyrning är 40 000 kr per år (schablonavdr
       </p>
 
       <p>
-        För dig som hyr ut {' '}<Link href="/blogg/blockhyra-foretagsbostader-nya-regler-juli-2026">personalboende via blockhyra</Link>{' '} kan de nya reglerna innebära förenklingar. 
+        För dig som hyr ut {' '}<Link href="/blogg/hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare">personalboende via blockhyra</Link>{' '} kan de nya reglerna innebära förenklingar. 
 Nya regler för blockhyra ska möta företagens behov av bostäder till sin personal, bland annat genom ett mer ändamålsenligt system för att underlätta uthyrning av företagsbostäder
 .
       </p>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { fontClassNames, SharedBody } from '../shared-layout'
 
 export const metadata: Metadata = {
-  title: 'StayOnSite - Zakwaterowanie dla pracowników budowlanych | Mieszkania służbowe Szwecja',
+  title: 'Zakwaterowanie Firmowe dla Pracowników | StayOnSite Szwecja',
   description: 'StayOnSite pomaga firmom budowlanym szybko znaleźć zakwaterowanie w innych lokalizacjach dla ich pracowników. Ponad 10 lat doświadczenia.',
   icons: [
     { rel: 'icon', url: '/favicon.ico', sizes: 'any' },

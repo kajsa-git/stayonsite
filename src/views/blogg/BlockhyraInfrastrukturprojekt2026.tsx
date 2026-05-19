@@ -362,7 +362,7 @@ Bygget av den 12 kilometer långa järnvägssträckan Umeå&ndash;Dåva pågår 
 
       <h3>Relaterade guider:</h3>
       <ul>
-        <li><Link href="/blogg/blockhyra-foretagsbostader-nya-regler-juli-2026">Blockhyra och företagsbostäder &ndash; nya regler juli 2026</Link></li>
+        <li><Link href="/blogg/hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare">Blockhyra och företagsbostäder &ndash; nya regler juli 2026</Link></li>
         <li><Link href="/blogg/privatuthyrningslagen-reform-2026">Nya privatuthyrningslagen 2026: Vad reformen innebär</Link></li>
         <li><Link href="/blogg/infrastruktur-personalboende-karta-2026">Infrastruktur och personalboende &ndash; karta 2026</Link></li>
         <li><Link href="/blogg/gron-omstallning-norr-boende">Grön omställning i norr: Boendeutmaningen</Link></li>

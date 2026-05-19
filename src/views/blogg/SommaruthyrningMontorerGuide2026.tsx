@@ -220,7 +220,7 @@ const SommaruthyrningMontorerGuide2026 = () => {
         <li><strong>Garanterad hyra</strong> genom företagsavtal</li>
         <li><strong>Professionella hyresgäster</strong> från verifierade byggföretag</li>
         <li><strong>Svar inom 24 timmar</strong></li>
-        <li>Hantering av <Link href="/blogg/blockhyra-foretagsbostader-nya-regler-juli-2026">blockhyresavtal</Link></li>
+        <li>Hantering av <Link href="/blogg/hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare">blockhyresavtal</Link></li>
       </ul>
 
       <p>

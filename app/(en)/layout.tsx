@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { fontClassNames, SharedBody } from '../shared-layout'
 
 export const metadata: Metadata = {
-  title: 'StayOnSite - Accommodation for Construction Workers | Corporate Housing Sweden',
+  title: 'Worker Accommodation & Corporate Housing Sweden | StayOnSite',
   description: 'StayOnSite helps construction companies quickly find accommodation in other locations for their workers. Over 10 years of experience. Housing throughout Sweden.',
   icons: [
     { rel: 'icon', url: '/favicon.ico', sizes: 'any' },

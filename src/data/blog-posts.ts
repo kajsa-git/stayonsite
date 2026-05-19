@@ -36,7 +36,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Ustawa o wynajmie 2026: Nowe zasady od 1 lipca – co zyskujesz'
     },
     description: {
-      sv: 'Riksdagen röstade igenom den största reformen sedan 2012. Schablonavdraget höjs till 50 000 kr och blockhyra förenklas. Så här maximerar du din hyresintäkt från 1 juli.',
+      sv: 'Riksdagen röstade igenom reformen: schablonavdraget höjs till 50 000 kr och blockhyra förenklas. Så maximerar du din hyresintäkt från 1 juli 2026.',
       en: 'Parliament passed the biggest reform since 2012. The standard deduction rises to SEK 50,000 and block rentals get simpler. How to maximise your rental income from 1 July.',
       pl: 'Sejm uchwalił największą reformę od 2012 r. Odliczenie rośnie do 50 000 SEK. Jak zmaksymalizować dochód z najmu od 1 lipca.'
     },
@@ -90,7 +90,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Ubezpieczenie i odpowiedzialność za zakwaterowanie pracowników – co obowiązuje?',
     },
     description: {
-      sv: 'Guide om försäkringar, ansvarsförsäkring och skydd vid uthyrning av personalboende till byggföretag och montörer.',
+      sv: 'Guide om försäkringar, ansvarsförsäkring och skydd vid uthyrning av personalboende till byggföretag och montörer i Sverige.',
       en: 'Guide on insurance, liability coverage and protection when renting accommodation to construction companies and contractors.',
       pl: 'Przewodnik po ubezpieczeniach, odpowiedzialności i ochronie przy wynajmie zakwaterowania dla firm budowlanych.',
     },
@@ -162,7 +162,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Regionalna analiza mieszkaniowa 2026: Gdzie znaleźć zakwaterowanie dla pracowników',
     },
     description: {
-      sv: 'Boverkets nya statistik visar var det finns överskott och brist på bostäder – och vad det betyder för ditt byggprojekt.',
+      sv: 'Boverkets nya statistik visar var det finns överskott och brist på bostäder – och vad det innebär för ditt byggprojekt 2026.',
       en: 'New housing statistics reveal where accommodation is available – and what it means for your construction project.',
       pl: 'Nowe statystyki pokazują, gdzie są mieszkania dostępne – i co to znaczy dla Twojego projektu budowlanego.',
     },
@@ -216,7 +216,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Nowe zasady kredytów hipotecznych kwiecień 2026: Jak wpływają na wynajmujących zakwaterowanie',
     },
     description: {
-      sv: 'Från 1 april 2026 gäller nya bolåneregler. Här är vad fastighetsägare som hyr ut till byggföretag behöver veta.',
+      sv: 'Från 1 april 2026 gäller nya bolåneregler i Sverige. Här är vad fastighetsägare som hyr ut till byggföretag behöver veta.',
       en: 'New mortgage rules from April 1, 2026. What property owners renting to construction companies need to know.',
       pl: 'Nowe zasady kredytów od 1 kwietnia 2026. Co właściciele wynajmujący firmom budowlanym muszą wiedzieć.',
     },
@@ -252,7 +252,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Wynajem nieruchomości: StayOnSite vs samodzielny wynajem vs inne platformy',
     },
     description: {
-      sv: 'Jämförelse av alternativ för husägare som vill hyra ut till företag. Avgifter, garantier och trygghet - så skiljer sig StayOnSite från Samtrygg, Qasa och egen uthyrning.',
+      sv: 'Jämförelse för husägare: Avgifter, garantier och trygghet – så skiljer sig StayOnSite från Samtrygg, Qasa och egen uthyrning.',
       en: 'Comparison of options for homeowners renting to companies. Fees, guarantees and security - how StayOnSite differs from other platforms.',
       pl: 'Porównanie opcji dla właścicieli wynajmujących firmom. Opłaty, gwarancje i bezpieczeństwo.',
     },
@@ -270,7 +270,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Zakwaterowanie pracownicze: 8 najczęstszych pytań firm budowlanych',
     },
     description: {
-      sv: 'Svar på de vanligaste frågorna om personalboende - pris, leveranstid, fakturering, ramavtal och vad som ingår.',
+      sv: 'Svar på de vanligaste frågorna om personalboende – pris, leveranstid, fakturering, ramavtal och vad som ingår. För byggföretag i Sverige.',
       en: 'Answers to the most common questions about worker accommodation - pricing, delivery time, invoicing, framework agreements.',
       pl: 'Odpowiedzi na najczęstsze pytania o zakwaterowanie pracownicze - ceny, czas realizacji, fakturowanie.',
     },
@@ -324,7 +324,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Jak działa wynajem zbiorczy dla projektów Ostlänken i Norrbotniabanan 2026',
     },
     description: {
-      sv: 'Stora infrastrukturkontrakt kräver personalboende. Så utnyttjar byggföretag de nya blockhyresreglerna från juli 2026.',
+      sv: 'Stora infrastrukturkontrakt kräver personalboende i hela Sverige. Så utnyttjar byggföretag de nya blockhyresreglerna från juli 2026.',
       en: 'Major infrastructure contracts require staff accommodation. How construction firms use the new block rental rules from July 2026.',
       pl: 'Duże kontrakty infrastrukturalne wymagają zakwaterowania personelu. Jak firmy budowlane używają nowych zasad wynajmu od lipca 2026.',
     },
@@ -378,7 +378,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Gdzie budownictwo mieszkaniowe się odradza? Prognoza dla zakwaterowania pracowników 2026-2027',
     },
     description: {
-      sv: 'Bostadsbyggandet vänder uppåt 2026. Se vilka regioner som får mest aktivitet och var byggföretag behöver montörboende.',
+      sv: 'Bostadsbyggandet vänder uppåt 2026. Se vilka regioner som får mest aktivitet och var byggföretag behöver montörboende och personalboende.',
       en: 'Housing construction rebounds in 2026. See which regions will see most activity and where companies need worker accommodation.',
       pl: 'Budownictwo mieszkaniowe rośnie w 2026 r. Zobacz, które regiony będą najbardziej aktywne i gdzie potrzebne będzie zakwaterowanie.',
     },
@@ -414,7 +414,7 @@ export const blogPosts: BlogPost[] = [
       pl: 'Krajowy plan infrastruktury Szwecji 2026-2037: Co oznacza dla zakwaterowania pracowników?',
     },
     description: {
-      sv: 'Ny infrastrukturplan med byggstartsbeslut för Ostlänken, Norrbotniabanan och fler projekt. Guide för byggföretag.',
+      sv: 'Ny infrastrukturplan 2026-2037 med byggstartsbeslut för Ostlänken, Norrbotniabanan och fler projekt. Guide för byggföretag och montörboende.',
       en: 'New infrastructure plan with construction decisions. Guide for contractors on accommodation needs 2026-2037.',
       pl: 'Nowy plan infrastruktury ze startem budowy. Przewodnik dla firm budowlanych o potrzebach zakwaterowania.',
     },
