@@ -424,6 +424,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['infrastruktur', 'ostlänken', 'norrbotniabanan', 'personalboende', 'trafikverket'],
     readingTime: 9,
   },
+  {
+    slug: 'kompetensbristen-byggsektorn-2026-praktisk-rekryteringsguide',
+    title: {
+      sv: 'Kompetensbristen i byggsektorn 2026: Praktisk guide för företag som rekryterar',
+      en: 'Construction Labor Shortage 2026: Practical Recruitment Guide',
+      pl: 'Niedobór pracowników w budownictwie 2026: Praktyczny przewodnik rekrutacyjny',
+    },
+    description: {
+      sv: '76% av byggföretagen har problem att rekrytera. Lös kompetensbristen genom flexibel rekrytering och boende. Guide med 5 strategier.',
+      en: '76% of construction companies struggle to recruit. Solve talent shortage with flexible hiring and accommodation. Guide with 5 strategies.',
+      pl: '76% firm budowlanych ma problemy z rekrutacją. Rozwiąż brak talentów dzięki elastycznej rekrutacji. Przewodnik z 5 strategiami.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-05-20',
+    category: 'Guide',
+    tags: ['kompetensförsörjning', 'rekrytering', 'arbetskraftsbrist', 'byggsektorn', 'personalstrategi'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
