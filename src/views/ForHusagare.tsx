@@ -132,7 +132,7 @@ const ForHusagare = () => {
                   {
                     n: '02',
                     title: 'Längre kontrakt – färre vakanser',
-                    body: 'Företagshyresgäster stannar veckor eller månader, inte helger. Förutsägbar inkomst utan ständiga omsättningar.',
+                    body: 'Företagshyresgäster stannar veckor eller månader, inte helger. Förutsägbar inkomst, färre byten och minimal administration mellan kontrakten.',
                   },
                   {
                     n: '03',
@@ -142,7 +142,7 @@ const ForHusagare = () => {
                   {
                     n: '04',
                     title: 'Vi sköter allt praktiskt',
-                    body: 'Avtal, in- och utflyttbesiktning, betalningar och löpande kontakt med hyresgästen. Du behöver inte lyfta ett finger.',
+                    body: 'Avtal, in- och utflyttbesiktning, betalningar och löpande kontakt med hyresgästen. En dedikerad kontaktperson – du behöver inte lyfta ett finger.',
                   },
                   {
                     n: '05',
@@ -155,7 +155,7 @@ const ForHusagare = () => {
                     body: 'Du får 100% av den avtalade hyran varje månad, utan avdrag. Vi tjänar på prisskillnaden mot företagskunden. Du betalar ingenting till oss.',
                   },
                 ].map(({ n, title, body }) => (
-                  <div key={n} className="bg-white p-7 flex gap-5">
+                  <div key={n} className="bg-white p-7 flex gap-5 min-h-40">
                     <span className="text-[#ff6300] font-bold text-sm font-heading shrink-0 pt-0.5">{n}</span>
                     <div className="border-l border-nordic-200 pl-5">
                       <h3 className="font-heading font-semibold text-nordic-900 text-base mb-1.5">{title}</h3>
