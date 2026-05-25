@@ -1,10 +1,12 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import type { Company } from "@/lib/crm/schema";
+import type { Company, Contact } from "@/lib/crm/schema";
+import { Mail, Phone, User } from "lucide-react";
 
 interface Props {
   company: Company;
+  primaryContact?: Contact | null;
 }
 
 function initials(name: string) {
@@ -24,7 +26,14 @@ const categoryColors: Record<string, string> = {
   Montage: "bg-orange-100 text-orange-800",
 };
 
-export function CompanyHeader({ company }: Props) {
+const LEAD_SOURCE_LABELS: Record<string, string> = {
+  kallt: "Kallt samtal",
+  webb: "Webb",
+  befintlig: "Befintlig kund",
+  referens: "Referens",
+};
+
+export function CompanyHeader({ company, primaryContact }: Props) {
   const colorClass = company.category
     ? (categoryColors[company.category] ?? "bg-nordic-200 text-nordic-800")
     : "bg-nordic-200 text-nordic-800";
@@ -34,7 +43,7 @@ export function CompanyHeader({ company }: Props) {
       <div className="h-14 w-14 rounded-2xl bg-nordic-700 text-white flex items-center justify-center text-xl font-bold shrink-0">
         {initials(company.name)}
       </div>
-      <div>
+      <div className="min-w-0">
         <h1 className="text-2xl font-bold text-nordic-900">{company.name}</h1>
         <div className="flex items-center gap-2 mt-1">
           {company.orgNr && (
@@ -53,7 +62,33 @@ export function CompanyHeader({ company }: Props) {
               {company.website}
             </a>
           )}
+          {company.leadSource && LEAD_SOURCE_LABELS[company.leadSource] && (
+            <Badge variant="outline" className="text-xs">
+              {LEAD_SOURCE_LABELS[company.leadSource]}
+            </Badge>
+          )}
         </div>
+
+        {primaryContact && (
+          <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-2 text-sm">
+            <span className="flex items-center gap-1.5 font-medium text-nordic-800">
+              <User className="h-3.5 w-3.5 text-muted-foreground" />
+              {primaryContact.name}
+            </span>
+            {primaryContact.phone && (
+              <a href={`tel:${primaryContact.phone}`} className="flex items-center gap-1.5 text-nordic-700 hover:text-primary-600">
+                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                {primaryContact.phone}
+              </a>
+            )}
+            {primaryContact.email && (
+              <a href={`mailto:${primaryContact.email}`} className="flex items-center gap-1.5 text-nordic-700 hover:text-primary-600">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                {primaryContact.email}
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

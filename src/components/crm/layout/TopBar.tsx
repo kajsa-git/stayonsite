@@ -2,41 +2,65 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
+import { useGlobalSearch } from "@/components/crm/search/GlobalSearch";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
-import { useSearch } from "@/hooks/crm/useSearch";
-import { Building2, ChevronLeft, ChevronRight, LogOut, Search } from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 interface TopBarProps {
   currentIndex?: number;
   total?: number;
   onPrev?: () => void;
   onNext?: () => void;
-  searchRef?: React.RefObject<HTMLInputElement>;
 }
 
-export function TopBar({ currentIndex, total, onPrev, onNext, searchRef }: TopBarProps) {
+export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const { counts } = useQueueCounts();
-  const { query, setQuery, results, clear } = useSearch();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const internalRef = useRef<HTMLInputElement>(null);
-  const inputRef = searchRef ?? internalRef;
-
-  useEffect(() => {
-    setShowDropdown(results.length > 0 && query.length >= 2);
-  }, [results, query]);
+  const { open: openSearch } = useGlobalSearch();
+  const [showNewCompany, setShowNewCompany] = useState(false);
 
   return (
     <div className="h-14 border-b bg-white flex items-center px-4 gap-4 sticky top-0 z-40">
-      <div className="flex items-center gap-2 text-nordic-700 font-semibold text-sm shrink-0">
+      <button
+        onClick={() => router.push("/crm")}
+        className="flex items-center gap-2 text-nordic-700 font-semibold text-sm shrink-0 hover:text-nordic-900 transition-colors"
+        title="Till Min dag"
+      >
         <Building2 className="h-4 w-4" />
         <span>StayOnSite CRM</span>
-      </div>
+      </button>
+
+      <nav className="flex items-center gap-0.5 shrink-0">
+        <button
+          onClick={() => router.push("/crm")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+        >
+          Min dag
+        </button>
+        <button
+          onClick={() => router.push("/crm/foretag")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+        >
+          Företagsbank
+        </button>
+        <button
+          onClick={() => router.push("/crm/properties")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+        >
+          Objektsbank
+        </button>
+        <button
+          onClick={() => router.push("/crm/sok")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+        >
+          Sök
+        </button>
+      </nav>
 
       {total != null && (
         <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
@@ -52,48 +76,32 @@ export function TopBar({ currentIndex, total, onPrev, onNext, searchRef }: TopBa
         </div>
       )}
 
-      <div className="relative flex-1 max-w-sm">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          ref={inputRef}
-          className="pl-8 h-9 text-sm"
-          placeholder="Sök företag… (⌘F)"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => query.length >= 2 && setShowDropdown(true)}
-          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-        />
-        {showDropdown && (
-          <div className="absolute top-full mt-1 left-0 right-0 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
-            {results.map((r) => (
-              <button
-                key={r.id}
-                className="w-full text-left px-3 py-2 text-sm hover:bg-nordic-100 flex flex-col"
-                onMouseDown={() => {
-                  clear();
-                  router.push(`/crm/company/${r.id}`);
-                }}
-              >
-                <span className="font-medium">{r.name}</span>
-                {(r.orgNr || r.category) && (
-                  <span className="text-xs text-muted-foreground">
-                    {[r.category, r.orgNr].filter(Boolean).join(" · ")}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <button
+        onClick={openSearch}
+        title="Sök allt (⌘K)"
+        className="relative flex-1 max-w-sm flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
+      >
+        <Search className="h-4 w-4 shrink-0" />
+        <span>Sök företag, förfrågan, objekt…</span>
+        <kbd className="ml-auto text-[10px] border rounded px-1.5 py-0.5 bg-white shrink-0">⌘K</kbd>
+      </button>
 
       <div className="flex items-center gap-2 ml-auto shrink-0">
+        <Badge
+          variant="outline"
+          className="cursor-pointer text-xs"
+          onClick={() => router.push("/crm")}
+          title="Nya förfrågningar"
+        >
+          {counts.incoming} nya
+        </Badge>
         <Badge
           variant="secondary"
           className="cursor-pointer text-xs"
           onClick={() => router.push("/crm")}
-          title="Återkomster idag"
+          title="Att kontakta idag"
         >
-          {counts.followUps} återkomster
+          {counts.followUps} kontakta
         </Badge>
         <Badge
           variant="outline"
@@ -101,7 +109,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext, searchRef }: TopBa
           onClick={() => router.push("/crm")}
           title="Aktiva matchningar"
         >
-          {counts.matching} matching
+          {counts.matching} matchning
         </Badge>
         <Badge
           variant="outline"
@@ -109,8 +117,19 @@ export function TopBar({ currentIndex, total, onPrev, onNext, searchRef }: TopBa
           onClick={() => router.push("/crm")}
           title="Att fakturera"
         >
-          {counts.invoiced} faktura
+          {counts.won} fakturera
         </Badge>
+
+          <Button
+          variant="outline"
+          size="sm"
+          className="h-8 gap-1.5 text-xs"
+          onClick={() => setShowNewCompany(true)}
+          title="Ny kund (⌘N)"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Ny kund
+        </Button>
 
         {session?.user?.name && (
           <span className="text-xs text-muted-foreground hidden md:block">
@@ -127,6 +146,8 @@ export function TopBar({ currentIndex, total, onPrev, onNext, searchRef }: TopBa
           <LogOut className="h-4 w-4" />
         </Button>
       </div>
+
+      <NewCompanyModal open={showNewCompany} onClose={() => setShowNewCompany(false)} />
     </div>
   );
 }

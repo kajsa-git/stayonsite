@@ -37,5 +37,28 @@ export function matchScore(request: Request, property: Property): number {
     score += 10;
   }
 
-  return Math.min(score, 100);
+  // Price within budget (rentOut = customer price vs request budgetMax)
+  if (request.budgetMax && property.rentOut) {
+    if (property.rentOut <= request.budgetMax) {
+      score += 10;
+    } else {
+      // Penalty grows with how far over budget, capped at -20
+      const over = (property.rentOut - request.budgetMax) / request.budgetMax;
+      score -= Math.min(Math.round(over * 40), 20);
+    }
+  }
+
+  // Furnished requirement
+  if (request.furnishedRequired) {
+    if (property.furnished) score += 10;
+    else score -= 15;
+  }
+
+  // Garage requirement
+  if (request.garageRequired) {
+    if (property.garage) score += 5;
+    else score -= 10;
+  }
+
+  return Math.max(0, Math.min(score, 100));
 }

@@ -1,5 +1,6 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { indexNote } from "@/lib/crm/search-index";
 import { notes } from "@/lib/crm/schema";
 import { desc, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
@@ -37,5 +38,6 @@ export async function POST(req: NextRequest) {
     .values({ id, authorId: user.id, ...body })
     .returning();
 
+  await indexNote(id).catch((e) => console.error("search-index note:", e));
   return NextResponse.json(row, { status: 201 });
 }

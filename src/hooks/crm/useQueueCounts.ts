@@ -4,8 +4,10 @@ import useSWR from "swr";
 
 interface QueueCounts {
   followUps: number;
+  incoming: number;
   matching: number;
-  invoiced: number;
+  won: number;
+  chaseLandlords: number;
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -16,7 +18,7 @@ export function useQueueCounts() {
   });
 
   return {
-    counts: data ?? { followUps: 0, matching: 0, invoiced: 0 },
+    counts: data ?? { followUps: 0, incoming: 0, matching: 0, won: 0, chaseLandlords: 0 },
     isLoading: !data && !error,
   };
 }

@@ -9,27 +9,22 @@ export function BottomBar() {
 
   return (
     <div className="h-10 border-t bg-white flex items-center px-4 gap-6 text-xs text-muted-foreground sticky bottom-0">
-      <button
-        className="hover:text-foreground transition-colors"
-        onClick={() => router.push("/crm")}
-      >
-        <span className="font-semibold text-foreground">{counts.followUps}</span> återkomster idag
+      <span className="text-muted-foreground/70">Din kö idag:</span>
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
+        <span className="font-semibold text-foreground">{counts.incoming}</span> nya förfrågningar
       </button>
-      <button
-        className="hover:text-foreground transition-colors"
-        onClick={() => router.push("/crm")}
-      >
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
+        <span className="font-semibold text-foreground">{counts.followUps}</span> att kontakta
+      </button>
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.matching}</span> pågående matchningar
       </button>
-      <button
-        className="hover:text-foreground transition-colors"
-        onClick={() => router.push("/crm")}
-      >
-        <span className="font-semibold text-foreground">{counts.invoiced}</span> att fakturera
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
+        <span className="font-semibold text-foreground">{counts.won}</span> att fakturera
       </button>
-      <div className="ml-auto text-[10px] text-muted-foreground/50">
-        F1 Matcha · F2 Återkom · F3 Fakturerad · F4 Nej tack · F5 Arkivera
-      </div>
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
+        <span className="font-semibold text-foreground">{counts.chaseLandlords}</span> jaga hyresvärdar
+      </button>
     </div>
   );
 }

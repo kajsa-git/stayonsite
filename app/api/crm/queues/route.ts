@@ -1,8 +1,17 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, requests } from "@/lib/crm/schema";
-import { and, eq, lte, or } from "drizzle-orm";
+import { companies, matches, properties, requests } from "@/lib/crm/schema";
+import { and, eq, inArray, lte } from "drizzle-orm";
 import { NextResponse } from "next/server";
+
+const requestSelect = {
+  id: requests.id,
+  requestNumber: requests.requestNumber,
+  companyId: requests.companyId,
+  companyName: companies.name,
+  city: requests.city,
+  status: requests.status,
+};
 
 export async function GET() {
   const session = await auth();
@@ -10,42 +19,46 @@ export async function GET() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [followUpCompanies, matchingRequests, invoicedRequests] = await Promise.all([
+  const requestsByStatus = (status: string) =>
     db
-      .select()
-      .from(companies)
-      .where(lte(companies.followUpDate, today)),
-
-    db
-      .select({
-        id: requests.id,
-        requestNumber: requests.requestNumber,
-        companyId: requests.companyId,
-        companyName: companies.name,
-        city: requests.city,
-        status: requests.status,
-      })
+      .select(requestSelect)
       .from(requests)
       .innerJoin(companies, eq(requests.companyId, companies.id))
-      .where(eq(requests.status, "matching")),
+      .where(eq(requests.status, status));
 
+  const [followUpCompanies, incoming, matching, toInvoice, chaseLandlords] = await Promise.all([
+    db.select().from(companies).where(lte(companies.followUpDate, today)),
+    requestsByStatus("incoming"),
+    requestsByStatus("matching"),
+    requestsByStatus("won"),
+    // Förslag som väntar svar från hyresvärd och vars jaga-datum passerat
     db
       .select({
-        id: requests.id,
-        requestNumber: requests.requestNumber,
-        companyId: requests.companyId,
+        id: matches.id,
+        requestId: matches.requestId,
+        followUpDate: matches.followUpDate,
+        propertyAddress: properties.address,
         companyName: companies.name,
-        city: requests.city,
-        status: requests.status,
+        requestNumber: requests.requestNumber,
       })
-      .from(requests)
+      .from(matches)
+      .innerJoin(requests, eq(matches.requestId, requests.id))
       .innerJoin(companies, eq(requests.companyId, companies.id))
-      .where(eq(requests.status, "invoiced")),
+      .leftJoin(properties, eq(matches.propertyId, properties.id))
+      .where(
+        and(
+          inArray(matches.status, ["suggested", "sent"]),
+          lte(matches.followUpDate, today),
+          inArray(requests.status, ["incoming", "matching"]),
+        ),
+      ),
   ]);
 
   return NextResponse.json({
     followUps: followUpCompanies,
-    matching: matchingRequests,
-    invoiced: invoicedRequests,
+    incoming,
+    matching,
+    won: toInvoice,
+    chaseLandlords,
   });
 }

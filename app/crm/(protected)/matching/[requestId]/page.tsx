@@ -12,5 +12,11 @@ export default async function MatchingPage({ params }: { params: Promise<{ reque
 
   const [company] = await db.select().from(companies).where(eq(companies.id, request.companyId));
 
-  return <MatchingView request={request} companyName={company?.name ?? ""} />;
+  return (
+    <MatchingView
+      request={request}
+      companyName={company?.name ?? ""}
+      companyInvoiceEmail={company?.invoiceEmail ?? null}
+    />
+  );
 }

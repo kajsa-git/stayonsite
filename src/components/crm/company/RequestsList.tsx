@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import type { Request } from "@/lib/crm/schema";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { RequestCard } from "./RequestCard";
 
 interface Props {
@@ -11,18 +10,35 @@ interface Props {
   companyId: string;
   activeRequestId?: string | null;
   onNewRequest: () => void;
+  onEditRequest?: (request: Request) => void;
+  onSelectRequest?: (id: string) => void;
+  onMatch?: (id: string) => void;
+  onStatusChange?: (requestId: string, status: string, extra?: Record<string, unknown>) => Promise<void>;
 }
 
-const ACTIVE_STATUSES = ["incoming", "matching"];
+const OPEN_STATUSES = ["incoming", "matching", "won"];
 
-export function RequestsList({ requests, companyId, activeRequestId, onNewRequest }: Props) {
+export function RequestsList({ requests, companyId, activeRequestId, onNewRequest, onEditRequest, onSelectRequest, onMatch, onStatusChange }: Props) {
   const sorted = [...requests].sort(
     (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
   );
+  const open = sorted.filter((r) => OPEN_STATUSES.includes(r.status));
+  const closed = sorted.filter((r) => !OPEN_STATUSES.includes(r.status));
 
-  const activeRequest = sorted.find(
-    (r) => r.id === activeRequestId || ACTIVE_STATUSES.includes(r.status)
-  );
+  function renderCard(r: Request, compact = false) {
+    return (
+      <RequestCard
+        key={r.id}
+        request={r}
+        compact={compact}
+        isActive={r.id === activeRequestId}
+        onSelect={onSelectRequest}
+        onEdit={onEditRequest}
+        onMatch={onMatch}
+        onStatusChange={onStatusChange}
+      />
+    );
+  }
 
   return (
     <div className="mb-6">
@@ -39,9 +55,20 @@ export function RequestsList({ requests, companyId, activeRequestId, onNewReques
         <p className="text-sm text-muted-foreground italic">Inga förfrågningar ännu.</p>
       ) : (
         <div className="space-y-3">
-          {sorted.map((r) => (
-            <RequestCard key={r.id} request={r} isActive={r.id === activeRequest?.id} />
-          ))}
+          {open.map((r) => renderCard(r))}
+
+          {open.length === 0 && (
+            <p className="text-sm text-muted-foreground italic">Inga aktiva förfrågningar.</p>
+          )}
+
+          {closed.length > 0 && (
+            <div className="pt-1 space-y-1.5">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                Avslutade ({closed.length})
+              </span>
+              {closed.map((r) => renderCard(r, true))}
+            </div>
+          )}
         </div>
       )}
     </div>

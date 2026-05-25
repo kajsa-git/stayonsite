@@ -1,5 +1,6 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { indexContact } from "@/lib/crm/search-index";
 import { contacts } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
@@ -20,7 +21,8 @@ export async function POST(req: NextRequest) {
       .where(eq(contacts.companyId, body.companyId));
   }
 
-  const id = nanoid();
-  const [row] = await db.insert(contacts).values({ id, ...body }).returning();
+  const id = body.id ?? nanoid();
+  const [row] = await db.insert(contacts).values({ ...body, id }).returning();
+  await indexContact(id).catch((e) => console.error("search-index contact:", e));
   return NextResponse.json(row, { status: 201 });
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `crm_companies` ADD `invoice_email` text;

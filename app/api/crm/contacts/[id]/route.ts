@@ -1,5 +1,6 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { indexContact, removeFromIndex } from "@/lib/crm/search-index";
 import { contacts } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,6 +24,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const [row] = await db.update(contacts).set(body).where(eq(contacts.id, id)).returning();
+  await indexContact(id).catch((e) => console.error("search-index contact:", e));
   return NextResponse.json(row);
 }
 
@@ -32,5 +34,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   const { id } = await params;
   await db.delete(contacts).where(eq(contacts.id, id));
+  await removeFromIndex("contact", id).catch((e) => console.error("search-index contact delete:", e));
   return NextResponse.json({ ok: true });
 }

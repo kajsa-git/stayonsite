@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /lp/
+Disallow: /crm/
+Disallow: /api/crm/
 
 User-agent: GPTBot
 Allow: /

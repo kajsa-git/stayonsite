@@ -6,7 +6,7 @@ export default auth(async (req) => {
 
   if (!pathname.startsWith("/crm")) return NextResponse.next();
 
-  if (pathname === "/crm/login") return NextResponse.next();
+  if (pathname === "/crm/login" || pathname === "/crm/pending") return NextResponse.next();
 
   if (!req.auth) {
     return NextResponse.redirect(new URL("/crm/login", req.url));

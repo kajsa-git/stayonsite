@@ -1,0 +1,269 @@
+"use client";
+import { CompanyHeader } from "./CompanyHeader";
+import { CompanyInfo } from "./CompanyInfo";
+import { ContactsList } from "./ContactsList";
+import { FollowUpModal } from "./FollowUpModal";
+import { NotesPanel } from "./NotesPanel";
+import { RequestsList } from "./RequestsList";
+import { RequestForm, type RequestFormData } from "./RequestForm";
+import { useCompany } from "@/hooks/crm/useCompany";
+import { RatingControl } from "../RatingControl";
+import type { Company, Request } from "@/lib/crm/schema";
+import { format } from "date-fns";
+import { sv } from "date-fns/locale";
+import { CalendarClock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
+
+interface CompanyCardProps {
+  companyId: string;
+  activeRequestId?: string | null;
+}
+
+export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
+  const router = useRouter();
+  const { company, mutate } = useCompany(companyId);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [followUpOpen, setFollowUpOpen] = useState(false);
+  const [requestForm, setRequestForm] = useState<{ open: boolean; request: Request | null }>({
+    open: false,
+    request: null,
+  });
+
+  // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
+  const selectedRequestId = selectedId ?? activeRequestId ?? null;
+
+  async function handleMatch(requestId: string) {
+    const req = company?.requests?.find((r) => r.id === requestId);
+    // Move incoming → matching so the request lands in the matching queue
+    if (req && req.status === "incoming") {
+      await fetch(`/api/crm/requests/${requestId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "matching" }),
+      });
+      mutate();
+      router.refresh();
+    }
+    router.push(`/crm/matching/${requestId}`);
+  }
+
+  async function handleSaveField(field: keyof Company, value: string): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: value }),
+      });
+      if (!res.ok) return false;
+      mutate();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function handleAddContact(data: { name?: string | null; phone?: string | null; email?: string | null; isPrimary?: boolean | null }) {
+    await fetch("/api/crm/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ companyId, ...data }),
+    });
+    mutate();
+  }
+
+  async function handleUpdateContact(contactId: string, data: object) {
+    await fetch(`/api/crm/contacts/${contactId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    mutate();
+  }
+
+  async function handleDeleteContact(contactId: string) {
+    await fetch(`/api/crm/contacts/${contactId}`, { method: "DELETE" });
+    mutate();
+  }
+
+  async function handleStatusChange(requestId: string, status: string, extra?: Record<string, unknown>) {
+    await fetch(`/api/crm/requests/${requestId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status, ...extra }),
+    });
+    mutate();
+    router.refresh(); // re-fetch server-rendered queue list in work mode
+  }
+
+  async function handleRating(rating: number | null) {
+    await fetch(`/api/crm/companies/${companyId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rating }),
+    });
+    mutate();
+  }
+
+  async function handleFollowUp(date: string, reason: string) {
+    await fetch(`/api/crm/companies/${companyId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followUpDate: date, followUpReason: reason }),
+    });
+    mutate();
+    router.refresh(); // re-fetch server-rendered queue list in work mode
+  }
+
+  async function handleAddNote(channel: string, content: string) {
+    await fetch("/api/crm/notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ companyId, channel, content }),
+    });
+    mutate();
+  }
+
+  async function handleUpdateNote(noteId: string, content: string) {
+    await fetch(`/api/crm/notes/${noteId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+    mutate();
+  }
+
+  async function handleDeleteNote(noteId: string) {
+    await fetch(`/api/crm/notes/${noteId}`, { method: "DELETE" });
+    mutate();
+  }
+
+  async function handleSaveRequest(data: RequestFormData, requestId?: string) {
+    if (requestId) {
+      await fetch(`/api/crm/requests/${requestId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    } else {
+      await fetch("/api/crm/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyId, status: "incoming", ...data }),
+      });
+    }
+    mutate();
+  }
+
+  if (!company) {
+    return (
+      <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
+        Laddar…
+      </div>
+    );
+  }
+
+  const lastClosed =
+    (company.requests ?? [])
+      .filter((r) => CLOSED_STATUSES.includes(r.status) && r.statusChangedAt)
+      .map((r) => r.statusChangedAt as string)
+      .sort()
+      .pop() ?? null;
+
+  const primaryContact =
+    (company.contacts ?? []).find((c) => c.isPrimary) ?? (company.contacts ?? [])[0] ?? null;
+
+  return (
+    <div>
+      <div className="flex items-start justify-between gap-3">
+        <CompanyHeader company={company} primaryContact={primaryContact} />
+        <div className="shrink-0 pt-1">
+          <RatingControl value={company.rating} onChange={handleRating} label="Kund-skattning" />
+        </div>
+      </div>
+      <CompanyInfo company={company} onSave={handleSaveField} />
+
+      {/* Company-level dates */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
+            <button
+              onClick={() => setFollowUpOpen(true)}
+              className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-amber-300 bg-white text-amber-800 hover:bg-amber-100 transition-colors"
+            >
+              <CalendarClock className="h-3 w-3" />
+              {company.followUpDate ? "Ändra" : "Återkom"}
+            </button>
+          </div>
+          {company.followUpDate ? (
+            <>
+              <p className="text-sm font-medium text-amber-900">{company.followUpDate}</p>
+              {company.followUpReason && (
+                <p className="text-xs text-amber-800/80 mt-0.5">{company.followUpReason}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">Ingen bokad återkomst</p>
+          )}
+        </div>
+        <div className="rounded-md border bg-muted/40 px-3 py-2">
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground block mb-1">
+            Senaste avslutsdatum
+          </span>
+          <p className="text-sm py-1">
+            {lastClosed ? format(new Date(lastClosed), "d MMM yyyy", { locale: sv }) : "—"}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-8">
+        <div>
+          <ContactsList
+            contacts={company.contacts ?? []}
+            companyId={companyId}
+            onAdd={handleAddContact}
+            onUpdate={handleUpdateContact}
+            onDelete={handleDeleteContact}
+          />
+          <RequestsList
+            requests={company.requests ?? []}
+            companyId={companyId}
+            activeRequestId={selectedRequestId}
+            onNewRequest={() => setRequestForm({ open: true, request: null })}
+            onEditRequest={(r) => setRequestForm({ open: true, request: r })}
+            onSelectRequest={setSelectedId}
+            onMatch={handleMatch}
+            onStatusChange={handleStatusChange}
+          />
+        </div>
+        <div>
+          <NotesPanel
+            notes={company.notes ?? []}
+            companyId={companyId}
+            onAdd={handleAddNote}
+            onUpdate={handleUpdateNote}
+            onDelete={handleDeleteNote}
+          />
+        </div>
+      </div>
+
+      <FollowUpModal
+        open={followUpOpen}
+        initialDate={company.followUpDate}
+        initialReason={company.followUpReason}
+        onClose={() => setFollowUpOpen(false)}
+        onSave={handleFollowUp}
+      />
+
+      <RequestForm
+        open={requestForm.open}
+        request={requestForm.request}
+        onClose={() => setRequestForm({ open: false, request: null })}
+        onSubmit={handleSaveRequest}
+      />
+    </div>
+  );
+}

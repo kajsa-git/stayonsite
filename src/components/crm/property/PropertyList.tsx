@@ -3,22 +3,69 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Property } from "@/lib/crm/schema";
-import { Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { LayoutList, Plus, Search, Table2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+const PROP_STATUS: Record<string, { label: string; cls: string }> = {
+  available: { label: "Tillgänglig", cls: "bg-green-100 text-green-800" },
+  reserved: { label: "Reserverad", cls: "bg-amber-100 text-amber-800" },
+  rented: { label: "Uthyrd", cls: "bg-blue-100 text-blue-800" },
+  off_market: { label: "Av marknaden", cls: "bg-gray-100 text-gray-600" },
+};
+
 export function PropertyList() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Property | null>(null);
   const [adding, setAdding] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "table">("list");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  const [minBeds, setMinBeds] = useState("");
+  const [publishedFilter, setPublishedFilter] = useState("");
 
   const { data: properties = [], mutate } = useSWR<Property[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}`,
     fetcher
   );
+
+  const cities = useMemo(
+    () => [...new Set(properties.map((p) => p.city).filter(Boolean) as string[])].sort(),
+    [properties]
+  );
+
+  const filtered = useMemo(() => {
+    const min = minBeds ? parseInt(minBeds) : 0;
+    return properties.filter((p) => {
+      if (statusFilter && (p.status ?? "available") !== statusFilter) return false;
+      if (cityFilter && p.city !== cityFilter) return false;
+      if (min && (p.beds ?? 0) < min) return false;
+      if (publishedFilter === "yes" && !p.published) return false;
+      if (publishedFilter === "no" && p.published) return false;
+      return true;
+    });
+  }, [properties, statusFilter, cityFilter, minBeds, publishedFilter]);
+
+  // Deep-link från global sök: /crm/properties?id=… öppnar objektet direkt (en gång).
+  // Läs query först efter mount (useEffect kör aldrig på servern → ingen hydreringskrock).
+  const [deepId, setDeepId] = useState<string | null>(null);
+  const applied = useRef(false);
+  useEffect(() => {
+    setDeepId(new URLSearchParams(window.location.search).get("id"));
+  }, []);
+  useEffect(() => {
+    if (deepId && !applied.current && properties.length) {
+      const p = properties.find((x) => x.id === deepId);
+      if (p) {
+        setSelected(p);
+        setViewMode("list");
+        applied.current = true;
+      }
+    }
+  }, [deepId, properties]);
 
   async function handleAdd(data: Omit<Property, "id" | "createdAt">) {
     await fetch("/api/crm/properties", {
@@ -30,67 +77,198 @@ export function PropertyList() {
     setAdding(false);
   }
 
+  async function handleUpdate(id: string, data: Partial<Property>) {
+    await fetch(`/api/crm/properties/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    mutate();
+  }
+
+  const toggleBtn = (mode: "list" | "table", label: string, Icon: typeof Table2) => (
+    <button
+      onClick={() => setViewMode(mode)}
+      className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md transition-colors ${
+        viewMode === mode ? "bg-nordic-200 text-nordic-900 font-medium" : "text-muted-foreground hover:bg-nordic-100"
+      }`}
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {label}
+    </button>
+  );
+
   return (
-    <div className="flex h-full">
-      {/* Sidebar */}
-      <div className="w-72 border-r bg-white flex flex-col">
-        <div className="p-3 border-b">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              className="pl-8 h-8 text-sm"
-              placeholder="Sök bostäder…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+    <div className="flex flex-col h-full">
+      {/* Top bar: search + view toggle + add */}
+      <div className="flex items-center gap-3 p-3 border-b bg-white shrink-0">
+        <div className="relative w-64">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            className="pl-8 h-8 text-sm"
+            placeholder="Sök bostäder…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <div className="flex-1 overflow-y-auto">
-          {properties.map((p) => (
-            <button
-              key={p.id}
-              className={`w-full text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
-              onClick={() => setSelected(p)}
-            >
-              <div className="truncate">{p.address || "(Adress saknas)"}</div>
-              <div className="text-xs text-muted-foreground truncate">
-                {[p.city, p.beds && `${p.beds} bäddar`].filter(Boolean).join(" · ")}
-              </div>
-            </button>
-          ))}
+        <div className="flex items-center gap-1 rounded-md border p-0.5">
+          {toggleBtn("list", "Lista", LayoutList)}
+          {toggleBtn("table", "Tabell", Table2)}
         </div>
-        <div className="p-3 border-t">
-          <Button
-            size="sm"
-            className="w-full gap-1 text-xs"
-            onClick={() => { setAdding(true); setSelected(null); }}
-          >
-            <Plus className="h-3 w-3" /> Ny bostad
-          </Button>
-        </div>
+        <span className="text-xs text-muted-foreground">{filtered.length} objekt</span>
+        <Button size="sm" className="ml-auto gap-1 text-xs" onClick={() => { setAdding(true); setSelected(null); }}>
+          <Plus className="h-3 w-3" /> Ny bostad
+        </Button>
       </div>
 
-      {/* Detail */}
-      <div className="flex-1 overflow-y-auto p-6">
-        {adding ? (
+      {/* Filterrad */}
+      {!adding && (
+        <div className="flex items-center gap-2 px-3 py-2 border-b bg-nordic-50 shrink-0 flex-wrap text-xs">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-7 border rounded px-2 bg-white text-xs"
+          >
+            <option value="">Alla statusar</option>
+            {Object.entries(PROP_STATUS).map(([k, v]) => (
+              <option key={k} value={k}>{v.label}</option>
+            ))}
+          </select>
+          <select
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="h-7 border rounded px-2 bg-white text-xs"
+          >
+            <option value="">Alla orter</option>
+            {cities.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <label className="flex items-center gap-1 text-muted-foreground">
+            Min bäddar
+            <input
+              type="number"
+              min={0}
+              value={minBeds}
+              onChange={(e) => setMinBeds(e.target.value)}
+              className="h-7 w-16 border rounded px-2 bg-white text-xs"
+            />
+          </label>
+          <select
+            value={publishedFilter}
+            onChange={(e) => setPublishedFilter(e.target.value)}
+            className="h-7 border rounded px-2 bg-white text-xs"
+          >
+            <option value="">Alla (publicering)</option>
+            <option value="yes">Publicerad</option>
+            <option value="no">Ej publicerad</option>
+          </select>
+          {(statusFilter || cityFilter || minBeds || publishedFilter) && (
+            <button
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBeds(""); setPublishedFilter(""); }}
+              className="text-muted-foreground hover:text-foreground underline"
+            >
+              Rensa
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Body */}
+      {adding ? (
+        <div className="flex-1 overflow-y-auto p-6">
           <PropertyForm onSave={handleAdd} onCancel={() => setAdding(false)} />
-        ) : selected ? (
-          <PropertyView property={selected} onUpdate={async (data) => {
-            await fetch(`/api/crm/properties`, {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ id: selected.id, ...data }),
-            });
-            mutate();
-          }} />
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-            Välj en bostad eller lägg till ny
+        </div>
+      ) : viewMode === "table" ? (
+        <div className="flex-1 overflow-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 bg-nordic-50 z-10">
+              <tr className="text-left text-[11px] text-muted-foreground uppercase tracking-wide">
+                <Th>Adress</Th>
+                <Th>Postnummer</Th>
+                <Th>Ort</Th>
+                <Th>m²</Th>
+                <Th>Bäddar</Th>
+                <Th>Hyra ut</Th>
+                <Th>Möblerat</Th>
+                <Th>Status</Th>
+                <Th>Tillgänglig</Th>
+                <Th>Hemsida</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr><td colSpan={10} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
+              ) : (
+                filtered.map((p) => {
+                  const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
+                  return (
+                    <tr
+                      key={p.id}
+                      onClick={() => { setSelected(p); setViewMode("list"); }}
+                      className="border-b hover:bg-nordic-100 cursor-pointer"
+                    >
+                      <Td className="font-medium">{p.address || "(saknas)"}</Td>
+                      <Td>{p.postalCode || "–"}</Td>
+                      <Td>{p.city || "–"}</Td>
+                      <Td>{p.squareMeters ?? "–"}</Td>
+                      <Td>{p.beds ?? "–"}</Td>
+                      <Td>{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</Td>
+                      <Td>{p.furnished ? "Ja" : "–"}</Td>
+                      <Td>
+                        <span className={`text-[11px] px-1.5 py-0.5 rounded ${st.cls}`}>{st.label}</span>
+                      </Td>
+                      <Td>{p.moveInFrom || "–"}</Td>
+                      <Td>{p.published ? "✓" : "–"}</Td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-1 min-h-0">
+          {/* Sidebar list */}
+          <div className="w-72 border-r bg-white overflow-y-auto shrink-0">
+            {filtered.length === 0 && (
+              <div className="px-3 py-6 text-center text-xs text-muted-foreground italic">Inga bostäder.</div>
+            )}
+            {filtered.map((p) => (
+              <button
+                key={p.id}
+                className={`w-full text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
+                onClick={() => setSelected(p)}
+              >
+                <div className="truncate">{p.address || "(Adress saknas)"}</div>
+                <div className="text-xs text-muted-foreground truncate">
+                  {[p.city, p.beds && `${p.beds} bäddar`].filter(Boolean).join(" · ")}
+                </div>
+              </button>
+            ))}
           </div>
-        )}
-      </div>
+          {/* Detail */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {selected ? (
+              <PropertyView property={selected} onUpdate={(data) => handleUpdate(selected.id, data)} />
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                Välj en bostad i listan
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
+}
+
+function Th({ children }: { children: React.ReactNode }) {
+  return <th className="px-3 py-2 font-medium whitespace-nowrap">{children}</th>;
+}
+
+function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <td className={`px-3 py-2 whitespace-nowrap ${className}`}>{children}</td>;
 }
 
 function PropertyForm({
@@ -102,28 +280,111 @@ function PropertyForm({
 }) {
   const [form, setForm] = useState<Partial<Property>>({ status: "available" });
 
-  function set(key: keyof Property, value: string | number) {
+  function set(key: keyof Property, value: string | number | boolean | undefined) {
     setForm((f) => ({ ...f, [key]: value }));
   }
+  const num = (v: string) => (v ? parseFloat(v) : undefined);
 
   return (
     <div className="max-w-lg space-y-4">
       <h2 className="text-lg font-semibold">Ny bostad</h2>
       <Field label="Adress" value={form.address} onChange={(v) => set("address", v)} required />
-      <Field label="Ort" value={form.city} onChange={(v) => set("city", v)} />
       <div className="grid grid-cols-3 gap-3">
-        <Field label="Sovrum" value={form.bedrooms?.toString()} onChange={(v) => set("bedrooms", parseInt(v))} type="number" />
-        <Field label="Bäddar" value={form.beds?.toString()} onChange={(v) => set("beds", parseInt(v))} type="number" />
-        <Field label="Badrum" value={form.bathrooms?.toString()} onChange={(v) => set("bathrooms", parseInt(v))} type="number" />
+        <Field label="Postnummer" value={form.postalCode} onChange={(v) => set("postalCode", v)} />
+        <Field label="Ort" value={form.city} onChange={(v) => set("city", v)} />
+        <Field label="Yta (m²)" value={form.squareMeters?.toString()} onChange={(v) => set("squareMeters", num(v))} type="number" />
       </div>
-      <Field label="Uthyrare" value={form.ownerName} onChange={(v) => set("ownerName", v)} />
-      <Field label="Telefon (uthyrare)" value={form.ownerPhone} onChange={(v) => set("ownerPhone", v)} />
-      <Field label="E-post (uthyrare)" value={form.ownerEmail} onChange={(v) => set("ownerEmail", v)} />
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="Sovrum" value={form.bedrooms?.toString()} onChange={(v) => set("bedrooms", num(v))} type="number" />
+        <Field label="Bäddar" value={form.beds?.toString()} onChange={(v) => set("beds", num(v))} type="number" />
+        <Field label="Badrum" value={form.bathrooms?.toString()} onChange={(v) => set("bathrooms", num(v))} type="number" />
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="Tvättmaskin (antal)" value={form.washingMachines?.toString()} onChange={(v) => set("washingMachines", num(v))} type="number" />
+        <Field label="Tumlare (antal)" value={form.dryers?.toString()} onChange={(v) => set("dryers", num(v))} type="number" />
+        <Field label="Parkering (antal)" value={form.parkingSpaces?.toString()} onChange={(v) => set("parkingSpaces", num(v))} type="number" />
+      </div>
+      <div className="flex flex-wrap gap-4 py-1">
+        <Check label="Möblerat" checked={!!form.furnished} onChange={(v) => set("furnished", v)} />
+        <Check label="Kök" checked={!!form.kitchen} onChange={(v) => set("kitchen", v)} />
+        <Check label="Garage" checked={!!form.garage} onChange={(v) => set("garage", v)} />
+        <Check label="Bredband ingår" checked={!!form.broadband} onChange={(v) => set("broadband", v)} />
+        <Check label="Eget boende" checked={!!form.egetBoende} onChange={(v) => set("egetBoende", v)} />
+      </div>
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-muted-foreground">Skick (fritext)</label>
+        <textarea
+          value={form.skick ?? ""}
+          onChange={(e) => set("skick", e.target.value)}
+          placeholder="T.ex. fint och fräscht, äldre standard, lantligt…"
+          className="w-full text-sm border rounded px-2 py-1.5 min-h-[48px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
+        />
+      </div>
+      <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50/60 px-3 py-2">
+        <Check label="Publicera på hemsidan (visar endast postnummer, aldrig adress)" checked={!!form.published} onChange={(v) => set("published", v)} />
+      </div>
+      <div className="rounded-md border p-3 space-y-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Uthyrare</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Typ</label>
+            <select
+              value={form.ownerType ?? "privatperson"}
+              onChange={(e) => set("ownerType", e.target.value)}
+              className="w-full h-8 text-sm border rounded px-2 bg-white"
+            >
+              <option value="privatperson">Privatperson</option>
+              <option value="foretag">Företag</option>
+            </select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">Upplägg</label>
+            <select
+              value={form.ownerArrangement ?? "direkt"}
+              onChange={(e) => set("ownerArrangement", e.target.value)}
+              className="w-full h-8 text-sm border rounded px-2 bg-white"
+            >
+              <option value="direkt">Direkt</option>
+              <option value="formedlare">Förmedlare</option>
+            </select>
+          </div>
+        </div>
+        <Field label={form.ownerType === "foretag" ? "Företagsnamn" : "Namn"} value={form.ownerName} onChange={(v) => set("ownerName", v)} />
+        {form.ownerType === "foretag" && (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Org.nr" value={form.ownerOrgNr} onChange={(v) => set("ownerOrgNr", v)} />
+            <Field label="Kontaktperson" value={form.ownerContactPerson} onChange={(v) => set("ownerContactPerson", v)} />
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Telefon" value={form.ownerPhone} onChange={(v) => set("ownerPhone", v)} />
+          <Field label="E-post" value={form.ownerEmail} onChange={(v) => set("ownerEmail", v)} />
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Vi hyr för (kr/mån)" value={form.rentIn?.toString()} onChange={(v) => set("rentIn", parseFloat(v))} type="number" />
-        <Field label="Vi hyr ut för (kr/mån)" value={form.rentOut?.toString()} onChange={(v) => set("rentOut", parseFloat(v))} type="number" />
+        <Field label="Vi hyr för (kr/mån)" value={form.rentIn?.toString()} onChange={(v) => set("rentIn", num(v))} type="number" />
+        <Field label="Vi hyr ut för (kr/mån)" value={form.rentOut?.toString()} onChange={(v) => set("rentOut", num(v))} type="number" />
       </div>
-      <Field label="Tillgänglig från" value={form.moveInFrom} onChange={(v) => set("moveInFrom", v)} type="date" />
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Tillgänglig från" value={form.moveInFrom} onChange={(v) => set("moveInFrom", v)} type="date" />
+        <Field label="Tillgänglig till" value={form.availableTo} onChange={(v) => set("availableTo", v)} type="date" />
+      </div>
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-muted-foreground">Intern beskrivning (visas aldrig publikt)</label>
+        <textarea
+          value={form.notes ?? ""}
+          onChange={(e) => set("notes", e.target.value)}
+          className="w-full text-sm border rounded px-2 py-1.5 min-h-[60px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
+        />
+      </div>
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-muted-foreground">Extern beskrivning (visas på hemsidan)</label>
+        <textarea
+          value={form.publicDescription ?? ""}
+          onChange={(e) => set("publicDescription", e.target.value)}
+          className="w-full text-sm border rounded px-2 py-1.5 min-h-[60px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
+        />
+      </div>
       <div className="flex gap-2 pt-2">
         <Button variant="ghost" onClick={onCancel}>Avbryt</Button>
         <Button onClick={() => onSave(form as Omit<Property, "id" | "createdAt">)} disabled={!form.address}>
@@ -131,6 +392,15 @@ function PropertyForm({
         </Button>
       </div>
     </div>
+  );
+}
+
+function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
+      {label}
+    </label>
   );
 }
 

@@ -1,24 +1,17 @@
-import { BottomBar } from "@/components/crm/layout/BottomBar";
-import { TopBar } from "@/components/crm/layout/TopBar";
-import { auth } from "@/lib/crm/auth";
-import { SessionProvider } from "next-auth/react";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import "../globals.css";
 
-export default async function CrmLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+export const metadata: Metadata = {
+  title: "Stay On Site CRM",
+  robots: { index: false, follow: false },
+};
 
-  if (!session) redirect("/crm/login");
-
-  const user = session.user as typeof session.user & { approved?: boolean };
-  if (!user?.approved) redirect("/crm/pending");
-
+export default function CrmBaseLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider session={session}>
-      <div className="min-h-screen flex flex-col bg-[#f5f5f4]">
-        <TopBar />
-        <main className="flex-1 overflow-auto">{children}</main>
-        <BottomBar />
-      </div>
-    </SessionProvider>
+    <html lang="sv">
+      <body className="bg-[#f5f5f4] text-[#1a1a1a] antialiased" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif' }}>
+        {children}
+      </body>
+    </html>
   );
 }
