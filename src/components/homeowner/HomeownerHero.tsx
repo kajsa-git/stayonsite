@@ -257,15 +257,15 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
             <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {cityName
                 ? tr(
-                    `Hyr ut till företag i ${cityName}`,
-                    `Rent out to companies in ${cityName}`,
-                    `Wynajmij firmom w ${cityName}`
+                    `Lista din bostad i ${cityName}`,
+                    `List your property in ${cityName}`,
+                    `Wystaw nieruchomość w ${cityName}`
                   )
                 : (
                   <>
-                    {tr('Hyr ut till', 'Rent out to', 'Wynajmij')}{' '}
+                    {tr('Lista din', 'List your', 'Wystaw swoją')}{' '}
                     <span className="text-[#ff6300]">
-                      {tr('företag.', 'companies.', 'firmom.')}
+                      {tr('bostad.', 'property.', 'nieruchomość.')}
                     </span>
                   </>
                 )}
@@ -288,7 +288,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
               <TrustStat
                 value={t('homeowner.conversion.trustGoogle' as TranslationKey)}
                 label={t('homeowner.conversion.trustGoogleLabel' as TranslationKey)}
-                star
+                google
               />
               <div className="w-px h-10 bg-white/15" />
               <TrustStat
@@ -536,19 +536,28 @@ function TrustStat({
   label,
   accent,
   star,
+  google,
 }: {
   value: string;
   label: string;
   accent?: boolean;
   star?: boolean;
+  google?: boolean;
 }) {
   return (
     <div className="text-center">
-      <div className={`font-heading text-xl md:text-2xl lg:text-3xl font-bold ${accent ? 'text-accent' : 'text-white'} flex items-center justify-center gap-1`}>
+      <div className={`font-heading text-xl md:text-2xl lg:text-3xl font-bold ${accent ? 'text-accent' : 'text-white'} flex items-center justify-center gap-1.5`}>
         {star && <Star size={16} className="text-yellow-400 fill-yellow-400" />}
         {value}
       </div>
-      <div className="text-[10px] md:text-xs text-white/40 font-medium">{label}</div>
+      {google ? (
+        <div className="flex items-center justify-center gap-1 mt-0.5">
+          <GoogleIcon />
+          <span className="text-[10px] md:text-xs text-white/40 font-medium">{label}</span>
+        </div>
+      ) : (
+        <div className="text-[10px] md:text-xs text-white/40 font-medium">{label}</div>
+      )}
     </div>
   );
 }
