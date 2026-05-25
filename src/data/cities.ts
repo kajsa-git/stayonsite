@@ -68,9 +68,9 @@ export const cities: City[] = [
     industries: ['Bygg & Anläggning', 'Infrastruktur', 'Bostäder', 'Kommersiellt'],
     coordinates: [59.3293, 18.0686],
     heroHook: ls(
-      'Lägenhetshotell & Personalboende i Stockholm – nära Slussen och tunnelbanan',
+      'Företagsboende Stockholm – möblerade lägenheter nära Slussen och tunnelbanan',
       'Corporate Housing Stockholm – Furnished Apartments Near Slussen & the Metro',
-      'Aparthotel & Noclegi Pracownicze w Sztokholmie – Blisko Slussen i Metra'
+      'Zakwaterowanie Firmowe Sztokholm – Umeblowane Mieszkania Blisko Slussen i Metra'
     ),
     intro: ls(
       'Slussen, tunnelbaneutbyggnaden och Förbifart Stockholm driver fortsatt hög efterfrågan på företagsboende i Stockholm. Vi erbjuder möblerade företagslägenheter och personalboende i Hammarby Sjöstad, Solna, Liljeholmen och Sundbyberg — alltid nära arbetsplatsen och med parkering för servicebilar. Fast månadskontrakt, komplett boendeplan inom 24 timmar och en dedikerad kontaktperson under hela projektet.',
@@ -78,7 +78,7 @@ export const cities: City[] = [
       'Slussen, rozbudowa metra i Trasa Zachodnia utrzymują stały wysoki popyt na zakwaterowanie firmowe w Sztokholmie. Oferujemy umeblowane mieszkania firmowe i noclegi pracownicze w Hammarby Sjöstad, Solna, Liljeholmen i Sundbyberg — zawsze blisko placu budowy, z parkingiem dla aut serwisowych. Stałe umowy miesięczne, pełny plan zakwaterowania w 24 godziny i dedykowany opiekun przez cały projekt.'
     ),
     keywords: lk(
-      ['personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm', 'lägenhetshotell stockholm'],
+      ['företagsboende stockholm', 'personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm'],
       ['corporate housing stockholm', 'corporate apartments stockholm', 'furnished apartments stockholm', 'staff housing stockholm', 'construction crew accommodation stockholm', 'temporary housing stockholm sweden'],
       ['zakwaterowanie pracownicze sztokholm', 'mieszkania firmowe sztokholm', 'noclegi dla ekip sztokholm', 'noclegi dla budowlańców sztokholm szwecja', 'kwatery pracownicze sztokholm', 'tymczasowe zakwaterowanie sztokholm szwecja']
     ),
@@ -177,10 +177,10 @@ export const cities: City[] = [
     highlights: ['Stora hamnprojekt', 'Spårvagnsutbyggnad', 'Bostadsområden som Backaplan', 'Industribyggnation'],
     industries: ['Hamn & Logistik', 'Industri', 'Bostäder', 'Transport'],
     coordinates: [57.7089, 11.9746],
-    heroHook: ls('Personalboende Göteborg – företagslägenheter nära Västlänken, hamnen och Volvo', 'Corporate Housing Gothenburg – Apartments Near the West Link, Harbour & Volvo', 'Zakwaterowanie Firmowe Göteborg – Mieszkania Blisko Västlänken, Portu i Volvo'),
+    heroHook: ls('Företagsboende Göteborg – personalboende nära Västlänken, hamnen och Volvo', 'Corporate Housing Gothenburg – Apartments Near the West Link, Harbour & Volvo', 'Zakwaterowanie Firmowe Göteborg – Mieszkania Blisko Västlänken, Portu i Volvo'),
     intro: ls('Västlänken, Backaplan och Volvos batterifabrik driver stor efterfrågan på personalboende i Göteborg. Våra företagslägenheter på Hisingen, i Majorna och Mölndal har parkering, delade kök och inflyttning inom 48 timmar.', 'The West Link, Backaplan and Volvo battery plant drive high demand for corporate housing in Gothenburg. Our apartments on Hisingen, in Majorna and Mölndal include parking, shared kitchens and 48-hour move-in.', 'Västlänken, Backaplan i fabryka baterii Volvo napędzają popyt na zakwaterowanie firmowe w Göteborgu. Nasze mieszkania na Hisingen, w Majornie i Mölndal mają parking, wspólne kuchnie i zameldowanie w 48 godzin.'),
     keywords: lk(
-      ['personalboende göteborg', 'företagsboende göteborg', 'byggboende hisingen', 'boende byggarbetare göteborg', 'montörboende göteborg', 'tillfälligt boende företag göteborg', 'lägenhetshotell göteborg', 'korttidsboende göteborg'],
+      ['företagsboende göteborg', 'personalboende göteborg', 'byggboende hisingen', 'boende byggarbetare göteborg', 'montörboende göteborg', 'tillfälligt boende företag göteborg', 'lägenhetshotell göteborg', 'korttidsboende göteborg'],
       ['staff housing gothenburg', 'corporate housing gothenburg', 'construction housing hisingen', 'worker accommodation gothenburg sweden', 'temporary housing gothenburg', 'construction crew accommodation gothenburg'],
       ['zakwaterowanie pracownicze göteborg', 'noclegi firmowe göteborg', 'mieszkania hisingen', 'noclegi dla budowlańców göteborg szwecja', 'kwatery pracownicze göteborg', 'tymczasowe zakwaterowanie göteborg szwecja']
     ),
@@ -607,10 +607,10 @@ export const cities: City[] = [
     highlights: ['Universitetsbyggnader', 'Teknikpark-utveckling', 'Moderna bostadsområden', 'Forskningscentra'],
     industries: ['Teknologi', 'Forskning', 'Utbildning', 'Industri'],
     coordinates: [58.4108, 15.6214],
-    heroHook: ls('Lägenhetshotell & Personalboende i Linköping – nära Saab och Mjärdevi', 'Aparthotel & Worker Accommodation in Linköping – Near Saab & Mjärdevi', 'Aparthotel & Noclegi Pracownicze w Linköping – Blisko Saaba i Mjärdevi'),
+    heroHook: ls('Företagsboende Linköping – personalboende nära Saab och Mjärdevi', 'Corporate Housing Linköping – Staff Accommodation Near Saab & Mjärdevi', 'Zakwaterowanie Firmowe Linköping – Noclegi Blisko Saaba i Mjärdevi'),
     intro: ls('Linköping drivs av högteknologi och avancerade installationer. Våra lägenhetshotell och projektboenden i Lambohov, Vallastaden och Mjärdevi ger under tio minuters resa till labb och hangarer.', 'Linköping runs on high-tech and advanced installs. Our aparthotels and project housing in Lambohov, Vallastaden and Mjärdevi keep trips to labs and hangars under ten minutes.', 'Linköping to wysokie technologie i zaawansowane instalacje. Nasze aparthotele i noclegi projektowe w Lambohov, Vallastaden i Mjärdevi zapewniają dojazd do laboratoriów i hangarów w mniej niż dziesięć minut.'),
     keywords: lk(
-      ['personalboende linköping', 'företagslägenheter mjärdevi', 'byggboende saab', 'boende byggarbetare linköping', 'montörboende linköping', 'tillfälligt boende företag linköping', 'lägenhetshotell linköping'],
+      ['företagsboende linköping', 'personalboende linköping', 'företagslägenheter mjärdevi', 'byggboende saab', 'boende byggarbetare linköping', 'montörboende linköping', 'tillfälligt boende företag linköping', 'lägenhetshotell linköping'],
       ['staff housing linkoping', 'corporate apartments mjar devi', 'saab construction housing', 'worker accommodation linkoping sweden', 'temporary housing linkoping', 'construction crew accommodation linkoping'],
       ['zakwaterowanie pracownicze linkoping', 'mieszkania firmowe mjar devi', 'noclegi saab', 'noclegi dla budowlańców linköping szwecja', 'kwatery pracownicze linköping', 'tymczasowe zakwaterowanie linköping szwecja']
     ),
@@ -693,10 +693,10 @@ export const cities: City[] = [
     highlights: ['Hamnområdesutveckling', 'Logistikcentra', 'Bostadsprojekt', 'Kommersiella anläggningar'],
     industries: ['Hamn & Logistik', 'Kommersiellt', 'Bostäder', 'Transport'],
     coordinates: [56.0465, 12.6945],
-    heroHook: ls('Lägenhetshotell & Personalboende i Helsingborg – nära hamnen och E4', 'Aparthotel & Worker Accommodation in Helsingborg – Near the Harbour & E4', 'Aparthotel & Noclegi Pracownicze w Helsingborgu – Blisko Portu i E4'),
+    heroHook: ls('Företagsboende Helsingborg – personalboende nära hamnen och E4', 'Corporate Housing Helsingborg – Staff Accommodation Near the Harbour & E4', 'Zakwaterowanie Firmowe Helsingborg – Noclegi Blisko Portu i E4'),
     intro: ls('Utvecklingen av Helsingborgs hamn, Oceanhamnen och logistikterminalerna kräver snabb access till färjor och E4. Våra lägenhetshotell och radhus i Oceanhamnen, Eneborg och Ättekulla har stora förråd och parkering.', 'The harbour, Oceanhamnen and logistics terminals need fast access to ferries and the E4. Our aparthotels and townhouses in Oceanhamnen, Eneborg and Ättekulla come with ample storage and parking.', 'Rozwój portu, Oceanhamnen i terminali logistycznych wymaga szybkiego dostępu do promów i E4. Nasze aparthotele i segmenty w Oceanhamnen, Eneborgu i Ättekulli mają duże magazyny i parkingi.'),
     keywords: lk(
-      ['personalboende helsingborg', 'hamnboende bygg', 'företagsboende öresund', 'boende byggarbetare helsingborg', 'montörboende helsingborg', 'tillfälligt boende företag helsingborg', 'lägenhetshotell helsingborg'],
+      ['företagsboende helsingborg', 'personalboende helsingborg', 'hamnboende bygg', 'företagsboende öresund', 'boende byggarbetare helsingborg', 'montörboende helsingborg', 'tillfälligt boende företag helsingborg', 'lägenhetshotell helsingborg'],
       ['staff housing helsingborg', 'harbour construction housing', 'oresund corporate housing', 'worker accommodation helsingborg sweden', 'temporary housing helsingborg', 'construction crew accommodation helsingborg'],
       ['zakwaterowanie pracownicze helsingborg', 'noclegi przy porcie', 'mieszkania firmowe oresund', 'noclegi dla budowlańców helsingborg szwecja', 'kwatery pracownicze helsingborg', 'tymczasowe zakwaterowanie helsingborg szwecja']
     ),

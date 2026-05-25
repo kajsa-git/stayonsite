@@ -9,18 +9,18 @@ import { MapPin } from 'lucide-react';
 
 const translations: Record<AvailableLanguages, { title: string; subtitle: string; notFound: string }> = {
   sv: {
-    title: 'Personalboende i hela Sverige',
-    subtitle: 'Vi täcker Sveriges största städer och industriknutpunkter',
+    title: 'Företagsboende i hela Sverige',
+    subtitle: 'Personalboende och projektboende i Sveriges största städer och industriknutpunkter',
     notFound: 'Hittar du inte din stad? Vi löser boende var som helst i Sverige.',
   },
   en: {
-    title: 'Worker accommodation across Sweden',
-    subtitle: "We cover Sweden's largest cities and industrial hubs",
+    title: 'Corporate housing across Sweden',
+    subtitle: "Staff accommodation and project housing in Sweden's largest cities and industrial hubs",
     notFound: 'Cannot find your city? We arrange housing anywhere in Sweden.',
   },
   pl: {
-    title: 'Noclegi pracownicze w całej Szwecji',
-    subtitle: 'Obsługujemy największe miasta i węzły przemysłowe Szwecji',
+    title: 'Zakwaterowanie firmowe w całej Szwecji',
+    subtitle: 'Noclegi pracownicze i projektowe w największych miastach i węzłach przemysłowych Szwecji',
     notFound: 'Nie możesz znaleźć swojego miasta? Organizujemy zakwaterowanie w dowolnym miejscu w Szwecji.',
   },
 };
