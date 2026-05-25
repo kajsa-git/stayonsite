@@ -4,6 +4,16 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+
+const STEPS = [
+  { emoji: "📥", title: "Nya förfrågningar", text: "Färska förfrågningar att ta tag i. Klicka för att läsa och börja leta boende." },
+  { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
+  { emoji: "🏠", title: "Pågående matchningar", text: "Förfrågningar du letar boende åt. Skicka förslag och markera när kunden valt ett." },
+  { emoji: "🧾", title: "Att fakturera", text: "Vunna affärer redo att faktureras. Markera fakturerad när fakturan är skickad." },
+  { emoji: "📲", title: "Jaga hyresvärdar", text: "Förslag som väntar svar från hyresvärden. Hör av dig igen på utsatt datum." },
+];
 
 interface CompanyQueue {
   id: string;
@@ -43,18 +53,65 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 export function MyDayView() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
+  const [showHelp, setShowHelp] = useState(true);
+
+  useEffect(() => {
+    if (localStorage.getItem("crm_minday_help") === "hidden") setShowHelp(false);
+  }, []);
+
+  function dismissHelp() {
+    localStorage.setItem("crm_minday_help", "hidden");
+    setShowHelp(false);
+  }
+  function openHelp() {
+    localStorage.removeItem("crm_minday_help");
+    setShowHelp(true);
+  }
 
   const { data } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], incoming: [], matching: [], won: [], chaseLandlords: [] };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-nordic-900">Min dag</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {format(new Date(), "EEEE d MMMM yyyy", { locale: sv })}
-        </p>
+      <div className="mb-6 flex items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-nordic-900">Min dag</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {format(new Date(), "EEEE d MMMM yyyy", { locale: sv })}
+          </p>
+        </div>
+        {!showHelp && (
+          <button onClick={openHelp} className="text-xs text-muted-foreground hover:text-foreground underline shrink-0">
+            Så funkar Min dag
+          </button>
+        )}
       </div>
+
+      {showHelp && (
+        <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50/60 p-4 relative">
+          <button
+            onClick={dismissHelp}
+            className="absolute top-3 right-3 text-amber-700/70 hover:text-amber-900"
+            title="Dölj"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <p className="text-sm font-semibold text-amber-900 mb-1">Så funkar din dag 👋</p>
+          <p className="text-xs text-amber-800/90 mb-3">
+            Varje kort är ett företag eller en förfrågan som väntar på dig. Jobba dig igenom kolumnerna från vänster till höger — klicka på ett kort för att öppna det.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+            {STEPS.map((s) => (
+              <div key={s.title} className="rounded-lg bg-white/70 border border-amber-100 p-2.5">
+                <div className="text-sm font-medium text-nordic-900 mb-0.5">
+                  <span className="mr-1">{s.emoji}</span>{s.title}
+                </div>
+                <p className="text-xs text-muted-foreground leading-snug">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
         <QueueSection

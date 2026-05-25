@@ -1,8 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { Property } from "@/lib/crm/schema";
-import { Home, Pencil, Plus, X } from "lucide-react";
+import { Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
@@ -13,6 +20,7 @@ import { RatingControl } from "../RatingControl";
 interface Props {
   property: Property;
   onUpdate: (data: Partial<Property>) => Promise<void>;
+  onDelete?: () => void | Promise<void>;
 }
 
 const STATUSES: { value: string; label: string; cls: string }[] = [
@@ -93,12 +101,26 @@ function toForm(p: Property): EditForm {
 
 const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
 
-export function PropertyView({ property, onUpdate }: Props) {
+export function PropertyView({ property, onUpdate, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<EditForm>(toForm(property));
   const [saving, setSaving] = useState(false);
   const [matchOpen, setMatchOpen] = useState(false);
   const [newLink, setNewLink] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
+  const delTarget = (property.address ?? "").trim() || "RADERA";
+
+  async function handleDelete() {
+    if (!onDelete) return;
+    setDeleting(true);
+    await onDelete();
+    setDeleting(false);
+    setDeleteOpen(false);
+  }
 
   const links = property.links ?? [];
   function addLink() {
@@ -114,6 +136,8 @@ export function PropertyView({ property, onUpdate }: Props) {
   useEffect(() => {
     setForm(toForm(property));
     setEditing(false);
+    setDeleteOpen(false);
+    setDeleteConfirm("");
   }, [property.id]);
 
   function set<K extends keyof EditForm>(field: K, value: EditForm[K]) {
@@ -456,6 +480,50 @@ export function PropertyView({ property, onUpdate }: Props) {
       <div className="border-t pt-4">
         <PropertyHistory propertyId={property.id} />
       </div>
+
+      {onDelete && (
+        <div className="border-t pt-4 flex items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground">
+            Radering tar bort objektet, dess förslag/matchningar, bilder och kontaktlogg permanent.
+          </p>
+          <button
+            onClick={() => { setDeleteConfirm(""); setDeleteOpen(true); }}
+            className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors shrink-0"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Ta bort objekt
+          </button>
+        </div>
+      )}
+
+      <Dialog open={deleteOpen} onOpenChange={(o) => !o && !deleting && setDeleteOpen(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort {property.address || "objektet"}?</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm space-y-2">
+            <p className="text-muted-foreground">
+              Detta går inte att ångra. Objektet och alla dess förslag/matchningar, bilder och kontaktlogg raderas permanent.
+            </p>
+            <div className="space-y-1 pt-1">
+              <label className="text-xs text-muted-foreground">
+                Skriv {delTarget === "RADERA" ? "RADERA" : "adressen"} för att bekräfta:
+              </label>
+              <input className={FIELD_CLS} value={deleteConfirm} placeholder={delTarget} autoFocus onChange={(e) => setDeleteConfirm(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)} disabled={deleting}>Avbryt</Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleting || deleteConfirm.trim() !== delTarget}
+            >
+              {deleting ? "Tar bort…" : "Ta bort permanent"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

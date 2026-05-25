@@ -86,6 +86,12 @@ export function PropertyList() {
     mutate();
   }
 
+  async function handleDelete(id: string) {
+    await fetch(`/api/crm/properties/${id}`, { method: "DELETE" });
+    setSelected(null);
+    mutate();
+  }
+
   const toggleBtn = (mode: "list" | "table", label: string, Icon: typeof Table2) => (
     <button
       onClick={() => setViewMode(mode)}
@@ -250,7 +256,11 @@ export function PropertyList() {
           {/* Detail */}
           <div className="flex-1 overflow-y-auto p-6">
             {selected ? (
-              <PropertyView property={selected} onUpdate={(data) => handleUpdate(selected.id, data)} />
+              <PropertyView
+                property={selected}
+                onUpdate={(data) => handleUpdate(selected.id, data)}
+                onDelete={() => handleDelete(selected.id)}
+              />
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
                 Välj en bostad i listan
