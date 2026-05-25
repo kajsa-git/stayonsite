@@ -73,9 +73,9 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
     {
       q: tr('Hur lång är avtalstiden?', 'How long is the contract?', 'Jak długi jest kontrakt?'),
       a: tr(
-        'Minst 3 månader, men de flesta samarbeten löper längre. Du kan säga upp med 1 månads uppsägningstid.',
-        "Minimum 3 months, but most partnerships run longer. You can cancel with 1 month's notice.",
-        'Minimum 3 miesiące. Możesz wypowiedzieć z 1-miesięcznym wypowiedzeniem.'
+        'Det bestämmer vi tillsammans. Avtalstiden anpassas efter hyresgästens projekt och dina önskemål som hyresvärd – alltid i öppen dialog tills alla parter är nöjda.',
+        'We decide that together. Contract length is tailored to the tenant\'s project and your preferences as a property owner – always in open dialogue until everyone is satisfied.',
+        'Ustalamy to wspólnie. Czas trwania umowy dostosowujemy do projektu najemcy i Twoich oczekiwań jako właściciela – zawsze w otwartym dialogu.'
       ),
     },
     {

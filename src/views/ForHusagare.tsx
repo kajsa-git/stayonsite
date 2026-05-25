@@ -85,10 +85,10 @@ const ForHusagare = () => {
           'acceptedAnswer': {
             '@type': 'Answer',
             'text': language === 'en'
-              ? "Minimum 3 months, but most partnerships run longer. You can cancel with 1 month's notice."
+              ? "We decide that together. Contract length is tailored to the tenant's project and your preferences as a property owner – always in open dialogue until everyone is satisfied."
               : language === 'pl'
-              ? 'Minimum 3 miesiące. Możesz wypowiedzieć z 1-miesięcznym wypowiedzeniem.'
-              : 'Minst 3 månader, men de flesta samarbeten löper längre. Du kan säga upp med 1 månads uppsägningstid.',
+              ? 'Ustalamy to wspólnie. Czas trwania umowy dostosowujemy do projektu najemcy i Twoich oczekiwań – zawsze w otwartym dialogu.'
+              : 'Det bestämmer vi tillsammans. Avtalstiden anpassas efter hyresgästens projekt och dina önskemål som hyresvärd – alltid i öppen dialog tills alla parter är nöjda.',
           },
         },
       ],
