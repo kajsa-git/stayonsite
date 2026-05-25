@@ -7,6 +7,52 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug } from '@/data/cities';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { notFound } from 'next/navigation';
+import { Star, Phone } from 'lucide-react';
+
+const HOMEOWNER_TESTIMONIALS: Record<string, { quote: string; author: string; location: string; income: string }[]> = {
+  oskarshamn: [
+    {
+      quote: 'Vi hyrde ut vår villa till ett underhållsteam på OKG. Seriösa, välskötta och aldrig några konstigheter. StayOnSite skötte kontrakt och besiktning på ett par dagar – jag behövde inte lyfta ett finger. Hyran trillar in varje månad.',
+      author: 'Erik S.',
+      location: 'Oskarshamn centrum',
+      income: '+9 500 kr/mån · 10 månader',
+    },
+    {
+      quote: 'Var tveksam i början – vad händer med mitt hus? Men montörerna som jobbar på hamnutbyggnaden är lugna och ordentliga. Nu är det tredje kontraktet och vi har inte haft en enda incident.',
+      author: 'Karin M.',
+      location: 'Figeholm, Oskarshamn',
+      income: '+8 000 kr/mån · 12 månader',
+    },
+  ],
+  gavle: [
+    {
+      quote: 'Hyresgästerna jobbar på ett datacenterprojekt utanför Gävle. Kajsa ordnade allt på tre dagar – kontrakt, nyckelöverlämning och registrering. Nu har vi haft hyresgäster i 14 månader och allt går på autopilot. Hyran är in den 25:e, utan avdrag.',
+      author: 'Petra L.',
+      location: 'Gävle',
+      income: '+12 500 kr/mån · 14 månader',
+    },
+    {
+      quote: 'Huset stod tomt halva åren när vi jobbade utomlands. Nu hyr StayOnSite ut det till ett ingenjörsteam på hamnutbyggnaden. Stabilt, tryggt och inga problem. Bästa beslutet vi tog.',
+      author: 'Jonas W.',
+      location: 'Brynäs, Gävle',
+      income: '+11 000 kr/mån · 9 månader',
+    },
+  ],
+  boden: [
+    {
+      quote: 'Tredje kontraktet nu med StayOnSite i Boden. Montörer som jobbar på försvarsutbyggnaden – alltid ordentliga och utan drama. Det är inte den uthyrning jag förväntade mig, men den bästa jag har haft.',
+      author: 'Magnus H.',
+      location: 'Boden',
+      income: '+8 500 kr/mån · 9 månader',
+    },
+    {
+      quote: 'Ville inte ha privata hyresgäster men förstod inte skillnaden. Företagshyresgäster är helt annorlunda – de jobbar 10-timmarsskift och vill bara ha lugn och ro. StayOnSite sköter allt, vi sitter still och får hyran.',
+      author: 'Anna-Karin B.',
+      location: 'Centrala Boden',
+      income: '+7 500 kr/mån · 11 månader',
+    },
+  ],
+};
 
 interface HomeownerCityPageProps {
   citySlug: string;
@@ -102,6 +148,8 @@ const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
     },
   ];
 
+  const cityTestimonials = HOMEOWNER_TESTIMONIALS[city.slug] ?? null;
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
@@ -125,6 +173,62 @@ const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
           subtitle={subtitle}
           extraFaqItems={extraFaqItems}
         />
+
+        {cityTestimonials && (
+          <section className="py-20 bg-nordic-50 border-t border-nordic-100">
+            <div className="container mx-auto px-6 md:px-8 max-w-5xl">
+              <div className="mb-10">
+                <span className="text-[#ff6300] text-xs uppercase tracking-[0.2em] font-semibold">Recensioner</span>
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-nordic-900 mt-2">
+                  Husägare i {city.name} berättar
+                </h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {cityTestimonials.map(({ quote, author, location, income }) => (
+                  <div key={author} className="bg-white rounded-2xl p-7 border border-nordic-200 flex flex-col">
+                    <div className="flex gap-0.5 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-[#FBBC04] text-[#FBBC04]" />
+                      ))}
+                    </div>
+                    <p className="text-nordic-800 text-sm leading-relaxed flex-grow mb-6">"{quote}"</p>
+                    <div className="border-t border-nordic-100 pt-4">
+                      <p className="font-heading font-semibold text-nordic-900 text-sm">{author}</p>
+                      <p className="text-nordic-500 text-xs mb-2">{location}</p>
+                      <span className="inline-block bg-[#ff6300]/10 text-[#ff6300] text-xs font-semibold px-2.5 py-1 rounded-full">{income}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section className="py-20 bg-primary">
+          <div className="container mx-auto px-6 md:px-8 max-w-3xl text-center">
+            <span className="text-[#ff6300] text-xs uppercase tracking-[0.2em] font-semibold">Kom igång idag</span>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mt-2 mb-4">
+              Hyr ut i {city.name}
+            </h2>
+            <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
+              Ring oss för ett kostnadsfritt samtal. Vi berättar vad din bostad är värd och hur snabbt vi kan matcha dig mot aktiva förfrågningar i {city.name}.
+            </p>
+            <a
+              href="tel:+46762498486"
+              className="inline-flex items-center justify-center gap-3 rounded-full h-14 px-8 bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              <Phone className="h-5 w-5" />
+              Ring oss: 076-249 84 86
+            </a>
+            <div className="flex items-center justify-center gap-6 mt-10 text-white/40 text-sm">
+              <span>0% avgift</span>
+              <span>·</span>
+              <span>Svar inom 24h</span>
+              <span>·</span>
+              <span>Ingen bindning</span>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
