@@ -47,7 +47,7 @@ const Hero = () => {
 
           {/* Left: copy */}
           <div className="flex-1">
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-4 lg:mb-6">
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl mb-4 lg:mb-6">
               {t('hero.title')}
             </h1>
 

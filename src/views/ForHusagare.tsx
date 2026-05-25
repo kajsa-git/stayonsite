@@ -109,42 +109,60 @@ const ForHusagare = () => {
       <Header />
       <main className="flex-grow">
         <HomeownerHero />
-        <section className="py-16 bg-white border-t border-nordic-100">
-          <div className="container mx-auto px-6 md:px-8 max-w-4xl">
-            <h2 className="text-2xl md:text-3xl font-semibold text-nordic-900 mb-4">
-              Hyra ut till företag – hur funkar det?
-            </h2>
-            <p className="text-nordic-700 mb-8 text-base leading-relaxed max-w-2xl">
-              Att hyra ut sin bostad till ett byggföretag, energibolag eller infrastrukturprojekt kallas ofta <strong>blockhyra</strong> eller <strong>personalboende</strong>. Istället för privatpersoner är det ett seriöst företag som betalar hyran – varje månad, i förskott, utan avdrag.
-            </p>
+        <section className="py-20 bg-nordic-900 relative overflow-hidden border-t border-white/5">
+          <div className="container mx-auto px-6 md:px-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-12">
+                <span className="text-[#ff6300] text-xs uppercase tracking-[0.2em] font-semibold">Fördelar</span>
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-2 mb-3">
+                  Varför husägare väljer StayOnSite
+                </h2>
+                <p className="text-white/60 text-base max-w-xl">
+                  Vi gör uthyrning till företag enkelt – så du kan fokusera på det som verkligen spelar roll.
+                </p>
+              </div>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
-                <div className="text-2xl font-bold text-[#ff6300] mb-2">1.</div>
-                <h3 className="font-semibold text-nordic-900 mb-2">Du skickar en intresseanmälan</h3>
-                <p className="text-sm text-nordic-600">Vi kontaktar dig och går igenom din bostad – läge, storlek och vad du kan förvänta dig i hyra. Ingen bindning.</p>
-              </div>
-              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
-                <div className="text-2xl font-bold text-[#ff6300] mb-2">2.</div>
-                <h3 className="font-semibold text-nordic-900 mb-2">Vi matchar dig med ett företag</h3>
-                <p className="text-sm text-nordic-600">Vi letar i vårt nätverk av byggbolag och projektledare efter en hyresgäst som passar din bostad och ditt område.</p>
-              </div>
-              <div className="bg-nordic-50 rounded-2xl p-6 border border-nordic-100">
-                <div className="text-2xl font-bold text-[#ff6300] mb-2">3.</div>
-                <h3 className="font-semibold text-nordic-900 mb-2">Fast hyra varje månad</h3>
-                <p className="text-sm text-nordic-600">Kontraktet skrivs direkt med företaget. Du får fast månadshyra utan avdrag – vi tjänar på mellanskillnaden mot vad företaget betalar.</p>
-              </div>
-            </div>
-
-            <div className="bg-nordic-900 text-white rounded-2xl p-6 md:p-8">
-              <h3 className="text-lg font-semibold mb-4">Varför hyra ut till företag istället för privatperson?</h3>
-              <div className="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-white/80">
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Vi betalar alltid i tid – StayOnSite är din motpart och garanterar hyran varje månad</span></div>
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Inget besittningsskydd – du får tillbaka huset när projektet är klart</span></div>
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Lägre slitage – veckopendlare är på jobbet 10 timmar om dagen</span></div>
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Längre kontrakt – typiskt 3–18 månader, förutsägbar inkomst</span></div>
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>0% avgift till oss – du får full hyra, vi fakturerar företaget separat</span></div>
-                <div className="flex gap-2"><span className="text-[#ff6300] font-bold mt-0.5">✓</span><span>Ny lag från 1 juli 2026 gör blockhyra enklare och tryggare</span></div>
+              <div className="grid md:grid-cols-2 gap-px bg-white/10 rounded-2xl overflow-hidden">
+                {[
+                  {
+                    n: '01',
+                    title: 'Svenska företag med aktiva behov',
+                    body: 'Vi arbetar direkt med bygg-, energi- och infrastrukturbolag i hela Sverige – inga plattformar, ingen mellanhand. Fler förfrågningar än vi kan fylla.',
+                  },
+                  {
+                    n: '02',
+                    title: 'Längre kontrakt – färre vakanser',
+                    body: 'Företagshyresgäster stannar veckor eller månader, inte helger. Förutsägbar inkomst utan ständiga omsättningar.',
+                  },
+                  {
+                    n: '03',
+                    title: 'Aktiv matchning i din stad',
+                    body: 'Du anmäler dig och vi matchar dig mot pågående förfrågningar i ditt område. De flesta husägare får ett konkret förslag inom 1–2 veckor.',
+                  },
+                  {
+                    n: '04',
+                    title: 'Vi sköter allt praktiskt',
+                    body: 'Avtal, in- och utflyttbesiktning, betalningar och löpande kontakt med hyresgästen. Du behöver inte lyfta ett finger.',
+                  },
+                  {
+                    n: '05',
+                    title: 'Lägre slitage än du tror',
+                    body: 'Veckopendlare är på jobbet 10 timmar om dagen. Inga barn, husdjur eller storhelger hemma – i regel mindre slitage än permanent boende.',
+                  },
+                  {
+                    n: '06',
+                    title: 'Ingen avgift – du får full hyra',
+                    body: 'Du får 100% av den avtalade hyran varje månad, utan avdrag. Vi tjänar på prisskillnaden mot företagskunden. Du betalar ingenting till oss.',
+                  },
+                ].map(({ n, title, body }) => (
+                  <div key={n} className="bg-nordic-900/80 p-7 flex gap-5">
+                    <span className="text-[#ff6300] font-bold text-sm font-heading shrink-0 pt-0.5">{n}</span>
+                    <div className="border-l border-white/10 pl-5">
+                      <h3 className="font-heading font-semibold text-white text-base mb-1.5">{title}</h3>
+                      <p className="text-white/55 text-sm leading-relaxed">{body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

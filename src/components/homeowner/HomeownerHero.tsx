@@ -257,11 +257,18 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
             <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
               {cityName
                 ? tr(
-                    `Hyr ut din bostad i ${cityName} till företag`,
-                    `Rent out your property in ${cityName} to companies`,
-                    `Wynajmij nieruchomość w ${cityName} firmom`
+                    `Hyr ut till företag i ${cityName}`,
+                    `Rent out to companies in ${cityName}`,
+                    `Wynajmij firmom w ${cityName}`
                   )
-                : t('homeowner.conversion.title' as TranslationKey)}
+                : (
+                  <>
+                    {tr('Hyr ut till', 'Rent out to', 'Wynajmij')}{' '}
+                    <span className="text-[#ff6300]">
+                      {tr('företag.', 'companies.', 'firmom.')}
+                    </span>
+                  </>
+                )}
             </h1>
 
             <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-2 md:mb-10">
