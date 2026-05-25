@@ -30,6 +30,8 @@ const STATUSES: { value: string; label: string; cls: string }[] = [
   { value: "off_market", label: "Av marknaden", cls: "bg-gray-100 text-gray-600 border-gray-300" },
 ];
 
+const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
+
 type EditForm = {
   address: string;
   postalCode: string;
@@ -434,6 +436,8 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         </div>
       </div>
 
+      <OwnerFollowUp property={property} onUpdate={onUpdate} />
+
       {property.notes && (
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Intern beskrivning</p>
@@ -524,6 +528,76 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function OwnerFollowUp({ property, onUpdate }: { property: Property; onUpdate: (data: Partial<Property>) => Promise<void> }) {
+  const [date, setDate] = useState(property.ownerFollowUpDate ?? "");
+  const [reason, setReason] = useState(property.ownerFollowUpReason ?? "");
+  const [note, setNote] = useState(property.ownerFollowUpNote ?? "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setDate(property.ownerFollowUpDate ?? "");
+    setReason(property.ownerFollowUpReason ?? "");
+    setNote(property.ownerFollowUpNote ?? "");
+  }, [property.id]);
+
+  async function save() {
+    setSaving(true);
+    await onUpdate({
+      ownerFollowUpDate: date || null,
+      ownerFollowUpReason: reason.trim() || null,
+      ownerFollowUpNote: note.trim() || null,
+    });
+    setSaving(false);
+  }
+  async function clear() {
+    setSaving(true);
+    setDate(""); setReason(""); setNote("");
+    await onUpdate({ ownerFollowUpDate: null, ownerFollowUpReason: null, ownerFollowUpNote: null });
+    setSaving(false);
+  }
+
+  return (
+    <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3 space-y-2">
+      <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Följ upp uthyrare</p>
+      <p className="text-[11px] text-amber-800/80 -mt-1">För sourcing/relationsvård — funkar även utan aktiv förfrågan.</p>
+      <div className="grid grid-cols-2 gap-2">
+        <Labeled label="Datum">
+          <input type="date" className={FIELD_CLS} value={date} onChange={(e) => setDate(e.target.value)} />
+        </Labeled>
+        <Labeled label="Anledning">
+          <input className={FIELD_CLS} placeholder="T.ex. Kolla pris" value={reason} onChange={(e) => setReason(e.target.value)} />
+        </Labeled>
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {FOLLOWUP_REASONS.map((r) => (
+          <button
+            key={r}
+            type="button"
+            onClick={() => setReason(r)}
+            className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+              reason === r ? "bg-amber-200 border-amber-300 text-amber-900" : "bg-white border-input text-muted-foreground hover:bg-amber-100"
+            }`}
+          >
+            {r}
+          </button>
+        ))}
+      </div>
+      <textarea
+        className={`${FIELD_CLS} min-h-[44px] resize-y`}
+        placeholder="Anteckning (valfri)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
+      <div className="flex justify-end gap-2">
+        {property.ownerFollowUpDate && (
+          <Button variant="ghost" size="sm" onClick={clear} disabled={saving}>Rensa</Button>
+        )}
+        <Button size="sm" onClick={save} disabled={saving || !date}>Spara uppföljning</Button>
+      </div>
     </div>
   );
 }

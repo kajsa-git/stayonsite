@@ -32,6 +32,7 @@ interface MatchRow {
   matchScore: number | null;
   sentAt: string | null;
   followUpDate: string | null;
+  followUpReason: string | null;
   propertyAddress: string | null;
   propertyCity: string | null;
   propertyRentOut: number | null;
@@ -64,6 +65,8 @@ const PROP_UNAVAILABLE: Record<string, string> = {
   rented: "Uthyrd",
   off_market: "Av marknaden",
 };
+
+const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
 
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
@@ -162,6 +165,15 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     mutateMatches();
   }
 
+  async function setMatchReason(id: string, reason: string) {
+    await fetch(`/api/crm/matches/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followUpReason: reason || null }),
+    });
+    mutateMatches();
+  }
+
   async function removeMatch(id: string) {
     await fetch(`/api/crm/matches/${id}`, { method: "DELETE" });
     mutateMatches();
@@ -169,6 +181,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
   return (
     <div className="max-w-5xl mx-auto p-6">
+      <datalist id="followup-reasons">
+        {FOLLOWUP_REASONS.map((r) => (
+          <option key={r} value={r} />
+        ))}
+      </datalist>
       <div className="mb-6">
         <button
           onClick={() => router.push(`/crm/company/${request.companyId}`)}
@@ -225,13 +242,22 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .join(" · ")}
                     </div>
                     {(m.status === "suggested" || m.status === "sent") && (
-                      <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-                        <span>📲 Jaga hyresvärd:</span>
+                      <div className="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+                        <span>📲 Följ upp:</span>
                         <input
                           type="date"
                           value={m.followUpDate ?? ""}
                           onChange={(e) => setMatchFollowUp(m.id, e.target.value)}
                           className="border rounded px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                        <input
+                          list="followup-reasons"
+                          defaultValue={m.followUpReason ?? ""}
+                          onBlur={(e) => {
+                            if ((e.target.value || "") !== (m.followUpReason ?? "")) setMatchReason(m.id, e.target.value);
+                          }}
+                          placeholder="anledning"
+                          className="border rounded px-1.5 py-0.5 text-xs w-28 focus:outline-none focus:ring-1 focus:ring-primary-500"
                         />
                       </div>
                     )}

@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
       matchScore: matches.matchScore,
       sentAt: matches.sentAt,
       followUpDate: matches.followUpDate,
+      followUpReason: matches.followUpReason,
       notes: matches.notes,
       createdAt: matches.createdAt,
       propertyAddress: properties.address,

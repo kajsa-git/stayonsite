@@ -140,6 +140,10 @@ export const properties = sqliteTable("crm_properties", {
   availableTo: text("available_to"),
   notes: text("notes"), // intern beskrivning — aldrig publik
   publicDescription: text("public_description"), // extern beskrivning — visas på hemsidan
+  // Följ upp uthyrare (sourcing/relationsvård) — oberoende av aktiv förfrågan
+  ownerFollowUpDate: text("owner_follow_up_date"),
+  ownerFollowUpReason: text("owner_follow_up_reason"), // kort: Kolla pris, Tillgänglighet juni…
+  ownerFollowUpNote: text("owner_follow_up_note"), // fritext
   rating: integer("rating"), // 0–10 intern skattning av uthyrare
   links: text("links", { mode: "json" }).$type<string[]>(), // externa länkar (Airbnb/Qasa/Booking/övrigt)
   status: text("status").default("available"),
@@ -152,6 +156,7 @@ export const properties = sqliteTable("crm_properties", {
   index("crm_properties_move_in_from_idx").on(t.moveInFrom),
   index("crm_properties_beds_idx").on(t.beds),
   index("crm_properties_published_idx").on(t.published),
+  index("crm_properties_owner_follow_up_date_idx").on(t.ownerFollowUpDate),
 ]);
 
 // Förslag/matchningar — kopplar en förfrågan till flera objekt (många-till-många)
@@ -167,6 +172,7 @@ export const matches = sqliteTable("crm_matches", {
   matchScore: real("match_score"),
   sentAt: text("sent_at"),
   followUpDate: text("follow_up_date"), // jaga hyresvärd: när höra av sig igen
+  followUpReason: text("follow_up_reason"), // kort anledning för uppföljningen
   notes: text("notes"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [

@@ -12,7 +12,7 @@ const STEPS = [
   { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
   { emoji: "🏠", title: "Pågående matchningar", text: "Förfrågningar du letar boende åt. Skicka förslag och markera när kunden valt ett." },
   { emoji: "🧾", title: "Att fakturera", text: "Vunna affärer redo att faktureras. Markera fakturerad när fakturan är skickad." },
-  { emoji: "📲", title: "Jaga hyresvärdar", text: "Förslag som väntar svar från hyresvärden. Hör av dig igen på utsatt datum." },
+  { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing. En rad per objekt." },
 ];
 
 const VERSES: { text: string; ref: string }[] = [
@@ -48,12 +48,14 @@ interface RequestQueue {
 }
 
 interface ChaseRow {
-  id: string;
-  requestId: string;
-  followUpDate?: string | null;
-  propertyAddress?: string | null;
-  companyName?: string | null;
-  requestNumber?: number | null;
+  propertyId: string;
+  address: string | null;
+  ownerName: string | null;
+  ownerPhone: string | null;
+  earliestDate: string | null;
+  reason: string | null;
+  requestCount: number;
+  sourcing: boolean;
 }
 
 interface QueueData {
@@ -90,8 +92,17 @@ export function MyDayView() {
     setShowHelp(true);
   }
 
-  const { data } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
+  const { data, mutate } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], incoming: [], matching: [], won: [], chaseLandlords: [] };
+
+  async function chaseAction(propertyId: string, action: string) {
+    await fetch(`/api/crm/properties/${propertyId}/chase`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action }),
+    });
+    mutate();
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -205,22 +216,18 @@ export function MyDayView() {
         />
 
         <QueueSection
-          title="Jaga hyresvärdar"
-          emoji="📲"
+          title="Följ upp uthyrare"
+          emoji="☎️"
           items={queues.chaseLandlords}
-          emptyText="Inget att jaga"
+          emptyText="Inget att följa upp"
           renderItem={(item) => (
-            <button
-              key={item.id}
-              className="w-full text-left p-3 rounded-lg bg-white border hover:border-rose-400 transition-colors"
-              onClick={() => router.push(`/crm/matching/${item.requestId}`)}
-            >
-              <div className="font-medium text-sm truncate">{item.propertyAddress ?? "(bostad)"}</div>
-              <div className="text-xs text-muted-foreground truncate">
-                #{item.requestNumber} {item.companyName}
-                {item.followUpDate && ` · ${item.followUpDate <= today ? "idag/försenad" : item.followUpDate}`}
-              </div>
-            </button>
+            <ChaseCard
+              key={item.propertyId}
+              item={item}
+              today={today}
+              onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
+              onAction={(action) => chaseAction(item.propertyId, action)}
+            />
           )}
         />
       </div>
@@ -254,6 +261,75 @@ export function MyDayView() {
   );
 }
 
+function ChaseCard({
+  item,
+  today,
+  onOpen,
+  onAction,
+}: {
+  item: ChaseRow;
+  today: string;
+  onOpen: () => void;
+  onAction: (action: string) => void | Promise<void>;
+}) {
+  const [busy, setBusy] = useState(false);
+  async function act(action: string) {
+    if (
+      action === "off_market" &&
+      !window.confirm("Markera objektet som av marknaden? Det slutar visas som ledigt. (Förslagen stängs inte automatiskt.)")
+    )
+      return;
+    setBusy(true);
+    await onAction(action);
+    setBusy(false);
+  }
+  const overdue = !!item.earliestDate && item.earliestDate <= today;
+  return (
+    <div className="p-3 rounded-lg bg-white border">
+      <button className="w-full text-left" onClick={onOpen}>
+        <div className="font-medium text-sm truncate">{item.address ?? "(adress saknas)"}</div>
+        <div className="text-xs text-muted-foreground truncate">
+          {[item.ownerName, item.ownerPhone].filter(Boolean).join(" · ") || "—"}
+        </div>
+        <div className="text-xs mt-1">
+          {item.sourcing ? (
+            <span className="italic text-nordic-500">Ingen aktiv förfrågan</span>
+          ) : (
+            <span className="text-amber-700 font-medium">
+              {item.requestCount} förfrågning{item.requestCount === 1 ? "" : "ar"} väntar
+            </span>
+          )}
+          {item.reason && <span className="text-muted-foreground"> · {item.reason}</span>}
+        </div>
+        {item.earliestDate && (
+          <div className={`text-[11px] mt-0.5 ${overdue ? "text-rose-600" : "text-muted-foreground"}`}>
+            {overdue ? "idag/försenad" : item.earliestDate}
+          </div>
+        )}
+      </button>
+      <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t">
+        <ChaseBtn onClick={() => act("snooze3")} disabled={busy}>Ringd · +3 d</ChaseBtn>
+        <ChaseBtn onClick={() => act("snooze7")} disabled={busy}>+7 d</ChaseBtn>
+        <ChaseBtn onClick={() => act("answered")} disabled={busy}>Fick svar</ChaseBtn>
+        <ChaseBtn onClick={() => act("off_market")} disabled={busy}>Av marknaden</ChaseBtn>
+        <ChaseBtn onClick={onOpen} disabled={busy}>Anteckning</ChaseBtn>
+      </div>
+    </div>
+  );
+}
+
+function ChaseBtn({ children, onClick, disabled }: { children: React.ReactNode; onClick: () => void; disabled?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
+    >
+      {children}
+    </button>
+  );
+}
+
 function RequestRow({ item, accent, onClick }: { item: RequestQueue; accent: string; onClick: () => void }) {
   return (
     <button
@@ -268,7 +344,7 @@ function RequestRow({ item, accent, onClick }: { item: RequestQueue; accent: str
   );
 }
 
-function QueueSection<T extends { id: string }>({
+function QueueSection<T>({
   title,
   emoji,
   items,

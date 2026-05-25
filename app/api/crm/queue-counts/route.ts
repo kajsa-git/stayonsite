@@ -1,6 +1,6 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, matches, requests } from "@/lib/crm/schema";
+import { companies, matches, properties, requests } from "@/lib/crm/schema";
 import { and, eq, inArray, lte } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -10,7 +10,7 @@ export async function GET() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [followUps, incomingQueue, matchingQueue, wonQueue, chaseQueue] = await Promise.all([
+  const [followUps, incomingQueue, matchingQueue, wonQueue, chaseMatchProps, chaseOwnerProps] = await Promise.all([
     db
       .select({ id: companies.id })
       .from(companies)
@@ -25,10 +25,9 @@ export async function GET() {
     // Won deals awaiting invoice
     db.select({ id: requests.id }).from(requests).where(eq(requests.status, "won")),
 
-    // Förslag som väntar hyresvärds-svar och vars jaga-datum passerat
-    // (endast för förfrågningar som fortfarande är öppna — inte vunna/stängda)
+    // Objekt med förslag vars jaga-datum passerat (öppna förfrågningar)
     db
-      .select({ id: matches.id })
+      .select({ propertyId: matches.propertyId })
       .from(matches)
       .innerJoin(requests, eq(matches.requestId, requests.id))
       .where(
@@ -38,13 +37,21 @@ export async function GET() {
           inArray(requests.status, ["incoming", "matching"]),
         ),
       ),
+
+    // Objekt med egen uppföljning (sourcing)
+    db.select({ id: properties.id }).from(properties).where(lte(properties.ownerFollowUpDate, today)),
   ]);
+
+  // Dedupa: räkna distinkta objekt i "Följ upp uthyrare"
+  const chaseProps = new Set<string>();
+  for (const m of chaseMatchProps) if (m.propertyId) chaseProps.add(m.propertyId);
+  for (const o of chaseOwnerProps) chaseProps.add(o.id);
 
   return NextResponse.json({
     followUps: followUps.length,
     incoming: incomingQueue.length,
     matching: matchingQueue.length,
     won: wonQueue.length,
-    chaseLandlords: chaseQueue.length,
+    chaseLandlords: chaseProps.size,
   });
 }
