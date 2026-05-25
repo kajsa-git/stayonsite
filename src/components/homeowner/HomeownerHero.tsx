@@ -42,9 +42,10 @@ interface HomeownerHeroProps {
   heroImage?: string;
   subtitle?: { sv: string; en: string; pl: string };
   extraFaqItems?: Array<{ q: string; a: string }>;
+  hideFaq?: boolean;
 }
 
-const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: HomeownerHeroProps = {}) => {
+const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }: HomeownerHeroProps = {}) => {
   const { t, language } = useLanguage();
 
   const tr = (sv: string, en: string, pl: string) => {
@@ -485,7 +486,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
         </div>
 
         {/* FAQ — below fold */}
-        <div className="mt-12 md:mt-16 max-w-2xl mx-auto lg:mx-0">
+        {!hideFaq && <div className="mt-12 md:mt-16 max-w-2xl mx-auto lg:mx-0">
           <h2 className="text-lg font-bold text-white/80 mb-4">
             {tr('Vanliga frågor', 'Common questions', 'Najczęstsze pytania')}
           </h2>
@@ -505,7 +506,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+        </div>}
 
         {/* City links — SEO internal linking (only on main page) */}
         {!cityName && (

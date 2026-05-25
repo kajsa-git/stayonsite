@@ -8,7 +8,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { cities } from '@/data/cities';
-import { MapPin, Phone, Star } from 'lucide-react';
+import { MapPin, Phone, Star, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 const ForHusagare = () => {
   const { t } = useTranslation();
@@ -108,7 +109,7 @@ const ForHusagare = () => {
       />
       <Header />
       <main className="flex-grow">
-        <HomeownerHero />
+        <HomeownerHero hideFaq />
         <section className="py-20 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-5xl mx-auto">
@@ -217,6 +218,8 @@ const ForHusagare = () => {
           </div>
         </section>
 
+        <FaqSection />
+
         <section className="py-14 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8 max-w-5xl">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
@@ -276,5 +279,79 @@ const ForHusagare = () => {
     </div>
   );
 };
+
+const FAQ_ITEMS = [
+  {
+    q: 'Kostar det något?',
+    a: 'Nej. Du betalar ingenting till oss. Vi hyr din bostad till ett fast belopp varje månad – utan avdrag. Vi tjänar på prisskillnaden gentemot företagskunden.',
+  },
+  {
+    q: 'Vilka bor i mitt hus?',
+    a: 'Professionella företagshyresgäster – montörer, ingenjörer och projektteam som arbetar tillfälligt i området. Aldrig privatpersoner.',
+  },
+  {
+    q: 'Hur lång är avtalstiden?',
+    a: 'Det bestämmer vi tillsammans. Avtalstiden anpassas efter hyresgästens projekt och dina önskemål som hyresvärd – alltid i öppen dialog tills alla parter är nöjda.',
+  },
+  {
+    q: 'Kan hyresgästen sitta kvar mot min vilja?',
+    a: 'Nej. Vid uthyrning av ett hus har hyresgästen inget besittningsskydd. Du kan säga upp avtalet med 3 månaders varsel utan att ange skäl – och utan domstolsförfarande. Vi använder alltid tidsbegränsade avtal kopplade till projektets längd, så avslutsdatumet är tydligt från dag ett.',
+  },
+  {
+    q: 'Vad händer med min villaförsäkring?',
+    a: 'Standardförsäkringen täcker normalt inte skador orsakade av hyresgäster. Du bör teckna ett uthyringstillägg – kostar typiskt 500–1 000 kr/år och täcker skadegörelse upp till 200 000 kr. Vi kräver dessutom att det hyrande företaget tecknar ansvarsförsäkring för sina anställda.',
+  },
+  {
+    q: 'Vad betalar jag i skatt på hyresintäkten?',
+    a: 'Du betalar 30 % kapitalskatt på överskottet. Avdragen är generösa: schablonavdrag 50 000 kr/år (från 1 juli 2026) plus 20 % av hyresintäkten. Exempel: 15 000 kr/mån (180 000 kr/år) → avdrag 86 000 kr → skatt ca 28 200 kr → ca 152 000 kr netto per år. Vi kan hjälpa dig räkna på just din bostad.',
+  },
+  {
+    q: 'Sliter inte montörer mer på huset?',
+    a: 'Tvärtom – veckopendlare sliter i regel mindre på en bostad än permanent boende. De är på jobbet 10 timmar om dagen och hemma bara på nätterna, utan barn, husdjur eller storhelger. Vi tar alltid in- och utflyttbesiktning med foton som skydd för dig.',
+  },
+  {
+    q: 'Behöver jag tillstånd för att hyra ut?',
+    a: 'Nej. Inget kommunalt, statligt eller annat tillstånd krävs för att hyra ut ett hus till ett företag. Har du en bostadsrätt krävs styrelsens godkännande – vi hjälper dig med den processen.',
+  },
+  {
+    q: 'Hur sätts hyran?',
+    a: 'Hyran ska vara skälig. En bra tumregel: 4 % av fastighetens marknadsvärde per år, delat på 12, plus löpande driftkostnader. Möblerat ger vanligtvis 10–30 % påslag. Vi hjälper dig sätta rätt nivå baserat på faktisk efterfrågan i ditt område – utan att du behöver gissa.',
+  },
+];
+
+function FaqSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <section className="py-20 bg-white border-t border-nordic-100">
+      <div className="container mx-auto px-6 md:px-8 max-w-3xl">
+        <div className="mb-10">
+          <span className="text-[#ff6300] text-xs uppercase tracking-[0.2em] font-semibold">Vanliga frågor</span>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-nordic-900 mt-2">
+            Allt du behöver veta
+          </h2>
+        </div>
+        <div className="divide-y divide-nordic-100">
+          {FAQ_ITEMS.map((item, i) => (
+            <div key={i}>
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between gap-4 py-5 text-left"
+                aria-expanded={open === i}
+              >
+                <span className="font-heading font-semibold text-nordic-900 text-base">{item.q}</span>
+                <ChevronDown
+                  className={`h-5 w-5 text-[#ff6300] shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {open === i && (
+                <p className="text-nordic-700 text-sm leading-relaxed pb-5 max-w-2xl">{item.a}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default ForHusagare;
