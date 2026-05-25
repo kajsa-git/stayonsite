@@ -15,6 +15,21 @@ const STEPS = [
   { emoji: "📲", title: "Jaga hyresvärdar", text: "Förslag som väntar svar från hyresvärden. Hör av dig igen på utsatt datum." },
 ];
 
+const VERSES: { text: string; ref: string }[] = [
+  { text: "Var inte rädd, för jag är med dig.", ref: "Jesaja 41:10" },
+  { text: "Herren är min herde, mig ska inget fattas.", ref: "Psaltaren 23:1" },
+  { text: "Allt förmår jag genom honom som ger mig kraft.", ref: "Filipperbrevet 4:13" },
+  { text: "Var stark och modig … Herren din Gud är med dig vart du än går.", ref: "Josua 1:9" },
+  { text: "Kom till mig, alla ni som är tyngda av bördor, så ska jag ge er vila.", ref: "Matteus 11:28" },
+  { text: "Kasta alla era bekymmer på honom, för han har omsorg om er.", ref: "1 Petrus 5:7" },
+  { text: "Jag vet vilka tankar jag har för er: tankar om frid, framtid och hopp.", ref: "Jeremia 29:11" },
+  { text: "Herren är nära alla som ropar till honom.", ref: "Psaltaren 145:18" },
+  { text: "Gud är vår tillflykt och styrka, en hjälp i nöden.", ref: "Psaltaren 46:2" },
+  { text: "Min nåd är nog för dig.", ref: "2 Korinthierbrevet 12:9" },
+  { text: "Frid lämnar jag åt er, min frid ger jag er.", ref: "Johannes 14:27" },
+  { text: "Se, jag är med er alla dagar till tidens slut.", ref: "Matteus 28:20" },
+];
+
 interface CompanyQueue {
   id: string;
   name: string;
@@ -54,6 +69,12 @@ export function MyDayView() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
   const [showHelp, setShowHelp] = useState(true);
+  const [verse, setVerse] = useState<{ text: string; ref: string } | null>(null);
+
+  function blessKajsa() {
+    const pool = VERSES.filter((v) => v.ref !== verse?.ref);
+    setVerse(pool[Math.floor(Math.random() * pool.length)]);
+  }
 
   useEffect(() => {
     if (localStorage.getItem("crm_minday_help") === "hidden") setShowHelp(false);
@@ -202,13 +223,30 @@ export function MyDayView() {
         />
       </div>
 
-      {/* Liten uppmuntran 🙏 */}
+      {/* Liten uppmuntran 🙏 — klicka på Jesus för ett bibelord */}
       <div className="mt-12 flex justify-end items-end gap-3 pr-2">
-        <div className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5 mb-5 max-w-xs">
-          <p className="text-sm font-medium text-nordic-900">Jag är med dig, Kajsa! ✝️</p>
+        <div className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5 mb-5 max-w-sm">
+          {verse ? (
+            <>
+              <p className="text-sm text-nordic-900 italic">”{verse.text}”</p>
+              <p className="text-xs text-muted-foreground mt-1">— {verse.ref}</p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-nordic-900">Jag är med dig, Kajsa! ✝️</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Klicka på mig för ett bibelord</p>
+            </>
+          )}
         </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/jesus-kajsa.png" alt="Glad tecknad Jesus som vinkar" className="h-28 w-28 object-contain select-none" draggable={false} />
+        <button type="button" onClick={blessKajsa} title="Klicka för ett bibelord" className="shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/jesus-kajsa.png"
+            alt="Glad tecknad Jesus som vinkar"
+            className="h-28 w-28 object-contain select-none cursor-pointer transition-transform hover:scale-105"
+            draggable={false}
+          />
+        </button>
       </div>
     </div>
   );
