@@ -122,7 +122,7 @@ const ForHusagare = () => {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-px bg-nordic-100 rounded-2xl overflow-hidden border border-nordic-100">
+              <div className="grid md:grid-cols-2 gap-px bg-nordic-200 rounded-2xl overflow-hidden border border-nordic-200">
                 {[
                   {
                     n: '01',
@@ -157,9 +157,9 @@ const ForHusagare = () => {
                 ].map(({ n, title, body }) => (
                   <div key={n} className="bg-white p-7 flex gap-5 min-h-40">
                     <span className="text-[#ff6300] font-bold text-sm font-heading shrink-0 pt-0.5">{n}</span>
-                    <div className="border-l border-nordic-200 pl-5">
+                    <div className="border-l-2 border-nordic-200 pl-5">
                       <h3 className="font-heading font-semibold text-nordic-900 text-base mb-1.5">{title}</h3>
-                      <p className="text-nordic-600 text-sm leading-relaxed">{body}</p>
+                      <p className="text-nordic-800 text-sm leading-relaxed">{body}</p>
                     </div>
                   </div>
                 ))}
