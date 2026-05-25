@@ -15,7 +15,7 @@ import {
 const GOOGLE_REVIEW_URL =
   'https://www.google.com/search?q=Stayonsite+AB';
 
-const REVIEW_KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
+const REVIEW_KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as const;
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

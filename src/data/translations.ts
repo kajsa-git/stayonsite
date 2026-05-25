@@ -88,6 +88,16 @@ export type TranslationKey =
   | "references.testimonial8.author"
   | "references.testimonial9.quote"
   | "references.testimonial9.author"
+  | "references.testimonial10.quote"
+  | "references.testimonial10.author"
+  | "references.testimonial11.quote"
+  | "references.testimonial11.author"
+  | "references.testimonial12.quote"
+  | "references.testimonial12.author"
+  | "references.testimonial13.quote"
+  | "references.testimonial13.author"
+  | "references.testimonial14.quote"
+  | "references.testimonial14.author"
   | "heroForm.city"
   | "heroForm.cityPlaceholder"
   | "heroForm.people"
@@ -481,6 +491,21 @@ export const translations: Record<
     "references.testimonial9.quote":
       "Vi är mycket nöjda med servicen. Snabb respons, bra erbjudande och all kommunikation gick mycket bra. Tack Kajsa för all hjälp.",
     "references.testimonial9.author": "Gintarė Kedienė",
+    "references.testimonial10.quote":
+      "Rekommenderar varmt. Hela upplevelsen: positiv, lösningsorienterad och snabb på bollen. Boende blev perfekt.",
+    "references.testimonial10.author": "Lovisa Åberg Bydén",
+    "references.testimonial11.quote":
+      "Stayonsite har mycket bra och smidiga processer. Kommunikation, service och samarbete håller en hög nivå.",
+    "references.testimonial11.author": "Christopher",
+    "references.testimonial12.quote":
+      "Allt funkade jättebra. Kajsa är professionell och är till stor hjälp med förmedlingen och kontakten med hyresgästen.",
+    "references.testimonial12.author": "Lena Ljung",
+    "references.testimonial13.quote":
+      "Använde mig av StayOnSite och fått fantastisk service rakt igenom. Kajsa har varit extremt snabb, tydlig och proffsig. Kan starkt rekommendera!",
+    "references.testimonial13.author": "Sebastian Nielsen",
+    "references.testimonial14.quote":
+      "Snabb respons och bra affär. Det är precis vad du behöver!",
+    "references.testimonial14.author": "Ludo Kiss",
 
     "heroForm.city": "Ort",
     "heroForm.cityPlaceholder": "T.ex. Boden, Gävle, Luleå",
@@ -953,6 +978,21 @@ export const translations: Record<
     "references.testimonial9.quote":
       "We are very happy about the service. Quick reaction, good offer and all communication went very well. Thanks for Kajsa for all help.",
     "references.testimonial9.author": "Gintarė Kedienė",
+    "references.testimonial10.quote":
+      "Highly recommend. The whole experience: positive, solution-oriented and fast on the ball. Accommodation was perfect.",
+    "references.testimonial10.author": "Lovisa Åberg Bydén",
+    "references.testimonial11.quote":
+      "StayOnSite has very smooth processes. Communication, service and collaboration are all at a high level.",
+    "references.testimonial11.author": "Christopher",
+    "references.testimonial12.quote":
+      "Everything worked great. Kajsa is professional and a great help with the rental process and tenant communication.",
+    "references.testimonial12.author": "Lena Ljung",
+    "references.testimonial13.quote":
+      "Used StayOnSite and received fantastic service throughout. Kajsa has been extremely fast, clear and professional. Highly recommend!",
+    "references.testimonial13.author": "Sebastian Nielsen",
+    "references.testimonial14.quote":
+      "Fast response and a great deal. That's exactly what you need!",
+    "references.testimonial14.author": "Ludo Kiss",
 
     "heroForm.city": "Location",
     "heroForm.cityPlaceholder": "e.g. Boden, Gävle, Luleå",
@@ -1426,6 +1466,21 @@ export const translations: Record<
     "references.testimonial9.quote":
       "Jesteśmy bardzo zadowoleni z usługi. Szybka reakcja, dobra oferta i cała komunikacja przebiegała bardzo dobrze. Dziękujemy Kajsa za całą pomoc.",
     "references.testimonial9.author": "Gintarė Kedienė",
+    "references.testimonial10.quote":
+      "Gorąco polecam. Całe doświadczenie: pozytywne, nastawione na rozwiązania i szybkie. Zakwaterowanie było idealne.",
+    "references.testimonial10.author": "Lovisa Åberg Bydén",
+    "references.testimonial11.quote":
+      "StayOnSite ma bardzo dobre i sprawne procesy. Komunikacja, serwis i współpraca są na wysokim poziomie.",
+    "references.testimonial11.author": "Christopher",
+    "references.testimonial12.quote":
+      "Wszystko działało świetnie. Kajsa jest profesjonalna i bardzo pomocna w procesie wynajmu i kontakcie z najemcą.",
+    "references.testimonial12.author": "Lena Ljung",
+    "references.testimonial13.quote":
+      "Skorzystałem z StayOnSite i przez cały czas otrzymywałem fantastyczną obsługę. Kajsa była bardzo szybka, klarowna i profesjonalna. Gorąco polecam!",
+    "references.testimonial13.author": "Sebastian Nielsen",
+    "references.testimonial14.quote":
+      "Szybka odpowiedź i świetna oferta. Właśnie tego potrzebujesz!",
+    "references.testimonial14.author": "Ludo Kiss",
 
     "heroForm.city": "Miejscowość",
     "heroForm.cityPlaceholder": "np. Boden, Gävle, Luleå",
