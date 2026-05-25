@@ -3,8 +3,9 @@
 import { Star, X } from "lucide-react";
 import { useState } from "react";
 
-// Rating lagras som 0–10. Visas som 5 stjärnor (varje stjärna = 2 poäng),
-// med halva stjärnor för udda värden — som en recensionssajt.
+// Rating lagras som 0–10. Visas som 5 stjärnor (varje stjärna = 2 poäng).
+// Enkelklick på en stjärna sätter värdet (stjärna N = N×2). Halva stjärnor
+// visas för befintliga udda värden, men klick sätter hela stjärnor — lätt att träffa.
 export function RatingControl({
   value,
   onChange,
@@ -20,36 +21,28 @@ export function RatingControl({
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs text-muted-foreground whitespace-nowrap">{label}</span>
-      <div className="flex items-center" onMouseLeave={() => setHover(null)}>
+      <div className="flex items-center gap-0.5" onMouseLeave={() => setHover(null)}>
         {Array.from({ length: 5 }, (_, i) => {
-          const points = Math.max(0, Math.min(2, display - i * 2)); // 0, 1 (halv) eller 2 (hel)
+          const starVal = (i + 1) * 2; // 2,4,6,8,10
+          const points = Math.max(0, Math.min(2, display - i * 2)); // 0, 1 (halv), 2 (hel)
           const fillPct = (points / 2) * 100;
-          const leftVal = i * 2 + 1; // klick vänster halva → udda
-          const rightVal = i * 2 + 2; // klick höger halva → jämn
           return (
-            <span key={i} className="relative inline-block h-5 w-5">
+            <button
+              key={i}
+              type="button"
+              aria-label={`Sätt ${starVal} av 10`}
+              title={`${starVal} / 10`}
+              className="relative h-6 w-6 cursor-pointer"
+              onMouseEnter={() => setHover(starVal)}
+              onClick={() => onChange(starVal)}
+            >
               {/* tom stjärna (botten) */}
-              <Star className="absolute inset-0 h-5 w-5 text-nordic-300" fill="currentColor" strokeWidth={0} />
+              <Star className="absolute inset-0 h-6 w-6 text-nordic-300" fill="currentColor" strokeWidth={0} />
               {/* fylld stjärna, klippt till fillPct */}
-              <span className="absolute inset-0 overflow-hidden" style={{ width: `${fillPct}%` }}>
-                <Star className="h-5 w-5 text-amber-400" fill="currentColor" strokeWidth={0} />
+              <span className="absolute inset-0 overflow-hidden pointer-events-none" style={{ width: `${fillPct}%` }}>
+                <Star className="h-6 w-6 text-amber-400" fill="currentColor" strokeWidth={0} />
               </span>
-              {/* klick-/hover-zoner: vänster halva = udda, höger halva = jämn */}
-              <button
-                type="button"
-                aria-label={`Sätt ${leftVal} av 10`}
-                className="absolute left-0 top-0 h-5 w-1/2 cursor-pointer"
-                onMouseEnter={() => setHover(leftVal)}
-                onClick={() => onChange(leftVal)}
-              />
-              <button
-                type="button"
-                aria-label={`Sätt ${rightVal} av 10`}
-                className="absolute right-0 top-0 h-5 w-1/2 cursor-pointer"
-                onMouseEnter={() => setHover(rightVal)}
-                onClick={() => onChange(rightVal)}
-              />
-            </span>
+            </button>
           );
         })}
       </div>

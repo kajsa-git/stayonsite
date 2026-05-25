@@ -58,6 +58,13 @@ const MATCH_STATUS_CLS: Record<string, string> = {
   rejected: "bg-red-100 text-red-800",
 };
 
+// Varning på objekt som inte längre är lediga (taget av annan kund el. av marknaden)
+const PROP_UNAVAILABLE: Record<string, string> = {
+  reserved: "Reserverad",
+  rented: "Uthyrd",
+  off_market: "Av marknaden",
+};
+
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
   const [detailProperty, setDetailProperty] = useState<Property | null>(null);
@@ -287,6 +294,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           .filter(Boolean)
                           .join(" · ")}
                       </div>
+                      {property.status && PROP_UNAVAILABLE[property.status] && (
+                        <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-800">
+                          ⚠️ {PROP_UNAVAILABLE[property.status]}
+                        </span>
+                      )}
                     </div>
                     <MatchScore score={score} />
                   </div>

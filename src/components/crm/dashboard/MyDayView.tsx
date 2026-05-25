@@ -201,6 +201,15 @@ export function MyDayView() {
           )}
         />
       </div>
+
+      {/* Liten uppmuntran 🙏 */}
+      <div className="mt-12 flex justify-end items-end gap-3 pr-2">
+        <div className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5 mb-5 max-w-xs">
+          <p className="text-sm font-medium text-nordic-900">Jag är med dig, Kajsa! ✝️</p>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/jesus-kajsa.png" alt="Glad tecknad Jesus som vinkar" className="h-28 w-28 object-contain select-none" draggable={false} />
+      </div>
     </div>
   );
 }
