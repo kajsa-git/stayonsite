@@ -8,10 +8,19 @@ import { RequestsList } from "./RequestsList";
 import { RequestForm, type RequestFormData } from "./RequestForm";
 import { useCompany } from "@/hooks/crm/useCompany";
 import { RatingControl } from "../RatingControl";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { Company, Request } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -31,6 +40,9 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     open: false,
     request: null,
   });
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
   const selectedRequestId = selectedId ?? activeRequestId ?? null;
@@ -157,6 +169,16 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     mutate();
   }
 
+  async function handleDeleteCompany() {
+    setDeleting(true);
+    const res = await fetch(`/api/crm/companies/${companyId}`, { method: "DELETE" });
+    setDeleting(false);
+    if (res.ok) {
+      router.push("/crm/foretag");
+      router.refresh();
+    }
+  }
+
   if (!company) {
     return (
       <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
@@ -249,6 +271,60 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           />
         </div>
       </div>
+
+      {/* Farlig zon: radera företag */}
+      <div className="mt-8 pt-4 border-t flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          Radering tar bort företaget och alla dess förfrågningar, kontakter och anteckningar permanent.
+        </p>
+        <button
+          onClick={() => { setDeleteConfirm(""); setDeleteOpen(true); }}
+          className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors shrink-0"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Ta bort företag
+        </button>
+      </div>
+
+      <Dialog open={deleteOpen} onOpenChange={(o) => !o && !deleting && setDeleteOpen(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort {company.name}?</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm space-y-2">
+            <p className="text-muted-foreground">Detta går inte att ångra. Följande raderas permanent:</p>
+            <ul className="text-sm list-disc pl-5 text-nordic-800">
+              <li>Företaget <strong>{company.name}</strong></li>
+              <li>{(company.requests ?? []).length} förfrågningar</li>
+              <li>{(company.contacts ?? []).length} kontakter</li>
+              <li>{(company.notes ?? []).length} anteckningar</li>
+            </ul>
+            <div className="space-y-1 pt-1">
+              <label className="text-xs text-muted-foreground">
+                Skriv företagsnamnet för att bekräfta:
+              </label>
+              <Input
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                placeholder={company.name}
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)} disabled={deleting}>
+              Avbryt
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteCompany}
+              disabled={deleting || deleteConfirm.trim() !== company.name.trim()}
+            >
+              {deleting ? "Tar bort…" : "Ta bort permanent"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <FollowUpModal
         open={followUpOpen}
