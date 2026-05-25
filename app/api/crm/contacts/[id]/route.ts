@@ -1,0 +1,36 @@
+import { auth } from "@/lib/crm/auth";
+import { db } from "@/lib/crm/db";
+import { contacts } from "@/lib/crm/schema";
+import { eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const body = await req.json();
+
+  // If marking as primary, clear others first
+  if (body.isPrimary) {
+    const [existing] = await db.select().from(contacts).where(eq(contacts.id, id));
+    if (existing) {
+      await db
+        .update(contacts)
+        .set({ isPrimary: false })
+        .where(eq(contacts.companyId, existing.companyId));
+    }
+  }
+
+  const [row] = await db.update(contacts).set(body).where(eq(contacts.id, id)).returning();
+  return NextResponse.json(row);
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  await db.delete(contacts).where(eq(contacts.id, id));
+  return NextResponse.json({ ok: true });
+}
