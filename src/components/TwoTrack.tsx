@@ -22,7 +22,7 @@ const TwoTrack = () => {
                 {t('twotrack.company.tagline')}
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
               {t('twotrack.company.title')}
             </h2>
             <p className="text-white/70 text-lg font-light mb-8 max-w-lg">
@@ -45,7 +45,7 @@ const TwoTrack = () => {
                 {t('twotrack.homeowner.tagline')}
               </span>
             </div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-nordic-900 mb-4">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-nordic-900 mb-4">
               {t('twotrack.homeowner.title')}
             </h2>
             <p className="text-nordic-600 text-lg font-light mb-8">
