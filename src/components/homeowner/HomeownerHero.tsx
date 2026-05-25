@@ -313,7 +313,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems }: Homeown
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-white mb-2">
+                  <h3 className="text-2xl font-heading font-bold text-white mb-2">
                     {t('homeowner.conversion.successTitle' as TranslationKey)}
                   </h3>
                   <p className="text-white/70">
@@ -544,7 +544,7 @@ function TrustStat({
 }) {
   return (
     <div className="text-center">
-      <div className={`font-display text-xl md:text-2xl lg:text-3xl font-bold ${accent ? 'text-accent' : 'text-white'} flex items-center justify-center gap-1`}>
+      <div className={`font-heading text-xl md:text-2xl lg:text-3xl font-bold ${accent ? 'text-accent' : 'text-white'} flex items-center justify-center gap-1`}>
         {star && <Star size={16} className="text-yellow-400 fill-yellow-400" />}
         {value}
       </div>
