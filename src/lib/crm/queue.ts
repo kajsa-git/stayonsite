@@ -39,14 +39,17 @@ export async function fetchQueueItems(queue: string): Promise<QueueItem[]> {
       .select()
       .from(companies)
       .where(lte(companies.followUpDate, today))
-      .orderBy(asc(companies.followUpDate));
-    return rows.map((c) => ({
-      itemId: c.id,
-      companyId: c.id,
-      companyName: c.name,
-      requestId: null,
-      statusLabel: c.followUpDate === today ? "Återkomst idag" : `Återkomst ${c.followUpDate}`,
-    }));
+      .orderBy(asc(companies.followUpDate), sql`${companies.followUpTime} ASC NULLS LAST`);
+    return rows.map((c) => {
+      const when = c.followUpDate === today ? "Återkomst idag" : `Återkomst ${c.followUpDate}`;
+      return {
+        itemId: c.id,
+        companyId: c.id,
+        companyName: c.name,
+        requestId: null,
+        statusLabel: c.followUpTime ? `${when} kl. ${c.followUpTime}` : when,
+      };
+    });
   }
 
   const status = REQUEST_QUEUE_STATUS[queue];

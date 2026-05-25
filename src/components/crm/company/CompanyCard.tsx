@@ -119,11 +119,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     mutate();
   }
 
-  async function handleFollowUp(date: string, reason: string) {
+  async function handleFollowUp(date: string, reason: string, time: string) {
     await fetch(`/api/crm/companies/${companyId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followUpDate: date, followUpReason: reason }),
+      body: JSON.stringify({ followUpDate: date, followUpReason: reason, followUpTime: time }),
     });
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
@@ -222,7 +222,10 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           </div>
           {company.followUpDate ? (
             <>
-              <p className="text-sm font-medium text-amber-900">{company.followUpDate}</p>
+              <p className="text-sm font-medium text-amber-900">
+                {company.followUpDate}
+                {company.followUpTime && <span className="font-normal"> kl. {company.followUpTime}</span>}
+              </p>
               {company.followUpReason && (
                 <p className="text-xs text-amber-800/80 mt-0.5">{company.followUpReason}</p>
               )}
@@ -330,6 +333,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         open={followUpOpen}
         initialDate={company.followUpDate}
         initialReason={company.followUpReason}
+        initialTime={company.followUpTime}
         onClose={() => setFollowUpOpen(false)}
         onSave={handleFollowUp}
       />

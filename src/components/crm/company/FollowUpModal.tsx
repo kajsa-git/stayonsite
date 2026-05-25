@@ -19,25 +19,28 @@ interface Props {
   open: boolean;
   initialDate?: string | null;
   initialReason?: string | null;
+  initialTime?: string | null;
   onClose: () => void;
-  onSave: (date: string, reason: string) => Promise<void>;
+  onSave: (date: string, reason: string, time: string) => Promise<void>;
 }
 
-export function FollowUpModal({ open, initialDate, initialReason, onClose, onSave }: Props) {
+export function FollowUpModal({ open, initialDate, initialReason, initialTime, onClose, onSave }: Props) {
   const [date, setDate] = useState<Date | undefined>();
   const [reason, setReason] = useState("");
+  const [time, setTime] = useState("08:00");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setDate(initialDate ? new Date(initialDate) : undefined);
     setReason(initialReason ?? "");
-  }, [open, initialDate, initialReason]);
+    setTime(initialTime || "08:00");
+  }, [open, initialDate, initialReason, initialTime]);
 
   async function save() {
     if (!date) return;
     setBusy(true);
-    await onSave(format(date, "yyyy-MM-dd"), reason);
+    await onSave(format(date, "yyyy-MM-dd"), reason, time);
     setBusy(false);
     onClose();
   }
@@ -49,6 +52,10 @@ export function FollowUpModal({ open, initialDate, initialReason, onClose, onSav
           <DialogTitle>Återkom — välj datum</DialogTitle>
         </DialogHeader>
         <Calendar mode="single" selected={date} onSelect={setDate} locale={sv} className="rounded-md border mx-auto" />
+        <div className="space-y-1">
+          <Label htmlFor="time">Klockslag</Label>
+          <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-32" />
+        </div>
         <div className="space-y-1">
           <Label htmlFor="reason">Anledning (valfri)</Label>
           <Input

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { companies, matches, properties, requests } from "@/lib/crm/schema";
-import { and, eq, inArray, lte } from "drizzle-orm";
+import { and, asc, eq, inArray, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 const requestSelect = {
@@ -27,7 +27,11 @@ export async function GET() {
       .where(eq(requests.status, status));
 
   const [followUpCompanies, incoming, matching, toInvoice, chaseLandlords] = await Promise.all([
-    db.select().from(companies).where(lte(companies.followUpDate, today)),
+    db
+      .select()
+      .from(companies)
+      .where(lte(companies.followUpDate, today))
+      .orderBy(asc(companies.followUpDate), sql`${companies.followUpTime} ASC NULLS LAST`),
     requestsByStatus("incoming"),
     requestsByStatus("matching"),
     requestsByStatus("won"),

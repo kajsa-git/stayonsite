@@ -1,0 +1,1 @@
+ALTER TABLE `crm_companies` ADD `follow_up_time` text;

@@ -35,6 +35,7 @@ interface CompanyQueue {
   name: string;
   followUpDate?: string | null;
   followUpReason?: string | null;
+  followUpTime?: string | null;
 }
 
 interface RequestQueue {
@@ -165,6 +166,7 @@ export function MyDayView() {
               {item.followUpDate && (
                 <div className="text-xs text-muted-foreground mt-0.5">
                   {item.followUpDate === today ? "Idag" : item.followUpDate}
+                  {item.followUpTime && ` kl. ${item.followUpTime}`}
                   {item.followUpReason && ` · ${item.followUpReason}`}
                 </div>
               )}

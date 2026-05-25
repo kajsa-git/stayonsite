@@ -52,6 +52,7 @@ export const companies = sqliteTable("crm_companies", {
   invoiceEmail: text("invoice_email"), // separat fakturamail (skiljer sig ofta från kontakt-mail)
   followUpDate: text("follow_up_date"),
   followUpReason: text("follow_up_reason"),
+  followUpTime: text("follow_up_time"), // HH:MM (default 08:00 i UI) — sortering inom dagen
   assignedTo: text("assigned_to"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
