@@ -109,20 +109,20 @@ const ForHusagare = () => {
       <Header />
       <main className="flex-grow">
         <HomeownerHero />
-        <section className="py-20 bg-nordic-900 relative overflow-hidden border-t border-white/5">
+        <section className="py-20 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-5xl mx-auto">
               <div className="mb-12">
                 <span className="text-[#ff6300] text-xs uppercase tracking-[0.2em] font-semibold">Fördelar</span>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-2 mb-3">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-nordic-900 mt-2 mb-3">
                   Varför husägare väljer StayOnSite
                 </h2>
-                <p className="text-white/60 text-base max-w-xl">
+                <p className="text-nordic-600 text-base max-w-xl">
                   Vi gör uthyrning till företag enkelt – så du kan fokusera på det som verkligen spelar roll.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-px bg-white/10 rounded-2xl overflow-hidden">
+              <div className="grid md:grid-cols-2 gap-px bg-nordic-100 rounded-2xl overflow-hidden border border-nordic-100">
                 {[
                   {
                     n: '01',
@@ -155,11 +155,11 @@ const ForHusagare = () => {
                     body: 'Du får 100% av den avtalade hyran varje månad, utan avdrag. Vi tjänar på prisskillnaden mot företagskunden. Du betalar ingenting till oss.',
                   },
                 ].map(({ n, title, body }) => (
-                  <div key={n} className="bg-nordic-900/80 p-7 flex gap-5">
+                  <div key={n} className="bg-white p-7 flex gap-5">
                     <span className="text-[#ff6300] font-bold text-sm font-heading shrink-0 pt-0.5">{n}</span>
-                    <div className="border-l border-white/10 pl-5">
-                      <h3 className="font-heading font-semibold text-white text-base mb-1.5">{title}</h3>
-                      <p className="text-white/55 text-sm leading-relaxed">{body}</p>
+                    <div className="border-l border-nordic-200 pl-5">
+                      <h3 className="font-heading font-semibold text-nordic-900 text-base mb-1.5">{title}</h3>
+                      <p className="text-nordic-600 text-sm leading-relaxed">{body}</p>
                     </div>
                   </div>
                 ))}
