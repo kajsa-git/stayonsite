@@ -117,7 +117,7 @@ const ForHusagare = () => {
                 <h2 className="text-3xl md:text-4xl font-heading font-bold text-nordic-900 mt-2 mb-3">
                   Varför husägare väljer StayOnSite
                 </h2>
-                <p className="text-nordic-600 text-base max-w-xl">
+                <p className="text-nordic-800 text-base max-w-xl">
                   Vi gör uthyrning till företag enkelt – så du kan fokusera på det som verkligen spelar roll.
                 </p>
               </div>
