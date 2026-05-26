@@ -21,7 +21,7 @@ import {
 import type { Company, Request } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarClock, Trash2 } from "lucide-react";
+import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -249,10 +249,10 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           )}
         </div>
         <div className="rounded-md border bg-muted/40 px-3 py-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground block mb-1">
-            Senaste avslutsdatum
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-1">
+            <CheckCircle2 className="h-3 w-3" /> Senaste avslutsdatum
           </span>
-          <p className="text-sm py-1">
+          <p className="text-sm font-medium text-nordic-800">
             {lastClosed ? format(new Date(lastClosed), "d MMM yyyy", { locale: sv }) : "—"}
           </p>
         </div>

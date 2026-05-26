@@ -1,7 +1,9 @@
 "use client";
 
 import type { Company, Contact } from "@/lib/crm/schema";
-import { Mail, Phone, User } from "lucide-react";
+import { ExternalLink, Mail, Phone, User } from "lucide-react";
+
+const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded";
 
 interface Props {
   company: Company;
@@ -25,29 +27,35 @@ const LEAD_SOURCE_LABELS: Record<string, string> = {
 };
 
 export function CompanyHeader({ company, primaryContact }: Props) {
+  const websiteHref = company.website
+    ? company.website.startsWith("http") ? company.website : `https://${company.website}`
+    : null;
+  const websiteLabel = company.website?.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
   return (
-    <div className="flex items-center gap-4 mb-6">
+    <div className="flex items-start gap-4 mb-6">
       <div className="h-14 w-14 rounded-2xl bg-nordic-700 text-white flex items-center justify-center text-xl font-bold shrink-0">
         {initials(company.name)}
       </div>
-      <div className="min-w-0">
-        <h1 className="text-2xl font-bold text-nordic-900">{company.name}</h1>
-        <div className="flex items-center gap-2 mt-1">
+      <div className="min-w-0 flex-1">
+        <h1 className="text-2xl font-bold text-nordic-900 truncate">{company.name}</h1>
+        <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1 text-xs">
           {company.orgNr && (
-            <span className="text-sm text-muted-foreground font-mono">{company.orgNr}</span>
+            <span className="font-mono text-nordic-600">{company.orgNr}</span>
           )}
-          {company.website && (
+          {websiteHref && (
             <a
-              href={company.website.startsWith("http") ? company.website : `https://${company.website}`}
+              href={websiteHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-primary-600 hover:underline"
+              className={`inline-flex items-center gap-1 text-primary-600 hover:underline max-w-[16rem] truncate ${FOCUS}`}
             >
-              {company.website}
+              <span className="truncate">{websiteLabel}</span>
+              <ExternalLink className="h-3 w-3 shrink-0" />
             </a>
           )}
           {company.leadSource && LEAD_SOURCE_LABELS[company.leadSource] && (
-            <span className="rounded-full border border-input px-2 py-0.5 text-xs text-muted-foreground">
+            <span className="rounded-full border border-input px-2 py-0.5 text-nordic-600">
               {LEAD_SOURCE_LABELS[company.leadSource]}
             </span>
           )}
@@ -56,19 +64,19 @@ export function CompanyHeader({ company, primaryContact }: Props) {
         {primaryContact && (
           <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-2 text-sm">
             <span className="flex items-center gap-1.5 font-medium text-nordic-800">
-              <User className="h-3.5 w-3.5 text-muted-foreground" />
+              <User className="h-3.5 w-3.5 text-nordic-500" />
               {primaryContact.name}
             </span>
             {primaryContact.phone && (
-              <a href={`tel:${primaryContact.phone}`} className="flex items-center gap-1.5 text-nordic-700 hover:text-primary-600">
-                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+              <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
+                <Phone className="h-3.5 w-3.5 text-nordic-500" />
                 {primaryContact.phone}
               </a>
             )}
             {primaryContact.email && (
-              <a href={`mailto:${primaryContact.email}`} className="flex items-center gap-1.5 text-nordic-700 hover:text-primary-600">
-                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                {primaryContact.email}
+              <a href={`mailto:${primaryContact.email}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
+                <Mail className="h-3.5 w-3.5 text-nordic-500" />
+                <span className="truncate max-w-[18rem]">{primaryContact.email}</span>
               </a>
             )}
           </div>

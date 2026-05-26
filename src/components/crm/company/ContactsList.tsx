@@ -132,7 +132,7 @@ export function ContactsList({ contacts, companyId, onAdd, onUpdate, onDelete }:
           ) : (
             <div
               key={c.id}
-              className="flex items-center gap-3 p-2 rounded-lg bg-white border text-sm group"
+              className="flex items-center gap-3 p-2 rounded-lg bg-white border text-sm group hover:border-nordic-300 transition-colors"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -141,17 +141,17 @@ export function ContactsList({ contacts, companyId, onAdd, onUpdate, onDelete }:
                     <Badge className="text-[10px] py-0 px-1 bg-amber-100 text-amber-800">Primär</Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+                <div className="flex items-center gap-3 text-xs text-nordic-600 mt-0.5">
                   {c.phone && (
-                    <a href={`tel:${c.phone}`} className="flex items-center gap-1 hover:text-foreground">
+                    <a href={`tel:${c.phone}`} className="flex items-center gap-1 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded">
                       <Phone className="h-3 w-3" />
                       {c.phone}
                     </a>
                   )}
                   {c.email && (
-                    <a href={`mailto:${c.email}`} className="flex items-center gap-1 hover:text-foreground">
-                      <Mail className="h-3 w-3" />
-                      {c.email}
+                    <a href={`mailto:${c.email}`} className="flex items-center gap-1 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded min-w-0">
+                      <Mail className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{c.email}</span>
                     </a>
                   )}
                 </div>
@@ -183,7 +183,7 @@ export function ContactsList({ contacts, companyId, onAdd, onUpdate, onDelete }:
                   </Button>
                 </div>
               ) : (
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                   {!c.isPrimary && (
                     <Button
                       variant="ghost"
