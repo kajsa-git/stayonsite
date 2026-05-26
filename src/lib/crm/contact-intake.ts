@@ -241,11 +241,6 @@ async function createHomeownerLead(
       postalCode,
       city,
       bedrooms,
-      ownerType: owner.ownerType,
-      ownerArrangement: owner.ownerArrangement,
-      ownerName: owner.name,
-      ownerPhone: owner.phone,
-      ownerEmail: owner.email,
       ownerFollowUpDate: today(),
       ownerFollowUpReason: "Ny husägare från webb",
       notes: sourceNotes(submission, [

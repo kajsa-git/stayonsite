@@ -1,48 +1,37 @@
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { owners, properties, type Owner, type Property } from "./schema";
 
-export type PropertyOwnerRow = {
-  property: Property;
-  owner: Owner | null;
+// Owner-identitet är härledd från owners-tabellen (objektet lagrar bara ownerId).
+// Läsvägar JOIN:ar owners och hydrerar dessa fält via mergeOwnerIntoProperty.
+export type OwnerView = {
+  ownerType: string | null;
+  ownerArrangement: string | null;
+  ownerName: string | null;
+  ownerOrgNr: string | null;
+  ownerContactPerson: string | null;
+  ownerPhone: string | null;
+  ownerEmail: string | null;
+  rating: number | null;
 };
 
-const OWNER_PROPERTY_KEYS = [
-  "ownerType",
-  "ownerArrangement",
-  "ownerName",
-  "ownerOrgNr",
-  "ownerContactPerson",
-  "ownerPhone",
-  "ownerEmail",
-  "ownerFollowUpDate",
-  "ownerFollowUpReason",
-  "ownerFollowUpNote",
-  "rating",
-] as const;
+export type PropertyWithOwner = Property & OwnerView;
 
-export function mergeOwnerIntoProperty({ property, owner }: PropertyOwnerRow): Property {
-  if (!owner) return property;
-  return {
-    ...property,
-    ownerType: owner.ownerType ?? property.ownerType,
-    ownerArrangement: owner.ownerArrangement ?? property.ownerArrangement,
-    ownerName: owner.name ?? property.ownerName,
-    ownerOrgNr: owner.orgNr ?? property.ownerOrgNr,
-    ownerContactPerson: owner.contactPerson ?? property.ownerContactPerson,
-    ownerPhone: owner.phone ?? property.ownerPhone,
-    ownerEmail: owner.email ?? property.ownerEmail,
-    ownerFollowUpDate: owner.followUpDate ?? property.ownerFollowUpDate,
-    ownerFollowUpReason: owner.followUpReason ?? property.ownerFollowUpReason,
-    ownerFollowUpNote: owner.followUpNote ?? property.ownerFollowUpNote,
-    rating: owner.rating ?? property.rating,
-  };
-}
+const EMPTY_OWNER_VIEW: OwnerView = {
+  ownerType: null,
+  ownerArrangement: null,
+  ownerName: null,
+  ownerOrgNr: null,
+  ownerContactPerson: null,
+  ownerPhone: null,
+  ownerEmail: null,
+  rating: null,
+};
 
-export function ownerSnapshot(owner: Owner): Partial<Property> {
+export function ownerView(owner: Owner | null | undefined): OwnerView {
+  if (!owner) return { ...EMPTY_OWNER_VIEW };
   return {
-    ownerId: owner.id,
     ownerType: owner.ownerType,
     ownerArrangement: owner.ownerArrangement,
     ownerName: owner.name,
@@ -50,88 +39,133 @@ export function ownerSnapshot(owner: Owner): Partial<Property> {
     ownerContactPerson: owner.contactPerson,
     ownerPhone: owner.phone,
     ownerEmail: owner.email,
-    ownerFollowUpDate: owner.followUpDate,
-    ownerFollowUpReason: owner.followUpReason,
-    ownerFollowUpNote: owner.followUpNote,
     rating: owner.rating,
   };
 }
 
-function hasOwnerPayload(body: Record<string, unknown>) {
-  return OWNER_PROPERTY_KEYS.some((key) => Object.prototype.hasOwnProperty.call(body, key));
+export type PropertyOwnerRow = { property: Property; owner: Owner | null };
+
+export function mergeOwnerIntoProperty({ property, owner }: PropertyOwnerRow): PropertyWithOwner {
+  return { ...property, ...ownerView(owner) };
 }
 
-function ownerValuesFromPropertyBody(body: Record<string, unknown>) {
+// Owner-identitetsfält som kan komma i en property-body men som bor i owners-tabellen.
+const OWNER_IDENTITY_KEYS = [
+  "ownerType",
+  "ownerArrangement",
+  "ownerName",
+  "ownerOrgNr",
+  "ownerContactPerson",
+  "ownerPhone",
+  "ownerEmail",
+  "rating",
+] as const;
+
+function hasOwnerPayload(body: Record<string, unknown>) {
+  return OWNER_IDENTITY_KEYS.some((key) => Object.prototype.hasOwnProperty.call(body, key));
+}
+
+// Behåll endast giltiga property-kolumner (ownerId + ownerFollowUp* + övrigt) för objekt-skrivningen.
+function stripForPropertyWrite(body: Record<string, unknown>): Partial<Property> {
+  const copy = { ...body };
+  delete copy.createOwner;
+  for (const key of OWNER_IDENTITY_KEYS) delete copy[key];
+  return copy as Partial<Property>;
+}
+
+type OwnerValues = {
+  ownerType: string | null;
+  ownerArrangement: string | null;
+  name: string;
+  orgNr: string | null;
+  contactPerson: string | null;
+  phone: string | null;
+  email: string | null;
+  rating: number | null;
+};
+
+function ownerValuesFromPropertyBody(body: Record<string, unknown>): OwnerValues {
+  const str = (v: unknown) => ((v as string | null | undefined) ?? "").trim();
   return {
     ownerType: (body.ownerType as string | null | undefined) ?? null,
     ownerArrangement: (body.ownerArrangement as string | null | undefined) ?? null,
-    name: ((body.ownerName as string | null | undefined) ?? "").trim() || "(uthyrare utan namn)",
-    orgNr: ((body.ownerOrgNr as string | null | undefined) ?? "").trim() || null,
-    contactPerson: ((body.ownerContactPerson as string | null | undefined) ?? "").trim() || null,
-    phone: ((body.ownerPhone as string | null | undefined) ?? "").trim() || null,
-    email: ((body.ownerEmail as string | null | undefined) ?? "").trim() || null,
-    followUpDate: (body.ownerFollowUpDate as string | null | undefined) || null,
-    followUpReason: ((body.ownerFollowUpReason as string | null | undefined) ?? "").trim() || null,
-    followUpNote: ((body.ownerFollowUpNote as string | null | undefined) ?? "").trim() || null,
+    name: str(body.ownerName) || "(uthyrare utan namn)",
+    orgNr: str(body.ownerOrgNr) || null,
+    contactPerson: str(body.ownerContactPerson) || null,
+    phone: str(body.ownerPhone) || null,
+    email: str(body.ownerEmail) || null,
     rating: typeof body.rating === "number" ? body.rating : body.rating == null ? null : Number(body.rating),
   };
 }
 
-function removeInternalKeys(body: Record<string, unknown>) {
-  const copy = { ...body };
-  delete copy.createOwner;
-  return copy;
+function hasUsefulOwnerData(v: OwnerValues) {
+  return [v.name, v.orgNr, v.phone, v.email].some((value) => value && value !== "(uthyrare utan namn)");
 }
 
+function digits(s: string | null | undefined) {
+  return (s ?? "").replace(/\D/g, "");
+}
+
+// Matcha-först: hitta befintlig uthyrare på normaliserat namn (+ telefon om angiven).
+async function findMatchingOwner(v: OwnerValues): Promise<Owner | null> {
+  const norm = v.name.trim().toLowerCase();
+  if (!norm || norm === "(uthyrare utan namn)") return null;
+  const rows = await db.select().from(owners).where(sql`lower(trim(${owners.name})) = ${norm}`);
+  if (rows.length === 0) return null;
+  const phone = digits(v.phone);
+  if (phone) {
+    const byPhone = rows.find((o) => digits(o.phone) === phone);
+    if (byPhone) return byPhone;
+  }
+  return rows[0];
+}
+
+async function writeThroughOwner(ownerId: string, values: OwnerValues) {
+  await db
+    .update(owners)
+    .set({ ...values, updatedAt: new Date().toISOString() })
+    .where(eq(owners.id, ownerId));
+}
+
+// Normaliserar en property-write så att uthyrar-identiteten alltid landar i owners-tabellen.
+// Returnerar endast giltiga property-kolumner (ownerId-länk + övrigt).
 export async function normalizePropertyWriteBody(
   body: Record<string, unknown>,
   existing?: Property,
 ): Promise<Partial<Property>> {
-  const next = removeInternalKeys(body) as Partial<Property>;
-  const ownerIdWasProvided = Object.prototype.hasOwnProperty.call(body, "ownerId");
+  const next = stripForPropertyWrite(body);
+  const ownerIdProvided = Object.prototype.hasOwnProperty.call(body, "ownerId");
+  const payload = hasOwnerPayload(body);
 
-  if (ownerIdWasProvided) {
-    if (!body.ownerId) return { ...next, ownerId: null };
-
-    const targetOwnerId = String(body.ownerId);
-    if (hasOwnerPayload(body) && existing?.ownerId === targetOwnerId) {
-      const values = ownerValuesFromPropertyBody(body);
-      const [owner] = await db
-        .update(owners)
-        .set({ ...values, updatedAt: new Date().toISOString() })
-        .where(eq(owners.id, targetOwnerId))
-        .returning();
-      return owner ? { ...next, ...ownerSnapshot(owner) } : { ...next, ownerId: null };
+  // Uttrycklig länk till en specifik uthyrare.
+  if (ownerIdProvided && body.ownerId) {
+    const targetId = String(body.ownerId);
+    // Redigerar man fälten på den redan länkade uthyraren → skriv igenom till owners.
+    if (payload && existing?.ownerId === targetId) {
+      await writeThroughOwner(targetId, ownerValuesFromPropertyBody(body));
     }
-
-    const [owner] = await db.select().from(owners).where(eq(owners.id, targetOwnerId));
-    if (!owner) return { ...next, ownerId: null };
-    return { ...next, ...ownerSnapshot(owner) };
+    return { ...next, ownerId: targetId };
   }
 
-  if (!hasOwnerPayload(body)) return next;
-
-  if (existing?.ownerId) {
-    const values = ownerValuesFromPropertyBody(body);
-    const [owner] = await db
-      .update(owners)
-      .set({ ...values, updatedAt: new Date().toISOString() })
-      .where(eq(owners.id, existing.ownerId))
-      .returning();
-    return owner ? { ...next, ...ownerSnapshot(owner) } : next;
+  // Ingen länk i denna write.
+  if (!payload) {
+    return ownerIdProvided ? { ...next, ownerId: null } : next;
   }
 
   const values = ownerValuesFromPropertyBody(body);
-  const hasUsefulOwnerData = [values.name, values.orgNr, values.phone, values.email].some(
-    (value) => value && value !== "(uthyrare utan namn)",
-  );
-  if (!hasUsefulOwnerData) return next;
 
-  const [owner] = await db
-    .insert(owners)
-    .values({ id: nanoid(), ...values })
-    .returning();
-  return { ...next, ...ownerSnapshot(owner) };
+  // Fortfarande länkad (ownerId utelämnat men objektet har en länk) → skriv igenom.
+  if (!ownerIdProvided && existing?.ownerId) {
+    await writeThroughOwner(existing.ownerId, values);
+    return { ...next, ownerId: existing.ownerId };
+  }
+
+  // Olänkad + uthyrardata → matcha befintlig, annars skapa ny.
+  if (!hasUsefulOwnerData(values)) return { ...next, ownerId: null };
+  const match = await findMatchingOwner(values);
+  if (match) return { ...next, ownerId: match.id };
+  const [created] = await db.insert(owners).values({ id: nanoid(), ...values }).returning();
+  return { ...next, ownerId: created.id };
 }
 
 export async function reindexLinkedProperties(

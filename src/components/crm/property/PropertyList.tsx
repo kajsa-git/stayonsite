@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import type { Property } from "@/lib/crm/schema";
+import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { Image as ImageIcon, LayoutList, Plus, Search, Table2 } from "lucide-react";
 
-type PropertyWithThumb = Property & { thumbnailUrl?: string | null };
+type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
@@ -24,7 +24,7 @@ const PROP_STATUS: Record<string, { label: string; cls: string }> = {
 
 export function PropertyList() {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Property | null>(null);
+  const [selected, setSelected] = useState<PropertyWithOwner | null>(null);
   const [adding, setAdding] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "table">("list");
   const [statusFilter, setStatusFilter] = useState("");
@@ -76,7 +76,7 @@ export function PropertyList() {
     }
   }, [deepId, properties]);
 
-  async function handleAdd(data: Omit<Property, "id" | "createdAt">) {
+  async function handleAdd(data: Omit<PropertyWithOwner, "id" | "createdAt">) {
     await fetch("/api/crm/properties", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -87,7 +87,7 @@ export function PropertyList() {
     toast({ title: "Bostad sparad" });
   }
 
-  async function handleUpdate(id: string, data: Partial<Property>) {
+  async function handleUpdate(id: string, data: Partial<PropertyWithOwner>) {
     const res = await fetch(`/api/crm/properties/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -338,12 +338,12 @@ function PropertyForm({
   onSave,
   onCancel,
 }: {
-  onSave: (data: Omit<Property, "id" | "createdAt">) => void;
+  onSave: (data: Omit<PropertyWithOwner, "id" | "createdAt">) => void;
   onCancel: () => void;
 }) {
-  const [form, setForm] = useState<Partial<Property>>({ status: "available" });
+  const [form, setForm] = useState<Partial<PropertyWithOwner>>({ status: "available" });
 
-  function set(key: keyof Property, value: string | number | boolean | undefined) {
+  function set(key: keyof PropertyWithOwner, value: string | number | boolean | undefined) {
     setForm((f) => ({ ...f, [key]: value }));
   }
   function setOwnerFields(patch: Partial<OwnerPickerValue>) {
@@ -464,7 +464,7 @@ function PropertyForm({
       </div>
       <div className="flex gap-2 pt-2">
         <Button variant="ghost" onClick={onCancel}>Avbryt</Button>
-        <Button onClick={() => onSave(form as Omit<Property, "id" | "createdAt">)} disabled={!form.address}>
+        <Button onClick={() => onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">)} disabled={!form.address}>
           Spara bostad
         </Button>
       </div>

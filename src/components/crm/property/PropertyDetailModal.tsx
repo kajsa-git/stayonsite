@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { Property } from "@/lib/crm/schema";
+import type { PropertyWithOwner } from "@/lib/crm/owners";
 import useSWR from "swr";
 
 interface Image {
@@ -19,7 +19,7 @@ const PROP_STATUS: Record<string, string> = {
   off_market: "Av marknaden",
 };
 
-export function PropertyDetailModal({ property, onClose }: { property: Property | null; onClose: () => void }) {
+export function PropertyDetailModal({ property, onClose }: { property: PropertyWithOwner | null; onClose: () => void }) {
   const { data: images = [] } = useSWR<Image[]>(
     property ? `/api/crm/properties/${property.id}/images` : null,
     fetcher

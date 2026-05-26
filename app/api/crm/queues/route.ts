@@ -1,6 +1,6 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, matches, properties, requests } from "@/lib/crm/schema";
+import { companies, matches, owners, properties, requests } from "@/lib/crm/schema";
 import { and, asc, eq, inArray, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -42,12 +42,13 @@ export async function GET() {
         followUpDate: matches.followUpDate,
         reason: matches.followUpReason,
         address: properties.address,
-        ownerName: properties.ownerName,
-        ownerPhone: properties.ownerPhone,
+        ownerName: owners.name,
+        ownerPhone: owners.phone,
       })
       .from(matches)
       .innerJoin(requests, eq(matches.requestId, requests.id))
       .leftJoin(properties, eq(matches.propertyId, properties.id))
+      .leftJoin(owners, eq(properties.ownerId, owners.id))
       .where(
         and(
           inArray(matches.status, ["suggested", "sent"]),
@@ -60,12 +61,13 @@ export async function GET() {
       .select({
         propertyId: properties.id,
         address: properties.address,
-        ownerName: properties.ownerName,
-        ownerPhone: properties.ownerPhone,
+        ownerName: owners.name,
+        ownerPhone: owners.phone,
         ownerFollowUpDate: properties.ownerFollowUpDate,
         ownerReason: properties.ownerFollowUpReason,
       })
       .from(properties)
+      .leftJoin(owners, eq(properties.ownerId, owners.id))
       .where(lte(properties.ownerFollowUpDate, today)),
   ]);
 

@@ -155,13 +155,12 @@ async function main() {
   }
   for (const p of propsToCreate) {
     await turso.execute({
+      // Uthyrar-identitet bor i crm_owners (skapas ovan) — objektet länkar bara via owner_id.
       sql: `INSERT INTO crm_properties
             (id, owner_id, address, city, bedrooms, beds, bathrooms, square_meters, rent_in, rent_out, move_in_from, availability, notes,
-             owner_type, owner_arrangement, owner_name, owner_org_nr, owner_contact_person, owner_phone, owner_email,
              status, published, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'direkt', ?, ?, ?, ?, ?, 'available', 0, datetime('now'), datetime('now'))`,
-      args: [p.id, p.ownerId, p.address, p.city, p.bedrooms, p.beds, p.bathrooms, p.squareMeters, p.rentIn, p.rentOut, p.moveInFrom, p.availability, p.notes,
-             p.ownerType, p.ownerName, p.ownerOrgNr, p.ownerContactPerson, p.ownerPhone, p.ownerEmail],
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available', 0, datetime('now'), datetime('now'))`,
+      args: [p.id, p.ownerId, p.address, p.city, p.bedrooms, p.beds, p.bathrooms, p.squareMeters, p.rentIn, p.rentOut, p.moveInFrom, p.availability, p.notes],
     });
   }
   console.log(`\n✅ Klart! Skapade ${ownersToCreate.size} uthyrare och ${propsToCreate.length} objekt.`);

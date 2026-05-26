@@ -168,13 +168,8 @@ export const properties = sqliteTable("crm_properties", {
   dryers: integer("dryers"),
   parkingSpaces: integer("parking_spaces"), // antal p-platser (separat från garage)
   skick: text("skick"), // fritext: kondition/standard
-  ownerType: text("owner_type"), // privatperson | foretag
-  ownerArrangement: text("owner_arrangement"), // direkt | formedlare (förmedlare = ofta dyrare)
-  ownerName: text("owner_name"),
-  ownerOrgNr: text("owner_org_nr"),
-  ownerContactPerson: text("owner_contact_person"),
-  ownerPhone: text("owner_phone"),
-  ownerEmail: text("owner_email"),
+  // Uthyrarens identitet (namn/typ/kontakt/betyg) bor i owners-tabellen — länkas via ownerId.
+  // Objektet speglar dem aldrig längre; läsvägar hämtar via JOIN (mergeOwnerIntoProperty).
   rentIn: real("rent_in"),
   rentOut: real("rent_out"),
   availability: text("availability"),
@@ -186,7 +181,6 @@ export const properties = sqliteTable("crm_properties", {
   ownerFollowUpDate: text("owner_follow_up_date"),
   ownerFollowUpReason: text("owner_follow_up_reason"), // kort: Kolla pris, Tillgänglighet juni…
   ownerFollowUpNote: text("owner_follow_up_note"), // fritext
-  rating: integer("rating"), // 0–10 intern skattning av uthyrare
   links: text("links", { mode: "json" }).$type<string[]>(), // externa länkar (Airbnb/Qasa/Booking/övrigt)
   status: text("status").default("available"),
   published: integer("published", { mode: "boolean" }).default(false),

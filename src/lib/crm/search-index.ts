@@ -98,7 +98,7 @@ function requestRow(r: Request, companyName: string): SearchIndexInsert {
   };
 }
 
-function propertyRow(p: Property): SearchIndexInsert {
+function propertyRow(p: Property, owner: Owner | null): SearchIndexInsert {
   const label = PROPERTY_STATUS_SV[p.status ?? "available"] ?? p.status ?? "";
   return {
     id: rowId("property", p.id),
@@ -111,9 +111,9 @@ function propertyRow(p: Property): SearchIndexInsert {
       p.address,
       p.postalCode,
       p.city,
-      p.ownerName,
-      p.ownerPhone,
-      p.ownerEmail,
+      owner?.name,
+      owner?.phone,
+      owner?.email,
       p.notes,
       p.publicDescription,
       label,
@@ -242,7 +242,8 @@ export async function indexProperty(propertyId: string): Promise<void> {
     await removeFromIndex("property", propertyId);
     return;
   }
-  await upsert(propertyRow(p));
+  const [owner] = p.ownerId ? await db.select().from(owners).where(eq(owners.id, p.ownerId)) : [null];
+  await upsert(propertyRow(p, owner ?? null));
 }
 
 export async function indexOwner(ownerId: string): Promise<void> {
@@ -278,6 +279,7 @@ export async function rebuildSearchIndex(): Promise<number> {
     db.select().from(notes),
   ]);
   const nameById = Object.fromEntries(allC.map((c) => [c.id, c.name]));
+  const ownerById = Object.fromEntries(allO.map((o) => [o.id, o]));
   const propertyCountByOwner = allP.reduce((acc, p) => {
     if (p.ownerId) acc[p.ownerId] = (acc[p.ownerId] ?? 0) + 1;
     return acc;
@@ -287,7 +289,7 @@ export async function rebuildSearchIndex(): Promise<number> {
     ...allC.map(companyRow),
     ...allCt.map((x) => contactRow(x, nameById[x.companyId] ?? "")),
     ...allR.map((x) => requestRow(x, nameById[x.companyId] ?? "")),
-    ...allP.map(propertyRow),
+    ...allP.map((x) => propertyRow(x, x.ownerId ? ownerById[x.ownerId] ?? null : null)),
     ...allO.map((x) => ownerRow(x, propertyCountByOwner[x.id] ?? 0)),
     ...allN.map((x) => noteRow(x, nameById[x.companyId] ?? "")),
   ];

@@ -32,8 +32,9 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export function OwnerPicker({ value, onChange }: Props) {
   const [query, setQuery] = useState("");
+  const trimmed = query.trim();
   const { data: owners = [] } = useSWR<OwnerRow[]>(
-    `/api/crm/owners?q=${encodeURIComponent(query)}&limit=8`,
+    trimmed ? `/api/crm/owners?q=${encodeURIComponent(trimmed)}&limit=8` : null,
     fetcher,
   );
 
@@ -75,7 +76,16 @@ export function OwnerPicker({ value, onChange }: Props) {
           </span>
           <button
             type="button"
-            onClick={() => onChange({ ownerId: null })}
+            onClick={() =>
+              onChange({
+                ownerId: null,
+                ownerName: "",
+                ownerOrgNr: "",
+                ownerContactPerson: "",
+                ownerPhone: "",
+                ownerEmail: "",
+              })
+            }
             className="inline-flex items-center gap-1 rounded border border-teal-200 bg-white px-1.5 py-0.5 text-teal-800 hover:bg-teal-100"
           >
             <X className="h-3 w-3" />

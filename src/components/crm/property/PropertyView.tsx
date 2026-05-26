@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Property } from "@/lib/crm/schema";
+import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
@@ -21,8 +21,8 @@ import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 import useSWR from "swr";
 
 interface Props {
-  property: Property;
-  onUpdate: (data: Partial<Property>) => Promise<void>;
+  property: PropertyWithOwner;
+  onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
   onDelete?: () => void | Promise<void>;
 }
 
@@ -69,7 +69,7 @@ type EditForm = {
 const s = (v: string | null | undefined) => v ?? "";
 const ns = (v: number | null | undefined) => v?.toString() ?? "";
 
-function toForm(p: Property): EditForm {
+function toForm(p: PropertyWithOwner): EditForm {
   return {
     ownerId: s(p.ownerId),
     address: s(p.address),
@@ -141,12 +141,14 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     toast({ title: "Länk borttagen" });
   }
 
+  // Resynka formuläret när objektet byts ELLER när en write returnerat (ny updatedAt) —
+  // så t.ex. en nyskapad/auto-länkad uthyrare (ownerId) reflekteras direkt.
   useEffect(() => {
     setForm(toForm(property));
     setEditing(false);
     setDeleteOpen(false);
     setDeleteConfirm("");
-  }, [property.id]);
+  }, [property.id, property.updatedAt]);
 
   function set<K extends keyof EditForm>(field: K, value: EditForm[K]) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -277,6 +279,15 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Uthyrare</p>
           <OwnerPicker value={form} onChange={setOwnerFields} />
+          {form.ownerId ? (
+            <p className="text-[11px] text-muted-foreground">
+              Uppgifterna nedan tillhör den länkade uthyraren — ändringar uppdaterar uthyraren (och alla dess objekt).
+            </p>
+          ) : form.ownerName.trim() ? (
+            <p className="text-[11px] text-muted-foreground">
+              Ingen uthyrare länkad — en skapas eller matchas automatiskt när du sparar.
+            </p>
+          ) : null}
           <div className="grid grid-cols-2 gap-2">
             <Labeled label="Typ">
               <select className={FIELD_CLS} value={form.ownerType} onChange={(e) => set("ownerType", e.target.value)}>
@@ -581,7 +592,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
 }
 
 function OwnerObjectLinks({ ownerId, currentPropertyId }: { ownerId: string; currentPropertyId: string }) {
-  const { data: properties = [] } = useSWR<Property[]>(`/api/crm/properties?ownerId=${ownerId}`, fetcher);
+  const { data: properties = [] } = useSWR<PropertyWithOwner[]>(`/api/crm/properties?ownerId=${ownerId}`, fetcher);
   const others = properties.filter((p) => p.id !== currentPropertyId);
   if (others.length === 0) return null;
 

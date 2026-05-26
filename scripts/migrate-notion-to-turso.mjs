@@ -236,14 +236,14 @@ async function run() {
 
   for (const p of notionProps) {
     await turso.execute({
+      // owner_name borttagen — uthyrar-identitet bor numera i crm_owners (länkas via owner_id).
       sql: `INSERT OR IGNORE INTO crm_properties
-            (id, address, city, owner_name, beds, rent_in, rent_out, move_in_from, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (id, address, city, beds, rent_in, rent_out, move_in_from, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         nanoid(),
         getProp(p, "Adress") || null,
         getProp(p, "Ort") || null,
-        getProp(p, "Uthyrare") || null,
         getProp(p, "Bäddar") || null,
         getProp(p, "Vi hyr för") || null,
         getProp(p, "Vi hyr UT för") || null,

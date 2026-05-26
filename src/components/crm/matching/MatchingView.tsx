@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/matching";
-import type { Property, Request } from "@/lib/crm/schema";
+import type { Request } from "@/lib/crm/schema";
+import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
 import { Check, Loader2, Pencil, Search, Send, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -71,7 +72,7 @@ const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få
 
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
-  const [detailProperty, setDetailProperty] = useState<Property | null>(null);
+  const [detailProperty, setDetailProperty] = useState<PropertyWithOwner | null>(null);
   const [confirmAccept, setConfirmAccept] = useState<MatchRow | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
@@ -89,7 +90,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     availableDates: false,
     showWeak: false,
   });
-  const { data: properties = [], isLoading } = useSWR<Property[]>(`/api/crm/properties?q=`, fetcher);
+  const { data: properties = [], isLoading } = useSWR<PropertyWithOwner[]>(`/api/crm/properties?q=`, fetcher);
   const { data: matches = [], mutate: mutateMatches } = useSWR<MatchRow[]>(
     `/api/crm/matches?requestId=${request.id}`,
     fetcher

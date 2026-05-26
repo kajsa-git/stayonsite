@@ -30,7 +30,6 @@ export async function GET(req: NextRequest) {
         like(properties.address, pat),
         like(properties.postalCode, pat),
         like(properties.city, pat),
-        like(properties.ownerName, pat),
         like(properties.notes, pat),
         like(owners.name, pat),
         like(owners.phone, pat),
@@ -81,5 +80,6 @@ export async function POST(req: NextRequest) {
   const [row] = await db.insert(properties).values({ id, ...values }).returning();
   await indexProperty(id).catch((e) => console.error("search-index property:", e));
   if (row?.ownerId) await indexOwner(row.ownerId).catch((e) => console.error("search-index owner:", e));
-  return NextResponse.json(row, { status: 201 });
+  const [owner] = row?.ownerId ? await db.select().from(owners).where(eq(owners.id, row.ownerId)) : [null];
+  return NextResponse.json(mergeOwnerIntoProperty({ property: row, owner: owner ?? null }), { status: 201 });
 }
