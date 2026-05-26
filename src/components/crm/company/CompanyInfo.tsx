@@ -17,6 +17,7 @@ const FIELDS = [
   { key: "website", label: "Webb", placeholder: "www.exempel.se" },
   { key: "invoiceEmail", label: "Fakturamail", placeholder: "faktura@exempel.se" },
   { key: "customerNumber", label: "Kundnr", placeholder: "t.ex. 29" },
+  { key: "street", label: "Gatuadress", placeholder: "Storgatan 1" },
   { key: "postalCode", label: "Postnummer", placeholder: "111 22" },
   { key: "city", label: "Ort", placeholder: "Stockholm" },
   { key: "country", label: "Land", placeholder: "Sverige" },
@@ -64,6 +65,7 @@ export function CompanyInfo({ company, onSave }: Props) {
       website: company.website ?? "",
       invoiceEmail: company.invoiceEmail ?? "",
       customerNumber: company.customerNumber ?? "",
+      street: company.street ?? "",
       postalCode: company.postalCode ?? "",
       city: company.city ?? "",
       country: company.country ?? "",
@@ -96,6 +98,7 @@ export function CompanyInfo({ company, onSave }: Props) {
 
   async function applyPlace(parts: PlaceParts) {
     const updates: Record<string, string> = {};
+    if (parts.street) updates.street = parts.street;
     if (parts.postalCode) updates.postalCode = parts.postalCode;
     if (parts.city) updates.city = parts.city;
     if (parts.country) updates.country = parts.country;
@@ -121,6 +124,7 @@ export function CompanyInfo({ company, onSave }: Props) {
       if (!r.found) { toast({ title: "Hittade inga uppgifter för org.nr", variant: "destructive" }); return; }
       const updates: Record<string, string> = {};
       if (r.name) updates.name = r.name;
+      if (r.street) updates.street = r.street;
       if (r.postalCode) updates.postalCode = r.postalCode;
       if (r.city) updates.city = r.city;
       if (r.country) updates.country = r.country;
@@ -180,12 +184,12 @@ export function CompanyInfo({ company, onSave }: Props) {
             {looking ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
             Hämta från org.nr
           </button>
-          <span className="text-xs text-muted-foreground">Fyller namn, postnummer, ort och land (allabolag.se)</span>
+          <span className="text-xs text-muted-foreground">Fyller namn, gatuadress, postnummer, ort och land (allabolag.se)</span>
         </div>
         {gmapsEnabled && (
           <div className="col-span-full flex flex-col gap-1">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Sök adress (fyller postnummer/ort/land)
+              Sök adress (fyller gatuadress/postnummer/ort/land)
             </label>
             <div
               ref={containerRef}

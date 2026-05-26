@@ -52,6 +52,7 @@ export const companies = sqliteTable("crm_companies", {
   invoiceEmail: text("invoice_email"), // separat fakturamail (skiljer sig ofta från kontakt-mail)
   languages: text("languages", { mode: "json" }).$type<string[]>(), // språk för utskick/segmentering
   customerNumber: text("customer_number"), // kundnr (extern referens, t.ex. Fortnox)
+  street: text("street"),
   postalCode: text("postal_code"),
   city: text("city"),
   country: text("country"),
