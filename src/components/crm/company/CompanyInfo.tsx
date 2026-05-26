@@ -115,11 +115,11 @@ export function CompanyInfo({ company, onSave }: Props) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 rounded-lg border border-input bg-nordic-50/60 px-4 py-2.5 text-sm font-medium hover:bg-nordic-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+        className="w-full flex items-center gap-2 rounded-lg border border-primary-200 bg-primary-50/50 px-4 py-2.5 text-sm font-semibold text-nordic-800 hover:bg-primary-50 hover:border-primary-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
       >
-        <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+        <ChevronRight className={`h-4 w-4 text-primary-500 transition-transform ${open ? "rotate-90" : ""}`} />
         Företagsuppgifter
-        <span className="ml-auto text-xs font-normal text-muted-foreground hidden sm:block">
+        <span className="ml-auto text-xs font-normal text-primary-700/70 hidden sm:block">
           Adress, kundnr, fakturamail — fylls oftast i innan affär
         </span>
       </button>

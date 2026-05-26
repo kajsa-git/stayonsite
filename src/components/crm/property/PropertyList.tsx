@@ -209,7 +209,7 @@ export function PropertyList() {
         <div className="flex-1 overflow-auto p-4">
           <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-nordic-50 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap">
+              <TableHeader className="sticky top-0 z-10 bg-nordic-100 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-nordic-900">
                 <TableRow className="border-b border-nordic-200 hover:bg-transparent">
                   <TableHead className="w-14" />
                   <TableHead>Adress</TableHead>
@@ -243,7 +243,7 @@ export function PropertyList() {
                         tabIndex={0}
                         onClick={() => { setSelected(p); setViewMode("list"); }}
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(p); setViewMode("list"); } }}
-                        className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+                        className="even:bg-nordic-100 hover:bg-primary-50/70 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                       >
                         <TableCell>
                           {p.thumbnailUrl ? (
@@ -253,19 +253,19 @@ export function PropertyList() {
                             <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
                           )}
                         </TableCell>
-                        <TableCell className="font-medium text-nordic-900">{p.address || "(saknas)"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.postalCode || "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.city || "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.ownerName || "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.squareMeters ?? "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.beds ?? "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.furnished ? "Ja" : "–"}</TableCell>
+                        <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}</TableCell>
+                        <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.city || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.squareMeters ?? "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.beds ?? "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.furnished ? "Ja" : "–"}</TableCell>
                         <TableCell>
                           <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
                         </TableCell>
-                        <TableCell className="text-nordic-600">{p.moveInFrom || "–"}</TableCell>
-                        <TableCell className="text-nordic-600">{p.published ? "✓" : "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.published ? "✓" : "–"}</TableCell>
                       </TableRow>
                     );
                   })

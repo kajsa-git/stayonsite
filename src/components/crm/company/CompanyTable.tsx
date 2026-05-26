@@ -95,7 +95,7 @@ export function CompanyTable() {
       <div className="flex-1 overflow-auto p-4">
         <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-nordic-50 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap">
+            <TableHeader className="sticky top-0 z-10 bg-nordic-100 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-nordic-900">
               <TableRow className="border-b border-nordic-200 hover:bg-transparent">
                 <TableHead className="w-12" />
                 <TableHead>Företag</TableHead>
@@ -122,15 +122,15 @@ export function CompanyTable() {
                     tabIndex={0}
                     onClick={() => router.push(`/crm/company/${c.id}`)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
-                    className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+                    className="even:bg-nordic-100 hover:bg-primary-50/70 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                   >
                     <TableCell>
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-nordic-700 text-white text-[11px] font-bold">{initials(c.name)}</span>
                     </TableCell>
-                    <TableCell className="font-semibold text-nordic-900">{c.name}</TableCell>
-                    <TableCell className="font-mono text-xs text-nordic-600">{c.orgNr || "–"}</TableCell>
-                    <TableCell className="text-nordic-600">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
-                    <TableCell className="text-nordic-600">
+                    <TableCell className="font-semibold text-foreground">{c.name}</TableCell>
+                    <TableCell className="font-mono text-xs text-foreground">{c.orgNr || "–"}</TableCell>
+                    <TableCell className="text-foreground">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
+                    <TableCell className="text-foreground">
                       {c.primaryContactName ? (
                         <span>{c.primaryContactName}{c.primaryContactPhone && <span className="text-muted-foreground"> · {c.primaryContactPhone}</span>}</span>
                       ) : "–"}
@@ -139,12 +139,12 @@ export function CompanyTable() {
                       {c.openRequestCount > 0 ? (
                         <span className="inline-block text-xs font-semibold text-green-800 bg-green-100 rounded-full px-2.5 py-0.5">{c.openRequestCount} aktiva</span>
                       ) : c.requestCount > 0 ? (
-                        <span className="inline-block text-xs font-medium text-nordic-600 bg-nordic-100 rounded-full px-2.5 py-0.5">{c.requestCount} st</span>
+                        <span className="inline-block text-xs font-medium text-foreground bg-nordic-100 rounded-full px-2.5 py-0.5">{c.requestCount} st</span>
                       ) : <span className="text-muted-foreground">–</span>}
                     </TableCell>
                     <TableCell>
                       {c.followUpDate ? (
-                        <span className={c.followUpDate <= today ? "text-amber-700 font-medium" : "text-nordic-600"}>{c.followUpDate}</span>
+                        <span className={c.followUpDate <= today ? "text-amber-700 font-medium" : "text-foreground"}>{c.followUpDate}</span>
                       ) : <span className="text-muted-foreground">–</span>}
                     </TableCell>
                   </TableRow>
