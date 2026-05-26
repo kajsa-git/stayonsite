@@ -8,7 +8,6 @@ const SELECT = {
   id: companies.id,
   name: companies.name,
   orgNr: companies.orgNr,
-  category: companies.category,
   followUpDate: companies.followUpDate,
   followUpReason: companies.followUpReason,
 };
@@ -21,7 +20,6 @@ export async function GET(req: NextRequest) {
   const q = p.get("q")?.trim();
   const status = p.get("status")?.trim();
   const city = p.get("city")?.trim();
-  const category = p.get("category")?.trim();
   const followUpFrom = p.get("followUpFrom")?.trim();
   const followUpTo = p.get("followUpTo")?.trim();
 
@@ -29,7 +27,6 @@ export async function GET(req: NextRequest) {
   const idSets: Set<string>[] = [];
 
   const companyConds = [];
-  if (category) companyConds.push(like(companies.category, `%${category}%`));
   if (followUpFrom) companyConds.push(gte(companies.followUpDate, followUpFrom));
   if (followUpTo) companyConds.push(lte(companies.followUpDate, followUpTo));
   if (companyConds.length) {
@@ -55,7 +52,6 @@ export async function GET(req: NextRequest) {
           or(
             like(companies.name, pat),
             like(companies.orgNr, pat),
-            like(companies.category, pat),
             like(companies.website, pat),
             like(companies.followUpReason, pat)
           )
@@ -68,7 +64,17 @@ export async function GET(req: NextRequest) {
       db
         .select({ companyId: requests.companyId })
         .from(requests)
-        .where(or(like(requests.city, pat), like(requests.notes, pat), like(requests.lostReason, pat))),
+        .where(
+          or(
+            like(requests.city, pat),
+            like(requests.postalCode, pat),
+            like(requests.street, pat),
+            like(requests.addressQuery, pat),
+            like(requests.billingProjectId, pat),
+            like(requests.notes, pat),
+            like(requests.lostReason, pat),
+          )
+        ),
     ]);
     const set = new Set<string>();
     c.forEach((x) => set.add(x.id));

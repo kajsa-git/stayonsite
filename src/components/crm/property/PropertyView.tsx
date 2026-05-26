@@ -16,6 +16,9 @@ import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
 import { CopyProspektLink } from "./CopyProspektLink";
 import { RatingControl } from "../RatingControl";
+import { toast } from "@/components/ui/use-toast";
+import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
+import useSWR from "swr";
 
 interface Props {
   property: Property;
@@ -30,9 +33,8 @@ const STATUSES: { value: string; label: string; cls: string }[] = [
   { value: "off_market", label: "Av marknaden", cls: "bg-gray-100 text-gray-600 border-gray-300" },
 ];
 
-const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
-
 type EditForm = {
+  ownerId: string;
   address: string;
   postalCode: string;
   city: string;
@@ -69,6 +71,7 @@ const ns = (v: number | null | undefined) => v?.toString() ?? "";
 
 function toForm(p: Property): EditForm {
   return {
+    ownerId: s(p.ownerId),
     address: s(p.address),
     postalCode: s(p.postalCode),
     city: s(p.city),
@@ -102,6 +105,7 @@ function toForm(p: Property): EditForm {
 }
 
 const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export function PropertyView({ property, onUpdate, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
@@ -130,9 +134,11 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     if (!url) return;
     onUpdate({ links: [...links, url] });
     setNewLink("");
+    toast({ title: "Länk sparad" });
   }
   function removeLink(url: string) {
     onUpdate({ links: links.filter((l) => l !== url) });
+    toast({ title: "Länk borttagen" });
   }
 
   useEffect(() => {
@@ -168,6 +174,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       moveInFrom: t(form.moveInFrom),
       availableTo: t(form.availableTo),
       ownerType: form.ownerType,
+      ownerId: form.ownerId || null,
       ownerArrangement: form.ownerArrangement,
       ownerName: t(form.ownerName),
       ownerOrgNr: t(form.ownerOrgNr),
@@ -184,6 +191,21 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     });
     setSaving(false);
     setEditing(false);
+    toast({ title: "Objekt sparat" });
+  }
+
+  function setOwnerFields(patch: Partial<OwnerPickerValue>) {
+    setForm((f) => ({
+      ...f,
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerId") ? { ownerId: patch.ownerId ?? "" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerType") ? { ownerType: patch.ownerType ?? "privatperson" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerArrangement") ? { ownerArrangement: patch.ownerArrangement ?? "direkt" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerName") ? { ownerName: patch.ownerName ?? "" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerOrgNr") ? { ownerOrgNr: patch.ownerOrgNr ?? "" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerContactPerson") ? { ownerContactPerson: patch.ownerContactPerson ?? "" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerPhone") ? { ownerPhone: patch.ownerPhone ?? "" } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerEmail") ? { ownerEmail: patch.ownerEmail ?? "" } : {}),
+    }));
   }
 
   if (editing) {
@@ -254,6 +276,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         </div>
         <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Uthyrare</p>
+          <OwnerPicker value={form} onChange={setOwnerFields} />
           <div className="grid grid-cols-2 gap-2">
             <Labeled label="Typ">
               <select className={FIELD_CLS} value={form.ownerType} onChange={(e) => set("ownerType", e.target.value)}>
@@ -309,7 +332,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
   }
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold">{property.address || "(Adress saknas)"}</h2>
@@ -334,155 +357,180 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         onClose={() => setMatchOpen(false)}
       />
 
-      {/* Quick status selector */}
-      <div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Status</p>
-        <div className="flex flex-wrap gap-1.5">
-          {STATUSES.map((st) => (
-            <button
-              key={st.value}
-              onClick={() => property.status !== st.value && onUpdate({ status: st.value })}
-              className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
-                property.status === st.value ? st.cls + " font-semibold" : "bg-white border-input text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {st.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Publish / unpublish (mirrors to public website) */}
-      <div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Hemsida</p>
-        {property.published ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs px-2.5 py-1 rounded-md border bg-green-100 text-green-800 border-green-300 font-semibold">
-              ✓ Publicerad på hemsidan
-            </span>
-            <CopyProspektLink propertyId={property.id} />
-            <button
-              onClick={() => onUpdate({ published: false })}
-              className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-colors"
-            >
-              Avpublicera
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => onUpdate({ published: true })}
-            className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors"
-          >
-            Publicera på hemsidan
-          </button>
-        )}
-      </div>
-
-      {/* Utrustning — visas alltid så man kan svara direkt */}
-      <div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Utrustning</p>
-        <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
-          <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
-          <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
-          <Equip label="Parkering" value={property.parkingSpaces != null ? String(property.parkingSpaces) : "–"} />
-          <Equip label="Kök" yes={!!property.kitchen} />
-          <Equip label="Garage" yes={!!property.garage} />
-          <Equip label="Bredband" yes={!!property.broadband} />
-          <Equip label="Möblerat" yes={!!property.furnished} />
-          <Equip label="Eget boende" yes={!!property.egetBoende} />
-        </div>
-      </div>
-
-      {property.skick && (
-        <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skick</p>
-          <p className="text-sm whitespace-pre-wrap">{property.skick}</p>
-        </div>
-      )}
-
-      <PropertyImages propertyId={property.id} />
-
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <InfoRow label="Yta" value={property.squareMeters ? `${property.squareMeters} m²` : null} />
-        <InfoRow label="Sovrum" value={property.bedrooms?.toString()} />
-        <InfoRow label="Bäddar" value={property.beds?.toString()} />
-        <InfoRow label="Badrum" value={property.bathrooms?.toString()} />
-        <InfoRow label="Tillgänglig från" value={property.moveInFrom} />
-        <InfoRow label="Tillgänglig till" value={property.availableTo} />
-        <InfoRow label="Vi hyr för" value={property.rentIn ? `${property.rentIn} kr/mån` : null} />
-        <InfoRow label="Vi hyr ut för" value={property.rentOut ? `${property.rentOut} kr/mån` : null} />
-      </div>
-
-      {/* Uthyrare */}
-      <div className="rounded-md border bg-muted/30 p-3">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
-            Uthyrare
-            {property.ownerType && (
-              <span className="ml-2 normal-case font-normal">
-                · {property.ownerType === "foretag" ? "Företag" : "Privatperson"}
-                {property.ownerArrangement === "formedlare" ? " · Förmedlare" : " · Direkt"}
-              </span>
-            )}
-          </p>
-          <RatingControl value={property.rating} onChange={(rating) => onUpdate({ rating })} label="Skattning" />
-        </div>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <InfoRow label={property.ownerType === "foretag" ? "Företag" : "Namn"} value={property.ownerName} />
-          {property.ownerType === "foretag" && <InfoRow label="Org.nr" value={property.ownerOrgNr} />}
-          {property.ownerType === "foretag" && <InfoRow label="Kontaktperson" value={property.ownerContactPerson} />}
-          <InfoRow label="Telefon" value={property.ownerPhone} />
-          <InfoRow label="E-post" value={property.ownerEmail} />
-        </div>
-      </div>
-
-      <OwnerFollowUp property={property} onUpdate={onUpdate} />
-
-      {property.notes && (
-        <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Intern beskrivning</p>
-          <p className="text-sm whitespace-pre-wrap">{property.notes}</p>
-        </div>
-      )}
-
-      {property.publicDescription && (
-        <div className="rounded-md border border-green-200 bg-green-50/40 p-3">
-          <p className="text-xs text-green-800 uppercase tracking-wide mb-1">Extern beskrivning (hemsida)</p>
-          <p className="text-sm whitespace-pre-wrap">{property.publicDescription}</p>
-        </div>
-      )}
-
-      {/* Externa länkar (Airbnb/Qasa/Booking/övrigt) */}
-      <div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Externa länkar</p>
-        <div className="space-y-1.5">
-          {links.map((url) => (
-            <div key={url} className="flex items-center gap-2 text-sm">
-              <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline truncate flex-1">
-                {url}
-              </a>
-              <button onClick={() => removeLink(url)} className="h-5 w-5 flex items-center justify-center rounded hover:bg-red-50 text-muted-foreground hover:text-red-700" title="Ta bort länk">
-                <X className="h-3.5 w-3.5" />
-              </button>
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Vänster kolumn: objektets fakta */}
+        <div className="space-y-6 min-w-0">
+          {/* Quick status selector */}
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Status</p>
+            <div className="flex flex-wrap gap-1.5">
+              {STATUSES.map((st) => (
+                <button
+                  key={st.value}
+                  onClick={async () => {
+                    if (property.status === st.value) return;
+                    await onUpdate({ status: st.value });
+                    toast({ title: "Status sparad" });
+                  }}
+                  className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                    property.status === st.value ? st.cls + " font-semibold" : "bg-white border-input text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {st.label}
+                </button>
+              ))}
             </div>
-          ))}
-          <div className="flex items-center gap-2">
-            <input
-              value={newLink}
-              onChange={(e) => setNewLink(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLink(); } }}
-              placeholder="Klistra in länk (Airbnb, Qasa, Booking…)"
-              className="flex-1 text-sm border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary-500"
-            />
-            <button onClick={addLink} disabled={!newLink.trim()} className="h-7 px-2 flex items-center gap-1 text-xs rounded-md border border-input hover:bg-muted disabled:opacity-40">
-              <Plus className="h-3.5 w-3.5" /> Lägg till
-            </button>
+          </div>
+
+          {/* Publish / unpublish (mirrors to public website) */}
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Hemsida</p>
+            {property.published ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs px-2.5 py-1 rounded-md border bg-green-100 text-green-800 border-green-300 font-semibold">
+                  ✓ Publicerad på hemsidan
+                </span>
+                <CopyProspektLink propertyId={property.id} />
+                <button
+                  onClick={async () => {
+                    await onUpdate({ published: false });
+                    toast({ title: "Avpublicerad" });
+                  }}
+                  className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-colors"
+                >
+                  Avpublicera
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={async () => {
+                  await onUpdate({ published: true });
+                  toast({ title: "Publicerad" });
+                }}
+                className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors"
+              >
+                Publicera på hemsidan
+              </button>
+            )}
+          </div>
+
+          {/* Utrustning — visas alltid så man kan svara direkt */}
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Utrustning</p>
+            <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+              <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
+              <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
+              <Equip label="Parkering" value={property.parkingSpaces != null ? String(property.parkingSpaces) : "–"} />
+              <Equip label="Kök" yes={!!property.kitchen} />
+              <Equip label="Garage" yes={!!property.garage} />
+              <Equip label="Bredband" yes={!!property.broadband} />
+              <Equip label="Möblerat" yes={!!property.furnished} />
+              <Equip label="Eget boende" yes={!!property.egetBoende} />
+            </div>
+          </div>
+
+          {property.skick && (
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skick</p>
+              <p className="text-sm whitespace-pre-wrap">{property.skick}</p>
+            </div>
+          )}
+
+          <PropertyImages propertyId={property.id} />
+
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <InfoRow label="Yta" value={property.squareMeters ? `${property.squareMeters} m²` : null} />
+            <InfoRow label="Sovrum" value={property.bedrooms?.toString()} />
+            <InfoRow label="Bäddar" value={property.beds?.toString()} />
+            <InfoRow label="Badrum" value={property.bathrooms?.toString()} />
+            <InfoRow label="Tillgänglig från" value={property.moveInFrom} />
+            <InfoRow label="Tillgänglig till" value={property.availableTo} />
+            <InfoRow label="Vi hyr för" value={property.rentIn ? `${property.rentIn} kr/mån` : null} />
+            <InfoRow label="Vi hyr ut för" value={property.rentOut ? `${property.rentOut} kr/mån` : null} />
+          </div>
+
+          {property.notes && (
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Intern beskrivning</p>
+              <p className="text-sm whitespace-pre-wrap">{property.notes}</p>
+            </div>
+          )}
+
+          {property.publicDescription && (
+            <div className="rounded-md border border-green-200 bg-green-50/40 p-3">
+              <p className="text-xs text-green-800 uppercase tracking-wide mb-1">Extern beskrivning (hemsida)</p>
+              <p className="text-sm whitespace-pre-wrap">{property.publicDescription}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Höger kolumn: uthyrare, kontakt & uppföljning, länkar */}
+        <div className="space-y-6 min-w-0">
+          {/* Uthyrare */}
+          <div className="rounded-md border bg-muted/30 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                Uthyrare
+                {property.ownerType && (
+                  <span className="ml-2 normal-case font-normal">
+                    · {property.ownerType === "foretag" ? "Företag" : "Privatperson"}
+                    {property.ownerArrangement === "formedlare" ? " · Förmedlare" : " · Direkt"}
+                  </span>
+                )}
+              </p>
+              <RatingControl
+                value={property.rating}
+                onChange={async (rating) => {
+                  await onUpdate({ rating });
+                  toast({ title: "Skattning sparad" });
+                }}
+                label="Skattning"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <InfoRow label={property.ownerType === "foretag" ? "Företag" : "Namn"} value={property.ownerName} />
+              {property.ownerType === "foretag" && <InfoRow label="Org.nr" value={property.ownerOrgNr} />}
+              {property.ownerType === "foretag" && <InfoRow label="Kontaktperson" value={property.ownerContactPerson} />}
+              <InfoRow label="Telefon" value={property.ownerPhone} />
+              <InfoRow label="E-post" value={property.ownerEmail} />
+            </div>
+            {property.ownerId && <OwnerObjectLinks ownerId={property.ownerId} currentPropertyId={property.id} />}
+          </div>
+
+          {/* Kontakt & uppföljning (kontaktlogg + följ upp uthyrare ihopslaget) */}
+          <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3">
+            <PropertyHistory property={property} onUpdate={onUpdate} />
+          </div>
+
+          {/* Externa länkar (Airbnb/Qasa/Booking/övrigt) */}
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Externa länkar</p>
+            <div className="space-y-1.5">
+              {links.map((url) => (
+                <div key={url} className="flex items-center gap-2 text-sm">
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline truncate flex-1">
+                    {url}
+                  </a>
+                  <button onClick={() => removeLink(url)} className="h-5 w-5 flex items-center justify-center rounded hover:bg-red-50 text-muted-foreground hover:text-red-700" title="Ta bort länk">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+              <div className="flex items-center gap-2">
+                <input
+                  value={newLink}
+                  onChange={(e) => setNewLink(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLink(); } }}
+                  placeholder="Klistra in länk (Airbnb, Qasa, Booking…)"
+                  className="flex-1 text-sm border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+                <button onClick={addLink} disabled={!newLink.trim()} className="h-7 px-2 flex items-center gap-1 text-xs rounded-md border border-input hover:bg-muted disabled:opacity-40">
+                  <Plus className="h-3.5 w-3.5" /> Lägg till
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="border-t pt-4">
-        <PropertyHistory propertyId={property.id} />
       </div>
 
       {onDelete && (
@@ -532,71 +580,27 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
   );
 }
 
-function OwnerFollowUp({ property, onUpdate }: { property: Property; onUpdate: (data: Partial<Property>) => Promise<void> }) {
-  const [date, setDate] = useState(property.ownerFollowUpDate ?? "");
-  const [reason, setReason] = useState(property.ownerFollowUpReason ?? "");
-  const [note, setNote] = useState(property.ownerFollowUpNote ?? "");
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    setDate(property.ownerFollowUpDate ?? "");
-    setReason(property.ownerFollowUpReason ?? "");
-    setNote(property.ownerFollowUpNote ?? "");
-  }, [property.id]);
-
-  async function save() {
-    setSaving(true);
-    await onUpdate({
-      ownerFollowUpDate: date || null,
-      ownerFollowUpReason: reason.trim() || null,
-      ownerFollowUpNote: note.trim() || null,
-    });
-    setSaving(false);
-  }
-  async function clear() {
-    setSaving(true);
-    setDate(""); setReason(""); setNote("");
-    await onUpdate({ ownerFollowUpDate: null, ownerFollowUpReason: null, ownerFollowUpNote: null });
-    setSaving(false);
-  }
+function OwnerObjectLinks({ ownerId, currentPropertyId }: { ownerId: string; currentPropertyId: string }) {
+  const { data: properties = [] } = useSWR<Property[]>(`/api/crm/properties?ownerId=${ownerId}`, fetcher);
+  const others = properties.filter((p) => p.id !== currentPropertyId);
+  if (others.length === 0) return null;
 
   return (
-    <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3 space-y-2">
-      <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Följ upp uthyrare</p>
-      <p className="text-[11px] text-amber-800/80 -mt-1">För sourcing/relationsvård — funkar även utan aktiv förfrågan.</p>
-      <div className="grid grid-cols-2 gap-2">
-        <Labeled label="Datum">
-          <input type="date" className={FIELD_CLS} value={date} onChange={(e) => setDate(e.target.value)} />
-        </Labeled>
-        <Labeled label="Anledning">
-          <input className={FIELD_CLS} placeholder="T.ex. Kolla pris" value={reason} onChange={(e) => setReason(e.target.value)} />
-        </Labeled>
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {FOLLOWUP_REASONS.map((r) => (
-          <button
-            key={r}
-            type="button"
-            onClick={() => setReason(r)}
-            className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
-              reason === r ? "bg-amber-200 border-amber-300 text-amber-900" : "bg-white border-input text-muted-foreground hover:bg-amber-100"
-            }`}
+    <div className="mt-3 border-t pt-2">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wide mb-1.5">
+        Samma uthyrare ({others.length + 1} objekt)
+      </p>
+      <div className="space-y-1">
+        {others.slice(0, 5).map((p) => (
+          <a
+            key={p.id}
+            href={`/crm/properties?id=${p.id}`}
+            className="block rounded border bg-white px-2 py-1.5 text-xs hover:bg-nordic-50"
           >
-            {r}
-          </button>
+            <span className="font-medium">{p.address || "(adress saknas)"}</span>
+            <span className="text-muted-foreground"> · {[p.postalCode, p.city].filter(Boolean).join(" ") || "ort saknas"}</span>
+          </a>
         ))}
-      </div>
-      <textarea
-        className={`${FIELD_CLS} min-h-[44px] resize-y`}
-        placeholder="Anteckning (valfri)"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-      <div className="flex justify-end gap-2">
-        {property.ownerFollowUpDate && (
-          <Button variant="ghost" size="sm" onClick={clear} disabled={saving}>Rensa</Button>
-        )}
-        <Button size="sm" onClick={save} disabled={saving || !date}>Spara uppföljning</Button>
       </div>
     </div>
   );

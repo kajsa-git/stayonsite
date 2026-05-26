@@ -10,6 +10,7 @@ import { useCompany } from "@/hooks/crm/useCompany";
 import { RatingControl } from "../RatingControl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -58,11 +59,12 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       });
       mutate();
       router.refresh();
+      toast({ title: "Förfrågan flyttad till matchning" });
     }
     router.push(`/crm/matching/${requestId}`);
   }
 
-  async function handleSaveField(field: keyof Company, value: string): Promise<boolean> {
+  async function handleSaveField(field: keyof Company, value: string | string[]): Promise<boolean> {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
         method: "PATCH",
@@ -71,8 +73,10 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       });
       if (!res.ok) return false;
       mutate();
+      toast({ title: "Sparat" });
       return true;
     } catch {
+      toast({ title: "Kunde inte spara", variant: "destructive" });
       return false;
     }
   }
@@ -84,6 +88,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       body: JSON.stringify({ companyId, ...data }),
     });
     mutate();
+    toast({ title: "Kontakt sparad" });
   }
 
   async function handleUpdateContact(contactId: string, data: object) {
@@ -93,11 +98,13 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       body: JSON.stringify(data),
     });
     mutate();
+    toast({ title: "Kontakt uppdaterad" });
   }
 
   async function handleDeleteContact(contactId: string) {
     await fetch(`/api/crm/contacts/${contactId}`, { method: "DELETE" });
     mutate();
+    toast({ title: "Kontakt borttagen" });
   }
 
   async function handleStatusChange(requestId: string, status: string, extra?: Record<string, unknown>) {
@@ -108,6 +115,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     });
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
+    toast({ title: "Status uppdaterad" });
   }
 
   async function handleRating(rating: number | null) {
@@ -117,6 +125,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       body: JSON.stringify({ rating }),
     });
     mutate();
+    toast({ title: "Skattning sparad" });
   }
 
   async function handleFollowUp(date: string, reason: string, time: string) {
@@ -127,6 +136,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     });
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
+    toast({ title: "Återkomst sparad" });
   }
 
   async function handleAddNote(channel: string, content: string) {
@@ -136,6 +146,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       body: JSON.stringify({ companyId, channel, content }),
     });
     mutate();
+    toast({ title: "Anteckning sparad" });
   }
 
   async function handleUpdateNote(noteId: string, content: string) {
@@ -145,11 +156,13 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       body: JSON.stringify({ content }),
     });
     mutate();
+    toast({ title: "Anteckning uppdaterad" });
   }
 
   async function handleDeleteNote(noteId: string) {
     await fetch(`/api/crm/notes/${noteId}`, { method: "DELETE" });
     mutate();
+    toast({ title: "Anteckning borttagen" });
   }
 
   async function handleSaveRequest(data: RequestFormData, requestId?: string) {
@@ -167,6 +180,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       });
     }
     mutate();
+    toast({ title: requestId ? "Förfrågan sparad" : "Förfrågan skapad" });
   }
 
   async function handleDeleteCompany() {

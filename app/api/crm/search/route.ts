@@ -16,7 +16,6 @@ export async function GET(req: NextRequest) {
     id: companies.id,
     name: companies.name,
     orgNr: companies.orgNr,
-    category: companies.category,
   };
 
   // 1. Direct company-field matches
@@ -27,7 +26,6 @@ export async function GET(req: NextRequest) {
       or(
         like(companies.name, pattern),
         like(companies.orgNr, pattern),
-        like(companies.category, pattern),
         like(companies.website, pattern),
         like(companies.followUpReason, pattern)
       )
@@ -44,7 +42,17 @@ export async function GET(req: NextRequest) {
     db
       .select({ companyId: requests.companyId })
       .from(requests)
-      .where(or(like(requests.city, pattern), like(requests.notes, pattern), like(requests.lostReason, pattern))),
+      .where(
+        or(
+          like(requests.city, pattern),
+          like(requests.postalCode, pattern),
+          like(requests.street, pattern),
+          like(requests.addressQuery, pattern),
+          like(requests.billingProjectId, pattern),
+          like(requests.notes, pattern),
+          like(requests.lostReason, pattern),
+        )
+      ),
   ]);
 
   const directIds = new Set(direct.map((c) => c.id));

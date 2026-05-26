@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import type { Company, Contact } from "@/lib/crm/schema";
 import { Mail, Phone, User } from "lucide-react";
 
@@ -18,14 +17,6 @@ function initials(name: string) {
     .join("");
 }
 
-const categoryColors: Record<string, string> = {
-  Bygg: "bg-amber-100 text-amber-800",
-  Skog: "bg-green-100 text-green-800",
-  Energi: "bg-blue-100 text-blue-800",
-  Infrastruktur: "bg-purple-100 text-purple-800",
-  Montage: "bg-orange-100 text-orange-800",
-};
-
 const LEAD_SOURCE_LABELS: Record<string, string> = {
   kallt: "Kallt samtal",
   webb: "Webb",
@@ -34,10 +25,6 @@ const LEAD_SOURCE_LABELS: Record<string, string> = {
 };
 
 export function CompanyHeader({ company, primaryContact }: Props) {
-  const colorClass = company.category
-    ? (categoryColors[company.category] ?? "bg-nordic-200 text-nordic-800")
-    : "bg-nordic-200 text-nordic-800";
-
   return (
     <div className="flex items-center gap-4 mb-6">
       <div className="h-14 w-14 rounded-2xl bg-nordic-700 text-white flex items-center justify-center text-xl font-bold shrink-0">
@@ -48,9 +35,6 @@ export function CompanyHeader({ company, primaryContact }: Props) {
         <div className="flex items-center gap-2 mt-1">
           {company.orgNr && (
             <span className="text-sm text-muted-foreground font-mono">{company.orgNr}</span>
-          )}
-          {company.category && (
-            <Badge className={`text-xs ${colorClass}`}>{company.category}</Badge>
           )}
           {company.website && (
             <a
@@ -63,9 +47,9 @@ export function CompanyHeader({ company, primaryContact }: Props) {
             </a>
           )}
           {company.leadSource && LEAD_SOURCE_LABELS[company.leadSource] && (
-            <Badge variant="outline" className="text-xs">
+            <span className="rounded-full border border-input px-2 py-0.5 text-xs text-muted-foreground">
               {LEAD_SOURCE_LABELS[company.leadSource]}
-            </Badge>
+            </span>
           )}
         </div>
 

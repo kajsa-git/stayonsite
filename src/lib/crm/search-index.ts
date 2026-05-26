@@ -4,18 +4,20 @@ import {
   companies,
   contacts,
   notes,
+  owners,
   properties,
   requests,
   searchIndex,
   type Company,
   type Contact,
   type Note,
+  type Owner,
   type Property,
   type Request,
   type SearchIndexInsert,
 } from "./schema";
 
-export type SearchEntityType = "company" | "contact" | "request" | "property" | "note";
+export type SearchEntityType = "company" | "contact" | "request" | "property" | "owner" | "note";
 
 const REQUEST_STATUS_SV: Record<string, string> = {
   incoming: "inkommen ny förfrågan",
@@ -52,8 +54,8 @@ function companyRow(c: Company): SearchIndexInsert {
     entityId: c.id,
     companyId: c.id,
     title: c.name,
-    subtitle: [c.category, c.orgNr].filter(Boolean).join(" · ") || null,
-    keywords: kw(c.name, c.orgNr, c.category, c.website, c.invoiceEmail),
+    subtitle: [c.orgNr, (c.languages ?? []).join(", ")].filter(Boolean).join(" · ") || null,
+    keywords: kw(c.name, c.orgNr, c.website, c.invoiceEmail, ...(c.languages ?? [])),
     route: `/crm/company/${c.id}`,
   };
 }
@@ -79,8 +81,19 @@ function requestRow(r: Request, companyName: string): SearchIndexInsert {
     entityId: r.id,
     companyId: r.companyId,
     title: `${companyName || "Förfrågan"} – förfrågan #${r.requestNumber ?? "?"}`,
-    subtitle: [r.city, label].filter(Boolean).join(" · ") || null,
-    keywords: kw(`förfrågan #${r.requestNumber}`, r.requestNumber, companyName, r.city, r.notes, label),
+    subtitle: [[r.street, r.postalCode, r.city].filter(Boolean).join(" "), label].filter(Boolean).join(" · ") || null,
+    keywords: kw(
+      `förfrågan #${r.requestNumber}`,
+      r.requestNumber,
+      r.billingProjectId,
+      companyName,
+      r.addressQuery,
+      r.street,
+      r.postalCode,
+      r.city,
+      r.notes,
+      label,
+    ),
     route: `/crm/company/${r.companyId}`,
   };
 }
@@ -106,6 +119,35 @@ function propertyRow(p: Property): SearchIndexInsert {
       label,
     ),
     route: `/crm/properties?id=${p.id}`,
+  };
+}
+
+function ownerRow(o: Owner, propertyCount?: number): SearchIndexInsert {
+  return {
+    id: rowId("owner", o.id),
+    entityType: "owner",
+    entityId: o.id,
+    companyId: null,
+    title: o.name,
+    subtitle: [
+      o.ownerType === "foretag" ? "Företag" : o.ownerType === "privatperson" ? "Privatperson" : null,
+      o.phone || o.email,
+      propertyCount != null ? `${propertyCount} objekt` : null,
+    ].filter(Boolean).join(" · ") || null,
+    keywords: kw(
+      "uthyrare",
+      o.name,
+      o.orgNr,
+      o.contactPerson,
+      o.phone,
+      o.email,
+      o.ownerType,
+      o.ownerArrangement,
+      o.notes,
+      o.followUpReason,
+      o.followUpNote,
+    ),
+    route: `/crm/properties?ownerId=${o.id}`,
   };
 }
 
@@ -203,6 +245,19 @@ export async function indexProperty(propertyId: string): Promise<void> {
   await upsert(propertyRow(p));
 }
 
+export async function indexOwner(ownerId: string): Promise<void> {
+  const [o] = await db.select().from(owners).where(eq(owners.id, ownerId));
+  if (!o) {
+    await removeFromIndex("owner", ownerId);
+    return;
+  }
+  const linked = await db.select({ id: properties.id }).from(properties).where(eq(properties.ownerId, ownerId));
+  await Promise.all([
+    upsert(ownerRow(o, linked.length)),
+    ...linked.map((x) => indexProperty(x.id)),
+  ]);
+}
+
 export async function indexNote(noteId: string): Promise<void> {
   const [n] = await db.select().from(notes).where(eq(notes.id, noteId));
   if (!n) {
@@ -214,20 +269,26 @@ export async function indexNote(noteId: string): Promise<void> {
 
 // Säkerhetsnät mot drift: töm och bygg om hela indexet från källtabellerna.
 export async function rebuildSearchIndex(): Promise<number> {
-  const [allC, allCt, allR, allP, allN] = await Promise.all([
+  const [allC, allCt, allR, allP, allO, allN] = await Promise.all([
     db.select().from(companies),
     db.select().from(contacts),
     db.select().from(requests),
     db.select().from(properties),
+    db.select().from(owners),
     db.select().from(notes),
   ]);
   const nameById = Object.fromEntries(allC.map((c) => [c.id, c.name]));
+  const propertyCountByOwner = allP.reduce((acc, p) => {
+    if (p.ownerId) acc[p.ownerId] = (acc[p.ownerId] ?? 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const rows: SearchIndexInsert[] = [
     ...allC.map(companyRow),
     ...allCt.map((x) => contactRow(x, nameById[x.companyId] ?? "")),
     ...allR.map((x) => requestRow(x, nameById[x.companyId] ?? "")),
     ...allP.map(propertyRow),
+    ...allO.map((x) => ownerRow(x, propertyCountByOwner[x.id] ?? 0)),
     ...allN.map((x) => noteRow(x, nameById[x.companyId] ?? "")),
   ];
 

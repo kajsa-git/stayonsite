@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
+import { toast } from "@/components/ui/use-toast";
 
 interface NewCompanyModalProps {
   open: boolean;
@@ -15,7 +16,6 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
   const [form, setForm] = useState({
     name: "",
     orgNr: "",
-    category: "",
     website: "",
     leadSource: "kallt",
     followUpDate: today,
@@ -42,13 +42,13 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
           id: nanoid(),
           name: form.name.trim(),
           orgNr: form.orgNr || null,
-          category: form.category || null,
           website: form.website || null,
           leadSource: form.leadSource || null,
           followUpDate: form.followUpDate || null,
           followUpReason: form.followUpDate ? "Första kontakt" : null,
         }),
       });
+      if (!res.ok) throw new Error(String(res.status));
       const company = await res.json();
 
       if (form.contactName || form.contactPhone || form.contactEmail) {
@@ -67,7 +67,10 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
       }
 
       onClose();
+      toast({ title: "Kund skapad" });
       router.push(`/crm/company/${company.id}`);
+    } catch {
+      toast({ title: "Kunde inte skapa kunden", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -89,25 +92,14 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
               placeholder="Nordic Ventures AB"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Org.nr</label>
-              <input
-                value={form.orgNr}
-                onChange={(e) => set("orgNr", e.target.value)}
-                className="w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5]"
-                placeholder="556789-1234"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Kategori</label>
-              <input
-                value={form.category}
-                onChange={(e) => set("category", e.target.value)}
-                className="w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5]"
-                placeholder="Bygg & Anläggning"
-              />
-            </div>
+          <div>
+            <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Org.nr</label>
+            <input
+              value={form.orgNr}
+              onChange={(e) => set("orgNr", e.target.value)}
+              className="w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5]"
+              placeholder="556789-1234"
+            />
           </div>
           <div>
             <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Webb</label>

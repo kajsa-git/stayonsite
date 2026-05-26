@@ -33,9 +33,16 @@ export async function POST(req: NextRequest) {
   const result = await db.transaction(async (tx) => {
     const existing = await tx.select().from(requests);
     const maxNum = existing.reduce((max, r) => Math.max(max, r.requestNumber ?? 0), 0);
+    const requestNumber = maxNum + 1;
     const [row] = await tx
       .insert(requests)
-      .values({ id, requestNumber: maxNum + 1, statusChangedAt: now, ...body })
+      .values({
+        id,
+        requestNumber,
+        statusChangedAt: now,
+        ...body,
+        billingProjectId: body.billingProjectId ?? String(requestNumber),
+      })
       .returning();
     return row;
   });

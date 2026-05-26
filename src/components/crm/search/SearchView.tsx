@@ -8,7 +8,6 @@ interface Result {
   id: string;
   name: string;
   orgNr: string | null;
-  category: string | null;
   followUpDate: string | null;
   followUpReason: string | null;
 }
@@ -32,7 +31,6 @@ export function SearchView() {
     q: "",
     status: "",
     city: "",
-    category: "",
     followUpFrom: "",
     followUpTo: "",
   });
@@ -87,10 +85,6 @@ export function SearchView() {
           <input className={INPUT} placeholder="Stockholm" value={filters.city} onChange={(e) => set("city", e.target.value)} />
         </div>
         <div className="flex flex-col gap-1">
-          <label className={LABEL}>Kategori</label>
-          <input className={INPUT} placeholder="Bygg, Energi…" value={filters.category} onChange={(e) => set("category", e.target.value)} />
-        </div>
-        <div className="flex flex-col gap-1">
           <label className={LABEL}>Återkomst från</label>
           <input type="date" className={INPUT} value={filters.followUpFrom} onChange={(e) => set("followUpFrom", e.target.value)} />
         </div>
@@ -101,7 +95,7 @@ export function SearchView() {
         <div className="flex items-end">
           {hasFilters && (
             <button
-              onClick={() => setFilters({ q: "", status: "", city: "", category: "", followUpFrom: "", followUpTo: "" })}
+              onClick={() => setFilters({ q: "", status: "", city: "", followUpFrom: "", followUpTo: "" })}
               className="text-xs text-muted-foreground hover:text-foreground underline"
             >
               Rensa filter
@@ -132,7 +126,7 @@ export function SearchView() {
                 <div className="min-w-0">
                   <div className="font-medium text-sm truncate">{c.name}</div>
                   <div className="text-xs text-muted-foreground truncate">
-                    {[c.orgNr, c.category].filter(Boolean).join(" · ")}
+                    {c.orgNr}
                   </div>
                 </div>
                 {c.followUpDate && (

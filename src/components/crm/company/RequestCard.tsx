@@ -39,7 +39,7 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
 
   if (compact) {
     const summary = [
-      request.city,
+      [request.street, request.postalCode, request.city].filter(Boolean).join(" ") || request.addressQuery || request.city,
       request.monthlyValue ? `${request.monthlyValue.toLocaleString("sv-SE")} kr` : null,
       request.lostReason,
     ]
@@ -112,7 +112,18 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
       <div className="bg-white px-4 py-3">
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
           <Field label="Ort" value={request.city} />
+          <Field label="Postnummer" value={request.postalCode} />
+          <Field label="Gata / plats" value={request.street} />
+          <Field label="Adressökning" value={request.addressQuery} />
           <Field label="Antal" value={request.persons?.toString()} />
+          <Field
+            label="Boenden"
+            value={
+              request.accommodationFrom || request.accommodationTo
+                ? `${request.accommodationFrom ?? "?"}–${request.accommodationTo ?? "?"}`
+                : undefined
+            }
+          />
           <Field
             label="Period"
             value={
@@ -122,6 +133,10 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
             }
           />
           <Field
+            label="Projekttid"
+            value={request.projectDurationMonths ? `${request.projectDurationMonths} mån` : undefined}
+          />
+          <Field
             label="Budget"
             value={
               request.budgetMax
@@ -129,6 +144,7 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
                 : undefined
             }
           />
+          <Field label="Projekt-id faktura" value={request.billingProjectId ?? request.requestNumber?.toString()} />
           {request.lostReason && <Field label="Anledning" value={request.lostReason} />}
           {request.notes && (
             <div className="col-span-2">

@@ -3,6 +3,7 @@
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import useSWR from "swr";
+import { toast } from "@/components/ui/use-toast";
 
 interface Image {
   id: string;
@@ -25,6 +26,8 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
     if (!files || files.length === 0) return;
     setError(null);
     setUploading(true);
+    let failed = false;
+    const count = files.length;
     try {
       for (const file of Array.from(files)) {
         const fd = new FormData();
@@ -33,9 +36,12 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
           setError(j.error ?? "Uppladdning misslyckades");
+          failed = true;
         }
       }
       mutate();
+      if (failed) toast({ title: "Någon bild kunde inte laddas upp", variant: "destructive" });
+      else toast({ title: count > 1 ? `${count} bilder uppladdade` : "Bild uppladdad" });
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -43,8 +49,14 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
   }
 
   async function remove(id: string) {
-    await fetch(`/api/crm/property-images/${id}`, { method: "DELETE" });
-    mutate();
+    try {
+      const res = await fetch(`/api/crm/property-images/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: "Bild borttagen" });
+    } catch {
+      toast({ title: "Kunde inte ta bort bilden", variant: "destructive" });
+    }
   }
 
   return (

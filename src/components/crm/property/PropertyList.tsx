@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import type { Property } from "@/lib/crm/schema";
 import { LayoutList, Plus, Search, Table2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
+import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -26,9 +28,10 @@ export function PropertyList() {
   const [cityFilter, setCityFilter] = useState("");
   const [minBeds, setMinBeds] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
+  const [ownerFilter, setOwnerFilter] = useState("");
 
   const { data: properties = [], mutate } = useSWR<Property[]>(
-    `/api/crm/properties?q=${encodeURIComponent(search)}`,
+    `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
     fetcher
   );
 
@@ -54,7 +57,9 @@ export function PropertyList() {
   const [deepId, setDeepId] = useState<string | null>(null);
   const applied = useRef(false);
   useEffect(() => {
-    setDeepId(new URLSearchParams(window.location.search).get("id"));
+    const params = new URLSearchParams(window.location.search);
+    setDeepId(params.get("id"));
+    setOwnerFilter(params.get("ownerId") ?? "");
   }, []);
   useEffect(() => {
     if (deepId && !applied.current && properties.length) {
@@ -75,14 +80,19 @@ export function PropertyList() {
     });
     mutate();
     setAdding(false);
+    toast({ title: "Bostad sparad" });
   }
 
   async function handleUpdate(id: string, data: Partial<Property>) {
-    await fetch(`/api/crm/properties/${id}`, {
+    const res = await fetch(`/api/crm/properties/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+    const updated = res.ok ? await res.json() : null;
+    if (updated) {
+      setSelected((current) => (current?.id === id ? { ...current, ...updated } : current));
+    }
     mutate();
   }
 
@@ -90,6 +100,7 @@ export function PropertyList() {
     await fetch(`/api/crm/properties/${id}`, { method: "DELETE" });
     setSelected(null);
     mutate();
+    toast({ title: "Bostad borttagen" });
   }
 
   const toggleBtn = (mode: "list" | "table", label: string, Icon: typeof Table2) => (
@@ -169,9 +180,14 @@ export function PropertyList() {
             <option value="yes">Publicerad</option>
             <option value="no">Ej publicerad</option>
           </select>
-          {(statusFilter || cityFilter || minBeds || publishedFilter) && (
+          {ownerFilter && (
+            <span className="rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-teal-800">
+              Uthyrare-filter
+            </span>
+          )}
+          {(statusFilter || cityFilter || minBeds || publishedFilter || ownerFilter) && (
             <button
-              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBeds(""); setPublishedFilter(""); }}
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBeds(""); setPublishedFilter(""); setOwnerFilter(""); }}
               className="text-muted-foreground hover:text-foreground underline"
             >
               Rensa
@@ -293,6 +309,19 @@ function PropertyForm({
   function set(key: keyof Property, value: string | number | boolean | undefined) {
     setForm((f) => ({ ...f, [key]: value }));
   }
+  function setOwnerFields(patch: Partial<OwnerPickerValue>) {
+    setForm((f) => ({
+      ...f,
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerId") ? { ownerId: patch.ownerId ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerType") ? { ownerType: patch.ownerType ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerArrangement") ? { ownerArrangement: patch.ownerArrangement ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerName") ? { ownerName: patch.ownerName ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerOrgNr") ? { ownerOrgNr: patch.ownerOrgNr ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerContactPerson") ? { ownerContactPerson: patch.ownerContactPerson ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerPhone") ? { ownerPhone: patch.ownerPhone ?? null } : {}),
+      ...(Object.prototype.hasOwnProperty.call(patch, "ownerEmail") ? { ownerEmail: patch.ownerEmail ?? null } : {}),
+    }));
+  }
   const num = (v: string) => (v ? parseFloat(v) : undefined);
 
   return (
@@ -335,6 +364,7 @@ function PropertyForm({
       </div>
       <div className="rounded-md border p-3 space-y-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Uthyrare</p>
+        <OwnerPicker value={form} onChange={setOwnerFields} />
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted-foreground">Typ</label>

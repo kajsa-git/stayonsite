@@ -50,6 +50,7 @@ export const companies = sqliteTable("crm_companies", {
   leadSource: text("lead_source"), // kallt | webb | befintlig | referens
   rating: integer("rating"), // 0–10 intern skattning av kund
   invoiceEmail: text("invoice_email"), // separat fakturamail (skiljer sig ofta från kontakt-mail)
+  languages: text("languages", { mode: "json" }).$type<string[]>(), // språk för utskick/segmentering
   followUpDate: text("follow_up_date"),
   followUpReason: text("follow_up_reason"),
   followUpTime: text("follow_up_time"), // HH:MM (default 08:00 i UI) — sortering inom dagen
@@ -79,6 +80,30 @@ export const contacts = sqliteTable("crm_contacts", {
   index("crm_contacts_email_idx").on(t.email),
 ]);
 
+export const owners = sqliteTable("crm_owners", {
+  id: text("id").primaryKey(),
+  ownerType: text("owner_type"), // privatperson | foretag
+  ownerArrangement: text("owner_arrangement"), // direkt | formedlare
+  name: text("name").notNull(),
+  orgNr: text("org_nr"),
+  contactPerson: text("contact_person"),
+  phone: text("phone"),
+  email: text("email"),
+  rating: integer("rating"), // 0–10 intern skattning av uthyrare
+  followUpDate: text("follow_up_date"),
+  followUpReason: text("follow_up_reason"),
+  followUpNote: text("follow_up_note"),
+  notes: text("notes"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_owners_name_idx").on(t.name),
+  index("crm_owners_org_nr_idx").on(t.orgNr),
+  index("crm_owners_phone_idx").on(t.phone),
+  index("crm_owners_email_idx").on(t.email),
+  index("crm_owners_follow_up_date_idx").on(t.followUpDate),
+]);
+
 export const requests = sqliteTable("crm_requests", {
   id: text("id").primaryKey(),
   requestNumber: integer("request_number"),
@@ -87,14 +112,21 @@ export const requests = sqliteTable("crm_requests", {
     .references(() => companies.id, { onDelete: "cascade" }),
   contactId: text("contact_id"),
   city: text("city"),
+  postalCode: text("postal_code"),
+  street: text("street"),
+  addressQuery: text("address_query"), // frivillig adress/autocomplete-fritext
   status: text("status").default("incoming").notNull(),
   persons: integer("persons"),
+  accommodationFrom: integer("accommodation_from"),
+  accommodationTo: integer("accommodation_to"),
   startDate: text("start_date"),
   endDate: text("end_date"),
+  projectDurationMonths: integer("project_duration_months"),
   budgetMax: real("budget_max"), // vad kunden söker inom (behov)
   furnishedRequired: integer("furnished_required", { mode: "boolean" }),
   garageRequired: integer("garage_required", { mode: "boolean" }),
   monthlyValue: real("monthly_value"), // affärsvärde när fakturerad (utfall)
+  billingProjectId: text("billing_project_id"), // Fortnox/projekt-id, default kan vara requestNumber
   wonPropertyId: text("won_property_id"),
   lostReason: text("lost_reason"),
   notes: text("notes"),
@@ -110,6 +142,7 @@ export const requests = sqliteTable("crm_requests", {
 
 export const properties = sqliteTable("crm_properties", {
   id: text("id").primaryKey(),
+  ownerId: text("owner_id").references(() => owners.id, { onDelete: "set null" }),
   address: text("address"),
   postalCode: text("postal_code"),
   city: text("city"),
@@ -157,6 +190,7 @@ export const properties = sqliteTable("crm_properties", {
   index("crm_properties_beds_idx").on(t.beds),
   index("crm_properties_published_idx").on(t.published),
   index("crm_properties_owner_follow_up_date_idx").on(t.ownerFollowUpDate),
+  index("crm_properties_owner_id_idx").on(t.ownerId),
 ]);
 
 // Förslag/matchningar — kopplar en förfrågan till flera objekt (många-till-många)
@@ -199,6 +233,8 @@ export type Company = typeof companies.$inferSelect;
 export type CompanyInsert = typeof companies.$inferInsert;
 export type Contact = typeof contacts.$inferSelect;
 export type ContactInsert = typeof contacts.$inferInsert;
+export type Owner = typeof owners.$inferSelect;
+export type OwnerInsert = typeof owners.$inferInsert;
 export type Request = typeof requests.$inferSelect;
 export type RequestInsert = typeof requests.$inferInsert;
 export type Property = typeof properties.$inferSelect;

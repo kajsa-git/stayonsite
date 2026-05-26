@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { matchScore } from "@/lib/crm/matching";
+import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/matching";
 import type { Property, Request } from "@/lib/crm/schema";
-import { Check, Send, Trash2 } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import { Check, Loader2, Pencil, Search, Send, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
@@ -75,6 +76,19 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
+  const [filters, setFilters] = useState({
+    q: "",
+    city: request.city ?? "",
+    minBeds: request.persons?.toString() ?? "",
+    maxRent: request.budgetMax?.toString() ?? "",
+    minRating: "",
+    availableOnly: true,
+    hideSuggested: false,
+    furnished: !!request.furnishedRequired,
+    garage: !!request.garageRequired,
+    availableDates: false,
+    showWeak: false,
+  });
   const { data: properties = [], isLoading } = useSWR<Property[]>(`/api/crm/properties?q=`, fetcher);
   const { data: matches = [], mutate: mutateMatches } = useSWR<MatchRow[]>(
     `/api/crm/matches?requestId=${request.id}`,
@@ -84,8 +98,56 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const suggestedIds = new Set(matches.map((m) => m.propertyId));
 
   const scored = properties
-    .map((p) => ({ property: p, score: matchScore(request, p) }))
+    .filter((p) => {
+      const q = filters.q.trim().toLowerCase();
+      const hay = [p.address, p.postalCode, p.city, p.ownerName, p.ownerContactPerson, p.notes]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (q && !hay.includes(q)) return false;
+      if (filters.city.trim() && !(p.city ?? "").toLowerCase().includes(filters.city.trim().toLowerCase())) return false;
+      if (filters.minBeds && (p.beds ?? 0) < parseInt(filters.minBeds, 10)) return false;
+      if (filters.maxRent && (p.rentOut ?? Infinity) > parseFloat(filters.maxRent)) return false;
+      if (filters.minRating && (p.rating ?? 0) < parseInt(filters.minRating, 10)) return false;
+      if (filters.availableOnly && p.status !== "available") return false;
+      if (filters.furnished && !p.furnished) return false;
+      if (filters.garage && !p.garage) return false;
+      if (filters.availableDates && !availableForRequest(request, p)) return false;
+      if (filters.hideSuggested && suggestedIds.has(p.id)) return false;
+      return true;
+    })
+    .map((p) => ({ property: p, ...matchDetails(request, p) }))
+    .filter((r) => filters.showWeak || r.score > 0)
     .sort((a, b) => b.score - a.score);
+
+  const isFiltered =
+    !!filters.q ||
+    !!filters.city ||
+    !!filters.minBeds ||
+    !!filters.maxRent ||
+    !!filters.minRating ||
+    !filters.availableOnly ||
+    filters.hideSuggested ||
+    filters.furnished ||
+    filters.garage ||
+    filters.availableDates ||
+    filters.showWeak;
+
+  function resetFilters() {
+    setFilters({
+      q: "",
+      city: "",
+      minBeds: "",
+      maxRent: "",
+      minRating: "",
+      availableOnly: true,
+      hideSuggested: false,
+      furnished: false,
+      garage: false,
+      availableDates: false,
+      showWeak: false,
+    });
+  }
 
   async function addSuggestion(propertyId: string, score: number) {
     await fetch("/api/crm/matches", {
@@ -94,6 +156,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       body: JSON.stringify({ requestId: request.id, propertyId, matchScore: score }),
     });
     mutateMatches();
+    toast({ title: "Förslag tillagt" });
   }
 
   // Endast Skickad/Avböjd här — accept hanteras av acceptMatch (vinst-kaskaden).
@@ -107,6 +170,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       body: JSON.stringify({ status, ...extra }),
     });
     mutateMatches();
+    toast({ title: status === "sent" ? "Markerat som skickad" : "Förslag avböjt" });
   }
 
   // Acceptera ett förslag → vunnet objekt + stäng övriga utestående förslag ("hyrde annat objekt")
@@ -144,6 +208,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       setConfirmAccept(null);
       mutateMatches();
       router.refresh();
+      toast({ title: "Affären flyttad till att fakturera" });
     } catch (err) {
       setAcceptError(
         "Något gick fel när affären skulle stängas. Kontrollera förslagens status nedan och försök igen."
@@ -163,6 +228,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       body: JSON.stringify({ followUpDate: date || null }),
     });
     mutateMatches();
+    toast({ title: "Uppföljning sparad" });
   }
 
   async function setMatchReason(id: string, reason: string) {
@@ -172,11 +238,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       body: JSON.stringify({ followUpReason: reason || null }),
     });
     mutateMatches();
+    toast({ title: "Anledning sparad" });
   }
 
   async function removeMatch(id: string) {
     await fetch(`/api/crm/matches/${id}`, { method: "DELETE" });
     mutateMatches();
+    toast({ title: "Förslag borttaget" });
   }
 
   return (
@@ -196,9 +264,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         <h1 className="text-xl font-bold">Matcha förfrågan #{request.requestNumber}</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {[
-            request.city,
+            [request.street, request.postalCode, request.city].filter(Boolean).join(" ") || request.addressQuery || request.city,
             request.persons && `${request.persons} pers.`,
+            (request.accommodationFrom || request.accommodationTo) &&
+              `${request.accommodationFrom ?? "?"}-${request.accommodationTo ?? "?"} boenden`,
             request.budgetMax && `≤ ${request.budgetMax.toLocaleString("sv-SE")} kr`,
+            request.projectDurationMonths && `${request.projectDurationMonths} mån`,
             request.startDate,
           ]
             .filter(Boolean)
@@ -213,8 +284,21 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             <h2 className="text-sm font-semibold mb-3">Kriterier</h2>
             <dl className="space-y-2 text-sm">
               <Row label="Ort" value={request.city} />
+              <Row label="Postnummer" value={request.postalCode} />
+              <Row label="Gata / plats" value={request.street} />
+              <Row label="Adressökning" value={request.addressQuery} />
               <Row label="Antal personer" value={request.persons?.toString()} />
+              <Row
+                label="Boenden"
+                value={
+                  request.accommodationFrom || request.accommodationTo
+                    ? `${request.accommodationFrom ?? "?"}-${request.accommodationTo ?? "?"}`
+                    : undefined
+                }
+              />
               <Row label="Budget (max)" value={request.budgetMax ? `${request.budgetMax.toLocaleString("sv-SE")} kr/mån` : undefined} />
+              <Row label="Projekttid" value={request.projectDurationMonths ? `${request.projectDurationMonths} mån` : undefined} />
+              <Row label="Projekt-id faktura" value={request.billingProjectId ?? request.requestNumber?.toString()} />
               <Row label="Möblerat krävs" value={request.furnishedRequired ? "Ja" : undefined} />
               <Row label="Garage krävs" value={request.garageRequired ? "Ja" : undefined} />
               <Row label="Inflytt" value={request.startDate} />
@@ -275,12 +359,17 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           }}
                           className="text-xs px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 flex items-center gap-1"
                         >
-                          <Check className="h-3 w-3" /> Kund valde detta
+                          <Check className="h-3 w-3" /> Acceptera
                         </button>
                       )}
                       {m.status !== "rejected" && (
                         <button onClick={() => setMatchStatus(m.id, "rejected")} className="text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100">
-                          Avböjd
+                          Avböj
+                        </button>
+                      )}
+                      {m.status === "rejected" && (
+                        <button onClick={() => setMatchStatus(m.id, "sent")} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1">
+                          <Pencil className="h-3 w-3" /> Ändra
                         </button>
                       )}
                       <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground ml-auto" title="Ta bort förslag">
@@ -296,13 +385,101 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
         {/* Right: available properties */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Tillgängliga bostäder ({properties.length})</h2>
+          <div className="bg-white rounded-xl border p-3 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold">Sök bostäder</h2>
+              <span className="text-xs text-muted-foreground">{scored.length} av {properties.length}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="col-span-2 relative">
+                <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input
+                  value={filters.q}
+                  onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
+                  className="h-8 pl-7 text-xs"
+                  placeholder="Adress, uthyrare, anteckning…"
+                />
+              </div>
+              <Input
+                value={filters.city}
+                onChange={(e) => setFilters((f) => ({ ...f, city: e.target.value }))}
+                className="h-8 text-xs"
+                placeholder="Ort"
+              />
+              <Input
+                type="number"
+                min="0"
+                value={filters.minBeds}
+                onChange={(e) => setFilters((f) => ({ ...f, minBeds: e.target.value }))}
+                className="h-8 text-xs"
+                placeholder="Min bäddar"
+              />
+              <Input
+                type="number"
+                min="0"
+                value={filters.maxRent}
+                onChange={(e) => setFilters((f) => ({ ...f, maxRent: e.target.value }))}
+                className="h-8 text-xs"
+                placeholder="Max hyra (kr/mån)"
+              />
+              <Input
+                type="number"
+                min="0"
+                max="10"
+                value={filters.minRating}
+                onChange={(e) => setFilters((f) => ({ ...f, minRating: e.target.value }))}
+                className="h-8 text-xs"
+                placeholder="Min betyg (0–10)"
+              />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <FilterPill active={filters.availableOnly} onClick={() => setFilters((f) => ({ ...f, availableOnly: !f.availableOnly }))}>
+                Endast lediga
+              </FilterPill>
+              <FilterPill active={filters.availableDates} onClick={() => setFilters((f) => ({ ...f, availableDates: !f.availableDates }))}>
+                Ledig på förfrågans datum
+              </FilterPill>
+              <FilterPill active={filters.furnished} onClick={() => setFilters((f) => ({ ...f, furnished: !f.furnished }))}>
+                Möblerat
+              </FilterPill>
+              <FilterPill active={filters.garage} onClick={() => setFilters((f) => ({ ...f, garage: !f.garage }))}>
+                Garage
+              </FilterPill>
+              <FilterPill active={filters.hideSuggested} onClick={() => setFilters((f) => ({ ...f, hideSuggested: !f.hideSuggested }))}>
+                Dölj föreslagna
+              </FilterPill>
+              <FilterPill active={filters.showWeak} onClick={() => setFilters((f) => ({ ...f, showWeak: !f.showWeak }))}>
+                Visa svaga träffar
+              </FilterPill>
+              {isFiltered && (
+                <button
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1 rounded-full border border-input px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted"
+                >
+                  <X className="h-3 w-3" /> Rensa
+                </button>
+              )}
+            </div>
+          </div>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Laddar…</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Letar boenden…
+              </div>
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="bg-white rounded-xl border p-4 animate-pulse space-y-2">
+                  <div className="h-4 w-2/3 rounded bg-nordic-100" />
+                  <div className="h-3 w-1/2 rounded bg-nordic-100" />
+                  <div className="h-3 w-1/3 rounded bg-nordic-100" />
+                </div>
+              ))}
+            </div>
           ) : scored.length === 0 ? (
-            <p className="text-sm text-muted-foreground italic">Inga bostäder inlagda ännu.</p>
+            <p className="text-sm text-muted-foreground italic">
+              {isFiltered ? "Inga bostäder matchar filtren — justera eller rensa." : "Inga bostäder inlagda ännu."}
+            </p>
           ) : (
-            scored.map(({ property, score }) => {
+            scored.map(({ property, score, chips }) => {
               const already = suggestedIds.has(property.id);
               return (
                 <div key={property.id} className="bg-white rounded-xl border p-4">
@@ -328,6 +505,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                     </div>
                     <MatchScore score={score} />
                   </div>
+                  {chips.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {chips.map((c, i) => (
+                        <Chip key={i} chip={c} />
+                      ))}
+                    </div>
+                  )}
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-3">
                     <Row label="Uthyrare" value={property.ownerName} />
                     <Row label="Hyra ut" value={property.rentOut ? `${property.rentOut} kr/mån` : undefined} />
@@ -368,7 +552,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Kund valde detta objekt</DialogTitle>
+            <DialogTitle>Acceptera objekt</DialogTitle>
           </DialogHeader>
 
           <div className="rounded-md border bg-muted/40 p-3 text-sm space-y-1">
@@ -378,6 +562,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             )}
             <div className="text-xs text-muted-foreground">
               Kund: {companyName}
+              <> · Projekt-id: <span className="text-nordic-800">{request.billingProjectId ?? request.requestNumber}</span></>
               {companyInvoiceEmail ? (
                 <> · Faktura: <span className="text-nordic-800">{companyInvoiceEmail}</span></>
               ) : (
@@ -434,5 +619,43 @@ function Row({ label, value }: { label: string; value?: string | null }) {
       <dt className="text-muted-foreground shrink-0">{label}:</dt>
       <dd>{value}</dd>
     </div>
+  );
+}
+
+const CHIP_CLS: Record<MatchChip["tone"], string> = {
+  good: "bg-green-100 text-green-800 border-green-200",
+  warn: "bg-amber-100 text-amber-800 border-amber-200",
+  bad: "bg-red-100 text-red-800 border-red-200",
+};
+
+function Chip({ chip }: { chip: MatchChip }) {
+  return (
+    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${CHIP_CLS[chip.tone]}`}>
+      {chip.label}
+    </span>
+  );
+}
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+        active
+          ? "border-primary-300 bg-primary-50 text-primary-800"
+          : "border-input bg-white text-muted-foreground hover:bg-muted"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

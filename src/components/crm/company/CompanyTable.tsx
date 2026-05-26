@@ -19,7 +19,6 @@ interface Row {
   id: string;
   name: string;
   orgNr: string | null;
-  category: string | null;
   leadSource: string | null;
   followUpDate: string | null;
   requestCount: number;
@@ -97,7 +96,6 @@ export function CompanyTable() {
             <tr className="text-left text-[11px] text-muted-foreground uppercase tracking-wide">
               <Th>Företag</Th>
               <Th>Org.nr</Th>
-              <Th>Kategori</Th>
               <Th>Lead-källa</Th>
               <Th>Huvudkontakt</Th>
               <Th>Förfrågningar</Th>
@@ -106,7 +104,7 @@ export function CompanyTable() {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={7} className="px-3 py-6 text-center text-muted-foreground italic">Inga företag.</td></tr>
+              <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground italic">Inga företag.</td></tr>
             ) : (
               filtered.map((c) => (
                 <tr
@@ -116,7 +114,6 @@ export function CompanyTable() {
                 >
                   <Td className="font-medium">{c.name}</Td>
                   <Td className="font-mono text-xs">{c.orgNr || "–"}</Td>
-                  <Td>{c.category || "–"}</Td>
                   <Td>{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</Td>
                   <Td>
                     {c.primaryContactName ? (

@@ -18,6 +18,8 @@ const CHANNELS = [
   { value: "samtal", label: "Samtal" },
   { value: "mejl", label: "Mejl" },
   { value: "whatsapp", label: "WhatsApp" },
+  { value: "messenger", label: "Messenger" },
+  { value: "sms", label: "SMS" },
   { value: "möte", label: "Möte" },
   { value: "annat", label: "Annat" },
 ];
@@ -26,6 +28,8 @@ const CHANNEL_ICONS: Record<string, string> = {
   samtal: "📞",
   mejl: "📧",
   whatsapp: "💬",
+  messenger: "💬",
+  sms: "✉️",
   möte: "🤝",
   annat: "📝",
 };
@@ -222,6 +226,22 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
               ))}
             </SelectContent>
           </Select>
+          <div className="flex flex-wrap gap-1">
+            {CHANNELS.map((c) => (
+              <button
+                key={c.value}
+                type="button"
+                onClick={() => setChannel(c.value)}
+                className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                  channel === c.value
+                    ? "border-primary-300 bg-primary-50 text-primary-800"
+                    : "border-input bg-white text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {CHANNEL_ICONS[c.value]} {c.label}
+              </button>
+            ))}
+          </div>
         </div>
         <textarea
           className="w-full text-sm border rounded-lg px-3 py-2 min-h-[160px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"

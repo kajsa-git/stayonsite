@@ -6,6 +6,14 @@ import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+
+const CHASE_TOAST: Record<string, string> = {
+  snooze3: "Uppskjuten 3 dagar",
+  snooze7: "Uppskjuten 7 dagar",
+  answered: "Markerad: fick svar",
+  off_market: "Objektet markerat av marknaden",
+};
 
 const STEPS = [
   { emoji: "📥", title: "Nya förfrågningar", text: "Färska förfrågningar att ta tag i. Klicka för att läsa och börja leta boende." },
@@ -96,12 +104,18 @@ export function MyDayView() {
   const queues = data ?? { followUps: [], incoming: [], matching: [], won: [], chaseLandlords: [] };
 
   async function chaseAction(propertyId: string, action: string) {
-    await fetch(`/api/crm/properties/${propertyId}/chase`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action }),
-    });
-    mutate();
+    try {
+      const res = await fetch(`/api/crm/properties/${propertyId}/chase`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: CHASE_TOAST[action] ?? "Sparat" });
+    } catch {
+      toast({ title: "Kunde inte spara", variant: "destructive" });
+    }
   }
 
   return (

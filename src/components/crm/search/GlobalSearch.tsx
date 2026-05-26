@@ -14,7 +14,7 @@ import {
 
 export interface SearchHit {
   id: string;
-  entityType: "company" | "request" | "property" | "contact" | "note";
+  entityType: "company" | "request" | "property" | "owner" | "contact" | "note";
   entityId: string;
   companyId: string | null;
   title: string;
@@ -26,6 +26,7 @@ const TYPE_LABEL: Record<SearchHit["entityType"], string> = {
   company: "Företag",
   request: "Förfrågan",
   property: "Objekt",
+  owner: "Uthyrare",
   contact: "Kontakt",
   note: "Anteckning",
 };
@@ -34,11 +35,12 @@ const TYPE_CLS: Record<SearchHit["entityType"], string> = {
   company: "bg-blue-100 text-blue-800",
   request: "bg-amber-100 text-amber-800",
   property: "bg-green-100 text-green-800",
+  owner: "bg-teal-100 text-teal-800",
   contact: "bg-purple-100 text-purple-800",
   note: "bg-nordic-200 text-nordic-700",
 };
 
-const GROUP_ORDER: SearchHit["entityType"][] = ["company", "request", "property", "contact", "note"];
+const GROUP_ORDER: SearchHit["entityType"][] = ["company", "request", "property", "owner", "contact", "note"];
 
 const GlobalSearchContext = createContext<{ open: () => void }>({ open: () => {} });
 

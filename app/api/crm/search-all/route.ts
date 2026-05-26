@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     .where(and(...terms.map((t) => like(searchIndex.keywords, `%${t}%`))))
     // Prioritera primära entiteter så de inte trängs ut av många anteckningar
     .orderBy(
-      sql`CASE ${searchIndex.entityType} WHEN 'company' THEN 0 WHEN 'request' THEN 1 WHEN 'property' THEN 2 WHEN 'contact' THEN 3 ELSE 4 END`,
+      sql`CASE ${searchIndex.entityType} WHEN 'company' THEN 0 WHEN 'request' THEN 1 WHEN 'property' THEN 2 WHEN 'owner' THEN 3 WHEN 'contact' THEN 4 ELSE 5 END`,
     )
     .limit(20);
 
