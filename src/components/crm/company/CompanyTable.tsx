@@ -91,81 +91,80 @@ export function CompanyTable() {
         <span className="text-xs text-muted-foreground">{filtered.length} företag</span>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <table className="w-full text-sm border-collapse">
-          <thead className="sticky top-0 bg-nordic-50 z-10">
-            <tr className="text-left text-[11px] text-muted-foreground uppercase tracking-wide">
-              <Th>Företag</Th>
-              <Th>Org.nr</Th>
-              <Th>Lead-källa</Th>
-              <Th>Huvudkontakt</Th>
-              <Th>Förfrågningar</Th>
-              <Th>Återkomst</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              Array.from({ length: 10 }).map((_, i) => (
-                <tr key={i} className="border-b">
-                  <td colSpan={6} className="px-3 py-2.5"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
-                </tr>
-              ))
-            ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground italic">Inga företag.</td></tr>
-            ) : (
-              filtered.map((c) => (
-                <tr
-                  key={c.id}
-                  tabIndex={0}
-                  onClick={() => router.push(`/crm/company/${c.id}`)}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
-                  className="border-b hover:bg-nordic-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
-                >
-                  <Td className="font-medium">{c.name}</Td>
-                  <Td className="font-mono text-xs">{c.orgNr || "–"}</Td>
-                  <Td>{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</Td>
-                  <Td>
-                    {c.primaryContactName ? (
-                      <span>
-                        {c.primaryContactName}
-                        {c.primaryContactPhone && (
-                          <span className="text-muted-foreground"> · {c.primaryContactPhone}</span>
-                        )}
-                      </span>
-                    ) : (
-                      "–"
-                    )}
-                  </Td>
-                  <Td>
-                    {c.openRequestCount > 0 ? (
-                      <span className="font-medium text-nordic-900">{c.openRequestCount} aktiva</span>
-                    ) : (
-                      <span className="text-muted-foreground">{c.requestCount > 0 ? `${c.requestCount} st` : "–"}</span>
-                    )}
-                  </Td>
-                  <Td>
-                    {c.followUpDate ? (
-                      <span className={c.followUpDate <= today ? "text-amber-700 font-medium" : ""}>
-                        {c.followUpDate}
-                      </span>
-                    ) : (
-                      "–"
-                    )}
-                  </Td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="flex-1 overflow-auto p-4">
+        <div className="rounded-xl border bg-white overflow-hidden shadow-sm">
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 z-10 bg-nordic-50 text-left text-[11px] text-muted-foreground uppercase tracking-wide">
+              <tr className="border-b border-nordic-200">
+                <Th className="w-12" />
+                <Th>Företag</Th>
+                <Th>Org.nr</Th>
+                <Th>Lead-källa</Th>
+                <Th>Huvudkontakt</Th>
+                <Th className="text-right">Förfrågningar</Th>
+                <Th>Återkomst</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                Array.from({ length: 10 }).map((_, i) => (
+                  <tr key={i} className="border-t border-nordic-100">
+                    <td colSpan={7} className="px-4 py-3"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
+                  </tr>
+                ))
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground italic">Inga företag.</td></tr>
+              ) : (
+                filtered.map((c) => (
+                  <tr
+                    key={c.id}
+                    tabIndex={0}
+                    onClick={() => router.push(`/crm/company/${c.id}`)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
+                    className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+                  >
+                    <Td>
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-nordic-700 text-white text-[11px] font-bold">{initials(c.name)}</span>
+                    </Td>
+                    <Td className="font-semibold text-nordic-900">{c.name}</Td>
+                    <Td className="font-mono text-xs text-nordic-600">{c.orgNr || "–"}</Td>
+                    <Td className="text-nordic-600">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</Td>
+                    <Td className="text-nordic-600">
+                      {c.primaryContactName ? (
+                        <span>{c.primaryContactName}{c.primaryContactPhone && <span className="text-muted-foreground"> · {c.primaryContactPhone}</span>}</span>
+                      ) : "–"}
+                    </Td>
+                    <Td className="text-right">
+                      {c.openRequestCount > 0 ? (
+                        <span className="inline-block text-xs font-semibold text-green-800 bg-green-100 rounded-full px-2.5 py-0.5">{c.openRequestCount} aktiva</span>
+                      ) : c.requestCount > 0 ? (
+                        <span className="inline-block text-xs font-medium text-nordic-600 bg-nordic-100 rounded-full px-2.5 py-0.5">{c.requestCount} st</span>
+                      ) : <span className="text-muted-foreground">–</span>}
+                    </Td>
+                    <Td>
+                      {c.followUpDate ? (
+                        <span className={c.followUpDate <= today ? "text-amber-700 font-medium" : "text-nordic-600"}>{c.followUpDate}</span>
+                      ) : <span className="text-muted-foreground">–</span>}
+                    </Td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
 
-function Th({ children }: { children: React.ReactNode }) {
-  return <th className="px-3 py-2 font-medium whitespace-nowrap">{children}</th>;
+function initials(name: string) {
+  return name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+}
+
+function Th({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
+  return <th className={`px-4 py-2.5 font-semibold whitespace-nowrap ${className}`}>{children}</th>;
 }
 
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`px-3 py-2 whitespace-nowrap ${className}`}>{children}</td>;
+  return <td className={`px-4 py-3 whitespace-nowrap ${className}`}>{children}</td>;
 }

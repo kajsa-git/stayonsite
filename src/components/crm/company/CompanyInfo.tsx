@@ -2,7 +2,7 @@
 
 import type { Company } from "@/lib/crm/schema";
 import { useGooglePlaces, type PlaceParts } from "@/hooks/use-google-places";
-import { Check, AlertCircle, Loader2, Plus, X } from "lucide-react";
+import { Check, AlertCircle, ChevronRight, Loader2, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -53,6 +53,7 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 export function CompanyInfo({ company, onSave }: Props) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [open, setOpen] = useState(false);
 
   // Reset local field state only when switching to a different company.
   useEffect(() => {
@@ -107,10 +108,23 @@ export function CompanyInfo({ company, onSave }: Props) {
       setStatus("error");
     }
   }
-  const { containerRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, true);
+  const { containerRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, open);
 
   return (
     <div className="mb-6">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 rounded-lg border border-input bg-nordic-50/60 px-4 py-2.5 text-sm font-medium hover:bg-nordic-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+      >
+        <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+        Företagsuppgifter
+        <span className="ml-auto text-xs font-normal text-muted-foreground hidden sm:block">
+          Adress, kundnr, fakturamail — fylls oftast i innan affär
+        </span>
+      </button>
+      {open && (
+      <div className="mt-3">
       <div className="flex justify-end h-4 mb-1">
         {status === "saving" && (
           <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -166,6 +180,8 @@ export function CompanyInfo({ company, onSave }: Props) {
           <LanguagePicker selected={company.languages ?? []} onToggle={toggleLanguage} />
         </div>
       </div>
+      </div>
+      )}
     </div>
   );
 }

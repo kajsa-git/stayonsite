@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StayOnSite CRM — designvarianter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f3f3f1; --card:#fff; --ink:#1b2227; --sub:#5b6470; --faint:#8b94a0;
+    --line:#e9e9e6; --line2:#f1f1ee; --navy:#173341;
+    --accent:#b9743e; --blue:#1f5fb5; --blue-bg:#eef4fc;
+    --amber-bg:#fffaf0; --amber-line:#f3dca0; --amber-ink:#946a1c;
+    --green:#2e7d52; --green-bg:#e9f6ee; --red:#c0392b; --red-bg:#fcecea;
+    --r:12px; --r-sm:8px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:24px;margin:0 0 4px}
+  .lead{color:var(--sub);margin:0 0 8px;max-width:70ch}
+  .vh{display:flex;align-items:baseline;gap:12px;margin:48px 0 6px}
+  .vh .tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:999px;padding:4px 10px}
+  .vh h2{font-size:18px;margin:0}
+  .note{color:var(--sub);font-size:13px;margin:0 0 16px;max-width:80ch}
+  .note b{color:var(--ink)}
+
+  /* card shell */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.04)}
+  .muted{color:var(--faint)}
+  .lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+
+  /* header */
+  .hdr{display:flex;align-items:flex-start;gap:16px}
+  .avatar{width:52px;height:52px;border-radius:14px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex:0 0 auto}
+  .hdr h3{font-size:22px;margin:0;line-height:1.15}
+  .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:5px;font-size:13px}
+  .meta a{color:var(--accent);text-decoration:none}
+  .chip{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--sub);background:#fafafa}
+  .contact{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:14px;color:var(--sub)}
+  .contact .i{color:var(--accent);font-weight:600}
+  .stars{margin-left:auto;color:#d7b46a;font-size:15px;letter-spacing:1px;white-space:nowrap}
+  .stars .l{font-size:11px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-right:8px;vertical-align:middle}
+
+  /* toolbar */
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{background:#fafafa}
+  .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .btn.primary:hover{background:#102832}
+  .btn.blue{color:var(--blue);border-color:#cfe0f5;background:var(--blue-bg)}
+
+  /* field grid */
+  .fields{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px}
+  .fields .full{grid-column:1/-1}
+  .field label{display:block;margin-bottom:4px}
+  .input{width:100%;border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;font:14px Inter;background:#fff;color:var(--ink)}
+  .input::placeholder{color:#c2c7cd}
+  .search{position:relative}
+  .search .input{padding-left:34px}
+  .search:before{content:"🔍";position:absolute;left:11px;top:8px;font-size:13px;opacity:.5}
+
+  /* two col body */
+  .body{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px}
+  @media(max-width:760px){.fields{grid-template-columns:repeat(2,1fr)}.body{grid-template-columns:1fr}}
+
+  .recall{border:1px solid var(--amber-line);background:var(--amber-bg);border-radius:var(--r);padding:12px 14px}
+  .recall .top{display:flex;justify-content:space-between;align-items:center}
+  .recall .lbl{color:var(--amber-ink)}
+  .recall .date{font-weight:600;color:#7a5b14;margin-top:4px}
+  .recall .why{font-size:12px;color:#9b7d33}
+  .recall .edit{font-size:12px;border:1px solid var(--amber-line);background:#fff;color:#8a6d1f;border-radius:7px;padding:3px 8px;cursor:pointer}
+
+  .closed{border:1px solid var(--line);background:#fafafa;border-radius:var(--r);padding:12px 14px}
+  .closed .lbl{display:flex;align-items:center;gap:6px}
+
+  .section-h{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}
+  .link{color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;text-decoration:none}
+
+  .contact-row{border:1px solid var(--line);border-radius:var(--r);padding:11px 13px}
+  .contact-row .nm{font-weight:600}
+  .pill-pri{font-size:10px;background:#fdf0d4;color:#8a6d1f;border-radius:999px;padding:1px 7px;margin-left:6px;font-weight:600}
+  .contact-row .sub{font-size:13px;color:var(--accent);margin-top:3px;display:flex;gap:14px;flex-wrap:wrap}
+
+  .req{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .req .bar{background:var(--amber-bg);border-bottom:1px solid var(--line2);padding:9px 13px;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+  .req .bar .id{font-weight:700;color:#a05a2c}
+  .req .badge{font-size:10px;font-weight:700;background:#1b2227;color:#fff;border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+  .req .grid{padding:13px;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:13px}
+  .req .grid b{color:var(--sub);font-weight:500}
+  .req .acts{display:flex;gap:8px;padding:0 13px 13px}
+  .mini{font-size:12px;border-radius:8px;padding:6px 10px;cursor:pointer;border:1px solid var(--line);background:#fff;display:inline-flex;gap:5px;align-items:center}
+  .mini.blue{color:var(--blue);background:var(--blue-bg);border-color:#cfe0f5}
+  .mini.red{color:var(--red);background:var(--red-bg);border-color:#f3cfc9}
+
+  /* notes */
+  .chs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .ch{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:#fff;cursor:pointer}
+  .ch.on{border-color:#bcd2f0;background:var(--blue-bg);color:var(--blue);font-weight:600}
+  .ta{width:100%;min-height:96px;border:1px solid var(--line);border-radius:var(--r);padding:11px 13px;font:14px Inter;resize:vertical}
+  .note-item{border:1px solid var(--line);border-radius:var(--r);padding:11px 13px;margin-top:10px}
+  .note-item .h{font-size:12px;color:var(--faint);margin-bottom:3px}
+
+  /* accordion */
+  details.acc{border:1px solid var(--line);border-radius:var(--r);margin-top:16px;overflow:hidden;background:#fcfcfb}
+  details.acc>summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;align-items:center;gap:10px;font-weight:600}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary .hint{font-weight:400;font-size:12px;color:var(--faint);margin-left:auto}
+  details.acc>summary .caret{transition:transform .15s;color:var(--faint)}
+  details.acc[open]>summary .caret{transform:rotate(90deg)}
+  details.acc .inner{padding:0 16px 18px;border-top:1px solid var(--line2)}
+  details.acc .inner{padding-top:16px}
+
+  /* tabs */
+  .tabs input{display:none}
+  .tabbar{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:16px 0 0}
+  .tabbar label{padding:9px 14px;font-size:14px;font-weight:500;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabbar label:hover{color:var(--ink)}
+  .tabpane{display:none;padding-top:18px}
+  #tbA:checked~.tabbar label[for=tbA],#tbB:checked~.tabbar label[for=tbB],#tbC:checked~.tabbar label[for=tbC]{color:var(--blue);border-bottom-color:var(--blue)}
+  #tbA:checked~.panes .p-A,#tbB:checked~.panes .p-B,#tbC:checked~.panes .p-C{display:block}
+
+  /* drawer (variant C) */
+  .vc{position:relative;overflow:hidden}
+  .summary-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}
+  .sc{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:#fafafa;color:var(--sub)}
+  .sc b{color:var(--ink);font-weight:600}
+  .sc.warn{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber-ink)}
+  #drw{display:none}
+  .drawer{position:absolute;top:0;right:0;height:100%;width:min(440px,86%);background:#fff;border-left:1px solid var(--line);box-shadow:-12px 0 30px rgba(16,24,40,.08);transform:translateX(102%);transition:transform .25s;padding:20px;overflow:auto}
+  #drw:checked~.drawer{transform:none}
+  .scrim{position:absolute;inset:0;background:rgba(16,24,40,.18);opacity:0;pointer-events:none;transition:opacity .2s}
+  #drw:checked~.scrim{opacity:1;pointer-events:auto}
+  .drawer .dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .closex{cursor:pointer;border:1px solid var(--line);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+  .fields.one{grid-template-columns:1fr 1fr}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>StayOnSite CRM — företagskort, 3 varianter</h1>
+  <p class="lead">Kortet är tungt idag för att alla företagsuppgifter (adress, kundnr, fakturamail…) alltid ligger uppslagna. De behövs oftast först <b>innan affär</b>. Alla tre varianter visar det viktigaste direkt och gömmer detaljer tills de behövs. Klicka runt — alla är interaktiva.</p>
+
+  <!-- ============ VARIANT A ============ -->
+  <div class="vh"><span class="tag">Variant A</span><h2>Hopfällbara företagsuppgifter</h2></div>
+  <p class="note">Standardvy = lätt. Adress/fakturering ligger i en hopfälld sektion (“Företagsuppgifter”) som öppnas vid behov. <b>Minst förändring</b> mot dagens kort.</p>
+  <div class="card">
+    <div class="hdr">
+      <div class="avatar">NA</div>
+      <div style="flex:1;min-width:0">
+        <h3>Nord Armering AB</h3>
+        <div class="meta"><a href="#">nordarmering.se ↗</a><span class="chip">Webb</span><span class="muted">· 559244-9978</span></div>
+        <div class="contact"><span><span class="i">👤</span> Sebastian Wikström</span><span><span class="i">📞</span> +46 733 93 25 48</span><span><span class="i">✉</span> sebastian.wikstrom@nordarmering.se</span></div>
+      </div>
+      <div class="stars"><span class="l">Kund-skattning</span>★★★★★★★★★★ <span class="muted">–</span></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary">+ Ny förfrågan</button>
+      <button class="btn">📞 Logga kontakt</button>
+      <button class="btn">📅 Boka återkomst</button>
+    </div>
+
+    <details class="acc">
+      <summary><span class="caret">▸</span> Företagsuppgifter <span class="hint">Adress, kundnr, fakturamail — fylls oftast i innan affär</span></summary>
+      <div class="inner">
+        <div class="search" style="margin-bottom:14px"><input class="input" placeholder="Sök adress – fyller postnummer/ort/land"></div>
+        <div class="fields">
+          <div class="field"><label class="lbl">Företagsnamn</label><input class="input" value="Nord Armering AB"></div>
+          <div class="field"><label class="lbl">Org.nr</label><input class="input" value="559244-9978"></div>
+          <div class="field"><label class="lbl">Webb</label><input class="input" value="nordarmering.se"></div>
+          <div class="field"><label class="lbl">Fakturamail</label><input class="input" placeholder="faktura@…"></div>
+          <div class="field"><label class="lbl">Kundnr</label><input class="input" placeholder="t.ex. 29"></div>
+          <div class="field"><label class="lbl">Postnummer</label><input class="input" placeholder="111 22"></div>
+          <div class="field"><label class="lbl">Ort</label><input class="input" placeholder="Stockholm"></div>
+          <div class="field"><label class="lbl">Land</label><input class="input" placeholder="Sverige"></div>
+          <div class="field full"><label class="lbl">Språk för utskick</label><button class="btn" style="border-style:dashed">+ Lägg till språk</button></div>
+        </div>
+      </div>
+    </details>
+
+    <div class="body">
+      <div>
+        <div class="recall">
+          <div class="top"><span class="lbl">⏰ Återkomst</span><button class="edit">📅 Ändra</button></div>
+          <div class="date">2026-05-26</div><div class="why">Första kontakt</div>
+        </div>
+        <div class="section-h"><span class="lbl">Förfrågningar (1)</span><a class="link">+ Ny förfrågan</a></div>
+        <div class="req">
+          <div class="bar"><span><span class="id">#1251</span> Matchar <span class="badge">VALD</span></span><span class="muted">26 maj 2026 ✎</span></div>
+          <div class="grid"><span><b>Ort:</b> Figeholm</span><span><b>Postnr:</b> 572 95</span><span><b>Gata:</b> Simpevarp 200</span><span><b>Antal:</b> 4</span><span style="grid-column:1/-1"><b>Anteckning:</b> Arbete på OKG ca 9 mån, 6 pers, start om 3–4 v.</span></div>
+          <div class="acts"><button class="mini blue">🏠 Se 1 förslag</button><button class="mini red">✕ Nej tack</button><button class="mini">🗄 Arkivera</button></div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl" style="margin-bottom:8px">Anteckningar</div>
+        <div class="chs"><span class="ch on">📞 Samtal</span><span class="ch">✉ Mejl</span><span class="ch">💬 WhatsApp</span><span class="ch">✉ SMS</span><span class="ch">🤝 Möte</span></div>
+        <textarea class="ta" placeholder="Skriv en anteckning…"></textarea>
+        <div class="note-item"><div class="h">📞 samtal · 26 maj 13:33</div>Ej svar, skickade sms om att han ska ringa upp mig.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VARIANT B ============ -->
+  <div class="vh"><span class="tag">Variant B</span><h2>Flikar: Översikt · Uppgifter · Anteckningar</h2></div>
+  <p class="note">Kortet delas i flikar. <b>Översikt</b> (default) visar bara det dagliga: kontakt, återkomst, förfrågningar. Adress/fakturering bor under <b>Uppgifter</b>. Tydligast separation, mest “app-känsla”.</p>
+  <div class="card tabs">
+    <input type="radio" name="tb" id="tbA" checked><input type="radio" name="tb" id="tbB"><input type="radio" name="tb" id="tbC">
+    <div class="hdr">
+      <div class="avatar">NA</div>
+      <div style="flex:1;min-width:0">
+        <h3>Nord Armering AB</h3>
+        <div class="contact" style="margin-top:6px"><span><span class="i">👤</span> Sebastian Wikström</span><span><span class="i">📞</span> +46 733 93 25 48</span><span><span class="i">✉</span> sebastian.wikstrom@nordarmering.se</span></div>
+      </div>
+      <div class="stars"><span class="l">Skattning</span>★★★★★★★★★★ <span class="muted">–</span></div>
+    </div>
+    <div class="tabbar"><label for="tbA">Översikt</label><label for="tbB">Uppgifter</label><label for="tbC">Anteckningar</label></div>
+    <div class="panes">
+      <div class="tabpane p-A">
+        <div class="body" style="margin-top:0">
+          <div>
+            <div class="recall"><div class="top"><span class="lbl">⏰ Återkomst</span><button class="edit">📅 Ändra</button></div><div class="date">2026-05-26</div><div class="why">Första kontakt</div></div>
+            <div class="section-h"><span class="lbl">Kontakter</span><a class="link">+ Lägg till</a></div>
+            <div class="contact-row"><div class="nm">Sebastian Wikström <span class="pill-pri">Primär</span></div><div class="sub"><span>📞 +46 733 93 25 48</span><span>✉ sebastian.wikstrom@nordarmering.se</span></div></div>
+          </div>
+          <div>
+            <div class="section-h" style="margin-top:0"><span class="lbl">Förfrågningar (1)</span><a class="link">+ Ny</a></div>
+            <div class="req">
+              <div class="bar"><span><span class="id">#1251</span> Matchar <span class="badge">VALD</span></span><span class="muted">26 maj ✎</span></div>
+              <div class="grid"><span><b>Ort:</b> Figeholm</span><span><b>Antal:</b> 4</span><span style="grid-column:1/-1"><b>Period:</b> 2026-06-06</span></div>
+              <div class="acts"><button class="mini blue">🏠 Se 1 förslag</button><button class="mini red">✕ Nej tack</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tabpane p-B">
+        <div class="search" style="margin-bottom:14px"><input class="input" placeholder="Sök adress – fyller postnummer/ort/land"></div>
+        <div class="fields">
+          <div class="field"><label class="lbl">Org.nr</label><input class="input" value="559244-9978"></div>
+          <div class="field"><label class="lbl">Webb</label><input class="input" value="nordarmering.se"></div>
+          <div class="field"><label class="lbl">Fakturamail</label><input class="input" placeholder="faktura@…"></div>
+          <div class="field"><label class="lbl">Kundnr</label><input class="input" placeholder="t.ex. 29"></div>
+          <div class="field"><label class="lbl">Postnummer</label><input class="input" placeholder="111 22"></div>
+          <div class="field"><label class="lbl">Ort</label><input class="input" placeholder="Stockholm"></div>
+          <div class="field"><label class="lbl">Land</label><input class="input" placeholder="Sverige"></div>
+          <div class="field"><label class="lbl">Språk</label><button class="btn" style="border-style:dashed">+ Lägg till</button></div>
+        </div>
+      </div>
+      <div class="tabpane p-C">
+        <div class="chs"><span class="ch on">📞 Samtal</span><span class="ch">✉ Mejl</span><span class="ch">💬 WhatsApp</span><span class="ch">✉ SMS</span></div>
+        <textarea class="ta" placeholder="Skriv en anteckning…"></textarea>
+        <div class="note-item"><div class="h">📞 samtal · 26 maj 13:33</div>Ej svar, skickade sms om att han ska ringa upp mig.</div>
+        <div class="note-item"><div class="h">📞 samtal · 26 maj 07:52</div>Ringde, talade in på telesvar. Skickade villa-förslag nära OKG.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VARIANT C ============ -->
+  <div class="vh"><span class="tag">Variant C</span><h2>Sammanfattning + redigera-panel</h2></div>
+  <p class="note">Kortet visar en <b>läs-sammanfattning</b> (små chips) och allt redigerbart ligger i en panel som glider in från höger via “Redigera uppgifter”. Renast dagligt, full kontroll vid behov.</p>
+  <div class="card vc">
+    <div class="hdr">
+      <div class="avatar">NA</div>
+      <div style="flex:1;min-width:0">
+        <h3>Nord Armering AB</h3>
+        <div class="contact" style="margin-top:6px"><span><span class="i">👤</span> Sebastian Wikström</span><span><span class="i">📞</span> +46 733 93 25 48</span><span><span class="i">✉</span> sebastian.wikstrom@nordarmering.se</span></div>
+      </div>
+      <div class="stars"><span class="l">Skattning</span>★★★★★★★★★★ <span class="muted">–</span></div>
+    </div>
+
+    <div class="summary-strip">
+      <span class="sc">Org.nr <b>559244-9978</b></span>
+      <span class="sc">🌐 <b>nordarmering.se</b></span>
+      <span class="sc warn">Fakturamail saknas</span>
+      <span class="sc warn">Adress saknas</span>
+      <label for="drw" class="btn blue" style="margin-left:auto">✎ Redigera uppgifter</label>
+    </div>
+
+    <div class="body">
+      <div>
+        <div class="recall"><div class="top"><span class="lbl">⏰ Återkomst</span><button class="edit">📅 Ändra</button></div><div class="date">2026-05-26</div><div class="why">Första kontakt</div></div>
+        <div class="section-h"><span class="lbl">Förfrågningar (1)</span><a class="link">+ Ny förfrågan</a></div>
+        <div class="req">
+          <div class="bar"><span><span class="id">#1251</span> Matchar <span class="badge">VALD</span></span><span class="muted">26 maj ✎</span></div>
+          <div class="grid"><span><b>Ort:</b> Figeholm</span><span><b>Antal:</b> 4</span></div>
+          <div class="acts"><button class="mini blue">🏠 Se 1 förslag</button><button class="mini red">✕ Nej tack</button></div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl" style="margin-bottom:8px">Anteckningar</div>
+        <div class="chs"><span class="ch on">📞 Samtal</span><span class="ch">✉ Mejl</span><span class="ch">✉ SMS</span></div>
+        <textarea class="ta" placeholder="Skriv en anteckning…"></textarea>
+      </div>
+    </div>
+
+    <input type="checkbox" id="drw">
+    <label for="drw" class="scrim"></label>
+    <div class="drawer">
+      <div class="dh"><strong>Företagsuppgifter</strong><label for="drw" class="closex">✕</label></div>
+      <div class="search" style="margin-bottom:14px"><input class="input" placeholder="Sök adress – fyller postnummer/ort/land"></div>
+      <div class="fields one">
+        <div class="field"><label class="lbl">Fakturamail</label><input class="input" placeholder="faktura@…"></div>
+        <div class="field"><label class="lbl">Kundnr</label><input class="input" placeholder="t.ex. 29"></div>
+        <div class="field"><label class="lbl">Postnummer</label><input class="input" placeholder="111 22"></div>
+        <div class="field"><label class="lbl">Ort</label><input class="input" placeholder="Stockholm"></div>
+        <div class="field"><label class="lbl">Land</label><input class="input" placeholder="Sverige"></div>
+        <div class="field"><label class="lbl">Org.nr</label><input class="input" value="559244-9978"></div>
+        <div class="field" style="grid-column:1/-1"><label class="lbl">Språk för utskick</label><button class="btn" style="border-style:dashed">+ Lägg till språk</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TABELLER ============ -->
+  <div class="vh"><span class="tag">Tabeller</span><h2>Fräschare lista (företag / objekt)</h2></div>
+  <p class="note">Mjuka radavdelare istället för rutnät, hover-markering, status som soft-pills, höger-justerade siffror, rundad behållare, sticky rubrik. Funkar med shadcns Table-komponent eller våra egna <code>&lt;table&gt;</code>.</p>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <thead>
+        <tr style="text-align:left;background:#fafafa;color:var(--faint);font-size:11px;letter-spacing:.06em;text-transform:uppercase">
+          <th style="padding:11px 16px;font-weight:600"></th>
+          <th style="padding:11px 16px;font-weight:600">Företag</th>
+          <th style="padding:11px 16px;font-weight:600">Ort</th>
+          <th style="padding:11px 16px;font-weight:600">Huvudkontakt</th>
+          <th style="padding:11px 16px;font-weight:600;text-align:right">Förfrågningar</th>
+          <th style="padding:11px 16px;font-weight:600">Återkomst</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <!-- rows injected -->
+      </tbody>
+    </table>
+  </div>
+  <p class="note" style="margin-top:10px">Tips: jag kan applicera samma tabellstil på <b>företagslistan</b>, <b>objektsbanken</b> och <b>matcha-sidan</b> i ett svep.</p>
+</div>
+
+<script>
+  const rows = [
+    ["NA","Nord Armering AB","Stockholm","Sebastian Wikström","2 aktiva","#2e7d52","2026-05-26",true],
+    ["BS","Bilfinger Sweden AB","Kungälv","Philip af Wetterstedt","1 aktiv","#2e7d52","—",false],
+    ["VE","Victor Energy AB","Ludvika","—","—","#8b94a0","2026-06-02",true],
+    ["WP","WP Welding AB","Frösön","Jonas Kvist","3 st","#8b94a0","—",false],
+    ["MM","MM Properties North AB","Stockholm","William","—","#8b94a0","2026-05-28",true],
+  ];
+  document.getElementById("tbody").innerHTML = rows.map(r=>`
+    <tr style="border-top:1px solid var(--line2);cursor:pointer" onmouseover="this.style.background='#f7f9fb'" onmouseout="this.style.background=''">
+      <td style="padding:12px 16px"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;align-items:center;justify-content:center;font-size:11px;font-weight:700">${r[0]}</span></td>
+      <td style="padding:12px 16px;font-weight:600">${r[1]}</td>
+      <td style="padding:12px 16px;color:var(--sub)">${r[2]}</td>
+      <td style="padding:12px 16px;color:var(--sub)">${r[3]}</td>
+      <td style="padding:12px 16px;text-align:right"><span style="font-size:12px;font-weight:600;color:${r[5]};background:${r[5]=='#2e7d52'?'#e9f6ee':'#f1f2f4'};border-radius:999px;padding:3px 10px">${r[4]}</span></td>
+      <td style="padding:12px 16px;color:${r[7]?'#946a1c':'var(--faint)'};font-weight:${r[7]?'600':'400'}">${r[6]}</td>
+    </tr>`).join("");
+</script>
+</body>
+</html>
