@@ -209,6 +209,7 @@ export function PropertyList() {
                 <Th>Adress</Th>
                 <Th>Postnummer</Th>
                 <Th>Ort</Th>
+                <Th>Uthyrare</Th>
                 <Th>m²</Th>
                 <Th>Bäddar</Th>
                 <Th>Hyra ut</Th>
@@ -220,7 +221,7 @@ export function PropertyList() {
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={10} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
+                <tr><td colSpan={11} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
               ) : (
                 filtered.map((p) => {
                   const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
@@ -233,6 +234,7 @@ export function PropertyList() {
                       <Td className="font-medium">{p.address || "(saknas)"}</Td>
                       <Td>{p.postalCode || "–"}</Td>
                       <Td>{p.city || "–"}</Td>
+                      <Td>{p.ownerName || "–"}</Td>
                       <Td>{p.squareMeters ?? "–"}</Td>
                       <Td>{p.beds ?? "–"}</Td>
                       <Td>{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</Td>
