@@ -42,10 +42,11 @@ export function CompanyTable() {
   const [filter, setFilter] = useState<CompanyFilter>("all");
   const today = new Date().toISOString().split("T")[0];
 
-  const { data: rows = [] } = useSWR<Row[]>(
+  const { data: rows = [], isLoading } = useSWR<Row[]>(
     `/api/crm/companies?summary=1&limit=500&q=${encodeURIComponent(search)}`,
     fetcher
   );
+  const loading = isLoading && rows.length === 0;
 
   const filtered = useMemo(() => {
     switch (filter) {
@@ -103,14 +104,22 @@ export function CompanyTable() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 10 }).map((_, i) => (
+                <tr key={i} className="border-b">
+                  <td colSpan={6} className="px-3 py-2.5"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
+                </tr>
+              ))
+            ) : filtered.length === 0 ? (
               <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground italic">Inga företag.</td></tr>
             ) : (
               filtered.map((c) => (
                 <tr
                   key={c.id}
+                  tabIndex={0}
                   onClick={() => router.push(`/crm/company/${c.id}`)}
-                  className="border-b hover:bg-nordic-100 cursor-pointer"
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
+                  className="border-b hover:bg-nordic-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                 >
                   <Td className="font-medium">{c.name}</Td>
                   <Td className="font-mono text-xs">{c.orgNr || "–"}</Td>
