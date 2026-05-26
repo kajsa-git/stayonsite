@@ -10,6 +10,19 @@ export interface MatchResult {
   chips: MatchChip[];
 }
 
+/** true=inom spann, false=utanför, null=okänt/inget spann angivet. */
+function inRange(val: number | null, from: number | null | undefined, to: number | null | undefined): boolean | null {
+  if (from == null && to == null) return null;
+  if (val == null) return null;
+  if (from != null && val < from) return false;
+  if (to != null && val > to) return false;
+  return true;
+}
+
+function rangeText(from: number | null | undefined, to: number | null | undefined): string {
+  return `${from ?? "?"}–${to ?? "?"}`;
+}
+
 /** Full breakdown: numeric score (0–100) + colored criteria chips for the UI. */
 export function matchDetails(request: Request, property: Property): MatchResult {
   let score = 0;
@@ -55,9 +68,20 @@ export function matchDetails(request: Request, property: Property): MatchResult 
     }
   }
 
-  // Requested number of units/homes.
-  if (request.accommodationFrom && request.accommodationTo) {
-    score += 5;
+  // Sovrum-spann (bedrooms)
+  if (request.bedroomsFrom != null || request.bedroomsTo != null) {
+    const r = inRange(property.bedrooms, request.bedroomsFrom, request.bedroomsTo);
+    if (r === true) { score += 10; chips.push({ label: `${property.bedrooms} sovrum ✓`, tone: "good" }); }
+    else if (r === false) chips.push({ label: `${property.bedrooms} sovrum (vill ${rangeText(request.bedroomsFrom, request.bedroomsTo)})`, tone: "bad" });
+    else chips.push({ label: "Sovrum okänt", tone: "warn" });
+  }
+
+  // Bädd-spann (beds)
+  if (request.bedsFrom != null || request.bedsTo != null) {
+    const r = inRange(property.beds, request.bedsFrom, request.bedsTo);
+    if (r === true) { score += 10; chips.push({ label: `${property.beds} bäddar ✓`, tone: "good" }); }
+    else if (r === false) chips.push({ label: `${property.beds} bäddar (vill ${rangeText(request.bedsFrom, request.bedsTo)})`, tone: "bad" });
+    else chips.push({ label: "Bäddar okänt", tone: "warn" });
   }
 
   // Availability overlap

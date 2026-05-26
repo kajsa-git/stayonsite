@@ -117,10 +117,18 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
           <Field label="Adressökning" value={request.addressQuery} />
           <Field label="Antal" value={request.persons?.toString()} />
           <Field
-            label="Boenden"
+            label="Sovrum"
             value={
-              request.accommodationFrom || request.accommodationTo
-                ? `${request.accommodationFrom ?? "?"}–${request.accommodationTo ?? "?"}`
+              request.bedroomsFrom || request.bedroomsTo
+                ? `${request.bedroomsFrom ?? "?"}–${request.bedroomsTo ?? "?"}`
+                : undefined
+            }
+          />
+          <Field
+            label="Bäddar"
+            value={
+              request.bedsFrom || request.bedsTo
+                ? `${request.bedsFrom ?? "?"}–${request.bedsTo ?? "?"}`
                 : undefined
             }
           />

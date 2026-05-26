@@ -64,6 +64,13 @@
       "when": 1779800100000,
       "tag": "0008_crm_owners",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1779800200000,
+      "tag": "0009_request_room_ranges",
+      "breakpoints": true
     }
   ]
 }

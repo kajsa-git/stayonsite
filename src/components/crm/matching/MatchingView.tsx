@@ -266,8 +266,10 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           {[
             [request.street, request.postalCode, request.city].filter(Boolean).join(" ") || request.addressQuery || request.city,
             request.persons && `${request.persons} pers.`,
-            (request.accommodationFrom || request.accommodationTo) &&
-              `${request.accommodationFrom ?? "?"}-${request.accommodationTo ?? "?"} boenden`,
+            (request.bedroomsFrom || request.bedroomsTo) &&
+              `${request.bedroomsFrom ?? "?"}-${request.bedroomsTo ?? "?"} sovrum`,
+            (request.bedsFrom || request.bedsTo) &&
+              `${request.bedsFrom ?? "?"}-${request.bedsTo ?? "?"} bäddar`,
             request.budgetMax && `≤ ${request.budgetMax.toLocaleString("sv-SE")} kr`,
             request.projectDurationMonths && `${request.projectDurationMonths} mån`,
             request.startDate,
@@ -289,10 +291,18 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               <Row label="Adressökning" value={request.addressQuery} />
               <Row label="Antal personer" value={request.persons?.toString()} />
               <Row
-                label="Boenden"
+                label="Sovrum"
                 value={
-                  request.accommodationFrom || request.accommodationTo
-                    ? `${request.accommodationFrom ?? "?"}-${request.accommodationTo ?? "?"}`
+                  request.bedroomsFrom || request.bedroomsTo
+                    ? `${request.bedroomsFrom ?? "?"}-${request.bedroomsTo ?? "?"}`
+                    : undefined
+                }
+              />
+              <Row
+                label="Bäddar"
+                value={
+                  request.bedsFrom || request.bedsTo
+                    ? `${request.bedsFrom ?? "?"}-${request.bedsTo ?? "?"}`
                     : undefined
                 }
               />

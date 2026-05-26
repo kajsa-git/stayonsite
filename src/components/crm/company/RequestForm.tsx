@@ -10,8 +10,10 @@ export interface RequestFormData {
   street: string | null;
   addressQuery: string | null;
   persons: number | null;
-  accommodationFrom: number | null;
-  accommodationTo: number | null;
+  bedroomsFrom: number | null;
+  bedroomsTo: number | null;
+  bedsFrom: number | null;
+  bedsTo: number | null;
   startDate: string | null;
   endDate: string | null;
   projectDurationMonths: number | null;
@@ -35,8 +37,10 @@ const EMPTY = {
   street: "",
   addressQuery: "",
   persons: "",
-  accommodationFrom: "",
-  accommodationTo: "",
+  bedroomsFrom: "",
+  bedroomsTo: "",
+  bedsFrom: "",
+  bedsTo: "",
   startDate: "",
   endDate: "",
   projectDurationMonths: "",
@@ -90,8 +94,10 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
             street: request.street ?? "",
             addressQuery: request.addressQuery ?? "",
             persons: request.persons?.toString() ?? "",
-            accommodationFrom: request.accommodationFrom?.toString() ?? "",
-            accommodationTo: request.accommodationTo?.toString() ?? "",
+            bedroomsFrom: request.bedroomsFrom?.toString() ?? "",
+            bedroomsTo: request.bedroomsTo?.toString() ?? "",
+            bedsFrom: request.bedsFrom?.toString() ?? "",
+            bedsTo: request.bedsTo?.toString() ?? "",
             startDate: request.startDate ?? "",
             endDate: request.endDate ?? "",
             projectDurationMonths: request.projectDurationMonths?.toString() ?? "",
@@ -134,8 +140,10 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
           street: form.street.trim() || null,
           addressQuery: form.addressQuery.trim() || null,
           persons: form.persons ? parseInt(form.persons, 10) : null,
-          accommodationFrom: form.accommodationFrom ? parseInt(form.accommodationFrom, 10) : null,
-          accommodationTo: form.accommodationTo ? parseInt(form.accommodationTo, 10) : null,
+          bedroomsFrom: form.bedroomsFrom ? parseInt(form.bedroomsFrom, 10) : null,
+          bedroomsTo: form.bedroomsTo ? parseInt(form.bedroomsTo, 10) : null,
+          bedsFrom: form.bedsFrom ? parseInt(form.bedsFrom, 10) : null,
+          bedsTo: form.bedsTo ? parseInt(form.bedsTo, 10) : null,
           startDate: form.startDate || null,
           endDate: form.endDate || null,
           projectDurationMonths: form.projectDurationMonths ? parseInt(form.projectDurationMonths, 10) : null,
@@ -220,24 +228,33 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
               <Field label="Antal personer">
                 <input type="number" min="0" value={form.persons} onChange={(e) => set("persons", e.target.value)} className={INPUT_CLS} placeholder="3" />
               </Field>
-              <Field label="Antal boenden">
+              <Field label="# Sovrum (från–till)">
                 <div className="flex items-center gap-1.5">
-                  <input type="number" min="0" value={form.accommodationFrom} onChange={(e) => set("accommodationFrom", e.target.value)} className={INPUT_CLS} placeholder="1" />
+                  <input type="number" min="0" value={form.bedroomsFrom} onChange={(e) => set("bedroomsFrom", e.target.value)} className={INPUT_CLS} placeholder="2" />
                   <span className="text-sm text-[#a8a8a8]">–</span>
-                  <input type="number" min="0" value={form.accommodationTo} onChange={(e) => set("accommodationTo", e.target.value)} className={INPUT_CLS} placeholder="3" />
+                  <input type="number" min="0" value={form.bedroomsTo} onChange={(e) => set("bedroomsTo", e.target.value)} className={INPUT_CLS} placeholder="4" />
                 </div>
               </Field>
-              <Field label="Budget (kr/mån)">
-                <input type="number" min="0" value={form.budgetMax} onChange={(e) => set("budgetMax", e.target.value)} className={INPUT_CLS} placeholder="25000" />
+              <Field label="# Bäddar (från–till)">
+                <div className="flex items-center gap-1.5">
+                  <input type="number" min="0" value={form.bedsFrom} onChange={(e) => set("bedsFrom", e.target.value)} className={INPUT_CLS} placeholder="2" />
+                  <span className="text-sm text-[#a8a8a8]">–</span>
+                  <input type="number" min="0" value={form.bedsTo} onChange={(e) => set("bedsTo", e.target.value)} className={INPUT_CLS} placeholder="6" />
+                </div>
               </Field>
             </div>
             <div className="grid grid-cols-3 gap-3">
+              <Field label="Budget (kr/mån)">
+                <input type="number" min="0" value={form.budgetMax} onChange={(e) => set("budgetMax", e.target.value)} className={INPUT_CLS} placeholder="25000" />
+              </Field>
               <Field label="Inflytt">
                 <input type="date" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} className={INPUT_CLS} />
               </Field>
               <Field label="Utflytt">
                 <input type="date" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} className={INPUT_CLS} />
               </Field>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
               <Field label="Projekttid (mån)">
                 <input type="number" min="0" value={form.projectDurationMonths} onChange={(e) => set("projectDurationMonths", e.target.value)} className={INPUT_CLS} placeholder="6" />
               </Field>

@@ -117,8 +117,12 @@ export const requests = sqliteTable("crm_requests", {
   addressQuery: text("address_query"), // frivillig adress/autocomplete-fritext
   status: text("status").default("incoming").notNull(),
   persons: integer("persons"),
-  accommodationFrom: integer("accommodation_from"),
+  accommodationFrom: integer("accommodation_from"), // utgått ur UI (ersatt av sovrum/bäddar-spann)
   accommodationTo: integer("accommodation_to"),
+  bedroomsFrom: integer("bedrooms_from"),
+  bedroomsTo: integer("bedrooms_to"),
+  bedsFrom: integer("beds_from"),
+  bedsTo: integer("beds_to"),
   startDate: text("start_date"),
   endDate: text("end_date"),
   projectDurationMonths: integer("project_duration_months"),
