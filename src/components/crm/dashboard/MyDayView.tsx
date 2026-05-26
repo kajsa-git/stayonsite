@@ -100,8 +100,9 @@ export function MyDayView() {
     setShowHelp(true);
   }
 
-  const { data, mutate } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
+  const { data, mutate, isLoading } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], incoming: [], matching: [], won: [], chaseLandlords: [] };
+  const loading = isLoading && !data;
 
   async function chaseAction(propertyId: string, action: string) {
     try {
@@ -160,6 +161,23 @@ export function MyDayView() {
         </div>
       )}
 
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+          {Array.from({ length: 5 }).map((_, c) => (
+            <div key={c}>
+              <div className="h-4 w-32 rounded bg-nordic-100 animate-pulse mb-3" />
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="rounded-lg border bg-white p-3 space-y-2">
+                    <div className="h-3.5 w-2/3 rounded bg-nordic-100 animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-nordic-100 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
         <QueueSection
           title="Nya förfrågningar"
@@ -184,7 +202,7 @@ export function MyDayView() {
           renderItem={(item) => (
             <button
               key={item.id}
-              className="w-full text-left p-3 rounded-lg bg-white border hover:border-primary-400 transition-colors"
+              className="w-full text-left p-3 rounded-lg bg-white border hover:border-primary-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
               onClick={() => router.push(`/crm/work/followups/${item.id}`)}
             >
               <div className="font-medium text-sm">{item.name}</div>
@@ -245,6 +263,7 @@ export function MyDayView() {
           )}
         />
       </div>
+      )}
 
       {/* Liten uppmuntran 🙏 — klicka på Jesus för ett bibelord */}
       <div className="mt-12 flex justify-end items-end gap-3 pr-2">
@@ -347,7 +366,7 @@ function ChaseBtn({ children, onClick, disabled }: { children: React.ReactNode; 
 function RequestRow({ item, accent, onClick }: { item: RequestQueue; accent: string; onClick: () => void }) {
   return (
     <button
-      className={`w-full text-left p-3 rounded-lg bg-white border transition-colors ${accent}`}
+      className={`w-full text-left p-3 rounded-lg bg-white border transition-colors hover:bg-nordic-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${accent}`}
       onClick={onClick}
     >
       <div className="font-medium text-sm">
