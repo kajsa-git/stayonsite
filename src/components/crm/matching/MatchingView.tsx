@@ -492,7 +492,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             scored.map(({ property, score, chips }) => {
               const already = suggestedIds.has(property.id);
               return (
-                <div key={property.id} className="bg-white rounded-xl border p-4">
+                <div key={property.id} className="bg-white rounded-xl border p-4 hover:border-nordic-300 hover:shadow-sm transition-all">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div>
                       <button

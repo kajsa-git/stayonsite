@@ -37,3 +37,8 @@ competitor-research-*.md
 .vercel
 .env*.local
 .env
+
+# Lokala AI-skills (skills.sh / shadcn-skill) — installeras per dev
+.agents/
+.claude/skills/
+skills-lock.json

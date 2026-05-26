@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import type { Property } from "@/lib/crm/schema";
 import { Image as ImageIcon, LayoutList, Plus, Search, Table2 } from "lucide-react";
@@ -205,69 +206,73 @@ export function PropertyList() {
           <PropertyForm onSave={handleAdd} onCancel={() => setAdding(false)} />
         </div>
       ) : viewMode === "table" ? (
-        <div className="flex-1 overflow-auto">
-          <table className="w-full text-sm border-collapse">
-            <thead className="sticky top-0 bg-nordic-50 z-10">
-              <tr className="text-left text-[11px] text-muted-foreground uppercase tracking-wide">
-                <Th></Th>
-                <Th>Adress</Th>
-                <Th>Postnummer</Th>
-                <Th>Ort</Th>
-                <Th>Uthyrare</Th>
-                <Th>m²</Th>
-                <Th>Bäddar</Th>
-                <Th>Hyra ut</Th>
-                <Th>Möblerat</Th>
-                <Th>Status</Th>
-                <Th>Tillgänglig</Th>
-                <Th>Hemsida</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                Array.from({ length: 8 }).map((_, i) => (
-                  <tr key={i} className="border-b">
-                    <td colSpan={12} className="px-3 py-2.5"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
-                  </tr>
-                ))
-              ) : filtered.length === 0 ? (
-                <tr><td colSpan={12} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
-              ) : (
-                filtered.map((p) => {
-                  const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
-                  return (
-                    <tr
-                      key={p.id}
-                      onClick={() => { setSelected(p); setViewMode("list"); }}
-                      className="border-b hover:bg-nordic-100 cursor-pointer"
-                    >
-                      <Td>
-                        {p.thumbnailUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.thumbnailUrl} alt="" className="h-9 w-9 rounded object-cover border" />
-                        ) : (
-                          <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
-                        )}
-                      </Td>
-                      <Td className="font-medium">{p.address || "(saknas)"}</Td>
-                      <Td>{p.postalCode || "–"}</Td>
-                      <Td>{p.city || "–"}</Td>
-                      <Td>{p.ownerName || "–"}</Td>
-                      <Td>{p.squareMeters ?? "–"}</Td>
-                      <Td>{p.beds ?? "–"}</Td>
-                      <Td>{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</Td>
-                      <Td>{p.furnished ? "Ja" : "–"}</Td>
-                      <Td>
-                        <span className={`text-[11px] px-1.5 py-0.5 rounded ${st.cls}`}>{st.label}</span>
-                      </Td>
-                      <Td>{p.moveInFrom || "–"}</Td>
-                      <Td>{p.published ? "✓" : "–"}</Td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+        <div className="flex-1 overflow-auto p-4">
+          <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
+            <Table>
+              <TableHeader className="sticky top-0 z-10 bg-nordic-50 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap">
+                <TableRow className="border-b border-nordic-200 hover:bg-transparent">
+                  <TableHead className="w-14" />
+                  <TableHead>Adress</TableHead>
+                  <TableHead>Postnummer</TableHead>
+                  <TableHead>Ort</TableHead>
+                  <TableHead>Uthyrare</TableHead>
+                  <TableHead>m²</TableHead>
+                  <TableHead>Bäddar</TableHead>
+                  <TableHead>Hyra ut</TableHead>
+                  <TableHead>Möblerat</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Tillgänglig</TableHead>
+                  <TableHead>Hemsida</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="[&_td]:py-2.5 [&_td]:whitespace-nowrap">
+                {loading ? (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <TableRow key={i} className="border-t border-nordic-100">
+                      <TableCell colSpan={12}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : filtered.length === 0 ? (
+                  <TableRow className="hover:bg-transparent"><TableCell colSpan={12} className="py-10 text-center text-muted-foreground italic">Inga bostäder.</TableCell></TableRow>
+                ) : (
+                  filtered.map((p) => {
+                    const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
+                    return (
+                      <TableRow
+                        key={p.id}
+                        tabIndex={0}
+                        onClick={() => { setSelected(p); setViewMode("list"); }}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(p); setViewMode("list"); } }}
+                        className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+                      >
+                        <TableCell>
+                          {p.thumbnailUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={p.thumbnailUrl} alt="" className="h-9 w-9 rounded object-cover border" />
+                          ) : (
+                            <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-medium text-nordic-900">{p.address || "(saknas)"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.postalCode || "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.city || "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.ownerName || "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.squareMeters ?? "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.beds ?? "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.furnished ? "Ja" : "–"}</TableCell>
+                        <TableCell>
+                          <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                        </TableCell>
+                        <TableCell className="text-nordic-600">{p.moveInFrom || "–"}</TableCell>
+                        <TableCell className="text-nordic-600">{p.published ? "✓" : "–"}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       ) : (
         <div className="flex flex-1 min-h-0">
@@ -327,14 +332,6 @@ export function PropertyList() {
       )}
     </div>
   );
-}
-
-function Th({ children }: { children?: React.ReactNode }) {
-  return <th className="px-3 py-2 font-medium whitespace-nowrap">{children}</th>;
-}
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`px-3 py-2 whitespace-nowrap ${className}`}>{children}</td>;
 }
 
 function PropertyForm({

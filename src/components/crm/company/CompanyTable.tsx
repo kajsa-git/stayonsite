@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -92,65 +93,65 @@ export function CompanyTable() {
       </div>
 
       <div className="flex-1 overflow-auto p-4">
-        <div className="rounded-xl border bg-white overflow-hidden shadow-sm">
-          <table className="w-full text-sm">
-            <thead className="sticky top-0 z-10 bg-nordic-50 text-left text-[11px] text-muted-foreground uppercase tracking-wide">
-              <tr className="border-b border-nordic-200">
-                <Th className="w-12" />
-                <Th>Företag</Th>
-                <Th>Org.nr</Th>
-                <Th>Lead-källa</Th>
-                <Th>Huvudkontakt</Th>
-                <Th className="text-right">Förfrågningar</Th>
-                <Th>Återkomst</Th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
+          <Table>
+            <TableHeader className="sticky top-0 z-10 bg-nordic-50 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap">
+              <TableRow className="border-b border-nordic-200 hover:bg-transparent">
+                <TableHead className="w-12" />
+                <TableHead>Företag</TableHead>
+                <TableHead>Org.nr</TableHead>
+                <TableHead>Lead-källa</TableHead>
+                <TableHead>Huvudkontakt</TableHead>
+                <TableHead className="text-right">Förfrågningar</TableHead>
+                <TableHead>Återkomst</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="[&_td]:py-3 [&_td]:whitespace-nowrap">
               {loading ? (
                 Array.from({ length: 10 }).map((_, i) => (
-                  <tr key={i} className="border-t border-nordic-100">
-                    <td colSpan={7} className="px-4 py-3"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
-                  </tr>
+                  <TableRow key={i} className="border-t border-nordic-100">
+                    <TableCell colSpan={7}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
+                  </TableRow>
                 ))
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground italic">Inga företag.</td></tr>
+                <TableRow className="hover:bg-transparent"><TableCell colSpan={7} className="py-10 text-center text-muted-foreground italic">Inga företag.</TableCell></TableRow>
               ) : (
                 filtered.map((c) => (
-                  <tr
+                  <TableRow
                     key={c.id}
                     tabIndex={0}
                     onClick={() => router.push(`/crm/company/${c.id}`)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
-                    className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
+                    className="border-t border-nordic-100 hover:bg-nordic-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                   >
-                    <Td>
+                    <TableCell>
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-nordic-700 text-white text-[11px] font-bold">{initials(c.name)}</span>
-                    </Td>
-                    <Td className="font-semibold text-nordic-900">{c.name}</Td>
-                    <Td className="font-mono text-xs text-nordic-600">{c.orgNr || "–"}</Td>
-                    <Td className="text-nordic-600">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</Td>
-                    <Td className="text-nordic-600">
+                    </TableCell>
+                    <TableCell className="font-semibold text-nordic-900">{c.name}</TableCell>
+                    <TableCell className="font-mono text-xs text-nordic-600">{c.orgNr || "–"}</TableCell>
+                    <TableCell className="text-nordic-600">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
+                    <TableCell className="text-nordic-600">
                       {c.primaryContactName ? (
                         <span>{c.primaryContactName}{c.primaryContactPhone && <span className="text-muted-foreground"> · {c.primaryContactPhone}</span>}</span>
                       ) : "–"}
-                    </Td>
-                    <Td className="text-right">
+                    </TableCell>
+                    <TableCell className="text-right">
                       {c.openRequestCount > 0 ? (
                         <span className="inline-block text-xs font-semibold text-green-800 bg-green-100 rounded-full px-2.5 py-0.5">{c.openRequestCount} aktiva</span>
                       ) : c.requestCount > 0 ? (
                         <span className="inline-block text-xs font-medium text-nordic-600 bg-nordic-100 rounded-full px-2.5 py-0.5">{c.requestCount} st</span>
                       ) : <span className="text-muted-foreground">–</span>}
-                    </Td>
-                    <Td>
+                    </TableCell>
+                    <TableCell>
                       {c.followUpDate ? (
                         <span className={c.followUpDate <= today ? "text-amber-700 font-medium" : "text-nordic-600"}>{c.followUpDate}</span>
                       ) : <span className="text-muted-foreground">–</span>}
-                    </Td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
@@ -159,12 +160,4 @@ export function CompanyTable() {
 
 function initials(name: string) {
   return name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
-}
-
-function Th({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
-  return <th className={`px-4 py-2.5 font-semibold whitespace-nowrap ${className}`}>{children}</th>;
-}
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`px-4 py-3 whitespace-nowrap ${className}`}>{children}</td>;
 }
