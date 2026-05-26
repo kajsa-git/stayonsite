@@ -43,6 +43,12 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           Min dag
         </button>
         <button
+          onClick={() => router.push("/crm/oversikt")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+        >
+          Översikt
+        </button>
+        <button
           onClick={() => router.push("/crm/foretag")}
           className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
         >
