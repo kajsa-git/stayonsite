@@ -32,10 +32,11 @@ export function PropertyList() {
   const [publishedFilter, setPublishedFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
 
-  const { data: properties = [], mutate } = useSWR<PropertyWithThumb[]>(
+  const { data: properties = [], mutate, isLoading } = useSWR<PropertyWithThumb[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
     fetcher
   );
+  const loading = isLoading && properties.length === 0;
 
   const cities = useMemo(
     () => [...new Set(properties.map((p) => p.city).filter(Boolean) as string[])].sort(),
@@ -208,6 +209,7 @@ export function PropertyList() {
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 bg-nordic-50 z-10">
               <tr className="text-left text-[11px] text-muted-foreground uppercase tracking-wide">
+                <Th></Th>
                 <Th>Adress</Th>
                 <Th>Postnummer</Th>
                 <Th>Ort</Th>
@@ -222,8 +224,14 @@ export function PropertyList() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
-                <tr><td colSpan={11} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
+              {loading ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <tr key={i} className="border-b">
+                    <td colSpan={12} className="px-3 py-2.5"><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></td>
+                  </tr>
+                ))
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={12} className="px-3 py-6 text-center text-muted-foreground italic">Inga bostäder.</td></tr>
               ) : (
                 filtered.map((p) => {
                   const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
@@ -233,6 +241,14 @@ export function PropertyList() {
                       onClick={() => { setSelected(p); setViewMode("list"); }}
                       className="border-b hover:bg-nordic-100 cursor-pointer"
                     >
+                      <Td>
+                        {p.thumbnailUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={p.thumbnailUrl} alt="" className="h-9 w-9 rounded object-cover border" />
+                        ) : (
+                          <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
+                        )}
+                      </Td>
                       <Td className="font-medium">{p.address || "(saknas)"}</Td>
                       <Td>{p.postalCode || "–"}</Td>
                       <Td>{p.city || "–"}</Td>
@@ -257,13 +273,23 @@ export function PropertyList() {
         <div className="flex flex-1 min-h-0">
           {/* Sidebar list */}
           <div className="w-72 border-r bg-white overflow-y-auto shrink-0">
-            {filtered.length === 0 && (
+            {loading &&
+              Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 px-3 py-2.5 border-b">
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3.5 w-3/4 rounded bg-nordic-100 animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-nordic-100 animate-pulse" />
+                  </div>
+                  <div className="h-11 w-11 shrink-0 rounded-md bg-nordic-100 animate-pulse" />
+                </div>
+              ))}
+            {!loading && filtered.length === 0 && (
               <div className="px-3 py-6 text-center text-xs text-muted-foreground italic">Inga bostäder.</div>
             )}
-            {filtered.map((p) => (
+            {!loading && filtered.map((p) => (
               <button
                 key={p.id}
-                className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
+                className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400 ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
                 onClick={() => setSelected(p)}
               >
                 <div className="flex-1 min-w-0">
@@ -303,7 +329,7 @@ export function PropertyList() {
   );
 }
 
-function Th({ children }: { children: React.ReactNode }) {
+function Th({ children }: { children?: React.ReactNode }) {
   return <th className="px-3 py-2 font-medium whitespace-nowrap">{children}</th>;
 }
 
