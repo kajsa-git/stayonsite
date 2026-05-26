@@ -71,6 +71,13 @@
       "when": 1779800200000,
       "tag": "0009_request_room_ranges",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1779800300000,
+      "tag": "0010_company_address",
+      "breakpoints": true
     }
   ]
 }

@@ -7,6 +7,7 @@ export interface PlaceParts {
   street: string;
   postalCode: string;
   city: string;
+  country: string;
   formatted: string;
 }
 
@@ -54,6 +55,7 @@ function parsePlace(place: any): PlaceParts {
     street: [route, num].filter(Boolean).join(" ").trim(),
     postalCode: get("postal_code"),
     city: get("postal_town") || get("locality") || get("sublocality_level_1") || "",
+    country: get("country"),
     formatted: place.formattedAddress ?? "",
   };
 }

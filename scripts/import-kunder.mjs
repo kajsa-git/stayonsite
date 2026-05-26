@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
- * import-kunder.mjs — importerar kundlista → crm_companies.
- * Torrkörning som default; --commit för att skriva. Dedup på org.nr/namn.
- * ★ = rekonstruerad (avhuggen i källan) e-post — verifiera.
+ * import-kunder.mjs — upsertar kundlista → crm_companies.
+ * Skapar nya företag OCH backfillar befintliga: fyller postnr/ort/land/kundnr,
+ * skapar primär kontakt med telefon (namn ur mejlet), tar bort temp-anteckningen.
+ * Torrkörning som default; --commit för att skriva. Idempotent.
+ * ★ = rekonstruerad (avhuggen i källan) e-post — domän MX-verifierad, brevlåda ej.
  */
 import { createClient } from "@libsql/client";
 import { readFileSync } from "fs";
@@ -17,6 +19,7 @@ for (const f of [".env.local", ".env"]) {
 const COMMIT = process.argv.includes("--commit");
 const turso = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
 const norm = (s) => (s || "").toString().toLowerCase().replace(/[\s.,()\-_/]+/g, "").trim();
+const nameFromEmail = (email) => email.split("@")[0].split(/[._-]+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 
 // kundnr, namn, orgnr, postnr, ort, land, tel, email, lang(sv/en), emailGuess?
 const KUNDER = [
@@ -43,39 +46,41 @@ const KUNDER = [
 
 async function main() {
   console.log(`\n${COMMIT ? "🚀 SKARP KÖRNING" : "🔍 TORRKÖRNING (inget skrivs)"}\n`);
-  const existing = (await turso.execute("SELECT name, org_nr FROM crm_companies")).rows;
-  const byOrg = new Set(existing.filter((c) => c.org_nr).map((c) => norm(c.org_nr)));
-  const byName = new Set(existing.map((c) => norm(c.name)));
+  const existing = (await turso.execute("SELECT id, name, org_nr FROM crm_companies")).rows;
+  const byOrg = new Map(existing.filter((c) => c.org_nr).map((c) => [norm(c.org_nr), c.id]));
+  const byName = new Map(existing.map((c) => [norm(c.name), c.id]));
 
-  const toCreate = [], skip = [];
-  for (const [kundnr, name, orgNr, postnr, ort, land, tel, email, lang, guess] of KUNDER) {
-    if ((orgNr && byOrg.has(norm(orgNr))) || byName.has(norm(name))) { skip.push(name); continue; }
-    const notes = [`Kundnr ${kundnr}`, [postnr, ort].filter(Boolean).join(" ") + (land ? `, ${land}` : ""), tel ? `Tel: ${tel}` : null].filter((s) => s && s.trim()).join(" · ");
-    toCreate.push({ id: nanoid(), name, orgNr, email, lang, notes, guess });
-    byOrg.add(norm(orgNr)); byName.add(norm(name));
-  }
+  let created = 0, updated = 0;
+  for (const [kundnr, name, orgNr, postnr, ort, land, tel, email, lang] of KUNDER) {
+    const id = (orgNr && byOrg.get(norm(orgNr))) || byName.get(norm(name)) || null;
+    const action = id ? "uppdaterar" : "skapar";
+    console.log(`  ${action.padEnd(11)} ${name}  ·  ${[postnr, ort].filter(Boolean).join(" ")}${land ? `, ${land}` : ""}  ·  ${tel ? "📞 " + tel : "ingen tel"}  ·  ${email}`);
+    if (id) updated++; else created++;
+    if (!COMMIT) continue;
 
-  console.log(`Företag att skapa: ${toCreate.length} · hoppas över (finns redan): ${skip.length}\n`);
-  for (const c of toCreate) console.log(`  - ${c.name}  [${c.lang}]  ${c.email}${c.guess ? " ★" : ""}`);
-  if (skip.length) console.log(`\n  Redan i CRM: ${skip.join("; ")}`);
-  console.log(`\n  ★ = rekonstruerad e-post (verifiera)`);
-
-  if (!COMMIT) { console.log(`\n🔍 Torrkörning klar. Kör med --commit för att skapa.\n`); process.exit(0); }
-
-  for (const c of toCreate) {
-    await turso.execute({
-      sql: `INSERT INTO crm_companies (id, name, org_nr, lead_source, invoice_email, languages, created_at, updated_at)
-            VALUES (?, ?, ?, 'befintlig', ?, ?, datetime('now'), datetime('now'))`,
-      args: [c.id, c.name, c.orgNr || null, c.email || null, JSON.stringify([c.lang])],
-    });
-    if (c.notes) {
+    if (id) {
       await turso.execute({
-        sql: `INSERT INTO crm_notes (id, company_id, channel, content, created_at) VALUES (?, ?, 'annat', ?, datetime('now'))`,
-        args: [nanoid(), c.id, c.notes],
+        sql: `UPDATE crm_companies SET customer_number=?, postal_code=?, city=?, country=?, invoice_email=COALESCE(invoice_email, ?), languages=COALESCE(languages, ?), updated_at=datetime('now') WHERE id=?`,
+        args: [String(kundnr), postnr || null, ort || null, land || null, email || null, JSON.stringify([lang]), id],
       });
+      await turso.execute({ sql: `DELETE FROM crm_notes WHERE company_id=? AND channel='annat' AND content LIKE 'Kundnr %'`, args: [id] });
+      if (tel) {
+        const has = (await turso.execute({ sql: `SELECT count(*) c FROM crm_contacts WHERE company_id=? AND phone=?`, args: [id, tel] })).rows[0].c;
+        if (!has) await turso.execute({ sql: `INSERT INTO crm_contacts (id, company_id, name, phone, email, is_primary) VALUES (?, ?, ?, ?, ?, 1)`, args: [nanoid(), id, nameFromEmail(email), tel, email || null] });
+      }
+    } else {
+      const cid = nanoid();
+      await turso.execute({
+        sql: `INSERT INTO crm_companies (id, name, org_nr, lead_source, invoice_email, languages, customer_number, postal_code, city, country, created_at, updated_at)
+              VALUES (?, ?, ?, 'befintlig', ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+        args: [cid, name, orgNr || null, email || null, JSON.stringify([lang]), String(kundnr), postnr || null, ort || null, land || null],
+      });
+      if (tel) await turso.execute({ sql: `INSERT INTO crm_contacts (id, company_id, name, phone, email, is_primary) VALUES (?, ?, ?, ?, ?, 1)`, args: [nanoid(), cid, nameFromEmail(email), tel, email || null] });
     }
   }
-  console.log(`\n✅ Klart! Skapade ${toCreate.length} företag.\n`);
+
+  console.log(`\n${COMMIT ? "✅ Klart!" : "Plan:"} ${created} att skapa, ${updated} att uppdatera (backfill).`);
+  if (!COMMIT) console.log(`Kör med --commit för att skriva.\n`);
   process.exit(0);
 }
 main().catch((e) => { console.error("❌", e.message); process.exit(1); });

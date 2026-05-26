@@ -1,6 +1,7 @@
 "use client";
 
 import type { Company } from "@/lib/crm/schema";
+import { useGooglePlaces, type PlaceParts } from "@/hooks/use-google-places";
 import { Check, AlertCircle, Loader2, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -14,6 +15,10 @@ const FIELDS = [
   { key: "orgNr", label: "Org.nr", placeholder: "556123-4567" },
   { key: "website", label: "Webb", placeholder: "www.exempel.se" },
   { key: "invoiceEmail", label: "Fakturamail", placeholder: "faktura@exempel.se" },
+  { key: "customerNumber", label: "Kundnr", placeholder: "t.ex. 29" },
+  { key: "postalCode", label: "Postnummer", placeholder: "111 22" },
+  { key: "city", label: "Ort", placeholder: "Stockholm" },
+  { key: "country", label: "Land", placeholder: "Sverige" },
 ] as const;
 
 const LANGUAGES = [
@@ -56,6 +61,10 @@ export function CompanyInfo({ company, onSave }: Props) {
       orgNr: company.orgNr ?? "",
       website: company.website ?? "",
       invoiceEmail: company.invoiceEmail ?? "",
+      customerNumber: company.customerNumber ?? "",
+      postalCode: company.postalCode ?? "",
+      city: company.city ?? "",
+      country: company.country ?? "",
     });
   }, [company.id]);
 
@@ -83,6 +92,23 @@ export function CompanyInfo({ company, onSave }: Props) {
     setStatus(ok ? "saved" : "error");
   }
 
+  async function applyPlace(parts: PlaceParts) {
+    const updates: Record<string, string> = {};
+    if (parts.postalCode) updates.postalCode = parts.postalCode;
+    if (parts.city) updates.city = parts.city;
+    if (parts.country) updates.country = parts.country;
+    if (Object.keys(updates).length === 0) return;
+    setValues((v) => ({ ...v, ...updates }));
+    setStatus("saving");
+    try {
+      const res = await Promise.all(Object.entries(updates).map(([k, val]) => onSave(k as keyof Company, val)));
+      setStatus(res.every(Boolean) ? "saved" : "error");
+    } catch {
+      setStatus("error");
+    }
+  }
+  const { containerRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, true);
+
   return (
     <div className="mb-6">
       <div className="flex justify-end h-4 mb-1">
@@ -103,7 +129,18 @@ export function CompanyInfo({ company, onSave }: Props) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-3">
+        {gmapsEnabled && (
+          <div className="col-span-full flex flex-col gap-1">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Sök adress (fyller postnummer/ort/land)
+            </label>
+            <div
+              ref={containerRef}
+              className="w-full rounded-md border border-input bg-white px-1 focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 [&_gmp-place-autocomplete]:block [&_gmp-place-autocomplete]:w-full"
+            />
+          </div>
+        )}
         {FIELDS.map(({ key, label, placeholder }) => (
           <div key={key} className="flex flex-col gap-1">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -122,7 +159,7 @@ export function CompanyInfo({ company, onSave }: Props) {
             />
           </div>
         ))}
-        <div className="col-span-2 flex flex-col gap-1">
+        <div className="col-span-full flex flex-col gap-1">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Språk för utskick
           </label>

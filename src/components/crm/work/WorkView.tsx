@@ -14,7 +14,7 @@ interface WorkViewProps {
 export function WorkView({ queue, companyId, requestId, items }: WorkViewProps) {
   return (
     <QueueProvider queue={queue} items={items} currentCompanyId={companyId} currentRequestId={requestId}>
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6">
         <QueueBanner requestId={requestId} />
         <CompanyCard companyId={companyId} activeRequestId={requestId} />
       </div>

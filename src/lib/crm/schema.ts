@@ -51,6 +51,10 @@ export const companies = sqliteTable("crm_companies", {
   rating: integer("rating"), // 0–10 intern skattning av kund
   invoiceEmail: text("invoice_email"), // separat fakturamail (skiljer sig ofta från kontakt-mail)
   languages: text("languages", { mode: "json" }).$type<string[]>(), // språk för utskick/segmentering
+  customerNumber: text("customer_number"), // kundnr (extern referens, t.ex. Fortnox)
+  postalCode: text("postal_code"),
+  city: text("city"),
+  country: text("country"),
   followUpDate: text("follow_up_date"),
   followUpReason: text("follow_up_reason"),
   followUpTime: text("follow_up_time"), // HH:MM (default 08:00 i UI) — sortering inom dagen
