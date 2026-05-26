@@ -1,13 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { Note } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -213,38 +206,24 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
 
       {/* New note form */}
       <div className="mb-4 space-y-2">
-        <div className="flex gap-2">
-          <Select value={channel} onValueChange={setChannel}>
-            <SelectTrigger className="w-32 h-8 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {CHANNELS.map((c) => (
-                <SelectItem key={c.value} value={c.value} className="text-xs">
-                  {CHANNEL_ICONS[c.value]} {c.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex flex-wrap gap-1">
-            {CHANNELS.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                onClick={() => setChannel(c.value)}
-                className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                  channel === c.value
-                    ? "border-primary-300 bg-primary-50 text-primary-800"
-                    : "border-input bg-white text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                {CHANNEL_ICONS[c.value]} {c.label}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-1">
+          {CHANNELS.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => setChannel(c.value)}
+              className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                channel === c.value
+                  ? "border-primary-300 bg-primary-50 text-primary-800 font-medium"
+                  : "border-input bg-white text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {CHANNEL_ICONS[c.value]} {c.label}
+            </button>
+          ))}
         </div>
         <textarea
-          className="w-full text-sm border rounded-lg px-3 py-2 min-h-[160px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
+          className="w-full text-sm border rounded-lg px-3 py-2 min-h-[120px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
           placeholder="Skriv en anteckning…"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -252,9 +231,10 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSave();
           }}
         />
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] text-muted-foreground">Kanal: {CHANNEL_ICONS[channel]} {CHANNELS.find((c) => c.value === channel)?.label}</span>
           <Button size="sm" onClick={handleSave} disabled={!content.trim() || saving}>
-            Spara (⌘↵)
+            {saving ? "Sparar…" : "Spara (⌘↵)"}
           </Button>
         </div>
       </div>
