@@ -30,6 +30,12 @@ const heroIntentSchema = baseSchema.extend({
         .refine(isValidContact, 'invalid_contact'),
     }),
     z.object({
+      ort: z.string().trim().min(2).max(100),
+      antal_personer: z.string().trim().regex(/^\d{1,4}$/),
+      email: z.string().trim().min(3).max(200).refine(isValidEmail, 'invalid_email'),
+      phone: z.string().trim().min(6).max(50).refine(isValidPhoneNumber, 'invalid_phone'),
+    }),
+    z.object({
       city: z.string().trim().min(2).max(100),
       people: z.string().trim().regex(/^\d{1,4}$/),
       email: z.string().trim().min(3).max(200).refine(isValidEmail, 'invalid_email'),

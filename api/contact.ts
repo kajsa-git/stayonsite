@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 import { z } from 'zod';
+import type { WebSubmission } from '../src/lib/crm/contact-intake';
 
 const CONTACT_TO = process.env.CONTACT_FORM_TO || 'kajsa@stayonsite.se';
 
@@ -29,6 +30,12 @@ const submissionSchema = z.discriminatedUnion('formType', [
       ort: z.string().min(2).max(100),
       antal_personer: z.string().regex(/^\d{1,3}$/),
       kontakt: z.string().min(3).max(200).refine(isValidContact),
+    }),
+    z.object({
+      ort: z.string().min(2).max(100),
+      antal_personer: z.string().regex(/^\d{1,4}$/),
+      email: z.string().min(3).max(200).refine(isValidEmail),
+      phone: z.string().min(6).max(50).refine(isValidPhone),
     }),
     // New foretag conversion form: city + people + email + phone
     z.object({
@@ -304,6 +311,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const forwarded = req.headers['x-forwarded-for'];
     const ip = typeof forwarded === 'string' ? forwarded.split(',')[0]?.trim() : undefined;
     const email = buildEmail(submission, ip, req.headers['user-agent']);
+    // Lazy import so a CRM/DB problem can never break email delivery (the
+    // critical path) — even a module-load error is caught here.
+    const crmResult = await import('../src/lib/crm/contact-intake')
+      .then((m) => m.mapWebSubmissionToCrm(submission as WebSubmission))
+      .catch((err) => {
+        console.error('CRM intake mapping failed', err);
+        return null;
+      });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -333,7 +348,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }).catch((err) => console.error('Confirmation email failed', err));
     }
 
-    return res.status(200).json({ success: true, provider: 'resend' });
+    return res.status(200).json({ success: true, provider: 'resend', crm: crmResult ? 'mapped' : 'skipped' });
   } catch (err) {
     console.error('Contact form error', err);
     return res.status(500).json({ success: false, error: 'contact_form_submission_failed' });
