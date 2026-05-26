@@ -1,8 +1,8 @@
 "use client";
 
 import type { Company } from "@/lib/crm/schema";
-import { Check, AlertCircle, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Check, AlertCircle, Loader2, Plus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   company: Company;
@@ -126,29 +126,94 @@ export function CompanyInfo({ company, onSave }: Props) {
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Språk för utskick
           </label>
-          <div className="flex flex-wrap gap-1.5">
-            {LANGUAGES.map((lang) => {
-              const active = (company.languages ?? []).includes(lang.code);
-              return (
-                <button
-                  key={lang.code}
-                  type="button"
-                  onClick={() => toggleLanguage(lang.code)}
-                  title={lang.label}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                    active
-                      ? "border-primary-300 bg-primary-50 text-primary-800"
-                      : "border-input bg-white text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  <span aria-hidden>{lang.flag}</span>
-                  {lang.label}
-                </button>
-              );
-            })}
-          </div>
+          <LanguagePicker selected={company.languages ?? []} onToggle={toggleLanguage} />
         </div>
       </div>
+    </div>
+  );
+}
+
+function LanguagePicker({ selected, onToggle }: { selected: string[]; onToggle: (code: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDoc(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
+  const selectedLangs = LANGUAGES.filter((l) => selected.includes(l.code));
+  const filtered = LANGUAGES.filter((l) => l.label.toLowerCase().includes(query.trim().toLowerCase()));
+
+  return (
+    <div ref={ref} className="relative">
+      <div className="flex flex-wrap items-center gap-1.5">
+        {selectedLangs.length === 0 && (
+          <span className="text-sm text-muted-foreground">Inga språk valda</span>
+        )}
+        {selectedLangs.map((l) => (
+          <span
+            key={l.code}
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary-300 bg-primary-50 text-primary-800 px-2.5 py-1 text-xs"
+          >
+            <span aria-hidden>{l.flag}</span>
+            {l.label}
+            <button
+              type="button"
+              onClick={() => onToggle(l.code)}
+              className="ml-0.5 text-primary-500 hover:text-primary-800"
+              title="Ta bort"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        ))}
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex items-center gap-1 rounded-full border border-dashed border-input bg-white text-muted-foreground hover:bg-muted px-2.5 py-1 text-xs"
+        >
+          <Plus className="h-3 w-3" /> Lägg till språk
+        </button>
+      </div>
+
+      {open && (
+        <div className="absolute z-20 mt-1 w-64 rounded-md border bg-white shadow-lg p-2">
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Sök språk…"
+            className="w-full text-sm border rounded px-2 py-1 mb-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500"
+          />
+          <div className="max-h-56 overflow-y-auto space-y-0.5">
+            {filtered.length === 0 ? (
+              <p className="text-xs text-muted-foreground px-1 py-1.5">Inget språk matchar.</p>
+            ) : (
+              filtered.map((l) => {
+                const active = selected.includes(l.code);
+                return (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => onToggle(l.code)}
+                    className={`w-full flex items-center gap-2 rounded px-2 py-1.5 text-sm text-left hover:bg-muted ${active ? "bg-primary-50" : ""}`}
+                  >
+                    <span aria-hidden>{l.flag}</span>
+                    <span className="flex-1">{l.label}</span>
+                    {active && <Check className="h-3.5 w-3.5 text-primary-600" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import type { Request } from "@/lib/crm/schema";
 import { useEffect, useState } from "react";
 import { useGooglePlaces, type PlaceParts } from "@/hooks/use-google-places";
+import { Check } from "lucide-react";
 
 export interface RequestFormData {
   city: string | null;
@@ -45,6 +46,35 @@ const EMPTY = {
   furnishedRequired: false,
   garageRequired: false,
 };
+
+const LABEL_CLS = "text-xs text-[#8a8a8a] uppercase tracking-wide font-medium";
+const INPUT_CLS =
+  "w-full px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5] focus:ring-1 focus:ring-[#1c5fb5]/30";
+
+const togglePill = (active: boolean) =>
+  `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${
+    active
+      ? "border-[#1c5fb5] bg-[#1c5fb5]/10 text-[#1c5fb5] font-medium"
+      : "border-[#d4d4d2] bg-white text-[#8a8a8a] hover:bg-[#f5f5f4]"
+  }`;
+
+function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
+  return (
+    <div className="space-y-1">
+      <label className={LABEL_CLS}>{label}</label>
+      {children}
+      {hint && <p className="text-[11px] text-[#a8a8a8]">{hint}</p>}
+    </div>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] font-semibold uppercase tracking-wider text-[#a8a8a8] border-b border-[#ededeb] pb-1.5">
+      {children}
+    </p>
+  );
+}
 
 export function RequestForm({ open, request, onClose, onSubmit }: Props) {
   const [form, setForm] = useState(EMPTY);
@@ -123,191 +153,121 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
     }
   }
 
-  const labelCls = "text-xs text-[#8a8a8a] uppercase tracking-wide font-medium";
-  const inputCls =
-    "w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5]";
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative bg-white border border-[#d4d4d2] rounded-[6px] shadow-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-sm font-semibold mb-4">
-          {request ? `Redigera förfrågan #${request.requestNumber}` : "Ny förfrågan"}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label className={labelCls}>Adressökning (valfri)</label>
-            <input
-              ref={addressRef}
-              autoFocus
-              autoComplete={gmapsEnabled ? "off" : "street-address"}
-              list={gmapsEnabled ? undefined : "request-address-hints"}
-              value={form.addressQuery}
-              onChange={(e) => set("addressQuery", e.target.value)}
-              onKeyDown={(e) => {
-                // Stoppa Enter från att skicka formuläret medan man väljer ett Google-förslag
-                if (gmapsEnabled && e.key === "Enter") e.preventDefault();
-              }}
-              className={inputCls}
-              placeholder={
-                gmapsEnabled
-                  ? "Börja skriv adress – välj i listan för att fylla ort/postnummer/gata"
-                  : "Börja skriv adress, ort eller arbetsplats…"
-              }
-            />
-            {!gmapsEnabled && (
-              <datalist id="request-address-hints">
-                {[form.street, form.postalCode, form.city].filter(Boolean).join(" ") && (
-                  <option value={[form.street, form.postalCode, form.city].filter(Boolean).join(" ")} />
-                )}
-              </datalist>
-            )}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className={labelCls}>Ort</label>
+      <div className="relative bg-white border border-[#d4d4d2] rounded-[8px] shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 z-10 bg-white border-b border-[#ededeb] px-6 py-3.5">
+          <h2 className="text-sm font-semibold">
+            {request ? `Redigera förfrågan #${request.requestNumber}` : "Ny förfrågan"}
+          </h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-6">
+          {/* Plats */}
+          <div className="space-y-3">
+            <SectionTitle>Plats</SectionTitle>
+            <Field
+              label={gmapsEnabled ? "Sök adress" : "Adressökning (valfri)"}
+              hint={gmapsEnabled ? "Välj ett förslag så fylls ort, postnummer och gata i automatiskt." : undefined}
+            >
               <input
-              value={form.city}
-              onChange={(e) => set("city", e.target.value)}
-              className={inputCls}
-                placeholder="Stockholm"
-            />
-            </div>
-            <div>
-              <label className={labelCls}>Postnummer</label>
-              <input
-                value={form.postalCode}
-                onChange={(e) => set("postalCode", e.target.value)}
-                className={inputCls}
-                placeholder="111 22"
+                ref={addressRef}
+                autoFocus
+                autoComplete={gmapsEnabled ? "off" : "street-address"}
+                list={gmapsEnabled ? undefined : "request-address-hints"}
+                value={form.addressQuery}
+                onChange={(e) => set("addressQuery", e.target.value)}
+                onKeyDown={(e) => {
+                  if (gmapsEnabled && e.key === "Enter") e.preventDefault();
+                }}
+                className={INPUT_CLS}
+                placeholder={gmapsEnabled ? "Börja skriv en adress…" : "Börja skriv adress, ort eller arbetsplats…"}
               />
-            </div>
-            <div>
-              <label className={labelCls}>Gata / plats</label>
-              <input
-                value={form.street}
-                onChange={(e) => set("street", e.target.value)}
-                className={inputCls}
-                placeholder="Storgatan"
-              />
+              {!gmapsEnabled && (
+                <datalist id="request-address-hints">
+                  {[form.street, form.postalCode, form.city].filter(Boolean).join(" ") && (
+                    <option value={[form.street, form.postalCode, form.city].filter(Boolean).join(" ")} />
+                  )}
+                </datalist>
+              )}
+            </Field>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Ort">
+                <input value={form.city} onChange={(e) => set("city", e.target.value)} className={INPUT_CLS} placeholder="Stockholm" />
+              </Field>
+              <Field label="Postnummer">
+                <input value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} className={INPUT_CLS} placeholder="111 22" />
+              </Field>
+              <Field label="Gata / plats">
+                <input value={form.street} onChange={(e) => set("street", e.target.value)} className={INPUT_CLS} placeholder="Storgatan" />
+              </Field>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-3">
-            <div>
-              <label className={labelCls}>Antal personer</label>
-              <input
-                type="number"
-                min="0"
-                value={form.persons}
-                onChange={(e) => set("persons", e.target.value)}
-                className={inputCls}
-                placeholder="3"
-              />
+
+          {/* Behov & tidsplan */}
+          <div className="space-y-3">
+            <SectionTitle>Behov & tidsplan</SectionTitle>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Antal personer">
+                <input type="number" min="0" value={form.persons} onChange={(e) => set("persons", e.target.value)} className={INPUT_CLS} placeholder="3" />
+              </Field>
+              <Field label="Antal boenden">
+                <div className="flex items-center gap-1.5">
+                  <input type="number" min="0" value={form.accommodationFrom} onChange={(e) => set("accommodationFrom", e.target.value)} className={INPUT_CLS} placeholder="1" />
+                  <span className="text-sm text-[#a8a8a8]">–</span>
+                  <input type="number" min="0" value={form.accommodationTo} onChange={(e) => set("accommodationTo", e.target.value)} className={INPUT_CLS} placeholder="3" />
+                </div>
+              </Field>
+              <Field label="Budget (kr/mån)">
+                <input type="number" min="0" value={form.budgetMax} onChange={(e) => set("budgetMax", e.target.value)} className={INPUT_CLS} placeholder="25000" />
+              </Field>
             </div>
-            <div>
-              <label className={labelCls}>Boende från</label>
-              <input
-                type="number"
-                min="0"
-                value={form.accommodationFrom}
-                onChange={(e) => set("accommodationFrom", e.target.value)}
-                className={inputCls}
-                placeholder="1"
-              />
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Inflytt">
+                <input type="date" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} className={INPUT_CLS} />
+              </Field>
+              <Field label="Utflytt">
+                <input type="date" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} className={INPUT_CLS} />
+              </Field>
+              <Field label="Projekttid (mån)">
+                <input type="number" min="0" value={form.projectDurationMonths} onChange={(e) => set("projectDurationMonths", e.target.value)} className={INPUT_CLS} placeholder="6" />
+              </Field>
             </div>
-            <div>
-              <label className={labelCls}>Boende till</label>
-              <input
-                type="number"
-                min="0"
-                value={form.accommodationTo}
-                onChange={(e) => set("accommodationTo", e.target.value)}
-                className={inputCls}
-                placeholder="3"
-              />
-            </div>
-            <div>
-              <label className={labelCls}>Budget (max kr/mån)</label>
-              <input
-                type="number"
-                min="0"
-                value={form.budgetMax}
-                onChange={(e) => set("budgetMax", e.target.value)}
-                className={inputCls}
-                placeholder="25000"
-              />
-            </div>
+            <Field label="Krav">
+              <div className="flex flex-wrap gap-1.5">
+                <button type="button" onClick={() => set("furnishedRequired", !form.furnishedRequired)} className={togglePill(form.furnishedRequired)}>
+                  {form.furnishedRequired && <Check className="h-3.5 w-3.5" />} Möblerat
+                </button>
+                <button type="button" onClick={() => set("garageRequired", !form.garageRequired)} className={togglePill(form.garageRequired)}>
+                  {form.garageRequired && <Check className="h-3.5 w-3.5" />} Garage
+                </button>
+              </div>
+            </Field>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className={labelCls}>Inflytt</label>
+
+          {/* Fakturering & noteringar */}
+          <div className="space-y-3">
+            <SectionTitle>Fakturering & noteringar</SectionTitle>
+            <Field label="Projekt-id för fakturering (Fortnox)">
               <input
-                type="date"
-                value={form.startDate}
-                onChange={(e) => set("startDate", e.target.value)}
-                className={inputCls}
+                value={form.billingProjectId}
+                onChange={(e) => set("billingProjectId", e.target.value)}
+                className={INPUT_CLS}
+                placeholder={request?.requestNumber ? `Förslag: ${request.requestNumber}` : "Skapas från förfrågningsnumret"}
               />
-            </div>
-            <div>
-              <label className={labelCls}>Utflytt</label>
-              <input
-                type="date"
-                value={form.endDate}
-                onChange={(e) => set("endDate", e.target.value)}
-                className={inputCls}
+            </Field>
+            <Field label="Anteckning">
+              <textarea
+                value={form.notes}
+                onChange={(e) => set("notes", e.target.value)}
+                className={`${INPUT_CLS} min-h-[60px] resize-y`}
+                placeholder="Specialönskemål, kontext…"
               />
-            </div>
-            <div>
-              <label className={labelCls}>Projekttid (mån)</label>
-              <input
-                type="number"
-                min="0"
-                value={form.projectDurationMonths}
-                onChange={(e) => set("projectDurationMonths", e.target.value)}
-                className={inputCls}
-                placeholder="6"
-              />
-            </div>
+            </Field>
           </div>
-          <div>
-            <label className={labelCls}>Projekt-id för fakturering (Fortnox)</label>
-            <input
-              value={form.billingProjectId}
-              onChange={(e) => set("billingProjectId", e.target.value)}
-              className={inputCls}
-              placeholder={request?.requestNumber ? `Förslag: ${request.requestNumber}` : "Skapas från förfrågningsnumret"}
-            />
-          </div>
-          <div className="flex flex-wrap gap-4 py-1">
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.furnishedRequired}
-                onChange={(e) => set("furnishedRequired", e.target.checked)}
-                className="h-4 w-4"
-              />
-              Möblerat krävs
-            </label>
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.garageRequired}
-                onChange={(e) => set("garageRequired", e.target.checked)}
-                className="h-4 w-4"
-              />
-              Garage krävs
-            </label>
-          </div>
-          <div>
-            <label className={labelCls}>Anteckning</label>
-            <textarea
-              value={form.notes}
-              onChange={(e) => set("notes", e.target.value)}
-              className={`${inputCls} min-h-[60px] resize-y`}
-              placeholder="Specialönskemål, kontext…"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
+
+          <div className="flex justify-end gap-2 pt-4 border-t border-[#ededeb]">
             <button
               type="button"
               onClick={onClose}
