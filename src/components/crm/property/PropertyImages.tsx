@@ -1,7 +1,7 @@
 "use client";
 
-import { ImagePlus, Loader2, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, ImagePlus, Loader2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { toast } from "@/components/ui/use-toast";
 
@@ -20,7 +20,19 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
   );
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightbox(null);
+      else if (e.key === "ArrowLeft") setLightbox((i) => (i === null ? i : (i - 1 + images.length) % images.length));
+      else if (e.key === "ArrowRight") setLightbox((i) => (i === null ? i : (i + 1) % images.length));
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [lightbox, images.length]);
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -87,10 +99,15 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
         <p className="text-sm text-muted-foreground italic">Inga bilder ännu.</p>
       ) : (
         <div className="grid grid-cols-3 gap-2">
-          {images.map((img) => (
+          {images.map((img, i) => (
             <div key={img.id} className="relative group aspect-square rounded-md overflow-hidden border bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.url} alt={img.fileName ?? "Bostadsbild"} className="w-full h-full object-cover" />
+              <img
+                src={img.url}
+                alt={img.fileName ?? "Bostadsbild"}
+                className="w-full h-full object-cover cursor-zoom-in"
+                onClick={() => setLightbox(i)}
+              />
               <button
                 onClick={() => remove(img.id)}
                 className="absolute top-1 right-1 h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
@@ -100,6 +117,47 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {lightbox !== null && images[lightbox] && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 h-9 w-9 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+            title="Stäng (Esc)"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {images.length > 1 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox - 1 + images.length) % images.length); }}
+              className="absolute left-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+              title="Föregående (←)"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={images[lightbox].url}
+            alt={images[lightbox].fileName ?? "Bostadsbild"}
+            className="max-h-[90vh] max-w-[92vw] object-contain rounded"
+            onClick={(e) => e.stopPropagation()}
+          />
+          {images.length > 1 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox + 1) % images.length); }}
+              className="absolute right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+              title="Nästa (→)"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          )}
+          <div className="absolute bottom-4 text-xs text-white/80">{lightbox + 1} / {images.length}</div>
         </div>
       )}
     </div>

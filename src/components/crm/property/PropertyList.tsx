@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import type { Property } from "@/lib/crm/schema";
-import { LayoutList, Plus, Search, Table2 } from "lucide-react";
+import { Image as ImageIcon, LayoutList, Plus, Search, Table2 } from "lucide-react";
+
+type PropertyWithThumb = Property & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
@@ -30,7 +32,7 @@ export function PropertyList() {
   const [publishedFilter, setPublishedFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
 
-  const { data: properties = [], mutate } = useSWR<Property[]>(
+  const { data: properties = [], mutate } = useSWR<PropertyWithThumb[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
     fetcher
   );
@@ -261,13 +263,23 @@ export function PropertyList() {
             {filtered.map((p) => (
               <button
                 key={p.id}
-                className={`w-full text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
+                className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
                 onClick={() => setSelected(p)}
               >
-                <div className="truncate">{p.address || "(Adress saknas)"}</div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {[p.city, p.beds && `${p.beds} bäddar`].filter(Boolean).join(" · ")}
+                <div className="flex-1 min-w-0">
+                  <div className="truncate">{p.address || "(Adress saknas)"}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {[p.city, p.beds && `${p.beds} bäddar`].filter(Boolean).join(" · ")}
+                  </div>
                 </div>
+                {p.thumbnailUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.thumbnailUrl} alt="" className="h-11 w-11 shrink-0 rounded-md border object-cover" />
+                ) : (
+                  <div className="h-11 w-11 shrink-0 rounded-md border bg-nordic-100 flex items-center justify-center text-nordic-300">
+                    <ImageIcon className="h-4 w-4" />
+                  </div>
+                )}
               </button>
             ))}
           </div>

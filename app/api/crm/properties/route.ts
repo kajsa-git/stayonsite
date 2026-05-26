@@ -2,8 +2,11 @@ import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexOwner, indexProperty } from "@/lib/crm/search-index";
 import { mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
-import { owners, properties } from "@/lib/crm/schema";
-import { and, eq, like, or } from "drizzle-orm";
+import { owners, properties, propertyImages } from "@/lib/crm/schema";
+import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { and, asc, eq, inArray, like, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -41,7 +44,31 @@ export async function GET(req: NextRequest) {
   }
 
   const rows = await query;
-  return NextResponse.json(rows.map(mergeOwnerIntoProperty));
+  const merged = rows.map(mergeOwnerIntoProperty);
+
+  // Bifoga en liten presignerad thumbnail (första bilden) per objekt för listvyn.
+  const ids = merged.map((p) => p.id);
+  const firstKeyByProp = new Map<string, string>();
+  if (ids.length) {
+    const imgs = await db
+      .select({ propertyId: propertyImages.propertyId, key: propertyImages.key })
+      .from(propertyImages)
+      .where(inArray(propertyImages.propertyId, ids))
+      .orderBy(asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+    for (const im of imgs) if (!firstKeyByProp.has(im.propertyId)) firstKeyByProp.set(im.propertyId, im.key);
+  }
+  const withThumbs = await Promise.all(
+    merged.map(async (p) => {
+      const key = firstKeyByProp.get(p.id);
+      return {
+        ...p,
+        thumbnailUrl: key
+          ? await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: key }), { expiresIn: 3600 })
+          : null,
+      };
+    })
+  );
+  return NextResponse.json(withThumbs);
 }
 
 export async function POST(req: NextRequest) {
