@@ -497,7 +497,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                     <div>
                       <button
                         onClick={() => setDetailProperty(property)}
-                        className="font-medium text-sm text-left hover:text-primary-600 hover:underline"
+                        className="font-medium text-sm text-left hover:text-primary-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded"
                         title="Visa alla detaljer"
                       >
                         {property.address}
@@ -659,7 +659,7 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+      className={`rounded-full border px-2.5 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${
         active
           ? "border-primary-300 bg-primary-50 text-primary-800"
           : "border-input bg-white text-muted-foreground hover:bg-muted"
