@@ -81,18 +81,11 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
       {/* Brand bar */}
       <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
-          <span
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ff6300] text-lg font-bold text-white"
-            style={wordmark}
-          >
-            S
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
+          <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Bostadsförslag
           </span>
-          <div className="leading-tight">
-            <div className="text-lg text-nordic-900" style={wordmark}>
-              Stay<span className="text-[#ff6300]">On</span>Site
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Bostadsförslag</div>
-          </div>
         </div>
       </header>
 
