@@ -173,7 +173,10 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
             >
               {gmapsEnabled ? (
                 <>
-                  <div ref={containerRef} className="gmp-autocomplete w-full [&_gmp-place-autocomplete]:w-full" />
+                  <div
+                    ref={containerRef}
+                    className="gmp-autocomplete w-full rounded-[4px] border border-[#d4d4d2] bg-white px-1 focus-within:border-[#1c5fb5] focus-within:ring-1 focus-within:ring-[#1c5fb5]/30 [&_gmp-place-autocomplete]:block [&_gmp-place-autocomplete]:w-full"
+                  />
                   {form.addressQuery && (
                     <p className="text-[11px] text-[#a8a8a8] mt-1">Vald: {form.addressQuery}</p>
                   )}
