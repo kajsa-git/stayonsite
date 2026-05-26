@@ -6,11 +6,35 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { ArrowRight, Car, CookingPot, DoorClosed, MapPin, Sofa, Wifi } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 const wordmark = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const [p] = await db
+    .select({
+      published: properties.published,
+      city: properties.city,
+      postalCode: properties.postalCode,
+      publicDescription: properties.publicDescription,
+    })
+    .from(properties)
+    .where(eq(properties.id, id));
+  if (!p || !p.published) return { title: "Bostadsförslag – StayOnSite" };
+  const title = p.city ? `Boende i ${p.city} – StayOnSite` : "Bostadsförslag – StayOnSite";
+  const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige";
+  const desc = p.publicDescription?.trim().slice(0, 160) || `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`;
+  return {
+    title,
+    description: desc,
+    openGraph: { title, description: desc, type: "website" },
+    twitter: { card: "summary_large_image", title, description: desc },
+  };
+}
 
 // PUBLIC, no-auth prospekt for a published property.
 // Tenant-safe only: NEVER address, owner, "vi hyr för"/"vi hyr ut för" or price.

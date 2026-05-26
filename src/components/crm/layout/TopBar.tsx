@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
 import { useGlobalSearch } from "@/components/crm/search/GlobalSearch";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
-import { Building2, ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -28,11 +28,12 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
     <div className="h-14 border-b bg-white flex items-center px-4 gap-4 sticky top-0 z-40">
       <button
         onClick={() => router.push("/crm")}
-        className="flex items-center gap-2 text-nordic-700 font-semibold text-sm shrink-0 hover:text-nordic-900 transition-colors"
+        className="flex items-center gap-2 shrink-0"
         title="Till Min dag"
       >
-        <Building2 className="h-4 w-4" />
-        <span>StayOnSite CRM</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-5 w-auto" />
+        <span className="text-xs font-medium text-muted-foreground border-l pl-2">CRM</span>
       </button>
 
       <nav className="flex items-center gap-0.5 shrink-0">

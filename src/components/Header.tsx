@@ -81,15 +81,26 @@ const Header = () => {
             className="flex items-center group relative"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <span
-              className={cn(
-                "text-2xl md:text-3xl font-display tracking-tight transition-colors duration-300 ease-out",
-                useScrolledStyle
-                  ? "text-primary"
-                  : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
-              )}
-            >
-              Stay<span className="text-[#ff6300] font-semibold">On</span>Site
+            <span className="relative inline-block h-8 md:h-9">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/stayonsite-logo.png"
+                alt="StayOnSite"
+                className={cn(
+                  "h-full w-auto transition-opacity duration-300 ease-out",
+                  useScrolledStyle ? "opacity-100" : "opacity-0"
+                )}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/stayonsite-logo-white.png"
+                alt=""
+                aria-hidden
+                className={cn(
+                  "absolute inset-0 h-full w-auto transition-opacity duration-300 ease-out drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
+                  useScrolledStyle ? "opacity-0" : "opacity-100"
+                )}
+              />
             </span>
             <div className={cn(
               "absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full",
