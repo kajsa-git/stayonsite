@@ -1,129 +1,102 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useRef } from "react";
 
 export interface PlaceParts {
   street: string;
   postalCode: string;
   city: string;
-}
-
-interface GAddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
-interface GAutocomplete {
-  addListener: (event: string, cb: () => void) => void;
-  getPlace: () => { address_components?: GAddressComponent[] };
-}
-interface GMaps {
-  maps: {
-    places: {
-      Autocomplete: new (
-        input: HTMLInputElement,
-        opts?: Record<string, unknown>
-      ) => GAutocomplete;
-    };
-    event: { clearInstanceListeners: (instance: unknown) => void };
-  };
+  formatted: string;
 }
 
 declare global {
   interface Window {
-    google?: GMaps;
-    __gmapsPlacesPromise?: Promise<void>;
+    google?: any;
+    __gmapsBootstrapped?: boolean;
   }
 }
 
-const SCRIPT_ID = "google-maps-places";
-
-function loadPlaces(apiKey: string): Promise<void> {
-  if (typeof window === "undefined") return Promise.reject(new Error("no window"));
-  if (window.google?.maps?.places) return Promise.resolve();
-  if (window.__gmapsPlacesPromise) return window.__gmapsPlacesPromise;
-
-  window.__gmapsPlacesPromise = new Promise<void>((resolve, reject) => {
-    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () => reject(new Error("Google Maps failed to load")));
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = SCRIPT_ID;
-    script.async = true;
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
-      apiKey
-    )}&libraries=places&language=sv&region=SE`;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Google Maps failed to load"));
-    document.head.appendChild(script);
-  });
-  return window.__gmapsPlacesPromise;
+// Google's official async inline loader — defines google.maps.importLibrary and
+// loads the JS API with loading=async (removes the "loaded directly" warning).
+function bootstrap(apiKey: string) {
+  if (typeof window === "undefined") return;
+  if (window.google?.maps?.importLibrary || window.__gmapsBootstrapped) return;
+  window.__gmapsBootstrapped = true;
+  ((g: Record<string, string>) => {
+    let h: Promise<void> | undefined;
+    const d: any = ((window.google = window.google || {}).maps = window.google.maps || {});
+    const libs = new Set<string>();
+    const params = new URLSearchParams();
+    const load = () =>
+      h ||
+      (h = new Promise<void>((resolve, reject) => {
+        const s = document.createElement("script");
+        params.set("libraries", [...libs].join(","));
+        for (const k in g) params.set(k.replace(/[A-Z]/g, (t) => "_" + t[0].toLowerCase()), g[k]);
+        params.set("callback", "google.maps.__ib__");
+        s.src = `https://maps.googleapis.com/maps/api/js?${params}`;
+        d.__ib__ = resolve;
+        s.onerror = () => reject(new Error("Google Maps could not load."));
+        document.head.append(s);
+      }));
+    d.importLibrary = (name: string, ...rest: unknown[]) =>
+      libs.add(name) && load().then(() => d.importLibrary(name, ...rest));
+  })({ key: apiKey, v: "weekly", language: "sv", region: "SE" });
 }
 
-function partsFromPlace(components: GAddressComponent[]): PlaceParts {
-  const get = (type: string) => components.find((c) => c.types.includes(type))?.long_name ?? "";
+function parsePlace(place: any): PlaceParts {
+  const comps: any[] = place.addressComponents ?? [];
+  const get = (type: string) => comps.find((c) => (c.types ?? []).includes(type))?.longText ?? "";
   const route = get("route");
-  const streetNumber = get("street_number");
-  const street = [route, streetNumber].filter(Boolean).join(" ").trim();
-  const postalCode = get("postal_code");
-  const city = get("postal_town") || get("locality") || get("sublocality") || "";
-  return { street, postalCode, city };
+  const num = get("street_number");
+  return {
+    street: [route, num].filter(Boolean).join(" ").trim(),
+    postalCode: get("postal_code"),
+    city: get("postal_town") || get("locality") || get("sublocality_level_1") || "",
+    formatted: place.formattedAddress ?? "",
+  };
 }
 
 /**
- * Returns a ref callback for an <input>. When a Google Maps API key is present
- * (NEXT_PUBLIC_GOOGLE_MAPS_API_KEY), attaches Places Autocomplete (SE only) and
- * calls onPlace with parsed parts on selection. No key → no-op (caller keeps its
- * own datalist fallback). `enabled` lets the caller skip attaching (e.g. modal closed).
+ * Mounts a Google PlaceAutocompleteElement (Places API New) into the returned
+ * container ref and calls onPlace with parsed parts on selection. Sweden-only.
+ * No API key → no-op (caller keeps its own input fallback). `enabled` lets the
+ * caller skip mounting (e.g. when a modal is closed).
  */
 export function useGooglePlaces(onPlace: (parts: PlaceParts) => void, enabled = true) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string | undefined;
   const onPlaceRef = useRef(onPlace);
   onPlaceRef.current = onPlace;
-  const acRef = useRef<GAutocomplete | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const attach = useCallback(
-    (input: HTMLInputElement) => {
-      const ac = new input.ownerDocument.defaultView!.google!.maps.places.Autocomplete(input, {
-        types: ["address"],
-        componentRestrictions: { country: "se" },
-        fields: ["address_components"],
-      });
-      acRef.current = ac;
-      ac.addListener("place_changed", () => {
-        const place = ac.getPlace();
-        if (place.address_components) onPlaceRef.current(partsFromPlace(place.address_components));
-      });
-    },
-    []
-  );
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!enabled || !apiKey || !inputRef.current) return;
+    if (!enabled || !apiKey || !containerRef.current) return;
     let cancelled = false;
-    loadPlaces(apiKey)
-      .then(() => {
-        if (!cancelled && inputRef.current && !acRef.current) attach(inputRef.current);
-      })
-      .catch(() => {
-        /* fallback: caller's datalist still works */
-      });
+    const container = containerRef.current;
+    bootstrap(apiKey);
+    (async () => {
+      try {
+        const { PlaceAutocompleteElement } = await window.google.maps.importLibrary("places");
+        if (cancelled || !container) return;
+        const el: any = new PlaceAutocompleteElement({ includedRegionCodes: ["se"] });
+        el.style.width = "100%";
+        container.innerHTML = "";
+        container.appendChild(el);
+        el.addEventListener("gmp-select", async (event: any) => {
+          const place = event.placePrediction.toPlace();
+          await place.fetchFields({ fields: ["addressComponents", "formattedAddress"] });
+          onPlaceRef.current(parsePlace(place));
+        });
+      } catch {
+        /* fallback: caller keeps its own input */
+      }
+    })();
     return () => {
       cancelled = true;
-      if (acRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(acRef.current);
-        acRef.current = null;
-      }
+      container.innerHTML = "";
     };
-  }, [apiKey, enabled, attach]);
+  }, [apiKey, enabled]);
 
-  const ref = useCallback((node: HTMLInputElement | null) => {
-    inputRef.current = node;
-  }, []);
-
-  return { ref, enabled: !!apiKey && enabled };
+  return { containerRef, enabled: !!apiKey && enabled };
 }

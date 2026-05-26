@@ -112,10 +112,10 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
       postalCode: parts.postalCode || f.postalCode,
       city: parts.city || f.city,
       addressQuery:
-        [parts.street, parts.postalCode, parts.city].filter(Boolean).join(", ") || f.addressQuery,
+        parts.formatted || [parts.street, parts.postalCode, parts.city].filter(Boolean).join(", ") || f.addressQuery,
     }));
   }
-  const { ref: addressRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, open);
+  const { containerRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, open);
 
   if (!open) return null;
 
@@ -171,25 +171,30 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
               label={gmapsEnabled ? "Sök adress" : "Adressökning (valfri)"}
               hint={gmapsEnabled ? "Välj ett förslag så fylls ort, postnummer och gata i automatiskt." : undefined}
             >
-              <input
-                ref={addressRef}
-                autoFocus
-                autoComplete={gmapsEnabled ? "off" : "street-address"}
-                list={gmapsEnabled ? undefined : "request-address-hints"}
-                value={form.addressQuery}
-                onChange={(e) => set("addressQuery", e.target.value)}
-                onKeyDown={(e) => {
-                  if (gmapsEnabled && e.key === "Enter") e.preventDefault();
-                }}
-                className={INPUT_CLS}
-                placeholder={gmapsEnabled ? "Börja skriv en adress…" : "Börja skriv adress, ort eller arbetsplats…"}
-              />
-              {!gmapsEnabled && (
-                <datalist id="request-address-hints">
-                  {[form.street, form.postalCode, form.city].filter(Boolean).join(" ") && (
-                    <option value={[form.street, form.postalCode, form.city].filter(Boolean).join(" ")} />
+              {gmapsEnabled ? (
+                <>
+                  <div ref={containerRef} className="gmp-autocomplete w-full [&_gmp-place-autocomplete]:w-full" />
+                  {form.addressQuery && (
+                    <p className="text-[11px] text-[#a8a8a8] mt-1">Vald: {form.addressQuery}</p>
                   )}
-                </datalist>
+                </>
+              ) : (
+                <>
+                  <input
+                    autoFocus
+                    autoComplete="street-address"
+                    list="request-address-hints"
+                    value={form.addressQuery}
+                    onChange={(e) => set("addressQuery", e.target.value)}
+                    className={INPUT_CLS}
+                    placeholder="Börja skriv adress, ort eller arbetsplats…"
+                  />
+                  <datalist id="request-address-hints">
+                    {[form.street, form.postalCode, form.city].filter(Boolean).join(" ") && (
+                      <option value={[form.street, form.postalCode, form.city].filter(Boolean).join(" ")} />
+                    )}
+                  </datalist>
+                </>
               )}
             </Field>
             <div className="grid grid-cols-3 gap-3">
