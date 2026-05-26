@@ -2,7 +2,8 @@
 
 import type { Company } from "@/lib/crm/schema";
 import { useGooglePlaces, type PlaceParts } from "@/hooks/use-google-places";
-import { Check, AlertCircle, ChevronRight, Loader2, Plus, X } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import { Check, AlertCircle, ChevronRight, Loader2, Plus, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -110,6 +111,31 @@ export function CompanyInfo({ company, onSave }: Props) {
   }
   const { containerRef, enabled: gmapsEnabled } = useGooglePlaces(applyPlace, open);
 
+  const [looking, setLooking] = useState(false);
+  async function fetchFromOrgNr() {
+    const orgnr = (values.orgNr || "").trim();
+    if (!orgnr) { toast({ title: "Fyll i org.nr först" }); return; }
+    setLooking(true);
+    try {
+      const r = await fetch(`/api/crm/company-lookup?orgnr=${encodeURIComponent(orgnr)}`).then((x) => x.json());
+      if (!r.found) { toast({ title: "Hittade inga uppgifter för org.nr", variant: "destructive" }); return; }
+      const updates: Record<string, string> = {};
+      if (r.name) updates.name = r.name;
+      if (r.postalCode) updates.postalCode = r.postalCode;
+      if (r.city) updates.city = r.city;
+      if (r.country) updates.country = r.country;
+      setValues((v) => ({ ...v, ...updates }));
+      setStatus("saving");
+      const res = await Promise.all(Object.entries(updates).map(([k, val]) => onSave(k as keyof Company, val)));
+      setStatus(res.every(Boolean) ? "saved" : "error");
+      toast({ title: `Hämtade: ${r.name ?? ""}${r.city ? `, ${r.city}` : ""}` });
+    } catch {
+      toast({ title: "Uppslag misslyckades", variant: "destructive" });
+    } finally {
+      setLooking(false);
+    }
+  }
+
   return (
     <div className="mb-6">
       <button
@@ -144,6 +170,18 @@ export function CompanyInfo({ company, onSave }: Props) {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-3">
+        <div className="col-span-full flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={fetchFromOrgNr}
+            disabled={looking}
+            className="inline-flex items-center gap-1.5 rounded-md border border-primary-200 bg-primary-50/60 px-3 py-1.5 text-sm font-medium text-primary-800 hover:bg-primary-50 disabled:opacity-50 transition-colors"
+          >
+            {looking ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
+            Hämta från org.nr
+          </button>
+          <span className="text-xs text-muted-foreground">Fyller namn, postnummer, ort och land (allabolag.se)</span>
+        </div>
         {gmapsEnabled && (
           <div className="col-span-full flex flex-col gap-1">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">

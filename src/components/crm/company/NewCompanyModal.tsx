@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
 import { toast } from "@/components/ui/use-toast";
+import { Loader2, Search } from "lucide-react";
 
 interface NewCompanyModalProps {
   open: boolean;
@@ -13,6 +14,7 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
   const [saving, setSaving] = useState(false);
+  const [looking, setLooking] = useState(false);
   const [form, setForm] = useState({
     name: "",
     orgNr: "",
@@ -28,6 +30,22 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
 
   function set(field: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  async function lookupOrgNr() {
+    const orgnr = form.orgNr.trim();
+    if (!orgnr) { toast({ title: "Fyll i org.nr först" }); return; }
+    setLooking(true);
+    try {
+      const r = await fetch(`/api/crm/company-lookup?orgnr=${encodeURIComponent(orgnr)}`).then((x) => x.json());
+      if (!r.found) { toast({ title: "Hittade inga uppgifter", variant: "destructive" }); return; }
+      setForm((f) => ({ ...f, name: r.name || f.name, contactPhone: f.contactPhone || r.phone || "" }));
+      toast({ title: `Hämtade: ${r.name ?? ""}` });
+    } catch {
+      toast({ title: "Uppslag misslyckades", variant: "destructive" });
+    } finally {
+      setLooking(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -93,7 +111,17 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
             />
           </div>
           <div>
-            <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Org.nr</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Org.nr</label>
+              <button
+                type="button"
+                onClick={lookupOrgNr}
+                disabled={looking}
+                className="inline-flex items-center gap-1 text-xs font-medium text-[#1c5fb5] hover:underline disabled:opacity-50"
+              >
+                {looking ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />} Hämta namn
+              </button>
+            </div>
             <input
               value={form.orgNr}
               onChange={(e) => set("orgNr", e.target.value)}
