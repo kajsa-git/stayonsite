@@ -343,9 +343,10 @@ function FollowUpCard({
   const [picking, setPicking] = useState(false);
   const [date, setDate] = useState(item.followUpDate ?? today);
   const [time, setTime] = useState(item.followUpTime ?? "08:00");
-  const overdue = !!item.followUpDate && item.followUpDate <= today;
+  const isToday = item.followUpDate === today;
+  const isPast = !!item.followUpDate && item.followUpDate < today;
   return (
-    <div className="rounded-lg bg-white border hover:border-primary-400 transition-colors">
+    <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300 hover:border-red-400" : "hover:border-primary-400"}`}>
       <button
         className="w-full text-left p-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
         onClick={onOpen}
@@ -355,10 +356,10 @@ function FollowUpCard({
           <div className="mt-1">
             <span
               className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
-                overdue ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
+                isPast ? "bg-red-100 text-red-800" : isToday ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
               }`}
             >
-              {item.followUpDate === today ? "Återkomst idag" : overdue ? "Försenad" : item.followUpDate}
+              {isToday ? "Återkomst idag" : isPast ? `Försenad · ${item.followUpDate}` : item.followUpDate}
               {item.followUpTime && ` kl. ${item.followUpTime}`}
             </span>
             {item.followUpReason && <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>}
