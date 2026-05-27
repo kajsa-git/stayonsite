@@ -111,18 +111,18 @@ export function PropertyHistory({ property }: { property: Property }) {
   async function startRound() {
     const res = await fetch(`/api/crm/properties/${propertyId}/outreach`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
     if (!res.ok) {
-      toast({ title: "Kunde inte starta runda", variant: "destructive" });
+      toast({ title: "Kunde inte starta", variant: "destructive" });
       return;
     }
     mutateRounds();
-    toast({ title: "Ny runda startad" });
+    toast({ title: "Uthyrarkontakt startad" });
   }
 
   async function deleteRound(id: string) {
     const res = await fetch(`/api/crm/outreach/${id}`, { method: "DELETE" });
     if (res.ok) {
       mutateRounds();
-      toast({ title: "Runda borttagen" });
+      toast({ title: "Borttagen" });
     }
   }
 
@@ -159,27 +159,31 @@ export function PropertyHistory({ property }: { property: Property }) {
 
   return (
     <div className="space-y-5">
-      {/* Kontaktrunda mot uthyrare */}
+      {/* Uthyrarkontakt */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Kontaktrunda</p>
+          <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Uthyrarkontakt</p>
           {!openRound && (
             <Button size="sm" className="h-7 text-xs gap-1" onClick={startRound}>
-              <Plus className="h-3 w-3" /> Starta ny runda
+              <Plus className="h-3 w-3" /> Ny uthyrarkontakt
             </Button>
           )}
         </div>
         <p className="text-[11px] text-amber-800/80 -mt-1">Bekräfta med uthyraren: pris, tillgänglighet, vill hyra ut?</p>
 
         {openRound ? (
-          <OpenRoundCard round={openRound} onPatch={patchRound} onDelete={deleteRound} />
+          <div className="space-y-1.5">
+            <p className="text-[11px] text-muted-foreground uppercase tracking-wide">Pågående</p>
+            <OpenRoundCard round={openRound} onPatch={patchRound} onDelete={deleteRound} />
+          </div>
         ) : (
-          <p className="text-sm text-muted-foreground italic">Ingen pågående runda. Starta en när du ska höra av dig till uthyraren.</p>
+          <p className="text-sm text-muted-foreground italic">Ingen pågående kontakt. Starta en när du ska höra av dig till uthyraren.</p>
         )}
 
-        {/* Avslutade rundor */}
+        {/* Avslutade */}
         {concluded.length > 0 && (
           <div className="space-y-1.5 pt-1">
+            <p className="text-[11px] text-muted-foreground uppercase tracking-wide">Avslutade</p>
             {concluded.map((r) => (
               <div key={r.id} className="flex items-start gap-2 text-sm group">
                 <span className={`shrink-0 text-[11px] px-1.5 py-0.5 rounded-full border ${STATUS_BADGE[r.status]}`}>
@@ -194,7 +198,7 @@ export function PropertyHistory({ property }: { property: Property }) {
                 <button
                   onClick={() => deleteRound(r.id)}
                   className="opacity-0 group-hover:opacity-100 h-5 w-5 flex items-center justify-center rounded hover:bg-red-50 text-muted-foreground hover:text-red-700 shrink-0"
-                  title="Ta bort runda"
+                  title="Ta bort"
                 >
                   <Trash2 className="h-3 w-3" />
                 </button>
@@ -315,14 +319,14 @@ function OpenRoundCard({
         <span className="mx-1 self-center text-muted-foreground">→</span>
         <button
           type="button"
-          onClick={() => onPatch(round.id, { status: "bekraftad", note: note.trim() || null }, "Bekräftad — runda avslutad")}
+          onClick={() => onPatch(round.id, { status: "bekraftad", note: note.trim() || null }, "Bekräftad — avslutad")}
           className="text-xs px-2.5 py-1 rounded-full border border-green-300 bg-white text-green-800 hover:bg-green-50 inline-flex items-center gap-1"
         >
           <Check className="h-3 w-3" /> Bekräftad
         </button>
         <button
           type="button"
-          onClick={() => onPatch(round.id, { status: "nej", note: note.trim() || null }, "Nej — runda avslutad")}
+          onClick={() => onPatch(round.id, { status: "nej", note: note.trim() || null }, "Nej — avslutad")}
           className="text-xs px-2.5 py-1 rounded-full border border-rose-300 bg-white text-rose-700 hover:bg-rose-50 inline-flex items-center gap-1"
         >
           <X className="h-3 w-3" /> Nej
@@ -368,7 +372,7 @@ function OpenRoundCard({
 
       <textarea
         className={`${FIELD_CLS} min-h-[44px] resize-y`}
-        placeholder="Anteckning (sparas på rundan)"
+        placeholder="Anteckning (sparas på kontakten)"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         onBlur={() => onPatch(round.id, { note: note.trim() || null })}
@@ -379,7 +383,7 @@ function OpenRoundCard({
           Startad {round.startedAt ? format(new Date(round.startedAt), "d MMM yyyy", { locale: sv }) : "—"}
         </span>
         <button onClick={() => onDelete(round.id)} className="text-[11px] text-muted-foreground hover:text-red-700 inline-flex items-center gap-1">
-          <Trash2 className="h-3 w-3" /> Ta bort runda
+          <Trash2 className="h-3 w-3" /> Ta bort
         </button>
       </div>
     </div>
