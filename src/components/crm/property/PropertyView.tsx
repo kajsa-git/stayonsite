@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
-import { Home, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ChevronRight, Home, Languages, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
@@ -59,6 +59,10 @@ type EditForm = {
   ownerEmail: string;
   notes: string;
   publicDescription: string;
+  publicDescriptionEn: string;
+  publicDescriptionPl: string;
+  skickEn: string;
+  skickPl: string;
   furnished: boolean;
   kitchen: boolean;
   garage: boolean;
@@ -96,6 +100,10 @@ function toForm(p: PropertyWithOwner): EditForm {
     ownerEmail: s(p.ownerEmail),
     notes: s(p.notes),
     publicDescription: s(p.publicDescription),
+    publicDescriptionEn: s(p.publicDescriptionEn),
+    publicDescriptionPl: s(p.publicDescriptionPl),
+    skickEn: s(p.skickEn),
+    skickPl: s(p.skickPl),
     furnished: !!p.furnished,
     kitchen: !!p.kitchen,
     garage: !!p.garage,
@@ -116,6 +124,8 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [showI18n, setShowI18n] = useState(false);
 
   // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
   const delTarget = (property.address ?? "").trim() || "RADERA";
@@ -185,6 +195,10 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       ownerEmail: t(form.ownerEmail),
       notes: t(form.notes),
       publicDescription: t(form.publicDescription),
+      publicDescriptionEn: t(form.publicDescriptionEn),
+      publicDescriptionPl: t(form.publicDescriptionPl),
+      skickEn: t(form.skickEn),
+      skickPl: t(form.skickPl),
       furnished: form.furnished,
       kitchen: form.kitchen,
       garage: form.garage,
@@ -194,6 +208,39 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     setSaving(false);
     setEditing(false);
     toast({ title: "Objekt sparat" });
+  }
+
+  async function generateTranslations() {
+    if (!form.publicDescription.trim() && !form.skick.trim()) {
+      toast({ title: "Fyll i beskrivning eller skick först" });
+      return;
+    }
+    setTranslating(true);
+    try {
+      const res = await fetch("/api/crm/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicDescription: form.publicDescription, skick: form.skick }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast({ title: data.error ?? "Översättning misslyckades", variant: "destructive" });
+        return;
+      }
+      setForm((f) => ({
+        ...f,
+        publicDescriptionEn: data.publicDescriptionEn ?? "",
+        publicDescriptionPl: data.publicDescriptionPl ?? "",
+        skickEn: data.skickEn ?? "",
+        skickPl: data.skickPl ?? "",
+      }));
+      setShowI18n(true);
+      toast({ title: "Översättningar genererade — granska och spara" });
+    } catch {
+      toast({ title: "Översättning misslyckades", variant: "destructive" });
+    } finally {
+      setTranslating(false);
+    }
   }
 
   function setOwnerFields(patch: Partial<OwnerPickerValue>) {
@@ -330,6 +377,43 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         <Labeled label="Extern beskrivning (visas på hemsidan)">
           <textarea className={`${FIELD_CLS} min-h-[60px] resize-y`} value={form.publicDescription} onChange={(e) => set("publicDescription", e.target.value)} />
         </Labeled>
+
+        <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={() => setShowI18n((v) => !v)}
+              className="inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-muted-foreground"
+            >
+              <ChevronRight className={`h-3.5 w-3.5 transition-transform ${showI18n ? "rotate-90" : ""}`} />
+              Översättningar (EN / PL)
+            </button>
+            <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs" onClick={generateTranslations} disabled={translating}>
+              {translating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Languages className="h-3.5 w-3.5" />}
+              Generera
+            </Button>
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            AI översätter svenska beskrivningen/skicket på begäran. Granska och redigera — sparas när du klickar Spara.
+          </p>
+          {showI18n && (
+            <div className="space-y-2 pt-1">
+              <Labeled label="Beskrivning (EN)">
+                <textarea className={`${FIELD_CLS} min-h-[48px] resize-y`} value={form.publicDescriptionEn} onChange={(e) => set("publicDescriptionEn", e.target.value)} />
+              </Labeled>
+              <Labeled label="Beskrivning (PL)">
+                <textarea className={`${FIELD_CLS} min-h-[48px] resize-y`} value={form.publicDescriptionPl} onChange={(e) => set("publicDescriptionPl", e.target.value)} />
+              </Labeled>
+              <Labeled label="Skick (EN)">
+                <textarea className={`${FIELD_CLS} min-h-[40px] resize-y`} value={form.skickEn} onChange={(e) => set("skickEn", e.target.value)} />
+              </Labeled>
+              <Labeled label="Skick (PL)">
+                <textarea className={`${FIELD_CLS} min-h-[40px] resize-y`} value={form.skickPl} onChange={(e) => set("skickPl", e.target.value)} />
+              </Labeled>
+            </div>
+          )}
+        </div>
+
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" size="sm" onClick={() => { setForm(toForm(property)); setEditing(false); }}>
             Avbryt

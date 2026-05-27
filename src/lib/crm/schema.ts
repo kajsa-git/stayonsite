@@ -176,7 +176,12 @@ export const properties = sqliteTable("crm_properties", {
   moveInFrom: text("move_in_from"),
   availableTo: text("available_to"),
   notes: text("notes"), // intern beskrivning — aldrig publik
-  publicDescription: text("public_description"), // extern beskrivning — visas på hemsidan
+  publicDescription: text("public_description"), // extern beskrivning (sv, källtext) — visas på hemsidan
+  // Lokaliserade varianter av extern beskrivning/skick (AI-genererade på begäran, redigerbara).
+  publicDescriptionEn: text("public_description_en"),
+  publicDescriptionPl: text("public_description_pl"),
+  skickEn: text("skick_en"),
+  skickPl: text("skick_pl"),
   // Följ upp uthyrare (sourcing/relationsvård) — oberoende av aktiv förfrågan
   ownerFollowUpDate: text("owner_follow_up_date"),
   ownerFollowUpReason: text("owner_follow_up_reason"), // kort: Kolla pris, Tillgänglighet juni…

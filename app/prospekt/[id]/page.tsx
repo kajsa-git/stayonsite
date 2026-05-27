@@ -13,21 +13,106 @@ export const dynamic = "force-dynamic";
 
 const wordmark = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+type Lang = "sv" | "en" | "pl";
+function pickLang(v: string | string[] | undefined): Lang {
+  const s = Array.isArray(v) ? v[0] : v;
+  return s === "en" || s === "pl" ? s : "sv";
+}
+
+const T: Record<Lang, {
+  tagline: string;
+  title: (c: string | null) => string;
+  photos: (n: number) => string;
+  details: string;
+  condition: string;
+  ctaTitle: string;
+  ctaSub: string;
+  ctaButton: string;
+  ctaHref: string;
+  footer: string;
+  metaDesc: (place: string) => string;
+  hl: { furnished: string; kitchen: string; garage: string; broadband: string; eget: string };
+  f: { area: string; bedrooms: string; beds: string; bathrooms: string; washer: string; dryer: string; parking: string; from: string; to: string };
+  parkingUnit: string;
+}> = {
+  sv: {
+    tagline: "Bostadsförslag",
+    title: (c) => (c ? `Boende i ${c}` : "Bostadsförslag"),
+    photos: (n) => `${n} bilder`,
+    details: "Detaljer",
+    condition: "Skick",
+    ctaTitle: "Intresserad av den här bostaden?",
+    ctaSub: "Hör av dig till StayOnSite så hjälper vi dig vidare — ofta med svar inom 24 timmar.",
+    ctaButton: "Kontakta oss",
+    ctaHref: "https://www.stayonsite.se/kontakt",
+    footer: "StayOnSite · Corporate housing i hela Sverige",
+    metaDesc: (place) => `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`,
+    hl: { furnished: "Möblerat", kitchen: "Eget kök", garage: "Garage", broadband: "Bredband ingår", eget: "Eget boende" },
+    f: { area: "Yta", bedrooms: "Sovrum", beds: "Bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
+    parkingUnit: "pl.",
+  },
+  en: {
+    tagline: "Housing proposal",
+    title: (c) => (c ? `Accommodation in ${c}` : "Housing proposal"),
+    photos: (n) => `${n} photos`,
+    details: "Details",
+    condition: "Condition",
+    ctaTitle: "Interested in this property?",
+    ctaSub: "Get in touch with StayOnSite and we'll help you further — usually a reply within 24 hours.",
+    ctaButton: "Contact us",
+    ctaHref: "https://www.stayonsite.se/en/corporate-housing-sweden",
+    footer: "StayOnSite · Corporate housing across Sweden",
+    metaDesc: (place) => `Furnished accommodation in ${place} via StayOnSite — corporate housing across Sweden.`,
+    hl: { furnished: "Furnished", kitchen: "Kitchen", garage: "Garage", broadband: "Broadband included", eget: "Private accommodation" },
+    f: { area: "Area", bedrooms: "Bedrooms", beds: "Beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", parking: "Parking", from: "Available from", to: "Available until" },
+    parkingUnit: "spots",
+  },
+  pl: {
+    tagline: "Propozycja zakwaterowania",
+    title: (c) => (c ? `Zakwaterowanie w ${c}` : "Propozycja zakwaterowania"),
+    photos: (n) => `${n} zdjęć`,
+    details: "Szczegóły",
+    condition: "Stan",
+    ctaTitle: "Zainteresowany tym mieszkaniem?",
+    ctaSub: "Skontaktuj się ze StayOnSite, a pomożemy Ci dalej — zwykle odpowiadamy w ciągu 24 godzin.",
+    ctaButton: "Skontaktuj się",
+    ctaHref: "https://www.stayonsite.se/pl/zakwaterowanie-firmowe",
+    footer: "StayOnSite · Zakwaterowanie firmowe w całej Szwecji",
+    metaDesc: (place) => `Umeblowane zakwaterowanie w ${place} przez StayOnSite — zakwaterowanie firmowe w całej Szwecji.`,
+    hl: { furnished: "Umeblowane", kitchen: "Kuchnia", garage: "Garaż", broadband: "Internet w cenie", eget: "Własne zakwaterowanie" },
+    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
+    parkingUnit: "miejsc",
+  },
+};
+
+const LANGS: { code: Lang; label: string }[] = [
+  { code: "sv", label: "SV" },
+  { code: "en", label: "EN" },
+  { code: "pl", label: "PL" },
+];
+
+export async function generateMetadata(
+  { params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ lang?: string | string[] }> },
+): Promise<Metadata> {
   const { id } = await params;
+  const lang = pickLang((await searchParams).lang);
+  const tr = T[lang];
   const [p] = await db
     .select({
       published: properties.published,
       city: properties.city,
       postalCode: properties.postalCode,
       publicDescription: properties.publicDescription,
+      publicDescriptionEn: properties.publicDescriptionEn,
+      publicDescriptionPl: properties.publicDescriptionPl,
     })
     .from(properties)
     .where(eq(properties.id, id));
-  if (!p || !p.published) return { title: "Bostadsförslag – StayOnSite" };
-  const title = p.city ? `Boende i ${p.city} – StayOnSite` : "Bostadsförslag – StayOnSite";
+  if (!p || !p.published) return { title: `${tr.tagline} – StayOnSite` };
+  const title = `${tr.title(p.city)} – StayOnSite`;
   const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige";
-  const desc = p.publicDescription?.trim().slice(0, 160) || `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`;
+  const localDesc = lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : p.publicDescription;
+  const desc = (localDesc || p.publicDescription)?.trim().slice(0, 160) || tr.metaDesc(place);
   return {
     title,
     description: desc,
@@ -38,10 +123,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 // PUBLIC, no-auth prospekt for a published property.
 // Tenant-safe only: NEVER address, owner, "vi hyr för"/"vi hyr ut för" or price.
-export default async function ProspektPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProspektPage(
+  { params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ lang?: string | string[] }> },
+) {
   const { id } = await params;
+  const lang = pickLang((await searchParams).lang);
+  const tr = T[lang];
+
   // Select ONLY tenant-safe fields — never address, owner-* or rent/price.
-  // (If forbidden fields aren't fetched, they can't leak via the RSC payload.)
   const [p] = await db
     .select({
       published: properties.published,
@@ -60,13 +149,21 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
       broadband: properties.broadband,
       egetBoende: properties.egetBoende,
       skick: properties.skick,
+      skickEn: properties.skickEn,
+      skickPl: properties.skickPl,
       publicDescription: properties.publicDescription,
+      publicDescriptionEn: properties.publicDescriptionEn,
+      publicDescriptionPl: properties.publicDescriptionPl,
       moveInFrom: properties.moveInFrom,
       availableTo: properties.availableTo,
     })
     .from(properties)
     .where(eq(properties.id, id));
   if (!p || !p.published) notFound();
+
+  const description =
+    (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) || p.publicDescription;
+  const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
 
   const imgRows = await db
     .select()
@@ -81,23 +178,23 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
   );
 
   const highlights = [
-    p.furnished && { label: "Möblerat", Icon: Sofa },
-    p.kitchen && { label: "Eget kök", Icon: CookingPot },
-    p.garage && { label: "Garage", Icon: Car },
-    p.broadband && { label: "Bredband ingår", Icon: Wifi },
-    p.egetBoende && { label: "Eget boende", Icon: DoorClosed },
+    p.furnished && { label: tr.hl.furnished, Icon: Sofa },
+    p.kitchen && { label: tr.hl.kitchen, Icon: CookingPot },
+    p.garage && { label: tr.hl.garage, Icon: Car },
+    p.broadband && { label: tr.hl.broadband, Icon: Wifi },
+    p.egetBoende && { label: tr.hl.eget, Icon: DoorClosed },
   ].filter(Boolean) as { label: string; Icon: typeof Sofa }[];
 
   const facts: { label: string; value: string }[] = [
-    p.squareMeters != null && { label: "Yta", value: `${p.squareMeters} m²` },
-    p.bedrooms != null && { label: "Sovrum", value: String(p.bedrooms) },
-    p.beds != null && { label: "Bäddar", value: String(p.beds) },
-    p.bathrooms != null && { label: "Badrum", value: String(p.bathrooms) },
-    p.washingMachines != null && { label: "Tvättmaskin", value: String(p.washingMachines) },
-    p.dryers != null && { label: "Tumlare", value: String(p.dryers) },
-    p.parkingSpaces != null && { label: "Parkering", value: `${p.parkingSpaces} pl.` },
-    p.moveInFrom && { label: "Tillgänglig från", value: p.moveInFrom },
-    p.availableTo && { label: "Tillgänglig till", value: p.availableTo },
+    p.squareMeters != null && { label: tr.f.area, value: `${p.squareMeters} m²` },
+    p.bedrooms != null && { label: tr.f.bedrooms, value: String(p.bedrooms) },
+    p.beds != null && { label: tr.f.beds, value: String(p.beds) },
+    p.bathrooms != null && { label: tr.f.bathrooms, value: String(p.bathrooms) },
+    p.washingMachines != null && { label: tr.f.washer, value: String(p.washingMachines) },
+    p.dryers != null && { label: tr.f.dryer, value: String(p.dryers) },
+    p.parkingSpaces != null && { label: tr.f.parking, value: `${p.parkingSpaces} ${tr.parkingUnit}` },
+    p.moveInFrom && { label: tr.f.from, value: p.moveInFrom },
+    p.availableTo && { label: tr.f.to, value: p.availableTo },
   ].filter(Boolean) as { label: string; value: string }[];
 
   return (
@@ -108,8 +205,21 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
           <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Bostadsförslag
+            {tr.tagline}
           </span>
+          <div className="ml-auto flex items-center gap-1">
+            {LANGS.map((l) => (
+              <a
+                key={l.code}
+                href={`?lang=${l.code}`}
+                className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                  l.code === lang ? "bg-nordic-900 text-white" : "text-muted-foreground hover:bg-nordic-100"
+                }`}
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -121,7 +231,7 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
             {[p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige"}
           </div>
           <h1 className="text-3xl font-bold text-nordic-900" style={wordmark}>
-            {p.city ? `Boende i ${p.city}` : "Bostadsförslag"}
+            {tr.title(p.city)}
           </h1>
         </div>
 
@@ -129,10 +239,7 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
         {highlights.length > 0 && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {highlights.map(({ label, Icon }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2.5 rounded-xl border bg-white px-3.5 py-3"
-              >
+              <div key={label} className="flex items-center gap-2.5 rounded-xl border bg-white px-3.5 py-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#fff1e8] text-[#ff6300]">
                   <Icon className="h-5 w-5" />
                 </span>
@@ -143,17 +250,17 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
         )}
 
         {/* Gallery */}
-        <ProspektGallery images={images} />
+        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} />
 
         {/* Description */}
-        {p.publicDescription && (
-          <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-nordic-800">{p.publicDescription}</p>
+        {description && (
+          <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-nordic-800">{description}</p>
         )}
 
         {/* Facts */}
         {facts.length > 0 && (
           <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Detaljer</h2>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.details}</h2>
             <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {facts.map((f) => (
                 <div key={f.label} className="rounded-xl border bg-white px-4 py-3">
@@ -166,31 +273,27 @@ export default async function ProspektPage({ params }: { params: Promise<{ id: s
         )}
 
         {/* Skick */}
-        {p.skick && (
+        {skick && (
           <div>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Skick</h2>
-            <p className="whitespace-pre-wrap text-[15px] text-nordic-800">{p.skick}</p>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.condition}</h2>
+            <p className="whitespace-pre-wrap text-[15px] text-nordic-800">{skick}</p>
           </div>
         )}
 
         {/* CTA */}
         <div className="rounded-2xl border bg-white p-6 text-center">
-          <p className="text-base font-semibold text-nordic-900">Intresserad av den här bostaden?</p>
-          <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-            Hör av dig till StayOnSite så hjälper vi dig vidare — ofta med svar inom 24 timmar.
-          </p>
+          <p className="text-base font-semibold text-nordic-900">{tr.ctaTitle}</p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">{tr.ctaSub}</p>
           <a
-            href="https://www.stayonsite.se/kontakt"
+            href={tr.ctaHref}
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#ff6300] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e65800]"
           >
-            Kontakta oss
+            {tr.ctaButton}
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          StayOnSite · Corporate housing i hela Sverige
-        </p>
+        <p className="text-center text-xs text-muted-foreground">{tr.footer}</p>
       </div>
     </div>
   );

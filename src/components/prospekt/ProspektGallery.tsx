@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { Expand } from "lucide-react";
 
-export function ProspektGallery({ images }: { images: string[] }) {
+export function ProspektGallery({ images, imagesLabel }: { images: string[]; imagesLabel?: string }) {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
@@ -49,7 +49,7 @@ export function ProspektGallery({ images }: { images: string[] }) {
           <img src={hero} alt="Bild 1" className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
           <span className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
             <Expand className="h-3.5 w-3.5" />
-            {images.length} bilder
+            {imagesLabel ?? `${images.length} bilder`}
           </span>
         </button>
 
