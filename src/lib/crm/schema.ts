@@ -182,6 +182,12 @@ export const properties = sqliteTable("crm_properties", {
   publicDescriptionPl: text("public_description_pl"),
   skickEn: text("skick_en"),
   skickPl: text("skick_pl"),
+  // "Vad ingår" — manuell lista (sv) + lokaliserade varianter.
+  inclusions: text("inclusions", { mode: "json" }).$type<string[]>(),
+  inclusionsEn: text("inclusions_en", { mode: "json" }).$type<string[]>(),
+  inclusionsPl: text("inclusions_pl", { mode: "json" }).$type<string[]>(),
+  // "Avstånd" — manuella platser med auto-räknat km/min (språkneutrala platsnamn).
+  distances: text("distances", { mode: "json" }).$type<{ label: string; address?: string; km: number; minutes: number }[]>(),
   // Följ upp uthyrare (sourcing/relationsvård) — oberoende av aktiv förfrågan
   ownerFollowUpDate: text("owner_follow_up_date"),
   ownerFollowUpReason: text("owner_follow_up_reason"), // kort: Kolla pris, Tillgänglighet juni…

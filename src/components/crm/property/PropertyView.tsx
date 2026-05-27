@@ -63,6 +63,10 @@ type EditForm = {
   publicDescriptionPl: string;
   skickEn: string;
   skickPl: string;
+  inclusions: string[];
+  inclusionsEn: string[];
+  inclusionsPl: string[];
+  distances: { label: string; address?: string; km: number; minutes: number }[];
   furnished: boolean;
   kitchen: boolean;
   garage: boolean;
@@ -104,6 +108,10 @@ function toForm(p: PropertyWithOwner): EditForm {
     publicDescriptionPl: s(p.publicDescriptionPl),
     skickEn: s(p.skickEn),
     skickPl: s(p.skickPl),
+    inclusions: p.inclusions ?? [],
+    inclusionsEn: p.inclusionsEn ?? [],
+    inclusionsPl: p.inclusionsPl ?? [],
+    distances: p.distances ?? [],
     furnished: !!p.furnished,
     kitchen: !!p.kitchen,
     garage: !!p.garage,
@@ -200,6 +208,10 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       publicDescriptionPl: t(form.publicDescriptionPl),
       skickEn: t(form.skickEn),
       skickPl: t(form.skickPl),
+      inclusions: form.inclusions.map((x) => x.trim()).filter(Boolean),
+      inclusionsEn: form.inclusionsEn,
+      inclusionsPl: form.inclusionsPl,
+      distances: form.distances,
       furnished: form.furnished,
       kitchen: form.kitchen,
       garage: form.garage,
@@ -261,7 +273,11 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       const res = await fetch("/api/crm/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ publicDescription: form.publicDescription, skick: form.skick }),
+        body: JSON.stringify({
+          publicDescription: form.publicDescription,
+          skick: form.skick,
+          inclusions: form.inclusions.map((x) => x.trim()).filter(Boolean),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -274,6 +290,8 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         publicDescriptionPl: data.publicDescriptionPl ?? "",
         skickEn: data.skickEn ?? "",
         skickPl: data.skickPl ?? "",
+        inclusionsEn: Array.isArray(data.inclusionsEn) ? data.inclusionsEn : f.inclusionsEn,
+        inclusionsPl: Array.isArray(data.inclusionsPl) ? data.inclusionsPl : f.inclusionsPl,
       }));
       setShowI18n(true);
       toast({ title: "Översättningar genererade — granska och spara" });
@@ -461,6 +479,41 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
               </Labeled>
             </div>
           )}
+        </div>
+
+        <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Vad ingår</p>
+          {form.inclusions.length === 0 && (
+            <p className="text-[11px] text-muted-foreground">Lägg till det som ingår (t.ex. möbler, sängkläder, bredband, städ). Visas som checklista i prospektet.</p>
+          )}
+          {form.inclusions.map((item, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                className={FIELD_CLS}
+                value={item}
+                placeholder="t.ex. Möbler & vitvaror"
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, inclusions: f.inclusions.map((x, j) => (j === i ? e.target.value : x)) }))
+                }
+              />
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, inclusions: f.inclusions.filter((_, j) => j !== i) }))}
+                className="shrink-0 text-muted-foreground hover:text-destructive"
+                title="Ta bort rad"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 gap-1.5 text-xs"
+            onClick={() => setForm((f) => ({ ...f, inclusions: [...f.inclusions, ""] }))}
+          >
+            <Plus className="h-3.5 w-3.5" /> Lägg till rad
+          </Button>
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

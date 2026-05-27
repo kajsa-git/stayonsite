@@ -11,6 +11,8 @@ type Translated = {
   publicDescription_pl: string;
   skick_en: string;
   skick_pl: string;
+  inclusions_en: string[];
+  inclusions_pl: string[];
 };
 
 function extractJson(text: string): Translated | null {
@@ -41,8 +43,11 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const publicDescription = (body.publicDescription as string | undefined)?.trim() ?? "";
   const skick = (body.skick as string | undefined)?.trim() ?? "";
-  if (!publicDescription && !skick) {
-    return NextResponse.json({ error: "Inget att översätta — fyll i beskrivning eller skick först." }, { status: 400 });
+  const inclusions: string[] = Array.isArray(body.inclusions)
+    ? body.inclusions.map((s: unknown) => String(s).trim()).filter(Boolean)
+    : [];
+  if (!publicDescription && !skick && inclusions.length === 0) {
+    return NextResponse.json({ error: "Inget att översätta — fyll i beskrivning, skick eller 'vad ingår' först." }, { status: 400 });
   }
 
   const prompt = `Du översätter text för ett seriöst svenskt corporate housing-bolag (StayOnSite). Översätt fälten nedan från svenska till engelska (en) och polska (pl).
@@ -53,15 +58,18 @@ Regler:
 - Är ett källfält tomt → returnera tom sträng för det språket.
 - Svara ENBART med giltig JSON, inga kodstaket, ingen extra text.
 
-JSON-format exakt:
-{"publicDescription_en":"","publicDescription_pl":"","skick_en":"","skick_pl":""}
+JSON-format exakt (inclusions_* är arrayer med samma antal element och ordning som källan):
+{"publicDescription_en":"","publicDescription_pl":"","skick_en":"","skick_pl":"","inclusions_en":[],"inclusions_pl":[]}
 
 Källtext (svenska):
 publicDescription:
 """${publicDescription}"""
 
 skick:
-"""${skick}"""`;
+"""${skick}"""
+
+inclusions (en per rad):
+${inclusions.length ? inclusions.map((x) => `- ${x}`).join("\n") : "(inga)"}`;
 
   let data: { content?: { type: string; text?: string }[] };
   try {
@@ -91,10 +99,15 @@ skick:
   const t = extractJson(textOut);
   if (!t) return NextResponse.json({ error: "Kunde inte tolka översättningen." }, { status: 502 });
 
+  const cleanArr = (a: unknown): string[] =>
+    Array.isArray(a) ? a.map((x) => String(x).trim()).filter(Boolean) : [];
+
   return NextResponse.json({
     publicDescriptionEn: publicDescription ? t.publicDescription_en?.trim() ?? "" : "",
     publicDescriptionPl: publicDescription ? t.publicDescription_pl?.trim() ?? "" : "",
     skickEn: skick ? t.skick_en?.trim() ?? "" : "",
     skickPl: skick ? t.skick_pl?.trim() ?? "" : "",
+    inclusionsEn: inclusions.length ? cleanArr(t.inclusions_en) : [],
+    inclusionsPl: inclusions.length ? cleanArr(t.inclusions_pl) : [],
   });
 }
