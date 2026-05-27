@@ -141,6 +141,23 @@ export function MyDayView() {
     }
   }
 
+  // Boka exakt datum + tid på en företags-återkomst direkt från Min dag.
+  async function scheduleFollowUp(companyId: string, date: string, time: string) {
+    if (!date) return;
+    try {
+      const res = await fetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followUpDate: date, followUpTime: time || null }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: `Bokad ${date}${time ? ` kl. ${time}` : ""}` });
+    } catch {
+      toast({ title: "Kunde inte boka", variant: "destructive" });
+    }
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6 flex items-end justify-between gap-3">
@@ -222,33 +239,14 @@ export function MyDayView() {
           items={queues.followUps}
           emptyText="Inga återkomster idag"
           renderItem={(item) => (
-            <div key={item.id} className="rounded-lg bg-white border hover:border-primary-400 transition-colors">
-              <button
-                className="w-full text-left p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg"
-                onClick={() => router.push(`/crm/work/followups/${item.id}`)}
-              >
-                <div className="font-medium text-sm">{item.name}</div>
-                {item.followUpDate && (
-                  <div className="mt-1">
-                    <span
-                      className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
-                        item.followUpDate <= today ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
-                      }`}
-                    >
-                      {item.followUpDate === today ? "Återkomst idag" : item.followUpDate <= today ? "Försenad" : item.followUpDate}
-                      {item.followUpTime && ` kl. ${item.followUpTime}`}
-                    </span>
-                    {item.followUpReason && <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>}
-                  </div>
-                )}
-              </button>
-              <div className="flex flex-wrap items-center gap-1 px-3 pb-2.5 pt-0.5 border-t border-dashed">
-                <span className="text-[11px] text-muted-foreground mr-0.5">Flytta fram:</span>
-                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 1)}>Imorgon</ChaseBtn>
-                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 3)}>+3 d</ChaseBtn>
-                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 7)}>+7 d</ChaseBtn>
-              </div>
-            </div>
+            <FollowUpCard
+              key={item.id}
+              item={item}
+              today={today}
+              onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+              onSnooze={(days) => snoozeFollowUp(item.id, days)}
+              onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
+            />
           )}
         />
 
@@ -325,6 +323,79 @@ export function MyDayView() {
           />
         </button>
       </div>
+    </div>
+  );
+}
+
+function FollowUpCard({
+  item,
+  today,
+  onOpen,
+  onSnooze,
+  onSchedule,
+}: {
+  item: CompanyQueue;
+  today: string;
+  onOpen: () => void;
+  onSnooze: (days: number) => void | Promise<void>;
+  onSchedule: (date: string, time: string) => void | Promise<void>;
+}) {
+  const [picking, setPicking] = useState(false);
+  const [date, setDate] = useState(item.followUpDate ?? today);
+  const [time, setTime] = useState(item.followUpTime ?? "08:00");
+  const overdue = !!item.followUpDate && item.followUpDate <= today;
+  return (
+    <div className="rounded-lg bg-white border hover:border-primary-400 transition-colors">
+      <button
+        className="w-full text-left p-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+        onClick={onOpen}
+      >
+        <div className="font-medium text-sm">{item.name}</div>
+        {item.followUpDate && (
+          <div className="mt-1">
+            <span
+              className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
+                overdue ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
+              }`}
+            >
+              {item.followUpDate === today ? "Återkomst idag" : overdue ? "Försenad" : item.followUpDate}
+              {item.followUpTime && ` kl. ${item.followUpTime}`}
+            </span>
+            {item.followUpReason && <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>}
+          </div>
+        )}
+      </button>
+      <div className="flex flex-wrap items-center gap-1 px-3 pb-2.5 pt-0.5 border-t border-dashed">
+        <span className="text-[11px] text-muted-foreground mr-0.5">Flytta fram:</span>
+        <ChaseBtn onClick={() => onSnooze(1)}>Imorgon</ChaseBtn>
+        <ChaseBtn onClick={() => onSnooze(3)}>+3 d</ChaseBtn>
+        <ChaseBtn onClick={() => onSnooze(7)}>+7 d</ChaseBtn>
+        <ChaseBtn onClick={() => setPicking((v) => !v)}>Välj…</ChaseBtn>
+      </div>
+      {picking && (
+        <div className="flex flex-wrap items-center gap-1.5 px-3 pb-2.5">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="border rounded px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-400"
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="border rounded px-1.5 py-0.5 text-xs w-24 focus:outline-none focus:ring-1 focus:ring-primary-400"
+          />
+          <ChaseBtn
+            onClick={() => {
+              onSchedule(date, time);
+              setPicking(false);
+            }}
+          >
+            Spara
+          </ChaseBtn>
+        </div>
+      )}
     </div>
   );
 }
