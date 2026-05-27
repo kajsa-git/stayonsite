@@ -95,7 +95,7 @@ function getSubject(s: Submission): string {
 
 function esc(v: string) { return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function buildEmail(s: Submission, ip?: string, ua?: string) {
+function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true) {
   const fields = s.fields as Record<string, string>;
   const subject = getSubject(s);
   const now = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Europe/Stockholm' }).format(new Date());
@@ -117,9 +117,15 @@ function buildEmail(s: Submission, ip?: string, ua?: string) {
     meta.utm = Object.entries(s.utmParams).map(([k,v]) => `${k}=${v}`).join(', ');
   }
 
-  const text = [subject, '', ...Object.entries(fields).map(([k,v]) => `${k}: ${v}`), '', ...Object.entries(meta).map(([k,v]) => `${k}: ${v}`)].join('\n');
+  const crmWarnText = crmOk ? '' : '⚠️ OBS: Kunde INTE läggas in i CRM automatiskt — lägg in leadet manuellt.\n\n';
+  const crmWarnHtml = crmOk
+    ? ''
+    : `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin:0 0 16px;color:#991b1b;font-weight:600;">⚠️ Kunde inte läggas in i CRM automatiskt — lägg in leadet manuellt.</div>`;
+
+  const text = [crmWarnText + subject, '', ...Object.entries(fields).map(([k,v]) => `${k}: ${v}`), '', ...Object.entries(meta).map(([k,v]) => `${k}: ${v}`)].join('\n');
 
   const html = `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.5;">
+    ${crmWarnHtml}
     <h1 style="font-size:20px;margin:0 0 16px;">${esc(subject)}</h1>
     <h2 style="font-size:16px;margin:24px 0 8px;">Insända uppgifter</h2>
     <table style="border-collapse:collapse;width:100%;max-width:720px;">${rows(fields)}</table>
@@ -310,7 +316,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const forwarded = req.headers['x-forwarded-for'];
     const ip = typeof forwarded === 'string' ? forwarded.split(',')[0]?.trim() : undefined;
-    const email = buildEmail(submission, ip, req.headers['user-agent']);
     // Lazy import so a CRM/DB problem can never break email delivery (the
     // critical path) — even a module-load error is caught here.
     const crmResult = await import('../src/lib/crm/contact-intake')
@@ -319,6 +324,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error('CRM intake mapping failed', err);
         return null;
       });
+    // Notisen till oss varnar om leadet inte kom in i CRM automatiskt.
+    const email = buildEmail(submission, ip, req.headers['user-agent'], crmResult != null);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
