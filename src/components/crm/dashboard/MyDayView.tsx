@@ -38,6 +38,12 @@ const VERSES: { text: string; ref: string }[] = [
   { text: "Se, jag är med er alla dagar till tidens slut.", ref: "Matteus 28:20" },
 ];
 
+function plusDays(n: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+}
+
 interface CompanyQueue {
   id: string;
   name: string;
@@ -116,6 +122,22 @@ export function MyDayView() {
       toast({ title: CHASE_TOAST[action] ?? "Sparat" });
     } catch {
       toast({ title: "Kunde inte spara", variant: "destructive" });
+    }
+  }
+
+  // Flytta fram (snooza) en företags-återkomst N dagar framåt.
+  async function snoozeFollowUp(companyId: string, days: number) {
+    try {
+      const res = await fetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followUpDate: plusDays(days) }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: days === 1 ? "Flyttad till imorgon" : `Flyttad fram ${days} dagar` });
+    } catch {
+      toast({ title: "Kunde inte flytta fram", variant: "destructive" });
     }
   }
 
@@ -200,20 +222,33 @@ export function MyDayView() {
           items={queues.followUps}
           emptyText="Inga återkomster idag"
           renderItem={(item) => (
-            <button
-              key={item.id}
-              className="w-full text-left p-3 rounded-lg bg-white border hover:border-primary-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
-              onClick={() => router.push(`/crm/work/followups/${item.id}`)}
-            >
-              <div className="font-medium text-sm">{item.name}</div>
-              {item.followUpDate && (
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {item.followUpDate === today ? "Idag" : item.followUpDate}
-                  {item.followUpTime && ` kl. ${item.followUpTime}`}
-                  {item.followUpReason && ` · ${item.followUpReason}`}
-                </div>
-              )}
-            </button>
+            <div key={item.id} className="rounded-lg bg-white border hover:border-primary-400 transition-colors">
+              <button
+                className="w-full text-left p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg"
+                onClick={() => router.push(`/crm/work/followups/${item.id}`)}
+              >
+                <div className="font-medium text-sm">{item.name}</div>
+                {item.followUpDate && (
+                  <div className="mt-1">
+                    <span
+                      className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
+                        item.followUpDate <= today ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
+                      }`}
+                    >
+                      {item.followUpDate === today ? "Återkomst idag" : item.followUpDate <= today ? "Försenad" : item.followUpDate}
+                      {item.followUpTime && ` kl. ${item.followUpTime}`}
+                    </span>
+                    {item.followUpReason && <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>}
+                  </div>
+                )}
+              </button>
+              <div className="flex flex-wrap items-center gap-1 px-3 pb-2.5 pt-0.5 border-t border-dashed">
+                <span className="text-[11px] text-muted-foreground mr-0.5">Flytta fram:</span>
+                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 1)}>Imorgon</ChaseBtn>
+                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 3)}>+3 d</ChaseBtn>
+                <ChaseBtn onClick={() => snoozeFollowUp(item.id, 7)}>+7 d</ChaseBtn>
+              </div>
+            </div>
           )}
         />
 
