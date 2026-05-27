@@ -46,6 +46,19 @@ function bootstrap(apiKey: string) {
   })({ key: apiKey, v: "weekly", language: "sv", region: "SE" });
 }
 
+// Ladda en Google Maps-JS-bibliotekslib (t.ex. "places", "routes") via samma loader.
+// Returnerar null om nyckel saknas eller laddningen fallerar.
+export async function loadGoogleMapsLibrary<T = any>(name: string): Promise<T | null> {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string | undefined;
+  if (!apiKey || typeof window === "undefined") return null;
+  bootstrap(apiKey);
+  try {
+    return (await window.google.maps.importLibrary(name)) as T;
+  } catch {
+    return null;
+  }
+}
+
 function parsePlace(place: any): PlaceParts {
   const comps: any[] = place.addressComponents ?? [];
   const get = (type: string) => comps.find((c) => (c.types ?? []).includes(type))?.longText ?? "";

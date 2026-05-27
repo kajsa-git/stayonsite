@@ -14,7 +14,8 @@ import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/mat
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
-import { Check, Loader2, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { Check, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
@@ -133,6 +134,20 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     filters.garage ||
     filters.availableDates ||
     filters.showWeak;
+
+  // Avstånd objekt → förfrågans arbetsplatsadress (kör-avstånd via Google, klient-sidigt).
+  const workplaceAddress =
+    [request.street, request.postalCode, request.city].filter(Boolean).join(" ") ||
+    request.addressQuery ||
+    request.city ||
+    "";
+  const distances = useDistances(
+    workplaceAddress,
+    scored.map(({ property }) => ({
+      id: property.id,
+      address: [property.address, property.postalCode, property.city].filter(Boolean).join(" "),
+    })),
+  );
 
   function resetFilters() {
     setFilters({
@@ -508,6 +523,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           .filter(Boolean)
                           .join(" · ")}
                       </div>
+                      {distances[property.id] && (
+                        <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700">
+                          <Navigation className="h-3 w-3" />
+                          {distances[property.id].distanceText} · {distances[property.id].durationText} till arbetsplatsen
+                        </div>
+                      )}
                       {property.status && PROP_UNAVAILABLE[property.status] && (
                         <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-800">
                           ⚠️ {PROP_UNAVAILABLE[property.status]}

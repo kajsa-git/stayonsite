@@ -94,7 +94,7 @@ const Header = () => {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/stayonsite-logo-white.png"
-                alt=""
+                alt="StayOnSite"
                 aria-hidden
                 className={cn(
                   "absolute inset-0 h-full w-auto transition-opacity duration-300 ease-out drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
