@@ -2,6 +2,7 @@ import { db } from "@/lib/crm/db";
 import { properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { ProspektGallery } from "@/components/prospekt/ProspektGallery";
+import { ProspektMap } from "@/components/prospekt/ProspektMap";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, desc, eq } from "drizzle-orm";
@@ -12,7 +13,22 @@ import { ArrowRight, Car, Check, CookingPot, DoorClosed, MapPin, Sofa, Wifi } fr
 export const dynamic = "force-dynamic";
 
 const editorial = { fontFamily: "var(--font-instrument), Georgia, serif" } as const;
-const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+// Geokodar postnummer-området en gång (cachat) via OSM Nominatim — server-side, ingen nyckel.
+async function geocodeArea(area: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=se&q=${encodeURIComponent(`${area}, Sverige`)}`,
+      { headers: { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" }, cache: "force-cache" },
+    );
+    if (!res.ok) return null;
+    const j = (await res.json()) as { lat: string; lon: string }[];
+    if (Array.isArray(j) && j[0]) return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+  } catch {
+    /* karta utelämnas om geokodning fallerar */
+  }
+  return null;
+}
 
 type Lang = "sv" | "en" | "pl";
 function pickLang(v: string | string[] | undefined): Lang {
@@ -185,12 +201,9 @@ export default async function ProspektPage(
   const inclusions = (localInclusions && localInclusions.length ? localInclusions : p.inclusions) ?? [];
   const distances = (p.distances ?? []).filter((d) => d.label?.trim());
 
-  // Karta på områdesnivå — aldrig exakt adress. Centrerad på postnummer/ort.
+  // Karta på områdesnivå — aldrig exakt adress. Cirkel runt postnummer-områdets centroid.
   const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
-  const mapSrc =
-    MAPS_KEY && mapArea
-      ? `https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(`${mapArea}, Sverige`)}&zoom=12&language=sv&region=SE`
-      : null;
+  const mapCoords = mapArea ? await geocodeArea(mapArea) : null;
 
   const imgRows = await db
     .select()
@@ -342,19 +355,12 @@ export default async function ProspektPage(
           </div>
         )}
 
-        {/* Karta — områdesnivå (aldrig exakt adress) */}
-        {mapSrc && (
+        {/* Karta — områdesnivå (cirkel runt området, aldrig exakt adress) */}
+        {mapCoords && (
           <div>
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.mapTitle}</h2>
             <div className="overflow-hidden rounded-xl border bg-white">
-              <iframe
-                src={mapSrc}
-                title={`Karta ${mapArea}`}
-                className="h-[300px] w-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
+              <ProspektMap lat={mapCoords.lat} lng={mapCoords.lng} />
               <div className="flex items-center gap-2 px-4 py-3 text-sm text-nordic-800">
                 <MapPin className="h-4 w-4 shrink-0 text-[#ff6300]" />
                 {mapArea}
