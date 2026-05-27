@@ -9,7 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
-import { ChevronRight, Home, Languages, Loader2, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
+import { ChevronRight, Home, Languages, Loader2, Navigation, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
+import { loadGoogleMapsLibrary } from "@/hooks/use-google-places";
 import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
@@ -135,6 +136,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
   const [translating, setTranslating] = useState(false);
   const [showI18n, setShowI18n] = useState(false);
   const [describing, setDescribing] = useState(false);
+  const [computingDist, setComputingDist] = useState(false);
 
   // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
   const delTarget = (property.address ?? "").trim() || "RADERA";
@@ -221,6 +223,61 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     setSaving(false);
     setEditing(false);
     toast({ title: "Objekt sparat" });
+  }
+
+  async function computeDistances() {
+    const origin = [form.address, form.postalCode, form.city].filter(Boolean).join(" ");
+    if (!origin) {
+      toast({ title: "Objektet saknar adress att mäta från" });
+      return;
+    }
+    const rows = form.distances.filter((d) => d.address?.trim());
+    if (rows.length === 0) {
+      toast({ title: "Lägg till platser med adress först" });
+      return;
+    }
+    setComputingDist(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const lib = await loadGoogleMapsLibrary<any>("routes");
+      if (!lib?.DistanceMatrixService) {
+        toast({ title: "Kartan kunde inte laddas", variant: "destructive" });
+        return;
+      }
+      const svc = new lib.DistanceMatrixService();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const resp: any = await new Promise((resolve) =>
+        svc.getDistanceMatrix(
+          { origins: [origin], destinations: rows.map((d) => d.address), travelMode: "DRIVING" },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (r: any) => resolve(r),
+        ),
+      );
+      const elements = resp?.rows?.[0]?.elements ?? [];
+      const byAddr = new Map<string, { km: number; minutes: number }>();
+      rows.forEach((d, j) => {
+        const el = elements[j];
+        if (el?.status === "OK") {
+          byAddr.set(d.address!, {
+            km: Math.round((el.distance.value / 1000) * 10) / 10,
+            minutes: Math.round(el.duration.value / 60),
+          });
+        }
+      });
+      if (byAddr.size === 0) {
+        toast({ title: "Inga avstånd kunde beräknas", variant: "destructive" });
+        return;
+      }
+      setForm((f) => ({
+        ...f,
+        distances: f.distances.map((d) => (d.address && byAddr.has(d.address) ? { ...d, ...byAddr.get(d.address)! } : d)),
+      }));
+      toast({ title: "Avstånd uppdaterade" });
+    } catch {
+      toast({ title: "Kunde inte räkna avstånd", variant: "destructive" });
+    } finally {
+      setComputingDist(false);
+    }
   }
 
   async function generateDescription() {
@@ -513,6 +570,60 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
             onClick={() => setForm((f) => ({ ...f, inclusions: [...f.inclusions, ""] }))}
           >
             <Plus className="h-3.5 w-3.5" /> Lägg till rad
+          </Button>
+        </div>
+
+        <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Avstånd till platser</p>
+            <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs" onClick={computeDistances} disabled={computingDist}>
+              {computingDist ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Navigation className="h-3.5 w-3.5" />}
+              Räkna avstånd
+            </Button>
+          </div>
+          {form.distances.length === 0 && (
+            <p className="text-[11px] text-muted-foreground">Lägg till platser (centrum, flygplats, arbetsplats…) med adress — tryck Räkna avstånd så fylls km och minuter i automatiskt.</p>
+          )}
+          {form.distances.map((d, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                className={`${FIELD_CLS} flex-1`}
+                placeholder="Plats (t.ex. Kiruna centrum)"
+                value={d.label}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, distances: f.distances.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)) }))
+                }
+              />
+              <input
+                className={`${FIELD_CLS} flex-1`}
+                placeholder="Adress att mäta till"
+                value={d.address ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, distances: f.distances.map((x, j) => (j === i ? { ...x, address: e.target.value } : x)) }))
+                }
+              />
+              <span className="w-24 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
+                {d.km ? `${d.km} km · ${d.minutes} min` : "—"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, distances: f.distances.filter((_, j) => j !== i) }))}
+                className="shrink-0 text-muted-foreground hover:text-destructive"
+                title="Ta bort plats"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 gap-1.5 text-xs"
+            onClick={() =>
+              setForm((f) => ({ ...f, distances: [...f.distances, { label: "", address: "", km: 0, minutes: 0 }] }))
+            }
+          >
+            <Plus className="h-3.5 w-3.5" /> Lägg till plats
           </Button>
         </div>
 

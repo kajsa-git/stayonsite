@@ -26,6 +26,7 @@ const T: Record<Lang, {
   details: string;
   condition: string;
   included: string;
+  distancesTitle: string;
   ctaTitle: string;
   ctaSub: string;
   ctaButton: string;
@@ -43,6 +44,7 @@ const T: Record<Lang, {
     details: "Detaljer",
     condition: "Skick",
     included: "Vad ingår",
+    distancesTitle: "Avstånd",
     ctaTitle: "Intresserad av den här bostaden?",
     ctaSub: "Hör av dig till StayOnSite så hjälper vi dig vidare — ofta med svar inom 24 timmar.",
     ctaButton: "Kontakta oss",
@@ -60,6 +62,7 @@ const T: Record<Lang, {
     details: "Details",
     condition: "Condition",
     included: "What's included",
+    distancesTitle: "Distances",
     ctaTitle: "Interested in this property?",
     ctaSub: "Get in touch with StayOnSite and we'll help you further — usually a reply within 24 hours.",
     ctaButton: "Contact us",
@@ -77,6 +80,7 @@ const T: Record<Lang, {
     details: "Szczegóły",
     condition: "Stan",
     included: "Co jest wliczone",
+    distancesTitle: "Odległości",
     ctaTitle: "Zainteresowany tym mieszkaniem?",
     ctaSub: "Skontaktuj się ze StayOnSite, a pomożemy Ci dalej — zwykle odpowiadamy w ciągu 24 godzin.",
     ctaButton: "Skontaktuj się",
@@ -161,6 +165,7 @@ export default async function ProspektPage(
       inclusions: properties.inclusions,
       inclusionsEn: properties.inclusionsEn,
       inclusionsPl: properties.inclusionsPl,
+      distances: properties.distances,
       moveInFrom: properties.moveInFrom,
       availableTo: properties.availableTo,
     })
@@ -173,6 +178,7 @@ export default async function ProspektPage(
   const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
   const localInclusions = lang === "en" ? p.inclusionsEn : lang === "pl" ? p.inclusionsPl : null;
   const inclusions = (localInclusions && localInclusions.length ? localInclusions : p.inclusions) ?? [];
+  const distances = (p.distances ?? []).filter((d) => d.label?.trim());
 
   const imgRows = await db
     .select()
@@ -303,6 +309,24 @@ export default async function ProspektPage(
           <div>
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.condition}</h2>
             <p className="whitespace-pre-wrap text-[15px] text-nordic-800">{skick}</p>
+          </div>
+        )}
+
+        {/* Avstånd */}
+        {distances.length > 0 && (
+          <div>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.distancesTitle}</h2>
+            <ul className="divide-y rounded-xl border bg-white">
+              {distances.map((d, i) => (
+                <li key={i} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-nordic-900">
+                  <span>{d.label}</span>
+                  <span className="flex items-center gap-2 tabular-nums">
+                    {d.km > 0 && <span className="text-sm text-muted-foreground">{d.km} km</span>}
+                    {d.minutes > 0 && <span className="font-semibold text-[#ff6300]">{d.minutes} min</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
