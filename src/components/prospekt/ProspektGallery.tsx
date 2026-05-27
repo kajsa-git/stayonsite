@@ -12,7 +12,15 @@ import {
 } from "@/components/ui/carousel";
 import { Expand } from "lucide-react";
 
-export function ProspektGallery({ images, imagesLabel }: { images: string[]; imagesLabel?: string }) {
+export function ProspektGallery({
+  images,
+  imagesLabel,
+  fullBleed = false,
+}: {
+  images: string[];
+  imagesLabel?: string;
+  fullBleed?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
@@ -43,10 +51,12 @@ export function ProspektGallery({ images, imagesLabel }: { images: string[]; ima
         <button
           type="button"
           onClick={() => openAt(0)}
-          className="group relative block w-full overflow-hidden rounded-2xl border bg-nordic-100"
+          className={`group relative block w-full overflow-hidden bg-nordic-100 ${
+            fullBleed ? "-mx-5 rounded-none" : "rounded-2xl border"
+          }`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={hero} alt="Bild 1" className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+          <img src={hero} alt="Bild 1" className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
           <span className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
             <Expand className="h-3.5 w-3.5" />
             {imagesLabel ?? `${images.length} bilder`}
@@ -54,7 +64,7 @@ export function ProspektGallery({ images, imagesLabel }: { images: string[]; ima
         </button>
 
         {rest.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-3 gap-2">
             {rest.map((url, i) => (
               <button
                 key={i}

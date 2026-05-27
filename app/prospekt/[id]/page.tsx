@@ -11,7 +11,8 @@ import { ArrowRight, Car, Check, CookingPot, DoorClosed, MapPin, Sofa, Wifi } fr
 
 export const dynamic = "force-dynamic";
 
-const wordmark = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
+const editorial = { fontFamily: "var(--font-instrument), Georgia, serif" } as const;
+const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 type Lang = "sv" | "en" | "pl";
 function pickLang(v: string | string[] | undefined): Lang {
@@ -27,6 +28,7 @@ const T: Record<Lang, {
   condition: string;
   included: string;
   distancesTitle: string;
+  mapTitle: string;
   ctaTitle: string;
   ctaSub: string;
   ctaButton: string;
@@ -45,6 +47,7 @@ const T: Record<Lang, {
     condition: "Skick",
     included: "Vad ingår",
     distancesTitle: "Avstånd",
+    mapTitle: "Karta",
     ctaTitle: "Intresserad av den här bostaden?",
     ctaSub: "Hör av dig till StayOnSite så hjälper vi dig vidare — ofta med svar inom 24 timmar.",
     ctaButton: "Kontakta oss",
@@ -63,6 +66,7 @@ const T: Record<Lang, {
     condition: "Condition",
     included: "What's included",
     distancesTitle: "Distances",
+    mapTitle: "Map",
     ctaTitle: "Interested in this property?",
     ctaSub: "Get in touch with StayOnSite and we'll help you further — usually a reply within 24 hours.",
     ctaButton: "Contact us",
@@ -81,6 +85,7 @@ const T: Record<Lang, {
     condition: "Stan",
     included: "Co jest wliczone",
     distancesTitle: "Odległości",
+    mapTitle: "Mapa",
     ctaTitle: "Zainteresowany tym mieszkaniem?",
     ctaSub: "Skontaktuj się ze StayOnSite, a pomożemy Ci dalej — zwykle odpowiadamy w ciągu 24 godzin.",
     ctaButton: "Skontaktuj się",
@@ -180,6 +185,13 @@ export default async function ProspektPage(
   const inclusions = (localInclusions && localInclusions.length ? localInclusions : p.inclusions) ?? [];
   const distances = (p.distances ?? []).filter((d) => d.label?.trim());
 
+  // Karta på områdesnivå — aldrig exakt adress. Centrerad på postnummer/ort.
+  const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
+  const mapSrc =
+    MAPS_KEY && mapArea
+      ? `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(`${mapArea}, Sverige`)}&zoom=12&size=640x300&scale=2&language=sv&region=SE&markers=${encodeURIComponent(`color:0xff6300|${mapArea}, Sverige`)}&key=${MAPS_KEY}`
+      : null;
+
   const imgRows = await db
     .select()
     .from(propertyImages)
@@ -245,18 +257,18 @@ export default async function ProspektPage(
             <MapPin className="h-3.5 w-3.5 text-[#ff6300]" />
             {[p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige"}
           </div>
-          <h1 className="text-3xl font-bold text-nordic-900" style={wordmark}>
+          <h1 className="text-[2.1rem] leading-[1.1] tracking-tight text-nordic-900" style={editorial}>
             {tr.title(p.city)}
           </h1>
         </div>
 
         {/* Highlights */}
         {highlights.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3">
             {highlights.map(({ label, Icon }) => (
-              <div key={label} className="flex items-center gap-2.5 rounded-xl border bg-white px-3.5 py-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#fff1e8] text-[#ff6300]">
-                  <Icon className="h-5 w-5" />
+              <div key={label} className="flex items-center gap-3 rounded-xl border bg-white px-4 py-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff1e8] text-[#ff6300]">
+                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
                 </span>
                 <span className="text-sm font-medium text-nordic-900">{label}</span>
               </div>
@@ -265,7 +277,7 @@ export default async function ProspektPage(
         )}
 
         {/* Gallery */}
-        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} />
+        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} fullBleed />
 
         {/* Description */}
         {description && (
@@ -327,6 +339,21 @@ export default async function ProspektPage(
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Karta — områdesnivå (aldrig exakt adress) */}
+        {mapSrc && (
+          <div>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.mapTitle}</h2>
+            <div className="overflow-hidden rounded-xl border bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={mapSrc} alt={`Karta ${mapArea}`} width={640} height={300} className="h-auto w-full" />
+              <div className="flex items-center gap-2 px-4 py-3 text-sm text-nordic-800">
+                <MapPin className="h-4 w-4 shrink-0 text-[#ff6300]" />
+                {mapArea}
+              </div>
+            </div>
           </div>
         )}
 
