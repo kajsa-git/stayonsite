@@ -189,10 +189,7 @@ export const properties = sqliteTable("crm_properties", {
   inclusionsPl: text("inclusions_pl", { mode: "json" }).$type<string[]>(),
   // "Avstånd" — manuella platser med auto-räknat km/min (språkneutrala platsnamn).
   distances: text("distances", { mode: "json" }).$type<{ label: string; address?: string; km: number; minutes: number }[]>(),
-  // Följ upp uthyrare (sourcing/relationsvård) — oberoende av aktiv förfrågan
-  ownerFollowUpDate: text("owner_follow_up_date"),
-  ownerFollowUpReason: text("owner_follow_up_reason"), // kort: Kolla pris, Tillgänglighet juni…
-  ownerFollowUpNote: text("owner_follow_up_note"), // fritext
+  // Uthyrar-uppföljning bor i crm_owner_outreach (rundor) — inte längre speglat på objektet.
   links: text("links", { mode: "json" }).$type<string[]>(), // externa länkar (Airbnb/Qasa/Booking/övrigt)
   status: text("status").default("available"),
   published: integer("published", { mode: "boolean" }).default(false),
@@ -204,8 +201,31 @@ export const properties = sqliteTable("crm_properties", {
   index("crm_properties_move_in_from_idx").on(t.moveInFrom),
   index("crm_properties_beds_idx").on(t.beds),
   index("crm_properties_published_idx").on(t.published),
-  index("crm_properties_owner_follow_up_date_idx").on(t.ownerFollowUpDate),
   index("crm_properties_owner_id_idx").on(t.ownerId),
+]);
+
+// Kontaktrundor mot uthyrare — en episod per objekt, ofta utlöst av en förfrågan.
+// Öppen runda = status ej i (bekraftad, nej). Driver "Följ upp uthyrare"-kön via nextFollowUpDate.
+export const ownerOutreach = sqliteTable("crm_owner_outreach", {
+  id: text("id").primaryKey(),
+  propertyId: text("property_id")
+    .notNull()
+    .references(() => properties.id, { onDelete: "cascade" }),
+  ownerId: text("owner_id").references(() => owners.id, { onDelete: "set null" }), // denormaliserat för kö/visning
+  requestId: text("request_id").references(() => requests.id, { onDelete: "set null" }), // valfri utlösare
+  status: text("status").notNull().default("ej_kontaktad"), // ej_kontaktad | kontaktad | i_dialog | bekraftad | nej
+  startedAt: text("started_at").default(sql`(datetime('now'))`),
+  nextFollowUpDate: text("next_follow_up_date"),
+  nextFollowUpReason: text("next_follow_up_reason"),
+  concludedAt: text("concluded_at"), // sätts när status → bekraftad/nej
+  note: text("note"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_owner_outreach_property_id_idx").on(t.propertyId),
+  index("crm_owner_outreach_owner_id_idx").on(t.ownerId),
+  index("crm_owner_outreach_request_id_idx").on(t.requestId),
+  index("crm_owner_outreach_next_follow_up_date_idx").on(t.nextFollowUpDate),
+  index("crm_owner_outreach_status_idx").on(t.status),
 ]);
 
 // Förslag/matchningar — kopplar en förfrågan till flera objekt (många-till-många)
@@ -330,3 +350,5 @@ export type SearchIndexRow = typeof searchIndex.$inferSelect;
 export type SearchIndexInsert = typeof searchIndex.$inferInsert;
 export type Email = typeof emails.$inferSelect;
 export type EmailInsert = typeof emails.$inferInsert;
+export type OwnerOutreach = typeof ownerOutreach.$inferSelect;
+export type OwnerOutreachInsert = typeof ownerOutreach.$inferInsert;

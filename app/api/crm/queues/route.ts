@@ -1,7 +1,7 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, matches, owners, properties, requests } from "@/lib/crm/schema";
-import { and, asc, eq, inArray, lte, sql } from "drizzle-orm";
+import { companies, matches, owners, ownerOutreach, properties, requests } from "@/lib/crm/schema";
+import { and, asc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 const requestSelect = {
@@ -56,19 +56,25 @@ export async function GET() {
           inArray(requests.status, ["incoming", "matching"]),
         ),
       ),
-    // Objekt-nivå uppföljning (sourcing/relationsvård), oberoende av förfrågan
+    // Öppna kontaktrundor mot uthyrare vars nästa-uppföljning passerat (sourcing + förfrågnings-utlösta)
     db
       .select({
-        propertyId: properties.id,
+        propertyId: ownerOutreach.propertyId,
         address: properties.address,
         ownerName: owners.name,
         ownerPhone: owners.phone,
-        ownerFollowUpDate: properties.ownerFollowUpDate,
-        ownerReason: properties.ownerFollowUpReason,
+        ownerFollowUpDate: ownerOutreach.nextFollowUpDate,
+        ownerReason: ownerOutreach.nextFollowUpReason,
       })
-      .from(properties)
+      .from(ownerOutreach)
+      .leftJoin(properties, eq(ownerOutreach.propertyId, properties.id))
       .leftJoin(owners, eq(properties.ownerId, owners.id))
-      .where(lte(properties.ownerFollowUpDate, today)),
+      .where(
+        and(
+          isNull(ownerOutreach.concludedAt),
+          lte(ownerOutreach.nextFollowUpDate, today),
+        ),
+      ),
   ]);
 
   // Dedupa till en rad per objekt: slå ihop match-jaga + objekt-jaga

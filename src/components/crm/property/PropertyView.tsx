@@ -814,7 +814,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
 
           {/* Kontakt & uppföljning (kontaktlogg + följ upp uthyrare ihopslaget) */}
           <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3">
-            <PropertyHistory property={property} onUpdate={onUpdate} />
+            <PropertyHistory property={property} />
           </div>
 
           {/* Mejlhistorik med ägaren */}

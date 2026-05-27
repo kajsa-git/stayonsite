@@ -15,9 +15,6 @@ export type OwnerPickerValue = {
   ownerContactPerson?: string | null;
   ownerPhone?: string | null;
   ownerEmail?: string | null;
-  ownerFollowUpDate?: string | null;
-  ownerFollowUpReason?: string | null;
-  ownerFollowUpNote?: string | null;
   rating?: number | null;
 };
 
@@ -48,9 +45,6 @@ export function OwnerPicker({ value, onChange }: Props) {
       ownerContactPerson: owner.contactPerson,
       ownerPhone: owner.phone,
       ownerEmail: owner.email,
-      ownerFollowUpDate: owner.followUpDate,
-      ownerFollowUpReason: owner.followUpReason,
-      ownerFollowUpNote: owner.followUpNote,
       rating: owner.rating,
     });
     setQuery("");

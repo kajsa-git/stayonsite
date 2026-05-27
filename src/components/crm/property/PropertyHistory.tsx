@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import type { Property } from "@/lib/crm/schema";
+import type { OwnerOutreach, Property } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Check, Plus, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import useSWR from "swr";
 
 interface MatchRow {
@@ -43,6 +43,29 @@ const MATCH_STATUS: Record<string, string> = {
   rejected: "Avböjd",
 };
 
+// Kontaktrunda-pipeline mot uthyrare.
+const OPEN_STEPS: { value: string; label: string }[] = [
+  { value: "ej_kontaktad", label: "Ej kontaktad" },
+  { value: "kontaktad", label: "Kontaktad" },
+  { value: "i_dialog", label: "I dialog" },
+];
+const STATUS_LABEL: Record<string, string> = {
+  ej_kontaktad: "Ej kontaktad",
+  kontaktad: "Kontaktad",
+  i_dialog: "I dialog",
+  bekraftad: "Bekräftad",
+  nej: "Nej",
+};
+const STATUS_BADGE: Record<string, string> = {
+  ej_kontaktad: "bg-nordic-100 text-nordic-600 border-nordic-200",
+  kontaktad: "bg-amber-100 text-amber-800 border-amber-300",
+  i_dialog: "bg-blue-100 text-blue-800 border-blue-300",
+  bekraftad: "bg-green-100 text-green-800 border-green-300",
+  nej: "bg-rose-100 text-rose-700 border-rose-300",
+};
+const TERMINAL = ["bekraftad", "nej"];
+const isOpen = (s: string) => !TERMINAL.includes(s);
+
 const CHANNELS = [
   { value: "samtal", label: "📞 Samtal" },
   { value: "mejl", label: "📧 Mejl" },
@@ -55,32 +78,53 @@ const CHANNELS = [
 const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
 const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
 
-export function PropertyHistory({
-  property,
-  onUpdate,
-}: {
-  property: Property;
-  onUpdate: (data: Partial<Property>) => Promise<void>;
-}) {
+export function PropertyHistory({ property }: { property: Property }) {
   const propertyId = property.id;
   const { data: history = [] } = useSWR<MatchRow[]>(`/api/crm/properties/${propertyId}/matches`, fetcher);
   const { data: notes = [], mutate } = useSWR<Note[]>(`/api/crm/properties/${propertyId}/notes`, fetcher);
+  const { data: rounds = [], mutate: mutateRounds } = useSWR<OwnerOutreach[]>(
+    `/api/crm/properties/${propertyId}/outreach`,
+    fetcher,
+  );
 
   const [channel, setChannel] = useState("samtal");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Följ upp uthyrare (sammanslaget med kontaktloggen)
-  const [date, setDate] = useState(property.ownerFollowUpDate ?? "");
-  const [reason, setReason] = useState(property.ownerFollowUpReason ?? "");
-  const [fuNote, setFuNote] = useState(property.ownerFollowUpNote ?? "");
-  const [fuSaving, setFuSaving] = useState(false);
+  const openRound = rounds.find((r) => isOpen(r.status)) ?? null;
+  const concluded = rounds.filter((r) => TERMINAL.includes(r.status));
 
-  useEffect(() => {
-    setDate(property.ownerFollowUpDate ?? "");
-    setReason(property.ownerFollowUpReason ?? "");
-    setFuNote(property.ownerFollowUpNote ?? "");
-  }, [property.id, property.ownerFollowUpDate, property.ownerFollowUpReason, property.ownerFollowUpNote]);
+  async function patchRound(id: string, patch: Partial<OwnerOutreach>, successMsg?: string) {
+    const res = await fetch(`/api/crm/outreach/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) {
+      toast({ title: "Kunde inte spara", variant: "destructive" });
+      return;
+    }
+    mutateRounds();
+    if (successMsg) toast({ title: successMsg });
+  }
+
+  async function startRound() {
+    const res = await fetch(`/api/crm/properties/${propertyId}/outreach`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    if (!res.ok) {
+      toast({ title: "Kunde inte starta runda", variant: "destructive" });
+      return;
+    }
+    mutateRounds();
+    toast({ title: "Ny runda startad" });
+  }
+
+  async function deleteRound(id: string) {
+    const res = await fetch(`/api/crm/outreach/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      mutateRounds();
+      toast({ title: "Runda borttagen" });
+    }
+  }
 
   async function addNote() {
     if (!content.trim()) return;
@@ -113,71 +157,51 @@ export function PropertyHistory({
     }
   }
 
-  async function saveFollowUp() {
-    setFuSaving(true);
-    await onUpdate({
-      ownerFollowUpDate: date || null,
-      ownerFollowUpReason: reason.trim() || null,
-      ownerFollowUpNote: fuNote.trim() || null,
-    });
-    setFuSaving(false);
-    toast({ title: "Uppföljning sparad" });
-  }
-
-  async function clearFollowUp() {
-    setFuSaving(true);
-    setDate("");
-    setReason("");
-    setFuNote("");
-    await onUpdate({ ownerFollowUpDate: null, ownerFollowUpReason: null, ownerFollowUpNote: null });
-    setFuSaving(false);
-    toast({ title: "Uppföljning rensad" });
-  }
-
   return (
     <div className="space-y-5">
-      {/* Nästa uppföljning av uthyrare */}
+      {/* Kontaktrunda mot uthyrare */}
       <div className="space-y-2">
-        <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Nästa uppföljning</p>
-        <p className="text-[11px] text-amber-800/80 -mt-1">För sourcing/relationsvård — funkar även utan aktiv förfrågan.</p>
-        <div className="grid grid-cols-2 gap-2">
-          <Labeled label="Datum">
-            <input type="date" className={FIELD_CLS} value={date} onChange={(e) => setDate(e.target.value)} />
-          </Labeled>
-          <Labeled label="Anledning">
-            <input className={FIELD_CLS} placeholder="T.ex. Kolla pris" value={reason} onChange={(e) => setReason(e.target.value)} />
-          </Labeled>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          {FOLLOWUP_REASONS.map((r) => (
-            <button
-              key={r}
-              type="button"
-              onClick={() => setReason(r)}
-              className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
-                reason === r ? "bg-amber-200 border-amber-300 text-amber-900" : "bg-white border-input text-muted-foreground hover:bg-amber-100"
-              }`}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-        <textarea
-          className={`${FIELD_CLS} min-h-[44px] resize-y`}
-          placeholder="Anteckning (valfri)"
-          value={fuNote}
-          onChange={(e) => setFuNote(e.target.value)}
-        />
-        <div className="flex justify-end gap-2">
-          {property.ownerFollowUpDate && (
-            <Button variant="ghost" size="sm" onClick={clearFollowUp} disabled={fuSaving}>
-              Rensa
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Kontaktrunda</p>
+          {!openRound && (
+            <Button size="sm" className="h-7 text-xs gap-1" onClick={startRound}>
+              <Plus className="h-3 w-3" /> Starta ny runda
             </Button>
           )}
-          <Button size="sm" onClick={saveFollowUp} disabled={fuSaving || !date}>
-            {fuSaving ? "Sparar…" : "Spara uppföljning"}
-          </Button>
         </div>
+        <p className="text-[11px] text-amber-800/80 -mt-1">Bekräfta med uthyraren: pris, tillgänglighet, vill hyra ut?</p>
+
+        {openRound ? (
+          <OpenRoundCard round={openRound} onPatch={patchRound} onDelete={deleteRound} />
+        ) : (
+          <p className="text-sm text-muted-foreground italic">Ingen pågående runda. Starta en när du ska höra av dig till uthyraren.</p>
+        )}
+
+        {/* Avslutade rundor */}
+        {concluded.length > 0 && (
+          <div className="space-y-1.5 pt-1">
+            {concluded.map((r) => (
+              <div key={r.id} className="flex items-start gap-2 text-sm group">
+                <span className={`shrink-0 text-[11px] px-1.5 py-0.5 rounded-full border ${STATUS_BADGE[r.status]}`}>
+                  {STATUS_LABEL[r.status]}
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="text-xs text-muted-foreground">
+                    {r.concludedAt ? format(new Date(r.concludedAt), "d MMM yyyy", { locale: sv }) : ""}
+                  </span>
+                  {r.note && <span className="block text-nordic-800 whitespace-pre-wrap">{r.note}</span>}
+                </span>
+                <button
+                  onClick={() => deleteRound(r.id)}
+                  className="opacity-0 group-hover:opacity-100 h-5 w-5 flex items-center justify-center rounded hover:bg-red-50 text-muted-foreground hover:text-red-700 shrink-0"
+                  title="Ta bort runda"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Kontaktlogg */}
@@ -257,11 +281,107 @@ export function PropertyHistory({
   );
 }
 
-function Labeled({ label, children }: { label: string; children: React.ReactNode }) {
+function OpenRoundCard({
+  round,
+  onPatch,
+  onDelete,
+}: {
+  round: OwnerOutreach;
+  onPatch: (id: string, patch: Partial<OwnerOutreach>, successMsg?: string) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+}) {
+  const [date, setDate] = useState(round.nextFollowUpDate ?? "");
+  const [reason, setReason] = useState(round.nextFollowUpReason ?? "");
+  const [note, setNote] = useState(round.note ?? "");
+
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs text-muted-foreground uppercase tracking-wide">{label}</label>
-      {children}
+    <div className="rounded-lg border bg-white p-3 space-y-3">
+      {/* Pipeline: öppna steg */}
+      <div className="flex flex-wrap gap-1">
+        {OPEN_STEPS.map((step) => (
+          <button
+            key={step.value}
+            type="button"
+            onClick={() => onPatch(round.id, { status: step.value }, `Status: ${step.label}`)}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              round.status === step.value
+                ? "bg-amber-200 border-amber-300 text-amber-900 font-medium"
+                : "bg-white border-input text-muted-foreground hover:bg-amber-50"
+            }`}
+          >
+            {step.label}
+          </button>
+        ))}
+        <span className="mx-1 self-center text-muted-foreground">→</span>
+        <button
+          type="button"
+          onClick={() => onPatch(round.id, { status: "bekraftad", note: note.trim() || null }, "Bekräftad — runda avslutad")}
+          className="text-xs px-2.5 py-1 rounded-full border border-green-300 bg-white text-green-800 hover:bg-green-50 inline-flex items-center gap-1"
+        >
+          <Check className="h-3 w-3" /> Bekräftad
+        </button>
+        <button
+          type="button"
+          onClick={() => onPatch(round.id, { status: "nej", note: note.trim() || null }, "Nej — runda avslutad")}
+          className="text-xs px-2.5 py-1 rounded-full border border-rose-300 bg-white text-rose-700 hover:bg-rose-50 inline-flex items-center gap-1"
+        >
+          <X className="h-3 w-3" /> Nej
+        </button>
+      </div>
+
+      {/* Nästa uppföljning */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-muted-foreground uppercase tracking-wide">Nästa uppföljning</label>
+          <input
+            type="date"
+            className={FIELD_CLS}
+            value={date}
+            onChange={(e) => { setDate(e.target.value); onPatch(round.id, { nextFollowUpDate: e.target.value || null }); }}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-muted-foreground uppercase tracking-wide">Anledning</label>
+          <input
+            className={FIELD_CLS}
+            placeholder="T.ex. Kolla pris"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            onBlur={() => onPatch(round.id, { nextFollowUpReason: reason.trim() || null })}
+          />
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {FOLLOWUP_REASONS.map((r) => (
+          <button
+            key={r}
+            type="button"
+            onClick={() => { setReason(r); onPatch(round.id, { nextFollowUpReason: r }); }}
+            className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+              reason === r ? "bg-amber-200 border-amber-300 text-amber-900" : "bg-white border-input text-muted-foreground hover:bg-amber-100"
+            }`}
+          >
+            {r}
+          </button>
+        ))}
+      </div>
+
+      <textarea
+        className={`${FIELD_CLS} min-h-[44px] resize-y`}
+        placeholder="Anteckning (sparas på rundan)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        onBlur={() => onPatch(round.id, { note: note.trim() || null })}
+      />
+
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] text-muted-foreground">
+          Startad {round.startedAt ? format(new Date(round.startedAt), "d MMM yyyy", { locale: sv }) : "—"}
+        </span>
+        <button onClick={() => onDelete(round.id)} className="text-[11px] text-muted-foreground hover:text-red-700 inline-flex items-center gap-1">
+          <Trash2 className="h-3 w-3" /> Ta bort runda
+        </button>
+      </div>
     </div>
   );
 }

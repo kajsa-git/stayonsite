@@ -65,7 +65,7 @@ function hasOwnerPayload(body: Record<string, unknown>) {
   return OWNER_IDENTITY_KEYS.some((key) => Object.prototype.hasOwnProperty.call(body, key));
 }
 
-// Behåll endast giltiga property-kolumner (ownerId + ownerFollowUp* + övrigt) för objekt-skrivningen.
+// Behåll endast giltiga property-kolumner (ownerId + övrigt) för objekt-skrivningen.
 function stripForPropertyWrite(body: Record<string, unknown>): Partial<Property> {
   const copy = { ...body };
   delete copy.createOwner;

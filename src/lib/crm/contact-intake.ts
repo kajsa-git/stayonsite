@@ -5,6 +5,7 @@ import {
   companies,
   contacts,
   owners,
+  ownerOutreach,
   properties,
   requests,
   type Company,
@@ -241,8 +242,6 @@ async function createHomeownerLead(
       postalCode,
       city,
       bedrooms,
-      ownerFollowUpDate: today(),
-      ownerFollowUpReason: "Ny husägare från webb",
       notes: sourceNotes(submission, [
         bedrooms ? `Sovrum: ${bedrooms}` : null,
         postalCode ? `Postnummer: ${postalCode}` : null,
@@ -251,6 +250,17 @@ async function createHomeownerLead(
       published: false,
     })
     .returning();
+
+  // Öppna en kontaktrunda så husägaren dyker upp i "Följ upp uthyrare" idag.
+  await db.insert(ownerOutreach).values({
+    id: nanoid(),
+    propertyId: property.id,
+    ownerId: owner.id,
+    status: "ej_kontaktad",
+    startedAt: new Date().toISOString(),
+    nextFollowUpDate: today(),
+    nextFollowUpReason: "Ny husägare från webb",
+  });
 
   await Promise.all([indexOwner(owner.id), indexProperty(property.id)]);
   return { owner, property };

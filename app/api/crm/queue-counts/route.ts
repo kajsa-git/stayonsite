@@ -1,7 +1,7 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, matches, properties, requests } from "@/lib/crm/schema";
-import { and, eq, inArray, lte } from "drizzle-orm";
+import { companies, matches, ownerOutreach, requests } from "@/lib/crm/schema";
+import { and, eq, inArray, isNull, lte } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -38,14 +38,17 @@ export async function GET() {
         ),
       ),
 
-    // Objekt med egen uppföljning (sourcing)
-    db.select({ id: properties.id }).from(properties).where(lte(properties.ownerFollowUpDate, today)),
+    // Öppna kontaktrundor vars nästa-uppföljning passerat
+    db
+      .select({ propertyId: ownerOutreach.propertyId })
+      .from(ownerOutreach)
+      .where(and(isNull(ownerOutreach.concludedAt), lte(ownerOutreach.nextFollowUpDate, today))),
   ]);
 
   // Dedupa: räkna distinkta objekt i "Följ upp uthyrare"
   const chaseProps = new Set<string>();
   for (const m of chaseMatchProps) if (m.propertyId) chaseProps.add(m.propertyId);
-  for (const o of chaseOwnerProps) chaseProps.add(o.id);
+  for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
 
   return NextResponse.json({
     followUps: followUps.length,
