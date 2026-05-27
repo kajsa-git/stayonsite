@@ -6,7 +6,7 @@ import { properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,7 +60,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     .select({ key: propertyImages.key })
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, id))
-    .orderBy(asc(propertyImages.sortOrder), asc(propertyImages.createdAt))
+    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt))
     .limit(1);
 
   let bg: string | null = null;

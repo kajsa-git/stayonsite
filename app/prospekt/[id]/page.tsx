@@ -4,7 +4,7 @@ import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { ProspektGallery } from "@/components/prospekt/ProspektGallery";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowRight, Car, CookingPot, DoorClosed, MapPin, Sofa, Wifi } from "lucide-react";
@@ -169,7 +169,7 @@ export default async function ProspektPage(
     .select()
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, id))
-    .orderBy(asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
 
   const images = await Promise.all(
     imgRows.map((im) =>

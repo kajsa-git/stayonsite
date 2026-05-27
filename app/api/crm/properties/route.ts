@@ -6,7 +6,7 @@ import { owners, properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { and, asc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       .select({ propertyId: propertyImages.propertyId, key: propertyImages.key })
       .from(propertyImages)
       .where(inArray(propertyImages.propertyId, ids))
-      .orderBy(asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+      .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
     for (const im of imgs) if (!firstKeyByProp.has(im.propertyId)) firstKeyByProp.set(im.propertyId, im.key);
   }
   const withThumbs = await Promise.all(

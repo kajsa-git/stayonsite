@@ -99,6 +99,13 @@
       "when": 1779800600000,
       "tag": "0013_property_description_i18n",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1779800700000,
+      "tag": "0014_property_image_primary",
+      "breakpoints": true
     }
   ]
 }

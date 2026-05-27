@@ -257,6 +257,7 @@ export const propertyImages = sqliteTable("crm_property_images", {
   key: text("key").notNull(), // R2 object key
   fileName: text("file_name"),
   sortOrder: integer("sort_order").default(0),
+  isPrimary: integer("is_primary", { mode: "boolean" }).default(false), // huvudbild i prospekt/OG
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 

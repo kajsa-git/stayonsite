@@ -4,7 +4,7 @@ import { propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,12 +18,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .select()
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, id))
-    .orderBy(asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
 
   const withUrls = await Promise.all(
     rows.map(async (r) => ({
       id: r.id,
       fileName: r.fileName,
+      isPrimary: !!r.isPrimary,
       url: await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: r.key }), { expiresIn: 3600 }),
     }))
   );

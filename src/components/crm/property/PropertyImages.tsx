@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, ImagePlus, Loader2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImagePlus, Loader2, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { toast } from "@/components/ui/use-toast";
@@ -9,6 +9,7 @@ interface Image {
   id: string;
   fileName: string | null;
   url: string;
+  isPrimary?: boolean;
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -60,6 +61,21 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
     }
   }
 
+  async function setPrimary(id: string) {
+    try {
+      const res = await fetch(`/api/crm/property-images/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPrimary: true }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: "Huvudbild satt — visas först i prospektet" });
+    } catch {
+      toast({ title: "Kunde inte sätta huvudbild", variant: "destructive" });
+    }
+  }
+
   async function remove(id: string) {
     try {
       const res = await fetch(`/api/crm/property-images/${id}`, { method: "DELETE" });
@@ -100,7 +116,12 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
       ) : (
         <div className="grid grid-cols-3 gap-2">
           {images.map((img, i) => (
-            <div key={img.id} className="relative group aspect-square rounded-md overflow-hidden border bg-muted">
+            <div
+              key={img.id}
+              className={`relative group aspect-square rounded-md overflow-hidden border bg-muted ${
+                img.isPrimary ? "ring-2 ring-[#ff6300] ring-offset-1" : ""
+              }`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={img.url}
@@ -108,6 +129,20 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
                 className="w-full h-full object-cover cursor-zoom-in"
                 onClick={() => setLightbox(i)}
               />
+              {img.isPrimary && (
+                <span className="absolute top-1 left-1 inline-flex items-center gap-1 rounded-full bg-[#ff6300] px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  <Star className="h-3 w-3 fill-current" /> Huvudbild
+                </span>
+              )}
+              {!img.isPrimary && (
+                <button
+                  onClick={() => setPrimary(img.id)}
+                  className="absolute bottom-1 left-1 inline-flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                  title="Sätt som huvudbild"
+                >
+                  <Star className="h-3 w-3" /> Huvudbild
+                </button>
+              )}
               <button
                 onClick={() => remove(img.id)}
                 className="absolute top-1 right-1 h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
