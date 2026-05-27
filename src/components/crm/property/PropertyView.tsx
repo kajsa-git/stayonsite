@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
-import { ChevronRight, Home, Languages, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ChevronRight, Home, Languages, Loader2, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
@@ -126,6 +126,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
   const [deleting, setDeleting] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [showI18n, setShowI18n] = useState(false);
+  const [describing, setDescribing] = useState(false);
 
   // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
   const delTarget = (property.address ?? "").trim() || "RADERA";
@@ -208,6 +209,46 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
     setSaving(false);
     setEditing(false);
     toast({ title: "Objekt sparat" });
+  }
+
+  async function generateDescription() {
+    setDescribing(true);
+    try {
+      const res = await fetch(`/api/crm/properties/${property.id}/describe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: form.city,
+          postalCode: form.postalCode,
+          squareMeters: form.squareMeters,
+          bedrooms: form.bedrooms,
+          beds: form.beds,
+          bathrooms: form.bathrooms,
+          furnished: form.furnished,
+          kitchen: form.kitchen,
+          garage: form.garage,
+          broadband: form.broadband,
+          egetBoende: form.egetBoende,
+          parkingSpaces: form.parkingSpaces,
+          washingMachines: form.washingMachines,
+          dryers: form.dryers,
+          skick: form.skick,
+          moveInFrom: form.moveInFrom,
+          availableTo: form.availableTo,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast({ title: data.error ?? "Generering misslyckades", variant: "destructive" });
+        return;
+      }
+      setForm((f) => ({ ...f, publicDescription: data.description ?? f.publicDescription }));
+      toast({ title: "Beskrivning genererad — granska och spara" });
+    } catch {
+      toast({ title: "Generering misslyckades", variant: "destructive" });
+    } finally {
+      setDescribing(false);
+    }
   }
 
   async function generateTranslations() {
@@ -374,9 +415,17 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         <Labeled label="Intern beskrivning (visas aldrig publikt)">
           <textarea className={`${FIELD_CLS} min-h-[60px] resize-y`} value={form.notes} onChange={(e) => set("notes", e.target.value)} />
         </Labeled>
-        <Labeled label="Extern beskrivning (visas på hemsidan)">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-xs text-muted-foreground uppercase tracking-wide">Extern beskrivning (visas på hemsidan)</label>
+            <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs" onClick={generateDescription} disabled={describing}>
+              {describing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+              Generera (AI)
+            </Button>
+          </div>
           <textarea className={`${FIELD_CLS} min-h-[60px] resize-y`} value={form.publicDescription} onChange={(e) => set("publicDescription", e.target.value)} />
-        </Labeled>
+          <p className="text-[11px] text-muted-foreground">AI skriver utifrån objektets data + uppladdade foton. Granska och redigera innan du sparar.</p>
+        </div>
 
         <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
           <div className="flex items-center justify-between gap-2">

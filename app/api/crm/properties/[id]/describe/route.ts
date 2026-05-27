@@ -1,0 +1,106 @@
+import { auth } from "@/lib/crm/auth";
+import { db } from "@/lib/crm/db";
+import { propertyImages } from "@/lib/crm/schema";
+import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { asc, desc, eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
+const MODEL = "claude-sonnet-4-5-20250929";
+
+const yesNo = (v: unknown) => (v ? "ja" : null);
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: "ANTHROPIC_API_KEY saknas i miljön (lägg till i Vercel)." }, { status: 503 });
+  }
+
+  const { id } = await params;
+  const b = await req.json().catch(() => ({} as Record<string, unknown>));
+
+  // Faktarader från objektets data (frivilligt — använder formulärets aktuella värden).
+  const facts: string[] = [
+    b.city && `Ort: ${b.city}`,
+    b.postalCode && `Postnummer: ${b.postalCode}`,
+    b.squareMeters && `Yta: ${b.squareMeters} m²`,
+    b.bedrooms && `Sovrum: ${b.bedrooms}`,
+    b.beds && `Bäddar: ${b.beds}`,
+    b.bathrooms && `Badrum: ${b.bathrooms}`,
+    yesNo(b.furnished) && "Möblerat",
+    yesNo(b.kitchen) && "Eget kök",
+    yesNo(b.garage) && "Garage",
+    yesNo(b.broadband) && "Bredband ingår",
+    yesNo(b.egetBoende) && "Eget boende (ej delat)",
+    b.parkingSpaces && `Parkering: ${b.parkingSpaces} platser`,
+    b.washingMachines && `Tvättmaskin: ${b.washingMachines}`,
+    b.dryers && `Tumlare: ${b.dryers}`,
+    b.skick && `Skick: ${b.skick}`,
+    b.moveInFrom && `Tillgänglig från: ${b.moveInFrom}`,
+    b.availableTo && `Tillgänglig till: ${b.availableTo}`,
+  ].filter(Boolean) as string[];
+
+  // Bilder för vision (presignerade R2-URL:er, primär först, max 6).
+  const imgRows = await db
+    .select({ key: propertyImages.key })
+    .from(propertyImages)
+    .where(eq(propertyImages.propertyId, id))
+    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt))
+    .limit(6);
+  const imageUrls = await Promise.all(
+    imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }), { expiresIn: 600 })),
+  );
+
+  if (facts.length === 0 && imageUrls.length === 0) {
+    return NextResponse.json({ error: "Fyll i lite data eller ladda upp bilder först." }, { status: 400 });
+  }
+
+  const instructions = `Du skriver en extern bostadsbeskrivning för ett seriöst svenskt corporate housing-bolag (StayOnSite). Beskrivningen visas publikt för företag som söker boende åt personal.
+
+Skriv på svenska, 2–4 meningar, saklig och förtroendeingivande B2B-ton. Beskriv det som faktiskt syns på bilderna och framgår av datan (standard, ljus, möblering, läge-känsla).
+
+Förbjudet: hitta inte på fakta, ingen reklamfluff, inga superlativ-staplar, och nämn ALDRIG exakt gatuadress, hyresvärd/ägare eller pris. Svara ENBART med beskrivningstexten, inget annat.
+
+Objektdata:
+${facts.length ? facts.map((f) => `- ${f}`).join("\n") : "(ingen strukturerad data angiven)"}`;
+
+  const content: unknown[] = [{ type: "text", text: instructions }];
+  for (const url of imageUrls) content.push({ type: "image", source: { type: "url", url } });
+
+  let data: { content?: { type: string; text?: string }[] };
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ model: MODEL, max_tokens: 600, messages: [{ role: "user", content }] }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      return NextResponse.json({ error: `Claude API ${res.status}`, detail: err.slice(0, 300) }, { status: 502 });
+    }
+    data = await res.json();
+  } catch (e) {
+    return NextResponse.json({ error: "Generering misslyckades", detail: String(e).slice(0, 200) }, { status: 502 });
+  }
+
+  const description = (data.content ?? [])
+    .filter((blk) => blk.type === "text")
+    .map((blk) => blk.text ?? "")
+    .join("")
+    .trim()
+    .replace(/^["“”]|["“”]$/g, "");
+
+  if (!description) return NextResponse.json({ error: "Tom beskrivning från modellen." }, { status: 502 });
+  return NextResponse.json({ description });
+}
