@@ -155,6 +155,7 @@ export const properties = sqliteTable("crm_properties", {
   address: text("address"),
   postalCode: text("postal_code"),
   city: text("city"),
+  country: text("country"), // tomt/null = Sverige; sätts för utländska objekt
   squareMeters: real("square_meters"),
   bedrooms: integer("bedrooms"),
   beds: integer("beds"),

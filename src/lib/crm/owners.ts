@@ -73,6 +73,11 @@ function stripForPropertyWrite(body: Record<string, unknown>): Partial<Property>
   return copy as Partial<Property>;
 }
 
+// Tomt/null land tolkas som Sverige (default för objekt idag).
+export function isSwedishCountry(c: string | null | undefined): boolean {
+  return !c || /^(sverige|sweden|se)$/i.test(c.trim());
+}
+
 // Svenska postnummer → "XXX XX". Lämnar orört om det inte är exakt 5 siffror.
 export function formatSwedishPostal(v: string | null | undefined): string | null | undefined {
   if (typeof v !== "string") return v;
@@ -141,7 +146,8 @@ export async function normalizePropertyWriteBody(
   existing?: Property,
 ): Promise<Partial<Property>> {
   const next = stripForPropertyWrite(body);
-  if (Object.prototype.hasOwnProperty.call(next, "postalCode")) {
+  // Postnummer-format är en Sverige-regel — bara om objektets land är (eller defaultar till) Sverige.
+  if (Object.prototype.hasOwnProperty.call(next, "postalCode") && isSwedishCountry(next.country ?? existing?.country)) {
     next.postalCode = formatSwedishPostal(next.postalCode);
   }
   const ownerIdProvided = Object.prototype.hasOwnProperty.call(body, "ownerId");

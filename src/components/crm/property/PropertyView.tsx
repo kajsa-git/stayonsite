@@ -40,6 +40,7 @@ type EditForm = {
   address: string;
   postalCode: string;
   city: string;
+  country: string;
   squareMeters: string;
   bedrooms: string;
   beds: string;
@@ -85,6 +86,7 @@ function toForm(p: PropertyWithOwner): EditForm {
     address: s(p.address),
     postalCode: s(p.postalCode),
     city: s(p.city),
+    country: s(p.country) || "Sverige",
     squareMeters: ns(p.squareMeters),
     bedrooms: ns(p.bedrooms),
     beds: ns(p.beds),
@@ -185,6 +187,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       address: t(form.address),
       postalCode: t(form.postalCode),
       city: t(form.city),
+      country: form.country.trim() || "Sverige",
       squareMeters: num(form.squareMeters),
       bedrooms: int(form.bedrooms),
       beds: int(form.beds),
@@ -381,12 +384,15 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         <Labeled label="Adress">
           <input className={FIELD_CLS} value={form.address} onChange={(e) => set("address", e.target.value)} />
         </Labeled>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <Labeled label="Postnummer">
             <input className={FIELD_CLS} value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} />
           </Labeled>
           <Labeled label="Ort">
             <input className={FIELD_CLS} value={form.city} onChange={(e) => set("city", e.target.value)} />
+          </Labeled>
+          <Labeled label="Land">
+            <input className={FIELD_CLS} value={form.country} placeholder="Sverige" onChange={(e) => set("country", e.target.value)} />
           </Labeled>
           <Labeled label="Yta (m²)">
             <input type="number" className={FIELD_CLS} value={form.squareMeters} onChange={(e) => set("squareMeters", e.target.value)} />

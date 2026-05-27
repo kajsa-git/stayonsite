@@ -8,6 +8,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, desc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { isSwedishCountry } from "@/lib/crm/owners";
 import { ArrowRight, Car, Check, CookingPot, DoorClosed, MapPin, Sofa, Wifi } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -15,15 +16,24 @@ export const dynamic = "force-dynamic";
 const editorial = { fontFamily: "var(--font-instrument), Georgia, serif" } as const;
 
 // Geokodar postnummer-området (cachat) via OSM Nominatim — server-side, ingen nyckel.
-// Svenska postnummer måste formateras "XXX XX"; faller tillbaka till ort om postnr inte matchar.
-async function geocodeArea(postalCode?: string | null, city?: string | null): Promise<{ lat: number; lng: number } | null> {
+// Landsmedvetet: svenskt postnummer formateras "XXX XX", annars används värdet rått.
+async function geocodeArea(
+  postalCode?: string | null,
+  city?: string | null,
+  country?: string | null,
+): Promise<{ lat: number; lng: number } | null> {
   const headers = { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" };
-  const spaced = (postalCode ?? "").replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2");
+  const swede = isSwedishCountry(country);
+  const postal = swede
+    ? (postalCode ?? "").replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2")
+    : (postalCode ?? "").trim();
   const c = (city ?? "").trim();
+  const countryName = swede ? "Sweden" : (country ?? "").trim();
+  const cn = countryName ? `&country=${encodeURIComponent(countryName)}` : "";
   const tries: string[] = [];
-  if (spaced && c) tries.push(`country=Sweden&postalcode=${encodeURIComponent(spaced)}&city=${encodeURIComponent(c)}`);
-  if (spaced) tries.push(`country=Sweden&postalcode=${encodeURIComponent(spaced)}`);
-  if (c) tries.push(`country=Sweden&city=${encodeURIComponent(c)}`);
+  if (postal && c) tries.push(`postalcode=${encodeURIComponent(postal)}&city=${encodeURIComponent(c)}${cn}`);
+  if (postal) tries.push(`postalcode=${encodeURIComponent(postal)}${cn}`);
+  if (c) tries.push(`city=${encodeURIComponent(c)}${cn}`);
   for (const params of tries) {
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&${params}`, {
@@ -175,6 +185,7 @@ export default async function ProspektPage(
       published: properties.published,
       postalCode: properties.postalCode,
       city: properties.city,
+      country: properties.country,
       squareMeters: properties.squareMeters,
       bedrooms: properties.bedrooms,
       beds: properties.beds,
@@ -213,7 +224,7 @@ export default async function ProspektPage(
 
   // Karta på områdesnivå — aldrig exakt adress. Cirkel runt postnummer-områdets centroid.
   const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
-  const mapCoords = p.postalCode || p.city ? await geocodeArea(p.postalCode, p.city) : null;
+  const mapCoords = p.postalCode || p.city ? await geocodeArea(p.postalCode, p.city, p.country) : null;
 
   const imgRows = await db
     .select()
