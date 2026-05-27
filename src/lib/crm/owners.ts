@@ -73,6 +73,13 @@ function stripForPropertyWrite(body: Record<string, unknown>): Partial<Property>
   return copy as Partial<Property>;
 }
 
+// Svenska postnummer → "XXX XX". Lämnar orört om det inte är exakt 5 siffror.
+export function formatSwedishPostal(v: string | null | undefined): string | null | undefined {
+  if (typeof v !== "string") return v;
+  const digits = v.replace(/\s+/g, "");
+  return /^\d{5}$/.test(digits) ? `${digits.slice(0, 3)} ${digits.slice(3)}` : v;
+}
+
 type OwnerValues = {
   ownerType: string | null;
   ownerArrangement: string | null;
@@ -134,6 +141,9 @@ export async function normalizePropertyWriteBody(
   existing?: Property,
 ): Promise<Partial<Property>> {
   const next = stripForPropertyWrite(body);
+  if (Object.prototype.hasOwnProperty.call(next, "postalCode")) {
+    next.postalCode = formatSwedishPostal(next.postalCode);
+  }
   const ownerIdProvided = Object.prototype.hasOwnProperty.call(body, "ownerId");
   const payload = hasOwnerPayload(body);
 
