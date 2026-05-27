@@ -189,7 +189,7 @@ export default async function ProspektPage(
   const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
   const mapSrc =
     MAPS_KEY && mapArea
-      ? `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(`${mapArea}, Sverige`)}&zoom=12&size=640x300&scale=2&language=sv&region=SE&markers=${encodeURIComponent(`color:0xff6300|${mapArea}, Sverige`)}&key=${MAPS_KEY}`
+      ? `https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${encodeURIComponent(`${mapArea}, Sverige`)}&zoom=12&language=sv&region=SE`
       : null;
 
   const imgRows = await db
@@ -347,8 +347,14 @@ export default async function ProspektPage(
           <div>
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.mapTitle}</h2>
             <div className="overflow-hidden rounded-xl border bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={mapSrc} alt={`Karta ${mapArea}`} width={640} height={300} className="h-auto w-full" />
+              <iframe
+                src={mapSrc}
+                title={`Karta ${mapArea}`}
+                className="h-[300px] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
               <div className="flex items-center gap-2 px-4 py-3 text-sm text-nordic-800">
                 <MapPin className="h-4 w-4 shrink-0 text-[#ff6300]" />
                 {mapArea}
