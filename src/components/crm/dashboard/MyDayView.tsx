@@ -433,10 +433,10 @@ function ChaseCard({
         </div>
         <div className="text-xs mt-1">
           {item.sourcing ? (
-            <span className="italic text-nordic-500">Ingen aktiv förfrågan</span>
+            <span className="italic text-nordic-500">Uthyrarkontakt att följa upp</span>
           ) : (
             <span className="text-amber-700 font-medium">
-              {item.requestCount} förfrågning{item.requestCount === 1 ? "" : "ar"} väntar
+              {item.requestCount === 1 ? "Skickat förslag väntar svar" : `${item.requestCount} skickade förslag väntar svar`}
             </span>
           )}
           {item.reason && <span className="text-muted-foreground"> · {item.reason}</span>}
