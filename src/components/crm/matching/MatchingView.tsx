@@ -141,13 +141,17 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     request.addressQuery ||
     request.city ||
     "";
-  const distances = useDistances(
-    workplaceAddress,
-    scored.map(({ property }) => ({
-      id: property.id,
-      address: [property.address, property.postalCode, property.city].filter(Boolean).join(" "),
-    })),
-  );
+  const distDests = (() => {
+    const byId = new Map<string, string>();
+    for (const { property } of scored) {
+      byId.set(property.id, [property.address, property.postalCode, property.city].filter(Boolean).join(" "));
+    }
+    for (const m of matches) {
+      if (!byId.has(m.propertyId)) byId.set(m.propertyId, [m.propertyAddress, m.propertyCity].filter(Boolean).join(" "));
+    }
+    return [...byId].map(([id, address]) => ({ id, address }));
+  })();
+  const distances = useDistances(workplaceAddress, distDests);
 
   function resetFilters() {
     setFilters({
@@ -351,6 +355,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
+                    {distances[m.propertyId] && (
+                      <div className="-mt-1 mb-2 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700">
+                        <Navigation className="h-3 w-3" />
+                        {distances[m.propertyId].distanceText} · {distances[m.propertyId].durationText} till arbetsplatsen
+                      </div>
+                    )}
                     {(m.status === "suggested" || m.status === "sent") && (
                       <div className="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-muted-foreground">
                         <span>📲 Följ upp:</span>
