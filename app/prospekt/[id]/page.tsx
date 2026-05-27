@@ -14,18 +14,28 @@ export const dynamic = "force-dynamic";
 
 const editorial = { fontFamily: "var(--font-instrument), Georgia, serif" } as const;
 
-// Geokodar postnummer-området en gång (cachat) via OSM Nominatim — server-side, ingen nyckel.
-async function geocodeArea(area: string): Promise<{ lat: number; lng: number } | null> {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=se&q=${encodeURIComponent(`${area}, Sverige`)}`,
-      { headers: { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" }, cache: "force-cache" },
-    );
-    if (!res.ok) return null;
-    const j = (await res.json()) as { lat: string; lon: string }[];
-    if (Array.isArray(j) && j[0]) return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
-  } catch {
-    /* karta utelämnas om geokodning fallerar */
+// Geokodar postnummer-området (cachat) via OSM Nominatim — server-side, ingen nyckel.
+// Svenska postnummer måste formateras "XXX XX"; faller tillbaka till ort om postnr inte matchar.
+async function geocodeArea(postalCode?: string | null, city?: string | null): Promise<{ lat: number; lng: number } | null> {
+  const headers = { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" };
+  const spaced = (postalCode ?? "").replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2");
+  const c = (city ?? "").trim();
+  const tries: string[] = [];
+  if (spaced && c) tries.push(`country=Sweden&postalcode=${encodeURIComponent(spaced)}&city=${encodeURIComponent(c)}`);
+  if (spaced) tries.push(`country=Sweden&postalcode=${encodeURIComponent(spaced)}`);
+  if (c) tries.push(`country=Sweden&city=${encodeURIComponent(c)}`);
+  for (const params of tries) {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&${params}`, {
+        headers,
+        cache: "force-cache",
+      });
+      if (!res.ok) continue;
+      const j = (await res.json()) as { lat: string; lon: string }[];
+      if (Array.isArray(j) && j[0]) return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+    } catch {
+      /* prova nästa variant */
+    }
   }
   return null;
 }
@@ -203,7 +213,7 @@ export default async function ProspektPage(
 
   // Karta på områdesnivå — aldrig exakt adress. Cirkel runt postnummer-områdets centroid.
   const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
-  const mapCoords = mapArea ? await geocodeArea(mapArea) : null;
+  const mapCoords = p.postalCode || p.city ? await geocodeArea(p.postalCode, p.city) : null;
 
   const imgRows = await db
     .select()
