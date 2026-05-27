@@ -1,0 +1,118 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import type { Email } from "@/lib/crm/schema";
+import { format } from "date-fns";
+import { sv } from "date-fns/locale";
+import { ChevronDown, ChevronUp, Mail, MailOpen } from "lucide-react";
+import { useState } from "react";
+import useSWR from "swr";
+import { EmailComposeModal } from "./EmailComposeModal";
+import { EmailLogModal } from "./EmailLogModal";
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+interface Props {
+  companyId?: string;
+  ownerId?: string;
+  defaultTo?: string;
+  contactId?: string;
+}
+
+function EmailItem({ email }: { email: Email }) {
+  const [expanded, setExpanded] = useState(false);
+  const isOut = email.direction === "out";
+
+  return (
+    <div className="bg-white rounded-lg border p-3 text-sm">
+      <button
+        type="button"
+        className="w-full text-left"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+          <span className={isOut ? "text-blue-600" : "text-green-600"}>
+            {isOut ? <Mail className="h-3.5 w-3.5 inline" /> : <MailOpen className="h-3.5 w-3.5 inline" />}
+            {" "}{isOut ? "Skickad" : "Mottagen"}
+          </span>
+          <span>·</span>
+          <span className="truncate">{isOut ? email.toEmail : email.fromEmail}</span>
+          <span className="ml-auto shrink-0">
+            {format(new Date(email.sentAt), "d MMM yyyy HH:mm", { locale: sv })}
+          </span>
+          {expanded ? <ChevronUp className="h-3 w-3 shrink-0" /> : <ChevronDown className="h-3 w-3 shrink-0" />}
+        </div>
+        <p className="font-medium text-nordic-900 truncate">{email.subject}</p>
+      </button>
+      {expanded && (
+        <p className="mt-2 whitespace-pre-wrap text-nordic-800 border-t pt-2">{email.body}</p>
+      )}
+    </div>
+  );
+}
+
+export function EmailThread({ companyId, ownerId, defaultTo, contactId }: Props) {
+  const [composeOpen, setComposeOpen] = useState(false);
+  const [logOpen, setLogOpen] = useState(false);
+
+  const param = companyId ? `companyId=${companyId}` : `ownerId=${ownerId}`;
+  const { data: emailList = [], mutate } = useSWR<Email[]>(
+    companyId || ownerId ? `/api/crm/emails?${param}` : null,
+    fetcher
+  );
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Mejl
+        </span>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 text-xs px-2"
+            onClick={() => setLogOpen(true)}
+          >
+            Logga
+          </Button>
+          <Button
+            size="sm"
+            className="h-6 text-xs px-2"
+            onClick={() => setComposeOpen(true)}
+          >
+            Skriv mejl
+          </Button>
+        </div>
+      </div>
+
+      {emailList.length === 0 ? (
+        <p className="text-sm text-muted-foreground italic">Inga mejl loggade ännu.</p>
+      ) : (
+        <div className="space-y-2">
+          {emailList.map((email) => (
+            <EmailItem key={email.id} email={email} />
+          ))}
+        </div>
+      )}
+
+      <EmailComposeModal
+        open={composeOpen}
+        defaultTo={defaultTo}
+        companyId={companyId}
+        contactId={contactId}
+        ownerId={ownerId}
+        onClose={() => setComposeOpen(false)}
+        onSent={() => mutate()}
+      />
+      <EmailLogModal
+        open={logOpen}
+        companyId={companyId}
+        contactId={contactId}
+        ownerId={ownerId}
+        onClose={() => setLogOpen(false)}
+        onLogged={() => mutate()}
+      />
+    </div>
+  );
+}

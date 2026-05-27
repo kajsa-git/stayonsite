@@ -6,6 +6,7 @@ import { FollowUpModal } from "./FollowUpModal";
 import { NotesPanel } from "./NotesPanel";
 import { RequestsList } from "./RequestsList";
 import { RequestForm, type RequestFormData } from "./RequestForm";
+import { EmailThread } from "@/components/crm/email/EmailThread";
 import { useCompany } from "@/hooks/crm/useCompany";
 import { RatingControl } from "../RatingControl";
 import { Button } from "@/components/ui/button";
@@ -278,13 +279,18 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
             onStatusChange={handleStatusChange}
           />
         </div>
-        <div>
+        <div className="space-y-8">
           <NotesPanel
             notes={company.notes ?? []}
             companyId={companyId}
             onAdd={handleAddNote}
             onUpdate={handleUpdateNote}
             onDelete={handleDeleteNote}
+          />
+          <EmailThread
+            companyId={companyId}
+            contactId={primaryContact?.id}
+            defaultTo={primaryContact?.email ?? undefined}
           />
         </div>
       </div>

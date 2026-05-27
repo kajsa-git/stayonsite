@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
+import { EmailThread } from "@/components/crm/email/EmailThread";
 import { CopyProspektLink } from "./CopyProspektLink";
 import { RatingControl } from "../RatingControl";
 import { toast } from "@/components/ui/use-toast";
@@ -809,6 +810,16 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
           <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3">
             <PropertyHistory property={property} onUpdate={onUpdate} />
           </div>
+
+          {/* Mejlhistorik med ägaren */}
+          {property.ownerId && (
+            <div className="rounded-md border p-3">
+              <EmailThread
+                ownerId={property.ownerId}
+                defaultTo={property.ownerEmail ?? undefined}
+              />
+            </div>
+          )}
 
           {/* Externa länkar (Airbnb/Qasa/Booking/övrigt) */}
           <div>

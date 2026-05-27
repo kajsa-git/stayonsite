@@ -300,6 +300,26 @@ export const searchIndex = sqliteTable("crm_search_index", {
   index("crm_search_index_updated_at_idx").on(t.updatedAt),
 ]);
 
+export const emails = sqliteTable("crm_emails", {
+  id: text("id").primaryKey(),
+  companyId: text("company_id").references(() => companies.id, { onDelete: "cascade" }),
+  contactId: text("contact_id").references(() => contacts.id, { onDelete: "set null" }),
+  ownerId: text("owner_id").references(() => owners.id, { onDelete: "set null" }),
+  direction: text("direction").notNull(), // 'out' | 'in'
+  subject: text("subject").notNull(),
+  body: text("body").notNull(),
+  fromEmail: text("from_email").notNull(),
+  toEmail: text("to_email").notNull(),
+  authorId: text("author_id"),   // crm_user id för utgående/manuell loggning
+  resendId: text("resend_id"),   // Resend message ID
+  isRead: integer("is_read", { mode: "boolean" }).default(true),
+  sentAt: text("sent_at").notNull(),
+}, (t) => [
+  index("crm_emails_company_id_idx").on(t.companyId),
+  index("crm_emails_owner_id_idx").on(t.ownerId),
+  index("crm_emails_sent_at_idx").on(t.sentAt),
+]);
+
 export type Match = typeof matches.$inferSelect;
 export type MatchInsert = typeof matches.$inferInsert;
 export type PropertyImage = typeof propertyImages.$inferSelect;
@@ -307,3 +327,5 @@ export type PropertyNote = typeof propertyNotes.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type SearchIndexRow = typeof searchIndex.$inferSelect;
 export type SearchIndexInsert = typeof searchIndex.$inferInsert;
+export type Email = typeof emails.$inferSelect;
+export type EmailInsert = typeof emails.$inferInsert;
