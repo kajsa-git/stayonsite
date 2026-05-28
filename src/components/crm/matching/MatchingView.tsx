@@ -14,7 +14,7 @@ import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/mat
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
-import { Check, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { ArrowUpRight, Check, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -345,7 +345,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                 {matches.map((m) => (
                   <div key={m.id} className="border rounded-lg p-2.5 text-sm">
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="font-medium truncate">{m.propertyAddress ?? "(bostad)"}</span>
+                      <button
+                        onClick={() => router.push(`/crm/properties?id=${m.propertyId}`)}
+                        className="font-medium truncate text-left hover:text-primary-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded inline-flex items-center gap-1"
+                        title="Öppna i Objektsbanken"
+                      >
+                        {m.propertyAddress ?? "(bostad)"}
+                        <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                      </button>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${MATCH_STATUS_CLS[m.status]}`}>
                         {MATCH_STATUS_LABEL[m.status]}
                       </span>
