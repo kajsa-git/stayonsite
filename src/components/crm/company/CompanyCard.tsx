@@ -189,6 +189,17 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     toast({ title: requestId ? "Förfrågan sparad" : "Förfrågan skapad" });
   }
 
+  async function handleClearFollowUp() {
+    await fetch(`/api/crm/companies/${companyId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followUpDate: null, followUpTime: null, followUpReason: null }),
+    });
+    mutate();
+    router.refresh();
+    toast({ title: "Återkomst borttagen" });
+  }
+
   async function handleBulkWon() {
     const active = (company?.requests ?? []).filter((r) => r.status === "incoming" || r.status === "matching");
     if (!active.length) return;
@@ -286,6 +297,14 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
                   title="Stäng alla öppna förfrågningar"
                 >
                   ✕ Nej
+                </button>
+              )}
+              {company.followUpDate && (
+                <button
+                  onClick={handleClearFollowUp}
+                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-muted transition-colors"
+                >
+                  Ta bort återkomst
                 </button>
               )}
               <button

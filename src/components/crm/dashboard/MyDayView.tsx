@@ -141,6 +141,21 @@ export function MyDayView() {
     }
   }
 
+  async function clearFollowUp(companyId: string) {
+    try {
+      const res = await fetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followUpDate: null, followUpTime: null, followUpReason: null }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      mutate();
+      toast({ title: "Återkomst borttagen" });
+    } catch {
+      toast({ title: "Kunde inte ta bort", variant: "destructive" });
+    }
+  }
+
   async function snoozeFollowUp(companyId: string, days: number) {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
@@ -292,6 +307,7 @@ export function MyDayView() {
                 onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
                 onMarkWon={() => markWon(item.openRequests)}
                 onMarkLost={(reason) => markLost(item.openRequests, reason)}
+                onClearFollowUp={() => clearFollowUp(item.id)}
               />
             )}
           />
@@ -426,6 +442,7 @@ function CompanyDayCard({
   onMarkWon,
   onMarkInvoiced,
   onMarkLost,
+  onClearFollowUp,
 }: {
   item: CompanyCard;
   today: string;
@@ -436,6 +453,7 @@ function CompanyDayCard({
   onMarkWon?: () => void | Promise<void>;
   onMarkInvoiced?: () => void | Promise<void>;
   onMarkLost: (reason: string) => void | Promise<void>;
+  onClearFollowUp?: () => void | Promise<void>;
 }) {
   const [action, setAction] = useState<"återkomst" | "nej" | null>(null);
   const [date, setDate] = useState(item.followUpDate ?? today);
@@ -496,6 +514,11 @@ function CompanyDayCard({
         <QBtn variant="primary" onClick={() => setAction(action === "återkomst" ? null : "återkomst")}>
           ↩ Återkomst
         </QBtn>
+        {variant === "followup" && onClearFollowUp && (
+          <QBtn disabled={busy} onClick={() => run(async () => { await onClearFollowUp(); })}>
+            Ta bort återkomst
+          </QBtn>
+        )}
         {variant !== "invoice" && hasActive && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkWon?.(); })}>
             ✓ Ska faktureras
