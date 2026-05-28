@@ -56,15 +56,6 @@ export function FollowUpModal({ open, initialDate, initialReason, initialTime, o
           <Label htmlFor="time">Klockslag</Label>
           <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-32" />
         </div>
-        <div className="space-y-1">
-          <Label htmlFor="reason">Anledning (valfri)</Label>
-          <Input
-            id="reason"
-            placeholder="T.ex. väntar på beslut, kvartalsbyte…"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          />
-        </div>
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>Avbryt</Button>
           <Button onClick={save} disabled={!date || busy}>Spara återkomst</Button>
