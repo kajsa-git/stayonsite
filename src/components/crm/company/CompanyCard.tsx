@@ -22,7 +22,6 @@ import {
 import type { Company, Request } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import confetti from "canvas-confetti";
 import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -202,7 +201,9 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     mutate();
     router.refresh();
     setQuickBusy(false);
-    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] });
+    import("canvas-confetti").then((mod) =>
+      mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
+    );
     toast({ title: "🎉 Ska faktureras!" });
   }
 

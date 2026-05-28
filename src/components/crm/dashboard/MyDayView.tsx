@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import confetti from "canvas-confetti";
-
 function fireConfetti() {
-  confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] });
+  import("canvas-confetti").then((mod) =>
+    mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
+  );
 }
 
 const CHASE_TOAST: Record<string, string> = {
