@@ -1,9 +1,11 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexProperty, indexRequest, removeFromIndex } from "@/lib/crm/search-index";
-import { matches, properties, requests } from "@/lib/crm/schema";
-import { and, eq, inArray, ne } from "drizzle-orm";
+import { companies, matches, properties, requests } from "@/lib/crm/schema";
+import { and, eq, inArray, ne, notInArray } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+
+const OPEN_STATUSES = ["incoming", "matching", "won"];
 
 const VALID_STATUSES = ["incoming", "matching", "won", "invoiced", "lost", "archived"];
 
@@ -54,6 +56,28 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       await indexProperty(propertyId);
     } catch (e) {
       console.error("won-property reflection:", e);
+    }
+  }
+
+  // När en förfrågan avslutas (invoiced/lost/archived): rensa företagets followUpDate
+  // om inga öppna förfrågningar kvar — annars fastnar företaget i "Att kontakta" i evighet.
+  if (row?.companyId && body.status && !OPEN_STATUSES.includes(body.status)) {
+    const remaining = await db
+      .select({ id: requests.id })
+      .from(requests)
+      .where(
+        and(
+          eq(requests.companyId, row.companyId),
+          inArray(requests.status, OPEN_STATUSES),
+        ),
+      )
+      .limit(1);
+
+    if (remaining.length === 0) {
+      await db
+        .update(companies)
+        .set({ followUpDate: null, followUpTime: null, followUpReason: null, updatedAt: now })
+        .where(eq(companies.id, row.companyId));
     }
   }
 
