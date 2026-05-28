@@ -11,16 +11,13 @@ export function BottomBar() {
     <div className="h-10 border-t bg-white flex items-center px-4 gap-6 text-xs text-muted-foreground sticky bottom-0">
       <span className="text-muted-foreground/70">Din kö idag:</span>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
-        <span className="font-semibold text-foreground">{counts.incoming}</span> nya förfrågningar
-      </button>
-      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.followUps}</span> att kontakta
       </button>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
-        <span className="font-semibold text-foreground">{counts.matching}</span> pågående matchningar
+        <span className="font-semibold text-foreground">{counts.openWithoutFollowUp}</span> öppna uppdrag
       </button>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
-        <span className="font-semibold text-foreground">{counts.won}</span> att fakturera
+        <span className="font-semibold text-foreground">{counts.toInvoice}</span> ska faktureras
       </button>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.chaseLandlords}</span> jaga hyresvärdar

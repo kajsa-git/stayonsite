@@ -4,9 +4,8 @@ import useSWR from "swr";
 
 interface QueueCounts {
   followUps: number;
-  incoming: number;
-  matching: number;
-  won: number;
+  openWithoutFollowUp: number;
+  toInvoice: number;
   chaseLandlords: number;
 }
 
@@ -18,7 +17,7 @@ export function useQueueCounts() {
   });
 
   return {
-    counts: data ?? { followUps: 0, incoming: 0, matching: 0, won: 0, chaseLandlords: 0 },
+    counts: data ?? { followUps: 0, openWithoutFollowUp: 0, toInvoice: 0, chaseLandlords: 0 },
     isLoading: !data && !error,
   };
 }

@@ -95,14 +95,6 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
 
       <div className="flex items-center gap-2 ml-auto shrink-0">
         <Badge
-          variant="outline"
-          className="cursor-pointer text-xs"
-          onClick={() => router.push("/crm")}
-          title="Nya förfrågningar"
-        >
-          {counts.incoming} nya
-        </Badge>
-        <Badge
           variant="secondary"
           className="cursor-pointer text-xs"
           onClick={() => router.push("/crm")}
@@ -114,17 +106,17 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           variant="outline"
           className="cursor-pointer text-xs"
           onClick={() => router.push("/crm")}
-          title="Aktiva matchningar"
+          title="Öppna uppdrag utan återkomst"
         >
-          {counts.matching} matchning
+          {counts.openWithoutFollowUp} öppna
         </Badge>
         <Badge
           variant="outline"
           className="cursor-pointer text-xs"
           onClick={() => router.push("/crm")}
-          title="Att fakturera"
+          title="Ska faktureras"
         >
-          {counts.won} fakturera
+          {counts.toInvoice} fakturera
         </Badge>
 
           <Button

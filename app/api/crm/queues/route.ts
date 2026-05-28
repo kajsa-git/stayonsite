@@ -4,11 +4,13 @@ import { companies, matches, owners, ownerOutreach, properties, requests } from 
 import { and, asc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-const requestSelect = {
+const ACTIVE_STATUSES = ["incoming", "matching"] as const;
+const OPEN_STATUSES = ["incoming", "matching", "won"] as const;
+
+const openRequestSelect = {
   id: requests.id,
   requestNumber: requests.requestNumber,
   companyId: requests.companyId,
-  companyName: companies.name,
   city: requests.city,
   status: requests.status,
 };
@@ -19,23 +21,28 @@ export async function GET() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const requestsByStatus = (status: string) =>
-    db
-      .select(requestSelect)
-      .from(requests)
-      .innerJoin(companies, eq(requests.companyId, companies.id))
-      .where(eq(requests.status, status));
-
-  const [followUpCompanies, incoming, matching, toInvoice, chaseMatches, chaseOwners] = await Promise.all([
+  // Wave 1: alla köer + chase-data parallellt
+  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseMatches, chaseOwners] = await Promise.all([
+    // Att kontakta: företag med återkomst idag eller försenad
     db
       .select()
       .from(companies)
       .where(lte(companies.followUpDate, today))
       .orderBy(asc(companies.followUpDate), sql`${companies.followUpTime} ASC NULLS LAST`),
-    requestsByStatus("incoming"),
-    requestsByStatus("matching"),
-    requestsByStatus("won"),
-    // Förslag vars jaga-datum passerat (väntar svar från hyresvärd), per match
+
+    // Öppna uppdrag: distinkta företag med incoming/matching + INGEN satt återkomst
+    db
+      .selectDistinct({ companyId: requests.companyId })
+      .from(requests)
+      .where(inArray(requests.status, [...ACTIVE_STATUSES])),
+
+    // Ska faktureras: distinkta företag med won-förfrågningar
+    db
+      .selectDistinct({ companyId: requests.companyId })
+      .from(requests)
+      .where(eq(requests.status, "won")),
+
+    // Chase: förslag vars jaga-datum passerat
     db
       .select({
         propertyId: matches.propertyId,
@@ -56,7 +63,8 @@ export async function GET() {
           inArray(requests.status, ["incoming", "matching"]),
         ),
       ),
-    // Öppna kontaktrundor mot uthyrare vars nästa-uppföljning passerat (sourcing + förfrågnings-utlösta)
+
+    // Chase: öppna kontaktrundor vars nästa-uppföljning passerat
     db
       .select({
         propertyId: ownerOutreach.propertyId,
@@ -77,7 +85,54 @@ export async function GET() {
       ),
   ]);
 
-  // Dedupa till en rad per objekt: slå ihop match-jaga + objekt-jaga
+  // Öppna uppdrag: bara företag utan satt återkomst (followUpDate IS NULL)
+  const followUpIds = new Set(followUpCompanies.map((c) => c.id));
+  const openWithoutFollowUpIds = activeRequestRows
+    .map((r) => r.companyId)
+    .filter((id) => !followUpIds.has(id));
+
+  // Ska faktureras: alla företag med won-förfrågningar
+  const toInvoiceIds = wonRequestRows.map((r) => r.companyId).filter((id, i, a) => a.indexOf(id) === i);
+
+  // Alla relevanta company-IDs för request-hämtning
+  const allRelevantIds = [...new Set([...followUpIds, ...openWithoutFollowUpIds, ...toInvoiceIds])];
+
+  // Wave 2: företagsdata + öppna förfrågningar för alla relevanta företag
+  const [openWithoutFollowUpCompanies, toInvoiceCompanies, allOpenRequests] = await Promise.all([
+    openWithoutFollowUpIds.length
+      ? db.select().from(companies).where(and(
+          inArray(companies.id, openWithoutFollowUpIds),
+          isNull(companies.followUpDate),
+        )).orderBy(asc(companies.updatedAt))
+      : Promise.resolve([]),
+    toInvoiceIds.length
+      ? db.select().from(companies).where(inArray(companies.id, toInvoiceIds)).orderBy(asc(companies.updatedAt))
+      : Promise.resolve([]),
+    allRelevantIds.length
+      ? db
+          .select(openRequestSelect)
+          .from(requests)
+          .where(
+            and(
+              inArray(requests.companyId, allRelevantIds),
+              inArray(requests.status, [...OPEN_STATUSES]),
+            ),
+          )
+      : Promise.resolve([]),
+  ]);
+
+  // Gruppera förfrågningar per företag
+  const reqsByCompany = new Map<string, (typeof allOpenRequests)[number][]>();
+  for (const r of allOpenRequests) {
+    if (!reqsByCompany.has(r.companyId)) reqsByCompany.set(r.companyId, []);
+    reqsByCompany.get(r.companyId)!.push(r);
+  }
+
+  const followUps = followUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
+  const openWithoutFollowUp = openWithoutFollowUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
+  const toInvoice = toInvoiceCompanies.map((c) => ({ ...c, openRequests: (reqsByCompany.get(c.id) ?? []).filter((r) => r.status === "won") }));
+
+  // Dedupa chase-rader per objekt
   type Acc = {
     propertyId: string;
     address: string | null;
@@ -128,11 +183,5 @@ export async function GET() {
     }))
     .sort((a, b) => (a.earliestDate ?? "").localeCompare(b.earliestDate ?? ""));
 
-  return NextResponse.json({
-    followUps: followUpCompanies,
-    incoming,
-    matching,
-    won: toInvoice,
-    chaseLandlords,
-  });
+  return NextResponse.json({ followUps, openWithoutFollowUp, toInvoice, chaseLandlords });
 }

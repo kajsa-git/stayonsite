@@ -21,11 +21,8 @@ import { useState } from "react";
 
 const LOST_REASONS = [
   "För dyrt",
-  "Hittade boende själv",
-  "Projektet skjuts upp",
-  "Projektet avbröts",
-  "Kontakt förlorad",
-  "Valde konkurrent",
+  "Ej passande bostad",
+  "Hittade bättre objekt",
   "Övrigt",
 ];
 

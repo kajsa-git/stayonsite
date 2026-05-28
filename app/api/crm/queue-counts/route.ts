@@ -10,22 +10,27 @@ export async function GET() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [followUps, incomingQueue, matchingQueue, wonQueue, chaseMatchProps, chaseOwnerProps] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps] = await Promise.all([
+    db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
+
+    // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL
     db
-      .select({ id: companies.id })
-      .from(companies)
-      .where(and(lte(companies.followUpDate, today))),
+      .selectDistinct({ companyId: requests.companyId })
+      .from(requests)
+      .innerJoin(companies, eq(requests.companyId, companies.id))
+      .where(
+        and(
+          inArray(requests.status, ["incoming", "matching"]),
+          isNull(companies.followUpDate),
+        ),
+      ),
 
-    // New, untriaged requests
-    db.select({ id: requests.id }).from(requests).where(eq(requests.status, "incoming")),
+    // Ska faktureras: företag med won-förfrågningar
+    db
+      .selectDistinct({ companyId: requests.companyId })
+      .from(requests)
+      .where(eq(requests.status, "won")),
 
-    // Active requests in matching status
-    db.select({ id: requests.id }).from(requests).where(eq(requests.status, "matching")),
-
-    // Won deals awaiting invoice
-    db.select({ id: requests.id }).from(requests).where(eq(requests.status, "won")),
-
-    // Objekt med förslag vars jaga-datum passerat (öppna förfrågningar)
     db
       .select({ propertyId: matches.propertyId })
       .from(matches)
@@ -38,23 +43,20 @@ export async function GET() {
         ),
       ),
 
-    // Öppna kontaktrundor vars nästa-uppföljning passerat
     db
       .select({ propertyId: ownerOutreach.propertyId })
       .from(ownerOutreach)
       .where(and(isNull(ownerOutreach.concludedAt), lte(ownerOutreach.nextFollowUpDate, today))),
   ]);
 
-  // Dedupa: räkna distinkta objekt i "Följ upp uthyrare"
   const chaseProps = new Set<string>();
   for (const m of chaseMatchProps) if (m.propertyId) chaseProps.add(m.propertyId);
   for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
 
   return NextResponse.json({
     followUps: followUps.length,
-    incoming: incomingQueue.length,
-    matching: matchingQueue.length,
-    won: wonQueue.length,
+    openWithoutFollowUp: openWithoutFollowUpRows.length,
+    toInvoice: toInvoiceRows.length,
     chaseLandlords: chaseProps.size,
   });
 }

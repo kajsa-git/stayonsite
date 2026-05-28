@@ -22,9 +22,12 @@ import {
 import type { Company, Request } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
+import confetti from "canvas-confetti";
 import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+const LOST_REASONS = ["För dyrt", "Ej passande bostad", "Hittade bättre objekt", "Övrigt"];
 
 const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
 
@@ -45,6 +48,9 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [quickAction, setQuickAction] = useState<"nej" | null>(null);
+  const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
+  const [quickBusy, setQuickBusy] = useState(false);
 
   // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
   const selectedRequestId = selectedId ?? activeRequestId ?? null;
@@ -184,6 +190,38 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     toast({ title: requestId ? "Förfrågan sparad" : "Förfrågan skapad" });
   }
 
+  async function handleBulkWon() {
+    const active = (company?.requests ?? []).filter((r) => r.status === "incoming" || r.status === "matching");
+    if (!active.length) return;
+    setQuickBusy(true);
+    await Promise.all(active.map((r) => fetch(`/api/crm/requests/${r.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "won" }),
+    })));
+    mutate();
+    router.refresh();
+    setQuickBusy(false);
+    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] });
+    toast({ title: "🎉 Ska faktureras!" });
+  }
+
+  async function handleBulkLost(reason: string) {
+    const open = (company?.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status));
+    if (!open.length) return;
+    setQuickBusy(true);
+    await Promise.all(open.map((r) => fetch(`/api/crm/requests/${r.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "lost", lostReason: reason }),
+    })));
+    mutate();
+    router.refresh();
+    setQuickBusy(false);
+    setQuickAction(null);
+    toast({ title: "Förfrågningar stängda" });
+  }
+
   async function handleDeleteCompany() {
     setDeleting(true);
     const res = await fetch(`/api/crm/companies/${companyId}`, { method: "DELETE" });
@@ -222,19 +260,43 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       </div>
       <CompanyInfo company={company} onSave={handleSaveField} />
 
-      {/* Company-level dates */}
+      {/* Company-level dates + snabbval */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
-            <button
-              onClick={() => setFollowUpOpen(true)}
-              className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-amber-300 bg-white text-amber-800 hover:bg-amber-100 transition-colors"
-            >
-              <CalendarClock className="h-3 w-3" />
-              {company.followUpDate ? "Ändra" : "Återkom"}
-            </button>
+            <div className="flex items-center gap-1">
+              {/* Snabbval: Ska faktureras */}
+              {(company.requests ?? []).some((r) => r.status === "incoming" || r.status === "matching") && (
+                <button
+                  onClick={handleBulkWon}
+                  disabled={quickBusy}
+                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-green-300 bg-green-50 text-green-800 hover:bg-green-100 transition-colors disabled:opacity-40"
+                  title="Markera alla aktiva förfrågningar som ska faktureras"
+                >
+                  ✓ Ska faktureras
+                </button>
+              )}
+              {/* Snabbval: Nej */}
+              {(company.requests ?? []).some((r) => ["incoming", "matching", "won"].includes(r.status)) && (
+                <button
+                  onClick={() => setQuickAction(quickAction === "nej" ? null : "nej")}
+                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
+                  title="Stäng alla öppna förfrågningar"
+                >
+                  ✕ Nej
+                </button>
+              )}
+              <button
+                onClick={() => setFollowUpOpen(true)}
+                className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-amber-300 bg-white text-amber-800 hover:bg-amber-100 transition-colors"
+              >
+                <CalendarClock className="h-3 w-3" />
+                {company.followUpDate ? "Ändra" : "Återkom"}
+              </button>
+            </div>
           </div>
+
           {company.followUpDate ? (
             <>
               <p className="text-sm font-medium text-amber-900">
@@ -248,7 +310,45 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           ) : (
             <p className="text-sm text-muted-foreground italic">Ingen bokad återkomst</p>
           )}
+
+          {/* Nej — inline anledningsval */}
+          {quickAction === "nej" && (
+            <div className="mt-2 pt-2 border-t border-amber-200 space-y-1.5">
+              <p className="text-[11px] font-medium text-red-800">Varför stängs förfrågan?</p>
+              <div className="flex flex-wrap gap-1">
+                {LOST_REASONS.map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setLostReason(r)}
+                    className={`text-[11px] px-2 py-0.5 rounded border transition-colors ${
+                      lostReason === r
+                        ? "border-red-400 bg-red-100 text-red-800 font-semibold"
+                        : "border-input bg-white text-muted-foreground hover:bg-red-50"
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => handleBulkLost(lostReason)}
+                  disabled={quickBusy}
+                  className="text-[11px] px-2 py-0.5 rounded border border-red-400 bg-red-600 text-white hover:bg-red-700 font-semibold disabled:opacity-40"
+                >
+                  Ja, stäng
+                </button>
+                <button
+                  onClick={() => setQuickAction(null)}
+                  className="text-[11px] px-2 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-muted"
+                >
+                  Avbryt
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
         <div className="rounded-md border bg-muted/40 px-3 py-2">
           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-1">
             <CheckCircle2 className="h-3 w-3" /> Senaste avslutsdatum

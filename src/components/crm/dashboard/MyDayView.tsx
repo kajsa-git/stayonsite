@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import confetti from "canvas-confetti";
+
+function fireConfetti() {
+  confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] });
+}
 
 const CHASE_TOAST: Record<string, string> = {
   snooze3: "Uppskjuten 3 dagar",
@@ -16,12 +21,24 @@ const CHASE_TOAST: Record<string, string> = {
 };
 
 const STEPS = [
-  { emoji: "📥", title: "Nya förfrågningar", text: "Färska förfrågningar att ta tag i. Klicka för att läsa och börja leta boende." },
   { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
-  { emoji: "🏠", title: "Pågående matchningar", text: "Förfrågningar du letar boende åt. Skicka förslag och markera när kunden valt ett." },
-  { emoji: "🧾", title: "Att fakturera", text: "Vunna affärer redo att faktureras. Markera fakturerad när fakturan är skickad." },
-  { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing. En rad per objekt." },
+  { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
+  { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
+  { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing." },
 ];
+
+const LOST_REASONS = ["För dyrt", "Ej passande bostad", "Hittade bättre objekt", "Övrigt"];
+
+const STATUS_LABEL: Record<string, string> = {
+  incoming: "Inkommen",
+  matching: "Matchar",
+  won: "Ska faktureras",
+};
+const STATUS_STYLE: Record<string, string> = {
+  incoming: "bg-blue-50 text-blue-800",
+  matching: "bg-amber-50 text-amber-800",
+  won: "bg-green-50 text-green-800",
+};
 
 const VERSES: { text: string; ref: string }[] = [
   { text: "Var inte rädd, för jag är med dig.", ref: "Jesaja 41:10" },
@@ -44,21 +61,21 @@ function plusDays(n: number) {
   return d.toISOString().split("T")[0];
 }
 
-interface CompanyQueue {
+interface OpenRequest {
+  id: string;
+  requestNumber: number | null;
+  companyId: string;
+  city?: string | null;
+  status: string;
+}
+
+interface CompanyCard {
   id: string;
   name: string;
   followUpDate?: string | null;
   followUpReason?: string | null;
   followUpTime?: string | null;
-}
-
-interface RequestQueue {
-  id: string;
-  requestNumber: number | null;
-  companyId: string;
-  companyName?: string;
-  city?: string | null;
-  status: string;
+  openRequests: OpenRequest[];
 }
 
 interface ChaseRow {
@@ -73,10 +90,9 @@ interface ChaseRow {
 }
 
 interface QueueData {
-  followUps: CompanyQueue[];
-  incoming: RequestQueue[];
-  matching: RequestQueue[];
-  won: RequestQueue[];
+  followUps: CompanyCard[];
+  openWithoutFollowUp: CompanyCard[];
+  toInvoice: CompanyCard[];
   chaseLandlords: ChaseRow[];
 }
 
@@ -107,7 +123,7 @@ export function MyDayView() {
   }
 
   const { data, mutate, isLoading } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
-  const queues = data ?? { followUps: [], incoming: [], matching: [], won: [], chaseLandlords: [] };
+  const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [] };
   const loading = isLoading && !data;
 
   async function chaseAction(propertyId: string, action: string) {
@@ -125,7 +141,6 @@ export function MyDayView() {
     }
   }
 
-  // Flytta fram (snooza) en företags-återkomst N dagar framåt.
   async function snoozeFollowUp(companyId: string, days: number) {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
@@ -141,7 +156,6 @@ export function MyDayView() {
     }
   }
 
-  // Boka exakt datum + tid på en företags-återkomst direkt från Min dag.
   async function scheduleFollowUp(companyId: string, date: string, time: string) {
     if (!date) return;
     try {
@@ -152,10 +166,58 @@ export function MyDayView() {
       });
       if (!res.ok) throw new Error(String(res.status));
       mutate();
-      toast({ title: `Bokad ${date}${time ? ` kl. ${time}` : ""}` });
+      toast({ title: `Återkomst bokad ${date}${time ? ` kl. ${time}` : ""}` });
     } catch {
       toast({ title: "Kunde inte boka", variant: "destructive" });
     }
+  }
+
+  async function markWon(requests: OpenRequest[]) {
+    const active = requests.filter((r) => r.status === "incoming" || r.status === "matching");
+    if (!active.length) return;
+    await Promise.all(
+      active.map((r) =>
+        fetch(`/api/crm/requests/${r.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "won" }),
+        }),
+      ),
+    );
+    mutate();
+    fireConfetti();
+    toast({ title: active.length === 1 ? "🎉 Ska faktureras!" : `🎉 ${active.length} förfrågningar — ska faktureras!` });
+  }
+
+  async function markLost(requests: OpenRequest[], reason: string) {
+    if (!requests.length) return;
+    await Promise.all(
+      requests.map((r) =>
+        fetch(`/api/crm/requests/${r.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "lost", lostReason: reason }),
+        }),
+      ),
+    );
+    mutate();
+    toast({ title: requests.length === 1 ? "Förfrågan stängd" : `${requests.length} förfrågningar stängda` });
+  }
+
+  async function markInvoiced(requests: OpenRequest[]) {
+    const won = requests.filter((r) => r.status === "won");
+    if (!won.length) return;
+    await Promise.all(
+      won.map((r) =>
+        fetch(`/api/crm/requests/${r.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "invoiced" }),
+        }),
+      ),
+    );
+    mutate();
+    toast({ title: won.length === 1 ? "Fakturerad ✓" : `${won.length} förfrågningar markerade som fakturerade` });
   }
 
   return (
@@ -176,18 +238,14 @@ export function MyDayView() {
 
       {showHelp && (
         <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50/60 p-4 relative">
-          <button
-            onClick={dismissHelp}
-            className="absolute top-3 right-3 text-amber-700/70 hover:text-amber-900"
-            title="Dölj"
-          >
+          <button onClick={dismissHelp} className="absolute top-3 right-3 text-amber-700/70 hover:text-amber-900" title="Dölj">
             <X className="h-4 w-4" />
           </button>
           <p className="text-sm font-semibold text-amber-900 mb-1">Så funkar din dag 👋</p>
           <p className="text-xs text-amber-800/90 mb-3">
-            Varje kort är ett företag eller en förfrågan som väntar på dig. Jobba dig igenom kolumnerna från vänster till höger — klicka på ett kort för att öppna det.
+            Varje kort är ett företag. Jobba dig igenom kolumnerna — klicka på ett kort för att öppna företaget, eller använd snabbvalen direkt på kortet.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
             {STEPS.map((s) => (
               <div key={s.title} className="rounded-lg bg-white/70 border border-amber-100 p-2.5">
                 <div className="text-sm font-medium text-nordic-900 mb-0.5">
@@ -201,8 +259,8 @@ export function MyDayView() {
       )}
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
-          {Array.from({ length: 5 }).map((_, c) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, c) => (
             <div key={c}>
               <div className="h-4 w-32 rounded bg-nordic-100 animate-pulse mb-3" />
               <div className="space-y-2">
@@ -217,93 +275,90 @@ export function MyDayView() {
           ))}
         </div>
       ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
-        <QueueSection
-          title="Nya förfrågningar"
-          emoji="📥"
-          items={queues.incoming}
-          emptyText="Inga nya förfrågningar"
-          renderItem={(item) => (
-            <RequestRow
-              key={item.id}
-              item={item}
-              accent="hover:border-purple-400"
-              onClick={() => router.push(`/crm/work/incoming/${item.companyId}?request=${item.id}`)}
-            />
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <QueueSection
+            title="Att kontakta"
+            emoji="📞"
+            items={queues.followUps}
+            emptyText="Inga återkomster idag"
+            renderItem={(item) => (
+              <CompanyDayCard
+                key={item.id}
+                item={item}
+                today={today}
+                variant="followup"
+                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+                onSnooze={(days) => snoozeFollowUp(item.id, days)}
+                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
+                onMarkWon={() => markWon(item.openRequests)}
+                onMarkLost={(reason) => markLost(item.openRequests, reason)}
+              />
+            )}
+          />
 
-        <QueueSection
-          title="Att kontakta"
-          emoji="📞"
-          items={queues.followUps}
-          emptyText="Inga återkomster idag"
-          renderItem={(item) => (
-            <FollowUpCard
-              key={item.id}
-              item={item}
-              today={today}
-              onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
-              onSnooze={(days) => snoozeFollowUp(item.id, days)}
-              onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
-            />
-          )}
-        />
+          <QueueSection
+            title="Öppna uppdrag"
+            emoji="📋"
+            items={queues.openWithoutFollowUp}
+            emptyText="Inga öppna uppdrag"
+            renderItem={(item) => (
+              <CompanyDayCard
+                key={item.id}
+                item={item}
+                today={today}
+                variant="open"
+                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+                onSnooze={(days) => snoozeFollowUp(item.id, days)}
+                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
+                onMarkWon={() => markWon(item.openRequests)}
+                onMarkLost={(reason) => markLost(item.openRequests, reason)}
+              />
+            )}
+          />
 
-        <QueueSection
-          title="Pågående matchningar"
-          emoji="🏠"
-          items={queues.matching}
-          emptyText="Inga aktiva matchningar"
-          renderItem={(item) => (
-            <RequestRow
-              key={item.id}
-              item={item}
-              accent="hover:border-amber-400"
-              onClick={() => router.push(`/crm/work/matching/${item.companyId}?request=${item.id}`)}
-            />
-          )}
-        />
+          <QueueSection
+            title="Ska faktureras"
+            emoji="🧾"
+            items={queues.toInvoice}
+            emptyText="Inget att fakturera"
+            renderItem={(item) => (
+              <CompanyDayCard
+                key={item.id}
+                item={item}
+                today={today}
+                variant="invoice"
+                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+                onSnooze={(days) => snoozeFollowUp(item.id, days)}
+                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
+                onMarkInvoiced={() => markInvoiced(item.openRequests)}
+                onMarkLost={(reason) => markLost(item.openRequests, reason)}
+              />
+            )}
+          />
 
-        <QueueSection
-          title="Att fakturera"
-          emoji="🧾"
-          items={queues.won}
-          emptyText="Inget att fakturera"
-          renderItem={(item) => (
-            <RequestRow
-              key={item.id}
-              item={item}
-              accent="hover:border-green-400"
-              onClick={() => router.push(`/crm/work/won/${item.companyId}?request=${item.id}`)}
-            />
-          )}
-        />
-
-        <QueueSection
-          title="Följ upp uthyrare"
-          emoji="☎️"
-          items={queues.chaseLandlords}
-          emptyText="Inget att följa upp"
-          renderItem={(item) => (
-            <ChaseCard
-              key={item.propertyId}
-              item={item}
-              today={today}
-              onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
-              onAction={(action) => chaseAction(item.propertyId, action)}
-            />
-          )}
-        />
-      </div>
+          <QueueSection
+            title="Följ upp uthyrare"
+            emoji="☎️"
+            items={queues.chaseLandlords}
+            emptyText="Inget att följa upp"
+            renderItem={(item) => (
+              <ChaseCard
+                key={item.propertyId}
+                item={item}
+                today={today}
+                onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
+                onAction={(action) => chaseAction(item.propertyId, action)}
+              />
+            )}
+          />
+        </div>
       )}
 
-      {/* Liten uppmuntran 🙏 — klicka på Jesus för ett bibelord */}
       <div className="mt-12 flex justify-end items-end gap-3 pr-2">
         <div className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5 mb-5 max-w-sm">
           {verse ? (
             <>
-              <p className="text-sm text-nordic-900 italic">”{verse.text}”</p>
+              <p className="text-sm text-nordic-900 italic">"{verse.text}"</p>
               <p className="text-xs text-muted-foreground mt-1">— {verse.ref}</p>
             </>
           ) : (
@@ -327,79 +382,198 @@ export function MyDayView() {
   );
 }
 
-function FollowUpCard({
+// ─── Snabbval-knappar ────────────────────────────────────────────────────────
+
+function QBtn({
+  children,
+  onClick,
+  disabled,
+  variant = "default",
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: "default" | "success" | "danger" | "primary";
+}) {
+  const styles = {
+    default: "border-input bg-white text-muted-foreground hover:bg-nordic-100",
+    primary: "border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 font-medium",
+    success: "border-green-300 bg-green-50 text-green-800 hover:bg-green-100 font-medium",
+    danger: "border-red-200 bg-red-50 text-red-700 hover:bg-red-100 font-medium",
+  };
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`text-[11px] px-2 py-0.5 rounded border transition-colors disabled:opacity-40 ${styles[variant]}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── Universellt företagskort med snabbval ────────────────────────────────────
+
+type CardVariant = "followup" | "open" | "invoice";
+
+function CompanyDayCard({
   item,
   today,
+  variant,
   onOpen,
   onSnooze,
   onSchedule,
+  onMarkWon,
+  onMarkInvoiced,
+  onMarkLost,
 }: {
-  item: CompanyQueue;
+  item: CompanyCard;
   today: string;
+  variant: CardVariant;
   onOpen: () => void;
   onSnooze: (days: number) => void | Promise<void>;
   onSchedule: (date: string, time: string) => void | Promise<void>;
+  onMarkWon?: () => void | Promise<void>;
+  onMarkInvoiced?: () => void | Promise<void>;
+  onMarkLost: (reason: string) => void | Promise<void>;
 }) {
-  const [picking, setPicking] = useState(false);
+  const [action, setAction] = useState<"återkomst" | "nej" | null>(null);
   const [date, setDate] = useState(item.followUpDate ?? today);
   const [time, setTime] = useState(item.followUpTime ?? "08:00");
-  const isToday = item.followUpDate === today;
+  const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
+  const [busy, setBusy] = useState(false);
+
   const isPast = !!item.followUpDate && item.followUpDate < today;
+  const isToday = item.followUpDate === today;
+
+  async function run<T>(fn: () => Promise<T>) {
+    setBusy(true);
+    try { await fn(); } finally { setBusy(false); setAction(null); }
+  }
+
+  const activeRequests = item.openRequests.filter((r) => r.status !== "won");
+  const hasActive = activeRequests.length > 0;
+  const wonRequests = item.openRequests.filter((r) => r.status === "won");
+
   return (
-    <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300 hover:border-red-400" : "hover:border-primary-400"}`}>
+    <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300" : "border-border"}`}>
+      {/* Klickbar huvud */}
       <button
-        className="w-full text-left p-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+        className="w-full text-left p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-t-lg"
         onClick={onOpen}
       >
         <div className="font-medium text-sm">{item.name}</div>
-        {item.followUpDate && (
-          <div className="mt-1">
-            <span
-              className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
-                isPast ? "bg-red-100 text-red-800" : isToday ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
-              }`}
-            >
-              {isToday ? "Återkomst idag" : isPast ? `Försenad · ${item.followUpDate}` : item.followUpDate}
+
+        {/* Återkomst-badge (followup-variant) */}
+        {variant === "followup" && item.followUpDate && (
+          <div className="mt-1.5">
+            <span className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
+              isPast ? "bg-red-100 text-red-800" : isToday ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
+            }`}>
+              {isPast ? `Försenad · ${item.followUpDate}` : isToday ? "Återkomst idag" : item.followUpDate}
               {item.followUpTime && ` kl. ${item.followUpTime}`}
             </span>
-            {item.followUpReason && <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>}
+            {item.followUpReason && (
+              <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>
+            )}
+          </div>
+        )}
+
+        {/* Request-badges */}
+        {item.openRequests.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {item.openRequests.map((r) => (
+              <span key={r.id} className={`inline-block text-[11px] px-1.5 py-0.5 rounded ${STATUS_STYLE[r.status] ?? "bg-gray-100 text-gray-700"}`}>
+                {r.city ? `${r.city} · ` : ""}{STATUS_LABEL[r.status] ?? r.status}
+              </span>
+            ))}
           </div>
         )}
       </button>
-      <div className="flex flex-wrap items-center gap-1 px-3 pb-2.5 pt-0.5 border-t border-dashed">
-        <span className="text-[11px] text-muted-foreground mr-0.5">Flytta fram:</span>
-        <ChaseBtn onClick={() => onSnooze(1)}>Imorgon</ChaseBtn>
-        <ChaseBtn onClick={() => onSnooze(3)}>+3 d</ChaseBtn>
-        <ChaseBtn onClick={() => onSnooze(7)}>+7 d</ChaseBtn>
-        <ChaseBtn onClick={() => setPicking((v) => !v)}>Välj…</ChaseBtn>
+
+      {/* Snabbvals-rad */}
+      <div className="flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1 border-t border-dashed">
+        <QBtn variant="primary" onClick={() => setAction(action === "återkomst" ? null : "återkomst")}>
+          ↩ Återkomst
+        </QBtn>
+        {variant !== "invoice" && hasActive && (
+          <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkWon?.(); })}>
+            ✓ Ska faktureras
+          </QBtn>
+        )}
+        {variant === "invoice" && (
+          <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkInvoiced?.(); })}>
+            ✓ Fakturerad
+          </QBtn>
+        )}
+        <QBtn variant="danger" onClick={() => setAction(action === "nej" ? null : "nej")}>
+          ✕ Nej
+        </QBtn>
       </div>
-      {picking && (
-        <div className="flex flex-wrap items-center gap-1.5 px-3 pb-2.5">
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="border rounded px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-400"
-          />
-          <input
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            className="border rounded px-1.5 py-0.5 text-xs w-24 focus:outline-none focus:ring-1 focus:ring-primary-400"
-          />
-          <ChaseBtn
-            onClick={() => {
-              onSchedule(date, time);
-              setPicking(false);
-            }}
-          >
-            Spara
-          </ChaseBtn>
+
+      {/* Återkomst — inline datumval */}
+      {action === "återkomst" && (
+        <div className="px-2.5 pb-2.5 pt-1 border-t bg-amber-50/50 rounded-b-lg space-y-1.5">
+          <p className="text-[11px] font-medium text-amber-800">Ny återkomst</p>
+          <div className="flex flex-wrap gap-1">
+            <QBtn onClick={() => run(async () => { await onSnooze(1); })}>Imorgon</QBtn>
+            <QBtn onClick={() => run(async () => { await onSnooze(3); })}>+3 d</QBtn>
+            <QBtn onClick={() => run(async () => { await onSnooze(7); })}>+7 d</QBtn>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="border rounded px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className="border rounded px-1.5 py-0.5 text-xs w-24 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <QBtn variant="primary" onClick={() => run(async () => { await onSchedule(date, time); })}>
+              Spara
+            </QBtn>
+          </div>
+        </div>
+      )}
+
+      {/* Nej — inline anledningsval */}
+      {action === "nej" && (
+        <div className="px-2.5 pb-2.5 pt-1 border-t bg-red-50/60 rounded-b-lg space-y-1.5">
+          <p className="text-[11px] font-medium text-red-800">
+            Stäng {item.openRequests.length === 1 ? "förfrågan" : `${item.openRequests.length} förfrågningar`} — varför?
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {LOST_REASONS.map((r) => (
+              <button
+                key={r}
+                onClick={() => setLostReason(r)}
+                className={`text-[11px] px-2 py-0.5 rounded border transition-colors ${
+                  lostReason === r
+                    ? "border-red-400 bg-red-100 text-red-800 font-semibold"
+                    : "border-input bg-white text-muted-foreground hover:bg-red-50"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-1.5 pt-0.5">
+            <QBtn variant="danger" disabled={busy} onClick={() => run(async () => { await onMarkLost(lostReason); })}>
+              Ja, stäng
+            </QBtn>
+            <QBtn onClick={() => setAction(null)}>Avbryt</QBtn>
+          </div>
         </div>
       )}
     </div>
   );
 }
+
+// ─── Uthyrare-korten (oförändrade) ────────────────────────────────────────────
 
 function ChaseCard({
   item,
@@ -416,9 +590,8 @@ function ChaseCard({
   async function act(action: string) {
     if (
       action === "off_market" &&
-      !window.confirm("Markera objektet som av marknaden? Det slutar visas som ledigt. (Förslagen stängs inte automatiskt.)")
-    )
-      return;
+      !window.confirm("Markera objektet som av marknaden? Det slutar visas som ledigt.")
+    ) return;
     setBusy(true);
     await onAction(action);
     setBusy(false);
@@ -448,41 +621,29 @@ function ChaseCard({
         )}
       </button>
       <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t">
-        <ChaseBtn onClick={() => act("snooze3")} disabled={busy}>Ringd · +3 d</ChaseBtn>
-        <ChaseBtn onClick={() => act("snooze7")} disabled={busy}>+7 d</ChaseBtn>
-        <ChaseBtn onClick={() => act("answered")} disabled={busy}>Fick svar</ChaseBtn>
-        <ChaseBtn onClick={() => act("off_market")} disabled={busy}>Av marknaden</ChaseBtn>
-        <ChaseBtn onClick={onOpen} disabled={busy}>Anteckning</ChaseBtn>
+        {(["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
+          <button
+            key={a}
+            onClick={() => act(a)}
+            disabled={busy}
+            className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
+          >
+            {a === "snooze3" ? "Ringd · +3 d" : a === "snooze7" ? "+7 d" : a === "answered" ? "Fick svar" : "Av marknaden"}
+          </button>
+        ))}
+        <button
+          onClick={onOpen}
+          disabled={busy}
+          className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
+        >
+          Anteckning
+        </button>
       </div>
     </div>
   );
 }
 
-function ChaseBtn({ children, onClick, disabled }: { children: React.ReactNode; onClick: () => void; disabled?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
-    >
-      {children}
-    </button>
-  );
-}
-
-function RequestRow({ item, accent, onClick }: { item: RequestQueue; accent: string; onClick: () => void }) {
-  return (
-    <button
-      className={`w-full text-left p-3 rounded-lg bg-white border transition-colors hover:bg-nordic-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${accent}`}
-      onClick={onClick}
-    >
-      <div className="font-medium text-sm">
-        #{item.requestNumber} {item.companyName}
-      </div>
-      {item.city && <div className="text-xs text-muted-foreground mt-0.5">{item.city}</div>}
-    </button>
-  );
-}
+// ─── Generisk kösektion ───────────────────────────────────────────────────────
 
 function QueueSection<T>({
   title,
