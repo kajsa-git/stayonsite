@@ -29,7 +29,7 @@ export function PropertyList() {
   const [viewMode, setViewMode] = useState<"list" | "table">("list");
   const [statusFilter, setStatusFilter] = useState("");
   const [cityFilter, setCityFilter] = useState("");
-  const [minBeds, setMinBeds] = useState("");
+  const [minBedrooms, setMinBedrooms] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
 
@@ -45,16 +45,16 @@ export function PropertyList() {
   );
 
   const filtered = useMemo(() => {
-    const min = minBeds ? parseInt(minBeds) : 0;
+    const minBr = minBedrooms ? parseInt(minBedrooms) : 0;
     return properties.filter((p) => {
       if (statusFilter && (p.status ?? "available") !== statusFilter) return false;
       if (cityFilter && p.city !== cityFilter) return false;
-      if (min && (p.beds ?? 0) < min) return false;
+      if (minBr && (p.bedrooms ?? 0) < minBr) return false;
       if (publishedFilter === "yes" && !p.published) return false;
       if (publishedFilter === "no" && p.published) return false;
       return true;
     });
-  }, [properties, statusFilter, cityFilter, minBeds, publishedFilter]);
+  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter]);
 
   // Deep-link från global sök: /crm/properties?id=… öppnar objektet direkt (en gång).
   // Läs query först efter mount (useEffect kör aldrig på servern → ingen hydreringskrock).
@@ -166,12 +166,12 @@ export function PropertyList() {
             ))}
           </select>
           <label className="flex items-center gap-1 text-muted-foreground">
-            Min bäddar
+            Min sovrum
             <input
               type="number"
               min={0}
-              value={minBeds}
-              onChange={(e) => setMinBeds(e.target.value)}
+              value={minBedrooms}
+              onChange={(e) => setMinBedrooms(e.target.value)}
               className="h-7 w-16 border rounded px-2 bg-white text-xs"
             />
           </label>
@@ -189,9 +189,9 @@ export function PropertyList() {
               Uthyrare-filter
             </span>
           )}
-          {(statusFilter || cityFilter || minBeds || publishedFilter || ownerFilter) && (
+          {(statusFilter || cityFilter || minBedrooms || publishedFilter || ownerFilter) && (
             <button
-              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBeds(""); setPublishedFilter(""); setOwnerFilter(""); }}
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setOwnerFilter(""); }}
               className="text-muted-foreground hover:text-foreground underline"
             >
               Rensa
@@ -217,6 +217,7 @@ export function PropertyList() {
                   <TableHead>Ort</TableHead>
                   <TableHead>Uthyrare</TableHead>
                   <TableHead>m²</TableHead>
+                  <TableHead>Sovrum</TableHead>
                   <TableHead>Bäddar</TableHead>
                   <TableHead>Hyra ut</TableHead>
                   <TableHead>Möblerat</TableHead>
@@ -229,11 +230,11 @@ export function PropertyList() {
                 {loading ? (
                   Array.from({ length: 8 }).map((_, i) => (
                     <TableRow key={i} className="border-t border-nordic-100">
-                      <TableCell colSpan={12}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
+                      <TableCell colSpan={13}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
                     </TableRow>
                   ))
                 ) : filtered.length === 0 ? (
-                  <TableRow className="hover:bg-transparent"><TableCell colSpan={12} className="py-10 text-center text-muted-foreground italic">Inga bostäder.</TableCell></TableRow>
+                  <TableRow className="hover:bg-transparent"><TableCell colSpan={13} className="py-10 text-center text-muted-foreground italic">Inga bostäder.</TableCell></TableRow>
                 ) : (
                   filtered.map((p) => {
                     const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
@@ -258,6 +259,7 @@ export function PropertyList() {
                         <TableCell className="text-foreground">{p.city || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.squareMeters ?? "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.bedrooms ?? "–"}</TableCell>
                         <TableCell className="text-foreground">{p.beds ?? "–"}</TableCell>
                         <TableCell className="text-foreground">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
                         <TableCell className="text-foreground">{p.furnished ? "Ja" : "–"}</TableCell>
@@ -300,7 +302,7 @@ export function PropertyList() {
                 <div className="flex-1 min-w-0">
                   <div className="truncate">{p.address || "(Adress saknas)"}</div>
                   <div className="text-xs text-muted-foreground truncate">
-                    {[p.city, p.beds && `${p.beds} bäddar`].filter(Boolean).join(" · ")}
+                    {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
                   </div>
                 </div>
                 {p.thumbnailUrl ? (
