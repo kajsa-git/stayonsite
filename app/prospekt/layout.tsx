@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", variable: "--font-instrument" });
+const playfair = Playfair_Display({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
   title: "Bostadsförslag — StayOnSite",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function ProspektLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sv">
-      <body className={`${inter.variable} ${instrument.variable} font-sans bg-[#faf8f4] text-[#1a1a1a] antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans bg-[#faf8f4] text-[#1a1a1a] antialiased`}>
         {children}
       </body>
     </html>

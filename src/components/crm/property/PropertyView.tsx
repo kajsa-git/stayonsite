@@ -75,6 +75,12 @@ type EditForm = {
   garage: boolean;
   broadband: boolean;
   egetBoende: boolean;
+  dishwasher: boolean;
+  allIncluded: boolean;
+  excludedNote: string;
+  linensIncluded: boolean;
+  heatWaterIncluded: boolean;
+  specialNote: string;
 };
 
 const s = (v: string | null | undefined) => v ?? "";
@@ -121,6 +127,12 @@ function toForm(p: PropertyWithOwner): EditForm {
     garage: !!p.garage,
     broadband: !!p.broadband,
     egetBoende: !!p.egetBoende,
+    dishwasher: !!p.dishwasher,
+    allIncluded: !!p.allIncluded,
+    excludedNote: s(p.excludedNote),
+    linensIncluded: !!p.linensIncluded,
+    heatWaterIncluded: !!p.heatWaterIncluded,
+    specialNote: s(p.specialNote),
   };
 }
 
@@ -223,6 +235,12 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
       garage: form.garage,
       broadband: form.broadband,
       egetBoende: form.egetBoende,
+      dishwasher: form.dishwasher,
+      allIncluded: form.allIncluded,
+      excludedNote: t(form.excludedNote),
+      linensIncluded: form.linensIncluded,
+      heatWaterIncluded: form.heatWaterIncluded,
+      specialNote: t(form.specialNote),
     });
     setSaving(false);
     setEditing(false);
@@ -423,6 +441,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
         <div className="flex flex-wrap gap-4 py-1">
           <Check label="Möblerat" checked={form.furnished} onChange={(v) => set("furnished", v)} />
           <Check label="Kök" checked={form.kitchen} onChange={(v) => set("kitchen", v)} />
+          <Check label="Diskmaskin" checked={form.dishwasher} onChange={(v) => set("dishwasher", v)} />
           <Check label="Garage" checked={form.garage} onChange={(v) => set("garage", v)} />
           <Check label="Bredband" checked={form.broadband} onChange={(v) => set("broadband", v)} />
           <Check label="Eget boende" checked={form.egetBoende} onChange={(v) => set("egetBoende", v)} />
@@ -446,6 +465,34 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
             <input type="date" className={FIELD_CLS} value={form.availableTo} onChange={(e) => set("availableTo", e.target.value)} />
           </Labeled>
         </div>
+
+        {/* Vad ingår i hyran */}
+        <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Vad ingår i hyran</p>
+          <div className="flex flex-wrap gap-4">
+            <Check label="Exakt allt ingår" checked={form.allIncluded} onChange={(v) => set("allIncluded", v)} />
+            <Check label="Sängkläder + handduk" checked={form.linensIncluded} onChange={(v) => set("linensIncluded", v)} />
+            <Check label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(v) => set("heatWaterIncluded", v)} />
+          </div>
+          <Labeled label="Om något INTE ingår, vad?">
+            <textarea
+              className={`${FIELD_CLS} min-h-[44px] resize-y`}
+              placeholder="T.ex. el, internet, soptömning…"
+              value={form.excludedNote}
+              onChange={(e) => set("excludedNote", e.target.value)}
+            />
+          </Labeled>
+        </div>
+
+        {/* Något särskilt att veta */}
+        <Labeled label="Något särskilt vi bör veta">
+          <textarea
+            className={`${FIELD_CLS} min-h-[48px] resize-y`}
+            placeholder="T.ex. trappor, sällskapsdjur, säsongsspecifikt…"
+            value={form.specialNote}
+            onChange={(e) => set("specialNote", e.target.value)}
+          />
+        </Labeled>
         <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Uthyrare</p>
           <OwnerPicker value={form} onChange={setOwnerFields} />
@@ -735,6 +782,7 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
             <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
               <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
               <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
+              <Equip label="Diskmaskin" yes={!!property.dishwasher} />
               <Equip label="Parkering" value={property.parkingSpaces != null ? String(property.parkingSpaces) : "–"} />
               <Equip label="Kök" yes={!!property.kitchen} />
               <Equip label="Garage" yes={!!property.garage} />
@@ -743,6 +791,27 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
               <Equip label="Eget boende" yes={!!property.egetBoende} />
             </div>
           </div>
+
+          {(property.allIncluded || property.linensIncluded || property.heatWaterIncluded || property.excludedNote) && (
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Vad ingår i hyran</p>
+              <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+                <Equip label="Allt ingår" yes={!!property.allIncluded} />
+                <Equip label="Sängkläder + handduk" yes={!!property.linensIncluded} />
+                <Equip label="Värme + varmvatten" yes={!!property.heatWaterIncluded} />
+              </div>
+              {property.excludedNote && (
+                <p className="text-sm mt-2"><span className="text-muted-foreground">Ingår inte:</span> {property.excludedNote}</p>
+              )}
+            </div>
+          )}
+
+          {property.specialNote && (
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Särskilt att veta</p>
+              <p className="text-sm whitespace-pre-wrap">{property.specialNote}</p>
+            </div>
+          )}
 
           {property.skick && (
             <div>

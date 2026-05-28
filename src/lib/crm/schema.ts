@@ -167,7 +167,14 @@ export const properties = sqliteTable("crm_properties", {
   egetBoende: integer("eget_boende", { mode: "boolean" }), // ej delat med andra
   washingMachines: integer("washing_machines"),
   dryers: integer("dryers"),
+  dishwasher: integer("dishwasher", { mode: "boolean" }), // diskmaskin
   parkingSpaces: integer("parking_spaces"), // antal p-platser (separat från garage)
+  // Vad ingår i hyran — diskreta booleans + textfält för undantag
+  allIncluded: integer("all_included", { mode: "boolean" }), // exakt allt ingår i hyran
+  excludedNote: text("excluded_note"), // om något INTE ingår, vad?
+  linensIncluded: integer("linens_included", { mode: "boolean" }), // sängkläder + handduk
+  heatWaterIncluded: integer("heat_water_included", { mode: "boolean" }), // värme + varmvatten
+  specialNote: text("special_note"), // något särskilt vi bör veta
   skick: text("skick"), // fritext: kondition/standard
   // Uthyrarens identitet (namn/typ/kontakt/betyg) bor i owners-tabellen — länkas via ownerId.
   // Objektet speglar dem aldrig längre; läsvägar hämtar via JOIN (mergeOwnerIntoProperty).

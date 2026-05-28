@@ -9,11 +9,11 @@ import { asc, desc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isSwedishCountry } from "@/lib/crm/owners";
-import { ArrowRight, Car, Check, CookingPot, DoorClosed, MapPin, Sofa, Wifi } from "lucide-react";
+import { ArrowRight, Check, DoorClosed, MapPin, Sofa } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const editorial = { fontFamily: "var(--font-instrument), Georgia, serif" } as const;
+const editorial = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
 
 // Geokodar postnummer-området (cachat) via OSM Nominatim — server-side, ingen nyckel.
 // Landsmedvetet: svenskt postnummer formateras "XXX XX", annars används värdet rått.
@@ -71,8 +71,8 @@ const T: Record<Lang, {
   ctaHref: string;
   footer: string;
   metaDesc: (place: string) => string;
-  hl: { furnished: string; kitchen: string; garage: string; broadband: string; eget: string };
-  f: { area: string; bedrooms: string; beds: string; bathrooms: string; washer: string; dryer: string; parking: string; from: string; to: string };
+  hl: { furnished: string; eget: string };
+  f: { area: string; bedrooms: string; beds: string; bathrooms: string; washer: string; dryer: string; dishwasher: string; parking: string; from: string; to: string };
   parkingUnit: string;
 }> = {
   sv: {
@@ -90,8 +90,8 @@ const T: Record<Lang, {
     ctaHref: "https://www.stayonsite.se/kontakt",
     footer: "StayOnSite · Corporate housing i hela Sverige",
     metaDesc: (place) => `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`,
-    hl: { furnished: "Möblerat", kitchen: "Eget kök", garage: "Garage", broadband: "Bredband ingår", eget: "Eget boende" },
-    f: { area: "Yta", bedrooms: "Sovrum", beds: "Bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
+    hl: { furnished: "Möblerat", eget: "Eget boende" },
+    f: { area: "Yta", bedrooms: "Sovrum", beds: "Bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", dishwasher: "Diskmaskin", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
     parkingUnit: "pl.",
   },
   en: {
@@ -109,8 +109,8 @@ const T: Record<Lang, {
     ctaHref: "https://www.stayonsite.se/en/corporate-housing-sweden",
     footer: "StayOnSite · Corporate housing across Sweden",
     metaDesc: (place) => `Furnished accommodation in ${place} via StayOnSite — corporate housing across Sweden.`,
-    hl: { furnished: "Furnished", kitchen: "Kitchen", garage: "Garage", broadband: "Broadband included", eget: "Private accommodation" },
-    f: { area: "Area", bedrooms: "Bedrooms", beds: "Beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", parking: "Parking", from: "Available from", to: "Available until" },
+    hl: { furnished: "Furnished", eget: "Private accommodation" },
+    f: { area: "Area", bedrooms: "Bedrooms", beds: "Beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", dishwasher: "Dishwasher", parking: "Parking", from: "Available from", to: "Available until" },
     parkingUnit: "spots",
   },
   pl: {
@@ -128,8 +128,8 @@ const T: Record<Lang, {
     ctaHref: "https://www.stayonsite.se/pl/zakwaterowanie-firmowe",
     footer: "StayOnSite · Zakwaterowanie firmowe w całej Szwecji",
     metaDesc: (place) => `Umeblowane zakwaterowanie w ${place} przez StayOnSite — zakwaterowanie firmowe w całej Szwecji.`,
-    hl: { furnished: "Umeblowane", kitchen: "Kuchnia", garage: "Garaż", broadband: "Internet w cenie", eget: "Własne zakwaterowanie" },
-    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
+    hl: { furnished: "Umeblowane", eget: "Własne zakwaterowanie" },
+    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", dishwasher: "Zmywarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
     parkingUnit: "miejsc",
   },
 };
@@ -192,11 +192,9 @@ export default async function ProspektPage(
       bathrooms: properties.bathrooms,
       washingMachines: properties.washingMachines,
       dryers: properties.dryers,
+      dishwasher: properties.dishwasher,
       parkingSpaces: properties.parkingSpaces,
       furnished: properties.furnished,
-      kitchen: properties.kitchen,
-      garage: properties.garage,
-      broadband: properties.broadband,
       egetBoende: properties.egetBoende,
       skick: properties.skick,
       skickEn: properties.skickEn,
@@ -240,9 +238,6 @@ export default async function ProspektPage(
 
   const highlights = [
     p.furnished && { label: tr.hl.furnished, Icon: Sofa },
-    p.kitchen && { label: tr.hl.kitchen, Icon: CookingPot },
-    p.garage && { label: tr.hl.garage, Icon: Car },
-    p.broadband && { label: tr.hl.broadband, Icon: Wifi },
     p.egetBoende && { label: tr.hl.eget, Icon: DoorClosed },
   ].filter(Boolean) as { label: string; Icon: typeof Sofa }[];
 
@@ -253,6 +248,7 @@ export default async function ProspektPage(
     p.bathrooms != null && { label: tr.f.bathrooms, value: String(p.bathrooms) },
     p.washingMachines != null && { label: tr.f.washer, value: String(p.washingMachines) },
     p.dryers != null && { label: tr.f.dryer, value: String(p.dryers) },
+    p.dishwasher && { label: tr.f.dishwasher, value: lang === "en" ? "Yes" : lang === "pl" ? "Tak" : "Ja" },
     p.parkingSpaces != null && { label: tr.f.parking, value: `${p.parkingSpaces} ${tr.parkingUnit}` },
     p.moveInFrom && { label: tr.f.from, value: p.moveInFrom },
     p.availableTo && { label: tr.f.to, value: p.availableTo },
@@ -311,7 +307,7 @@ export default async function ProspektPage(
         )}
 
         {/* Gallery */}
-        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} fullBleed />
+        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} />
 
         {/* Description */}
         {description && (
