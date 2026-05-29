@@ -26,38 +26,28 @@ interface Props {
   contacts?: ContactOption[];
 }
 
-function EmailItem({ email }: { email: Email }) {
+// ─── Enskilt mejl ────────────────────────────────────────────────────────────
+
+function EmailMessage({ email }: { email: Email }) {
   const [expanded, setExpanded] = useState(false);
   const isOut = email.direction === "out";
 
   return (
-    <div className="bg-white rounded-lg border p-3 text-sm">
-      <button
-        type="button"
-        className="w-full text-left"
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+    <div className={`border-l-2 pl-3 py-1 ${isOut ? "border-blue-200" : "border-green-300"}`}>
+      <button type="button" className="w-full text-left" onClick={() => setExpanded((v) => !v)}>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className={isOut ? "text-blue-600" : "text-green-600"}>
-            {isOut ? <Mail className="h-3.5 w-3.5 inline" /> : <MailOpen className="h-3.5 w-3.5 inline" />}
-            {" "}{isOut ? "Skickad" : "Mottagen"}
+            {isOut ? <Mail className="h-3 w-3 inline" /> : <MailOpen className="h-3 w-3 inline" />}
+            {" "}{isOut ? "Du" : email.fromEmail}
           </span>
-          <span>·</span>
-          <span className="truncate">{isOut ? email.toEmail : email.fromEmail}</span>
-          <span className="ml-auto shrink-0">
-            {format(new Date(email.sentAt), "d MMM yyyy HH:mm", { locale: sv })}
-          </span>
+          <span className="ml-auto shrink-0">{format(new Date(email.sentAt), "d MMM HH:mm", { locale: sv })}</span>
           {expanded ? <ChevronUp className="h-3 w-3 shrink-0" /> : <ChevronDown className="h-3 w-3 shrink-0" />}
         </div>
-        <p className="font-medium text-nordic-900 truncate">{email.subject}</p>
       </button>
       {expanded && (
-        <div className="mt-2 border-t pt-2 text-nordic-800 text-sm">
+        <div className="mt-1.5 text-sm text-nordic-800">
           {email.html ? (
-            <div
-              className="prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: email.html }}
-            />
+            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: email.html }} />
           ) : (
             <p className="whitespace-pre-wrap">{email.body}</p>
           )}
@@ -66,6 +56,59 @@ function EmailItem({ email }: { email: Email }) {
     </div>
   );
 }
+
+// ─── Tråd (grupp av mejl med samma gmailThreadId) ─────────────────────────────
+
+function EmailThreadGroup({ messages }: { messages: Email[] }) {
+  const sorted = [...messages].sort((a, b) => a.sentAt.localeCompare(b.sentAt));
+  const latest = sorted[sorted.length - 1];
+  const hasUnread = sorted.some((m) => m.direction === "in" && !m.isRead);
+  const [open, setOpen] = useState(hasUnread);
+
+  const inCount = sorted.filter((m) => m.direction === "in").length;
+  const outCount = sorted.filter((m) => m.direction === "out").length;
+
+  return (
+    <div className="rounded-lg bg-white border overflow-hidden">
+      <button
+        type="button"
+        className="w-full text-left px-3 py-2.5 hover:bg-nordic-50 transition-colors"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 shrink-0">
+            {outCount > 0 && <Mail className="h-3.5 w-3.5 text-blue-500" />}
+            {inCount > 0 && <MailOpen className="h-3.5 w-3.5 text-green-500" />}
+          </div>
+          <p className={`text-sm truncate flex-1 ${hasUnread ? "font-semibold text-nordic-900" : "text-nordic-800"}`}>
+            {latest.subject || "(inget ämne)"}
+          </p>
+          <div className="flex items-center gap-2 shrink-0 ml-auto">
+            {sorted.length > 1 && (
+              <span className="text-[11px] bg-nordic-100 text-nordic-600 rounded-full px-1.5 py-0.5 font-medium">
+                {sorted.length}
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground">
+              {format(new Date(latest.sentAt), "d MMM HH:mm", { locale: sv })}
+            </span>
+            {open ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
+          </div>
+        </div>
+      </button>
+
+      {open && (
+        <div className="px-3 pb-3 space-y-2 border-t bg-nordic-50/30">
+          {sorted.map((m) => (
+            <EmailMessage key={m.id} email={m} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
 export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [] }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
@@ -100,44 +143,39 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
     }
   }
 
-  // Auto-synka Gmail-trådar när företaget öppnas
   useEffect(() => {
     if (companyId) handleSync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId]);
 
+  // Gruppera per gmailThreadId, fristående mejl får egen grupp
+  const threads = Object.values(
+    emailList.reduce<Record<string, Email[]>>((acc, email) => {
+      const key = email.gmailThreadId ?? `solo-${email.id}`;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(email);
+      return acc;
+    }, {}),
+  ).sort((a, b) => {
+    const latestA = Math.max(...a.map((e) => new Date(e.sentAt).getTime()));
+    const latestB = Math.max(...b.map((e) => new Date(e.sentAt).getTime()));
+    return latestB - latestA;
+  });
+
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Mejl
-        </span>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Mejl</span>
         <div className="flex gap-1">
           {companyId && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 text-xs px-2"
-              onClick={handleSync}
-              disabled={syncing}
-              title="Hämta svar från Gmail"
-            >
+            <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={handleSync} disabled={syncing} title="Hämta svar från Gmail">
               {syncing ? "Synkar…" : "↻ Synka"}
             </Button>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 text-xs px-2"
-            onClick={() => setLogOpen(true)}
-          >
+          <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={() => setLogOpen(true)}>
             Logga
           </Button>
-          <Button
-            size="sm"
-            className="h-6 text-xs px-2"
-            onClick={() => setComposeOpen(true)}
-          >
+          <Button size="sm" className="h-6 text-xs px-2" onClick={() => setComposeOpen(true)}>
             Skriv mejl
           </Button>
         </div>
@@ -149,14 +187,15 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
           <a href="/api/auth/signin" className="underline font-medium">Logga in igen</a>
         </div>
       )}
+
       {syncing && emailList.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">Hämtar mejl…</p>
-      ) : emailList.length === 0 ? (
+      ) : threads.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">Inga mejl loggade ännu.</p>
       ) : (
         <div className="space-y-2">
-          {emailList.map((email) => (
-            <EmailItem key={email.id} email={email} />
+          {threads.map((group) => (
+            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} />
           ))}
         </div>
       )}
