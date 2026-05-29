@@ -130,6 +130,7 @@ export const requests = sqliteTable("crm_requests", {
   bedsTo: integer("beds_to"),
   startDate: text("start_date"),
   endDate: text("end_date"),
+  endDateOngoing: integer("end_date_ongoing", { mode: "boolean" }), // löpande: avslut tills vidare (inget bestämt slutdatum)
   projectDurationMonths: integer("project_duration_months"),
   budgetMax: real("budget_max"), // vad kunden söker inom (behov)
   furnishedRequired: integer("furnished_required", { mode: "boolean" }),
@@ -140,6 +141,12 @@ export const requests = sqliteTable("crm_requests", {
   lostReason: text("lost_reason"),
   notes: text("notes"),
   statusChangedAt: text("status_changed_at"),
+  // In-/avflyttning: checklistor (avbockade nyckel-id) + tidpunkt klarmarkerad.
+  // Checklistans mallar bor i src/lib/crm/move-checklists.ts — här lagras bara vad som är avbockat.
+  moveInChecklist: text("move_in_checklist", { mode: "json" }).$type<string[]>(),
+  moveOutChecklist: text("move_out_checklist", { mode: "json" }).$type<string[]>(),
+  moveInDoneAt: text("move_in_done_at"),
+  moveOutDoneAt: text("move_out_done_at"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
 }, (t) => [
@@ -340,7 +347,9 @@ export const emails = sqliteTable("crm_emails", {
   fromEmail: text("from_email").notNull(),
   toEmail: text("to_email").notNull(),
   authorId: text("author_id"),   // crm_user id för utgående/manuell loggning
-  resendId: text("resend_id"),   // Resend message ID
+  resendId: text("resend_id"),
+  gmailMessageId: text("gmail_message_id"),
+  gmailThreadId: text("gmail_thread_id"),
   isRead: integer("is_read", { mode: "boolean" }).default(true),
   sentAt: text("sent_at").notNull(),
 }, (t) => [

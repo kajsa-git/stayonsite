@@ -70,6 +70,29 @@ function EmailItem({ email }: { email: Email }) {
 export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [] }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [gmailError, setGmailError] = useState<string | null>(null);
+
+  async function handleSync() {
+    if (!companyId) return;
+    setSyncing(true);
+    setGmailError(null);
+    try {
+      const res = await fetch("/api/crm/emails/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyId }),
+      });
+      const data = await res.json();
+      if (data.error === "gmail_auth") {
+        setGmailError(data.message);
+      } else {
+        mutate();
+      }
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   const param = companyId ? `companyId=${companyId}` : `ownerId=${ownerId}`;
   const { data: emailList = [], mutate } = useSWR<Email[]>(
@@ -84,6 +107,18 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
           Mejl
         </span>
         <div className="flex gap-1">
+          {companyId && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 text-xs px-2"
+              onClick={handleSync}
+              disabled={syncing}
+              title="Hämta svar från Gmail"
+            >
+              {syncing ? "Synkar…" : "↻ Synka"}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -102,6 +137,12 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
         </div>
       </div>
 
+      {gmailError && (
+        <div className="mb-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800">
+          {gmailError}{" "}
+          <a href="/api/auth/signin" className="underline font-medium">Logga in igen</a>
+        </div>
+      )}
       {emailList.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">Inga mejl loggade ännu.</p>
       ) : (

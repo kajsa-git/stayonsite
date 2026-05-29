@@ -1,49 +1,56 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { contacts, emails, owners } from "@/lib/crm/schema";
+import { contacts } from "@/lib/crm/schema";
+import { emails } from "@/lib/crm/schema";
+import { GmailAuthError, gmailSend } from "@/lib/crm/gmail";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { to, subject, body: emailBody, html: emailHtml, companyId, contactId, ownerId } = body;
+  const { to, subject, body: emailBody, html: emailHtml, companyId, contactId, ownerId, threadId } = body;
 
   if (!to || !subject || !emailBody) {
     return NextResponse.json({ error: "to, subject, body required" }, { status: 400 });
   }
 
+  const user = session.user as typeof session.user & { id: string };
   const from = process.env.RESEND_FROM ?? "kajsa@stayonsite.se";
-  const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const { data, error } = await resend.emails.send({
-    from: `Kajsa <${from}>`,
-    to,
-    replyTo: from,
-    subject,
-    text: emailBody,
-    ...(emailHtml ? { html: emailHtml } : {}),
-  });
+  let gmailMessageId: string | null = null;
+  let gmailThreadId: string | null = null;
 
-  if (error) {
-    console.error("Resend error (CRM send):", error);
-    return NextResponse.json({ error: "resend_error", detail: error }, { status: 502 });
+  try {
+    const result = await gmailSend(user.id, {
+      from: `Kajsa <${from}>`,
+      to,
+      subject,
+      text: emailBody,
+      html: emailHtml ?? undefined,
+      threadId: threadId ?? undefined,
+    });
+    gmailMessageId = result.messageId;
+    gmailThreadId = result.threadId;
+  } catch (err) {
+    if (err instanceof GmailAuthError) {
+      return NextResponse.json({ error: "gmail_auth", message: err.message }, { status: 403 });
+    }
+    console.error("Gmail send error:", err);
+    return NextResponse.json({ error: "send_error", message: "Kunde inte skicka mejlet via Gmail." }, { status: 502 });
   }
 
-  const user = session.user as typeof session.user & { id: string };
-  const id = nanoid();
-
-  // Resolve companyId from contactId if only contactId provided
+  // Resolve companyId from contactId if needed
   let resolvedCompanyId = companyId ?? null;
   if (!resolvedCompanyId && contactId) {
     const [c] = await db.select({ companyId: contacts.companyId }).from(contacts).where(eq(contacts.id, contactId));
     resolvedCompanyId = c?.companyId ?? null;
   }
 
+  const id = nanoid();
   const [row] = await db
     .insert(emails)
     .values({
@@ -58,7 +65,8 @@ export async function POST(req: NextRequest) {
       fromEmail: from,
       toEmail: to,
       authorId: user.id,
-      resendId: data?.id ?? null,
+      gmailMessageId,
+      gmailThreadId,
       sentAt: new Date().toISOString(),
     })
     .returning();
