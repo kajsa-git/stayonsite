@@ -62,6 +62,18 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           Objektsbank
         </button>
         <button
+          onClick={() => router.push("/crm/flyttar")}
+          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
+          title="In- & avflyttningar att hantera"
+        >
+          In- & avflyttningar
+          {counts.moveSchedule > 0 && (
+            <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#ff6300] text-white text-[10px] font-bold tabular-nums align-middle">
+              {String(counts.moveSchedule).padStart(2, "0")}
+            </span>
+          )}
+        </button>
+        <button
           onClick={() => router.push("/crm/sok")}
           className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
         >

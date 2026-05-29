@@ -52,16 +52,36 @@ export async function GET() {
       .select({ propertyId: ownerOutreach.propertyId })
       .from(ownerOutreach)
       .where(and(isNull(ownerOutreach.concludedAt), lte(ownerOutreach.nextFollowUpDate, today))),
+
+    // In-/avflyttningar att hantera: aktiva uppdrag med datum.
+    db
+      .select({
+        startDate: requests.startDate,
+        endDate: requests.endDate,
+        endDateOngoing: requests.endDateOngoing,
+        moveInDoneAt: requests.moveInDoneAt,
+        moveOutDoneAt: requests.moveOutDoneAt,
+      })
+      .from(requests)
+      .where(inArray(requests.status, ["won", "invoiced"])),
   ]);
 
   const chaseProps = new Set<string>();
   for (const m of chaseMatchProps) if (m.propertyId) chaseProps.add(m.propertyId);
   for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
 
+  // Ohanterade in-/avflyttningar inom 3 dagar (förfallna räknas också): ej klarmarkerade.
+  let moveSchedule = 0;
+  for (const r of moveRows) {
+    if (r.startDate && !r.moveInDoneAt && r.startDate <= horizon) moveSchedule++;
+    if (r.endDate && !r.endDateOngoing && !r.moveOutDoneAt && r.endDate <= horizon) moveSchedule++;
+  }
+
   return NextResponse.json({
     followUps: followUps.length,
     openWithoutFollowUp: openWithoutFollowUpRows.length,
     toInvoice: toInvoiceRows.length,
     chaseLandlords: chaseProps.size,
+    moveSchedule,
   });
 }
