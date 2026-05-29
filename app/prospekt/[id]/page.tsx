@@ -1,144 +1,14 @@
 import { db } from "@/lib/crm/db";
-import { properties, propertyImages } from "@/lib/crm/schema";
-import { R2_BUCKET, r2 } from "@/lib/crm/r2";
-import { ProspektGallery } from "@/components/prospekt/ProspektGallery";
-import { ProspektMap } from "@/components/prospekt/ProspektMap";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { asc, desc, eq } from "drizzle-orm";
+import { properties } from "@/lib/crm/schema";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { isSwedishCountry } from "@/lib/crm/owners";
-import { ArrowRight, Check, DoorClosed, MapPin, Sofa } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { loadPublicProperty } from "@/lib/crm/public-property";
+import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase";
+import { LANGS, T, pickLang } from "@/components/prospekt/prospekt-i18n";
 
 export const dynamic = "force-dynamic";
-
-const editorial = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
-
-// Geokodar postnummer-området (cachat) via OSM Nominatim — server-side, ingen nyckel.
-// Landsmedvetet: svenskt postnummer formateras "XXX XX", annars används värdet rått.
-async function geocodeArea(
-  postalCode?: string | null,
-  city?: string | null,
-  country?: string | null,
-): Promise<{ lat: number; lng: number } | null> {
-  const headers = { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" };
-  const swede = isSwedishCountry(country);
-  const postal = swede
-    ? (postalCode ?? "").replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2")
-    : (postalCode ?? "").trim();
-  const c = (city ?? "").trim();
-  const countryName = swede ? "Sweden" : (country ?? "").trim();
-  const cn = countryName ? `&country=${encodeURIComponent(countryName)}` : "";
-  const tries: string[] = [];
-  if (postal && c) tries.push(`postalcode=${encodeURIComponent(postal)}&city=${encodeURIComponent(c)}${cn}`);
-  if (postal) tries.push(`postalcode=${encodeURIComponent(postal)}${cn}`);
-  if (c) tries.push(`city=${encodeURIComponent(c)}${cn}`);
-  for (const params of tries) {
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&${params}`, {
-        headers,
-        cache: "force-cache",
-      });
-      if (!res.ok) continue;
-      const j = (await res.json()) as { lat: string; lon: string }[];
-      if (Array.isArray(j) && j[0]) return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
-    } catch {
-      /* prova nästa variant */
-    }
-  }
-  return null;
-}
-
-type Lang = "sv" | "en" | "pl";
-function pickLang(v: string | string[] | undefined): Lang {
-  const s = Array.isArray(v) ? v[0] : v;
-  return s === "en" || s === "pl" ? s : "sv";
-}
-
-const T: Record<Lang, {
-  tagline: string;
-  title: (c: string | null) => string;
-  photos: (n: number) => string;
-  details: string;
-  condition: string;
-  included: string;
-  distancesTitle: string;
-  mapTitle: string;
-  ctaTitle: string;
-  ctaSub: string;
-  ctaButton: string;
-  ctaHref: string;
-  footer: string;
-  metaDesc: (place: string) => string;
-  hl: { furnished: string; eget: string };
-  f: { area: string; bedrooms: string; beds: string; bathrooms: string; washer: string; dryer: string; dishwasher: string; parking: string; from: string; to: string };
-  parkingUnit: string;
-}> = {
-  sv: {
-    tagline: "Bostadsförslag",
-    title: (c) => (c ? `Boende i ${c}` : "Bostadsförslag"),
-    photos: (n) => `${n} bilder`,
-    details: "Detaljer",
-    condition: "Skick",
-    included: "Vad ingår",
-    distancesTitle: "Avstånd",
-    mapTitle: "Karta",
-    ctaTitle: "Intresserad av den här bostaden?",
-    ctaSub: "Hör av dig till StayOnSite så hjälper vi dig vidare — ofta med svar inom 24 timmar.",
-    ctaButton: "Kontakta oss",
-    ctaHref: "https://www.stayonsite.se/kontakt",
-    footer: "StayOnSite · Corporate housing i hela Sverige",
-    metaDesc: (place) => `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`,
-    hl: { furnished: "Möblerat", eget: "Eget boende" },
-    f: { area: "Yta", bedrooms: "Sovrum", beds: "Bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", dishwasher: "Diskmaskin", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
-    parkingUnit: "pl.",
-  },
-  en: {
-    tagline: "Housing proposal",
-    title: (c) => (c ? `Accommodation in ${c}` : "Housing proposal"),
-    photos: (n) => `${n} photos`,
-    details: "Details",
-    condition: "Condition",
-    included: "What's included",
-    distancesTitle: "Distances",
-    mapTitle: "Map",
-    ctaTitle: "Interested in this property?",
-    ctaSub: "Get in touch with StayOnSite and we'll help you further — usually a reply within 24 hours.",
-    ctaButton: "Contact us",
-    ctaHref: "https://www.stayonsite.se/en/corporate-housing-sweden",
-    footer: "StayOnSite · Corporate housing across Sweden",
-    metaDesc: (place) => `Furnished accommodation in ${place} via StayOnSite — corporate housing across Sweden.`,
-    hl: { furnished: "Furnished", eget: "Private accommodation" },
-    f: { area: "Area", bedrooms: "Bedrooms", beds: "Beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", dishwasher: "Dishwasher", parking: "Parking", from: "Available from", to: "Available until" },
-    parkingUnit: "spots",
-  },
-  pl: {
-    tagline: "Propozycja zakwaterowania",
-    title: (c) => (c ? `Zakwaterowanie w ${c}` : "Propozycja zakwaterowania"),
-    photos: (n) => `${n} zdjęć`,
-    details: "Szczegóły",
-    condition: "Stan",
-    included: "Co jest wliczone",
-    distancesTitle: "Odległości",
-    mapTitle: "Mapa",
-    ctaTitle: "Zainteresowany tym mieszkaniem?",
-    ctaSub: "Skontaktuj się ze StayOnSite, a pomożemy Ci dalej — zwykle odpowiadamy w ciągu 24 godzin.",
-    ctaButton: "Skontaktuj się",
-    ctaHref: "https://www.stayonsite.se/pl/zakwaterowanie-firmowe",
-    footer: "StayOnSite · Zakwaterowanie firmowe w całej Szwecji",
-    metaDesc: (place) => `Umeblowane zakwaterowanie w ${place} przez StayOnSite — zakwaterowanie firmowe w całej Szwecji.`,
-    hl: { furnished: "Umeblowane", eget: "Własne zakwaterowanie" },
-    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", dishwasher: "Zmywarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
-    parkingUnit: "miejsc",
-  },
-};
-
-const LANGS: { code: Lang; label: string }[] = [
-  { code: "sv", label: "SV" },
-  { code: "en", label: "EN" },
-  { code: "pl", label: "PL" },
-];
 
 export async function generateMetadata(
   { params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ lang?: string | string[] }> },
@@ -170,8 +40,8 @@ export async function generateMetadata(
   };
 }
 
-// PUBLIC, no-auth prospekt for a published property.
-// Tenant-safe only: NEVER address, owner, "vi hyr för"/"vi hyr ut för" or price.
+// PUBLIC, no-auth prospekt for a published property — säljlänk som CRM:et delar direkt.
+// Tenant-safe only: NEVER address, owner, "vi hyr för"/"vi hyr ut för" or price (säkras i loadPublicProperty).
 export default async function ProspektPage(
   { params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ lang?: string | string[] }> },
 ) {
@@ -179,80 +49,8 @@ export default async function ProspektPage(
   const lang = pickLang((await searchParams).lang);
   const tr = T[lang];
 
-  // Select ONLY tenant-safe fields — never address, owner-* or rent/price.
-  const [p] = await db
-    .select({
-      published: properties.published,
-      postalCode: properties.postalCode,
-      city: properties.city,
-      country: properties.country,
-      squareMeters: properties.squareMeters,
-      bedrooms: properties.bedrooms,
-      beds: properties.beds,
-      bathrooms: properties.bathrooms,
-      washingMachines: properties.washingMachines,
-      dryers: properties.dryers,
-      dishwasher: properties.dishwasher,
-      parkingSpaces: properties.parkingSpaces,
-      furnished: properties.furnished,
-      egetBoende: properties.egetBoende,
-      skick: properties.skick,
-      skickEn: properties.skickEn,
-      skickPl: properties.skickPl,
-      publicDescription: properties.publicDescription,
-      publicDescriptionEn: properties.publicDescriptionEn,
-      publicDescriptionPl: properties.publicDescriptionPl,
-      inclusions: properties.inclusions,
-      inclusionsEn: properties.inclusionsEn,
-      inclusionsPl: properties.inclusionsPl,
-      distances: properties.distances,
-      moveInFrom: properties.moveInFrom,
-      availableTo: properties.availableTo,
-    })
-    .from(properties)
-    .where(eq(properties.id, id));
-  if (!p || !p.published) notFound();
-
-  const description =
-    (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) || p.publicDescription;
-  const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
-  const localInclusions = lang === "en" ? p.inclusionsEn : lang === "pl" ? p.inclusionsPl : null;
-  const inclusions = (localInclusions && localInclusions.length ? localInclusions : p.inclusions) ?? [];
-  const distances = (p.distances ?? []).filter((d) => d.label?.trim());
-
-  // Karta på områdesnivå — aldrig exakt adress. Cirkel runt postnummer-områdets centroid.
-  const mapArea = [p.postalCode, p.city].filter(Boolean).join(" ");
-  const mapCoords = p.postalCode || p.city ? await geocodeArea(p.postalCode, p.city, p.country) : null;
-
-  const imgRows = await db
-    .select()
-    .from(propertyImages)
-    .where(eq(propertyImages.propertyId, id))
-    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
-
-  const images = await Promise.all(
-    imgRows.map((im) =>
-      getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }), { expiresIn: 60 * 60 * 24 * 7 })
-    )
-  );
-
-  const highlights = [
-    p.furnished && { label: tr.hl.furnished, Icon: Sofa },
-    p.egetBoende && { label: tr.hl.eget, Icon: DoorClosed },
-  ].filter(Boolean) as { label: string; Icon: typeof Sofa }[];
-
-  const facts: { label: string; value: string }[] = [
-    p.squareMeters != null && { label: tr.f.area, value: `${p.squareMeters} m²` },
-    p.bedrooms != null && { label: tr.f.bedrooms, value: String(p.bedrooms) },
-    p.beds != null && { label: tr.f.beds, value: String(p.beds) },
-    p.bathrooms != null && { label: tr.f.bathrooms, value: String(p.bathrooms) },
-    p.washingMachines != null && { label: tr.f.washer, value: String(p.washingMachines) },
-    p.dryers != null && { label: tr.f.dryer, value: String(p.dryers) },
-    p.dishwasher && { label: tr.f.dishwasher, value: lang === "en" ? "Yes" : lang === "pl" ? "Tak" : "Ja" },
-    p.parkingSpaces != null && { label: tr.f.parking, value: `${p.parkingSpaces} ${tr.parkingUnit}` },
-    p.moveInFrom && { label: tr.f.from, value: p.moveInFrom },
-    p.availableTo && { label: tr.f.to, value: p.availableTo },
-  ].filter(Boolean) as { label: string; value: string }[];
+  const data = await loadPublicProperty(id);
+  if (!data) notFound();
 
   return (
     <div className="min-h-screen pb-16">
@@ -281,110 +79,7 @@ export default async function ProspektPage(
       </header>
 
       <div className="mx-auto max-w-3xl space-y-8 px-5 py-8">
-        {/* Title */}
-        <div>
-          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-nordic-100 px-3 py-1 text-xs font-medium text-nordic-700">
-            <MapPin className="h-3.5 w-3.5 text-[#ff6300]" />
-            {[p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige"}
-          </div>
-          <h1 className="text-[2.1rem] leading-[1.1] tracking-tight text-nordic-900" style={editorial}>
-            {tr.title(p.city)}
-          </h1>
-        </div>
-
-        {/* Highlights */}
-        {highlights.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
-            {highlights.map(({ label, Icon }) => (
-              <div key={label} className="flex items-center gap-3 rounded-xl border bg-white px-4 py-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff1e8] text-[#ff6300]">
-                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
-                </span>
-                <span className="text-sm font-medium text-nordic-900">{label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Gallery */}
-        <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} />
-
-        {/* Description */}
-        {description && (
-          <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-nordic-800">{description}</p>
-        )}
-
-        {/* Facts */}
-        {facts.length > 0 && (
-          <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.details}</h2>
-            <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {facts.map((f) => (
-                <div key={f.label} className="rounded-xl border bg-white px-4 py-3">
-                  <dt className="text-xs text-muted-foreground">{f.label}</dt>
-                  <dd className="mt-0.5 text-lg font-semibold tabular-nums text-nordic-900">{f.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        )}
-
-        {/* Vad ingår */}
-        {inclusions.length > 0 && (
-          <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.included}</h2>
-            <ul className="divide-y rounded-xl border bg-white">
-              {inclusions.map((item, i) => (
-                <li key={i} className="flex items-center gap-3 px-4 py-3 text-[15px] text-nordic-800">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#fff1e8] text-[#ff6300]">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Skick */}
-        {skick && (
-          <div>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.condition}</h2>
-            <p className="whitespace-pre-wrap text-[15px] text-nordic-800">{skick}</p>
-          </div>
-        )}
-
-        {/* Avstånd */}
-        {distances.length > 0 && (
-          <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.distancesTitle}</h2>
-            <ul className="divide-y rounded-xl border bg-white">
-              {distances.map((d, i) => (
-                <li key={i} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-nordic-900">
-                  <span>{d.label}</span>
-                  <span className="flex items-center gap-2 tabular-nums">
-                    {d.km > 0 && <span className="text-sm text-muted-foreground">{d.km} km</span>}
-                    {d.minutes > 0 && <span className="font-semibold text-[#ff6300]">{d.minutes} min</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Karta — områdesnivå (cirkel runt området, aldrig exakt adress) */}
-        {mapCoords && (
-          <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{tr.mapTitle}</h2>
-            <div className="overflow-hidden rounded-xl border bg-white">
-              <ProspektMap lat={mapCoords.lat} lng={mapCoords.lng} />
-              <div className="flex items-center gap-2 px-4 py-3 text-sm text-nordic-800">
-                <MapPin className="h-4 w-4 shrink-0 text-[#ff6300]" />
-                {mapArea}
-              </div>
-            </div>
-          </div>
-        )}
+        <PropertyShowcase data={data} lang={lang} title={tr.title(data.row.city)} />
 
         {/* CTA */}
         <div className="rounded-2xl border bg-white p-6 text-center">

@@ -191,6 +191,10 @@ export const properties = sqliteTable("crm_properties", {
   moveInFrom: text("move_in_from"),
   availableTo: text("available_to"),
   notes: text("notes"), // intern beskrivning — aldrig publik
+  // Publik namngivning för listsidan/detaljsidan. publicName = redigerbar SEO-rubrik (sv),
+  // slug = ren URL-nyckel (unik). Genereras deterministiskt om de lämnas tomma (se slug.ts).
+  publicName: text("public_name"),
+  slug: text("slug"),
   publicDescription: text("public_description"), // extern beskrivning (sv, källtext) — visas på hemsidan
   // Lokaliserade varianter av extern beskrivning/skick (AI-genererade på begäran, redigerbara).
   publicDescriptionEn: text("public_description_en"),
@@ -216,6 +220,7 @@ export const properties = sqliteTable("crm_properties", {
   index("crm_properties_beds_idx").on(t.beds),
   index("crm_properties_published_idx").on(t.published),
   index("crm_properties_owner_id_idx").on(t.ownerId),
+  uniqueIndex("crm_properties_slug_idx").on(t.slug),
 ]);
 
 // Kontaktrundor mot uthyrare — en episod per objekt, ofta utlöst av en förfrågan.
