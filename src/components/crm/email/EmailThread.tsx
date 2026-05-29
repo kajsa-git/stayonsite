@@ -28,7 +28,7 @@ interface Props {
 
 // ─── Enskilt mejl ────────────────────────────────────────────────────────────
 
-function EmailMessage({ email }: { email: Email }) {
+function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email) => void }) {
   const [expanded, setExpanded] = useState(false);
   const isOut = email.direction === "out";
 
@@ -51,6 +51,15 @@ function EmailMessage({ email }: { email: Email }) {
           ) : (
             <p className="whitespace-pre-wrap">{email.body}</p>
           )}
+          {!isOut && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onReply(email); }}
+              className="mt-2 text-[11px] px-2 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 transition-colors"
+            >
+              ↩ Svara
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -59,7 +68,7 @@ function EmailMessage({ email }: { email: Email }) {
 
 // ─── Tråd (grupp av mejl med samma gmailThreadId) ─────────────────────────────
 
-function EmailThreadGroup({ messages }: { messages: Email[] }) {
+function EmailThreadGroup({ messages, onReply }: { messages: Email[]; onReply: (email: Email) => void }) {
   const sorted = [...messages].sort((a, b) => a.sentAt.localeCompare(b.sentAt));
   const latest = sorted[sorted.length - 1];
   const hasUnread = sorted.some((m) => m.direction === "in" && !m.isRead);
@@ -100,7 +109,7 @@ function EmailThreadGroup({ messages }: { messages: Email[] }) {
       {open && (
         <div className="px-3 pb-3 space-y-2 border-t bg-nordic-50/30">
           {sorted.map((m) => (
-            <EmailMessage key={m.id} email={m} />
+            <EmailMessage key={m.id} email={m} onReply={onReply} />
           ))}
         </div>
       )}
@@ -112,9 +121,16 @@ function EmailThreadGroup({ messages }: { messages: Email[] }) {
 
 export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [] }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
+  const [replyTo, setReplyTo] = useState<{ to: string; subject: string; threadId: string | null } | null>(null);
   const [logOpen, setLogOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [gmailError, setGmailError] = useState<string | null>(null);
+
+  function handleReply(email: Email) {
+    const subject = email.subject.startsWith("Re:") ? email.subject : `Re: ${email.subject}`;
+    setReplyTo({ to: email.fromEmail, subject, threadId: email.gmailThreadId ?? null });
+    setComposeOpen(true);
+  }
 
   const param = companyId ? `companyId=${companyId}` : `ownerId=${ownerId}`;
   const { data: emailList = [], mutate } = useSWR<Email[]>(
@@ -195,20 +211,22 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
       ) : (
         <div className="space-y-2">
           {threads.map((group) => (
-            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} />
+            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} onReply={handleReply} />
           ))}
         </div>
       )}
 
       <EmailComposeModal
         open={composeOpen}
-        defaultTo={defaultTo}
+        defaultTo={replyTo?.to ?? defaultTo}
+        defaultSubject={replyTo?.subject}
+        threadId={replyTo?.threadId ?? undefined}
         companyId={companyId}
         contactId={contactId}
         ownerId={ownerId}
-        contacts={contacts}
-        onClose={() => setComposeOpen(false)}
-        onSent={() => mutate()}
+        contacts={replyTo ? [] : contacts}
+        onClose={() => { setComposeOpen(false); setReplyTo(null); }}
+        onSent={() => { mutate(); setReplyTo(null); }}
       />
       <EmailLogModal
         open={logOpen}

@@ -25,6 +25,8 @@ interface ContactOption {
 interface Props {
   open: boolean;
   defaultTo?: string;
+  defaultSubject?: string;
+  threadId?: string;
   companyId?: string;
   contactId?: string;
   ownerId?: string;
@@ -61,6 +63,8 @@ function ToolbarBtn({
 export function EmailComposeModal({
   open,
   defaultTo,
+  defaultSubject,
+  threadId,
   companyId,
   contactId,
   ownerId,
@@ -70,7 +74,7 @@ export function EmailComposeModal({
 }: Props) {
   const [to, setTo] = useState(defaultTo ?? "");
   const [selectedContactId, setSelectedContactId] = useState(contactId ?? "");
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState(defaultSubject ?? "");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,10 +96,10 @@ export function EmailComposeModal({
     if (!open) return;
     setTo(defaultTo ?? "");
     setSelectedContactId(contactId ?? "");
-    setSubject("");
+    setSubject(defaultSubject ?? "");
     setError(null);
     editor?.commands.setContent("");
-  }, [open, defaultTo, contactId, editor]);
+  }, [open, defaultTo, defaultSubject, contactId, editor]);
 
   function handleSelectContact(c: ContactOption) {
     setTo(c.email);
@@ -128,6 +132,7 @@ export function EmailComposeModal({
           companyId,
           contactId: selectedContactId || contactId,
           ownerId,
+          threadId: threadId ?? undefined,
         }),
       });
       if (!res.ok) {
