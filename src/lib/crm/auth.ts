@@ -25,22 +25,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     // DrizzleAdapter uppdaterar inte scope/refresh_token vid återinloggning — gör det manuellt.
-    async signIn({ account }) {
-      if (!account) return;
+    async signIn({ user, account }) {
+      if (!account || !user?.id) return;
+      const patch: Record<string, unknown> = {};
+      if (account.access_token) patch.access_token = account.access_token;
+      if (account.refresh_token) patch.refresh_token = account.refresh_token;
+      if (account.expires_at) patch.expires_at = account.expires_at;
+      if (account.scope) patch.scope = account.scope;
+      if (!Object.keys(patch).length) return;
       await db
         .update(accounts)
-        .set({
-          access_token: account.access_token ?? undefined,
-          refresh_token: account.refresh_token ?? undefined,
-          expires_at: account.expires_at ?? undefined,
-          scope: account.scope ?? undefined,
-        })
-        .where(
-          and(
-            eq(accounts.userId, account.userId),
-            eq(accounts.provider, account.provider),
-          ),
-        );
+        .set(patch)
+        .where(and(eq(accounts.userId, user.id), eq(accounts.provider, account.provider)));
     },
   },
   callbacks: {
