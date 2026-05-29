@@ -9,7 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
 import { useState, useEffect } from "react";
+import { Bold, Italic, Underline as UnderlineIcon, List, Link as LinkIcon } from "lucide-react";
 
 interface ContactOption {
   id: string;
@@ -28,31 +33,87 @@ interface Props {
   onSent: () => void;
 }
 
-export function EmailComposeModal({ open, defaultTo, companyId, contactId, ownerId, contacts = [], onClose, onSent }: Props) {
+function ToolbarBtn({
+  active,
+  onClick,
+  title,
+  children,
+}: {
+  active?: boolean;
+  onClick: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => { e.preventDefault(); onClick(); }}
+      title={title}
+      className={`p-1.5 rounded transition-colors ${
+        active ? "bg-nordic-200 text-nordic-900" : "text-muted-foreground hover:bg-nordic-100 hover:text-nordic-900"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function EmailComposeModal({
+  open,
+  defaultTo,
+  companyId,
+  contactId,
+  ownerId,
+  contacts = [],
+  onClose,
+  onSent,
+}: Props) {
   const [to, setTo] = useState(defaultTo ?? "");
   const [selectedContactId, setSelectedContactId] = useState(contactId ?? "");
   const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Synka "till"-fältet när man väljer kontakt från pickern
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      Link.configure({ openOnClick: false }),
+    ],
+    content: "",
+    editorProps: {
+      attributes: {
+        class: "min-h-[140px] text-sm px-3 py-2 focus:outline-none",
+      },
+    },
+  });
+
   useEffect(() => {
     if (!open) return;
     setTo(defaultTo ?? "");
     setSelectedContactId(contactId ?? "");
     setSubject("");
-    setBody("");
     setError(null);
-  }, [open, defaultTo, contactId]);
+    editor?.commands.setContent("");
+  }, [open, defaultTo, contactId, editor]);
 
   function handleSelectContact(c: ContactOption) {
     setTo(c.email);
     setSelectedContactId(c.id);
   }
 
+  function handleSetLink() {
+    if (!editor) return;
+    const url = window.prompt("URL:");
+    if (url) editor.chain().focus().setLink({ href: url }).run();
+    else editor.chain().focus().unsetLink().run();
+  }
+
   async function handleSend() {
-    if (!to.trim() || !subject.trim() || !body.trim()) return;
+    if (!to.trim() || !subject.trim() || !editor) return;
+    const html = editor.getHTML();
+    const text = editor.getText();
+    if (!text.trim()) return;
     setSending(true);
     setError(null);
     try {
@@ -62,7 +123,8 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
         body: JSON.stringify({
           to: to.trim(),
           subject: subject.trim(),
-          body: body.trim(),
+          body: text,
+          html,
           companyId,
           contactId: selectedContactId || contactId,
           ownerId,
@@ -70,7 +132,11 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        setError(d.error === "resend_error" ? "Kunde inte skicka mejlet. Kontrollera att RESEND_API_KEY är satt i Vercel." : "Fel vid sändning.");
+        setError(
+          d.error === "resend_error"
+            ? "Kunde inte skicka mejlet. Kontrollera att RESEND_API_KEY är satt i Vercel."
+            : "Fel vid sändning.",
+        );
         return;
       }
       onSent();
@@ -81,6 +147,7 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
   }
 
   const hasMultipleContacts = contacts.length > 1;
+  const bodyEmpty = !editor?.getText().trim();
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && !sending && onClose()}>
@@ -89,7 +156,6 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
           <DialogTitle>Skriv mejl</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
-          {/* Kontaktpicker — visas bara om det finns flera kontakter med e-post */}
           {hasMultipleContacts && (
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Välj kontakt</label>
@@ -105,7 +171,7 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
                         : "border-input bg-white text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    {c.name ? `${c.name}` : c.email}
+                    {c.name ?? c.email}
                   </button>
                 ))}
               </div>
@@ -121,6 +187,7 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
               type="email"
             />
           </div>
+
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-1 block">Ämne</label>
             <Input
@@ -129,21 +196,62 @@ export function EmailComposeModal({ open, defaultTo, companyId, contactId, owner
               placeholder="Ämnesrad"
             />
           </div>
+
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-1 block">Meddelande</label>
-            <textarea
-              className="w-full text-sm border rounded-lg px-3 py-2 min-h-[140px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
-              placeholder="Skriv ditt meddelande…"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSend(); }}
-            />
+            <div className="border rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-primary-500">
+              {/* Toolbar */}
+              <div className="flex items-center gap-0.5 px-2 py-1 border-b bg-nordic-50">
+                <ToolbarBtn
+                  active={editor?.isActive("bold")}
+                  onClick={() => editor?.chain().focus().toggleBold().run()}
+                  title="Fetstil (⌘B)"
+                >
+                  <Bold className="h-3.5 w-3.5" />
+                </ToolbarBtn>
+                <ToolbarBtn
+                  active={editor?.isActive("italic")}
+                  onClick={() => editor?.chain().focus().toggleItalic().run()}
+                  title="Kursiv (⌘I)"
+                >
+                  <Italic className="h-3.5 w-3.5" />
+                </ToolbarBtn>
+                <ToolbarBtn
+                  active={editor?.isActive("underline")}
+                  onClick={() => editor?.chain().focus().toggleUnderline().run()}
+                  title="Understruken (⌘U)"
+                >
+                  <UnderlineIcon className="h-3.5 w-3.5" />
+                </ToolbarBtn>
+                <div className="w-px h-4 bg-border mx-1" />
+                <ToolbarBtn
+                  active={editor?.isActive("bulletList")}
+                  onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                  title="Punktlista"
+                >
+                  <List className="h-3.5 w-3.5" />
+                </ToolbarBtn>
+                <ToolbarBtn
+                  active={editor?.isActive("link")}
+                  onClick={handleSetLink}
+                  title="Länk"
+                >
+                  <LinkIcon className="h-3.5 w-3.5" />
+                </ToolbarBtn>
+              </div>
+              {/* Editor */}
+              <EditorContent editor={editor} />
+            </div>
           </div>
+
           {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={sending}>Avbryt</Button>
-          <Button onClick={handleSend} disabled={sending || !to.trim() || !subject.trim() || !body.trim()}>
+          <Button
+            onClick={handleSend}
+            disabled={sending || !to.trim() || !subject.trim() || bodyEmpty}
+          >
             {sending ? "Skickar…" : "Skicka"}
           </Button>
         </DialogFooter>

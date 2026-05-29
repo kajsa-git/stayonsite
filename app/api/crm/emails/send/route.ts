@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { to, subject, body: emailBody, companyId, contactId, ownerId } = body;
+  const { to, subject, body: emailBody, html: emailHtml, companyId, contactId, ownerId } = body;
 
   if (!to || !subject || !emailBody) {
     return NextResponse.json({ error: "to, subject, body required" }, { status: 400 });
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     replyTo: from,
     subject,
     text: emailBody,
+    ...(emailHtml ? { html: emailHtml } : {}),
   });
 
   if (error) {
