@@ -12,11 +12,18 @@ import { EmailLogModal } from "./EmailLogModal";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+interface ContactOption {
+  id: string;
+  name?: string | null;
+  email: string;
+}
+
 interface Props {
   companyId?: string;
   ownerId?: string;
   defaultTo?: string;
   contactId?: string;
+  contacts?: ContactOption[];
 }
 
 function EmailItem({ email }: { email: Email }) {
@@ -51,7 +58,7 @@ function EmailItem({ email }: { email: Email }) {
   );
 }
 
-export function EmailThread({ companyId, ownerId, defaultTo, contactId }: Props) {
+export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [] }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
 
@@ -102,6 +109,7 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId }: Props)
         companyId={companyId}
         contactId={contactId}
         ownerId={ownerId}
+        contacts={contacts}
         onClose={() => setComposeOpen(false)}
         onSent={() => mutate()}
       />

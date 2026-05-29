@@ -411,6 +411,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
             companyId={companyId}
             contactId={primaryContact?.id}
             defaultTo={primaryContact?.email ?? undefined}
+            contacts={(company.contacts ?? []).filter((c) => c.email)}
           />
         </div>
       </div>
