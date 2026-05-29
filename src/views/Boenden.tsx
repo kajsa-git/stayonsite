@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import useSWR from 'swr'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 interface Listing {
   id: string
+  name: string
+  slug: string
   city: string | null
   postalCode: string | null
   squareMeters: number | null
@@ -29,39 +32,53 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
   const imgs = listing.imageUrls
   const hasImages = imgs.length > 0
 
+  // Klick var som helst på kortet → detaljsidan (stretched-link-overlay, z-10).
+  // Interaktiva kontroller (bildpilar, dots, intresse-knapp) ligger z-20 + preventDefault.
+  const stop = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-nordic-100 flex flex-col">
+    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-nordic-100 flex flex-col">
+      <Link href={`/boenden/${listing.slug}`} className="absolute inset-0 z-10" aria-label={listing.name}>
+        <span className="sr-only">{listing.name}</span>
+      </Link>
+
       {/* Bild */}
       <div className="relative aspect-[4/3] bg-nordic-100 overflow-hidden">
         {hasImages ? (
           <>
             <img
               src={imgs[imgIdx]}
-              alt={`Boende i ${listing.city ?? ''}`}
-              className="w-full h-full object-cover"
+              alt={listing.name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
             {imgs.length > 1 && (
               <>
                 <button
-                  onClick={() => setImgIdx(i => Math.max(0, i - 1))}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors disabled:opacity-30"
+                  onClick={(e) => { stop(e); setImgIdx(i => Math.max(0, i - 1)) }}
+                  className="absolute left-2 top-1/2 z-20 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors disabled:opacity-30"
                   disabled={imgIdx === 0}
+                  aria-label="Föregående bild"
                 >
                   ‹
                 </button>
                 <button
-                  onClick={() => setImgIdx(i => Math.min(imgs.length - 1, i + 1))}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors disabled:opacity-30"
+                  onClick={(e) => { stop(e); setImgIdx(i => Math.min(imgs.length - 1, i + 1)) }}
+                  className="absolute right-2 top-1/2 z-20 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center shadow transition-colors disabled:opacity-30"
                   disabled={imgIdx === imgs.length - 1}
+                  aria-label="Nästa bild"
                 >
                   ›
                 </button>
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                <div className="absolute bottom-2 left-1/2 z-20 -translate-x-1/2 flex gap-1">
                   {imgs.slice(0, 6).map((_, i) => (
                     <button
                       key={i}
-                      onClick={() => setImgIdx(i)}
+                      onClick={(e) => { stop(e); setImgIdx(i) }}
                       className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIdx ? 'bg-white' : 'bg-white/50'}`}
+                      aria-label={`Visa bild ${i + 1}`}
                     />
                   ))}
                 </div>
@@ -76,7 +93,7 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-semibold text-nordic-900 text-lg leading-tight">{listing.city ?? 'Sverige'}</h3>
+          <h3 className="font-semibold text-nordic-900 text-lg leading-tight">{listing.name}</h3>
           {listing.postalCode && (
             <span className="text-xs text-muted-foreground shrink-0 mt-0.5">{listing.postalCode}</span>
           )}
@@ -113,8 +130,8 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
         )}
 
         <button
-          onClick={() => onInterest(listing)}
-          className="mt-auto w-full bg-[#ff6300] hover:bg-[#e55a00] text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
+          onClick={(e) => { stop(e); onInterest(listing) }}
+          className="relative z-20 mt-auto w-full bg-[#ff6300] hover:bg-[#e55a00] text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
         >
           Jag är intresserad
         </button>

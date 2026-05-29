@@ -3,6 +3,7 @@ import { propertyImages, properties } from "@/lib/crm/schema";
 import { r2, R2_BUCKET } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { publicDisplayName } from "@/lib/crm/slug";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -12,6 +13,8 @@ export async function GET() {
   const rows = await db
     .select({
       id: properties.id,
+      publicName: properties.publicName,
+      slug: properties.slug,
       city: properties.city,
       postalCode: properties.postalCode,
       squareMeters: properties.squareMeters,
@@ -56,7 +59,10 @@ export async function GET() {
           getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: img.key }), { expiresIn: 3600 }),
         ),
       );
-      return { ...p, imageUrls };
+      // name = redigerbar rubrik (faller tillbaka till deterministiskt SEO-namn).
+      // slug = ren URL; faller tillbaka till id tills backfill/sparning satt en slug.
+      const name = publicDisplayName(p.publicName, { city: p.city, bedrooms: p.bedrooms, beds: p.beds });
+      return { ...p, name, slug: p.slug ?? p.id, imageUrls };
     }),
   );
 

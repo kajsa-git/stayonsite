@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { buildPublicName, slugify } from "@/lib/crm/slug";
 import { ChevronRight, Home, Languages, Loader2, Navigation, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { loadGoogleMapsLibrary } from "@/hooks/use-google-places";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +18,7 @@ import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
 import { EmailThread } from "@/components/crm/email/EmailThread";
 import { CopyProspektLink } from "./CopyProspektLink";
+import { CopyBoendeLink } from "./CopyBoendeLink";
 import { RatingControl } from "../RatingControl";
 import { toast } from "@/components/ui/use-toast";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
@@ -62,6 +64,8 @@ type EditForm = {
   ownerPhone: string;
   ownerEmail: string;
   notes: string;
+  publicName: string;
+  slug: string;
   publicDescription: string;
   publicDescriptionEn: string;
   publicDescriptionPl: string;
@@ -114,6 +118,8 @@ function toForm(p: PropertyWithOwner): EditForm {
     ownerPhone: s(p.ownerPhone),
     ownerEmail: s(p.ownerEmail),
     notes: s(p.notes),
+    publicName: s(p.publicName),
+    slug: s(p.slug),
     publicDescription: s(p.publicDescription),
     publicDescriptionEn: s(p.publicDescriptionEn),
     publicDescriptionPl: s(p.publicDescriptionPl),
@@ -206,6 +212,16 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  // Förhandsvisning av deterministiskt auto-namn + slug (speglar serverns default i owners.ts).
+  const autoPublicName = buildPublicName({
+    city: form.city.trim() || null,
+    bedrooms: form.bedrooms ? parseInt(form.bedrooms, 10) : null,
+    beds: form.beds ? parseInt(form.beds, 10) : null,
+  });
+  const previewSlug = form.slug.trim()
+    ? slugify(form.slug)
+    : slugify(form.publicName.trim() || autoPublicName);
+
   async function handleSave() {
     setSaving(true);
     const t = (v: string) => v.trim() || null;
@@ -238,6 +254,8 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
       ownerPhone: t(form.ownerPhone),
       ownerEmail: t(form.ownerEmail),
       notes: t(form.notes),
+      publicName: t(form.publicName),
+      slug: t(form.slug),
       publicDescription: t(form.publicDescription),
       publicDescriptionEn: t(form.publicDescriptionEn),
       publicDescriptionPl: t(form.publicDescriptionPl),
@@ -565,6 +583,33 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
         <Labeled label="Intern beskrivning (visas aldrig publikt)">
           <textarea className={`${FIELD_CLS} min-h-[60px] resize-y`} value={form.notes} onChange={(e) => set("notes", e.target.value)} />
         </Labeled>
+
+        <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Publik namngivning (hemsidan)</p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Labeled label="Publikt namn">
+              <input
+                className={FIELD_CLS}
+                value={form.publicName}
+                placeholder={autoPublicName}
+                onChange={(e) => set("publicName", e.target.value)}
+              />
+            </Labeled>
+            <Labeled label="URL (slug)">
+              <input
+                className={FIELD_CLS}
+                value={form.slug}
+                placeholder={slugify(autoPublicName)}
+                onChange={(e) => set("slug", e.target.value)}
+              />
+            </Labeled>
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            Lämna tomt → genereras automatiskt. Adress:{" "}
+            <span className="font-medium text-nordic-700">www.stayonsite.se/boenden/{previewSlug || "…"}</span>
+          </p>
+        </div>
+
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between gap-2">
             <label className="text-xs text-muted-foreground uppercase tracking-wide">Extern beskrivning (visas på hemsidan)</label>
@@ -777,6 +822,11 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
                 <span className="text-xs px-2.5 py-1 rounded-md border bg-green-100 text-green-800 border-green-300 font-semibold">
                   ✓ Publicerad på hemsidan
                 </span>
+                {property.slug ? (
+                  <CopyBoendeLink slug={property.slug} />
+                ) : (
+                  <span className="text-[11px] text-muted-foreground">Publik URL skapas när du sparar med en ort</span>
+                )}
                 <CopyProspektLink propertyId={property.id} />
                 <button
                   onClick={async () => {

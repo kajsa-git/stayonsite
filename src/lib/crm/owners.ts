@@ -2,6 +2,22 @@ import { eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { owners, properties, type Owner, type Property } from "./schema";
+import { publicDisplayName, slugify } from "./slug";
+
+// Säkerställ en unik URL-slug i crm_properties. Lägger -2, -3… vid krock.
+// excludeId = objektets eget id (så en re-save inte krockar med sig själv).
+export async function ensureUniqueSlug(base: string, excludeId?: string): Promise<string> {
+  const root = slugify(base) || "boende";
+  let candidate = root;
+  let n = 1;
+  // I praktiken bara ett fåtal varv — slug-krockar är sällsynta.
+  for (;;) {
+    const rows = await db.select({ id: properties.id }).from(properties).where(eq(properties.slug, candidate));
+    if (!rows.some((r) => r.id !== excludeId)) return candidate;
+    n += 1;
+    candidate = `${root}-${n}`;
+  }
+}
 
 // Owner-identitet är härledd från owners-tabellen (objektet lagrar bara ownerId).
 // Läsvägar JOIN:ar owners och hydrerar dessa fält via mergeOwnerIntoProperty.
@@ -157,6 +173,28 @@ export async function normalizePropertyWriteBody(
   if (Object.prototype.hasOwnProperty.call(next, "postalCode") && isSwedishCountry(next.country ?? existing?.country)) {
     next.postalCode = formatSwedishPostal(next.postalCode);
   }
+
+  // Publik URL-slug. publicName lämnas som manuell override (rubriken beräknas annars deterministiskt);
+  // slug persisteras och är stabil när den väl satts. Genereras när en ort finns, eller sätts explicit.
+  // Mutationen sker på `next` här uppe så att den följer med i alla owner-grenars `{ ...next }`-returer nedan.
+  const has = (k: string) => Object.prototype.hasOwnProperty.call(next, k);
+  const effCity = (has("city") ? (next.city as string | null) : existing?.city) ?? null;
+  const effBedrooms = (has("bedrooms") ? (next.bedrooms as number | null) : existing?.bedrooms) ?? null;
+  const effBeds = (has("beds") ? (next.beds as number | null) : existing?.beds) ?? null;
+  const effName = (has("publicName") ? (next.publicName as string | null) : existing?.publicName) ?? null;
+  const providedSlug = has("slug") ? ((next.slug as string | null) ?? "").trim() : "";
+  if (providedSlug) {
+    next.slug = await ensureUniqueSlug(providedSlug, existing?.id);
+  } else if (!existing?.slug && effCity) {
+    next.slug = await ensureUniqueSlug(
+      publicDisplayName(effName, { city: effCity, bedrooms: effBedrooms, beds: effBeds }),
+      existing?.id,
+    );
+  } else if (has("slug")) {
+    // Tomt slug-fält skickat men en finns redan (eller ort saknas) → rör inte befintlig slug.
+    delete (next as { slug?: unknown }).slug;
+  }
+
   const ownerIdProvided = Object.prototype.hasOwnProperty.call(body, "ownerId");
   const payload = hasOwnerPayload(body);
 
