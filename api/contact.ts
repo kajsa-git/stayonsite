@@ -95,7 +95,7 @@ function getSubject(s: Submission): string {
 
 function esc(v: string) { return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true) {
+function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true, crmError?: string) {
   const fields = s.fields as Record<string, string>;
   const subject = getSubject(s);
   const now = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Europe/Stockholm' }).format(new Date());
@@ -117,10 +117,10 @@ function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true) {
     meta.utm = Object.entries(s.utmParams).map(([k,v]) => `${k}=${v}`).join(', ');
   }
 
-  const crmWarnText = crmOk ? '' : '⚠️ OBS: Kunde INTE läggas in i CRM automatiskt — lägg in leadet manuellt.\n\n';
+  const crmWarnText = crmOk ? '' : `⚠️ OBS: Kunde INTE läggas in i CRM automatiskt — lägg in leadet manuellt.${crmError ? `\nFel: ${crmError}` : ''}\n\n`;
   const crmWarnHtml = crmOk
     ? ''
-    : `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin:0 0 16px;color:#991b1b;font-weight:600;">⚠️ Kunde inte läggas in i CRM automatiskt — lägg in leadet manuellt.</div>`;
+    : `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin:0 0 16px;color:#991b1b;font-weight:600;">⚠️ Kunde inte läggas in i CRM automatiskt — lägg in leadet manuellt.${crmError ? `<br><code style="font-size:12px;font-weight:400;">${esc(crmError)}</code>` : ''}</div>`;
 
   const text = [crmWarnText + subject, '', ...Object.entries(fields).map(([k,v]) => `${k}: ${v}`), '', ...Object.entries(meta).map(([k,v]) => `${k}: ${v}`)].join('\n');
 
@@ -318,14 +318,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const ip = typeof forwarded === 'string' ? forwarded.split(',')[0]?.trim() : undefined;
     // Lazy import so a CRM/DB problem can never break email delivery (the
     // critical path) — even a module-load error is caught here.
+    let crmError: string | undefined;
     const crmResult = await import('../src/lib/crm/contact-intake')
       .then((m) => m.mapWebSubmissionToCrm(submission as WebSubmission))
       .catch((err) => {
+        crmError = err instanceof Error ? err.message : String(err);
         console.error('CRM intake mapping failed', err);
         return null;
       });
     // Notisen till oss varnar om leadet inte kom in i CRM automatiskt.
-    const email = buildEmail(submission, ip, req.headers['user-agent'], crmResult != null);
+    const email = buildEmail(submission, ip, req.headers['user-agent'], crmResult != null, crmError);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
