@@ -137,6 +137,18 @@ function extractBody(payload: {
   return { text: "", html: null };
 }
 
+// Sök efter tråd-IDs i Gmail som matchar en e-postadress
+export async function gmailSearchThreadIds(userId: string, email: string): Promise<string[]> {
+  const token = await getAccessToken(userId);
+  const q = encodeURIComponent(`to:${email} OR from:${email}`);
+  const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/threads?q=${q}&maxResults=50`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return ((data.threads ?? []) as { id: string }[]).map((t) => t.id);
+}
+
 export async function gmailGetThread(userId: string, threadId: string): Promise<GmailMessage[]> {
   const token = await getAccessToken(userId);
   const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}?format=full`, {

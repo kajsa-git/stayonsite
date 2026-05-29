@@ -1,12 +1,11 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { emails } from "@/lib/crm/schema";
-import { GmailAuthError, gmailGetThread } from "@/lib/crm/gmail";
-import { and, eq, inArray } from "drizzle-orm";
+import { contacts, emails } from "@/lib/crm/schema";
+import { GmailAuthError, gmailGetThread, gmailSearchThreadIds } from "@/lib/crm/gmail";
+import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
-// Synkar alla Gmail-trådar kopplade till ett företag och lagrar nya meddelanden.
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,27 +16,37 @@ export async function POST(req: NextRequest) {
   const user = session.user as typeof session.user & { id: string };
   const from = process.env.RESEND_FROM ?? "kajsa@stayonsite.se";
 
-  // Hitta alla unika Gmail-trådar för företaget
   const existing = await db
     .select({ gmailThreadId: emails.gmailThreadId, gmailMessageId: emails.gmailMessageId })
     .from(emails)
-    .where(and(eq(emails.companyId, companyId)));
+    .where(eq(emails.companyId, companyId));
 
-  const threadIds = [...new Set(existing.map((e) => e.gmailThreadId).filter(Boolean) as string[])];
+  const knownThreadIds = new Set(existing.map((e) => e.gmailThreadId).filter(Boolean) as string[]);
   const knownMessageIds = new Set(existing.map((e) => e.gmailMessageId).filter(Boolean) as string[]);
-
-  if (threadIds.length === 0) return NextResponse.json({ synced: 0 });
 
   let synced = 0;
 
   try {
-    for (const threadId of threadIds) {
+    // 1. Sök Gmail på kontakternas e-postadresser för att hitta trådar vi inte känner till
+    const companyContacts = await db
+      .select({ email: contacts.email })
+      .from(contacts)
+      .where(and(eq(contacts.companyId, companyId)));
+
+    const contactEmails = companyContacts.map((c) => c.email).filter(Boolean) as string[];
+
+    for (const contactEmail of contactEmails) {
+      const foundIds = await gmailSearchThreadIds(user.id, contactEmail);
+      for (const id of foundIds) knownThreadIds.add(id);
+    }
+
+    // 2. Hämta alla trådar (kända + nyupptäckta) och importera meddelanden vi inte har
+    for (const threadId of knownThreadIds) {
       const messages = await gmailGetThread(user.id, threadId);
 
       for (const msg of messages) {
         if (knownMessageIds.has(msg.id)) continue;
 
-        // Avgör riktning: utgående om from-adressen är vår
         const isOut = msg.from.toLowerCase().includes(from.toLowerCase());
 
         await db.insert(emails).values({
