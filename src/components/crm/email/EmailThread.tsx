@@ -149,7 +149,9 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
           <a href="/api/auth/signin" className="underline font-medium">Logga in igen</a>
         </div>
       )}
-      {emailList.length === 0 ? (
+      {syncing && emailList.length === 0 ? (
+        <p className="text-sm text-muted-foreground italic">Hämtar mejl…</p>
+      ) : emailList.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">Inga mejl loggade ännu.</p>
       ) : (
         <div className="space-y-2">
