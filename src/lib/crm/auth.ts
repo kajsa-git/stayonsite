@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { db } from "./db";
 import { accounts, sessions, users, verificationTokens } from "./schema";
+import { and, eq } from "drizzle-orm";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
@@ -22,6 +23,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  events: {
+    // DrizzleAdapter uppdaterar inte scope/refresh_token vid återinloggning — gör det manuellt.
+    async signIn({ account }) {
+      if (!account) return;
+      await db
+        .update(accounts)
+        .set({
+          access_token: account.access_token ?? undefined,
+          refresh_token: account.refresh_token ?? undefined,
+          expires_at: account.expires_at ?? undefined,
+          scope: account.scope ?? undefined,
+        })
+        .where(
+          and(
+            eq(accounts.userId, account.userId),
+            eq(accounts.provider, account.provider),
+          ),
+        );
+    },
+  },
   callbacks: {
     async session({ session, user }) {
       if (session.user) {

@@ -10,12 +10,7 @@ async function getAccessToken(userId: string): Promise<string> {
     .from(accounts)
     .where(and(eq(accounts.userId, userId), eq(accounts.provider, "google")));
 
-  if (!account?.access_token) throw new GmailAuthError("Inget Google-konto kopplat.");
-
-  // Kontrollera om scopet inkluderar Gmail
-  if (!account.scope?.includes("gmail")) {
-    throw new GmailAuthError("Gmail-behörighet saknas. Logga ut och in igen för att koppla Gmail.");
-  }
+  if (!account?.access_token) throw new GmailAuthError("Inget Google-konto kopplat. Logga in igen.");
 
   // Förnya om token går ut inom 60 sekunder
   const now = Math.floor(Date.now() / 1000);
