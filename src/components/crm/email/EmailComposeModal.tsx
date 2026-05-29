@@ -132,11 +132,7 @@ export function EmailComposeModal({
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        setError(
-          d.error === "resend_error"
-            ? "Kunde inte skicka mejlet. Kontrollera att RESEND_API_KEY är satt i Vercel."
-            : "Fel vid sändning.",
-        );
+        setError(d.error === "gmail_auth" ? d.message : "Fel vid sändning — kontrollera Gmail-koppling.");
         return;
       }
       onSent();

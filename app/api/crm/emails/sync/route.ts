@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   if (!companyId) return NextResponse.json({ error: "companyId required" }, { status: 400 });
 
   const user = session.user as typeof session.user & { id: string };
-  const from = process.env.RESEND_FROM ?? "kajsa@stayonsite.se";
+  const from = process.env.CRM_FROM ?? "kajsa@stayonsite.se";
 
   const existing = await db
     .select({ gmailThreadId: emails.gmailThreadId, gmailMessageId: emails.gmailMessageId })

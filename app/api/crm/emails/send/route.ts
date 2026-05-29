@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const user = session.user as typeof session.user & { id: string };
-  const from = process.env.RESEND_FROM ?? "kajsa@stayonsite.se";
+  const from = process.env.CRM_FROM ?? "kajsa@stayonsite.se";
 
   let gmailMessageId: string | null = null;
   let gmailThreadId: string | null = null;
