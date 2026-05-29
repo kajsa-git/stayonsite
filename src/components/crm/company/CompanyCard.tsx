@@ -12,6 +12,7 @@ import { RatingControl } from "../RatingControl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { crmFetch, crmErrorMessage } from "@/lib/crm/fetcher";
 import {
   Dialog,
   DialogContent,
@@ -54,18 +55,27 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
   const selectedRequestId = selectedId ?? activeRequestId ?? null;
 
+  function notifyError(e: unknown) {
+    toast({ title: crmErrorMessage(e), variant: "destructive" });
+  }
+
   async function handleMatch(requestId: string) {
     const req = company?.requests?.find((r) => r.id === requestId);
     // Move incoming → matching so the request lands in the matching queue
     if (req && req.status === "incoming") {
-      await fetch(`/api/crm/requests/${requestId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "matching" }),
-      });
-      mutate();
-      router.refresh();
-      toast({ title: "Förfrågan flyttad till matchning" });
+      try {
+        await crmFetch(`/api/crm/requests/${requestId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "matching" }),
+        });
+        mutate();
+        router.refresh();
+        toast({ title: "Förfrågan flyttad till matchning" });
+      } catch (e) {
+        notifyError(e);
+        return; // navigera inte vidare om flytten misslyckades
+      }
     }
     router.push(`/crm/matching/${requestId}`);
   }
@@ -88,29 +98,41 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   }
 
   async function handleAddContact(data: { name?: string | null; phone?: string | null; email?: string | null; isPrimary?: boolean | null }) {
-    await fetch("/api/crm/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ companyId, ...data }),
-    });
-    mutate();
-    toast({ title: "Kontakt sparad" });
+    try {
+      await crmFetch("/api/crm/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyId, ...data }),
+      });
+      mutate();
+      toast({ title: "Kontakt sparad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleUpdateContact(contactId: string, data: object) {
-    await fetch(`/api/crm/contacts/${contactId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    mutate();
-    toast({ title: "Kontakt uppdaterad" });
+    try {
+      await crmFetch(`/api/crm/contacts/${contactId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      mutate();
+      toast({ title: "Kontakt uppdaterad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleDeleteContact(contactId: string) {
-    await fetch(`/api/crm/contacts/${contactId}`, { method: "DELETE" });
-    mutate();
-    toast({ title: "Kontakt borttagen" });
+    try {
+      await crmFetch(`/api/crm/contacts/${contactId}`, { method: "DELETE" });
+      mutate();
+      toast({ title: "Kontakt borttagen" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleStatusChange(requestId: string, status: string, extra?: Record<string, unknown>) {
@@ -130,122 +152,175 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   }
 
   async function handleRating(rating: number | null) {
-    await fetch(`/api/crm/companies/${companyId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating }),
-    });
-    mutate();
-    toast({ title: "Skattning sparad" });
+    try {
+      await crmFetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating }),
+      });
+      mutate();
+      toast({ title: "Skattning sparad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleFollowUp(date: string, reason: string, time: string) {
-    await fetch(`/api/crm/companies/${companyId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followUpDate: date, followUpReason: reason, followUpTime: time }),
-    });
-    mutate();
-    router.refresh(); // re-fetch server-rendered queue list in work mode
-    toast({ title: "Återkomst sparad" });
+    try {
+      await crmFetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followUpDate: date, followUpReason: reason, followUpTime: time }),
+      });
+      mutate();
+      router.refresh(); // re-fetch server-rendered queue list in work mode
+      toast({ title: "Återkomst sparad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleAddNote(channel: string, content: string) {
-    await fetch("/api/crm/notes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ companyId, channel, content }),
-    });
-    mutate();
-    toast({ title: "Anteckning sparad" });
+    try {
+      await crmFetch("/api/crm/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyId, channel, content }),
+      });
+      mutate();
+      toast({ title: "Anteckning sparad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleUpdateNote(noteId: string, content: string) {
-    await fetch(`/api/crm/notes/${noteId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
-    mutate();
-    toast({ title: "Anteckning uppdaterad" });
+    try {
+      await crmFetch(`/api/crm/notes/${noteId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      mutate();
+      toast({ title: "Anteckning uppdaterad" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleDeleteNote(noteId: string) {
-    await fetch(`/api/crm/notes/${noteId}`, { method: "DELETE" });
-    mutate();
-    toast({ title: "Anteckning borttagen" });
+    try {
+      await crmFetch(`/api/crm/notes/${noteId}`, { method: "DELETE" });
+      mutate();
+      toast({ title: "Anteckning borttagen" });
+    } catch (e) {
+      notifyError(e);
+    }
   }
 
   async function handleSaveRequest(data: RequestFormData, requestId?: string) {
-    if (requestId) {
-      await fetch(`/api/crm/requests/${requestId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-    } else {
-      await fetch("/api/crm/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyId, status: "incoming", ...data }),
-      });
+    try {
+      if (requestId) {
+        await crmFetch(`/api/crm/requests/${requestId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      } else {
+        await crmFetch("/api/crm/requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ companyId, status: "incoming", ...data }),
+        });
+      }
+      mutate();
+      toast({ title: requestId ? "Förfrågan sparad" : "Förfrågan skapad" });
+    } catch (e) {
+      notifyError(e);
     }
-    mutate();
-    toast({ title: requestId ? "Förfrågan sparad" : "Förfrågan skapad" });
   }
 
   async function handleClearFollowUp() {
-    await fetch(`/api/crm/companies/${companyId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followUpDate: null, followUpTime: null, followUpReason: null }),
-    });
-    mutate();
-    router.refresh();
-    toast({ title: "Återkomst borttagen" });
+    try {
+      await crmFetch(`/api/crm/companies/${companyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followUpDate: null, followUpTime: null, followUpReason: null }),
+      });
+      mutate();
+      router.refresh();
+      toast({ title: "Återkomst borttagen" });
+    } catch (e) {
+      notifyError(e);
+    }
+  }
+
+  // Skicka en status-PATCH och returnera om den lyckades (kastar aldrig).
+  async function patchStatusOk(requestId: string, body: object): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/crm/requests/${requestId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
   }
 
   async function handleBulkWon() {
     const active = (company?.requests ?? []).filter((r) => r.status === "incoming" || r.status === "matching");
     if (!active.length) return;
     setQuickBusy(true);
-    await Promise.all(active.map((r) => fetch(`/api/crm/requests/${r.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "won" }),
-    })));
-    mutate();
-    router.refresh();
-    setQuickBusy(false);
-    import("canvas-confetti").then((mod) =>
-      mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
-    );
-    toast({ title: "🎉 Ska faktureras!" });
+    try {
+      const results = await Promise.all(active.map((r) => patchStatusOk(r.id, { status: "won" })));
+      mutate();
+      router.refresh();
+      const failed = results.filter((ok) => !ok).length;
+      if (failed > 0) {
+        toast({ title: `${failed} av ${active.length} kunde inte markeras`, variant: "destructive" });
+      } else {
+        import("canvas-confetti").then((mod) =>
+          mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
+        );
+        toast({ title: "🎉 Ska faktureras!" });
+      }
+    } finally {
+      setQuickBusy(false);
+    }
   }
 
   async function handleBulkLost(reason: string) {
     const open = (company?.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status));
     if (!open.length) return;
     setQuickBusy(true);
-    await Promise.all(open.map((r) => fetch(`/api/crm/requests/${r.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "lost", lostReason: reason }),
-    })));
-    mutate();
-    router.refresh();
-    setQuickBusy(false);
-    setQuickAction(null);
-    toast({ title: "Förfrågningar stängda" });
+    try {
+      const results = await Promise.all(open.map((r) => patchStatusOk(r.id, { status: "lost", lostReason: reason })));
+      mutate();
+      router.refresh();
+      const failed = results.filter((ok) => !ok).length;
+      if (failed > 0) {
+        toast({ title: `${failed} av ${open.length} kunde inte stängas`, variant: "destructive" });
+      } else {
+        toast({ title: "Förfrågningar stängda" });
+      }
+    } finally {
+      setQuickAction(null);
+      setQuickBusy(false);
+    }
   }
 
   async function handleDeleteCompany() {
     setDeleting(true);
-    const res = await fetch(`/api/crm/companies/${companyId}`, { method: "DELETE" });
-    setDeleting(false);
-    if (res.ok) {
+    try {
+      await crmFetch(`/api/crm/companies/${companyId}`, { method: "DELETE" });
       router.push("/crm/foretag");
       router.refresh();
+    } catch (e) {
+      notifyError(e);
+    } finally {
+      setDeleting(false);
     }
   }
 

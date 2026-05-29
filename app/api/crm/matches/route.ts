@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { matches, properties } from "@/lib/crm/schema";
 import { and, desc, eq } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/crm/matches?requestId=... → matches for a request, joined with property summary
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const requestId = req.nextUrl.searchParams.get("requestId");
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();

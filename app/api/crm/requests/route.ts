@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexRequest } from "@/lib/crm/search-index";
 import { requests } from "@/lib/crm/schema";
@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const companyId = req.nextUrl.searchParams.get("companyId");
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -34,13 +34,15 @@ export async function POST(req: NextRequest) {
     const existing = await tx.select().from(requests);
     const maxNum = existing.reduce((max, r) => Math.max(max, r.requestNumber ?? 0), 0);
     const requestNumber = maxNum + 1;
+    // Server-genererade fält (id/requestNumber/statusChangedAt) sätts EFTER spreaden
+    // så att klienten inte kan skriva över dem.
     const [row] = await tx
       .insert(requests)
       .values({
+        ...body,
         id,
         requestNumber,
         statusChangedAt: now,
-        ...body,
         billingProjectId: body.billingProjectId ?? String(requestNumber),
       })
       .returning();

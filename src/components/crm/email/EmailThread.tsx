@@ -5,12 +5,34 @@ import type { Email } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { ChevronDown, ChevronUp, Mail, MailOpen } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
+import DOMPurify from "dompurify";
 import { EmailComposeModal } from "./EmailComposeModal";
 import { EmailLogModal } from "./EmailLogModal";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+// Inkommande mejl-HTML kommer från externa avsändare och får aldrig renderas rått.
+// Tvinga säkra länkar (öppnas i ny flik utan referrer/window.opener-läcka).
+if (typeof window !== "undefined") {
+  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if (node.tagName === "A") {
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noopener noreferrer");
+    }
+  });
+}
+
+function sanitizeEmailHtml(html: string): string {
+  // Sanering sker klient-sida (DOMPurify kräver DOM). Mejl-HTML renderas bara
+  // efter att användaren expanderat tråden, så detta körs alltid i webbläsaren.
+  if (typeof window === "undefined") return "";
+  return DOMPurify.sanitize(html, {
+    FORBID_TAGS: ["script", "style", "iframe", "object", "embed", "form", "input", "button", "link", "meta", "base"],
+    ALLOW_DATA_ATTR: false,
+  });
+}
 
 interface ContactOption {
   id: string;
@@ -31,6 +53,7 @@ interface Props {
 function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email) => void }) {
   const [expanded, setExpanded] = useState(false);
   const isOut = email.direction === "out";
+  const safeHtml = useMemo(() => (email.html ? sanitizeEmailHtml(email.html) : ""), [email.html]);
 
   return (
     <div className={`border-l-2 pl-3 py-1 ${isOut ? "border-blue-200" : "border-green-300"}`}>
@@ -46,8 +69,8 @@ function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email
       </button>
       {expanded && (
         <div className="mt-1.5 text-sm text-nordic-800">
-          {email.html ? (
-            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: email.html }} />
+          {safeHtml ? (
+            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: safeHtml }} />
           ) : (
             <p className="whitespace-pre-wrap">{email.body}</p>
           )}

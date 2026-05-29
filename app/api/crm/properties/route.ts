@@ -1,7 +1,7 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexOwner, indexProperty } from "@/lib/crm/search-index";
-import { mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
+import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
 import { owners, properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const q = req.nextUrl.searchParams.get("q");
@@ -71,10 +71,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
+  if (body.status != null && !isValidPropertyStatus(body.status)) {
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
   const id = nanoid();
   const values = await normalizePropertyWriteBody(body);
   const [row] = await db.insert(properties).values({ id, ...values }).returning();

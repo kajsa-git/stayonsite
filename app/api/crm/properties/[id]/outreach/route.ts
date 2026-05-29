@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { ownerOutreach, properties } from "@/lib/crm/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 const OPEN = ["ej_kontaktad", "kontaktad", "i_dialog"];
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // Starta ny runda. Returnerar befintlig öppen runda om en redan finns (max en öppen per objekt).
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;

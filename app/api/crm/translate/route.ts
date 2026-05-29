@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,7 @@ function extractJson(text: string): Translated | null {
 // Översätter ett objekts beskrivning/skick (sv → en/pl). Ren funktion: skriver INTE till DB —
 // klienten persisterar resultatet via vanlig spara. Använd på begäran (knapp i CRM).
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;

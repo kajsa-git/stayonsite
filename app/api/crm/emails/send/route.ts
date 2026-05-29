@@ -1,14 +1,14 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { contacts } from "@/lib/crm/schema";
 import { emails } from "@/lib/crm/schema";
-import { GmailAuthError, gmailSend } from "@/lib/crm/gmail";
+import { GmailAuthError, gmailSend, gmailThreadReplyHeaders } from "@/lib/crm/gmail";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -25,6 +25,17 @@ export async function POST(req: NextRequest) {
   let gmailThreadId: string | null = null;
 
   try {
+    // Vid svar: hämta trådens senaste Message-ID så In-Reply-To/References sätts korrekt
+    // (best-effort — faller tillbaka till enbart threadId om hämtningen misslyckas).
+    let replyHeaders: { inReplyTo?: string; references?: string } = {};
+    if (threadId) {
+      try {
+        replyHeaders = await gmailThreadReplyHeaders(user.id, threadId);
+      } catch (e) {
+        console.error("Gmail reply-headers:", e);
+      }
+    }
+
     const result = await gmailSend(user.id, {
       from: `Kajsa <${from}>`,
       to,
@@ -32,6 +43,8 @@ export async function POST(req: NextRequest) {
       text: emailBody,
       html: emailHtml ?? undefined,
       threadId: threadId ?? undefined,
+      inReplyTo: replyHeaders.inReplyTo,
+      references: replyHeaders.references,
     });
     gmailMessageId = result.messageId;
     gmailThreadId = result.threadId;

@@ -1,6 +1,7 @@
 import { and, desc, eq, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
+import { safeFetchPublic } from "./safe-fetch";
 import {
   companies,
   contacts,
@@ -59,7 +60,9 @@ function sourceNotes(submission: WebSubmission, extra: Array<string | null | und
 
 async function scrapeCompanyName(domain: string): Promise<string | null> {
   try {
-    const res = await fetch(`https://${domain}`, {
+    // domain kommer från en e-postadress (user-input) → SSRF-skyddad fetch:
+    // blockerar privata/loopback/link-local-mål, bara-IP och redirect-till-intern.
+    const res = await safeFetchPublic(`https://${domain}`, {
       signal: AbortSignal.timeout(3000),
       headers: { "User-Agent": "Mozilla/5.0 (compatible; StayOnSite/1.0)" },
     });

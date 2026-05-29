@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexNote } from "@/lib/crm/search-index";
 import { notes } from "@/lib/crm/schema";
@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const companyId = req.nextUrl.searchParams.get("companyId");
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -33,9 +33,16 @@ export async function POST(req: NextRequest) {
 
   const id = nanoid();
   const user = session.user as typeof session.user & { id: string };
+  // Plocka endast tillåtna fält explicit — klienten får aldrig sätta authorId/createdAt.
   const [row] = await db
     .insert(notes)
-    .values({ id, authorId: user.id, ...body })
+    .values({
+      id,
+      companyId: body.companyId,
+      channel: body.channel,
+      content: body.content,
+      authorId: user.id,
+    })
     .returning();
 
   await indexNote(id).catch((e) => console.error("search-index note:", e));

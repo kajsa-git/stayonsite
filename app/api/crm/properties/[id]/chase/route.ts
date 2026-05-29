@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexProperty } from "@/lib/crm/search-index";
 import { matches, ownerOutreach, properties } from "@/lib/crm/schema";
@@ -39,7 +39,7 @@ async function ensureOpenRound(propertyId: string) {
 // Snabbåtgärder för "Följ upp uthyrare". Reschedule/clear är benignt;
 // VI STÄNGER ALDRIG (rejected) matchningar här — det kräver tydlig bekräftelse i matchningsvyn.
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;

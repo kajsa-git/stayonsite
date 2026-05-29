@@ -119,10 +119,13 @@ export function PropertyHistory({ property }: { property: Property }) {
   }
 
   async function deleteRound(id: string) {
+    if (!window.confirm("Ta bort den här uthyrarkontakten? Detta går inte att ångra.")) return;
     const res = await fetch(`/api/crm/outreach/${id}`, { method: "DELETE" });
     if (res.ok) {
       mutateRounds();
       toast({ title: "Borttagen" });
+    } else {
+      toast({ title: "Kunde inte ta bort", variant: "destructive" });
     }
   }
 
@@ -147,6 +150,7 @@ export function PropertyHistory({ property }: { property: Property }) {
   }
 
   async function removeNote(id: string) {
+    if (!window.confirm("Ta bort den här loggposten? Detta går inte att ångra.")) return;
     try {
       const res = await fetch(`/api/crm/property-notes/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error(String(res.status));

@@ -47,6 +47,12 @@ export class GmailAuthError extends Error {
 
 // ─── RFC 2822-byggare ─────────────────────────────────────────────────────────
 
+// Skydd mot header-injektion: ett header-värde får aldrig innehålla CR/LF (då kan
+// en angripare smuggla in extra headers eller en body). Vik ihop till mellanslag.
+function headerValue(v: string): string {
+  return v.replace(/[\r\n]+/g, " ").trim();
+}
+
 function buildRfc2822(opts: {
   from: string;
   to: string;
@@ -57,8 +63,15 @@ function buildRfc2822(opts: {
   references?: string;
 }): string {
   const boundary = `=_Part_${Date.now()}`;
-  let msg = `From: ${opts.from}\r\nTo: ${opts.to}\r\nSubject: ${opts.subject}\r\nMIME-Version: 1.0\r\n`;
-  if (opts.inReplyTo) msg += `In-Reply-To: ${opts.inReplyTo}\r\nReferences: ${opts.references ?? opts.inReplyTo}\r\n`;
+  const from = headerValue(opts.from);
+  const to = headerValue(opts.to);
+  const subject = headerValue(opts.subject);
+  let msg = `From: ${from}\r\nTo: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\n`;
+  if (opts.inReplyTo) {
+    const inReplyTo = headerValue(opts.inReplyTo);
+    const references = headerValue(opts.references ?? opts.inReplyTo);
+    msg += `In-Reply-To: ${inReplyTo}\r\nReferences: ${references}\r\n`;
+  }
 
   if (opts.html) {
     msg += `Content-Type: multipart/alternative; boundary="${boundary}"\r\n\r\n`;
@@ -75,7 +88,7 @@ function buildRfc2822(opts: {
 
 export async function gmailSend(
   userId: string,
-  opts: { from: string; to: string; subject: string; text: string; html?: string; threadId?: string },
+  opts: { from: string; to: string; subject: string; text: string; html?: string; threadId?: string; inReplyTo?: string; references?: string },
 ): Promise<{ messageId: string; threadId: string }> {
   const token = await getAccessToken(userId);
   const raw = Buffer.from(buildRfc2822(opts)).toString("base64url");
@@ -142,6 +155,30 @@ export async function gmailSearchThreadIds(userId: string, email: string): Promi
   if (!res.ok) return [];
   const data = await res.json();
   return ((data.threads ?? []) as { id: string }[]).map((t) => t.id);
+}
+
+// Hämta In-Reply-To/References för att besvara en tråd korrekt. Gmails threadId
+// trådar i avsändarens konto, men RFC-headern (Message-ID) krävs för korrekt trådning
+// hos mottagaren och i strikta mejlklienter. Bygger References-kedjan.
+export async function gmailThreadReplyHeaders(
+  userId: string,
+  threadId: string,
+): Promise<{ inReplyTo?: string; references?: string }> {
+  const token = await getAccessToken(userId);
+  const res = await fetch(
+    `https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}?format=metadata&metadataHeaders=Message-ID&metadataHeaders=References`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  const msgs = (data.messages ?? []) as { payload?: { headers?: { name: string; value: string }[] } }[];
+  if (!msgs.length) return {};
+  const last = msgs[msgs.length - 1];
+  const getH = (n: string) => last.payload?.headers?.find((h) => h.name.toLowerCase() === n)?.value;
+  const messageId = getH("message-id");
+  if (!messageId) return {};
+  const prevRefs = getH("references");
+  return { inReplyTo: messageId, references: prevRefs ? `${prevRefs} ${messageId}` : messageId };
 }
 
 export async function gmailGetThread(userId: string, threadId: string): Promise<GmailMessage[]> {

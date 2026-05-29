@@ -1,5 +1,5 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import NextAuth from "next-auth";
+import NextAuth, { type Session } from "next-auth";
 import Google from "next-auth/providers/google";
 import { db } from "./db";
 import { accounts, sessions, users, verificationTokens } from "./schema";
@@ -57,3 +57,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/crm/login",
   },
 });
+
+// Drop-in för auth() i API-routes: returnerar sessionen ENDAST om användaren är
+// godkänd (approved). Defense-in-depth utöver middleware — skulle middleware någon
+// gång faila öppet nekar route-lagret ändå både oinloggade och ogodkända användare.
+// approved finns redan på session.user (sätts i session-callbacken ovan).
+export async function requireApprovedSession(): Promise<Session | null> {
+  const session = await auth();
+  if (!session) return null;
+  const approved = (session.user as { approved?: boolean } | undefined)?.approved;
+  return approved ? session : null;
+}

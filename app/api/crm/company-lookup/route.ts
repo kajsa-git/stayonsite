@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 // Enkel uppslagning av företagsuppgifter via org.nr (publika registerdata).
@@ -22,7 +22,7 @@ const titleCase = (s: string) =>
   s.toLowerCase().replace(/(^|\s|-)([a-zåäö])/g, (_m, a, b) => a + b.toUpperCase());
 
 export async function GET(req: NextRequest) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const orgnr = (req.nextUrl.searchParams.get("orgnr") || "").replace(/\D/g, "");

@@ -203,32 +203,42 @@ export function MyDayView() {
   async function markWon(requests: OpenRequest[]) {
     const active = requests.filter((r) => r.status === "incoming" || r.status === "matching");
     if (!active.length) return;
-    await Promise.all(
+    const results = await Promise.all(
       active.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "won" }),
-        }),
+        }).catch(() => ({ ok: false }) as Response),
       ),
     );
     mutate();
+    const failed = results.filter((res) => !res.ok).length;
+    if (failed) {
+      toast({ title: `${failed} av ${active.length} kunde inte markeras`, variant: "destructive" });
+      return;
+    }
     fireConfetti();
     toast({ title: active.length === 1 ? "🎉 Ska faktureras!" : `🎉 ${active.length} förfrågningar — ska faktureras!` });
   }
 
   async function markLost(requests: OpenRequest[], reason: string) {
     if (!requests.length) return;
-    await Promise.all(
+    const results = await Promise.all(
       requests.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "lost", lostReason: reason }),
-        }),
+        }).catch(() => ({ ok: false }) as Response),
       ),
     );
     mutate();
+    const failed = results.filter((res) => !res.ok).length;
+    if (failed) {
+      toast({ title: `${failed} av ${requests.length} kunde inte stängas`, variant: "destructive" });
+      return;
+    }
     toast({ title: requests.length === 1 ? "Förfrågan stängd" : `${requests.length} förfrågningar stängda` });
   }
 
@@ -371,7 +381,11 @@ export function MyDayView() {
                 item={item}
                 today={today}
                 variant="open"
-                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+                onOpen={() =>
+                  router.push(
+                    `/crm/work/${item.openRequests.some((r) => r.status === "matching") ? "matching" : "incoming"}/${item.id}`,
+                  )
+                }
                 onSnooze={(days) => snoozeFollowUp(item.id, days)}
                 onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
                 onMarkWon={() => markWon(item.openRequests)}
@@ -391,7 +405,7 @@ export function MyDayView() {
                 item={item}
                 today={today}
                 variant="invoice"
-                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
+                onOpen={() => router.push(`/crm/work/won/${item.id}`)}
                 onSnooze={(days) => snoozeFollowUp(item.id, days)}
                 onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
                 onMarkInvoiced={() => markInvoiced(item.openRequests)}

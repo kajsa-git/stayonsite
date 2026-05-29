@@ -166,16 +166,24 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
   }
 
   const links = property.links ?? [];
-  function addLink() {
+  async function addLink() {
     const url = newLink.trim();
     if (!url) return;
-    onUpdate({ links: [...links, url] });
-    setNewLink("");
-    toast({ title: "Länk sparad" });
+    try {
+      await onUpdate({ links: [...links, url] });
+      setNewLink("");
+      toast({ title: "Länk sparad" });
+    } catch {
+      /* feltoast visas av onUpdate */
+    }
   }
-  function removeLink(url: string) {
-    onUpdate({ links: links.filter((l) => l !== url) });
-    toast({ title: "Länk borttagen" });
+  async function removeLink(url: string) {
+    try {
+      await onUpdate({ links: links.filter((l) => l !== url) });
+      toast({ title: "Länk borttagen" });
+    } catch {
+      /* feltoast visas av onUpdate */
+    }
   }
 
   // Resynka formuläret när objektet byts ELLER när en write returnerat (ny updatedAt) —
@@ -203,7 +211,8 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
     const t = (v: string) => v.trim() || null;
     const num = (v: string) => (v ? parseFloat(v) : null);
     const int = (v: string) => (v ? parseInt(v, 10) : null);
-    await onUpdate({
+    try {
+      await onUpdate({
       address: t(form.address),
       postalCode: t(form.postalCode),
       city: t(form.city),
@@ -249,10 +258,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
       linensIncluded: form.linensIncluded,
       heatWaterIncluded: form.heatWaterIncluded,
       specialNote: t(form.specialNote),
-    });
-    setSaving(false);
-    setEditing(false);
-    toast({ title: "Objekt sparat" });
+      });
+      setEditing(false);
+      toast({ title: "Objekt sparat" });
+    } catch {
+      /* feltoast visas av onUpdate; behåll redigeringsläget för retry */
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function computeDistances() {
@@ -739,8 +752,12 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
                   key={st.value}
                   onClick={async () => {
                     if (property.status === st.value) return;
-                    await onUpdate({ status: st.value });
-                    toast({ title: "Status sparad" });
+                    try {
+                      await onUpdate({ status: st.value });
+                      toast({ title: "Status sparad" });
+                    } catch {
+                      /* feltoast visas av onUpdate */
+                    }
                   }}
                   className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
                     property.status === st.value ? st.cls + " font-semibold" : "bg-white border-input text-muted-foreground hover:bg-muted"
@@ -763,8 +780,12 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
                 <CopyProspektLink propertyId={property.id} />
                 <button
                   onClick={async () => {
-                    await onUpdate({ published: false });
-                    toast({ title: "Avpublicerad" });
+                    try {
+                      await onUpdate({ published: false });
+                      toast({ title: "Avpublicerad" });
+                    } catch {
+                      /* feltoast visas av onUpdate */
+                    }
                   }}
                   className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-colors"
                 >
@@ -774,8 +795,12 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             ) : (
               <button
                 onClick={async () => {
-                  await onUpdate({ published: true });
-                  toast({ title: "Publicerad" });
+                  try {
+                    await onUpdate({ published: true });
+                    toast({ title: "Publicerad" });
+                  } catch {
+                    /* feltoast visas av onUpdate */
+                  }
                 }}
                 className="text-xs px-2.5 py-1 rounded-md border border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors"
               >
@@ -873,8 +898,12 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
               <RatingControl
                 value={property.rating}
                 onChange={async (rating) => {
-                  await onUpdate({ rating });
-                  toast({ title: "Skattning sparad" });
+                  try {
+                    await onUpdate({ rating });
+                    toast({ title: "Skattning sparad" });
+                  } catch {
+                    /* feltoast visas av onUpdate */
+                  }
                 }}
                 label="Skattning"
               />

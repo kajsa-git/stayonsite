@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { companies, properties, requests } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
@@ -16,7 +16,7 @@ function monthsBetween(a?: string | null, b?: string | null): number | null {
 }
 
 export async function GET() {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const [reqRows, propRows] = await Promise.all([

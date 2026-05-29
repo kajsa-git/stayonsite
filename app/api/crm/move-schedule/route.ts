@@ -1,4 +1,4 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { companies, properties, requests } from "@/lib/crm/schema";
 import { eq, inArray } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 // In- och avflyttningar för aktiva uppdrag (won/invoiced).
 // Inflytt = uppdrag med startdatum. Avflytt = uppdrag med slutdatum (ej löpande).
 export async function GET() {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rows = await db

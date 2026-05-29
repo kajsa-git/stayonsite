@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // Auth.js required tables — column types must match @auth/drizzle-adapter expectations exactly
 export const users = sqliteTable("crm_users", {
@@ -356,6 +356,9 @@ export const emails = sqliteTable("crm_emails", {
   index("crm_emails_company_id_idx").on(t.companyId),
   index("crm_emails_owner_id_idx").on(t.ownerId),
   index("crm_emails_sent_at_idx").on(t.sentAt),
+  // Idempotent Gmail-synk: samma meddelande får aldrig dubblas. NULL (utgående/manuella
+  // mejl utan gmail-id) räknas som distinkta i SQLite, så de krockar inte.
+  uniqueIndex("crm_emails_gmail_message_id_unique_idx").on(t.gmailMessageId),
 ]);
 
 export type Match = typeof matches.$inferSelect;

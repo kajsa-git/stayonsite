@@ -1,7 +1,8 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { sniffImageType } from "@/lib/crm/image-type";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, desc, eq } from "drizzle-orm";
@@ -10,7 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // GET — list a property's images with short-lived presigned view URLs
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // POST — upload an image (multipart form-data, field "file")
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -44,19 +45,25 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Ingen fil" }, { status: 400 });
   }
-  if (!file.type.startsWith("image/")) {
-    return NextResponse.json({ error: "Endast bilder tillåtna" }, { status: 400 });
-  }
   if (file.size > 15 * 1024 * 1024) {
     return NextResponse.json({ error: "Max 15 MB" }, { status: 400 });
   }
 
-  const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
-  const key = `properties/${id}/${nanoid()}.${ext}`;
+  // Validera mot magic bytes — lita aldrig på klientens Content-Type. Avvisar bl.a.
+  // SVG och spoofade payloads. Lagrar sniffad MIME/ext, inte filändelsen.
   const bytes = Buffer.from(await file.arrayBuffer());
+  const sniffed = sniffImageType(bytes);
+  if (!sniffed) {
+    return NextResponse.json(
+      { error: "Filen är inte en giltig bild (jpg, png, webp, gif eller avif)" },
+      { status: 400 },
+    );
+  }
+
+  const key = `properties/${id}/${nanoid()}.${sniffed.ext}`;
 
   await r2.send(
-    new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: file.type })
+    new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime })
   );
 
   const imageId = nanoid();

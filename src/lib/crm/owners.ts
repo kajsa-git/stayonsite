@@ -18,6 +18,13 @@ export type OwnerView = {
 
 export type PropertyWithOwner = Property & OwnerView;
 
+// Kanonisk uppsättning objekt-statusar (speglar UI och sökindex). Valideras vid skrivning.
+export const VALID_PROPERTY_STATUSES = ["available", "reserved", "rented", "off_market"] as const;
+
+export function isValidPropertyStatus(s: unknown): boolean {
+  return typeof s === "string" && (VALID_PROPERTY_STATUSES as readonly string[]).includes(s);
+}
+
 const EMPTY_OWNER_VIEW: OwnerView = {
   ownerType: null,
   ownerArrangement: null,

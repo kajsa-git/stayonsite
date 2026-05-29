@@ -1,12 +1,13 @@
-import { auth } from "@/lib/crm/auth";
+import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { deleteContactDeep } from "@/lib/crm/cascade-delete";
 import { indexContact, removeFromIndex } from "@/lib/crm/search-index";
 import { contacts } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -29,11 +30,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  await db.delete(contacts).where(eq(contacts.id, id));
+  await db.transaction((tx) => deleteContactDeep(tx, id));
   await removeFromIndex("contact", id).catch((e) => console.error("search-index contact delete:", e));
   return NextResponse.json({ ok: true });
 }

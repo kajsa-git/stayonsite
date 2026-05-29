@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
+import { crmFetch, crmFetchJson, crmErrorMessage } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { Image as ImageIcon, LayoutList, Plus, Search, Table2 } from "lucide-react";
 
@@ -78,40 +79,49 @@ export function PropertyList() {
   }, [deepId, properties]);
 
   async function handleAdd(data: Omit<PropertyWithOwner, "id" | "createdAt">) {
-    const res = await fetch("/api/crm/properties", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const created = res.ok ? await res.json() : null;
-    mutate();
-    setAdding(false);
-    if (created) {
+    try {
+      const created = await crmFetchJson<PropertyWithOwner>("/api/crm/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      mutate();
+      setAdding(false);
       setSelected(created);
       setJustCreatedId(created.id);
       setViewMode("list");
+      toast({ title: "Bostad sparad" });
+    } catch (e) {
+      toast({ title: crmErrorMessage(e), variant: "destructive" });
     }
-    toast({ title: "Bostad sparad" });
   }
 
+  // Kastar vidare vid fel så att anropare (PropertyView snabbåtgärder) kan hoppa
+  // över sin success-toast; feltoasten visas här.
   async function handleUpdate(id: string, data: Partial<PropertyWithOwner>) {
-    const res = await fetch(`/api/crm/properties/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const updated = res.ok ? await res.json() : null;
-    if (updated) {
+    try {
+      const updated = await crmFetchJson<PropertyWithOwner>(`/api/crm/properties/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
       setSelected((current) => (current?.id === id ? { ...current, ...updated } : current));
+      mutate();
+    } catch (e) {
+      toast({ title: crmErrorMessage(e), variant: "destructive" });
+      throw e;
     }
-    mutate();
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/crm/properties/${id}`, { method: "DELETE" });
-    setSelected(null);
-    mutate();
-    toast({ title: "Bostad borttagen" });
+    try {
+      await crmFetch(`/api/crm/properties/${id}`, { method: "DELETE" });
+      setSelected(null);
+      mutate();
+      toast({ title: "Bostad borttagen" });
+    } catch (e) {
+      toast({ title: crmErrorMessage(e), variant: "destructive" });
+    }
   }
 
   const toggleBtn = (mode: "list" | "table", label: string, Icon: typeof Table2) => (
