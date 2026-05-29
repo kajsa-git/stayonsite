@@ -26,6 +26,7 @@ export function PropertyList() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<PropertyWithOwner | null>(null);
   const [adding, setAdding] = useState(false);
+  const [justCreatedId, setJustCreatedId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "table">("list");
   const [statusFilter, setStatusFilter] = useState("");
   const [cityFilter, setCityFilter] = useState("");
@@ -77,13 +78,19 @@ export function PropertyList() {
   }, [deepId, properties]);
 
   async function handleAdd(data: Omit<PropertyWithOwner, "id" | "createdAt">) {
-    await fetch("/api/crm/properties", {
+    const res = await fetch("/api/crm/properties", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+    const created = res.ok ? await res.json() : null;
     mutate();
     setAdding(false);
+    if (created) {
+      setSelected(created);
+      setJustCreatedId(created.id);
+      setViewMode("list");
+    }
     toast({ title: "Bostad sparad" });
   }
 
@@ -242,8 +249,8 @@ export function PropertyList() {
                       <TableRow
                         key={p.id}
                         tabIndex={0}
-                        onClick={() => { setSelected(p); setViewMode("list"); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(p); setViewMode("list"); } }}
+                        onClick={() => { setSelected(p); setJustCreatedId(null); setViewMode("list"); }}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(p); setJustCreatedId(null); setViewMode("list"); } }}
                         className="even:bg-nordic-100 hover:bg-primary-50/70 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                       >
                         <TableCell>
@@ -297,7 +304,7 @@ export function PropertyList() {
               <button
                 key={p.id}
                 className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400 ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
-                onClick={() => setSelected(p)}
+                onClick={() => { setSelected(p); setJustCreatedId(null); }}
               >
                 <div className="flex-1 min-w-0">
                   <div className="truncate">{p.address || "(Adress saknas)"}</div>
@@ -320,9 +327,11 @@ export function PropertyList() {
           <div className="flex-1 overflow-y-auto p-6">
             {selected ? (
               <PropertyView
+                key={selected.id}
                 property={selected}
                 onUpdate={(data) => handleUpdate(selected.id, data)}
                 onDelete={() => handleDelete(selected.id)}
+                startEditing={selected.id === justCreatedId}
               />
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
@@ -367,9 +376,10 @@ function PropertyForm({
     <div className="max-w-lg space-y-4">
       <h2 className="text-lg font-semibold">Ny bostad</h2>
       <Field label="Adress" value={form.address} onChange={(v) => set("address", v)} required />
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <Field label="Postnummer" value={form.postalCode} onChange={(v) => set("postalCode", v)} />
         <Field label="Ort" value={form.city} onChange={(v) => set("city", v)} />
+        <Field label="Land" value={form.country} onChange={(v) => set("country", v)} placeholder="Sverige" />
         <Field label="Yta (m²)" value={form.squareMeters?.toString()} onChange={(v) => set("squareMeters", num(v))} type="number" />
       </div>
       <div className="grid grid-cols-3 gap-3">
@@ -385,6 +395,7 @@ function PropertyForm({
       <div className="flex flex-wrap gap-4 py-1">
         <Check label="Möblerat" checked={!!form.furnished} onChange={(v) => set("furnished", v)} />
         <Check label="Kök" checked={!!form.kitchen} onChange={(v) => set("kitchen", v)} />
+        <Check label="Diskmaskin" checked={!!form.dishwasher} onChange={(v) => set("dishwasher", v)} />
         <Check label="Garage" checked={!!form.garage} onChange={(v) => set("garage", v)} />
         <Check label="Bredband ingår" checked={!!form.broadband} onChange={(v) => set("broadband", v)} />
         <Check label="Eget boende" checked={!!form.egetBoende} onChange={(v) => set("egetBoende", v)} />
@@ -489,12 +500,14 @@ function Field({
   onChange,
   required,
   type = "text",
+  placeholder,
 }: {
   label: string;
   value?: string | null;
   onChange: (v: string) => void;
   required?: boolean;
   type?: string;
+  placeholder?: string;
 }) {
   return (
     <div className="space-y-1">
@@ -503,6 +516,7 @@ function Field({
         type={type}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
         className="h-8 text-sm"
       />
     </div>

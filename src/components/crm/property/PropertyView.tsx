@@ -11,7 +11,7 @@ import {
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { ChevronRight, Home, Languages, Loader2, Navigation, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { loadGoogleMapsLibrary } from "@/hooks/use-google-places";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
@@ -26,6 +26,7 @@ interface Props {
   property: PropertyWithOwner;
   onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
   onDelete?: () => void | Promise<void>;
+  startEditing?: boolean;
 }
 
 const STATUSES: { value: string; label: string; cls: string }[] = [
@@ -139,8 +140,8 @@ function toForm(p: PropertyWithOwner): EditForm {
 const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-export function PropertyView({ property, onUpdate, onDelete }: Props) {
-  const [editing, setEditing] = useState(false);
+export function PropertyView({ property, onUpdate, onDelete, startEditing }: Props) {
+  const [editing, setEditing] = useState(!!startEditing);
   const [form, setForm] = useState<EditForm>(toForm(property));
   const [saving, setSaving] = useState(false);
   const [matchOpen, setMatchOpen] = useState(false);
@@ -179,7 +180,14 @@ export function PropertyView({ property, onUpdate, onDelete }: Props) {
 
   // Resynka formuläret när objektet byts ELLER när en write returnerat (ny updatedAt) —
   // så t.ex. en nyskapad/auto-länkad uthyrare (ownerId) reflekteras direkt.
+  // Vid mount respekteras startEditing (nyskapat objekt öppnas i redigera-läge).
+  // Senare ändringar av samma objekt (t.ex. updatedAt efter sparning) resyncar form och stänger redigering.
+  const firstRun = useRef(true);
   useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
     setForm(toForm(property));
     setEditing(false);
     setDeleteOpen(false);
