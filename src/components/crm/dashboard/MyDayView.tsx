@@ -222,7 +222,7 @@ export function MyDayView() {
   async function markInvoiced(requests: OpenRequest[]) {
     const won = requests.filter((r) => r.status === "won");
     if (!won.length) return;
-    await Promise.all(
+    const results = await Promise.all(
       won.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
@@ -232,6 +232,17 @@ export function MyDayView() {
       ),
     );
     mutate();
+    const blocked = results.filter((res) => !res.ok).length;
+    if (blocked) {
+      toast({
+        title:
+          blocked === won.length
+            ? "Saknar in-/utflyttsdatum — öppna uppdraget och fyll i innan fakturering."
+            : `${blocked} kunde inte faktureras (saknar datum). Öppna uppdraget och fyll i.`,
+        variant: "destructive",
+      });
+      return;
+    }
     toast({ title: won.length === 1 ? "Fakturerad ✓" : `${won.length} förfrågningar markerade som fakturerade` });
   }
 

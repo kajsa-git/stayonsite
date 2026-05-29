@@ -9,8 +9,13 @@ export async function GET() {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const today = new Date().toISOString().split("T")[0];
+  const horizon = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().split("T")[0];
+  })();
 
-  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps, moveRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
 
     // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL

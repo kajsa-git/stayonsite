@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Request } from "@/lib/crm/schema";
+import { hasValidInvoiceDates } from "@/lib/crm/move-checklists";
 import { Archive, Home, Receipt, X } from "lucide-react";
 import { useState } from "react";
 
@@ -33,20 +34,33 @@ interface Props {
 }
 
 export function RequestStatusActions({ request, onStatusChange, onMatch }: Props) {
-  const [modal, setModal] = useState<"lost" | "archive" | null>(null);
+  const [modal, setModal] = useState<"lost" | "archive" | "invoice" | null>(null);
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
   const [busy, setBusy] = useState(false);
+
+  // Fakturera-modalen: tvinga fram inflytt/utflytt (eller löpande) innan fakturering.
+  const [startDate, setStartDate] = useState(request.startDate ?? "");
+  const [endDate, setEndDate] = useState(request.endDate ?? "");
+  const [ongoing, setOngoing] = useState(!!request.endDateOngoing);
+  const invoiceDatesValid = hasValidInvoiceDates({ startDate, endDate, endDateOngoing: ongoing });
 
   const isIncoming = request.status === "incoming";
   const isMatching = request.status === "matching";
   const isWon = request.status === "won";
   if (!isIncoming && !isMatching && !isWon) return null;
 
+  const wonMissingDates = isWon && !hasValidInvoiceDates(request);
+
   async function run(status: string, extra?: Record<string, unknown>) {
     setBusy(true);
-    await onStatusChange(request.id, status, extra);
-    setBusy(false);
-    setModal(null);
+    try {
+      await onStatusChange(request.id, status, extra);
+      setModal(null);
+    } catch {
+      // Felet har redan visats som toast av anroparen; håll modalen öppen.
+    } finally {
+      setBusy(false);
+    }
   }
 
   const btn =
@@ -71,7 +85,12 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
         {isWon && (
           <button
             className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100`}
-            onClick={() => run("invoiced")}
+            onClick={() => {
+              setStartDate(request.startDate ?? "");
+              setEndDate(request.endDate ?? "");
+              setOngoing(!!request.endDateOngoing);
+              setModal("invoice");
+            }}
             disabled={busy}
           >
             <Receipt className="h-3.5 w-3.5" />
@@ -97,6 +116,71 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
           Arkivera
         </button>
       </div>
+
+      {/* Mjuk varning vid Vunnen: påminn om datum (blockerar inte förrän fakturering) */}
+      {wonMissingDates && (
+        <p className="mt-2 text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+          Saknar inflytt-/utflyttsdatum — fyll i innan fakturering (krävs då).
+        </p>
+      )}
+
+      {/* Markera fakturerad → kräver datum */}
+      <Dialog open={modal === "invoice"} onOpenChange={(o) => !o && setModal(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Fakturera förfrågan #{request.requestNumber}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Ange uppdragets period innan fakturering. Detta driver in- och avflyttningslistan.
+          </p>
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">Inflytt (startdatum)</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">Utflytt (slutdatum)</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                disabled={ongoing}
+                className="w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:bg-muted disabled:text-muted-foreground"
+              />
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="checkbox" checked={ongoing} onChange={(e) => setOngoing(e.target.checked)} />
+            Löpande (tills vidare — inget bestämt slutdatum)
+          </label>
+          {!invoiceDatesValid && (
+            <p className="text-[11px] text-amber-700">
+              Startdatum krävs, samt slutdatum eller "löpande".
+            </p>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setModal(null)}>Avbryt</Button>
+            <Button
+              onClick={() =>
+                run("invoiced", {
+                  startDate: startDate || null,
+                  endDate: ongoing ? null : endDate || null,
+                  endDateOngoing: ongoing,
+                })
+              }
+              disabled={busy || !invoiceDatesValid}
+            >
+              <Receipt className="h-3.5 w-3.5 mr-1.5" />
+              Markera fakturerad
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Nej tack → lost */}
       <Dialog open={modal === "lost"} onOpenChange={(o) => !o && setModal(null)}>

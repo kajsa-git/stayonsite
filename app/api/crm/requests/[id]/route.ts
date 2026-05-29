@@ -1,5 +1,10 @@
 import { auth } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import {
+  hasValidInvoiceDates,
+  isMoveInChecklistComplete,
+  isMoveOutChecklistComplete,
+} from "@/lib/crm/move-checklists";
 import { indexProperty, indexRequest, removeFromIndex } from "@/lib/crm/search-index";
 import { matches, properties, requests } from "@/lib/crm/schema";
 import { and, eq, inArray, ne } from "drizzle-orm";
@@ -16,6 +21,33 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   if (body.status && !VALID_STATUSES.includes(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+
+  // Hämta nuvarande rad för fält som inte alltid skickas med i body (datum, checklistor).
+  const [existing] = await db.select().from(requests).where(eq(requests.id, id));
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const merged = { ...existing, ...body };
+
+  // Hård grind: fakturering kräver startdatum + (slutdatum ELLER löpande).
+  if (body.status === "invoiced" && !hasValidInvoiceDates(merged)) {
+    return NextResponse.json(
+      { error: "missing_dates", message: "Ange inflytt- och utflyttsdatum (eller löpande) innan fakturering." },
+      { status: 400 },
+    );
+  }
+
+  // En in-/avflytt får bara klarmarkeras när hela checklistan är avbockad.
+  if (body.moveInDoneAt && !isMoveInChecklistComplete(merged.moveInChecklist)) {
+    return NextResponse.json(
+      { error: "checklist_incomplete", message: "Bocka av hela inflyttningschecklistan först." },
+      { status: 400 },
+    );
+  }
+  if (body.moveOutDoneAt && !isMoveOutChecklistComplete(merged.moveOutChecklist)) {
+    return NextResponse.json(
+      { error: "checklist_incomplete", message: "Bocka av hela avflyttningschecklistan först." },
+      { status: 400 },
+    );
   }
 
   const now = new Date().toISOString();
@@ -54,6 +86,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       await indexProperty(propertyId);
     } catch (e) {
       console.error("won-property reflection:", e);
+    }
+  }
+
+  // Avflytt klarmarkerad → objektet blir ledigt igen.
+  if (body.moveOutDoneAt && row?.wonPropertyId) {
+    try {
+      await db
+        .update(properties)
+        .set({ status: "available", updatedAt: now })
+        .where(eq(properties.id, row.wonPropertyId));
+      await indexProperty(row.wonPropertyId);
+    } catch (e) {
+      console.error("move-out property release:", e);
     }
   }
 

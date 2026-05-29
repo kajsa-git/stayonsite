@@ -114,11 +114,16 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   }
 
   async function handleStatusChange(requestId: string, status: string, extra?: Record<string, unknown>) {
-    await fetch(`/api/crm/requests/${requestId}`, {
+    const res = await fetch(`/api/crm/requests/${requestId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status, ...extra }),
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      toast({ title: err?.message ?? "Kunde inte uppdatera status", variant: "destructive" });
+      throw new Error(err?.error ?? "status_update_failed");
+    }
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
     toast({ title: "Status uppdaterad" });

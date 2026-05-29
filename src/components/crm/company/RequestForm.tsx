@@ -16,6 +16,7 @@ export interface RequestFormData {
   bedsTo: number | null;
   startDate: string | null;
   endDate: string | null;
+  endDateOngoing: boolean;
   projectDurationMonths: number | null;
   budgetMax: number | null;
   billingProjectId: string | null;
@@ -43,6 +44,7 @@ const EMPTY = {
   bedsTo: "",
   startDate: "",
   endDate: "",
+  endDateOngoing: false,
   projectDurationMonths: "",
   budgetMax: "",
   billingProjectId: "",
@@ -100,6 +102,7 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
             bedsTo: request.bedsTo?.toString() ?? "",
             startDate: request.startDate ?? "",
             endDate: request.endDate ?? "",
+            endDateOngoing: !!request.endDateOngoing,
             projectDurationMonths: request.projectDurationMonths?.toString() ?? "",
             budgetMax: request.budgetMax?.toString() ?? "",
             billingProjectId: request.billingProjectId ?? request.requestNumber?.toString() ?? "",
@@ -145,7 +148,8 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
           bedsFrom: form.bedsFrom ? parseInt(form.bedsFrom, 10) : null,
           bedsTo: form.bedsTo ? parseInt(form.bedsTo, 10) : null,
           startDate: form.startDate || null,
-          endDate: form.endDate || null,
+          endDate: form.endDateOngoing ? null : form.endDate || null,
+          endDateOngoing: form.endDateOngoing,
           projectDurationMonths: form.projectDurationMonths ? parseInt(form.projectDurationMonths, 10) : null,
           budgetMax: form.budgetMax ? parseFloat(form.budgetMax) : null,
           billingProjectId: form.billingProjectId.trim() || null,
@@ -251,7 +255,20 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
                 <input type="date" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} className={INPUT_CLS} />
               </Field>
               <Field label="Utflytt">
-                <input type="date" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} className={INPUT_CLS} />
+                <input
+                  type="date"
+                  value={form.endDate}
+                  onChange={(e) => set("endDate", e.target.value)}
+                  disabled={form.endDateOngoing}
+                  className={`${INPUT_CLS} disabled:bg-[#f5f5f4] disabled:text-[#a8a8a8]`}
+                />
+                <button
+                  type="button"
+                  onClick={() => set("endDateOngoing", !form.endDateOngoing)}
+                  className={`mt-1.5 ${togglePill(form.endDateOngoing)}`}
+                >
+                  {form.endDateOngoing && <Check className="h-3.5 w-3.5" />} Löpande (tills vidare)
+                </button>
               </Field>
             </div>
             <div className="grid grid-cols-3 gap-3">
