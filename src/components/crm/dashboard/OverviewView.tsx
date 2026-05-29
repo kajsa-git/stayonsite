@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -247,6 +248,40 @@ export function OverviewView() {
           )}
         </div>
       </div>
+
+      <RebuildIndexButton />
+    </div>
+  );
+}
+
+function RebuildIndexButton() {
+  const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
+
+  async function rebuild() {
+    setState("loading");
+    try {
+      const res = await fetch("/api/crm/search-index/rebuild", { method: "POST" });
+      const data = await res.json();
+      if (data.ok) setState("done");
+      else setState("error");
+    } catch {
+      setState("error");
+    }
+    setTimeout(() => setState("idle"), 4000);
+  }
+
+  return (
+    <div className="mt-10 pt-6 border-t flex items-center justify-between">
+      <p className="text-xs text-muted-foreground">
+        Om Cmd+K-sökningen inte hittar objekt eller kontakter — synka sökindexet.
+      </p>
+      <button
+        onClick={rebuild}
+        disabled={state === "loading"}
+        className="text-xs px-3 py-1.5 rounded border border-input bg-white text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50 shrink-0 ml-4"
+      >
+        {state === "loading" ? "Bygger om…" : state === "done" ? "✓ Klart" : state === "error" ? "Fel — försök igen" : "Synka sökindex"}
+      </button>
     </div>
   );
 }
