@@ -57,9 +57,30 @@ function sourceNotes(submission: WebSubmission, extra: Array<string | null | und
   ].filter(Boolean).join("\n");
 }
 
-function companyNameFrom(email: string | null, phone: string | null) {
+async function scrapeCompanyName(domain: string): Promise<string | null> {
+  try {
+    const res = await fetch(`https://${domain}`, {
+      signal: AbortSignal.timeout(3000),
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; StayOnSite/1.0)" },
+    });
+    const html = await res.text();
+    const ogSiteName = html.match(/<meta[^>]+property="og:site_name"[^>]+content="([^"]{1,120})"/i)?.[1]
+      ?? html.match(/<meta[^>]+content="([^"]{1,120})"[^>]+property="og:site_name"/i)?.[1];
+    if (ogSiteName?.trim()) return ogSiteName.trim();
+    const title = html.match(/<title[^>]*>([^<]{1,120})<\/title>/i)?.[1]?.trim();
+    return title || null;
+  } catch {
+    return null;
+  }
+}
+
+async function companyNameFrom(email: string | null, phone: string | null): Promise<string> {
   const domain = email?.split("@")[1];
-  if (domain) return `Webbförfrågan · ${domain}`;
+  if (domain) {
+    const scraped = await scrapeCompanyName(domain);
+    if (scraped) return scraped;
+    return `Webbförfrågan · ${domain}`;
+  }
   if (phone) return `Webbförfrågan · ${phone}`;
   return "Webbförfrågan";
 }
@@ -97,7 +118,7 @@ async function ensureCompanyAndContact({
     .insert(companies)
     .values({
       id: companyId,
-      name: companyNameFrom(email, phone),
+      name: await companyNameFrom(email, phone),
       leadSource: "webb",
       languages: [submission.locale],
       followUpDate: today(),
