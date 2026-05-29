@@ -217,7 +217,7 @@ export function Boenden() {
       <Header />
       <main className="min-h-screen bg-gray-50">
         {/* Hero */}
-        <div className="bg-[#0f1c2e] text-white py-16 px-4">
+        <div className="bg-[#0f1c2e] text-white pt-28 pb-16 px-4">
           <div className="max-w-5xl mx-auto text-center">
             <h1 className="font-display text-3xl md:text-4xl font-bold mb-3">Lediga boenden</h1>
             <p className="text-white/70 text-lg max-w-xl mx-auto">
