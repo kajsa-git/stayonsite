@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
       direction: "out",
       subject,
       body: emailBody,
+      html: emailHtml ?? null,
       fromEmail: from,
       toEmail: to,
       authorId: user.id,

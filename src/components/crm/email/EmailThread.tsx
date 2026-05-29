@@ -52,7 +52,16 @@ function EmailItem({ email }: { email: Email }) {
         <p className="font-medium text-nordic-900 truncate">{email.subject}</p>
       </button>
       {expanded && (
-        <p className="mt-2 whitespace-pre-wrap text-nordic-800 border-t pt-2">{email.body}</p>
+        <div className="mt-2 border-t pt-2 text-nordic-800 text-sm">
+          {email.html ? (
+            <div
+              className="prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: email.html }}
+            />
+          ) : (
+            <p className="whitespace-pre-wrap">{email.body}</p>
+          )}
+        </div>
       )}
     </div>
   );

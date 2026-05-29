@@ -336,6 +336,7 @@ export const emails = sqliteTable("crm_emails", {
   direction: text("direction").notNull(), // 'out' | 'in'
   subject: text("subject").notNull(),
   body: text("body").notNull(),
+  html: text("html"),
   fromEmail: text("from_email").notNull(),
   toEmail: text("to_email").notNull(),
   authorId: text("author_id"),   // crm_user id för utgående/manuell loggning
