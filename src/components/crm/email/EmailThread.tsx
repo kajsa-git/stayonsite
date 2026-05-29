@@ -5,7 +5,7 @@ import type { Email } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { ChevronDown, ChevronUp, Mail, MailOpen } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { EmailComposeModal } from "./EmailComposeModal";
 import { EmailLogModal } from "./EmailLogModal";
@@ -73,6 +73,12 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
   const [syncing, setSyncing] = useState(false);
   const [gmailError, setGmailError] = useState<string | null>(null);
 
+  const param = companyId ? `companyId=${companyId}` : `ownerId=${ownerId}`;
+  const { data: emailList = [], mutate } = useSWR<Email[]>(
+    companyId || ownerId ? `/api/crm/emails?${param}` : null,
+    fetcher,
+  );
+
   async function handleSync() {
     if (!companyId) return;
     setSyncing(true);
@@ -94,11 +100,11 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
     }
   }
 
-  const param = companyId ? `companyId=${companyId}` : `ownerId=${ownerId}`;
-  const { data: emailList = [], mutate } = useSWR<Email[]>(
-    companyId || ownerId ? `/api/crm/emails?${param}` : null,
-    fetcher
-  );
+  // Auto-synka Gmail-trådar när företaget öppnas
+  useEffect(() => {
+    if (companyId) handleSync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
 
   return (
     <div>
