@@ -135,7 +135,7 @@ export function MyDayView() {
     { refreshInterval: 30000 },
   ).data;
   const dueSoon = (kind: "moveIns" | "moveOuts") =>
-    (moveData?.[kind] ?? []).filter((i) => !i.doneAt && i.date <= plusDays(3)).length;
+    (moveData?.[kind] ?? []).filter((i) => !i.doneAt && i.date <= plusDays(7)).length;
   const moveInsSoon = dueSoon("moveIns");
   const moveOutsSoon = dueSoon("moveOuts");
 
@@ -306,7 +306,7 @@ export function MyDayView() {
             {counts.moveSchedule}
           </span>
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-nordic-900">På gång inom 3 dagar</div>
+            <div className="text-sm font-semibold text-nordic-900">På gång den närmaste veckan</div>
             <div className="text-xs text-muted-foreground flex items-center gap-3 mt-0.5">
               {moveInsSoon > 0 && (
                 <span className="inline-flex items-center gap-1"><LogIn className="h-3.5 w-3.5 text-blue-600" />{moveInsSoon} inflytt</span>

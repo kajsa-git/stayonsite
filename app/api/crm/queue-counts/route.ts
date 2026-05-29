@@ -9,9 +9,10 @@ export async function GET() {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const today = new Date().toISOString().split("T")[0];
+  // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
   const horizon = (() => {
     const d = new Date();
-    d.setDate(d.getDate() + 3);
+    d.setDate(d.getDate() + 7);
     return d.toISOString().split("T")[0];
   })();
 

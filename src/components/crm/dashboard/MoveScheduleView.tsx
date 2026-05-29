@@ -47,7 +47,7 @@ export function MoveScheduleView() {
   // Räknare till rubriken: öppna (ej klarmarkerade) totalt + hur många som är på gång inom 3 dagar.
   const openCount = [...moveIns, ...moveOuts].filter((i) => !i.doneAt).length;
   const dueSoon = [...moveIns, ...moveOuts].filter(
-    (i) => !i.doneAt && differenceInCalendarDays(parseISO(i.date), new Date()) <= 3,
+    (i) => !i.doneAt && differenceInCalendarDays(parseISO(i.date), new Date()) <= 7,
   ).length;
 
   async function patch(requestId: string, body: Record<string, unknown>) {
@@ -114,7 +114,7 @@ export function MoveScheduleView() {
           )}
         </div>
         <p className="text-sm text-muted-foreground mt-1">
-          Bocka av hela checklistan innan du klarmarkerar. Aktuella poster (inom 3 dagar) är markerade.
+          Bocka av hela checklistan innan du klarmarkerar. Brådskande poster (inom 3 dagar) är markerade.
         </p>
       </div>
 
