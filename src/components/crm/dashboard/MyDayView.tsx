@@ -5,8 +5,9 @@ import { sv } from "date-fns/locale";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { ArrowRight, LogIn, LogOut, X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 function fireConfetti() {
   import("canvas-confetti").then((mod) =>
     mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
@@ -125,6 +126,18 @@ export function MyDayView() {
   const { data, mutate, isLoading } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [] };
   const loading = isLoading && !data;
+
+  // Flytt-flagga: in-/avflyttningar på gång inom 3 dagar (samma räknare som fliken).
+  const { counts } = useQueueCounts();
+  const moveData = useSWR<{ moveIns: { date: string; doneAt: string | null }[]; moveOuts: { date: string; doneAt: string | null }[] }>(
+    "/api/crm/move-schedule",
+    fetcher,
+    { refreshInterval: 30000 },
+  ).data;
+  const dueSoon = (kind: "moveIns" | "moveOuts") =>
+    (moveData?.[kind] ?? []).filter((i) => !i.doneAt && i.date <= plusDays(3)).length;
+  const moveInsSoon = dueSoon("moveIns");
+  const moveOutsSoon = dueSoon("moveOuts");
 
   async function chaseAction(propertyId: string, action: string) {
     try {
@@ -282,6 +295,30 @@ export function MyDayView() {
             ))}
           </div>
         </div>
+      )}
+
+      {counts.moveSchedule > 0 && (
+        <button
+          onClick={() => router.push("/crm/flyttar")}
+          className="mb-6 w-full flex items-center gap-3 rounded-xl border border-[#ff6300]/30 bg-[#ff6300]/5 px-4 py-3 text-left hover:bg-[#ff6300]/10 transition-colors"
+        >
+          <span className="inline-flex items-center justify-center min-w-[26px] h-[26px] px-1.5 rounded-full bg-[#ff6300] text-white text-sm font-bold tabular-nums shrink-0">
+            {counts.moveSchedule}
+          </span>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-nordic-900">På gång inom 3 dagar</div>
+            <div className="text-xs text-muted-foreground flex items-center gap-3 mt-0.5">
+              {moveInsSoon > 0 && (
+                <span className="inline-flex items-center gap-1"><LogIn className="h-3.5 w-3.5 text-blue-600" />{moveInsSoon} inflytt</span>
+              )}
+              {moveOutsSoon > 0 && (
+                <span className="inline-flex items-center gap-1"><LogOut className="h-3.5 w-3.5 text-rose-600" />{moveOutsSoon} avflytt</span>
+              )}
+              {moveInsSoon === 0 && moveOutsSoon === 0 && <span>In- & avflyttningar att hantera</span>}
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-[#ff6300] ml-auto shrink-0" />
+        </button>
       )}
 
       {loading ? (

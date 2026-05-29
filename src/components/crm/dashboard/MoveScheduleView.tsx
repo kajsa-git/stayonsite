@@ -44,6 +44,12 @@ export function MoveScheduleView() {
   const moveIns = data?.moveIns ?? [];
   const moveOuts = data?.moveOuts ?? [];
 
+  // Räknare till rubriken: öppna (ej klarmarkerade) totalt + hur många som är på gång inom 3 dagar.
+  const openCount = [...moveIns, ...moveOuts].filter((i) => !i.doneAt).length;
+  const dueSoon = [...moveIns, ...moveOuts].filter(
+    (i) => !i.doneAt && differenceInCalendarDays(parseISO(i.date), new Date()) <= 3,
+  ).length;
+
   async function patch(requestId: string, body: Record<string, unknown>) {
     const res = await fetch(`/api/crm/requests/${requestId}`, {
       method: "PATCH",
@@ -94,7 +100,19 @@ export function MoveScheduleView() {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-nordic-900">In- & avflyttningar</h1>
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-nordic-900">In- & avflyttningar</h1>
+          {openCount > 0 && (
+            <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-nordic-200 text-nordic-800 text-sm font-bold tabular-nums">
+              {openCount}
+            </span>
+          )}
+          {dueSoon > 0 && (
+            <span className="inline-flex items-center gap-1 h-6 px-2 rounded-full bg-[#ff6300] text-white text-xs font-bold tabular-nums">
+              {dueSoon} på gång
+            </span>
+          )}
+        </div>
         <p className="text-sm text-muted-foreground mt-1">
           Bocka av hela checklistan innan du klarmarkerar. Aktuella poster (inom 3 dagar) är markerade.
         </p>
