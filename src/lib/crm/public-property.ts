@@ -10,6 +10,7 @@ import { properties, propertyImages, type Property } from "./schema";
 const PUBLIC_COLUMNS = {
   id: properties.id,
   published: properties.published,
+  prospektPublished: properties.prospektPublished,
   status: properties.status,
   publicName: properties.publicName,
   slug: properties.slug,
@@ -85,17 +86,24 @@ async function geocodeArea(
 }
 
 // Laddar ett publikt objekt via slug ELLER id (slug först, id som fallback för äldre prospekt-länkar).
-// Returnerar null om objektet saknas eller inte är publicerat. requireAvailable gatear på status=available.
+// Två oberoende ytor:
+//   surface: "web"      → publika listsidan/detaljsidan. Kräver published = true OCH status = available.
+//   surface: "prospekt" → delbar prospekt-länk. Kräver prospektPublished = true (oberoende av status/hemsida).
+// Returnerar null om objektet saknas eller inte får visas på den begärda ytan.
 export async function loadPublicProperty(
   idOrSlug: string,
-  opts: { requireAvailable?: boolean } = {},
+  opts: { surface: "web" | "prospekt" },
 ): Promise<PublicProperty | null> {
   const bySlug = await db.select(PUBLIC_COLUMNS).from(properties).where(eq(properties.slug, idOrSlug)).limit(1);
   const [row] = bySlug.length
     ? bySlug
     : await db.select(PUBLIC_COLUMNS).from(properties).where(eq(properties.id, idOrSlug)).limit(1);
-  if (!row || !row.published) return null;
-  if (opts.requireAvailable && row.status !== "available") return null;
+  if (!row) return null;
+  if (opts.surface === "web") {
+    if (!row.published || row.status !== "available") return null;
+  } else {
+    if (!row.prospektPublished) return null;
+  }
 
   const imgRows = await db
     .select({ key: propertyImages.key })

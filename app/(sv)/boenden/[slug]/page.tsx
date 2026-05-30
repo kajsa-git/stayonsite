@@ -67,7 +67,7 @@ export default async function BoendeDetailPage(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params
-  const data = await loadPublicProperty(slug, { requireAvailable: true })
+  const data = await loadPublicProperty(slug, { surface: "web" })
   if (!data) notFound()
 
   const { row: p, images } = data

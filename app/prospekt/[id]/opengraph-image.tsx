@@ -22,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   // Tenant-safe fields only — never address, owner or price.
   const [p] = await db
     .select({
-      published: properties.published,
+      prospektPublished: properties.prospektPublished,
       postalCode: properties.postalCode,
       city: properties.city,
       squareMeters: properties.squareMeters,
@@ -42,8 +42,8 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const logoH = 60;
   const logoW = Math.round((logoH * 1820) / 480);
 
-  // Not published / not found → generic branded card (no private data).
-  if (!p || !p.published) {
+  // Inte prospekt-publicerad / saknas → generiskt varumärkt kort (ingen privat data).
+  if (!p || !p.prospektPublished) {
     return new ImageResponse(
       (
         <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: NAVY }}>

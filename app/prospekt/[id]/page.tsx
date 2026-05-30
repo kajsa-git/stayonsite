@@ -18,7 +18,7 @@ export async function generateMetadata(
   const tr = T[lang];
   const [p] = await db
     .select({
-      published: properties.published,
+      prospektPublished: properties.prospektPublished,
       city: properties.city,
       postalCode: properties.postalCode,
       publicDescription: properties.publicDescription,
@@ -27,7 +27,7 @@ export async function generateMetadata(
     })
     .from(properties)
     .where(eq(properties.id, id));
-  if (!p || !p.published) return { title: `${tr.tagline} – StayOnSite` };
+  if (!p || !p.prospektPublished) return { title: `${tr.tagline} – StayOnSite` };
   const title = `${tr.title(p.city)} – StayOnSite`;
   const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige";
   const localDesc = lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : p.publicDescription;
@@ -49,7 +49,7 @@ export default async function ProspektPage(
   const lang = pickLang((await searchParams).lang);
   const tr = T[lang];
 
-  const data = await loadPublicProperty(id);
+  const data = await loadPublicProperty(id, { surface: "prospekt" });
   if (!data) notFound();
 
   return (

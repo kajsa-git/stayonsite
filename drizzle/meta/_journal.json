@@ -162,6 +162,13 @@
       "when": 1748736000000,
       "tag": "0022_boenden_naming",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1748822400000,
+      "tag": "0023_property_prospekt_published",
+      "breakpoints": true
     }
   ]
 }
