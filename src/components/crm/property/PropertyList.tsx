@@ -472,6 +472,20 @@ function PropertyForm({
             {imported.images > 0 ? ` · ${imported.images} foton hämtas när du sparar` : ""} — granska och spara.
           </p>
         )}
+        {pendingImages.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {pendingImages.map((src, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={src}
+                alt={`Foto ${i + 1}`}
+                loading="lazy"
+                className="h-14 w-14 rounded border object-cover bg-nordic-100"
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <Field label="Adress" value={form.address} onChange={(v) => set("address", v)} required />
