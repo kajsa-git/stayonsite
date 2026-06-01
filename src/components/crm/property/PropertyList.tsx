@@ -6,7 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/components/ui/use-toast";
 import { crmFetch, crmFetchJson, crmErrorMessage } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
-import { Image as ImageIcon, LayoutList, Plus, Search, Table2 } from "lucide-react";
+import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
+import { DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
 
 type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -78,19 +79,40 @@ export function PropertyList() {
     }
   }, [deepId, properties]);
 
-  async function handleAdd(data: Omit<PropertyWithOwner, "id" | "createdAt">) {
+  async function handleAdd(
+    data: Omit<PropertyWithOwner, "id" | "createdAt">,
+    opts?: { imageUrls?: string[] },
+  ) {
     try {
       const created = await crmFetchJson<PropertyWithOwner>("/api/crm/properties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      // Importerade annonsbilder laddas ner server-side till objektets galleri (best-effort:
+      // objektet är sparat även om bildimporten fallerar — Kajsa kan ladda upp manuellt då).
+      let imgNote = "";
+      if (opts?.imageUrls?.length) {
+        try {
+          const r = await crmFetchJson<{ created: number; failed: number }>(
+            `/api/crm/properties/${created.id}/images/import`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ urls: opts.imageUrls }),
+            },
+          );
+          if (r.created) imgNote = ` · ${r.created} foton`;
+        } catch {
+          /* ignorera — objektet är redan sparat */
+        }
+      }
       mutate();
       setAdding(false);
       setSelected(created);
       setJustCreatedId(created.id);
       setViewMode("list");
-      toast({ title: "Bostad sparad" });
+      toast({ title: `Bostad sparad${imgNote}` });
     } catch (e) {
       toast({ title: crmErrorMessage(e), variant: "destructive" });
     }
@@ -359,10 +381,43 @@ function PropertyForm({
   onSave,
   onCancel,
 }: {
-  onSave: (data: Omit<PropertyWithOwner, "id" | "createdAt">) => void;
+  onSave: (data: Omit<PropertyWithOwner, "id" | "createdAt">, opts?: { imageUrls?: string[] }) => void;
   onCancel: () => void;
 }) {
   const [form, setForm] = useState<Partial<PropertyWithOwner>>({ status: "available" });
+  const [importUrl, setImportUrl] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [imported, setImported] = useState<{ source: ImportedListing["source"]; images: number } | null>(null);
+  const [pendingImages, setPendingImages] = useState<string[]>([]);
+
+  // Hämtar en Qasa-/Airbnb-annons och förifyller formuläret. Sparar inget — Kajsa granskar
+  // och klickar Spara, varpå objektet skapas och bilderna importeras (se handleAdd).
+  async function runImport() {
+    const url = importUrl.trim();
+    if (!url || importing) return;
+    setImporting(true);
+    try {
+      const { listing } = await crmFetchJson<{ listing: ImportedListing }>("/api/crm/import-listing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      // Nollställ alla import-härledda fält först → en ny import ersätter den förra helt
+      // (ingen läckande adress/uthyrare/hyra från ett tidigare inklistrat objekt).
+      setForm((f) => {
+        const cleared = { ...f };
+        for (const k of IMPORT_MANAGED_KEYS) delete cleared[k];
+        return { ...cleared, ...listingToPropertyPatch(listing) };
+      });
+      setPendingImages(listing.imageUrls);
+      setImported({ source: listing.source, images: listing.imageUrls.length });
+      toast({ title: `Importerad från ${SOURCE_LABEL[listing.source]}` });
+    } catch (e) {
+      toast({ title: crmErrorMessage(e), variant: "destructive" });
+    } finally {
+      setImporting(false);
+    }
+  }
 
   function set(key: keyof PropertyWithOwner, value: string | number | boolean | undefined) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -385,6 +440,40 @@ function PropertyForm({
   return (
     <div className="max-w-lg space-y-4">
       <h2 className="text-lg font-semibold">Ny bostad</h2>
+
+      {/* Snabbimport från annonslänk — förifyller fälten nedan för granskning */}
+      <div className="rounded-md border border-dashed border-nordic-300 bg-nordic-50/60 p-3 space-y-2">
+        <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+          <DownloadCloud className="h-3.5 w-3.5" /> Importera från Qasa- eller Airbnb-länk
+        </label>
+        <div className="flex gap-2">
+          <Input
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); runImport(); } }}
+            placeholder="https://qasa.com/se/sv/home/… eller https://airbnb.se/rooms/…"
+            className="h-8 text-sm"
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            className="gap-1 text-xs shrink-0"
+            onClick={runImport}
+            disabled={importing || !importUrl.trim()}
+          >
+            {importing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
+            {importing ? "Hämtar…" : "Hämta"}
+          </Button>
+        </div>
+        {imported && (
+          <p className="text-xs text-green-700">
+            ✓ Fält ifyllda från {SOURCE_LABEL[imported.source]}
+            {imported.images > 0 ? ` · ${imported.images} foton hämtas när du sparar` : ""} — granska och spara.
+          </p>
+        )}
+      </div>
+
       <Field label="Adress" value={form.address} onChange={(v) => set("address", v)} required />
       <div className="grid grid-cols-2 gap-3">
         <Field label="Postnummer" value={form.postalCode} onChange={(v) => set("postalCode", v)} />
@@ -484,10 +573,20 @@ function PropertyForm({
           onChange={(e) => set("publicDescription", e.target.value)}
           className="w-full text-sm border rounded px-2 py-1.5 min-h-[60px] resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
         />
+        {imported && (
+          <p className="text-[11px] text-amber-700">
+            ⚠ Importerad text kan innehålla gatuadress, uthyrarens namn eller telefon — ta bort sådant innan du publicerar (endast postnummer får visas publikt).
+          </p>
+        )}
       </div>
       <div className="flex gap-2 pt-2">
         <Button variant="ghost" onClick={onCancel}>Avbryt</Button>
-        <Button onClick={() => onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">)} disabled={!form.address}>
+        <Button
+          onClick={() => onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">, { imageUrls: pendingImages })}
+          // Adress är intern (visas aldrig publikt) → räcker med ort eller postnummer för att
+          // spara. Airbnb anger aldrig gatuadress, så annars går en ren Airbnb-import inte att spara.
+          disabled={!form.address && !form.city && !form.postalCode}
+        >
           Spara bostad
         </Button>
       </div>
