@@ -18,6 +18,7 @@ import { EmailThread } from "@/components/crm/email/EmailThread";
 import { PropertyEditForm } from "./PropertyEditForm";
 import { PropertyPublicControls } from "./PropertyPublicControls";
 import { Equip, InfoRow } from "./property-ui";
+import { PhoneActions } from "@/components/crm/PhoneActions";
 import { RatingControl } from "../RatingControl";
 import { toast } from "@/components/ui/use-toast";
 import useSWR from "swr";
@@ -260,7 +261,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
               <InfoRow label={property.ownerType === "foretag" ? "Företag" : "Namn"} value={property.ownerName} />
               {property.ownerType === "foretag" && <InfoRow label="Org.nr" value={property.ownerOrgNr} />}
               {property.ownerType === "foretag" && <InfoRow label="Kontaktperson" value={property.ownerContactPerson} />}
-              <InfoRow label="Telefon" value={property.ownerPhone} />
+              <InfoRow label="Telefon" value={property.ownerPhone} actions={<PhoneActions phone={property.ownerPhone} />} />
               <InfoRow label="E-post" value={property.ownerEmail} />
             </div>
             {property.ownerId && <OwnerObjectLinks ownerId={property.ownerId} currentPropertyId={property.id} />}

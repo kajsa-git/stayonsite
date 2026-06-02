@@ -2,6 +2,7 @@
 
 import type { Company, Contact } from "@/lib/crm/schema";
 import { ExternalLink, Mail, Phone, User } from "lucide-react";
+import { PhoneActions } from "@/components/crm/PhoneActions";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded";
 
@@ -68,10 +69,13 @@ export function CompanyHeader({ company, primaryContact }: Props) {
               {primaryContact.name}
             </span>
             {primaryContact.phone && (
-              <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
-                <Phone className="h-3.5 w-3.5 text-nordic-500" />
-                {primaryContact.phone}
-              </a>
+              <span className="flex items-center gap-1.5">
+                <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
+                  <Phone className="h-3.5 w-3.5 text-nordic-500" />
+                  {primaryContact.phone}
+                </a>
+                <PhoneActions phone={primaryContact.phone} />
+              </span>
             )}
             {primaryContact.email && (
               <a href={`mailto:${primaryContact.email}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>

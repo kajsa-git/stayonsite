@@ -38,12 +38,29 @@ export function Labeled({ label, children }: { label: string; children: React.Re
   );
 }
 
-export function InfoRow({ label, value }: { label: string; value?: string | null }) {
+export function InfoRow({
+  label,
+  value,
+  actions,
+}: {
+  label: string;
+  value?: string | null;
+  actions?: React.ReactNode;
+}) {
   if (!value) return null;
   return (
     <div>
       <dt className="text-xs text-muted-foreground">{label}</dt>
-      <dd className="font-medium">{value}</dd>
+      <dd className="font-medium">
+        {actions ? (
+          <span className="flex items-center gap-2">
+            <span>{value}</span>
+            {actions}
+          </span>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   );
 }

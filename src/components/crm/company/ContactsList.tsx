@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Contact } from "@/lib/crm/schema";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
+import { PhoneActions } from "@/components/crm/PhoneActions";
 import { Check, Mail, Pencil, Phone, Plus, Star, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
@@ -143,10 +144,13 @@ export function ContactsList({ contacts, companyId, onAdd, onUpdate, onDelete }:
                 </div>
                 <div className="flex items-center gap-3 text-xs text-nordic-600 mt-0.5">
                   {c.phone && (
-                    <a href={`tel:${c.phone}`} className="flex items-center gap-1 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded">
-                      <Phone className="h-3 w-3" />
-                      {c.phone}
-                    </a>
+                    <span className="flex items-center gap-1.5">
+                      <a href={`tel:${c.phone}`} className="flex items-center gap-1 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded">
+                        <Phone className="h-3 w-3" />
+                        {c.phone}
+                      </a>
+                      <PhoneActions phone={c.phone} />
+                    </span>
                   )}
                   {c.email && (
                     <a href={`mailto:${c.email}`} className="flex items-center gap-1 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded min-w-0">
