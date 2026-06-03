@@ -28,6 +28,7 @@ import BlockhyraPrivatuthyrningJuli2026 from '@/views/blogg/BlockhyraPrivatuthyr
 import InfrastrukturplanPersonalboende2026 from '@/views/blogg/InfrastrukturplanPersonalboende2026'
 import KompetensbristenByggsektorn2026 from '@/views/blogg/KompetensbristenByggsektorn2026'
 import NyaHyreslagenJuli2026ForetagPersonalboende from '@/views/blogg/NyaHyreslagenJuli2026ForetagPersonalboende'
+import ForeberedFastighetBlockhyraInfrastruktur2026 from '@/views/blogg/ForeberedFastighetBlockhyraInfrastruktur2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -42,7 +43,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'sa-fungerar-det-fran-intresse-till-forsta-hyran': SaFungerarDetHusagare2026,
   'hyra-ut-jamforelse-stayonsite-vs-andra-2026': HyraUtJamforelse2026,
   'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
-  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,  'sommaruthyrning-montorer-guide-2026': SommaruthyrningMontorerGuide2026,  'schablonavdrag-skatt-blockhyra-husagare-2026': SchablonavdragSkattBlockhyraHusagare2026,  'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026': BostadsbyggandeAterhamtningPrognosArtikel,  'hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare': BlockhyraPrivatuthyrningJuli2026,  'infrastrukturplan-2026-2037-personalboende-guide': InfrastrukturplanPersonalboende2026,  'kompetensbristen-byggsektorn-2026-praktisk-rekryteringsguide': KompetensbristenByggsektorn2026,  'nya-hyreslagen-juli-2026-foretag-personalboende-guide': NyaHyreslagenJuli2026ForetagPersonalboende,
+  'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,  'sommaruthyrning-montorer-guide-2026': SommaruthyrningMontorerGuide2026,  'schablonavdrag-skatt-blockhyra-husagare-2026': SchablonavdragSkattBlockhyraHusagare2026,  'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026': BostadsbyggandeAterhamtningPrognosArtikel,  'hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare': BlockhyraPrivatuthyrningJuli2026,  'infrastrukturplan-2026-2037-personalboende-guide': InfrastrukturplanPersonalboende2026,  'kompetensbristen-byggsektorn-2026-praktisk-rekryteringsguide': KompetensbristenByggsektorn2026,  'nya-hyreslagen-juli-2026-foretag-personalboende-guide': NyaHyreslagenJuli2026ForetagPersonalboende,  'forbered-fastighet-blockhyra-infrastruktursatsning-2026': ForeberedFastighetBlockhyraInfrastruktur2026,
 }
 
 export function generateStaticParams() {

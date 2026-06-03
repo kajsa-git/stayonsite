@@ -460,6 +460,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['privatuthyrningslagen', 'hyreslagstiftning', 'blockhyra', 'företagsuthyrning', 'nya-regler-2026'],
     readingTime: 9,
   },
+  {
+    slug: 'forbered-fastighet-blockhyra-infrastruktursatsning-2026',
+    title: {
+      sv: 'Så förbereder du din fastighet för blockhyra när infrastrukturbyggena tar fart',
+      en: 'How to Prepare Your Property for Block Rental During Infrastructure Boom',
+      pl: 'Jak przygotować nieruchomość do wynajmu grupowego podczas boomu infrastrukturalnego',
+    },
+    description: {
+      sv: 'Regeringens 1171 miljarder i infrastruktur skapar enorm efterfrågan. Gör din fastighet redo för personalboende med denna praktiska checklista.',
+      en: 'Government\'s 1171 billion infrastructure plan creates huge demand. Prepare your property for worker accommodation with this practical checklist.',
+      pl: 'Rządowy plan infrastrukturalny za 1171 miliardów tworzy ogromny popyt. Przygotuj swoją nieruchomość na zakwaterowanie pracowników.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-06-03',
+    category: 'Guide',
+    tags: ['blockhyra', 'infrastruktur', 'husägare', 'fastighetsförberedelse', 'renovering', 'personalboende'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
