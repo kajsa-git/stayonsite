@@ -1,0 +1,10 @@
+# Inte en monorepo — filen finns bara för pnpm-inställningar (pnpm 10.16+ läser
+# dem härifrån, inte längre från "pnpm"-fältet i package.json).
+#
+# Godkänner build-scripts för paket med native-binärer. pnpm 11 gör annars
+# "ignored build scripts" till ett HÅRT fel (ERR_PNPM_IGNORED_BUILDS) i CI,
+# där `npm install -g pnpm` drar senaste pnpm. esbuild och sharp behöver sina
+# postinstall-script för att fungera.
+allowBuilds:
+  esbuild: true
+  sharp: true
