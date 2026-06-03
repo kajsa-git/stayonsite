@@ -26,10 +26,11 @@ export function normalizePhoneE164(raw: string | null | undefined, defaultCc = S
   return `+${digits}`;
 }
 
-// wa.me kräver enbart siffror med landskod, utan inledande +.
+// whatsapp://-schemat öppnar WhatsApp-skrivbordsappen (eller mobilappen) direkt,
+// utan omväg via wa.me/webben. Kräver siffror med landskod, utan inledande +.
 export function whatsappHref(raw: string | null | undefined, defaultCc = SWEDEN_CC): string | null {
   const e164 = normalizePhoneE164(raw, defaultCc);
-  return e164 ? `https://wa.me/${e164.slice(1)}` : null;
+  return e164 ? `whatsapp://send?phone=${e164.slice(1)}` : null;
 }
 
 // sms: öppnar telefonens/Macens meddelandeapp med numret förifyllt.
