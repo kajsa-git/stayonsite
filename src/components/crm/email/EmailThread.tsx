@@ -162,14 +162,14 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
   );
 
   async function handleSync() {
-    if (!companyId) return;
+    if (!companyId && !ownerId) return;
     setSyncing(true);
     setGmailError(null);
     try {
       const res = await fetch("/api/crm/emails/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyId }),
+        body: JSON.stringify(companyId ? { companyId } : { ownerId }),
       });
       const data = await res.json();
       if (data.error === "gmail_auth") {
@@ -183,9 +183,9 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
   }
 
   useEffect(() => {
-    if (companyId) handleSync();
+    if (companyId || ownerId) handleSync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyId]);
+  }, [companyId, ownerId]);
 
   // Gruppera per gmailThreadId, fristående mejl får egen grupp
   const threads = Object.values(
@@ -206,7 +206,7 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Mejl</span>
         <div className="flex gap-1">
-          {companyId && (
+          {(companyId || ownerId) && (
             <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={handleSync} disabled={syncing} title="Hämta svar från Gmail">
               {syncing ? "Synkar…" : "↻ Synka"}
             </Button>
