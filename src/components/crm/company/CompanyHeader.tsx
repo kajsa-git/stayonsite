@@ -25,6 +25,8 @@ const LEAD_SOURCE_LABELS: Record<string, string> = {
   webb: "Webb",
   befintlig: "Befintlig kund",
   referens: "Referens",
+  qasa: "Qasa",
+  airbnb: "AirBnB",
 };
 
 export function CompanyHeader({ company, primaryContact }: Props) {

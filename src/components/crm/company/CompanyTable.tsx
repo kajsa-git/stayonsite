@@ -33,6 +33,8 @@ const LEAD_SOURCE: Record<string, string> = {
   webb: "Webb",
   befintlig: "Befintlig kund",
   referens: "Referens",
+  qasa: "Qasa",
+  airbnb: "AirBnB",
 };
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());

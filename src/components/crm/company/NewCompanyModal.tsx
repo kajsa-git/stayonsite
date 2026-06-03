@@ -150,6 +150,8 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
                 <option value="webb">Webb</option>
                 <option value="befintlig">Befintlig kund</option>
                 <option value="referens">Referens</option>
+                <option value="qasa">Qasa</option>
+                <option value="airbnb">AirBnB</option>
               </select>
             </div>
             <div>
