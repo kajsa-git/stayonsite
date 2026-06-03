@@ -140,7 +140,7 @@ export function MyDayView() {
   const moveOutsSoon = dueSoon("moveOuts");
 
   // Dagens aktivitet — kompakt sammanfattning av vad som hänt idag.
-  const todayStats = useSWR<{ notes: number; calls: number; newCompanies: number; newRequests: number; won: number; lost: number }>(
+  const todayStats = useSWR<{ notes: number; calls: number; owners: number; ownerLogs: number; ownerCalls: number; newCompanies: number; newRequests: number; won: number; lost: number }>(
     "/api/crm/today",
     fetcher,
     { refreshInterval: 30000 },
@@ -295,9 +295,13 @@ export function MyDayView() {
       {todayStats && (
         <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-1.5 rounded-xl border border-nordic-200 bg-white px-4 py-2.5">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground shrink-0">Idag</span>
-          <span className="text-sm" title={`${todayStats.calls} samtal av ${todayStats.notes} loggade noteringar`}>
+          <span className="text-sm" title={`${todayStats.calls} samtal av ${todayStats.notes} loggade kundnoteringar`}>
             <b className="tabular-nums text-nordic-900">{todayStats.notes}</b>{" "}
             <span className="text-muted-foreground">loggat</span>
+          </span>
+          <span className="text-sm" title={`${todayStats.ownerLogs} loggade uthyrarkontakter idag (${todayStats.ownerCalls} samtal)`}>
+            <b className="tabular-nums text-nordic-900">{todayStats.owners}</b>{" "}
+            <span className="text-muted-foreground">uthyrare</span>
           </span>
           <span className="text-sm">
             <b className="tabular-nums text-nordic-900">{todayStats.newCompanies}</b>{" "}

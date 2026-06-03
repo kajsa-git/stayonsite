@@ -1,6 +1,6 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { companies, notes, requests } from "@/lib/crm/schema";
+import { companies, notes, propertyNotes, requests } from "@/lib/crm/schema";
 import { NextResponse } from "next/server";
 
 // Dagens aktivitet — kompakt sammanfattning för Min dag.
@@ -11,12 +11,15 @@ export async function GET() {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const [noteRows, companyRows, reqRows] = await Promise.all([
+  const [noteRows, companyRows, reqRows, propNoteRows] = await Promise.all([
     db.select({ createdAt: notes.createdAt, channel: notes.channel }).from(notes),
     db.select({ createdAt: companies.createdAt }).from(companies),
     db
       .select({ createdAt: requests.createdAt, status: requests.status, statusChangedAt: requests.statusChangedAt })
       .from(requests),
+    db
+      .select({ createdAt: propertyNotes.createdAt, channel: propertyNotes.channel, propertyId: propertyNotes.propertyId })
+      .from(propertyNotes),
   ]);
 
   // "Idag" i svensk tid som YYYY-MM-DD.
@@ -28,10 +31,19 @@ export async function GET() {
   const notesToday = noteRows.filter((n) => isToday(n.createdAt));
   const calls = notesToday.filter((n) => n.channel === "samtal").length;
 
+  // Uthyrarkontakter loggade idag (crm_property_notes). "owners" = antal distinkta
+  // objekt/uthyrare som hörts av; "ownerLogs" = totalt antal loggade kontakter.
+  const propNotesToday = propNoteRows.filter((n) => isToday(n.createdAt));
+  const owners = new Set(propNotesToday.map((n) => n.propertyId)).size;
+  const ownerCalls = propNotesToday.filter((n) => n.channel === "samtal").length;
+
   return NextResponse.json({
     date: today,
     notes: notesToday.length,
     calls,
+    owners,
+    ownerLogs: propNotesToday.length,
+    ownerCalls,
     newCompanies: companyRows.filter((c) => isToday(c.createdAt)).length,
     newRequests: reqRows.filter((r) => isToday(r.createdAt)).length,
     won: reqRows.filter((r) => (r.status === "won" || r.status === "invoiced") && isToday(r.statusChangedAt)).length,
