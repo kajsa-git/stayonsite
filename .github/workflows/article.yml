@@ -40,6 +40,12 @@ jobs:
 
       - name: Build to verify
         id: build
+        env:
+          # Bygget importerar CRM-modulerna (libSQL-klient + Auth.js Drizzle-adapter)
+          # vid page-data-insamling. Klienten valideras vid skapande men ansluter inte,
+          # och inga DB-queries körs i bygget (dynamiska routes + try/catch i sitemap),
+          # så en platshållar-URL räcker för att verifiera att artikeln kompilerar.
+          TURSO_DATABASE_URL: "file::memory:"
         run: |
           npm install -g pnpm
           pnpm install --frozen-lockfile
