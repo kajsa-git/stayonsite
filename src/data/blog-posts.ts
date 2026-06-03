@@ -442,6 +442,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['kompetensförsörjning', 'rekrytering', 'arbetskraftsbrist', 'byggsektorn', 'personalstrategi'],
     readingTime: 9,
   },
+  {
+    slug: 'nya-hyreslagen-juli-2026-foretag-personalboende-guide',
+    title: {
+      sv: 'Nya hyreslagen juli 2026: Vad gäller för företag som hyr ut personalboende?',
+      en: 'New Rental Law July 2026: What Applies to Companies Providing Staff Accommodation?',
+      pl: 'Nowa ustawa czynszowa lipiec 2026: Co obowiązuje firmy wynajmujące zakwaterowanie dla pracowników?',
+    },
+    description: {
+      sv: '1 juli 2026 träder nya hyresregler i kraft. Här är vad byggföretag och boendebolag behöver veta om privatuthyrningslagen och blockhyra.',
+      en: 'New rental rules take effect July 1, 2026. Here\'s what construction companies and accommodation providers need to know about the reform.',
+      pl: '1 lipca 2026 wchodzą nowe zasady wynajmu. Oto co firmy budowlane i dostawcy zakwaterowania muszą wiedzieć o reformie.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-06-03',
+    category: 'Lagstiftning',
+    tags: ['privatuthyrningslagen', 'hyreslagstiftning', 'blockhyra', 'företagsuthyrning', 'nya-regler-2026'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
