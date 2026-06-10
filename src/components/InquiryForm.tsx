@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { trackFormSubmit } from '@/lib/gtag';
+import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { isValidPhoneNumber } from '@/lib/contact';
 import {
   getContactFormErrorMessage,
@@ -16,6 +17,7 @@ import FormSuccess from './inquiry/FormSuccess';
 const InquiryForm = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const utmParams = useUtmCapture();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
@@ -50,6 +52,7 @@ const InquiryForm = () => {
           phone,
           message: String(formData.get('message') ?? '').trim(),
         },
+        utmParams,
       });
       setFormSuccess(true);
       trackFormSubmit();

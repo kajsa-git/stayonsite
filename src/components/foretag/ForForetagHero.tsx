@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
 import { trackFormSubmit } from '@/lib/gtag';
+import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -28,6 +29,7 @@ type Lang = 'sv' | 'en' | 'pl';
 const ForForetagHero = () => {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const utmParams = useUtmCapture();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
@@ -73,6 +75,7 @@ const ForForetagHero = () => {
           email: String(formData.get('email') ?? '').trim(),
           phone: phone.trim(),
         },
+        utmParams,
       });
       setFormSuccess(true);
       trackFormSubmit();

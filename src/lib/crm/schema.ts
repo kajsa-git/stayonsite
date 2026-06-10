@@ -139,6 +139,15 @@ export const requests = sqliteTable("crm_requests", {
   billingProjectId: text("billing_project_id"), // Fortnox/projekt-id, default kan vara requestNumber
   wonPropertyId: text("won_property_id"),
   lostReason: text("lost_reason"),
+  // Annonsattribution: Google klick-ID (gclid) från landningssidan. Bärs hela
+  // vägen från formuläret hit så Offline Conversion Import kan attribuera
+  // leadet/affären till annonsklicket utan cookies.
+  gclid: text("gclid"),
+  gclidCapturedAt: text("gclid_captured_at"),
+  // Idempotens för uppladdade offline-konverteringar — sätts när raden laddats
+  // upp till Google Ads så vi aldrig laddar upp samma konvertering två gånger.
+  gadsLeadUploadedAt: text("gads_lead_uploaded_at"),
+  gadsWonUploadedAt: text("gads_won_uploaded_at"),
   notes: text("notes"),
   statusChangedAt: text("status_changed_at"),
   // In-/avflyttning: checklistor (avbockade nyckel-id) + tidpunkt klarmarkerad.

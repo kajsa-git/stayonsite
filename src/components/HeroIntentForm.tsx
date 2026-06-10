@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
 import { trackFormSubmit } from '@/lib/gtag';
+import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -20,6 +21,7 @@ interface HeroIntentFormProps {
 const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const utmParams = useUtmCapture();
 
   const [city, setCity] = useState(defaultCity);
   const [people, setPeople] = useState('');
@@ -72,6 +74,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
           email: emailValue,
           phone: phoneValue,
         },
+        utmParams,
       });
       setFormSuccess(true);
       trackFormSubmit();

@@ -181,6 +181,8 @@ async function createCompanyRequest(
       contactId: contact?.id ?? null,
       city,
       persons,
+      gclid: clean(submission.utmParams?.gclid),
+      gclidCapturedAt: submission.utmParams?.gclid ? new Date().toISOString() : null,
       status: "incoming",
       billingProjectId: String(requestNumber),
       notes: sourceNotes(submission, [
