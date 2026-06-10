@@ -478,6 +478,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['blockhyra', 'infrastruktur', 'husägare', 'fastighetsförberedelse', 'renovering', 'personalboende'],
     readingTime: 9,
   },
+  {
+    slug: 'blockhyra-personalbostader-nya-regler-implementering-2026',
+    title: {
+      sv: 'Nya hyreslagen är nu aktiv: Vad händer med dina personalboenden?',
+      en: 'New Rental Law Now Active: Impact on Staff Accommodation',
+      pl: 'Nowe prawo najmu już obowiązuje: Wpływ na zakwaterowanie pracowników',
+    },
+    description: {
+      sv: 'Från 1 juli 2026 gäller nya regler för blockhyra. Så påverkas företagsbostäder och personalboende – praktisk guide för företag.',
+      en: 'New block rental rules took effect July 1, 2026. How corporate housing and staff accommodation are affected – practical guide.',
+      pl: 'Od 1 lipca 2026 obowiązują nowe zasady najmu blokowego. Wpływ na mieszkania służbowe – praktyczny przewodnik.',
+    },
+    author: 'StayOnSite',
+    publishedDate: '2026-06-10',
+    category: 'Lagstiftning',
+    tags: ['blockhyra', 'hyreslagen-2026', 'företagsbostäder', 'personalboende', 'lagändringar'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
