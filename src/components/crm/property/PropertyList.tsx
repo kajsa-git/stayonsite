@@ -389,29 +389,43 @@ function PropertyForm({
   const [importing, setImporting] = useState(false);
   const [imported, setImported] = useState<{ source: ImportedListing["source"]; images: number } | null>(null);
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+  // Dubblett-varning: sätts när importen hittar ett befintligt objekt med samma länk/adress.
+  const [dupe, setDupe] = useState<{ existing: { id: string; address: string | null; city: string | null }; listing: ImportedListing } | null>(null);
 
-  // Hämtar en Qasa-/Airbnb-annons och förifyller formuläret. Sparar inget — Kajsa granskar
-  // och klickar Spara, varpå objektet skapas och bilderna importeras (se handleAdd).
-  async function runImport() {
+  // Förifyller formuläret från en hämtad annons (sparar inget — Kajsa granskar och sparar).
+  function applyListing(listing: ImportedListing) {
+    // Nollställ alla import-härledda fält först → en ny import ersätter den förra helt
+    // (ingen läckande adress/uthyrare/hyra från ett tidigare inklistrat objekt).
+    setForm((f) => {
+      const cleared = { ...f };
+      for (const k of IMPORT_MANAGED_KEYS) delete cleared[k];
+      return { ...cleared, ...listingToPropertyPatch(listing) };
+    });
+    setPendingImages(listing.imageUrls);
+    setImported({ source: listing.source, images: listing.imageUrls.length });
+    toast({ title: `Importerad från ${SOURCE_LABEL[listing.source]}` });
+  }
+
+  // Hämtar en Qasa-/Airbnb-annons. force=true hoppar över dubblett-varningen ("Importera ändå").
+  async function runImport(force = false) {
     const url = importUrl.trim();
     if (!url || importing) return;
     setImporting(true);
     try {
-      const { listing } = await crmFetchJson<{ listing: ImportedListing }>("/api/crm/import-listing", {
+      const { listing, existing } = await crmFetchJson<{
+        listing: ImportedListing;
+        existing: { id: string; address: string | null; city: string | null } | null;
+      }>("/api/crm/import-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      // Nollställ alla import-härledda fält först → en ny import ersätter den förra helt
-      // (ingen läckande adress/uthyrare/hyra från ett tidigare inklistrat objekt).
-      setForm((f) => {
-        const cleared = { ...f };
-        for (const k of IMPORT_MANAGED_KEYS) delete cleared[k];
-        return { ...cleared, ...listingToPropertyPatch(listing) };
-      });
-      setPendingImages(listing.imageUrls);
-      setImported({ source: listing.source, images: listing.imageUrls.length });
-      toast({ title: `Importerad från ${SOURCE_LABEL[listing.source]}` });
+      if (existing && !force) {
+        setDupe({ existing, listing });
+        return; // varna i stället för att fylla i — undviker tysta dubbletter
+      }
+      setDupe(null);
+      applyListing(listing);
     } catch (e) {
       toast({ title: crmErrorMessage(e), variant: "destructive" });
     } finally {
@@ -459,13 +473,37 @@ function PropertyForm({
             size="sm"
             variant="secondary"
             className="gap-1 text-xs shrink-0"
-            onClick={runImport}
+            onClick={() => runImport()}
             disabled={importing || !importUrl.trim()}
           >
             {importing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
             {importing ? "Hämtar…" : "Hämta"}
           </Button>
         </div>
+        {dupe && (
+          <div className="rounded-md border border-amber-300 bg-amber-50 p-2.5 text-xs space-y-2">
+            <p className="font-medium text-amber-900">
+              ⚠ Det här objektet verkar redan finnas
+              {dupe.existing.address ? `: ${dupe.existing.address}` : ""}
+              {dupe.existing.city ? `, ${dupe.existing.city}` : ""}.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={`/crm/properties?id=${dupe.existing.id}`}
+                className="inline-flex items-center rounded border border-amber-400 bg-white px-2 py-1 font-medium text-amber-900 hover:bg-amber-100"
+              >
+                Öppna befintligt
+              </a>
+              <button
+                type="button"
+                onClick={() => { const l = dupe.listing; setDupe(null); applyListing(l); }}
+                className="inline-flex items-center rounded border border-input bg-white px-2 py-1 text-muted-foreground hover:bg-nordic-100"
+              >
+                Importera ändå
+              </button>
+            </div>
+          </div>
+        )}
         {imported && (
           <p className="text-xs text-green-700">
             ✓ Fält ifyllda från {SOURCE_LABEL[imported.source]}
