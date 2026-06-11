@@ -3,6 +3,7 @@ import type { PublicProperty } from "@/lib/crm/public-property";
 import { ProspektGallery } from "@/components/prospekt/ProspektGallery";
 import { ProspektMap } from "@/components/prospekt/ProspektMap";
 import { T, type Lang } from "@/components/prospekt/prospekt-i18n";
+import { translateInclusion } from "@/components/prospekt/inclusion-i18n";
 
 const editorial = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
 
@@ -25,8 +26,17 @@ export function PropertyShowcase({
   const description =
     (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) || p.publicDescription;
   const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
+  // Vad ingår: AI-översättningen (inclusionsEn/Pl) vinner per post när den finns, annars
+  // deterministisk ordbok (täcker hela Qasa-/Airbnb-importens ordförråd), annars källtexten.
+  // Tidigare föll hela listan tillbaka till svenska om AI-översättning saknades → svensk
+  // text på engelska/polska sidor för importerade objekt.
   const localInclusions = lang === "en" ? p.inclusionsEn : lang === "pl" ? p.inclusionsPl : null;
-  const inclusions = (localInclusions && localInclusions.length ? localInclusions : p.inclusions) ?? [];
+  const sourceInclusions = p.inclusions ?? [];
+  const base = sourceInclusions.length ? sourceInclusions : (localInclusions ?? []);
+  const inclusions =
+    lang === "sv"
+      ? sourceInclusions
+      : base.map((sv, i) => localInclusions?.[i]?.trim() || translateInclusion(sv, lang));
   const distances = (p.distances ?? []).filter((d) => d.label?.trim());
 
   const highlights = [
