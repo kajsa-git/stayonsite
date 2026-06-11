@@ -125,13 +125,20 @@ function header(msg: { payload: { headers: { name: string; value: string }[] } }
   return msg.payload.headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? "";
 }
 
+// Gmail levererar base64url-kodade kroppar. atob() ger Latin-1 och förstör all UTF-8
+// (åäö, emoji) — avkoda via Buffer som UTF-8 i stället.
+function decodeB64Url(data?: string): string {
+  if (!data) return "";
+  return Buffer.from(data.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf-8");
+}
+
 function extractBody(payload: {
   mimeType?: string;
   body?: { data?: string };
   parts?: typeof payload[];
 }): { text: string; html: string | null } {
-  if (payload.mimeType === "text/plain") return { text: atob(payload.body?.data?.replace(/-/g, "+").replace(/_/g, "/") ?? ""), html: null };
-  if (payload.mimeType === "text/html") return { text: "", html: atob(payload.body?.data?.replace(/-/g, "+").replace(/_/g, "/") ?? "") };
+  if (payload.mimeType === "text/plain") return { text: decodeB64Url(payload.body?.data), html: null };
+  if (payload.mimeType === "text/html") return { text: "", html: decodeB64Url(payload.body?.data) };
   if (payload.parts) {
     let text = "";
     let html: string | null = null;

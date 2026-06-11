@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface QueueCounts {
   followUps: number;
@@ -10,7 +11,7 @@ interface QueueCounts {
   moveSchedule: number;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function useQueueCounts() {
   const { data, error } = useSWR<QueueCounts>("/api/crm/queue-counts", fetcher, {

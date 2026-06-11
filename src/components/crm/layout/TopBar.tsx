@@ -7,8 +7,17 @@ import { useGlobalSearch } from "@/components/crm/search/GlobalSearch";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+
+const NAV_ITEMS: { href: string; label: string; exact?: boolean; title?: string }[] = [
+  { href: "/crm", label: "Min dag", exact: true },
+  { href: "/crm/oversikt", label: "Översikt" },
+  { href: "/crm/foretag", label: "Företagsbank" },
+  { href: "/crm/properties", label: "Objektsbank" },
+  { href: "/crm/flyttar", label: "In- & avflyttningar", title: "In- & avflyttningar att hantera" },
+  { href: "/crm/sok", label: "Sök" },
+];
 
 interface TopBarProps {
   currentIndex?: number;
@@ -19,6 +28,7 @@ interface TopBarProps {
 
 export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session } = useSession();
   const { counts } = useQueueCounts();
   const { open: openSearch } = useGlobalSearch();
@@ -37,48 +47,27 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       </button>
 
       <nav className="flex items-center gap-0.5 shrink-0">
-        <button
-          onClick={() => router.push("/crm")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-        >
-          Min dag
-        </button>
-        <button
-          onClick={() => router.push("/crm/oversikt")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-        >
-          Översikt
-        </button>
-        <button
-          onClick={() => router.push("/crm/foretag")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-        >
-          Företagsbank
-        </button>
-        <button
-          onClick={() => router.push("/crm/properties")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-        >
-          Objektsbank
-        </button>
-        <button
-          onClick={() => router.push("/crm/flyttar")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-          title="In- & avflyttningar att hantera"
-        >
-          In- & avflyttningar
-          {counts.moveSchedule > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#ff6300] text-white text-[10px] font-bold tabular-nums align-middle">
-              {String(counts.moveSchedule).padStart(2, "0")}
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => router.push("/crm/sok")}
-          className="text-xs px-2 py-1 rounded text-nordic-700 hover:bg-nordic-100 transition-colors"
-        >
-          Sök
-        </button>
+        {NAV_ITEMS.map((item) => {
+          const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <button
+              key={item.href}
+              onClick={() => router.push(item.href)}
+              title={item.title}
+              aria-current={active ? "page" : undefined}
+              className={`text-xs px-2 py-1 rounded transition-colors ${
+                active ? "bg-nordic-100 text-nordic-900 font-semibold" : "text-nordic-700 hover:bg-nordic-100"
+              }`}
+            >
+              {item.label}
+              {item.href === "/crm/flyttar" && counts.moveSchedule > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#ff6300] text-white text-[10px] font-bold tabular-nums align-middle">
+                  {counts.moveSchedule}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </nav>
 
       {total != null && (
@@ -136,7 +125,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           size="sm"
           className="h-8 gap-1.5 text-xs"
           onClick={() => setShowNewCompany(true)}
-          title="Ny kund (⌘N)"
+          title="Ny kund"
         >
           <Plus className="h-3.5 w-3.5" />
           Ny kund

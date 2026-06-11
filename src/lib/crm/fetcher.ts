@@ -39,3 +39,24 @@ export function crmErrorMessage(e: unknown): string {
   if (e instanceof Error && e.message) return e.message;
   return "Något gick fel";
 }
+
+// Läs-fetch för SWR. Kastar på icke-2xx så att SWR sätter `error` i stället för att
+// rendera serverns felobjekt ({error:"Unauthorized"}) som om det vore giltig data —
+// en utgången session visade tidigare tysta nollor i hela gränssnittet.
+export async function swrFetcher<T = unknown>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    let message = res.status === 401 ? "Du verkar vara utloggad – logga in igen." : `Kunde inte hämta data (${res.status})`;
+    if (res.status !== 401) {
+      try {
+        const data = await res.clone().json();
+        if (data?.message) message = data.message;
+        else if (data?.error) message = data.error;
+      } catch {
+        /* svaret var inte JSON */
+      }
+    }
+    throw new CrmFetchError(message, res.status);
+  }
+  return (await res.json()) as T;
+}

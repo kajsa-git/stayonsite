@@ -63,26 +63,30 @@ export async function POST(req: NextRequest) {
     resolvedCompanyId = c?.companyId ?? null;
   }
 
-  const id = nanoid();
-  const [row] = await db
-    .insert(emails)
-    .values({
-      id,
-      companyId: resolvedCompanyId,
-      contactId: contactId ?? null,
-      ownerId: ownerId ?? null,
-      direction: "out",
-      subject,
-      body: emailBody,
-      html: emailHtml ?? null,
-      fromEmail: from,
-      toEmail: to,
-      authorId: user.id,
-      gmailMessageId,
-      gmailThreadId,
-      sentAt: new Date().toISOString(),
-    })
-    .returning();
+  const values = {
+    id: nanoid(),
+    companyId: resolvedCompanyId,
+    contactId: contactId ?? null,
+    ownerId: ownerId ?? null,
+    direction: "out" as const,
+    subject,
+    body: emailBody,
+    html: emailHtml ?? null,
+    fromEmail: from,
+    toEmail: to,
+    authorId: user.id,
+    gmailMessageId,
+    gmailThreadId,
+    sentAt: new Date().toISOString(),
+  };
 
-  return NextResponse.json(row, { status: 201 });
+  // Mejlet är redan skickat — en loggnings-miss (t.ex. om Gmail-synken hann importera
+  // samma meddelande-id först, unikt index) får aldrig se ut som ett sändfel.
+  try {
+    const [row] = await db.insert(emails).values(values).onConflictDoNothing().returning();
+    return NextResponse.json(row ?? { ...values, alreadyLogged: true }, { status: 201 });
+  } catch (e) {
+    console.error("Email log insert (post-send):", e);
+    return NextResponse.json({ ...values, logged: false }, { status: 201 });
+  }
 }

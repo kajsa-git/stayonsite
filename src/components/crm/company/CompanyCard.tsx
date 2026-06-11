@@ -87,7 +87,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: value }),
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        toast({ title: j.message ?? j.error ?? "Kunde inte spara", variant: "destructive" });
+        return false;
+      }
       mutate();
       toast({ title: "Sparat" });
       return true;

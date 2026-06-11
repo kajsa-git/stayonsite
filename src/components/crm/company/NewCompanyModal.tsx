@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2, Search } from "lucide-react";
+import { todayStockholm } from "@/lib/crm/date";
 
 interface NewCompanyModalProps {
   open: boolean;
@@ -12,7 +13,7 @@ interface NewCompanyModalProps {
 
 export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
   const router = useRouter();
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayStockholm();
   const [saving, setSaving] = useState(false);
   const [looking, setLooking] = useState(false);
   const [form, setForm] = useState({

@@ -25,8 +25,10 @@ export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const orgnr = (req.nextUrl.searchParams.get("orgnr") || "").replace(/\D/g, "");
-  if (orgnr.length !== 10) return NextResponse.json({ found: false, error: "Ange ett 10-siffrigt org.nr" });
+  let orgnr = (req.nextUrl.searchParams.get("orgnr") || "").replace(/\D/g, "");
+  // Acceptera även 12-siffrigt format (med sekel-prefix, t.ex. 16XXXXXXXXXX) → dra bort prefixet.
+  if (orgnr.length === 12) orgnr = orgnr.slice(2);
+  if (orgnr.length !== 10) return NextResponse.json({ found: false, error: "Ange ett 10- eller 12-siffrigt org.nr" });
 
   try {
     const res = await fetch(`https://www.allabolag.se/${orgnr}`, {

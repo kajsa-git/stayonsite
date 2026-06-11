@@ -8,8 +8,13 @@ export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Normalisera: gemener, trimma, kollapsa whitespace
-  const q = (req.nextUrl.searchParams.get("q") ?? "").toLowerCase().trim().replace(/\s+/g, " ");
+  // Normalisera: gemener, neutralisera LIKE-jokrar (% _ \) så att t.ex. "50%" inte
+  // matchar allt, trimma, kollapsa whitespace.
+  const q = (req.nextUrl.searchParams.get("q") ?? "")
+    .toLowerCase()
+    .replace(/[%_\\]/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
   if (q.length < 2) return NextResponse.json([]);
 
   // Flera ord → alla måste matcha (AND av LIKE). Cappa antal termer.

@@ -1,5 +1,6 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { todayStockholm, plusDaysStockholm } from "@/lib/crm/date";
 import { companies, matches, ownerOutreach, requests } from "@/lib/crm/schema";
 import { and, eq, inArray, isNull, lte } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -8,13 +9,11 @@ export async function GET() {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const today = new Date().toISOString().split("T")[0];
+  // Samma svenska "idag" som /api/crm/queues, så badge-räknarna och kö-kolumnerna
+  // aldrig glider isär runt midnatt.
+  const today = todayStockholm();
   // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
-  const horizon = (() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 7);
-    return d.toISOString().split("T")[0];
-  })();
+  const horizon = plusDaysStockholm(7);
 
   const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps, moveRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),

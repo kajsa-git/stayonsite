@@ -10,8 +10,9 @@ import useSWR from "swr";
 import DOMPurify from "dompurify";
 import { EmailComposeModal } from "./EmailComposeModal";
 import { EmailLogModal } from "./EmailLogModal";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 // Inkommande mejl-HTML kommer från externa avsändare och får aldrig renderas rått.
 // Tvinga säkra länkar (öppnas i ny flik utan referrer/window.opener-läcka).
@@ -30,7 +31,11 @@ function sanitizeEmailHtml(html: string): string {
   if (typeof window === "undefined") return "";
   return DOMPurify.sanitize(html, {
     FORBID_TAGS: ["script", "style", "iframe", "object", "embed", "form", "input", "button", "link", "meta", "base"],
+    // Inline-style kan bära spårningsbilder (background:url) och layout-kapning — släpp aldrig igenom.
+    FORBID_ATTR: ["style"],
     ALLOW_DATA_ATTR: false,
+    // Tillåt bara ofarliga URI-scheman (blockerar javascript:/data:-baserade trick).
+    ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel|cid):/i,
   });
 }
 

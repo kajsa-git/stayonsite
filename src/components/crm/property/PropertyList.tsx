@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { crmFetch, crmFetchJson, crmErrorMessage } from "@/lib/crm/fetcher";
+import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
 import { DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
@@ -15,7 +15,7 @@ import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 const PROP_STATUS: Record<string, { label: string; cls: string }> = {
   available: { label: "Tillgänglig", cls: "bg-green-100 text-green-800" },

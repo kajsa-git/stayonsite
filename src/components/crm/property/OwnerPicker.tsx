@@ -5,6 +5,7 @@ import type { Owner } from "@/lib/crm/schema";
 import { Link2, Search, X } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 export type OwnerPickerValue = {
   ownerId?: string | null;
@@ -25,7 +26,7 @@ interface Props {
   onChange: (patch: Partial<OwnerPickerValue>) => void;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function OwnerPicker({ value, onChange }: Props) {
   const [query, setQuery] = useState("");

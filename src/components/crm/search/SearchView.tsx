@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Result {
   id: string;
@@ -21,7 +22,7 @@ const STATUS_OPTIONS = [
   { value: "archived", label: "Arkiverad" },
 ];
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 const LABEL = "text-xs font-medium text-muted-foreground uppercase tracking-wide";
 const INPUT = "w-full text-sm bg-white border border-input rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
 

@@ -76,8 +76,9 @@ export function matchDetails(request: Request, property: Property): MatchResult 
     else chips.push({ label: "Sovrum okänt", tone: "warn" });
   }
 
-  // Bädd-spann (beds)
-  if (request.bedsFrom != null || request.bedsTo != null) {
+  // Bädd-spann (beds) — endast när personantal INTE angetts. Annars poängsätter
+  // "Beds vs persons"-blocket ovan redan samma property.beds och vi skulle dubbelräkna.
+  if (!request.persons && (request.bedsFrom != null || request.bedsTo != null)) {
     const r = inRange(property.beds, request.bedsFrom, request.bedsTo);
     if (r === true) { score += 10; chips.push({ label: `${property.beds} bäddar ✓`, tone: "good" }); }
     else if (r === false) chips.push({ label: `${property.beds} bäddar (vill ${rangeText(request.bedsFrom, request.bedsTo)})`, tone: "bad" });

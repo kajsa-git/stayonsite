@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2) return NextResponse.json([]);
 
-  const pattern = `%${q}%`;
+  // Neutralisera LIKE-jokrar (% _ \) så att söktexten matchas bokstavligt.
+  const pattern = `%${q.replace(/[%_\\]/g, " ")}%`;
   const select = {
     id: companies.id,
     name: companies.name,

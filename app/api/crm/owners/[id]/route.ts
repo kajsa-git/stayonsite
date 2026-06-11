@@ -13,9 +13,24 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
+
+  // Whitelist redigerbara fält — klienten får aldrig skriva över id/createdAt.
+  const ALLOWED = [
+    "ownerType", "ownerArrangement", "name", "orgNr", "contactPerson", "phone", "email",
+    "rating", "followUpDate", "followUpReason", "followUpNote", "notes",
+  ] as const;
+  const data: Record<string, unknown> = {};
+  for (const key of ALLOWED) if (key in body) data[key] = body[key];
+  // name är NOT NULL — tillåt aldrig att tömma den (annars constraint-fel → 500).
+  if ("name" in data) {
+    const nm = String(data.name ?? "").trim();
+    if (nm) data.name = nm;
+    else delete data.name;
+  }
+
   const [row] = await db
     .update(owners)
-    .set({ ...body, updatedAt: new Date().toISOString() })
+    .set({ ...data, updatedAt: new Date().toISOString() })
     .where(eq(owners.id, id))
     .returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });

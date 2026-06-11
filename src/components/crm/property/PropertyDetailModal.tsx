@@ -3,6 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Image {
   id: string;
@@ -10,7 +11,7 @@ interface Image {
   url: string;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 const PROP_STATUS: Record<string, string> = {
   available: "Tillgänglig",
@@ -77,8 +78,8 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
           <Item label="Badrum" value={p.bathrooms?.toString() ?? "–"} />
           <Item label="Tillgänglig från" value={p.moveInFrom ?? "–"} />
           <Item label="Tillgänglig till" value={p.availableTo ?? "–"} />
-          <Item label="Vi hyr för" value={p.rentIn ? `${p.rentIn} kr/mån` : "–"} />
-          <Item label="Vi hyr ut för" value={p.rentOut ? `${p.rentOut} kr/mån` : "–"} />
+          <Item label="Vi hyr för" value={p.rentIn ? `${p.rentIn.toLocaleString("sv-SE")} kr/mån` : "–"} />
+          <Item label="Vi hyr ut för" value={p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr/mån` : "–"} />
           <Item label="Uthyrare" value={p.ownerName ?? "–"} />
           <Item label="Telefon" value={p.ownerPhone ?? "–"} />
           <Item label="E-post" value={p.ownerEmail ?? "–"} />

@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
+import { todayStockholm } from "@/lib/crm/date";
 
 type CompanyFilter = "all" | "active" | "followup" | "no_followup";
 
@@ -37,16 +39,23 @@ const LEAD_SOURCE: Record<string, string> = {
   airbnb: "AirBnB",
 };
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function CompanyTable() {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filter, setFilter] = useState<CompanyFilter>("all");
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayStockholm();
+
+  // Debounca söktexten så vi inte skjuter en 500-raders fråga per tangenttryck.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
 
   const { data: rows = [], isLoading } = useSWR<Row[]>(
-    `/api/crm/companies?summary=1&limit=500&q=${encodeURIComponent(search)}`,
+    `/api/crm/companies?summary=1&limit=500&q=${encodeURIComponent(debouncedSearch)}`,
     fetcher
   );
   const loading = isLoading && rows.length === 0;

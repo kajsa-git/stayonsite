@@ -1,5 +1,5 @@
 -- crm_requests: annonsattribution för Offline Conversion Import (OCI).
--- gclid bärs från landningssidan hela vägen till leadet; *_uploaded_at ger
+-- gclid bärs från landningssidan hela vägen till leadet, och *_uploaded_at ger
 -- idempotens så samma konvertering aldrig laddas upp till Google Ads två gånger.
 -- Paras med scripts/apply-0024-gclid-attribution.mjs (idempotent mot live).
 ALTER TABLE `crm_requests` ADD `gclid` text;--> statement-breakpoint

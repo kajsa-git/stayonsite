@@ -24,7 +24,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
   }
 
-  const [row] = await db.update(contacts).set(body).where(eq(contacts.id, id)).returning();
+  // Whitelist redigerbara fält — klienten får aldrig flytta kontakten till ett annat
+  // företag (companyId) eller byta id.
+  const ALLOWED = ["name", "phone", "email", "isPrimary"] as const;
+  const data: Record<string, unknown> = {};
+  for (const key of ALLOWED) if (key in body) data[key] = body[key];
+
+  const [row] = await db.update(contacts).set(data).where(eq(contacts.id, id)).returning();
+  if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
   await indexContact(id).catch((e) => console.error("search-index contact:", e));
   return NextResponse.json(row);
 }

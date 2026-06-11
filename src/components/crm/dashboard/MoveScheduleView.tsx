@@ -14,6 +14,7 @@ import { ArrowRight, Check, LogIn, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
+import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 
 interface MoveItem {
   requestId: string;
@@ -34,17 +35,18 @@ interface MoveData {
   moveOuts: MoveItem[];
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 const nowIso = () => new Date().toISOString();
 
 export function MoveScheduleView() {
-  const { data, mutate, isLoading } = useSWR<MoveData>("/api/crm/move-schedule", fetcher, {
+  const { data, mutate, isLoading, error } = useSWR<MoveData>("/api/crm/move-schedule", fetcher, {
     refreshInterval: 30000,
   });
   const moveIns = data?.moveIns ?? [];
   const moveOuts = data?.moveOuts ?? [];
 
-  // Räknare till rubriken: öppna (ej klarmarkerade) totalt + hur många som är på gång inom 3 dagar.
+  // Räknare till rubriken: öppna (ej klarmarkerade) totalt + hur många som är på gång den
+  // närmaste veckan (≤ 7 dagar) — samma fönster som "På gång"-flaggan på Min dag.
   const openCount = [...moveIns, ...moveOuts].filter((i) => !i.doneAt).length;
   const dueSoon = [...moveIns, ...moveOuts].filter(
     (i) => !i.doneAt && differenceInCalendarDays(parseISO(i.date), new Date()) <= 7,
@@ -117,6 +119,19 @@ export function MoveScheduleView() {
           Bocka av hela checklistan innan du klarmarkerar. Brådskande poster (inom 3 dagar) är markerade.
         </p>
       </div>
+
+      {error && !data && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <span className="font-medium">Kunde inte ladda in- & avflyttningar.</span>
+          <span className="text-red-700/80">{crmErrorMessage(error)}</span>
+          <button
+            onClick={() => mutate()}
+            className="ml-auto shrink-0 rounded border border-red-300 bg-white px-2 py-1 text-xs font-medium text-red-800 hover:bg-red-100"
+          >
+            Försök igen
+          </button>
+        </div>
+      )}
 
       {isLoading && !data ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

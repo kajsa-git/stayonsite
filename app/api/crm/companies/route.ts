@@ -63,10 +63,13 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
+  const name = String(body.name ?? "").trim();
+  if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
+
   const id = body.id ?? nanoid();
   const [row] = await db
     .insert(companies)
-    .values({ ...body, id })
+    .values({ ...body, id, name })
     .returning();
   await indexCompany(id).catch((e) => console.error("search-index company:", e));
   return NextResponse.json(row, { status: 201 });

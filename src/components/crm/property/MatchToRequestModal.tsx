@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Check, Search } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
+import { REQUEST_STATUS_LABEL as STATUS_LABEL } from "@/lib/crm/request-status";
 
 interface OpenRequest {
   id: string;
@@ -17,9 +19,7 @@ interface OpenRequest {
   budgetMax: number | null;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
-const STATUS_LABEL: Record<string, string> = { incoming: "Inkommen", matching: "Matchar" };
+const fetcher = swrFetcher;
 
 export function MatchToRequestModal({
   propertyId,

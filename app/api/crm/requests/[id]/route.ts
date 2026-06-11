@@ -24,13 +24,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
+  // Whitelist redigerbara fält — server-ägda kolumner (id, requestNumber, companyId,
+  // gclid/gads-attribution, tidsstämplar) får aldrig skrivas över av klienten.
+  const ALLOWED = [
+    "contactId", "city", "postalCode", "street", "addressQuery", "status", "persons",
+    "accommodationFrom", "accommodationTo", "bedroomsFrom", "bedroomsTo", "bedsFrom", "bedsTo",
+    "startDate", "endDate", "endDateOngoing", "projectDurationMonths", "budgetMax",
+    "furnishedRequired", "garageRequired", "monthlyValue", "billingProjectId", "wonPropertyId",
+    "lostReason", "notes", "moveInChecklist", "moveOutChecklist", "moveInDoneAt", "moveOutDoneAt",
+  ] as const;
+  const data: Record<string, unknown> = {};
+  for (const key of ALLOWED) if (key in body) data[key] = body[key];
+
   // Hämta nuvarande rad för fält som inte alltid skickas med i body (datum, checklistor).
   const [existing] = await db.select().from(requests).where(eq(requests.id, id));
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const merged = { ...existing, ...body };
+  const merged = { ...existing, ...data };
 
   // Hård grind: fakturering kräver startdatum + (slutdatum ELLER löpande).
-  if (body.status === "invoiced" && !hasValidInvoiceDates(merged)) {
+  if (data.status === "invoiced" && !hasValidInvoiceDates(merged)) {
     return NextResponse.json(
       { error: "missing_dates", message: "Ange inflytt- och utflyttsdatum (eller löpande) innan fakturering." },
       { status: 400 },
@@ -38,13 +50,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   // En in-/avflytt får bara klarmarkeras när hela checklistan är avbockad.
-  if (body.moveInDoneAt && !isMoveInChecklistComplete(merged.moveInChecklist)) {
+  if (data.moveInDoneAt && !isMoveInChecklistComplete(merged.moveInChecklist)) {
     return NextResponse.json(
       { error: "checklist_incomplete", message: "Bocka av hela inflyttningschecklistan först." },
       { status: 400 },
     );
   }
-  if (body.moveOutDoneAt && !isMoveOutChecklistComplete(merged.moveOutChecklist)) {
+  if (data.moveOutDoneAt && !isMoveOutChecklistComplete(merged.moveOutChecklist)) {
     return NextResponse.json(
       { error: "checklist_incomplete", message: "Bocka av hela avflyttningschecklistan först." },
       { status: 400 },
@@ -54,7 +66,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const now = new Date().toISOString();
   const [row] = await db
     .update(requests)
-    .set({ ...body, updatedAt: now, ...(body.status ? { statusChangedAt: now } : {}) })
+    .set({ ...data, updatedAt: now, ...(data.status ? { statusChangedAt: now } : {}) })
     .where(eq(requests.id, id))
     .returning();
 
@@ -62,16 +74,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   // Dubbelboknings-spärr: när ett objekt vinns/fakureras, spegla det på objektet
   // och dra tillbaka andra företags öppna förslag på samma objekt.
-  if (row?.wonPropertyId && (body.status === "won" || body.status === "invoiced")) {
+  if (row?.wonPropertyId && (data.status === "won" || data.status === "invoiced")) {
     const propertyId = row.wonPropertyId;
-    const newStatus = body.status === "invoiced" ? "rented" : "reserved";
+    const newStatus = data.status === "invoiced" ? "rented" : "reserved";
     try {
       await db
         .update(properties)
         .set({ status: newStatus, updatedAt: now })
         .where(eq(properties.id, propertyId));
 
-      if (body.status === "won") {
+      if (data.status === "won") {
         // Stäng öppna förslag på samma objekt som tillhör ANDRA förfrågningar
         await db
           .update(matches)
@@ -91,7 +103,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   // Avflytt klarmarkerad → objektet blir ledigt igen.
-  if (body.moveOutDoneAt && row?.wonPropertyId) {
+  if (data.moveOutDoneAt && row?.wonPropertyId) {
     try {
       await db
         .update(properties)

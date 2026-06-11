@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, ImagePlus, Loader2, Star, X } from "lucide-r
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { toast } from "@/components/ui/use-toast";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Image {
   id: string;
@@ -12,7 +13,7 @@ interface Image {
   isPrimary?: boolean;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function PropertyImages({ propertyId }: { propertyId: string }) {
   const { data: images = [], mutate } = useSWR<Image[]>(
@@ -39,25 +40,40 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
     if (!files || files.length === 0) return;
     setError(null);
     setUploading(true);
-    let failed = false;
-    const count = files.length;
+    const list = Array.from(files);
+    let ok = 0;
+    let lastError: string | null = null;
     try {
-      for (const file of Array.from(files)) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const res = await fetch(`/api/crm/properties/${propertyId}/images`, { method: "POST", body: fd });
-        if (!res.ok) {
-          const j = await res.json().catch(() => ({}));
-          setError(j.error ?? "Uppladdning misslyckades");
-          failed = true;
+      // Varje fil i sin egen try/catch — ett nätverksfel på en bild får aldrig
+      // avbryta hela batchen eller hoppa över mutate().
+      for (const file of list) {
+        try {
+          const fd = new FormData();
+          fd.append("file", file);
+          const res = await fetch(`/api/crm/properties/${propertyId}/images`, { method: "POST", body: fd });
+          if (res.ok) ok++;
+          else {
+            const j = await res.json().catch(() => ({}));
+            lastError = j.error ?? `Uppladdning misslyckades (${res.status})`;
+          }
+        } catch {
+          lastError = "Nätverksfel vid uppladdning";
         }
       }
-      mutate();
-      if (failed) toast({ title: "Någon bild kunde inte laddas upp", variant: "destructive" });
-      else toast({ title: count > 1 ? `${count} bilder uppladdade` : "Bild uppladdad" });
     } finally {
+      await mutate();
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
+    }
+    const failed = list.length - ok;
+    if (failed === 0) {
+      toast({ title: ok > 1 ? `${ok} bilder uppladdade` : "Bild uppladdad" });
+    } else {
+      setError(lastError);
+      toast({
+        title: ok > 0 ? `${ok} av ${list.length} uppladdade — ${failed} misslyckades` : "Uppladdningen misslyckades",
+        variant: "destructive",
+      });
     }
   }
 
@@ -70,7 +86,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
       });
       if (!res.ok) throw new Error(String(res.status));
       mutate();
-      toast({ title: "Huvudbild satt — visas först i prospektet" });
+      toast({ title: "Huvudbild satt — visas först i galleriet" });
     } catch {
       toast({ title: "Kunde inte sätta huvudbild", variant: "destructive" });
     }
@@ -169,7 +185,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
           </button>
           {images.length > 1 && (
             <button
-              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox - 1 + images.length) % images.length); }}
+              onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? i : (i - 1 + images.length) % images.length)); }}
               className="absolute left-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
               title="Föregående (←)"
             >
@@ -185,7 +201,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
           />
           {images.length > 1 && (
             <button
-              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox + 1) % images.length); }}
+              onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? i : (i + 1) % images.length)); }}
               className="absolute right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
               title="Nästa (→)"
             >

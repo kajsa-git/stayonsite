@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const MODEL = "claude-sonnet-4-5-20250929";
+const MODEL = "claude-sonnet-4-6";
 
 const yesNo = (v: unknown) => (v ? "ja" : null);
 
@@ -83,7 +83,7 @@ ${facts.length ? facts.map((f) => `- ${f}`).join("\n") : "(ingen strukturerad da
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
-      body: JSON.stringify({ model: MODEL, max_tokens: 600, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 600, thinking: { type: "disabled" }, messages: [{ role: "user", content }] }),
     });
     if (!res.ok) {
       const err = await res.text();

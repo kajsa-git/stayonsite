@@ -8,17 +8,49 @@ import { useEffect, useState } from "react";
 import { ArrowRight, LogIn, LogOut, X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
+import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
+import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
+import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
+import { AnimatePresence, motion } from "framer-motion";
 function fireConfetti() {
   import("canvas-confetti").then((mod) =>
     mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
   );
 }
 
+// En mjuk skur av guldstjärnor från Jesus i nedre högra hörnet. Större "big"-variant
+// var femte välsignelse som en liten milstolpe.
+function sprinkleBlessing(big = false) {
+  import("canvas-confetti").then((mod) =>
+    mod.default({
+      particleCount: big ? 70 : 32,
+      spread: big ? 95 : 62,
+      startVelocity: big ? 40 : 26,
+      gravity: 0.55,
+      scalar: big ? 1.1 : 0.85,
+      ticks: 130,
+      angle: 110,
+      origin: { x: 0.9, y: 0.86 },
+      colors: ["#ff6300", "#ffd700", "#ffffff", "#fcd34d"],
+      shapes: ["star", "circle"],
+    }),
+  );
+}
+
+// Varma hälsningar i pratbubblan innan första klicket (slumpas vid sidladdning).
+const GREETINGS = [
+  "Jag är med dig, Kajsa! ✝️",
+  "Heja dig idag, Kajsa! 🙌",
+  "Du klarar det här 💪",
+  "En fin dag önskas dig ☀️",
+  "Frid över din dag 🕊️",
+];
+
 const CHASE_TOAST: Record<string, string> = {
   snooze3: "Uppskjuten 3 dagar",
   snooze7: "Uppskjuten 7 dagar",
   answered: "Markerad: fick svar",
-  off_market: "Objektet markerat av marknaden",
+  off_market: "Objektet markerat som av marknaden",
 };
 
 const STEPS = [
@@ -30,16 +62,9 @@ const STEPS = [
 
 const LOST_REASONS = ["För dyrt", "Ej passande bostad", "Hittade bättre objekt", "Övrigt"];
 
-const STATUS_LABEL: Record<string, string> = {
-  incoming: "Inkommen",
-  matching: "Matchar",
-  won: "Ska faktureras",
-};
-const STATUS_STYLE: Record<string, string> = {
-  incoming: "bg-blue-50 text-blue-800",
-  matching: "bg-amber-50 text-amber-800",
-  won: "bg-green-50 text-green-800",
-};
+// Kanoniska status-etiketter + färger (delas med övriga vyer).
+const STATUS_LABEL = REQUEST_STATUS_LABEL;
+const STATUS_STYLE = REQUEST_STATUS_STYLE;
 
 const VERSES: { text: string; ref: string }[] = [
   { text: "Var inte rädd, för jag är med dig.", ref: "Jesaja 41:10" },
@@ -56,11 +81,7 @@ const VERSES: { text: string; ref: string }[] = [
   { text: "Se, jag är med er alla dagar till tidens slut.", ref: "Matteus 28:20" },
 ];
 
-function plusDays(n: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
+const plusDays = plusDaysStockholm;
 
 interface OpenRequest {
   id: string;
@@ -97,22 +118,31 @@ interface QueueData {
   chaseLandlords: ChaseRow[];
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function MyDayView() {
   const router = useRouter();
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayStockholm();
   const [showHelp, setShowHelp] = useState(true);
   const [verse, setVerse] = useState<{ text: string; ref: string } | null>(null);
+  const [blessCount, setBlessCount] = useState(0);
+  const [greeting, setGreeting] = useState(GREETINGS[0]);
 
   function blessKajsa() {
     const pool = VERSES.filter((v) => v.ref !== verse?.ref);
     setVerse(pool[Math.floor(Math.random() * pool.length)]);
+    const next = blessCount + 1;
+    setBlessCount(next);
+    try { localStorage.setItem(`crm_bless_${today}`, String(next)); } catch { /* privat läge */ }
+    sprinkleBlessing(next % 5 === 0);
   }
 
   useEffect(() => {
     if (localStorage.getItem("crm_minday_help") === "hidden") setShowHelp(false);
-  }, []);
+    setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
+    const saved = Number(localStorage.getItem(`crm_bless_${today}`) || 0);
+    if (saved > 0) setBlessCount(saved);
+  }, [today]);
 
   function dismissHelp() {
     localStorage.setItem("crm_minday_help", "hidden");
@@ -123,11 +153,11 @@ export function MyDayView() {
     setShowHelp(true);
   }
 
-  const { data, mutate, isLoading } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
+  const { data, mutate, isLoading, error } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [] };
   const loading = isLoading && !data;
 
-  // Flytt-flagga: in-/avflyttningar på gång inom 3 dagar (samma räknare som fliken).
+  // Flytt-flagga: in-/avflyttningar på gång den närmaste veckan (≤ 7 dagar, samma räknare som fliken).
   const { counts } = useQueueCounts();
   const moveData = useSWR<{ moveIns: { date: string; doneAt: string | null }[]; moveOuts: { date: string; doneAt: string | null }[] }>(
     "/api/crm/move-schedule",
@@ -258,7 +288,7 @@ export function MyDayView() {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "invoiced" }),
-        }),
+        }).catch(() => ({ ok: false }) as Response),
       ),
     );
     mutate();
@@ -291,6 +321,19 @@ export function MyDayView() {
           </button>
         )}
       </div>
+
+      {error && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <span className="font-medium">Kunde inte ladda dagens kö.</span>
+          <span className="text-red-700/80">{crmErrorMessage(error)}</span>
+          <button
+            onClick={() => mutate()}
+            className="ml-auto shrink-0 rounded border border-red-300 bg-white px-2 py-1 text-xs font-medium text-red-800 hover:bg-red-100"
+          >
+            Försök igen
+          </button>
+        </div>
+      )}
 
       {todayStats && (
         <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-1.5 rounded-xl border border-nordic-200 bg-white px-4 py-2.5">
@@ -418,11 +461,12 @@ export function MyDayView() {
                 item={item}
                 today={today}
                 variant="open"
-                onOpen={() =>
-                  router.push(
-                    `/crm/work/${item.openRequests.some((r) => r.status === "matching") ? "matching" : "incoming"}/${item.id}`,
-                  )
-                }
+                onOpen={() => {
+                  const queue = item.openRequests.some((r) => r.status === "matching") ? "matching" : "incoming";
+                  // Skicka med rätt förfrågan så kö-bannern landar på den (annars första för bolaget).
+                  const req = item.openRequests.find((r) => r.status === queue);
+                  router.push(`/crm/work/${queue}/${item.id}${req ? `?request=${req.id}` : ""}`);
+                }}
                 onSnooze={(days) => snoozeFollowUp(item.id, days)}
                 onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
                 onMarkWon={() => markWon(item.openRequests)}
@@ -442,7 +486,10 @@ export function MyDayView() {
                 item={item}
                 today={today}
                 variant="invoice"
-                onOpen={() => router.push(`/crm/work/won/${item.id}`)}
+                onOpen={() => {
+                  const req = item.openRequests.find((r) => r.status === "won");
+                  router.push(`/crm/work/won/${item.id}${req ? `?request=${req.id}` : ""}`);
+                }}
                 onSnooze={(days) => snoozeFollowUp(item.id, days)}
                 onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
                 onMarkInvoiced={() => markInvoiced(item.openRequests)}
@@ -470,28 +517,70 @@ export function MyDayView() {
       )}
 
       <div className="mt-12 flex justify-end items-end gap-3 pr-2">
-        <div className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5 mb-5 max-w-sm">
-          {verse ? (
-            <>
-              <p className="text-sm text-nordic-900 italic">"{verse.text}"</p>
-              <p className="text-xs text-muted-foreground mt-1">— {verse.ref}</p>
-            </>
-          ) : (
-            <>
-              <p className="text-sm font-medium text-nordic-900">Jag är med dig, Kajsa! ✝️</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Klicka på mig för ett bibelord</p>
-            </>
+        <div className="flex flex-col items-end gap-2 mb-5 max-w-sm">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={verse?.ref ?? "greeting"}
+              initial={{ opacity: 0, scale: 0.8, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 4 }}
+              transition={{ type: "spring", stiffness: 420, damping: 24 }}
+              className="relative bg-white border rounded-2xl rounded-br-none shadow-sm px-4 py-2.5"
+            >
+              {verse ? (
+                <>
+                  <p className="text-sm text-nordic-900 italic">"{verse.text}"</p>
+                  <p className="text-xs text-muted-foreground mt-1">— {verse.ref}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-nordic-900">{greeting}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Klicka på mig för ett bibelord ✨</p>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+          {blessCount > 0 && (
+            <motion.span
+              key={blessCount}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 18 }}
+              className="text-[11px] font-medium text-amber-600 select-none"
+              title="Återställs varje dag"
+            >
+              ✨ {blessCount} {blessCount === 1 ? "välsignelse" : "välsignelser"} idag
+            </motion.span>
           )}
         </div>
-        <button type="button" onClick={blessKajsa} title="Klicka för ett bibelord" className="shrink-0">
+
+        <motion.button
+          type="button"
+          onClick={blessKajsa}
+          title="Klicka för ett bibelord"
+          aria-label="Klicka för ett bibelord"
+          className="relative shrink-0 cursor-pointer"
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+          whileHover={{ scale: 1.1, rotate: -3 }}
+          whileTap={{ scale: 0.9, rotate: 5 }}
+        >
+          {/* Mjuk pulserande gloria bakom Jesus */}
+          <motion.span
+            aria-hidden
+            className="absolute inset-0 -z-10 rounded-full blur-xl"
+            style={{ background: "radial-gradient(circle, rgba(255,215,0,0.45), transparent 70%)" }}
+            animate={{ scale: [1, 1.18, 1], opacity: [0.35, 0.6, 0.35] }}
+            transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/jesus-kajsa.png"
             alt="Glad tecknad Jesus som vinkar"
-            className="h-28 w-28 object-contain select-none cursor-pointer transition-transform hover:scale-105"
+            className="h-28 w-28 object-contain select-none pointer-events-none"
             draggable={false}
           />
-        </button>
+        </motion.button>
       </div>
     </div>
   );
@@ -750,7 +839,7 @@ function ChaseCard({
             disabled={busy}
             className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
           >
-            {a === "snooze3" ? "Ringd · +3 d" : a === "snooze7" ? "+7 d" : a === "answered" ? "Fick svar" : "Av marknaden"}
+            {a === "snooze3" ? "Ringd · +3 d" : a === "snooze7" ? "Ringd · +7 d" : a === "answered" ? "Fick svar" : "Av marknaden"}
           </button>
         ))}
         <button

@@ -36,14 +36,15 @@ export async function GET(req: NextRequest) {
 
   const reqConds = [];
   if (status) reqConds.push(eq(requests.status, status));
-  if (city) reqConds.push(like(requests.city, `%${city}%`));
+  if (city) reqConds.push(like(requests.city, `%${city.replace(/[%_\\]/g, " ")}%`));
   if (reqConds.length) {
     const rows = await db.select({ companyId: requests.companyId }).from(requests).where(and(...reqConds));
     idSets.push(new Set(rows.map((r) => r.companyId)));
   }
 
   if (q && q.length >= 2) {
-    const pat = `%${q}%`;
+    // Neutralisera LIKE-jokrar (% _ \) så att söktexten matchas bokstavligt.
+    const pat = `%${q.replace(/[%_\\]/g, " ")}%`;
     const [c, ct, n, r] = await Promise.all([
       db
         .select({ id: companies.id })

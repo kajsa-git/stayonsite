@@ -1,6 +1,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexProperty } from "@/lib/crm/search-index";
+import { plusDaysStockholm } from "@/lib/crm/date";
 import { matches, ownerOutreach, properties } from "@/lib/crm/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
@@ -9,11 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 const OPEN_MATCH = ["suggested", "sent"];
 const OPEN_ROUND = ["ej_kontaktad", "kontaktad", "i_dialog"];
 
-function plusDays(n: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
+const plusDays = plusDaysStockholm;
 
 // Hämtar objektets öppna runda, eller skapar en (objektet kan ligga i kön enbart pga match-jakt).
 async function ensureOpenRound(propertyId: string) {

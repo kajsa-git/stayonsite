@@ -8,6 +8,8 @@ import { sv } from "date-fns/locale";
 import { Check, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
+import { REQUEST_STATUS_LABEL as REQ_STATUS } from "@/lib/crm/request-status";
 
 interface MatchRow {
   id: string;
@@ -26,16 +28,8 @@ interface Note {
   createdAt: string | null;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
-const REQ_STATUS: Record<string, string> = {
-  incoming: "Inkommen",
-  matching: "Matchar",
-  won: "Vunnen",
-  invoiced: "Fakturerad",
-  lost: "Nej tack",
-  archived: "Arkiverad",
-};
 const MATCH_STATUS: Record<string, string> = {
   suggested: "Förslag",
   sent: "Skickad",

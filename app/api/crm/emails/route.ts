@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
   if (!direction || !subject || !emailBody || !fromEmail || !toEmail) {
     return NextResponse.json({ error: "direction, subject, body, fromEmail, toEmail required" }, { status: 400 });
   }
+  // direction styr hela rendering-grenen (in vs ut) i EmailThread — en felstavning
+  // skulle visa ett utgående mejl som inkommande. Validera mot tillåtna värden.
+  if (direction !== "in" && direction !== "out") {
+    return NextResponse.json({ error: "direction must be 'in' or 'out'" }, { status: 400 });
+  }
 
   const user = session.user as typeof session.user & { id: string };
   const id = nanoid();

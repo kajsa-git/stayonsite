@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const MODEL = "claude-sonnet-4-5-20250929";
+const MODEL = "claude-sonnet-4-6";
 
 type Translated = {
   publicDescription_en: string;
@@ -83,6 +83,7 @@ ${inclusions.length ? inclusions.map((x) => `- ${x}`).join("\n") : "(inga)"}`;
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 2000,
+        thinking: { type: "disabled" },
         messages: [{ role: "user", content: prompt }],
       }),
     });

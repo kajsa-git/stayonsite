@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface SearchResult {
   id: string;
@@ -10,7 +11,7 @@ interface SearchResult {
   category: string | null;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function useSearch() {
   const [query, setQuery] = useState("");

@@ -22,6 +22,7 @@ import { PhoneActions } from "@/components/crm/PhoneActions";
 import { RatingControl } from "../RatingControl";
 import { toast } from "@/components/ui/use-toast";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Props {
   property: PropertyWithOwner;
@@ -38,7 +39,7 @@ const STATUSES: { value: string; label: string; cls: string }[] = [
 ];
 
 const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function PropertyView({ property, onUpdate, onDelete, startEditing }: Props) {
   const [editing, setEditing] = useState(!!startEditing);
@@ -205,14 +206,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           <PropertyImages propertyId={property.id} />
 
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <InfoRow label="Yta" value={property.squareMeters ? `${property.squareMeters} m²` : null} />
+            <InfoRow label="Yta" value={property.squareMeters ? `${property.squareMeters.toLocaleString("sv-SE")} m²` : null} />
             <InfoRow label="Sovrum" value={property.bedrooms?.toString()} />
             <InfoRow label="Bäddar" value={property.beds?.toString()} />
             <InfoRow label="Badrum" value={property.bathrooms?.toString()} />
             <InfoRow label="Tillgänglig från" value={property.moveInFrom} />
             <InfoRow label="Tillgänglig till" value={property.availableTo} />
-            <InfoRow label="Vi hyr för" value={property.rentIn ? `${property.rentIn} kr/mån` : null} />
-            <InfoRow label="Vi hyr ut för" value={property.rentOut ? `${property.rentOut} kr/mån` : null} />
+            <InfoRow label="Vi hyr för" value={property.rentIn ? `${property.rentIn.toLocaleString("sv-SE")} kr/mån` : null} />
+            <InfoRow label="Vi hyr ut för" value={property.rentOut ? `${property.rentOut.toLocaleString("sv-SE")} kr/mån` : null} />
           </div>
 
           {property.notes && (

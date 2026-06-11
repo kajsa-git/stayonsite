@@ -44,11 +44,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
+
+  // Whitelist redigerbara kolumner — klienten får aldrig skriva över id/createdAt
+  // eller injicera okända fält (mass-assignment).
+  const ALLOWED = [
+    "name", "orgNr", "category", "website", "leadSource", "rating", "invoiceEmail",
+    "languages", "customerNumber", "street", "postalCode", "city", "country",
+    "followUpDate", "followUpReason", "followUpTime", "assignedTo",
+  ] as const;
+  const data: Record<string, unknown> = {};
+  for (const key of ALLOWED) if (key in body) data[key] = body[key];
+
   const [row] = await db
     .update(companies)
-    .set({ ...body, updatedAt: new Date().toISOString() })
+    .set({ ...data, updatedAt: new Date().toISOString() })
     .where(eq(companies.id, id))
     .returning();
+  if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   await indexCompany(id).catch((e) => console.error("search-index company:", e));
   return NextResponse.json(row);

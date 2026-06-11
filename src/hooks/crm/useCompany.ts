@@ -2,6 +2,7 @@
 
 import type { Company, Contact, Note, Request } from "@/lib/crm/schema";
 import useSWR from "swr";
+import { swrFetcher } from "@/lib/crm/fetcher";
 
 export interface CompanyFull extends Company {
   contacts: Contact[];
@@ -9,7 +10,7 @@ export interface CompanyFull extends Company {
   notes: Note[];
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 export function useCompany(id: string | null) {
   const { data, error, mutate } = useSWR<CompanyFull>(

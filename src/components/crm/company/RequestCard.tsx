@@ -5,15 +5,7 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { Pencil } from "lucide-react";
 import { RequestStatusActions } from "./RequestStatusActions";
-
-const STATUS_LABELS: Record<string, string> = {
-  incoming: "Inkommen",
-  matching: "Matchar",
-  won: "Vunnen · att fakturera",
-  invoiced: "Fakturerad",
-  lost: "Nej tack",
-  archived: "Arkiverad",
-};
+import { REQUEST_STATUS_LABEL as STATUS_LABELS } from "@/lib/crm/request-status";
 
 const STATUS_COLORS: Record<string, string> = {
   incoming: "bg-blue-50 border-blue-200 text-blue-800",

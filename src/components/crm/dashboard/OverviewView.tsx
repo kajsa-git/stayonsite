@@ -2,8 +2,9 @@
 
 import useSWR from "swr";
 import { useState } from "react";
+import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 type PeriodStats = {
   won: number;
@@ -27,7 +28,7 @@ function krCompact(n: number): string {
 }
 
 export function OverviewView() {
-  const { data, isLoading } = useSWR<Overview>("/api/crm/overview", fetcher, { refreshInterval: 30000 });
+  const { data, isLoading, error, mutate } = useSWR<Overview>("/api/crm/overview", fetcher, { refreshInterval: 30000 });
   const loading = isLoading && !data;
 
   return (
@@ -36,6 +37,19 @@ export function OverviewView() {
         <h1 className="text-2xl font-bold text-nordic-900">Översikt</h1>
         <p className="text-sm text-muted-foreground mt-1">Pågående affärer och avslut den här veckan och månaden.</p>
       </div>
+
+      {error && !data && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <span className="font-medium">Kunde inte ladda översikten.</span>
+          <span className="text-red-700/80">{crmErrorMessage(error)}</span>
+          <button
+            onClick={() => mutate()}
+            className="ml-auto shrink-0 rounded border border-red-300 bg-white px-2 py-1 text-xs font-medium text-red-800 hover:bg-red-100"
+          >
+            Försök igen
+          </button>
+        </div>
+      )}
 
       {/* Pågående affärer + uppskattat ordervärde */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">

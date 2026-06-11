@@ -21,6 +21,8 @@ import { useState } from "react";
 import useSWR from "swr";
 import { MatchScore } from "./MatchScore";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
+import { swrFetcher } from "@/lib/crm/fetcher";
+import { plusDaysStockholm } from "@/lib/crm/date";
 
 interface Props {
   request: Request;
@@ -41,13 +43,9 @@ interface MatchRow {
   propertyRentOut: number | null;
 }
 
-function plusDays(n: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
+const plusDays = plusDaysStockholm;
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = swrFetcher;
 
 const MATCH_STATUS_LABEL: Record<string, string> = {
   suggested: "Förslag",
@@ -170,13 +168,22 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   }
 
   async function addSuggestion(propertyId: string, score: number) {
-    await fetch("/api/crm/matches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ requestId: request.id, propertyId, matchScore: score }),
-    });
-    mutateMatches();
-    toast({ title: "Förslag tillagt" });
+    try {
+      const res = await fetch("/api/crm/matches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId: request.id, propertyId, matchScore: score }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        toast({ title: j.error ?? "Kunde inte lägga till förslag", variant: "destructive" });
+        return;
+      }
+      mutateMatches();
+      toast({ title: "Förslag tillagt" });
+    } catch {
+      toast({ title: "Kunde inte lägga till förslag", variant: "destructive" });
+    }
   }
 
   // Endast Skickad/Avböjd här — accept hanteras av acceptMatch (vinst-kaskaden).
@@ -184,13 +191,21 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     // Skickad → default jaga-datum (+3 dagar). Avböjd → sluta jaga.
     const extra: Record<string, unknown> =
       status === "sent" ? { followUpDate: plusDays(3) } : status === "rejected" ? { followUpDate: null } : {};
-    await fetch(`/api/crm/matches/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, ...extra }),
-    });
-    mutateMatches();
-    toast({ title: status === "sent" ? "Markerat som skickad" : "Förslag avböjt" });
+    try {
+      const res = await fetch(`/api/crm/matches/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status, ...extra }),
+      });
+      if (!res.ok) {
+        toast({ title: "Kunde inte uppdatera förslaget", variant: "destructive" });
+        return;
+      }
+      mutateMatches();
+      toast({ title: status === "sent" ? "Markerat som skickad" : "Förslag avböjt" });
+    } catch {
+      toast({ title: "Kunde inte uppdatera förslaget", variant: "destructive" });
+    }
   }
 
   // Acceptera ett förslag → vunnet objekt + stäng övriga utestående förslag ("hyrde annat objekt")
