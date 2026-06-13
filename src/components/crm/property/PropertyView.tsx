@@ -20,6 +20,7 @@ import { PropertyPublicControls } from "./PropertyPublicControls";
 import { Equip, InfoRow } from "./property-ui";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { RatingControl } from "../RatingControl";
+import { ReviewRequestSnippet } from "@/components/crm/ReviewRequestSnippet";
 import { toast } from "@/components/ui/use-toast";
 import useSWR from "swr";
 import { swrFetcher } from "@/lib/crm/fetcher";
@@ -264,6 +265,9 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
               {property.ownerType === "foretag" && <InfoRow label="Kontaktperson" value={property.ownerContactPerson} />}
               <InfoRow label="Telefon" value={property.ownerPhone} actions={<PhoneActions phone={property.ownerPhone} />} />
               <InfoRow label="E-post" value={property.ownerEmail} />
+            </div>
+            <div className="mt-3">
+              <ReviewRequestSnippet name={property.ownerContactPerson ?? property.ownerName} variant="owner" />
             </div>
             {property.ownerId && <OwnerObjectLinks ownerId={property.ownerId} currentPropertyId={property.id} />}
           </div>

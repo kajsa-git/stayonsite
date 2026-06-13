@@ -3,6 +3,7 @@
 import type { Company, Contact } from "@/lib/crm/schema";
 import { ExternalLink, Mail, Phone, User } from "lucide-react";
 import { PhoneActions } from "@/components/crm/PhoneActions";
+import { ReviewRequestSnippet } from "@/components/crm/ReviewRequestSnippet";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded";
 
@@ -87,6 +88,10 @@ export function CompanyHeader({ company, primaryContact }: Props) {
             )}
           </div>
         )}
+
+        <div className="mt-3">
+          <ReviewRequestSnippet name={primaryContact?.name} variant="company" />
+        </div>
       </div>
     </div>
   );
