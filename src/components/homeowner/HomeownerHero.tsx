@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/accordion';
 import { Send, Star } from 'lucide-react';
 
-const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=Stayonsite+AB';
+const GOOGLE_REVIEW_URL = 'https://g.page/r/CcBH36cXOKj8EBM/review';
 
 const GoogleIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
