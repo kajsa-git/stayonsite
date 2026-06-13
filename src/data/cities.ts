@@ -263,7 +263,7 @@ export const cities: City[] = [
     highlights: ['Västra Hamnen-projektet', 'Citytunnel-underhåll', 'Moderna bostadsområden', 'Öresundsbron-relaterade projekt'],
     industries: ['Bostäder', 'Infrastruktur', 'Kommersiellt', 'Transport'],
     coordinates: [55.605, 13.0038],
-    heroHook: ls('Företagslägenheter & personalboende i Malmö – nära Hyllie och Öresund', 'Aparthotel & Worker Accommodation in Malmö – Near Hyllie & Öresund', 'Aparthotel & Noclegi Pracownicze w Malmö – Blisko Hyllie i Öresund'),
+    heroHook: ls('Företagslägenheter & personalboende i Malmö – nära Hyllie och Öresund', 'Corporate Housing & Apartments in Malmö – Near Hyllie & Öresund', 'Aparthotel & Noclegi Pracownicze w Malmö – Blisko Hyllie i Öresund'),
     intro: ls('När projekten rullar i Hyllie, Västra Hamnen eller utefter E6:an behöver ni företagsbostäder och flexibla korttidsboenden i Malmö. Våra möblerade företagslägenheter och lägenhetshotell i Limhamn, Fosie och centrala Malmö har komplett köksutrustning, veckostäd och tvättlösningar.', 'When projects run in Hyllie, Västra Hamnen or along the E6 you need flexible short-term housing. Our aparthotels in Limhamn, Fosie and central Malmö come with full kitchens, weekly cleaning and laundry.', 'Gdy projekty toczą się w Hyllie, Västra Hamnen lub wzdłuż E6, potrzebujecie elastycznych noclegów krótkoterminowych. Nasze aparthotele w Limhamn, Fosie i centrum Malmö mają pełne kuchnie, cotygodniowe sprzątanie i pranie.'),
     keywords: lk(
       ['personalboende malmö', 'företagsboende malmö', 'relocation malmö bygg', 'boende byggarbetare malmö', 'montörboende malmö', 'tillfälligt boende företag malmö', 'boende malmö', 'lägenhetshotell malmö', 'korttidsboende malmö'],
@@ -349,7 +349,7 @@ export const cities: City[] = [
     highlights: ['Universitetsbyggnader', 'Nya bostadsområden', 'Forskningsanläggningar', 'Infrastrukturprojekt'],
     industries: ['Utbildning', 'Forskning', 'Bostäder', 'Offentlig sektor'],
     coordinates: [59.8586, 17.6389],
-    heroHook: ls('Företagslägenheter & personalbostäder i Uppsala – nära sjukhuset och campus', 'Aparthotel & Worker Accommodation in Uppsala – Near the Hospital & Campus', 'Aparthotel & Noclegi Pracownicze w Uppsali – Blisko Szpitala i Kampusu'),
+    heroHook: ls('Företagslägenheter & personalbostäder i Uppsala – nära sjukhuset och campus', 'Corporate Housing & Apartments in Uppsala – Near the Hospital & Campus', 'Aparthotel & Noclegi Pracownicze w Uppsali – Blisko Szpitala i Kampusu'),
     intro: ls('Akademiska sjukhuset, nya campusytor och bostadsexpansion kräver företagslägenheter och personalbostäder där installatörer kan dela vardag. Våra lägenhetshotell och kedjehus i Gränby, Rosendal och Bäcklösa ger kort restid till både city och industriområden.', 'The university hospital, new campuses and housing expansion need accommodation where installers can live comfortably. Our aparthotels and townhouses in Gränby, Rosendal and Bäcklösa offer short travel to both city and industrial zones.', 'Szpital uniwersytecki, nowe kampusy i rozbudowa mieszkaniowa wymagają zakwaterowania, w którym monterzy mogą normalnie żyć. Nasze aparthotele i segmenty w Gränby, Rosendalu i Bäcklöse zapewniają krótki dojazd do centrum i stref przemysłowych.'),
     keywords: lk(
       ['personalboende uppsala', 'företagslägenheter uppsala', 'byggboende life science', 'boende byggarbetare uppsala', 'montörboende uppsala', 'tillfälligt boende företag uppsala', 'lägenhetshotell uppsala', 'boende uppsala'],
@@ -435,7 +435,7 @@ export const cities: City[] = [
     highlights: ['Kraftverksbyggnation', 'Industrianläggningar', 'Bostadsprojekt', 'Energiinfrastruktur'],
     industries: ['Energi', 'Industri', 'Bygg & Anläggning', 'Bostäder'],
     coordinates: [59.6162, 16.5528],
-    heroHook: ls('Företagslägenheter & personalboende i Västerås – nära Mälarenergi och E18', 'Aparthotel & Short-Term Housing in Västerås – Near Mälarenergi & E18', 'Aparthotel & Noclegi Krótkoterminowe w Västerås – Blisko Mälarenergi i E18'),
+    heroHook: ls('Företagslägenheter & personalboende i Västerås – nära Mälarenergi och E18', 'Corporate Housing & Apartments in Västerås – Near Mälarenergi & E18', 'Aparthotel & Noclegi Krótkoterminowe w Västerås – Blisko Mälarenergi i E18'),
     intro: ls('Batterifabriker, kraftverk och logistik driver behovet av företagslägenheter och personalboende i Västerås. Våra lägenhetshotell och korttidsboenden i Tunbytorp, Gideonsberg och Köpingstrakten ger snabb åtkomst till E18 och hamnen. Alltid möblerat, alltid slutstädat.', 'Local projects run on battery plants, power stations and logistics hubs. Our aparthotels and short-term housing in Tunbytorp, Gideonsberg and Köping offer fast access to the E18 and harbour. Always furnished and cleaned.', 'Projekty w Västerås to fabryki baterii, elektrownie i logistyczne huby. Nasze aparthotele i noclegi krótkoterminowe w Tunbytorp, Gideonsbergu i Köping zapewniają szybki dojazd do E18 i portu. Zawsze umeblowane, zawsze wysprzątane.'),
     keywords: lk(
       ['personalboende västerås', 'företagsboende mälarenergi', 'byggboende batterifabrik', 'boende byggarbetare västerås', 'montörboende västerås', 'tillfälligt boende företag västerås', 'korttidsboende västerås', 'lägenhetshotell västerås'],
@@ -521,7 +521,7 @@ export const cities: City[] = [
     highlights: ['Universitetsexpansion', 'Sjukhusbyggnation', 'Centrala bostadsprojekt', 'Logistikanläggningar'],
     industries: ['Utbildning', 'Vård', 'Logistik', 'Bostäder'],
     coordinates: [59.2741, 15.2066],
-    heroHook: ls('Företagsboende & företagslägenheter i Örebro – vid logistiknavet E18/E20', 'Aparthotel & Worker Accommodation in Örebro – At the E18/E20 Logistics Hub', 'Aparthotel & Noclegi Pracownicze w Örebro – Przy Węźle Logistycznym E18/E20'),
+    heroHook: ls('Företagsboende & företagslägenheter i Örebro – vid logistiknavet E18/E20', 'Corporate Housing & Apartments in Örebro – At the E18/E20 Logistics Hub', 'Aparthotel & Noclegi Pracownicze w Örebro – Przy Węźle Logistycznym E18/E20'),
     intro: ls('Universitetet, nya logistikparker och sjukhusutbyggnaden kräver företagslägenheter och personalboende i Örebro. Våra lägenhetshotell och radhus i Bettorp, Adolfsberg och Marieberg ger lag egna sovrum men delade gemensamma ytor.', 'The university, logistics parks and hospital expansion demand flexible housing. Our aparthotels and townhouses in Bettorp, Adolfsberg and Marieberg give crews private bedrooms with shared common areas.', 'Uniwersytet, parki logistyczne i rozbudowa szpitala wymagają elastycznych noclegów. Nasze aparthotele i segmenty w Bettorp, Adolfsbergu i Mariebergu zapewniają ekipom własne sypialnie i wspólne przestrzenie.'),
     keywords: lk(
       ['personalboende örebro', 'företagsboende logistik', 'byggboende universitet örebro', 'boende byggarbetare örebro', 'montörboende örebro', 'tillfälligt boende företag örebro'],
@@ -779,7 +779,7 @@ export const cities: City[] = [
     highlights: ['Industriexpansion', 'Universitetsbyggnation', 'Centrumförnyelse', 'Bostadsutveckling'],
     industries: ['Industri', 'Utbildning', 'Kommersiellt', 'Bostäder'],
     coordinates: [57.7826, 14.1618],
-    heroHook: ls('Företagsboende & personalboende i Jönköping – nära Elmia och Torsvik', 'Aparthotel & Worker Accommodation in Jönköping – Near Elmia & Torsvik', 'Aparthotel & Noclegi Pracownicze w Jönköping – Blisko Elmii i Torsvik'),
+    heroHook: ls('Företagsboende & personalboende i Jönköping – nära Elmia och Torsvik', 'Corporate Housing & Apartments in Jönköping – Near Elmia & Torsvik', 'Aparthotel & Noclegi Pracownicze w Jönköping – Blisko Elmii i Torsvik'),
     intro: ls('Elmia-mässor, logistiknavet Torsvik och nya bostadskvarter skapar behov av företagsbostäder och personalboende i Jönköping. Våra lägenhetshotell i Huskvarna och centrum samt villor söder om stan passar team med servicebilar.', 'Elmia fairs, the Torsvik logistics hub and new housing blocks need space for equipment. Our aparthotels in Huskvarna and downtown plus villas south of town suit teams with service vans.', 'Targi Elmia, hub logistyczny Torsvik i nowe osiedla potrzebują miejsca na sprzęt. Nasze aparthotele w Huskvarnie, centrum i wille na południu miasta pasują ekipom z autami serwisowymi.'),
     keywords: lk(
       ['personalboende jönköping', 'företagsboende torsvik', 'logistikboende elmia', 'boende byggarbetare jönköping', 'montörboende jönköping', 'tillfälligt boende företag jönköping', 'lägenhetshotell jönköping'],
@@ -865,7 +865,7 @@ export const cities: City[] = [
     highlights: ['Industriområdesförnyelse', 'Campusbyggnation', 'Stadsdelsutveckling', 'Infrastrukturprojekt'],
     industries: ['Industri', 'Utbildning', 'Stadsförnyelse', 'Teknik'],
     coordinates: [58.5942, 16.1826],
-    heroHook: ls('Företagslägenheter & personalboende i Norrköping – nära Ostlänken och Inre hamnen', 'Accommodation & Worker Housing in Norrköping – Near Ostlänken & Inre Hamnen', 'Noclegi & Zakwaterowanie Pracownicze w Norrköping – Blisko Ostlänken i Inre Hamnen'),
+    heroHook: ls('Företagslägenheter & personalboende i Norrköping – nära Ostlänken och Inre hamnen', 'Corporate Housing & Apartments in Norrköping – Near Ostlänken & Inre Hamnen', 'Noclegi & Zakwaterowanie Pracownicze w Norrköping – Blisko Ostlänken i Inre Hamnen'),
     intro: ls('Stora projekt som Ostlänken och Inre hamnen gör att många företag behöver företagslägenheter och personalboende i Norrköping. Vi ordnar möblerade företagsbostäder och lägenhetshotell i Saltängen, Hageby och Åby med kort avstånd till era arbetsplatser.', 'Major projects like Ostlänken and Inre Hamnen mean many companies need accommodation in Norrköping. We arrange furnished aparthotels in Saltängen, Hageby and Åby close to your work sites.', 'Duże projekty jak Ostlänken i Inre Hamnen sprawiają, że wiele firm potrzebuje noclegów w Norrköping. Organizujemy umeblowane aparthotele w Saltängen, Hageby i Åby blisko Waszych budów.'),
     keywords: lk(
       ['personalboende norrköping', 'företagsboende ostlänken', 'byggboende inre hamnen', 'boende byggarbetare norrköping', 'montörboende norrköping', 'tillfälligt boende företag norrköping', 'boende norrköping'],
@@ -953,7 +953,7 @@ export const cities: City[] = [
     coordinates: [60.6749, 17.1413],
     heroHook: ls(
       'Företagslägenheter & företagsboende i Gävle – nära hamnen och datacenter',
-      'Aparthotel & Worker Accommodation in Gävle – Near Harbour & Data Centers',
+      'Corporate Housing & Apartments in Gävle – Near Harbour & Data Centers',
       'Aparthotel & Noclegi Pracownicze w Gävle – Blisko Portu i Centrów Danych'
     ),
     intro: ls(
@@ -1063,7 +1063,7 @@ export const cities: City[] = [
     coordinates: [65.8252, 21.6886],
     heroHook: ls(
       'Företagsbostäder & personalboende i Boden – nära försvaret och H2 Green Steel',
-      'Accommodation & Worker Housing in Boden – Near Defence & H2 Green Steel',
+      'Corporate Housing & Apartments in Boden – Near Defence & H2 Green Steel',
       'Noclegi & Zakwaterowanie Pracownicze w Boden – Blisko Obronności i H2 Green Steel'
     ),
     intro: ls(
@@ -1613,7 +1613,7 @@ export const cities: City[] = [
     coordinates: [65.5848, 22.1547],
     heroHook: ls(
       'Företagsbostäder & personalboende i Luleå – nära datacenter och gruvnäring',
-      'Accommodation & Worker Housing in Luleå – Near Data Centers & Mining',
+      'Corporate Housing & Apartments in Luleå – Near Data Centers & Mining',
       'Noclegi & Zakwaterowanie Pracownicze w Luleå – Blisko Centrów Danych i Kopalni'
     ),
     intro: ls(
@@ -1723,7 +1723,7 @@ export const cities: City[] = [
     coordinates: [57.2644, 16.4486],
     heroHook: ls(
       'Företagsbostäder & personalboende i Oskarshamn – nära OKG och hamnen',
-      'Accommodation & Worker Housing in Oskarshamn – Near OKG & the Harbour',
+      'Corporate Housing & Apartments in Oskarshamn – Near OKG & the Harbour',
       'Noclegi & Zakwaterowanie Pracownicze w Oskarshamn – Blisko OKG i Portu'
     ),
     intro: ls(
@@ -1833,7 +1833,7 @@ export const cities: City[] = [
     coordinates: [57.0444, 16.4450],
     heroHook: ls(
       'Företagsbostäder & personalboende i Mönsterås – nära Södra Cell och hamnen',
-      'Worker Housing in Mönsterås – Near Södra Cell & the Harbour',
+      'Corporate Housing & Apartments in Mönsterås – Near Södra Cell & the Harbour',
       'Zakwaterowanie Pracownicze w Mönsterås – Blisko Södra Cell i Portu'
     ),
     intro: ls(
@@ -1943,7 +1943,7 @@ export const cities: City[] = [
     coordinates: [63.8258, 20.2630],
     heroHook: ls(
       'Företagslägenheter & personalboende i Umeå – nära sjukhuset och Norrbotniabanan',
-      'Accommodation & Worker Housing in Umeå – Near the Hospital & Norrbotniabanan',
+      'Corporate Housing & Apartments in Umeå – Near the Hospital & Norrbotniabanan',
       'Noclegi & Zakwaterowanie Pracownicze w Umeå – Blisko Szpitala i Norrbotniabanan'
     ),
     intro: ls(
@@ -2053,7 +2053,7 @@ export const cities: City[] = [
     coordinates: [64.7507, 20.9528],
     heroHook: ls(
       'Företagsbostäder & företagslägenheter i Skellefteå – nära industrin och stadsprojekten',
-      'Accommodation & Worker Housing in Skellefteå – Near Industry & City Projects',
+      'Corporate Housing & Apartments in Skellefteå – Near Industry & City Projects',
       'Noclegi & Zakwaterowanie Pracownicze w Skellefteå – Blisko Przemysłu i Projektów'
     ),
     intro: ls(
@@ -2163,7 +2163,7 @@ export const cities: City[] = [
     coordinates: [59.3793, 13.5036],
     heroHook: ls(
       'Företagsbostäder & personalboende i Karlstad – vid E18 och Värmlands industrier',
-      'Accommodation & Worker Housing in Karlstad – By E18 & Värmland Industry',
+      'Corporate Housing & Apartments in Karlstad – By E18 & Värmland Industry',
       'Noclegi & Zakwaterowanie Pracownicze w Karlstad – Przy E18 i Przemyśle'
     ),
     intro: ls(
@@ -2273,7 +2273,7 @@ export const cities: City[] = [
     coordinates: [63.1792, 14.6357],
     heroHook: ls(
       'Företagsbostäder & personalboende i Östersund – nära försvaret och sjukhuset',
-      'Accommodation & Worker Housing in Östersund – Near Defence & Hospital',
+      'Corporate Housing & Apartments in Östersund – Near Defence & Hospital',
       'Noclegi & Zakwaterowanie Pracownicze w Östersund – Blisko Wojska i Szpitala'
     ),
     intro: ls(
@@ -2383,7 +2383,7 @@ export const cities: City[] = [
     coordinates: [59.3710, 16.5098],
     heroHook: ls(
       'Företagsbostäder & personalboende i Eskilstuna – nära industrin och E20',
-      'Accommodation & Worker Housing in Eskilstuna – Near Industry & E20',
+      'Corporate Housing & Apartments in Eskilstuna – Near Industry & E20',
       'Noclegi & Zakwaterowanie Pracownicze w Eskilstuna – Blisko Przemysłu i E20'
     ),
     intro: ls(
@@ -2493,7 +2493,7 @@ export const cities: City[] = [
     coordinates: [55.7047, 13.1910],
     heroHook: ls(
       'Företagslägenheter & personalboende i Lund – nära ESS, MAX IV och sjukhuset',
-      'Aparthotel & Worker Housing in Lund – Near ESS, MAX IV & the Hospital',
+      'Corporate Housing & Apartments in Lund – Near ESS, MAX IV & the Hospital',
       'Aparthotel & Zakwaterowanie Pracownicze w Lund – Blisko ESS, MAX IV i Szpitala'
     ),
     intro: ls(
@@ -2603,7 +2603,7 @@ export const cities: City[] = [
     coordinates: [67.8558, 20.2253],
     heroHook: ls(
       'Företagsbostäder & personalboende i Kiruna – nära LKAB och stadsflytten',
-      'Accommodation & Worker Housing in Kiruna – Near LKAB & the City Relocation',
+      'Corporate Housing & Apartments in Kiruna – Near LKAB & the City Relocation',
       'Noclegi & Zakwaterowanie Pracownicze w Kiruna – Blisko LKAB i Przeniesienia Miasta'
     ),
     intro: ls(
@@ -2713,7 +2713,7 @@ export const cities: City[] = [
     coordinates: [67.1341, 20.6518],
     heroHook: ls(
       'Företagsbostäder & personalboende i Gällivare – nära LKAB och Aitik-gruvan',
-      'Accommodation & Worker Housing in Gällivare – Near LKAB & Aitik Mine',
+      'Corporate Housing & Apartments in Gällivare – Near LKAB & Aitik Mine',
       'Noclegi & Zakwaterowanie Pracownicze w Gällivare – Blisko LKAB i Kopalni Aitik'
     ),
     intro: ls(
@@ -2823,7 +2823,7 @@ export const cities: City[] = [
     coordinates: [56.6745, 12.8578],
     heroHook: ls(
       'Företagsbostäder & personalboende i Halmstad – nära hamnen och E6',
-      'Aparthotel & Worker Housing in Halmstad – Near the Port & E6',
+      'Corporate Housing & Apartments in Halmstad – Near the Port & E6',
       'Aparthotel & Zakwaterowanie Pracownicze w Halmstad – Blisko Portu i E6'
     ),
     intro: ls(
@@ -2933,7 +2933,7 @@ export const cities: City[] = [
     coordinates: [60.6065, 15.6355],
     heroHook: ls(
       'Företagslägenheter & personalbostäder i Falun – nära SSAB, Högskolan och byggprojekten i Dalarna',
-      'Worker Housing in Falun – Near SSAB, University & Construction in Dalarna',
+      'Corporate Housing & Apartments in Falun – Near SSAB, University & Construction in Dalarna',
       'Zakwaterowanie Pracownicze w Falun – Blisko SSAB, Uczelni i Budów w Dalarna'
     ),
     intro: ls(
@@ -3043,7 +3043,7 @@ export const cities: City[] = [
     coordinates: [60.1493, 15.1870],
     heroHook: ls(
       'Företagsbostäder & personalboende i Ludvika – nära Hitachi Energy och vattenkraftsprojekten',
-      'Worker Housing in Ludvika – Near Hitachi Energy & Hydropower Projects',
+      'Corporate Housing & Apartments in Ludvika – Near Hitachi Energy & Hydropower Projects',
       'Zakwaterowanie Pracownicze w Ludvika – Blisko Hitachi Energy i Hydroelektrowni'
     ),
     intro: ls(
@@ -3153,7 +3153,7 @@ export const cities: City[] = [
     coordinates: [58.7530, 17.0086],
     heroHook: ls(
       'Företagsbostäder & personalboende i Nyköping – nära Ostlänken, Skavsta och industrierna',
-      'Worker Housing in Nyköping – Near Ostlänken Railway, Skavsta & Industry',
+      'Corporate Housing & Apartments in Nyköping – Near Ostlänken Railway, Skavsta & Industry',
       'Zakwaterowanie Pracownicze w Nyköping – Blisko Ostlänken, Skavsta i Przemysłu'
     ),
     intro: ls(
@@ -3263,7 +3263,7 @@ export const cities: City[] = [
     coordinates: [63.2909, 18.7152],
     heroHook: ls(
       'Personalbostäder & företagsboende i Örnsköldsvik – nära Domsjö, Ostkustbanan och skogsindustrin',
-      'Worker Housing in Örnsköldsvik – Near Domsjö, East Coast Line & Forestry',
+      'Corporate Housing & Apartments in Örnsköldsvik – Near Domsjö, East Coast Line & Forestry',
       'Zakwaterowanie Pracownicze w Örnsköldsvik – Blisko Domsjö, Kolei Wschodniej i Leśnictwa'
     ),
     intro: ls(
