@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getCityBySlug, getNearbyCities } from '@/data/cities';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
+import { CONTENT_UPDATED } from '@/lib/seo-utils';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -192,7 +193,21 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
     ]
   };
 
-  const structuredData = [serviceSchema, organizationSchema, breadcrumbSchema, faqSchema];
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: heroHeading,
+    url: canonicalUrl,
+    inLanguage: language,
+    dateModified: CONTENT_UPDATED,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'StayOnSite',
+      url: 'https://www.stayonsite.se',
+    },
+  };
+
+  const structuredData = [serviceSchema, organizationSchema, breadcrumbSchema, faqSchema, webPageSchema];
 
   return (
     <div className="min-h-screen flex flex-col">

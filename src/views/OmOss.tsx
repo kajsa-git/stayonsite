@@ -48,7 +48,9 @@ const OmOss = () => {
       email: 'info@stayonsite.se',
       founder: {
         '@type': 'Person',
-        name: 'Kajsa Lindwall',
+        name: 'Kajsa Sihlén',
+        jobTitle: 'Grundare & VD',
+        sameAs: ['https://www.linkedin.com/in/kajsa-sihl%C3%A9n-4b16b657/'],
       },
       foundingDate: '2016',
       priceRange: '$$',

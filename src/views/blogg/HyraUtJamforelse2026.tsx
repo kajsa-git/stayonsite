@@ -67,7 +67,7 @@ const HyraUtJamforelse2026 = () => {
           &quot;Vi hyr din bostad på ett fast kontrakt. Din hyra betalas varje månad utan avdrag
           och utan avgifter. Vi sköter resten.&quot;
         </p>
-        <cite>- Kajsa Lindwall, grundare StayOnSite</cite>
+        <cite>- Kajsa Sihlén, grundare StayOnSite</cite>
       </blockquote>
 
       <h3>Fördelar med StayOnSite</h3>

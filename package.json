@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest",
+    "indexnow": "node scripts/indexnow-submit.mjs",
     "db:studio": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs studio"
   },
   "dependencies": {

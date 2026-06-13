@@ -405,7 +405,7 @@ function updateBlogPosts(topic) {
       en: '${topic.descEn.replace(/'/g, "\\'")}',
       pl: '${topic.descPl.replace(/'/g, "\\'")}',
     },
-    author: 'StayOnSite',
+    author: 'Kajsa Sihlén',
     publishedDate: '${today}',
     category: '${topic.category}',
     tags: [${topic.tags.map(t => `'${t}'`).join(', ')}],

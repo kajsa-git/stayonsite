@@ -4,13 +4,16 @@ import { cities } from '@/data/cities'
 import { blogPosts } from '@/data/blog-posts'
 import { db } from '@/lib/crm/db'
 import { properties } from '@/lib/crm/schema'
+import { CONTENT_UPDATED } from '@/lib/seo-utils'
 
 export const dynamic = 'force-static'
 
 const BASE = 'https://www.stayonsite.se'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const today = new Date().toISOString().split('T')[0]
+  // Stabilt innehållsdatum istället för byggdatum (today vid varje deploy ger
+  // missvisande lastmod). Blogg/boenden använder sina egna riktiga datum nedan.
+  const today = CONTENT_UPDATED
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -72,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...blogPosts.map((post) => ({
       url: `${BASE}/blogg/${post.slug}`,
-      lastModified: post.publishedDate,
+      lastModified: post.updatedDate || post.publishedDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),

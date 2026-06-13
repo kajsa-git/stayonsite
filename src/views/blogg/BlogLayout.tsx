@@ -21,6 +21,8 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const description = post.description[language] || post.description.sv;
 
   const articleUrl = `https://www.stayonsite.se/blogg/${post.slug}`;
+  const modifiedDate = post.updatedDate || post.publishedDate;
+  const isUpdated = Boolean(post.updatedDate && post.updatedDate !== post.publishedDate);
 
   const structuredData = [
     {
@@ -34,7 +36,19 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         width: 1200,
         height: 630,
       },
-      author: { '@type': 'Person', name: post.author },
+      author: {
+        '@type': 'Person',
+        name: post.author,
+        jobTitle: 'Grundare & VD',
+        url: 'https://www.stayonsite.se/om-oss',
+        image: 'https://www.stayonsite.se/images/kajsa.webp',
+        sameAs: ['https://www.linkedin.com/in/kajsa-sihl%C3%A9n-4b16b657/'],
+        worksFor: {
+          '@type': 'Organization',
+          name: 'StayOnSite',
+          url: 'https://www.stayonsite.se',
+        },
+      },
       publisher: {
         '@type': 'Organization',
         name: 'StayOnSite',
@@ -45,7 +59,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         },
       },
       datePublished: post.publishedDate,
-      dateModified: post.publishedDate,
+      dateModified: modifiedDate,
       mainEntityOfPage: articleUrl,
       wordCount: post.readingTime * 250,
       articleSection: post.category,
@@ -71,7 +85,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         type="article"
         structuredData={structuredData}
         articlePublishedTime={`${post.publishedDate}T00:00:00Z`}
-        articleModifiedTime={`${post.publishedDate}T00:00:00Z`}
+        articleModifiedTime={`${modifiedDate}T00:00:00Z`}
         articleAuthor="https://www.stayonsite.se"
         articleSection={post.category}
         articleTags={post.tags}
@@ -100,6 +114,11 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
             <div className="flex flex-wrap items-center gap-6 text-white/60 text-sm">
               <span className="flex items-center gap-2"><User size={14} />{post.author}</span>
               <span className="flex items-center gap-2"><Calendar size={14} />{post.publishedDate}</span>
+              {isUpdated && (
+                <span className="flex items-center gap-2">
+                  {language === 'sv' ? 'Uppdaterad' : language === 'en' ? 'Updated' : 'Zaktualizowano'} {post.updatedDate}
+                </span>
+              )}
               <span className="flex items-center gap-2"><Clock size={14} />{post.readingTime} min</span>
             </div>
           </div>

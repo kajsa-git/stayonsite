@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     canonical: articleUrl,
     type: 'article',
     articlePublishedTime: `${post.publishedDate}T00:00:00Z`,
-    articleModifiedTime: `${post.publishedDate}T00:00:00Z`,
+    articleModifiedTime: `${post.updatedDate || post.publishedDate}T00:00:00Z`,
     articleAuthor: 'https://www.stayonsite.se',
     articleSection: post.category,
     articleTags: post.tags,

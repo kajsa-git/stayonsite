@@ -411,7 +411,7 @@ const PrivatuthyrningslagenReform2026 = () => {
           maximalt enkelt och lönsamt för husägare att hyra ut. Därför tar vi ingen avgift
           av husägaren &mdash; överhuvudtaget.&quot;
         </p>
-        <cite>&mdash; Kajsa Lindwall, grundare StayOnSite</cite>
+        <cite>&mdash; Kajsa Sihlén, grundare StayOnSite</cite>
       </blockquote>
 
       <h3>Garanterad hyra varje månad</h3>

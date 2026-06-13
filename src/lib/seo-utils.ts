@@ -1,4 +1,13 @@
 /**
+ * Senaste materiella innehållsuppdatering för statiska sidor + stadssidor.
+ * Används som lastmod i sitemap och dateModified i JSON-LD istället för byggdatum
+ * (byggdatum vid varje deploy är ett missvisande färskhetssignal). Bumpa detta
+ * datum när stads-/sidinnehåll uppdateras på riktigt. Blogg och boenden har egna
+ * datum och påverkas inte.
+ */
+export const CONTENT_UPDATED = '2026-06-13'
+
+/**
  * Truncate a description to fit within meta description limits (155 chars).
  * Cuts at the last sentence boundary before the limit, or at the last word boundary.
  */
