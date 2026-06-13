@@ -1,9 +1,12 @@
 'use client'
 
+import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
+import { cities } from '@/data/cities';
 import ForForetagHero from '@/components/foretag/ForForetagHero';
 
 const ForForetag = () => {
@@ -111,7 +114,38 @@ const ForForetag = () => {
       <Header />
       <main className="flex-grow">
         <ForForetagHero />
+
+        {/* Stads-hubb: funnlar köpare till rätt ort + intern länkkraft till stadssidorna */}
+        <section className="py-16 bg-nordic-50 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12 max-w-5xl">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-nordic-900 mb-4">
+              {t('Företagsbostäder i hela Sverige', 'Corporate housing across Sweden', 'Zakwaterowanie firmowe w całej Szwecji')}
+            </h2>
+            <p className="text-nordic-600 mb-8 max-w-2xl">
+              {t(
+                'Vi ordnar personalboende och företagsbostäder stad för stad – med extra fokus på orter utanför storstäderna där bygg-, energi- och industriprojekten är som störst. Hitta er ort:',
+                'We arrange worker accommodation and corporate housing city by city – with extra focus on locations outside the big cities where construction, energy and industrial projects are largest. Find your location:',
+                'Organizujemy zakwaterowanie pracownicze i mieszkania firmowe miasto po mieście – ze szczególnym naciskiem na miejscowości poza dużymi miastami. Znajdź swoją lokalizację:'
+              )}
+            </p>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3">
+              {[...cities]
+                .sort((a, b) => a.name.localeCompare(b.name, 'sv'))
+                .map((city) => (
+                  <li key={city.slug}>
+                    <Link
+                      href={`/stad/${city.slug}`}
+                      className="text-nordic-700 hover:text-accent transition-colors"
+                    >
+                      {city.name}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </section>
       </main>
+      <Footer />
     </div>
   );
 };
