@@ -1,4 +1,5 @@
 import { BottomBar } from "@/components/crm/layout/BottomBar";
+import { MobileTabBar } from "@/components/crm/layout/MobileTabBar";
 import { TopBar } from "@/components/crm/layout/TopBar";
 import { GlobalSearchProvider } from "@/components/crm/search/GlobalSearch";
 import { auth } from "@/lib/crm/auth";
@@ -18,8 +19,10 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
       <GlobalSearchProvider>
         <div className="min-h-screen flex flex-col bg-[#f5f5f4]">
           <TopBar />
-          <main className="flex-1 overflow-auto">{children}</main>
+          {/* pb-14 lämnar plats för den fasta mobil-tabbaren (md:pb-0 på desktop) */}
+          <main className="flex-1 overflow-auto pb-14 md:pb-0">{children}</main>
           <BottomBar />
+          <MobileTabBar />
         </div>
       </GlobalSearchProvider>
     </SessionProvider>

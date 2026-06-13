@@ -46,7 +46,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
         <span className="text-xs font-medium text-muted-foreground border-l pl-2">CRM</span>
       </button>
 
-      <nav className="flex items-center gap-0.5 shrink-0">
+      <nav className="hidden md:flex items-center gap-0.5 shrink-0">
         {NAV_ITEMS.map((item) => {
           const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
           return (
@@ -71,7 +71,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       </nav>
 
       {total != null && (
-        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+        <div className="hidden md:flex items-center gap-1 text-xs text-muted-foreground shrink-0">
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onPrev} disabled={currentIndex === 0}>
             <ChevronLeft className="h-3 w-3" />
           </Button>
@@ -87,14 +87,14 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       <button
         onClick={openSearch}
         title="Sök allt (⌘K)"
-        className="relative flex-1 max-w-sm flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
+        className="relative flex-1 max-w-sm hidden md:flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
       >
         <Search className="h-4 w-4 shrink-0" />
         <span>Sök företag, förfrågan, objekt…</span>
         <kbd className="ml-auto text-[10px] border rounded px-1.5 py-0.5 bg-white shrink-0">⌘K</kbd>
       </button>
 
-      <div className="flex items-center gap-2 ml-auto shrink-0">
+      <div className="hidden md:flex items-center gap-2 ml-auto shrink-0">
         <Badge
           variant="secondary"
           className="cursor-pointer text-xs"
@@ -144,6 +144,13 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           title="Logga ut"
         >
           <LogOut className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Mobil: kompakt högercluster — global sök (navigation via bottom-tabbar) */}
+      <div className="flex md:hidden items-center ml-auto shrink-0">
+        <Button variant="ghost" size="icon" className="h-9 w-9" onClick={openSearch} title="Sök allt">
+          <Search className="h-5 w-5" />
         </Button>
       </div>
 

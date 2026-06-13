@@ -104,7 +104,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
 
   return (
     <div className="max-w-4xl space-y-6">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold">{property.address || "(Adress saknas)"}</h2>
           <p className="text-sm text-muted-foreground">

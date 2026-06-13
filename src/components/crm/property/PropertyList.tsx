@@ -7,10 +7,11 @@ import { toast } from "@/components/ui/use-toast";
 import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
-import { DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
+import { ChevronLeft, DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
 
 type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
@@ -35,6 +36,7 @@ export function PropertyList() {
   const [minBedrooms, setMinBedrooms] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
+  const isMobile = useIsMobile();
 
   const { data: properties = [], mutate, isLoading } = useSWR<PropertyWithThumb[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
@@ -158,11 +160,53 @@ export function PropertyList() {
     </button>
   );
 
+  // Listrader — återanvänds i desktop-sidopanelen och i mobil-single-pane.
+  const listBody = (
+    <>
+      {loading &&
+        Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 px-3 py-2.5 border-b">
+            <div className="flex-1 space-y-1.5">
+              <div className="h-3.5 w-3/4 rounded bg-nordic-100 animate-pulse" />
+              <div className="h-3 w-1/2 rounded bg-nordic-100 animate-pulse" />
+            </div>
+            <div className="h-11 w-11 shrink-0 rounded-md bg-nordic-100 animate-pulse" />
+          </div>
+        ))}
+      {!loading && filtered.length === 0 && (
+        <div className="px-3 py-6 text-center text-xs text-muted-foreground italic">Inga bostäder.</div>
+      )}
+      {!loading &&
+        filtered.map((p) => (
+          <button
+            key={p.id}
+            className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400 ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
+            onClick={() => { setSelected(p); setJustCreatedId(null); }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="truncate">{p.address || "(Adress saknas)"}</div>
+              <div className="text-xs text-muted-foreground truncate">
+                {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
+              </div>
+            </div>
+            {p.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={p.thumbnailUrl} alt="" className="h-11 w-11 shrink-0 rounded-md border object-cover" />
+            ) : (
+              <div className="h-11 w-11 shrink-0 rounded-md border bg-nordic-100 flex items-center justify-center text-nordic-300">
+                <ImageIcon className="h-4 w-4" />
+              </div>
+            )}
+          </button>
+        ))}
+    </>
+  );
+
   return (
     <div className="flex flex-col h-full">
       {/* Top bar: search + view toggle + add */}
-      <div className="flex items-center gap-3 p-3 border-b bg-white shrink-0">
-        <div className="relative w-64">
+      <div className="flex flex-wrap items-center gap-3 p-3 border-b bg-white shrink-0">
+        <div className="relative w-64 max-w-full">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             className="pl-8 h-8 text-sm"
@@ -171,7 +215,8 @@ export function PropertyList() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-1 rounded-md border p-0.5">
+        {/* List/tabell-växlaren är desktop-only — på mobil tvingas single-pane-listan */}
+        <div className="hidden md:flex items-center gap-1 rounded-md border p-0.5">
           {toggleBtn("list", "Lista", LayoutList)}
           {toggleBtn("table", "Tabell", Table2)}
         </div>
@@ -244,6 +289,31 @@ export function PropertyList() {
         <div className="flex-1 overflow-y-auto p-6">
           <PropertyForm onSave={handleAdd} onCancel={() => setAdding(false)} />
         </div>
+      ) : isMobile ? (
+        /* Mobil: single-pane — lista i helbredd, vald bostad fyller skärmen med tillbaka-knapp */
+        selected ? (
+          <div className="flex flex-col flex-1 min-h-0">
+            <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-white px-3 py-2 shrink-0">
+              <button
+                onClick={() => setSelected(null)}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-700 hover:text-foreground"
+              >
+                <ChevronLeft className="h-4 w-4" /> Tillbaka
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <PropertyView
+                key={selected.id}
+                property={selected}
+                onUpdate={(data) => handleUpdate(selected.id, data)}
+                onDelete={() => handleDelete(selected.id)}
+                startEditing={selected.id === justCreatedId}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto bg-white">{listBody}</div>
+        )
       ) : viewMode === "table" ? (
         <div className="flex-1 overflow-auto p-4">
           <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
@@ -319,41 +389,7 @@ export function PropertyList() {
         <div className="flex flex-1 min-h-0">
           {/* Sidebar list */}
           <div className="w-72 border-r bg-white overflow-y-auto shrink-0">
-            {loading &&
-              Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 px-3 py-2.5 border-b">
-                  <div className="flex-1 space-y-1.5">
-                    <div className="h-3.5 w-3/4 rounded bg-nordic-100 animate-pulse" />
-                    <div className="h-3 w-1/2 rounded bg-nordic-100 animate-pulse" />
-                  </div>
-                  <div className="h-11 w-11 shrink-0 rounded-md bg-nordic-100 animate-pulse" />
-                </div>
-              ))}
-            {!loading && filtered.length === 0 && (
-              <div className="px-3 py-6 text-center text-xs text-muted-foreground italic">Inga bostäder.</div>
-            )}
-            {!loading && filtered.map((p) => (
-              <button
-                key={p.id}
-                className={`w-full flex items-center gap-3 text-left px-3 py-2.5 border-b text-sm hover:bg-nordic-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400 ${selected?.id === p.id ? "bg-nordic-100 font-medium" : ""}`}
-                onClick={() => { setSelected(p); setJustCreatedId(null); }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="truncate">{p.address || "(Adress saknas)"}</div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
-                  </div>
-                </div>
-                {p.thumbnailUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.thumbnailUrl} alt="" className="h-11 w-11 shrink-0 rounded-md border object-cover" />
-                ) : (
-                  <div className="h-11 w-11 shrink-0 rounded-md border bg-nordic-100 flex items-center justify-center text-nordic-300">
-                    <ImageIcon className="h-4 w-4" />
-                  </div>
-                )}
-              </button>
-            ))}
+            {listBody}
           </div>
           {/* Detail */}
           <div className="flex-1 overflow-y-auto p-6">

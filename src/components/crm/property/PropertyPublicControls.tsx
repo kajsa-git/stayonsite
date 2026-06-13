@@ -1,12 +1,13 @@
 "use client";
 
 import { toast } from "@/components/ui/use-toast";
+import { publicDisplayName } from "@/lib/crm/slug";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
-import { CopyBoendeLink } from "./CopyBoendeLink";
-import { CopyProspektLink } from "./CopyProspektLink";
+import { ShareLinkButton } from "./ShareLinkButton";
 
 // Publicering — hemsidan (published) och prospekt-länken (prospektPublished) styrs
-// oberoende av varandra. Ren utbrytning ur PropertyView, oförändrat beteende.
+// oberoende av varandra. Delningstexten använder bara publikt säkra fält
+// (publikt namn + ort) — aldrig adress/ägare/pris.
 export function PropertyPublicControls({
   property,
   onUpdate,
@@ -14,6 +15,19 @@ export function PropertyPublicControls({
   property: PropertyWithOwner;
   onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
 }) {
+  const displayName = publicDisplayName(property.publicName, {
+    city: property.city,
+    bedrooms: property.bedrooms,
+    beds: property.beds,
+  });
+
+  const toggleCls = (on: boolean) =>
+    `text-sm px-3 py-1.5 rounded-md border font-semibold transition-colors ${
+      on
+        ? "bg-green-100 text-green-800 border-green-300"
+        : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
+    }`;
+
   return (
     <div>
       <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Publicering</p>
@@ -29,17 +43,18 @@ export function PropertyPublicControls({
                 /* feltoast visas av onUpdate */
               }
             }}
-            className={`text-xs px-2.5 py-1 rounded-md border font-semibold transition-colors ${
-              property.published
-                ? "bg-green-100 text-green-800 border-green-300"
-                : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
-            }`}
+            className={toggleCls(!!property.published)}
           >
             {property.published ? "✓ På hemsidan" : "Publicera på hemsidan"}
           </button>
           {property.published &&
             (property.slug ? (
-              <CopyBoendeLink slug={property.slug} />
+              <ShareLinkButton
+                path={`/boenden/${property.slug}`}
+                title={displayName}
+                text={displayName}
+                label="Dela publik länk"
+              />
             ) : (
               <span className="text-[11px] text-muted-foreground">Publik URL skapas när du sparar med en ort</span>
             ))}
@@ -59,15 +74,18 @@ export function PropertyPublicControls({
                 /* feltoast visas av onUpdate */
               }
             }}
-            className={`text-xs px-2.5 py-1 rounded-md border font-semibold transition-colors ${
-              property.prospektPublished
-                ? "bg-green-100 text-green-800 border-green-300"
-                : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
-            }`}
+            className={toggleCls(!!property.prospektPublished)}
           >
             {property.prospektPublished ? "✓ Prospekt-länk" : "Aktivera prospekt-länk"}
           </button>
-          {property.prospektPublished && <CopyProspektLink propertyId={property.id} />}
+          {property.prospektPublished && (
+            <ShareLinkButton
+              path={`/prospekt/${property.id}`}
+              title={displayName}
+              text={displayName}
+              label="Dela prospekt-länk"
+            />
+          )}
         </div>
       </div>
     </div>

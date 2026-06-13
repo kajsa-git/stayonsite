@@ -8,7 +8,7 @@ export function BottomBar() {
   const router = useRouter();
 
   return (
-    <div className="h-10 border-t bg-white flex items-center px-4 gap-6 text-xs text-muted-foreground sticky bottom-0">
+    <div className="h-10 border-t bg-white hidden md:flex items-center px-4 gap-6 text-xs text-muted-foreground sticky bottom-0">
       <span className="text-muted-foreground/70">Din kö idag:</span>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.followUps}</span> att kontakta

@@ -110,7 +110,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md border border-input hover:bg-muted transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md border border-input hover:bg-muted transition-colors disabled:opacity-50"
         >
           {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImagePlus className="h-3.5 w-3.5" />}
           {uploading ? "Laddar upp…" : "Ladda upp"}
