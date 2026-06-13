@@ -12,7 +12,9 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel';
 
-const GOOGLE_REVIEW_URL = 'https://g.page/r/CcBH36cXOKj8EBM/review';
+// Läs-/verifiera-länk för spekulanter (visar profilen + recensioner).
+// Skriv-länken (g.page/r/CcBH36cXOKj8EBM/review) används i uppföljning efter uthyrning, inte här.
+const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=Stayonsite+AB';
 
 const REVIEW_KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as const;
 
