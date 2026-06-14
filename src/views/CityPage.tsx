@@ -154,11 +154,27 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
     }
   };
 
+  // Pris-intent: fångar "företagsbostäder {stad} pris" / "vad kostar..." (hög köpintention).
+  // Etablerad siffra från /for-foretag (från 6 900 kr/person/mån).
+  const pricingFaq = {
+    question: {
+      sv: `Vad kostar företagsbostäder i ${city.name}?`,
+      en: `What does corporate housing in ${city.name} cost?`,
+      pl: `Ile kosztuje zakwaterowanie firmowe w ${city.name}?`,
+    },
+    answer: {
+      sv: `Företagsbostäder och personalboende i ${city.name} kostar från 6 900 kr per person och månad. Priset beror på antal personer, standard och hur länge ni hyr — men alltid betydligt billigare än hotell. Ni får en offert inom 24 timmar.`,
+      en: `Corporate housing and worker accommodation in ${city.name} starts from SEK 6,900 per person per month. The price depends on the number of people, standard and length of stay — but is always significantly cheaper than hotels. You receive a quote within 24 hours.`,
+      pl: `Zakwaterowanie firmowe i pracownicze w ${city.name} kosztuje od 6 900 SEK za osobę miesięcznie. Cena zależy od liczby osób, standardu i długości najmu — ale zawsze znacznie taniej niż hotel. Ofertę otrzymasz w 24 godziny.`,
+    },
+  };
+  const faqItems = [pricingFaq, ...city.faq];
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     inLanguage: language,
-    mainEntity: city.faq.map((item) => ({
+    mainEntity: faqItems.map((item) => ({
       '@type': 'Question',
       name: getLocalizedText(item.question, language),
       acceptedAnswer: {
@@ -525,7 +541,7 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
                 )}
               </h2>
               <Accordion type="single" collapsible>
-                {city.faq.map((item, index) => (
+                {faqItems.map((item, index) => (
                   <AccordionItem value={`faq-${index}`} key={item.question.sv}>
                     <AccordionTrigger className="text-left text-lg">
                       {getLocalizedText(item.question, language)}
