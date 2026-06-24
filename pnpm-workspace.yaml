@@ -2,9 +2,11 @@
 # dem härifrån, inte längre från "pnpm"-fältet i package.json).
 #
 # Godkänner build-scripts för paket med native-binärer. pnpm 11 gör annars
-# "ignored build scripts" till ett HÅRT fel (ERR_PNPM_IGNORED_BUILDS) i CI,
-# där `npm install -g pnpm` drar senaste pnpm. esbuild och sharp behöver sina
-# postinstall-script för att fungera.
+# "ignored build scripts" till ett HÅRT fel (ERR_PNPM_IGNORED_BUILDS) i CI, där
+# `npm install -g pnpm` drar senaste pnpm. unrs-resolver tillkom transitivt via
+# eslint-config-next och saknades här → kraschade veckobloggens build-steg
+# (17 + 24 juni 2026). Lägg till nya native-paket här om felet återkommer.
 allowBuilds:
   esbuild: true
   sharp: true
+  unrs-resolver: true
