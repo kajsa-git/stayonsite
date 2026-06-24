@@ -21,13 +21,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Company, Request } from "@/lib/crm/schema";
+import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const LOST_REASONS = ["För dyrt", "Ej passande bostad", "Hittade bättre objekt", "Övrigt"];
 
 const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
 

@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
+import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
 import { AnimatePresence, motion } from "framer-motion";
 function fireConfetti() {
@@ -59,8 +60,6 @@ const STEPS = [
   { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
   { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing." },
 ];
-
-const LOST_REASONS = ["För dyrt", "Ej passande bostad", "Hittade bättre objekt", "Övrigt"];
 
 // Kanoniska status-etiketter + färger (delas med övriga vyer).
 const STATUS_LABEL = REQUEST_STATUS_LABEL;

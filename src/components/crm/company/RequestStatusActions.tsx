@@ -17,15 +17,9 @@ import {
 } from "@/components/ui/select";
 import type { Request } from "@/lib/crm/schema";
 import { hasValidInvoiceDates } from "@/lib/crm/move-checklists";
+import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { Archive, Home, Receipt, X } from "lucide-react";
 import { useState } from "react";
-
-const LOST_REASONS = [
-  "För dyrt",
-  "Ej passande bostad",
-  "Hittade bättre objekt",
-  "Övrigt",
-];
 
 interface Props {
   request: Request & { matchCount?: number };
