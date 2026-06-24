@@ -498,6 +498,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['blockhyra', 'hyreslagen-2026', 'företagsbostäder', 'personalboende', 'lagändringar'],
     readingTime: 9,
   },
+  {
+    slug: 'boende-utlandska-arbetare-bygg-praktisk-guide-2026',
+    title: {
+      sv: 'Boende för utländska arbetare inom bygg: Praktisk guide 2026',
+      en: 'Housing for foreign construction workers: Practical guide 2026',
+      pl: 'Zakwaterowanie dla zagranicznych pracowników budowlanych: Praktyczny przewodnik 2026',
+    },
+    description: {
+      sv: 'Praktisk guide för byggföretag: Så planerar du boende, avtal och logistik för utländska arbetsteam från EU. Checklista och tips.',
+      en: 'Practical guide for construction companies: Plan housing, contracts & logistics for foreign EU workers. Checklist & tips included.',
+      pl: 'Praktyczny przewodnik dla firm budowlanych: Jak zaplanować zakwaterowanie, umowy i logistykę dla zagranicznych zespołów z UE.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-06-24',
+    category: 'Guide',
+    tags: ['utländsk arbetskraft', 'utstationering', 'arbetskraftsbrist', 'infrastrukturprojekt', 'EU-regler'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
