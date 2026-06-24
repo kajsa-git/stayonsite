@@ -23,7 +23,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
       <ul>
         <li>
           <strong>Hanterat personalboende via StayOnSite</strong> - avtal direkt med ett bolag som
-          tar hand om boende, nyckelhantering, städning och fakturering. Från 6 900 kr per
+          tar hand om boende, nyckelhantering, städning och fakturering. Från 5 900 kr per
           person och månad.
         </li>
         <li>
@@ -56,7 +56,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
         <tbody>
           <tr>
             <td>StayOnSite</td>
-            <td>Från 6 900 kr</td>
+            <td>Från 5 900 kr</td>
             <td>Ja</td>
             <td>Ja</td>
             <td>Ja</td>
@@ -115,10 +115,10 @@ const PersonalboendeVsHotellKostnad2026 = () => {
         <tbody>
           <tr>
             <td>StayOnSite</td>
-            <td>6 900 kr</td>
-            <td>207 000 kr</td>
+            <td>5 900 kr</td>
+            <td>177 000 kr</td>
             <td>Minimal</td>
-            <td>ca 207 000 kr</td>
+            <td>ca 177 000 kr</td>
           </tr>
           <tr>
             <td>Hotell (medelklass)</td>
@@ -168,7 +168,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
 
       <h3>Fördelar</h3>
       <ul>
-        <li>Lägst kostnad av de hanterade alternativen - från 6 900 kr per person och månad</li>
+        <li>Lägst kostnad av de hanterade alternativen - från 5 900 kr per person och månad</li>
         <li>Företagsfaktura med projektmärkning ingår</li>
         <li>Fast kontaktperson, svarar samma dag</li>
         <li>Flexibla avtalsperioder anpassade till projekttiden</li>

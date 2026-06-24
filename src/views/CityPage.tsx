@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getCityBySlug, getNearbyCities } from '@/data/cities';
+import type { City } from '@/data/cities';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { CONTENT_UPDATED } from '@/lib/seo-utils';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -46,18 +46,17 @@ import { trackPhoneClick } from '@/lib/gtag';
 interface CityPageProps {
   citySlug: string;
   locale: 'sv' | 'en' | 'pl';
+  city: City;
+  nearbyCities: City[];
 }
 
-const CityPage = ({ citySlug, locale }: CityPageProps) => {
+const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
   const { language, setLanguage } = useLanguage();
 
   useEffect(() => {
     setLanguage(locale);
     window.scrollTo(0, 0);
   }, [citySlug, locale, setLanguage]);
-
-  const city = getCityBySlug(citySlug);
-  const nearbyCities = getNearbyCities(citySlug);
 
   if (!city) {
     notFound();
@@ -155,7 +154,7 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
   };
 
   // Pris-intent: fångar "företagsbostäder {stad} pris" / "vad kostar..." (hög köpintention).
-  // Etablerad siffra från /for-foretag (från 6 900 kr/person/mån).
+  // Etablerad siffra (från 5 900 kr/mån — matchar annonserna).
   const pricingFaq = {
     question: {
       sv: `Vad kostar företagsbostäder i ${city.name}?`,
@@ -163,9 +162,9 @@ const CityPage = ({ citySlug, locale }: CityPageProps) => {
       pl: `Ile kosztuje zakwaterowanie firmowe w ${city.name}?`,
     },
     answer: {
-      sv: `Företagsbostäder och personalboende i ${city.name} kostar från 6 900 kr per person och månad. Priset beror på antal personer, standard och hur länge ni hyr — men alltid betydligt billigare än hotell. Ni får en offert inom 24 timmar.`,
-      en: `Corporate housing and worker accommodation in ${city.name} starts from SEK 6,900 per person per month. The price depends on the number of people, standard and length of stay — but is always significantly cheaper than hotels. You receive a quote within 24 hours.`,
-      pl: `Zakwaterowanie firmowe i pracownicze w ${city.name} kosztuje od 6 900 SEK za osobę miesięcznie. Cena zależy od liczby osób, standardu i długości najmu — ale zawsze znacznie taniej niż hotel. Ofertę otrzymasz w 24 godziny.`,
+      sv: `Företagsbostäder och personalboende i ${city.name} kostar från 5 900 kr per månad. Priset beror på antal personer, standard och hur länge ni hyr — men alltid betydligt billigare än hotell. Ni får en offert inom 24 timmar.`,
+      en: `Corporate housing and worker accommodation in ${city.name} starts from SEK 5,900 per month. The price depends on the number of people, standard and length of stay — but is always significantly cheaper than hotels. You receive a quote within 24 hours.`,
+      pl: `Zakwaterowanie firmowe i pracownicze w ${city.name} kosztuje od 5 900 SEK miesięcznie. Cena zależy od liczby osób, standardu i długości najmu — ale zawsze znacznie taniej niż hotel. Ofertę otrzymasz w 24 godziny.`,
     },
   };
   const faqItems = [pricingFaq, ...city.faq];

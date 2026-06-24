@@ -51,7 +51,7 @@ const PersonalboendeVanligaFragor2026 = () => {
 
       <p>
         Priset beror på ort, antal personer och avtalstid. Som riktmärke är
-        priset från 6 900 kr per person och månad för ett fullt möblerat boende.
+        priset från 5 900 kr per person och månad för ett fullt möblerat boende.
       </p>
 
       <p>
