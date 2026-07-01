@@ -516,6 +516,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['utländsk arbetskraft', 'utstationering', 'arbetskraftsbrist', 'infrastrukturprojekt', 'EU-regler'],
     readingTime: 9,
   },
+  {
+    slug: 'forbered-infrastrukturkontrakt-2026-boende-entreprenorer-guide',
+    title: {
+      sv: 'Förbered er innan infrastrukturkontrakten tecknas hösten 2026 – boendeguide för entreprenörer',
+      en: 'Prepare Before Infrastructure Contracts Are Signed Fall 2026 – Housing Guide for Contractors',
+      pl: 'Przygotuj się przed podpisaniem kontraktów infrastrukturalnych jesienią 2026 – przewodnik po zakwaterowaniu dla wykonawców',
+    },
+    description: {
+      sv: 'Stora kontrakt inom Ostlänken och Norrbotniabanan tecknas hösten 2026. Så säkrar du boende för din personal i tid.',
+      en: 'Major contracts in Ostlänken and Norrbotniabanan signed fall 2026. How to secure worker housing in time.',
+      pl: 'Duże kontrakty w Ostlänken i Norrbotniabanan podpisywane jesienią 2026. Jak zabezpieczyć zakwaterowanie dla pracowników.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-01',
+    category: 'Guide',
+    tags: ['infrastruktur', 'ostlänken', 'norrbotniabanan', 'upphandling', 'personalboende', 'entreprenörer'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
