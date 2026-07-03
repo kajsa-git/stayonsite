@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
-import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Upload, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Phone, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
-import { trackFormSubmit } from "@/lib/gtag";
+import { trackFormSubmit, trackPhoneClick } from "@/lib/gtag";
 import { cn } from "@/lib/utils";
 
 type IntakeFormState = {
@@ -417,20 +417,43 @@ export function PropertyIntakeForm() {
     return (
       <section className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl rounded-md border border-green-200 bg-white p-6 shadow-sm sm:p-8">
-          <CheckCircle2 className="h-10 w-10 text-green-700" />
-          <h1 className="mt-4 text-2xl font-semibold text-nordic-950 sm:text-3xl">Tack, vi har fått bostaden</h1>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
+            <CheckCircle2 className="h-7 w-7 text-green-700" />
+          </div>
+          <h1 className="mt-4 text-2xl font-semibold text-nordic-950 sm:text-3xl">Tack – vi har tagit emot din bostad!</h1>
           <p className="mt-3 text-base leading-7 text-nordic-800">
-            StayOnSite går igenom uppgifterna och hör av sig om något behöver kompletteras.
+            Vi går igenom uppgifterna och hör av oss <strong>inom 24 timmar</strong>. Inget publiceras
+            innan vi har stämt av med dig.
           </p>
-          <div className="mt-5 rounded-md bg-nordic-50 p-4 text-sm text-nordic-800">
-            Ärendenummer: <span className="font-mono font-semibold">{success.propertyId}</span>
-            <br />
-            Bilder mottagna: <span className="font-semibold">{success.imageCount}</span>
+
+          <div className="mt-5 space-y-1 rounded-md bg-nordic-50 p-4 text-sm text-nordic-800">
+            <p>Bilder mottagna: <span className="font-semibold">{success.imageCount}</span></p>
+            <p>
+              Referens: <span className="font-mono font-semibold">{success.propertyId}</span>
+              <span className="text-nordic-600"> – uppge den gärna om du hör av dig.</span>
+            </p>
             {success.imageErrors.length > 0 && (
-              <p className="mt-2 text-amber-800">
-                Några bilder kunde inte laddas upp, men bostaden är sparad. Vi kan be om komplettering.
+              <p className="pt-1 text-amber-800">
+                Några bilder kunde inte laddas upp, men bostaden är sparad – vi återkommer om komplettering.
               </p>
             )}
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a
+              href="tel:+46762498486"
+              onClick={trackPhoneClick}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#0f766e] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#115e59]"
+            >
+              <Phone className="h-4 w-4" />
+              Har du frågor? Ring 076-249 84 86
+            </a>
+            <a
+              href="https://www.stayonsite.se"
+              className="inline-flex min-h-11 items-center justify-center rounded-md border border-nordic-200 px-5 text-sm font-semibold text-nordic-800 transition-colors hover:border-nordic-400"
+            >
+              Till stayonsite.se
+            </a>
           </div>
         </div>
       </section>
@@ -549,7 +572,7 @@ export function PropertyIntakeForm() {
               <div className="space-y-5">
                 <div className="grid gap-4 sm:grid-cols-3">
                   <Stepper id="washingMachines" label="Tvättmaskin" value={form.washingMachines} onChange={(value) => set("washingMachines", value)} />
-                  <Stepper id="dryers" label="Tumlare" value={form.dryers} onChange={(value) => set("dryers", value)} />
+                  <Stepper id="dryers" label="Torktumlare" value={form.dryers} onChange={(value) => set("dryers", value)} />
                   <Stepper id="parkingSpaces" label="Parkering" value={form.parkingSpaces} onChange={(value) => set("parkingSpaces", value)} />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -558,7 +581,7 @@ export function PropertyIntakeForm() {
                   <ToggleCard label="Diskmaskin" checked={form.dishwasher} onChange={(value) => set("dishwasher", value)} />
                   <ToggleCard label="Garage" checked={form.garage} onChange={(value) => set("garage", value)} />
                   <ToggleCard label="Bredband" checked={form.broadband} onChange={(value) => set("broadband", value)} />
-                  <ToggleCard label="Hela bostaden hyrs ut separat" checked={form.egetBoende} onChange={(value) => set("egetBoende", value)} description="Inte delat med andra hyresgäster." />
+                  <ToggleCard label="Hela bostaden hyrs ut" checked={form.egetBoende} onChange={(value) => set("egetBoende", value)} description="Egen bostad – inte rum delat med andra hyresgäster." />
                 </div>
               </div>
             )}
@@ -658,7 +681,7 @@ export function PropertyIntakeForm() {
               ) : (
                 <Button type="submit" disabled={isSubmitting} className="min-h-11 gap-2 bg-[#0f766e] hover:bg-[#115e59]">
                   {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                  {isSubmitting ? "Skickar..." : "Skicka bostaden"}
+                  {isSubmitting ? "Skickar in..." : "Skicka in bostaden"}
                 </Button>
               )}
             </div>
