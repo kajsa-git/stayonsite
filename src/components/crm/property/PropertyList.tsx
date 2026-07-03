@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/components/ui/use-toast";
 import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
 import { ChevronLeft, DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
 
@@ -15,6 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
+import { PropertyIntakeSharePanel } from "./PropertyIntakeSharePanel";
 
 const fetcher = swrFetcher;
 
@@ -24,6 +26,10 @@ const PROP_STATUS: Record<string, { label: string; cls: string }> = {
   rented: { label: "Uthyrd", cls: "bg-blue-100 text-blue-800" },
   off_market: { label: "Av marknaden", cls: "bg-gray-100 text-gray-600" },
 };
+
+function isPropertyIntake(property: Pick<PropertyWithOwner, "notes">) {
+  return !!property.notes?.includes(PROPERTY_INTAKE_MARKER);
+}
 
 export function PropertyList() {
   const [search, setSearch] = useState("");
@@ -35,6 +41,7 @@ export function PropertyList() {
   const [cityFilter, setCityFilter] = useState("");
   const [minBedrooms, setMinBedrooms] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
+  const [intakeFilter, setIntakeFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
   const isMobile = useIsMobile();
 
@@ -57,9 +64,12 @@ export function PropertyList() {
       if (minBr && (p.bedrooms ?? 0) < minBr) return false;
       if (publishedFilter === "yes" && !p.published) return false;
       if (publishedFilter === "no" && p.published) return false;
+      if (intakeFilter === "yes" && !isPropertyIntake(p)) return false;
       return true;
     });
-  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter]);
+  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter]);
+
+  const intakeCount = useMemo(() => properties.filter(isPropertyIntake).length, [properties]);
 
   // Deep-link från global sök: /crm/properties?id=… öppnar objektet direkt (en gång).
   // Läs query först efter mount (useEffect kör aldrig på servern → ingen hydreringskrock).
@@ -188,6 +198,11 @@ export function PropertyList() {
               <div className="text-xs text-muted-foreground truncate">
                 {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
               </div>
+              {isPropertyIntake(p) && (
+                <span className="mt-1 inline-flex rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-800">
+                  Nytt bostadsintag
+                </span>
+              )}
             </div>
             {p.thumbnailUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -221,10 +236,23 @@ export function PropertyList() {
           {toggleBtn("table", "Tabell", Table2)}
         </div>
         <span className="text-xs text-muted-foreground">{filtered.length} objekt</span>
+        {intakeCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setIntakeFilter((value) => (value === "yes" ? "" : "yes"))}
+            className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+              intakeFilter === "yes" ? "bg-teal-700 text-white" : "bg-teal-50 text-teal-800 hover:bg-teal-100"
+            }`}
+          >
+            {intakeCount} nya intag
+          </button>
+        )}
         <Button size="sm" className="ml-auto gap-1 text-xs" onClick={() => { setAdding(true); setSelected(null); }}>
           <Plus className="h-3 w-3" /> Ny bostad
         </Button>
       </div>
+
+      <PropertyIntakeSharePanel />
 
       {/* Filterrad */}
       {!adding && (
@@ -268,14 +296,22 @@ export function PropertyList() {
             <option value="yes">Publicerad</option>
             <option value="no">Ej publicerad</option>
           </select>
+          <select
+            value={intakeFilter}
+            onChange={(e) => setIntakeFilter(e.target.value)}
+            className="h-7 border rounded px-2 bg-white text-xs"
+          >
+            <option value="">Alla intag</option>
+            <option value="yes">Nya bostadsintag</option>
+          </select>
           {ownerFilter && (
             <span className="rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-teal-800">
               Uthyrare-filter
             </span>
           )}
-          {(statusFilter || cityFilter || minBedrooms || publishedFilter || ownerFilter) && (
+          {(statusFilter || cityFilter || minBedrooms || publishedFilter || intakeFilter || ownerFilter) && (
             <button
-              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setOwnerFilter(""); }}
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setIntakeFilter(""); setOwnerFilter(""); }}
               className="text-muted-foreground hover:text-foreground underline"
             >
               Rensa
@@ -373,7 +409,14 @@ export function PropertyList() {
                         <TableCell className="text-foreground">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
                         <TableCell className="text-foreground">{p.furnished ? "Ja" : "–"}</TableCell>
                         <TableCell>
-                          <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                          <div className="flex flex-col items-start gap-1">
+                            <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                            {isPropertyIntake(p) && (
+                              <span className="inline-block rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-800">
+                                Nytt intag
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.published ? "✓" : "–"}</TableCell>
