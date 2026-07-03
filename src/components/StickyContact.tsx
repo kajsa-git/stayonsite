@@ -5,7 +5,7 @@ import { Phone, MessageCircle, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { trackPhoneClick } from '@/lib/gtag';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
 const StickyContact = () => {
   const { t } = useLanguage();
@@ -79,7 +79,7 @@ const StickyContact = () => {
               className="w-full rounded-xl border-primary/10 text-primary/70 hover:bg-primary/5 hover:text-primary/70 font-bold h-12 transition-all"
               size="sm"
             >
-              <a href="https://wa.me/46762498486" onClick={trackPhoneClick} target="_blank" rel="noreferrer">
+              <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} target="_blank" rel="noreferrer">
                 <MessageCircle size={16} className="mr-2" />
                 WhatsApp
               </a>

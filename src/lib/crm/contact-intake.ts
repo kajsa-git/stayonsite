@@ -18,7 +18,7 @@ import {
 import { indexCompany, indexContact, indexOwner, indexProperty, indexRequest } from "./search-index";
 
 export type WebSubmission = {
-  formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner";
+  formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner" | "lp-corporate";
   locale: "sv" | "en" | "pl";
   page: string;
   source?: string;

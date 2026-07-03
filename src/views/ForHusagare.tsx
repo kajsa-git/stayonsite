@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { trackPhoneClick } from '@/lib/gtag';
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { cities } from '@/data/cities';
@@ -261,6 +262,7 @@ const ForHusagare = () => {
             </p>
             <a
               href="tel:+46762498486"
+              onClick={trackPhoneClick}
               className="inline-flex items-center justify-center gap-3 rounded-full h-14 px-8 bg-accent hover:bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               <Phone className="h-5 w-5" />

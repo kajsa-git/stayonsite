@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { trackPhoneClick } from '@/lib/gtag';
 import { getCityBySlug } from '@/data/cities';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { notFound } from 'next/navigation';
@@ -215,6 +216,7 @@ const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
             </p>
             <a
               href="tel:+46762498486"
+              onClick={trackPhoneClick}
               className="inline-flex items-center justify-center gap-3 rounded-full h-14 px-8 bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               <Phone className="h-5 w-5" />

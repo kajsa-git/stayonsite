@@ -75,6 +75,14 @@ const submissionSchema = z.discriminatedUnion("formType", [
     phone: z.string().min(6).max(50).refine(isValidPhone),
     city: z.string().min(2).max(100),
   })}),
+  // Corporate housing paid LP (English): company + email + phone + city + people
+  z.object({ ...base, formType: z.literal("lp-corporate"), fields: z.object({
+    company: z.string().min(1).max(200),
+    email: z.string().min(3).max(200).refine(isValidEmail),
+    phone: z.string().min(6).max(50).refine(isValidPhone),
+    city: z.string().min(2).max(100),
+    people: z.string().regex(/^\d{1,4}$/),
+  })}),
 ]);
 
 type Submission = z.infer<typeof submissionSchema>;
@@ -86,6 +94,7 @@ const FORM_LABELS: Record<string, string> = {
   "inquiry": "Kontaktformulär",
   "homeowner": "Husägarformulär",
   "lp-homeowner": "Husägarformulär (LP)",
+  "lp-corporate": "Företagsförfrågan (engelsk LP)",
 };
 
 function getSubject(s: Submission): string {
@@ -97,6 +106,10 @@ function getSubject(s: Submission): string {
   }
   if (s.formType === "inquiry") return "Ny förfrågan från StayOnSite";
   if (s.formType === "lp-homeowner") return "Ny husägare via Facebook-annons";
+  if (s.formType === "lp-corporate") {
+    const f = s.fields as Record<string, string>;
+    return `Företagslead (engelsk annons): ${f.company || ""} – ${f.city || ""}`.trim();
+  }
   return "Ny husägare-registrering från StayOnSite";
 }
 

@@ -2,6 +2,7 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ClipboardList, KeyRound, RefreshCcw } from 'lucide-react';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
 const WhyStayOnSite = () => {
   const { t } = useLanguage();
@@ -83,6 +84,10 @@ const WhyStayOnSite = () => {
               </ul>
               <a
                 href={cta.href}
+                onClick={() => {
+                  if (cta.href.startsWith('tel:')) trackPhoneClick();
+                  else if (cta.href.includes('wa.me')) trackWhatsAppClick();
+                }}
                 className="mt-6 inline-flex items-center text-sm font-semibold text-[#ff6300] hover:text-[#e25200]"
               >
                 {cta.label}

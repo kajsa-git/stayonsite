@@ -41,7 +41,7 @@ import HeroIntentForm from '@/components/HeroIntentForm';
 import InquiryForm from '@/components/InquiryForm';
 import StickyContact from '@/components/StickyContact';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
-import { trackPhoneClick } from '@/lib/gtag';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
 interface CityPageProps {
   citySlug: string;
@@ -303,7 +303,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
                 className="flex flex-col sm:flex-row gap-6 mb-16"
               >
                 <Button asChild size="lg" className="group rounded-full h-16 px-10 text-lg bg-accent hover:bg-accent text-white shadow-2xl shadow-accent/30 transition-all duration-500 hover:scale-105 active:scale-95">
-                  <a href="tel:+46762498486" className="flex items-center gap-3">
+                  <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-3">
                     <Phone className="h-5 w-5 group-hover:rotate-12 transition-transform" />
                     {translate('Ring oss nu', 'Call us now', 'Zadzwoń teraz')}
                   </a>
@@ -314,7 +314,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
                   variant="outline"
                   className="group rounded-full h-16 px-10 text-lg border-white/25 bg-white/5 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95"
                 >
-                  <a href="https://wa.me/46762498486" className="flex items-center gap-3">
+                  <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} className="flex items-center gap-3">
                     <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
                     {translate('WhatsApp', 'WhatsApp', 'WhatsApp')}
                   </a>

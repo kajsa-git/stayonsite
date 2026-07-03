@@ -1,6 +1,7 @@
 import { Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
 interface DirectContactProps {
   language: 'en' | 'pl';
@@ -40,7 +41,7 @@ const DirectContact = ({ language, className = '' }: DirectContactProps) => {
         className="group rounded-full h-14 sm:h-16 px-8 sm:px-10 bg-accent hover:bg-accent/90 text-white text-base sm:text-lg font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
         asChild
       >
-        <a href={phoneHref} className="flex items-center gap-3">
+        <a href={phoneHref} onClick={trackPhoneClick} className="flex items-center gap-3">
           <Phone size={22} className="group-hover:rotate-12 transition-transform" />
           {labels[language].call}
         </a>
@@ -50,7 +51,7 @@ const DirectContact = ({ language, className = '' }: DirectContactProps) => {
         className="group rounded-full h-14 sm:h-16 px-8 sm:px-10 bg-[#25D366] hover:bg-[#20BD5A] text-white text-base sm:text-lg font-bold shadow-2xl shadow-[#25D366]/30 transition-all duration-300 hover:scale-105 active:scale-95"
         asChild
       >
-        <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex items-center gap-3">
+        <a href={whatsappHref} onClick={trackWhatsAppClick} target="_blank" rel="noreferrer" className="flex items-center gap-3">
           <MessageCircle size={22} className="group-hover:scale-110 transition-transform" />
           {labels[language].whatsapp}
         </a>

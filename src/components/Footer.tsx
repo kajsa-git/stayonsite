@@ -3,7 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { trackPhoneClick } from '@/lib/gtag';
+import { trackPhoneClick, trackWhatsAppClick, trackEmailClick } from '@/lib/gtag';
 const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
@@ -27,7 +27,7 @@ const Footer = () => {
                 variant="outline"
                 className="rounded-full border-white/40 bg-white/10 hover:bg-white/20 text-white h-11 px-5"
               >
-                <a href="https://wa.me/46762498486" onClick={trackPhoneClick} target="_blank" rel="noreferrer">
+                <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} target="_blank" rel="noreferrer">
                   <MessageCircle size={16} className="mr-2" />
                   {t('hero.ctaWhatsapp')}
                 </a>
@@ -50,7 +50,7 @@ const Footer = () => {
                 <div className="mr-4 w-10 h-10 rounded-full flex items-center justify-center border border-white/40">
                   <Mail size={18} className="text-[#ff6300]" />
                 </div>
-                <a href="mailto:info@stayonsite.se" className="font-medium hover:text-[#ff6300] transition-colors duration-300">
+                <a href="mailto:info@stayonsite.se" onClick={trackEmailClick} className="font-medium hover:text-[#ff6300] transition-colors duration-300">
                   info@stayonsite.se
                 </a>
               </div>

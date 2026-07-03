@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { trackPhoneClick } from '@/lib/gtag';
+import { trackWhatsAppClick } from '@/lib/gtag';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 const FloatingPhoneButton = () => {
@@ -38,7 +38,7 @@ const FloatingPhoneButton = () => {
           <TooltipTrigger asChild>
             <a
               href="https://wa.me/46762498486"
-              onClick={trackPhoneClick}
+              onClick={trackWhatsAppClick}
               target="_blank"
               rel="noreferrer"
               className="group flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] shadow-lg hover:bg-[#1EBE59] transition-all duration-300 hover:scale-110"

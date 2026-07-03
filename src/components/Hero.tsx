@@ -6,6 +6,7 @@ import { MessageCircle, Phone, Star } from 'lucide-react';
 import { RATING_VALUE } from '@/data/constants';
 import { motion } from 'framer-motion';
 import HeroIntentForm from '@/components/HeroIntentForm';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
 const phoneHref = 'tel:+46762498486';
 const whatsappHref = 'https://wa.me/46762498486';
@@ -81,7 +82,7 @@ const Hero = () => {
                 className="group rounded-full h-14 px-8 bg-accent hover:bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-500 hover:scale-105 active:scale-95"
                 asChild
               >
-                <a href={phoneHref} className="flex items-center gap-3">
+                <a href={phoneHref} onClick={trackPhoneClick} className="flex items-center gap-3">
                   <Phone size={20} className="group-hover:rotate-12 transition-transform" />
                   {t('hero.ctaPhone')}
                 </a>
@@ -91,7 +92,7 @@ const Hero = () => {
                 className="group rounded-full h-14 px-8 border-white/30 bg-white/5 text-white hover:bg-white/10 hover:border-white/60 text-base font-semibold backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95 shadow-xl"
                 asChild
               >
-                <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex items-center gap-3">
+                <a href={whatsappHref} onClick={trackWhatsAppClick} target="_blank" rel="noreferrer" className="flex items-center gap-3">
                   <MessageCircle size={20} className="group-hover:scale-110 transition-transform" />
                   {t('hero.ctaWhatsapp')}
                 </a>

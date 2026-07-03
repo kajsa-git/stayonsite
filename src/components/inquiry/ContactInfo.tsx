@@ -2,6 +2,7 @@
 
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { trackPhoneClick, trackEmailClick } from '@/lib/gtag';
 const ContactInfo = () => {
   const {
     t
@@ -12,6 +13,7 @@ const ContactInfo = () => {
       <div className="space-y-4">
         <a
           href="mailto:kajsa@stayonsite.se"
+          onClick={trackEmailClick}
           className="flex items-center gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">
@@ -21,6 +23,7 @@ const ContactInfo = () => {
         </a>
         <a
           href="tel:+46762498486"
+          onClick={trackPhoneClick}
           className="flex items-center gap-4 rounded-2xl border border-white bg-white/70 px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff6300]/10 text-[#ff6300]">

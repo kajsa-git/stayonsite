@@ -5,6 +5,7 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { trackPhoneClick, trackEmailClick } from '@/lib/gtag'
 
 interface Listing {
   id: string
@@ -177,6 +178,7 @@ function InterestModal({ listing, onClose }: { listing: Listing; onClose: () => 
         <div className="space-y-3">
           <a
             href="tel:+46762498486"
+            onClick={trackPhoneClick}
             className="flex items-center gap-3 w-full border border-nordic-200 rounded-xl px-4 py-3 hover:bg-nordic-50 transition-colors"
           >
             <span className="text-2xl">📞</span>
@@ -188,6 +190,7 @@ function InterestModal({ listing, onClose }: { listing: Listing; onClose: () => 
 
           <a
             href={`mailto:kajsa@stayonsite.se?subject=Intresserad av boende i ${encodeURIComponent(city)}`}
+            onClick={trackEmailClick}
             className="flex items-center gap-3 w-full border border-nordic-200 rounded-xl px-4 py-3 hover:bg-nordic-50 transition-colors"
           >
             <span className="text-2xl">✉️</span>
@@ -274,7 +277,7 @@ export function Boenden() {
             <div className="text-center py-20 text-muted-foreground">
               <p className="text-lg font-medium mb-2">Inga lediga boenden just nu</p>
               <p className="text-sm">Kontakta oss — vi hittar något som passar er.</p>
-              <a href="tel:+46762498486" className="inline-block mt-4 bg-[#ff6300] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#e55a00] transition-colors">
+              <a href="tel:+46762498486" onClick={trackPhoneClick} className="inline-block mt-4 bg-[#ff6300] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#e55a00] transition-colors">
                 Ring 076-249 84 86
               </a>
             </div>

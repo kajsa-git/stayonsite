@@ -2,7 +2,8 @@ export type ContactFormType =
   | 'hero-intent'
   | 'inquiry'
   | 'homeowner'
-  | 'lp-homeowner';
+  | 'lp-homeowner'
+  | 'lp-corporate';
 
 export interface ContactFormResponse {
   success: boolean;

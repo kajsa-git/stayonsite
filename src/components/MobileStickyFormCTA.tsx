@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Phone } from 'lucide-react';
+import { trackPhoneClick } from '@/lib/gtag';
 
 interface MobileStickyFormCTAProps {
   targetId: string;
@@ -38,7 +39,7 @@ const MobileStickyFormCTA = ({
             variant="outline"
             className="h-12 px-4 rounded-xl border-nordic-200"
           >
-            <a href={phoneHref}>
+            <a href={phoneHref} onClick={trackPhoneClick}>
               <Phone size={16} className="mr-2 shrink-0" />
               <span className="truncate">{phoneLabel}</span>
             </a>

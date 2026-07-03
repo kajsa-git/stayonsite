@@ -6,6 +6,7 @@ import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
+import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/gtag';
 import { cities } from '@/data/cities';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import {
@@ -128,7 +129,7 @@ const OmOss = () => {
               {t('Kontakta StayOnSite', 'Contact StayOnSite', 'Skontaktuj się ze StayOnSite')}
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-              <a href="tel:+46762498486" className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
+              <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
                   <Phone className="w-5 h-5 text-accent" />
                 </div>
@@ -137,7 +138,7 @@ const OmOss = () => {
                   <p className="font-semibold text-nordic-900 group-hover:text-accent transition-colors">+46 76-249 84 86</p>
                 </div>
               </a>
-              <a href="mailto:info@stayonsite.se" className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
+              <a href="mailto:info@stayonsite.se" onClick={trackEmailClick} className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
                   <Mail className="w-5 h-5 text-accent" />
                 </div>
@@ -146,7 +147,7 @@ const OmOss = () => {
                   <p className="font-semibold text-nordic-900 group-hover:text-accent transition-colors">info@stayonsite.se</p>
                 </div>
               </a>
-              <a href="https://wa.me/46762498486" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
+              <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} target="_blank" rel="noreferrer" className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
                   <MessageCircle className="w-5 h-5 text-accent" />
                 </div>

@@ -8,6 +8,7 @@ import InquiryForm from '@/components/InquiryForm';
 import CityLinks from '@/components/CityLinks';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MessageCircle, MapPin, Clock } from 'lucide-react';
+import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/gtag';
 
 const Kontakt = () => {
   const { language } = useLanguage();
@@ -123,6 +124,7 @@ const Kontakt = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
               <a
                 href="tel:+46762498486"
+                onClick={trackPhoneClick}
                 className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group"
               >
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
@@ -137,6 +139,7 @@ const Kontakt = () => {
               </a>
               <a
                 href="mailto:info@stayonsite.se"
+                onClick={trackEmailClick}
                 className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group"
               >
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
@@ -151,6 +154,7 @@ const Kontakt = () => {
               </a>
               <a
                 href="https://wa.me/46762498486"
+                onClick={trackWhatsAppClick}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-4 p-5 rounded-2xl bg-nordic-50 hover:bg-accent/5 transition-colors group"

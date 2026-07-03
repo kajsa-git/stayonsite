@@ -8,6 +8,8 @@ declare global {
 export const GA_ADS_ID = process.env.NEXT_PUBLIC_GADS_ID ?? ''
 export const GA_ADS_CALL_LABEL = process.env.NEXT_PUBLIC_GADS_CALL_LABEL ?? ''
 export const GA_ADS_FORM_LABEL = process.env.NEXT_PUBLIC_GADS_FORM_LABEL ?? ''
+export const GA_ADS_EMAIL_LABEL = process.env.NEXT_PUBLIC_GADS_EMAIL_LABEL ?? ''
+export const GA_ADS_WHATSAPP_LABEL = process.env.NEXT_PUBLIC_GADS_WHATSAPP_LABEL ?? ''
 
 const CONSENT_KEY = 'cookie-consent'
 
@@ -32,20 +34,25 @@ export function updateConsent(choice: ConsentChoice) {
   })
 }
 
-export function trackPhoneClick() {
+function fireConversion(label: string) {
   if (typeof window === 'undefined' || !window.gtag || !GA_ADS_ID) return
   window.gtag('event', 'conversion', {
-    send_to: GA_ADS_CALL_LABEL
-      ? `${GA_ADS_ID}/${GA_ADS_CALL_LABEL}`
-      : GA_ADS_ID,
+    send_to: label ? `${GA_ADS_ID}/${label}` : GA_ADS_ID,
   })
 }
 
+export function trackPhoneClick() {
+  fireConversion(GA_ADS_CALL_LABEL)
+}
+
 export function trackFormSubmit() {
-  if (typeof window === 'undefined' || !window.gtag || !GA_ADS_ID) return
-  window.gtag('event', 'conversion', {
-    send_to: GA_ADS_FORM_LABEL
-      ? `${GA_ADS_ID}/${GA_ADS_FORM_LABEL}`
-      : GA_ADS_ID,
-  })
+  fireConversion(GA_ADS_FORM_LABEL)
+}
+
+export function trackEmailClick() {
+  fireConversion(GA_ADS_EMAIL_LABEL)
+}
+
+export function trackWhatsAppClick() {
+  fireConversion(GA_ADS_WHATSAPP_LABEL)
 }

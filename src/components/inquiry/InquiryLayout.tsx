@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageCircle, Phone } from 'lucide-react';
-import { trackPhoneClick } from '@/lib/gtag';
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 import ContactInfo from './ContactInfo';
 import WhyUs from './WhyUs';
 
@@ -30,6 +30,7 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
         <div className="mt-6 md:mt-8 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-sm">
           <a
             href="tel:+46762498486"
+            onClick={trackPhoneClick}
             className="inline-flex items-center gap-2 text-nordic-700 hover:text-nordic-900 transition-colors"
           >
             <Phone size={15} />
@@ -38,7 +39,7 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
           <span className="hidden sm:inline text-nordic-300">|</span>
           <a
             href="https://wa.me/46762498486"
-            onClick={trackPhoneClick}
+            onClick={trackWhatsAppClick}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-nordic-700 hover:text-nordic-900 transition-colors"
