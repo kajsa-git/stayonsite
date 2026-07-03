@@ -85,12 +85,14 @@ export const propertyIntakeSchema = z
     washingMachines: nullableInt,
     dryers: nullableInt,
     parkingSpaces: nullableInt,
+    parkingType: z.array(z.string().trim().max(60)).max(12).optional().nullable(),
     furnished: z.boolean().default(false),
     kitchen: z.boolean().default(false),
     dishwasher: z.boolean().default(false),
     garage: z.boolean().default(false),
     broadband: z.boolean().default(false),
     egetBoende: z.boolean().default(false),
+    equipmentNote: stringOrNull,
     skick: stringOrNull,
     desiredRent: nullableNumber,
     moveInFrom: optionalDate,
@@ -146,7 +148,7 @@ export function propertyIntakeInclusions(input: PropertyIntakeInput): string[] {
     input.linensIncluded ? "Sängkläder och handduk" : null,
     input.heatWaterIncluded ? "Värme och varmvatten" : null,
     input.broadband ? "Bredband" : null,
-    input.parkingSpaces ? "Parkering" : null,
+    (input.parkingType && input.parkingType.length) || input.parkingSpaces ? "Parkering" : null,
   ].filter(Boolean) as string[];
 }
 
@@ -173,6 +175,8 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
     line("Önskad hyra", money(input.desiredRent)),
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,
     included.length ? ["Vad ingår i hyran", ...included.map((item) => `- ${item}`)].join("\n") : null,
+    line("Parkering", input.parkingType && input.parkingType.length ? input.parkingType.join(", ") : null),
+    line("Övrigt om utrustning", input.equipmentNote),
     line("Något särskilt", input.specialNote),
   ].filter(Boolean).join("\n\n");
 }

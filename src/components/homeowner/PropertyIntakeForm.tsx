@@ -30,13 +30,13 @@ type IntakeFormState = {
   bathrooms: string;
   washingMachines: string;
   dryers: string;
-  parkingSpaces: string;
+  parkingType: string[];
   furnished: boolean;
   kitchen: boolean;
   dishwasher: boolean;
-  garage: boolean;
   broadband: boolean;
   egetBoende: boolean;
+  equipmentNote: string;
   skick: string;
   desiredRent: string;
   moveInFrom: string;
@@ -63,6 +63,14 @@ const steps = [
   { title: "Bilder", eyebrow: "6" },
 ] as const;
 
+const PARKING_OPTIONS: { value: string; description?: string }[] = [
+  { value: "Garage", description: "Inomhus/låsbart." },
+  { value: "Carport" },
+  { value: "Egen uppfart", description: "På tomten." },
+  { value: "Gatuparkering" },
+  { value: "Parkeringsplats", description: "Egen p-plats i område." },
+];
+
 const initialForm: IntakeFormState = {
   ownerType: "privatperson",
   ownerArrangement: "direkt",
@@ -81,13 +89,13 @@ const initialForm: IntakeFormState = {
   bathrooms: "",
   washingMachines: "",
   dryers: "",
-  parkingSpaces: "",
+  parkingType: [],
   furnished: true,
   kitchen: true,
   dishwasher: false,
-  garage: false,
   broadband: true,
   egetBoende: true,
+  equipmentNote: "",
   skick: "",
   desiredRent: "",
   moveInFrom: "",
@@ -252,6 +260,15 @@ export function PropertyIntakeForm() {
     setErrors((current) => ({ ...current, [field]: undefined }));
   }
 
+  function toggleParking(value: string) {
+    setForm((current) => ({
+      ...current,
+      parkingType: current.parkingType.includes(value)
+        ? current.parkingType.filter((v) => v !== value)
+        : [...current.parkingType, value],
+    }));
+  }
+
   function setOwnerType(ownerType: IntakeFormState["ownerType"]) {
     setForm((current) => ({
       ...current,
@@ -344,13 +361,14 @@ export function PropertyIntakeForm() {
       bathrooms: toNumber(form.bathrooms),
       washingMachines: toNumber(form.washingMachines),
       dryers: toNumber(form.dryers),
-      parkingSpaces: toNumber(form.parkingSpaces),
+      parkingType: form.parkingType,
       furnished: form.furnished,
       kitchen: form.kitchen,
       dishwasher: form.dishwasher,
-      garage: form.garage,
+      garage: form.parkingType.includes("Garage"),
       broadband: form.broadband,
       egetBoende: form.egetBoende,
+      equipmentNote: fieldValue(form.equipmentNote),
       skick: fieldValue(form.skick),
       desiredRent: toNumber(form.desiredRent),
       moveInFrom: fieldValue(form.moveInFrom),
@@ -566,19 +584,36 @@ export function PropertyIntakeForm() {
             )}
 
             {step === 3 && (
-              <div className="space-y-5">
-                <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-6">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <Stepper id="washingMachines" label="Tvättmaskin" value={form.washingMachines} onChange={(value) => set("washingMachines", value)} />
                   <Stepper id="dryers" label="Torktumlare" value={form.dryers} onChange={(value) => set("dryers", value)} />
-                  <Stepper id="parkingSpaces" label="Parkering" value={form.parkingSpaces} onChange={(value) => set("parkingSpaces", value)} />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   <ToggleCard label="Möblerat" checked={form.furnished} onChange={(value) => set("furnished", value)} />
                   <ToggleCard label="Kök" checked={form.kitchen} onChange={(value) => set("kitchen", value)} />
                   <ToggleCard label="Diskmaskin" checked={form.dishwasher} onChange={(value) => set("dishwasher", value)} />
-                  <ToggleCard label="Garage" checked={form.garage} onChange={(value) => set("garage", value)} />
                   <ToggleCard label="Bredband" checked={form.broadband} onChange={(value) => set("broadband", value)} />
                   <ToggleCard label="Hela bostaden hyrs ut" checked={form.egetBoende} onChange={(value) => set("egetBoende", value)} description="Egen bostad – inte rum delat med andra hyresgäster." />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-nordic-900">Parkering</p>
+                  <p className="text-sm text-nordic-600">Välj det som stämmer – flera går bra.</p>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {PARKING_OPTIONS.map((option) => (
+                      <ToggleCard
+                        key={option.value}
+                        label={option.value}
+                        description={option.description}
+                        checked={form.parkingType.includes(option.value)}
+                        onChange={() => toggleParking(option.value)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="equipmentNote" className="text-sm font-semibold text-nordic-900">Övrigt om utrustning</Label>
+                  <Textarea id="equipmentNote" value={form.equipmentNote} onChange={(event) => set("equipmentNote", event.target.value)} placeholder="T.ex. bastu, altan, extra förvaring, redskap, larm, laddbox..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
                 </div>
               </div>
             )}
@@ -595,10 +630,13 @@ export function PropertyIntakeForm() {
                   <Label htmlFor="availabilityNote" className="text-sm font-semibold text-nordic-900">Kommentar om tillgänglighet</Label>
                   <Textarea id="availabilityNote" value={form.availabilityNote} onChange={(event) => set("availabilityNote", event.target.value)} placeholder="T.ex. ledigt efter sommaren, bara vardagar, osäker sluttid..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
                 </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <ToggleCard label="Exakt allt ingår" checked={form.allIncluded} onChange={(value) => set("allIncluded", value)} />
-                  <ToggleCard label="Sängkläder + handduk" checked={form.linensIncluded} onChange={(value) => set("linensIncluded", value)} />
-                  <ToggleCard label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(value) => set("heatWaterIncluded", value)} />
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-nordic-900">Vad ingår i hyran?</p>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <ToggleCard label="Allt ingår i hyran" checked={form.allIncluded} onChange={(value) => set("allIncluded", value)} />
+                    <ToggleCard label="Sängkläder + handdukar" checked={form.linensIncluded} onChange={(value) => set("linensIncluded", value)} />
+                    <ToggleCard label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(value) => set("heatWaterIncluded", value)} />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="excludedNote" className="text-sm font-semibold text-nordic-900">Om något inte ingår, vad?</Label>
