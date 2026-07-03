@@ -138,7 +138,7 @@ const ForForetagHero = () => {
           {/* Left: copy + trust bar (desktop) */}
           <div className="flex-1 mb-3 lg:mb-0">
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-white drop-shadow-2xl mb-2 md:mb-6">
-              {t('Boka personalboende', 'Book worker accommodation', 'Zarezerwuj zakwaterowanie')}
+              {t('Hitta personalboende', 'Find worker accommodation', 'Znajdź zakwaterowanie')}
             </h1>
 
             <p className="max-w-xl text-sm md:text-xl text-white/70 font-light leading-relaxed mb-2 md:mb-10">

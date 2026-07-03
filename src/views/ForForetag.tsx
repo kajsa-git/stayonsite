@@ -98,9 +98,9 @@ const ForForetag = () => {
           'Zakwaterowanie pracownicze dla firm - Otrzymaj ofertę | StayOnSite'
         )}
         description={t(
-          'Boka personalboende för ert team. Möblerat, inflyttningsklart, en faktura. Vi ordnar boende i hela Sverige. Offert inom 24 timmar.',
-          'Book worker accommodation for your team. Furnished, move-in ready, one invoice. We arrange accommodation across Sweden. Quote within 24 hours.',
-          'Zarezerwuj zakwaterowanie dla swojego zespołu. Umeblowane, gotowe, jedna faktura. Oferta w ciągu 24 godzin.'
+          'Hitta personalboende för ert team. Möblerat, inflyttningsklart, en faktura. Vi ordnar boende i hela Sverige. Offert inom 24 timmar.',
+          'Find worker accommodation for your team. Furnished, move-in ready, one invoice. We arrange accommodation across Sweden. Quote within 24 hours.',
+          'Znajdź zakwaterowanie dla swojego zespołu. Umeblowane, gotowe, jedna faktura. Oferta w ciągu 24 godzin.'
         )}
         canonical="https://www.stayonsite.se/for-foretag"
         structuredData={structuredData}
