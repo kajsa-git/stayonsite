@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
-import { trackFormSubmit, trackPhoneClick } from "@/lib/gtag";
 import { cn } from "@/lib/utils";
 
 type IntakeFormState = {
@@ -204,10 +203,10 @@ function Stepper({
   const numeric = Number(value || 0);
   const next = (delta: number) => onChange(String(Math.max(min, (Number.isFinite(numeric) ? numeric : 0) + delta)));
   return (
-    <div className="rounded-md border border-nordic-200 bg-white p-3">
+    <div className="space-y-2">
       <Label htmlFor={id} className="text-sm font-semibold text-nordic-900">{label}</Label>
-      <div className="mt-2 flex items-center gap-2">
-        <Button type="button" variant="outline" className="h-11 w-11 p-0 text-lg" onClick={() => next(-1)} aria-label={`Minska ${label}`}>
+      <div className="flex items-center">
+        <Button type="button" variant="outline" className="h-11 w-10 shrink-0 rounded-r-none p-0 text-lg" onClick={() => next(-1)} aria-label={`Minska ${label}`}>
           -
         </Button>
         <Input
@@ -215,9 +214,9 @@ function Stepper({
           value={value}
           inputMode="numeric"
           onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, 3))}
-          className="h-11 text-center text-base font-semibold"
+          className="h-11 min-w-0 flex-1 rounded-none border-x-0 text-center text-base font-semibold"
         />
-        <Button type="button" variant="outline" className="h-11 w-11 p-0 text-lg" onClick={() => next(1)} aria-label={`Öka ${label}`}>
+        <Button type="button" variant="outline" className="h-11 w-10 shrink-0 rounded-l-none p-0 text-lg" onClick={() => next(1)} aria-label={`Öka ${label}`}>
           +
         </Button>
       </div>
@@ -400,7 +399,6 @@ export function PropertyIntakeForm() {
         throw new Error(result?.error ?? "property_intake_failed");
       }
 
-      trackFormSubmit();
       setSuccess({
         propertyId: result.propertyId,
         imageCount: result.imageCount ?? 0,
@@ -442,7 +440,6 @@ export function PropertyIntakeForm() {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href="tel:+46762498486"
-              onClick={trackPhoneClick}
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#0f766e] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#115e59]"
             >
               <Phone className="h-4 w-4" />
@@ -551,7 +548,7 @@ export function PropertyIntakeForm() {
             {step === 2 && (
               <div className="space-y-5">
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <LabelledInput id="squareMeters" label="Yta (m²)" value={form.squareMeters} onChange={(value) => set("squareMeters", value)} type="number" inputMode="decimal" />
+                  <LabelledInput id="squareMeters" label="Bostadsyta (m²)" value={form.squareMeters} onChange={(value) => set("squareMeters", value)} type="number" inputMode="decimal" />
                   <Stepper id="bedrooms" label="Sovrum" value={form.bedrooms} onChange={(value) => set("bedrooms", value)} />
                   <Stepper id="beds" label="Bäddar" value={form.beds} onChange={(value) => set("beds", value)} />
                   <Stepper id="bathrooms" label="Badrum" value={form.bathrooms} onChange={(value) => set("bathrooms", value)} />
