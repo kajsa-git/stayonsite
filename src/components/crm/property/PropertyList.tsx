@@ -623,10 +623,13 @@ function PropertyForm({
   onSave,
   onCancel,
 }: {
-  onSave: (data: Omit<PropertyWithOwner, "id" | "createdAt">, opts?: { imageUrls?: string[] }) => void;
+  onSave: (data: Omit<PropertyWithOwner, "id" | "createdAt">, opts?: { imageUrls?: string[] }) => void | Promise<void>;
   onCancel: () => void;
 }) {
   const [form, setForm] = useState<Partial<PropertyWithOwner>>({ status: "available" });
+  // Spärr mot dubbelsparning: POST + serverns bildimport kan ta många sekunder,
+  // och ett andra klick under tiden skapade tidigare ett dubblettobjekt.
+  const [saving, setSaving] = useState(false);
   const [importUrl, setImportUrl] = useState("");
   const [importing, setImporting] = useState(false);
   const [imported, setImported] = useState<{ source: ImportedListing["source"]; images: number } | null>(null);
@@ -876,12 +879,21 @@ function PropertyForm({
       <div className="flex gap-2 pt-2">
         <Button variant="ghost" onClick={onCancel}>Avbryt</Button>
         <Button
-          onClick={() => onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">, { imageUrls: pendingImages })}
+          onClick={async () => {
+            if (saving) return;
+            setSaving(true);
+            try {
+              await onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">, { imageUrls: pendingImages });
+            } finally {
+              setSaving(false);
+            }
+          }}
           // Adress är intern (visas aldrig publikt) → räcker med ort eller postnummer för att
           // spara. Airbnb anger aldrig gatuadress, så annars går en ren Airbnb-import inte att spara.
-          disabled={!form.address && !form.city && !form.postalCode}
+          disabled={saving || (!form.address && !form.city && !form.postalCode)}
         >
-          Spara bostad
+          {saving && <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />}
+          {saving ? "Sparar…" : "Spara bostad"}
         </Button>
       </div>
     </div>
