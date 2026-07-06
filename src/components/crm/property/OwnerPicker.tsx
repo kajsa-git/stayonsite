@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import type { Owner } from "@/lib/crm/schema";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { Link2, Search, X } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
@@ -102,7 +103,7 @@ export function OwnerPicker({ value, onChange }: Props) {
               >
                 <span className="block text-sm font-medium truncate">{owner.name}</span>
                 <span className="block text-xs text-muted-foreground truncate">
-                  {[owner.contactPerson, owner.phone || owner.email, owner.propertyCount != null ? `${owner.propertyCount} objekt` : null]
+                  {[owner.contactPerson, formatPhoneSv(owner.phone) || owner.email, owner.propertyCount != null ? `${owner.propertyCount} objekt` : null]
                     .filter(Boolean)
                     .join(" · ")}
                 </span>

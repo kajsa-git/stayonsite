@@ -1,6 +1,7 @@
 "use client";
 
 import type { Company, Contact } from "@/lib/crm/schema";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { ExternalLink, Mail, Phone, User } from "lucide-react";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { ReviewRequestSnippet } from "@/components/crm/ReviewRequestSnippet";
@@ -75,7 +76,7 @@ export function CompanyHeader({ company, primaryContact }: Props) {
               <span className="flex items-center gap-1.5">
                 <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
                   <Phone className="h-3.5 w-3.5 text-nordic-500" />
-                  {primaryContact.phone}
+                  {formatPhoneSv(primaryContact.phone)}
                 </a>
                 <PhoneActions phone={primaryContact.phone} />
               </span>

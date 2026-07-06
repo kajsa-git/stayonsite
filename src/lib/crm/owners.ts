@@ -2,6 +2,7 @@ import { eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { owners, properties, type Owner, type Property } from "./schema";
+import { normalizePhoneForStorage } from "./phone-links";
 import { publicDisplayName, slugify } from "./slug";
 
 // Säkerställ en unik URL-slug i crm_properties. Lägger -2, -3… vid krock.
@@ -127,7 +128,7 @@ function ownerValuesFromPropertyBody(body: Record<string, unknown>): OwnerValues
     name: str(body.ownerName) || "(uthyrare utan namn)",
     orgNr: str(body.ownerOrgNr) || null,
     contactPerson: str(body.ownerContactPerson) || null,
-    phone: str(body.ownerPhone) || null,
+    phone: normalizePhoneForStorage(str(body.ownerPhone)),
     email: str(body.ownerEmail) || null,
     rating: typeof body.rating === "number" ? body.rating : body.rating == null ? null : Number(body.rating),
   };

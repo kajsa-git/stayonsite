@@ -1,10 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
@@ -69,7 +71,7 @@ const EXPORT_COLUMNS: { header: string; value: (p: PropertyWithThumb) => string 
   { header: "Uthyrare", value: (p) => p.ownerName },
   { header: "Typ", value: (p) => p.ownerType },
   { header: "Kontaktperson", value: (p) => p.ownerContactPerson },
-  { header: "Telefon", value: (p) => p.ownerPhone },
+  { header: "Telefon", value: (p) => formatPhoneSv(p.ownerPhone) },
   { header: "E-post", value: (p) => p.ownerEmail },
   { header: "Hyra in (kr/mån)", value: (p) => p.rentIn },
   { header: "Hyra ut (kr/mån)", value: (p) => p.rentOut },
@@ -113,6 +115,9 @@ export function PropertyList() {
   const [intakeFilter, setIntakeFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" } | null>(null);
+  // Tabelläget öppnar objektet i en dialog ovanpå tabellen (i stället för att hoppa
+  // till listvyn) — redigera, stäng, och du är kvar där du var i tabellen.
+  const [tableModal, setTableModal] = useState<PropertyWithOwner | null>(null);
   const isMobile = useIsMobile();
 
   const { data: properties = [], mutate, isLoading } = useSWR<PropertyWithThumb[]>(
@@ -232,6 +237,7 @@ export function PropertyList() {
         body: JSON.stringify(data),
       });
       setSelected((current) => (current?.id === id ? { ...current, ...updated } : current));
+      setTableModal((current) => (current?.id === id ? { ...current, ...updated } : current));
       mutate();
     } catch (e) {
       toast({ title: crmErrorMessage(e), variant: "destructive" });
@@ -516,8 +522,8 @@ export function PropertyList() {
                       <TableRow
                         key={p.id}
                         tabIndex={0}
-                        onClick={() => { setSelected(p); setJustCreatedId(null); setViewMode("list"); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(p); setJustCreatedId(null); setViewMode("list"); } }}
+                        onClick={() => { setTableModal(p); setJustCreatedId(null); }}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTableModal(p); setJustCreatedId(null); } }}
                         className="even:bg-nordic-100 hover:bg-primary-50/70 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                       >
                         <TableCell>
@@ -540,7 +546,7 @@ export function PropertyList() {
                               onClick={(e) => e.stopPropagation()}
                               className="text-primary-600 hover:underline"
                             >
-                              {p.ownerPhone}
+                              {formatPhoneSv(p.ownerPhone)}
                             </a>
                           ) : (
                             "–"
@@ -570,6 +576,20 @@ export function PropertyList() {
               </TableBody>
             </Table>
           </div>
+          {/* Objekt-dialog: full vy med redigering utan att lämna tabellen */}
+          <Dialog open={!!tableModal} onOpenChange={(open) => { if (!open) setTableModal(null); }}>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              <DialogTitle className="sr-only">{tableModal?.address || "Bostad"}</DialogTitle>
+              {tableModal && (
+                <PropertyView
+                  key={tableModal.id}
+                  property={tableModal}
+                  onUpdate={(data) => handleUpdate(tableModal.id, data)}
+                  onDelete={async () => { await handleDelete(tableModal.id); setTableModal(null); }}
+                />
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
       ) : (
         <div className="flex flex-1 min-h-0">

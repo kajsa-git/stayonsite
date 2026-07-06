@@ -9,6 +9,7 @@ import { ArrowRight, LogIn, LogOut, X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
@@ -862,7 +863,7 @@ function ChaseCard({
       <button className="w-full text-left" onClick={onOpen}>
         <div className="font-medium text-sm truncate">{item.address ?? "(adress saknas)"}</div>
         <div className="text-xs text-muted-foreground truncate">
-          {[item.ownerName, item.ownerPhone].filter(Boolean).join(" · ") || "—"}
+          {[item.ownerName, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
         </div>
         <div className="text-xs mt-1">
           {item.sourcing ? (

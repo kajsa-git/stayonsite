@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import useSWR from "swr";
 import { swrFetcher } from "@/lib/crm/fetcher";
 
@@ -81,7 +82,7 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
           <Item label="Vi hyr för" value={p.rentIn ? `${p.rentIn.toLocaleString("sv-SE")} kr/mån` : "–"} />
           <Item label="Vi hyr ut för" value={p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr/mån` : "–"} />
           <Item label="Uthyrare" value={p.ownerName ?? "–"} />
-          <Item label="Telefon" value={p.ownerPhone ?? "–"} />
+          <Item label="Telefon" value={formatPhoneSv(p.ownerPhone) ?? "–"} />
           <Item label="E-post" value={p.ownerEmail ?? "–"} />
         </div>
 

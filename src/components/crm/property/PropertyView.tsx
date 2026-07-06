@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PropertyImages } from "./PropertyImages";
@@ -263,7 +264,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
               <InfoRow label={property.ownerType === "foretag" ? "Företag" : "Namn"} value={property.ownerName} />
               {property.ownerType === "foretag" && <InfoRow label="Org.nr" value={property.ownerOrgNr} />}
               {property.ownerType === "foretag" && <InfoRow label="Kontaktperson" value={property.ownerContactPerson} />}
-              <InfoRow label="Telefon" value={property.ownerPhone} actions={<PhoneActions phone={property.ownerPhone} />} />
+              <InfoRow label="Telefon" value={formatPhoneSv(property.ownerPhone)} actions={<PhoneActions phone={property.ownerPhone} />} />
               <InfoRow label="E-post" value={property.ownerEmail} />
             </div>
             <div className="mt-3">

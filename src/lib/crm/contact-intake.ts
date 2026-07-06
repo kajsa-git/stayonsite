@@ -1,6 +1,7 @@
 import { and, desc, eq, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
+import { normalizePhoneForStorage } from "./phone-links";
 import { safeFetchPublic } from "./safe-fetch";
 import {
   companies,
@@ -102,7 +103,7 @@ async function findCompanyByContact(email: string | null, phone: string | null) 
 
 async function ensureCompanyAndContact({
   email,
-  phone,
+  phone: rawPhone,
   name,
   submission,
 }: {
@@ -111,6 +112,9 @@ async function ensureCompanyAndContact({
   name?: string | null;
   submission: WebSubmission;
 }) {
+  // Normalisera till E.164 innan både matchning och skrivning — annars missar
+  // findCompanyByContact befintliga kontakter vars nummer redan är normaliserade.
+  const phone = normalizePhoneForStorage(rawPhone);
   const existing = await findCompanyByContact(email, phone);
   if (existing) {
     return { company: existing.company, contact: existing.contact };

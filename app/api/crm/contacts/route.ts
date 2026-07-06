@@ -1,5 +1,6 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { normalizePhoneForStorage } from "@/lib/crm/phone-links";
 import { indexContact } from "@/lib/crm/search-index";
 import { contacts } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
@@ -22,7 +23,9 @@ export async function POST(req: NextRequest) {
   }
 
   const id = body.id ?? nanoid();
-  const [row] = await db.insert(contacts).values({ ...body, id }).returning();
+  // Telefonnummer lagras kanoniskt som E.164 (+46…).
+  const phone = normalizePhoneForStorage(body.phone);
+  const [row] = await db.insert(contacts).values({ ...body, phone, id }).returning();
   await indexContact(id).catch((e) => console.error("search-index contact:", e));
   return NextResponse.json(row, { status: 201 });
 }

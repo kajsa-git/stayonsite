@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import { db } from "./db";
 import { normalizePropertyWriteBody } from "./owners";
+import { normalizePhoneForStorage } from "./phone-links";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
 import { ownerOutreach, owners, properties, type Owner, type Property, type PropertyInsert } from "./schema";
@@ -259,8 +260,14 @@ async function markOwnerForFollowUp(ownerId: string, input: PropertyIntakeInput)
 }
 
 export async function createPropertyIntake(
-  input: PropertyIntakeInput,
+  rawInput: PropertyIntakeInput,
 ): Promise<{ property: Property; owner: Owner | null }> {
+  // Normalisera telefonen till E.164 innan både uthyrar-matchning och skrivning —
+  // annars missar findOwnerByContact befintliga uthyrare vars nummer redan är normaliserade.
+  const input: PropertyIntakeInput = {
+    ...rawInput,
+    ownerPhone: normalizePhoneForStorage(rawInput.ownerPhone) ?? rawInput.ownerPhone,
+  };
   const existingOwner = await findOwnerByContact(input.ownerEmail, input.ownerPhone);
   const writeBody = propertyIntakeToPropertyBody(input);
   if (existingOwner) {

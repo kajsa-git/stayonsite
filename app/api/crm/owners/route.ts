@@ -1,5 +1,6 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { normalizePhoneForStorage } from "@/lib/crm/phone-links";
 import { indexOwner } from "@/lib/crm/search-index";
 import { owners, properties } from "@/lib/crm/schema";
 import { asc, eq, like, or, sql } from "drizzle-orm";
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
       name,
       orgNr: body.orgNr ?? null,
       contactPerson: body.contactPerson ?? null,
-      phone: body.phone ?? null,
+      phone: normalizePhoneForStorage(body.phone),
       email: body.email ?? null,
       rating: body.rating ?? null,
       followUpDate: body.followUpDate ?? null,

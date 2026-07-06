@@ -1,5 +1,6 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
+import { normalizePhoneForStorage } from "@/lib/crm/phone-links";
 import { deleteContactDeep } from "@/lib/crm/cascade-delete";
 import { indexContact, removeFromIndex } from "@/lib/crm/search-index";
 import { contacts } from "@/lib/crm/schema";
@@ -29,6 +30,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const ALLOWED = ["name", "phone", "email", "isPrimary"] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) if (key in body) data[key] = body[key];
+  // Telefonnummer lagras kanoniskt som E.164 (+46…).
+  if ("phone" in data) data.phone = normalizePhoneForStorage(data.phone as string | null);
 
   const [row] = await db.update(contacts).set(data).where(eq(contacts.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
