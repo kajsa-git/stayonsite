@@ -5,6 +5,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { propertyImages, properties } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { safeFetchPublic } from "@/lib/crm/safe-fetch";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
@@ -90,7 +91,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     .where(eq(propertyImages.propertyId, id));
   let hasPrimary = existing.length > 0;
 
+  // Innehålls-dedup: hoppa över bilder som redan finns på objektet (t.ex. vid
+  // om-import av samma annons) och dubbletter inom samma anrop.
+  const seenHashes = await existingImageHashes(id);
+
   let created = 0;
+  let skipped = 0;
   const failed: string[] = [];
 
   const slice = urls.slice(0, MAX_IMAGES);
@@ -110,6 +116,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       failed.push(url);
       continue;
     }
+    const hash = imageContentHash(bytes);
+    if (seenHashes.has(hash)) {
+      skipped++;
+      continue;
+    }
+    seenHashes.add(hash);
     const key = `properties/${id}/${nanoid()}.${sniffed.ext}`;
     try {
       await r2.send(new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime }));
@@ -128,5 +140,5 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
   }
 
-  return NextResponse.json({ created, failed: failed.length });
+  return NextResponse.json({ created, failed: failed.length, skipped });
 }

@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { appendPropertyIntakeImageSummary, createPropertyIntake, propertyIntakeSchema } from "@/lib/crm/property-intake";
 import { db } from "@/lib/crm/db";
+import { imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { propertyImages } from "@/lib/crm/schema";
@@ -23,7 +24,7 @@ function filesFrom(formData: FormData) {
   return formData.getAll("images").filter((value): value is File => value instanceof File && value.size > 0);
 }
 
-async function uploadImage(propertyId: string, file: File, sortOrder: number, isPrimary: boolean) {
+async function uploadImage(propertyId: string, file: File, sortOrder: number, isPrimary: boolean, seenHashes: Set<string>) {
   if (file.size > MAX_IMAGE_BYTES) {
     throw new Error("image_too_large");
   }
@@ -33,6 +34,13 @@ async function uploadImage(propertyId: string, file: File, sortOrder: number, is
   if (!sniffed) {
     throw new Error("invalid_image_type");
   }
+
+  // Innehålls-dedup: samma foto bifogat två gånger i samma inskick lagras en gång.
+  const hash = imageContentHash(bytes);
+  if (seenHashes.has(hash)) {
+    throw new Error("duplicate_image");
+  }
+  seenHashes.add(hash);
 
   const key = `properties/${propertyId}/${nanoid()}.${sniffed.ext}`;
   await r2.send(new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime }));
@@ -97,9 +105,10 @@ export async function POST(req: NextRequest) {
 
     let imageCount = 0;
     const imageErrors: string[] = [];
+    const seenHashes = new Set<string>();
     for (const [index, file] of files.entries()) {
       try {
-        await uploadImage(property.id, file, index, imageCount === 0);
+        await uploadImage(property.id, file, index, imageCount === 0, seenHashes);
         imageCount += 1;
       } catch (error) {
         const message = error instanceof Error ? error.message : "image_upload_failed";

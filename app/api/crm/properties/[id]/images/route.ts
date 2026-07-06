@@ -2,6 +2,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -58,6 +59,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       { error: "Filen är inte en giltig bild (jpg, png, webp, gif eller avif)" },
       { status: 400 },
     );
+  }
+
+  // Innehålls-dedup: exakt samma bild ska inte lagras två gånger på samma objekt.
+  const hashes = await existingImageHashes(id);
+  if (hashes.has(imageContentHash(bytes))) {
+    return NextResponse.json({ error: "Bilden finns redan på det här objektet" }, { status: 409 });
   }
 
   const key = `properties/${id}/${nanoid()}.${sniffed.ext}`;
