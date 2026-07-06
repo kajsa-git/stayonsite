@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
+import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher, CrmFetchError } from "@/lib/crm/fetcher";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
@@ -223,6 +223,8 @@ export function PropertyList() {
       setViewMode("list");
       toast({ title: `Bostad sparad${imgNote}` });
     } catch (e) {
+      // 409 = serverns dubblettspärr → låt formuläret visa "Öppna befintligt / Spara ändå".
+      if (e instanceof CrmFetchError && e.status === 409) throw e;
       toast({ title: crmErrorMessage(e), variant: "destructive" });
     }
   }
@@ -630,6 +632,8 @@ function PropertyForm({
   // Spärr mot dubbelsparning: POST + serverns bildimport kan ta många sekunder,
   // och ett andra klick under tiden skapade tidigare ett dubblettobjekt.
   const [saving, setSaving] = useState(false);
+  // Serverns dubblettspärr (409): visa varning med "Öppna befintligt / Spara ändå".
+  const [saveDupe, setSaveDupe] = useState<{ id: string; address: string | null; city: string | null } | null>(null);
   const [importUrl, setImportUrl] = useState("");
   const [importing, setImporting] = useState(false);
   const [imported, setImported] = useState<{ source: ImportedListing["source"]; images: number } | null>(null);
@@ -882,8 +886,15 @@ function PropertyForm({
           onClick={async () => {
             if (saving) return;
             setSaving(true);
+            setSaveDupe(null);
             try {
               await onSave(form as Omit<PropertyWithOwner, "id" | "createdAt">, { imageUrls: pendingImages });
+            } catch (e) {
+              const existing = e instanceof CrmFetchError && e.status === 409
+                ? (e.data as { existing?: { id: string; address: string | null; city: string | null } } | undefined)?.existing
+                : undefined;
+              if (existing) setSaveDupe(existing);
+              else toast({ title: crmErrorMessage(e), variant: "destructive" });
             } finally {
               setSaving(false);
             }
@@ -896,6 +907,44 @@ function PropertyForm({
           {saving ? "Sparar…" : "Spara bostad"}
         </Button>
       </div>
+      {saveDupe && (
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-2.5 text-xs space-y-2">
+          <p className="font-medium text-amber-900">
+            ⚠ Det här objektet verkar redan finnas
+            {saveDupe.address ? `: ${saveDupe.address}` : ""}
+            {saveDupe.city ? `, ${saveDupe.city}` : ""}.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/crm/properties?id=${saveDupe.id}`}
+              className="inline-flex items-center rounded border border-amber-400 bg-white px-2 py-1 font-medium text-amber-900 hover:bg-amber-100"
+            >
+              Öppna befintligt
+            </a>
+            <button
+              type="button"
+              onClick={async () => {
+                if (saving) return;
+                setSaving(true);
+                setSaveDupe(null);
+                try {
+                  await onSave(
+                    { ...form, forceDuplicate: true } as unknown as Omit<PropertyWithOwner, "id" | "createdAt">,
+                    { imageUrls: pendingImages },
+                  );
+                } catch (e) {
+                  toast({ title: crmErrorMessage(e), variant: "destructive" });
+                } finally {
+                  setSaving(false);
+                }
+              }}
+              className="inline-flex items-center rounded border border-input bg-white px-2 py-1 text-muted-foreground hover:bg-nordic-100"
+            >
+              Spara ändå
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

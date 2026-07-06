@@ -6,7 +6,7 @@ import { owners, properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -78,6 +78,26 @@ export async function POST(req: NextRequest) {
   if (body.status != null && !isValidPropertyStatus(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
+
+  // Dubblettspärr: samma adress + ort (case-/whitespace-okänsligt) som ett befintligt
+  // objekt avvisas med 409 + det befintliga, så klienten kan visa "Öppna befintligt /
+  // Spara ändå". forceDuplicate=true kör över (och filtreras bort av stripForPropertyWrite).
+  const dupAddress = String(body.address ?? "").trim().toLowerCase();
+  if (dupAddress && body.forceDuplicate !== true) {
+    const dupCity = String(body.city ?? "").trim().toLowerCase();
+    const candidates = await db
+      .select({ id: properties.id, address: properties.address, city: properties.city })
+      .from(properties)
+      .where(sql`lower(trim(${properties.address})) = ${dupAddress}`);
+    const existing = candidates.find((c) => String(c.city ?? "").trim().toLowerCase() === dupCity);
+    if (existing) {
+      return NextResponse.json(
+        { error: `Objektet verkar redan finnas: ${existing.address}${existing.city ? `, ${existing.city}` : ""}`, existing },
+        { status: 409 },
+      );
+    }
+  }
+
   const id = nanoid();
   const values = await normalizePropertyWriteBody(body);
   const [row] = await db.insert(properties).values({ id, ...values }).returning();

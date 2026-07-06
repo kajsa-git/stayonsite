@@ -4,10 +4,12 @@
 
 export class CrmFetchError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  data?: unknown; // serverns JSON-kropp (t.ex. { existing } vid 409-dubblett)
+  constructor(message: string, status: number, data?: unknown) {
     super(message);
     this.name = "CrmFetchError";
     this.status = status;
+    this.data = data;
   }
 }
 
@@ -15,15 +17,17 @@ export async function crmFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   const res = await fetch(input, init);
   if (!res.ok) {
     let message = `Något gick fel (${res.status})`;
+    let data: unknown;
     try {
-      const data = await res.clone().json();
-      if (data?.message) message = data.message;
-      else if (data?.error) message = data.error;
+      data = await res.clone().json();
+      const d = data as { message?: string; error?: string };
+      if (d?.message) message = d.message;
+      else if (d?.error) message = d.error;
     } catch {
       /* svaret var inte JSON */
     }
     if (res.status === 401) message = "Du verkar vara utloggad – logga in igen.";
-    throw new CrmFetchError(message, res.status);
+    throw new CrmFetchError(message, res.status, data);
   }
   return res;
 }
