@@ -6,8 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/components/ui/use-toast";
 import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
-import { ChevronLeft, DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronsUpDown, ChevronUp, Download, DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
 
 type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -15,6 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
+import { PropertyIntakeSharePanel } from "./PropertyIntakeSharePanel";
 
 const fetcher = swrFetcher;
 
@@ -24,6 +26,79 @@ const PROP_STATUS: Record<string, { label: string; cls: string }> = {
   rented: { label: "Uthyrd", cls: "bg-blue-100 text-blue-800" },
   off_market: { label: "Av marknaden", cls: "bg-gray-100 text-gray-600" },
 };
+
+function isPropertyIntake(property: Pick<PropertyWithOwner, "notes">) {
+  return !!property.notes?.includes(PROPERTY_INTAKE_MARKER);
+}
+
+// Sorterbara tabellkolumner → funktion som plockar ut jämförvärdet ur ett objekt.
+// Booleans blir 0/1, status jämförs på sin etikett så ordningen blir begriplig.
+type SortKey =
+  | "address" | "postalCode" | "city" | "ownerName" | "ownerContactPerson" | "ownerPhone" | "squareMeters"
+  | "bedrooms" | "beds" | "rentOut" | "furnished" | "status" | "moveInFrom" | "published";
+
+const SORT_VALUE: Record<SortKey, (p: PropertyWithThumb) => string | number | null | undefined> = {
+  address: (p) => p.address,
+  postalCode: (p) => p.postalCode,
+  city: (p) => p.city,
+  ownerName: (p) => p.ownerName,
+  ownerContactPerson: (p) => p.ownerContactPerson,
+  ownerPhone: (p) => p.ownerPhone,
+  squareMeters: (p) => p.squareMeters,
+  bedrooms: (p) => p.bedrooms,
+  beds: (p) => p.beds,
+  rentOut: (p) => p.rentOut,
+  furnished: (p) => (p.furnished ? 1 : 0),
+  status: (p) => (PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available).label,
+  moveInFrom: (p) => p.moveInFrom,
+  published: (p) => (p.published ? 1 : 0),
+};
+
+// CSV-export av de rader som visas. Excel-vänlig för svenska: UTF-8 BOM så åäö blir rätt,
+// semikolon-avgränsare (svensk Excel delar på ; inte ,) och fält citeras vid behov.
+const EXPORT_COLUMNS: { header: string; value: (p: PropertyWithThumb) => string | number | null | undefined }[] = [
+  { header: "Adress", value: (p) => p.address },
+  { header: "Postnummer", value: (p) => p.postalCode },
+  { header: "Ort", value: (p) => p.city },
+  { header: "Land", value: (p) => p.country },
+  { header: "m²", value: (p) => p.squareMeters },
+  { header: "Sovrum", value: (p) => p.bedrooms },
+  { header: "Bäddar", value: (p) => p.beds },
+  { header: "Badrum", value: (p) => p.bathrooms },
+  { header: "Möblerat", value: (p) => (p.furnished ? "Ja" : "Nej") },
+  { header: "Uthyrare", value: (p) => p.ownerName },
+  { header: "Typ", value: (p) => p.ownerType },
+  { header: "Kontaktperson", value: (p) => p.ownerContactPerson },
+  { header: "Telefon", value: (p) => p.ownerPhone },
+  { header: "E-post", value: (p) => p.ownerEmail },
+  { header: "Hyra in (kr/mån)", value: (p) => p.rentIn },
+  { header: "Hyra ut (kr/mån)", value: (p) => p.rentOut },
+  { header: "Status", value: (p) => (PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available).label },
+  { header: "Tillgänglig från", value: (p) => p.moveInFrom },
+  { header: "Tillgänglig till", value: (p) => p.availableTo },
+  { header: "Publicerad", value: (p) => (p.published ? "Ja" : "Nej") },
+];
+
+function exportPropertiesCsv(rows: PropertyWithThumb[]) {
+  const esc = (v: string | number | null | undefined) => {
+    const s = v === null || v === undefined ? "" : String(v);
+    return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const lines = [
+    EXPORT_COLUMNS.map((c) => esc(c.header)).join(";"),
+    ...rows.map((p) => EXPORT_COLUMNS.map((c) => esc(c.value(p))).join(";")),
+  ];
+  const csv = "\ufeff" + lines.join("\r\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `bostader-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
 export function PropertyList() {
   const [search, setSearch] = useState("");
@@ -35,7 +110,9 @@ export function PropertyList() {
   const [cityFilter, setCityFilter] = useState("");
   const [minBedrooms, setMinBedrooms] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
+  const [intakeFilter, setIntakeFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
+  const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" } | null>(null);
   const isMobile = useIsMobile();
 
   const { data: properties = [], mutate, isLoading } = useSWR<PropertyWithThumb[]>(
@@ -57,9 +134,34 @@ export function PropertyList() {
       if (minBr && (p.bedrooms ?? 0) < minBr) return false;
       if (publishedFilter === "yes" && !p.published) return false;
       if (publishedFilter === "no" && p.published) return false;
+      if (intakeFilter === "yes" && !isPropertyIntake(p)) return false;
       return true;
     });
-  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter]);
+  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter]);
+
+  // Sortering: tomma värden hamnar alltid sist (oavsett riktning), annars siffer- resp.
+  // svensk textjämförelse. Utan aktiv sortering behålls serverns ordning.
+  const sorted = useMemo(() => {
+    if (!sort) return filtered;
+    const getVal = SORT_VALUE[sort.key];
+    const factor = sort.dir === "asc" ? 1 : -1;
+    return [...filtered].sort((pa, pb) => {
+      const a = getVal(pa);
+      const b = getVal(pb);
+      const aEmpty = a === null || a === undefined || a === "";
+      const bEmpty = b === null || b === undefined || b === "";
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;
+      if (bEmpty) return -1;
+      const cmp =
+        typeof a === "number" && typeof b === "number"
+          ? a - b
+          : String(a).localeCompare(String(b), "sv");
+      return factor * cmp;
+    });
+  }, [filtered, sort]);
+
+  const intakeCount = useMemo(() => properties.filter(isPropertyIntake).length, [properties]);
 
   // Deep-link från global sök: /crm/properties?id=… öppnar objektet direkt (en gång).
   // Läs query först efter mount (useEffect kör aldrig på servern → ingen hydreringskrock).
@@ -160,6 +262,31 @@ export function PropertyList() {
     </button>
   );
 
+  // Klickbar kolumnrubrik: första klicket sorterar stigande, nästa fallande, växlar sen.
+  const sortHeader = (key: SortKey, label: string, className = "") => {
+    const active = sort?.key === key;
+    return (
+      <TableHead className={className}>
+        <button
+          type="button"
+          onClick={() =>
+            setSort((cur) =>
+              cur?.key === key ? { key, dir: cur.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" },
+            )
+          }
+          className={`inline-flex items-center gap-1 -mx-1 px-1 rounded transition-colors hover:text-primary-600 ${active ? "text-primary-600" : ""}`}
+        >
+          {label}
+          {active ? (
+            sort!.dir === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+          ) : (
+            <ChevronsUpDown className="h-3 w-3 opacity-30" />
+          )}
+        </button>
+      </TableHead>
+    );
+  };
+
   // Listrader — återanvänds i desktop-sidopanelen och i mobil-single-pane.
   const listBody = (
     <>
@@ -188,6 +315,11 @@ export function PropertyList() {
               <div className="text-xs text-muted-foreground truncate">
                 {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
               </div>
+              {isPropertyIntake(p) && (
+                <span className="mt-1 inline-flex rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-800">
+                  Nytt bostadsintag
+                </span>
+              )}
             </div>
             {p.thumbnailUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -221,10 +353,33 @@ export function PropertyList() {
           {toggleBtn("table", "Tabell", Table2)}
         </div>
         <span className="text-xs text-muted-foreground">{filtered.length} objekt</span>
-        <Button size="sm" className="ml-auto gap-1 text-xs" onClick={() => { setAdding(true); setSelected(null); }}>
+        {intakeCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setIntakeFilter((value) => (value === "yes" ? "" : "yes"))}
+            className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+              intakeFilter === "yes" ? "bg-teal-700 text-white" : "bg-teal-50 text-teal-800 hover:bg-teal-100"
+            }`}
+          >
+            {intakeCount} nya intag
+          </button>
+        )}
+        <Button
+          size="sm"
+          variant="outline"
+          className="ml-auto gap-1 text-xs"
+          onClick={() => exportPropertiesCsv(sorted)}
+          disabled={sorted.length === 0}
+          title="Exportera de visade bostäderna till CSV (öppnas i Excel)"
+        >
+          <Download className="h-3 w-3" /> Exportera CSV
+        </Button>
+        <Button size="sm" className="gap-1 text-xs" onClick={() => { setAdding(true); setSelected(null); }}>
           <Plus className="h-3 w-3" /> Ny bostad
         </Button>
       </div>
+
+      <PropertyIntakeSharePanel />
 
       {/* Filterrad */}
       {!adding && (
@@ -268,14 +423,22 @@ export function PropertyList() {
             <option value="yes">Publicerad</option>
             <option value="no">Ej publicerad</option>
           </select>
+          <select
+            value={intakeFilter}
+            onChange={(e) => setIntakeFilter(e.target.value)}
+            className="h-7 border rounded px-2 bg-white text-xs"
+          >
+            <option value="">Alla intag</option>
+            <option value="yes">Nya bostadsintag</option>
+          </select>
           {ownerFilter && (
             <span className="rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-teal-800">
               Uthyrare-filter
             </span>
           )}
-          {(statusFilter || cityFilter || minBedrooms || publishedFilter || ownerFilter) && (
+          {(statusFilter || cityFilter || minBedrooms || publishedFilter || intakeFilter || ownerFilter) && (
             <button
-              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setOwnerFilter(""); }}
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setIntakeFilter(""); setOwnerFilter(""); }}
               className="text-muted-foreground hover:text-foreground underline"
             >
               Rensa
@@ -321,31 +484,33 @@ export function PropertyList() {
               <TableHeader className="sticky top-0 z-10 bg-nordic-100 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-nordic-900">
                 <TableRow className="border-b border-nordic-200 hover:bg-transparent">
                   <TableHead className="w-14" />
-                  <TableHead>Adress</TableHead>
-                  <TableHead>Postnummer</TableHead>
-                  <TableHead>Ort</TableHead>
-                  <TableHead>Uthyrare</TableHead>
-                  <TableHead>m²</TableHead>
-                  <TableHead>Sovrum</TableHead>
-                  <TableHead>Bäddar</TableHead>
-                  <TableHead>Hyra ut</TableHead>
-                  <TableHead>Möblerat</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Tillgänglig</TableHead>
-                  <TableHead>Hemsida</TableHead>
+                  {sortHeader("address", "Adress")}
+                  {sortHeader("postalCode", "Postnummer")}
+                  {sortHeader("city", "Ort")}
+                  {sortHeader("ownerName", "Uthyrare")}
+                  {sortHeader("ownerContactPerson", "Kontaktperson")}
+                  {sortHeader("ownerPhone", "Telefon")}
+                  {sortHeader("squareMeters", "m²")}
+                  {sortHeader("bedrooms", "Sovrum")}
+                  {sortHeader("beds", "Bäddar")}
+                  {sortHeader("rentOut", "Hyra ut")}
+                  {sortHeader("furnished", "Möblerat")}
+                  {sortHeader("status", "Status")}
+                  {sortHeader("moveInFrom", "Tillgänglig")}
+                  {sortHeader("published", "Hemsida")}
                 </TableRow>
               </TableHeader>
               <TableBody className="[&_td]:py-2.5 [&_td]:whitespace-nowrap">
                 {loading ? (
                   Array.from({ length: 8 }).map((_, i) => (
                     <TableRow key={i} className="border-t border-nordic-100">
-                      <TableCell colSpan={13}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
+                      <TableCell colSpan={15}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
                     </TableRow>
                   ))
-                ) : filtered.length === 0 ? (
-                  <TableRow className="hover:bg-transparent"><TableCell colSpan={13} className="py-10 text-center text-muted-foreground italic">Inga bostäder.</TableCell></TableRow>
+                ) : sorted.length === 0 ? (
+                  <TableRow className="hover:bg-transparent"><TableCell colSpan={15} className="py-10 text-center text-muted-foreground italic">Inga bostäder.</TableCell></TableRow>
                 ) : (
-                  filtered.map((p) => {
+                  sorted.map((p) => {
                     const st = PROP_STATUS[p.status ?? "available"] ?? PROP_STATUS.available;
                     return (
                       <TableRow
@@ -367,13 +532,34 @@ export function PropertyList() {
                         <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.city || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.ownerContactPerson || "–"}</TableCell>
+                        <TableCell className="text-foreground">
+                          {p.ownerPhone ? (
+                            <a
+                              href={`tel:${p.ownerPhone.replace(/\s+/g, "")}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-primary-600 hover:underline"
+                            >
+                              {p.ownerPhone}
+                            </a>
+                          ) : (
+                            "–"
+                          )}
+                        </TableCell>
                         <TableCell className="text-foreground">{p.squareMeters ?? "–"}</TableCell>
                         <TableCell className="text-foreground">{p.bedrooms ?? "–"}</TableCell>
                         <TableCell className="text-foreground">{p.beds ?? "–"}</TableCell>
                         <TableCell className="text-foreground">{p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr` : "–"}</TableCell>
                         <TableCell className="text-foreground">{p.furnished ? "Ja" : "–"}</TableCell>
                         <TableCell>
-                          <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                          <div className="flex flex-col items-start gap-1">
+                            <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                            {isPropertyIntake(p) && (
+                              <span className="inline-block rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-800">
+                                Nytt intag
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.published ? "✓" : "–"}</TableCell>
