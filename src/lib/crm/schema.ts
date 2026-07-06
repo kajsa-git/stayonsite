@@ -331,6 +331,24 @@ export const propertyNotes = sqliteTable("crm_property_notes", {
   index("crm_property_notes_property_id_idx").on(t.propertyId),
 ]);
 
+// Utkorg för iMessage/SMS: CRM:t köar meddelanden här, Mac-agenten
+// (scripts/imessage-agent.mjs, launchd var 30:e sekund) skickar via Messages.app
+// och rapporterar tillbaka status. queued → sending → sent | failed.
+export const outboxMessages = sqliteTable("crm_outbox_messages", {
+  id: text("id").primaryKey(),
+  toPhone: text("to_phone").notNull(), // E.164
+  body: text("body").notNull(),
+  ownerId: text("owner_id"),
+  contactId: text("contact_id"),
+  status: text("status").notNull().default("queued"), // queued | sending | sent | failed
+  error: text("error"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  sentAt: text("sent_at"),
+}, (t) => [
+  index("crm_outbox_messages_status_idx").on(t.status),
+  index("crm_outbox_messages_to_phone_idx").on(t.toPhone),
+]);
+
 // Denormaliserat sökindex — en rad per sökbar entitet (company/request/property/note/contact).
 // id = `${entityType}:${entityId}` så upserts blir idempotenta.
 export const searchIndex = sqliteTable("crm_search_index", {

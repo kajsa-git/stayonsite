@@ -1,12 +1,16 @@
 "use client";
 
-import { MessageCircle, MessageSquare } from "lucide-react";
+import { MessageCircle, MessageSquare, Send } from "lucide-react";
+import { useState } from "react";
 import { smsHref, whatsappHref } from "@/lib/crm/phone-links";
+import { SendMessageDialog } from "./SendMessageDialog";
 
-// Snabbknappar bredvid ett telefonnummer: öppnar WhatsApp (grön) resp. SMS direkt.
+// Snabbknappar bredvid ett telefonnummer: öppnar WhatsApp (grön) resp. SMS direkt,
+// samt köar iMessage/SMS via CRM:ts utkorg (orange) — skickas av Mac-agenten.
 // Renderar inget om numret inte går att tolka. stopPropagation så klick inte triggar
 // en ev. klickbar rad runtomkring.
 export function PhoneActions({ phone, className = "" }: { phone?: string | null; className?: string }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const wa = whatsappHref(phone);
   const sms = smsHref(phone);
   if (!wa && !sms) return null;
@@ -34,6 +38,20 @@ export function PhoneActions({ phone, className = "" }: { phone?: string | null;
         >
           <MessageSquare className="h-3 w-3" />
         </a>
+      )}
+      {sms && phone && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setDialogOpen(true); }}
+            title="Skicka via CRM (Messages på din Mac)"
+            aria-label="Skicka via CRM"
+            className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+          >
+            <Send className="h-3 w-3" />
+          </button>
+          {dialogOpen && <SendMessageDialog phone={phone} open={dialogOpen} onOpenChange={setDialogOpen} />}
+        </>
       )}
     </span>
   );
