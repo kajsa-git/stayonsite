@@ -10,6 +10,19 @@ export interface MatchResult {
   chips: MatchChip[];
 }
 
+// Ortjämförelse tål stavningsvarianter ("Mönsterås"/"Monsteras", "västerås"/"Västerås"):
+// gemener + å/ä→a, ö→o + övriga diakritiska tecken bort. Samma förenkling som slugify.
+function normalizeCityName(s: string): string {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/å/g, "a")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "");
+}
+
 /** true=inom spann, false=utanför, null=okänt/inget spann angivet. */
 function inRange(val: number | null, from: number | null | undefined, to: number | null | undefined): boolean | null {
   if (from == null && to == null) return null;
@@ -30,7 +43,7 @@ export function matchDetails(request: Request, property: Property): MatchResult 
 
   // Location (highest weight)
   if (request.city && property.city) {
-    if (request.city.toLowerCase() === property.city.toLowerCase()) {
+    if (normalizeCityName(request.city) === normalizeCityName(property.city)) {
       score += 35;
       chips.push({ label: "Rätt ort", tone: "good" });
     } else {

@@ -1,4 +1,5 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
+import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
 import { matches } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
@@ -24,7 +25,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (key in body) data[key] = body[key];
   }
   // Stamp sentAt when a suggestion is marked as sent
-  if (body.status === "sent") data.sentAt = new Date().toISOString();
+  if (body.status === "sent") {
+    data.sentAt = new Date().toISOString();
+    // Skickat förslag utan uppföljningsdatum = garanterat tappad tråd. Sätt +3 dagar
+    // automatiskt om klienten inte anger något eget — det var så 10/10 skickade
+    // förslag hamnade förfallna utan att synas.
+    const [existing] = await db.select({ followUpDate: matches.followUpDate }).from(matches).where(eq(matches.id, id));
+    if (!("followUpDate" in body) && !existing?.followUpDate) {
+      data.followUpDate = plusDaysStockholm(3);
+      data.followUpReason = data.followUpReason ?? "Förslag skickat — väntar svar";
+    }
+  }
 
   const [row] = await db.update(matches).set(data).where(eq(matches.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });

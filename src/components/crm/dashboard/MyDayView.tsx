@@ -13,6 +13,11 @@ import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
+import { ownerFollowUpSms } from "@/lib/crm/sms-templates";
+import { crmFetchJson } from "@/lib/crm/fetcher";
+import { DraftsPanel } from "./DraftsPanel";
+import { RenewalsPanel, type RenewalRow } from "./RenewalsPanel";
+import { RepliesPanel } from "./RepliesPanel";
 import { AnimatePresence, motion } from "framer-motion";
 function fireConfetti() {
   import("canvas-confetti").then((mod) =>
@@ -56,10 +61,13 @@ const CHASE_TOAST: Record<string, string> = {
 };
 
 const STEPS = [
+  { emoji: "💬", title: "Svar", text: "Inkommande SMS från kända kontakter, inlästa från din Mac. Ja-svar → publicera & länka med ett klick." },
+  { emoji: "🔁", title: "Förlängningar", text: "Avtal som närmar sig slutdatum. Skicka förläng-SMS (utkast) innan de rinner ut." },
   { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
   { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
   { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing." },
+  { emoji: "✉️", title: "Utkast", text: "SMS som CRM:et förberett. Inget skickas förrän du godkänner det här." },
 ];
 
 // Kanoniska status-etiketter + färger (delas med övriga vyer).
@@ -153,12 +161,14 @@ interface CompanyCard {
 interface ChaseRow {
   propertyId: string;
   address: string | null;
+  ownerId: string | null;
   ownerName: string | null;
   ownerPhone: string | null;
   earliestDate: string | null;
   reason: string | null;
   requestCount: number;
   sourcing: boolean;
+  hasReply: boolean;
 }
 
 interface QueueData {
@@ -166,6 +176,7 @@ interface QueueData {
   openWithoutFollowUp: CompanyCard[];
   toInvoice: CompanyCard[];
   chaseLandlords: ChaseRow[];
+  renewals: RenewalRow[];
 }
 
 const fetcher = swrFetcher;
@@ -204,7 +215,7 @@ export function MyDayView() {
   }
 
   const { data, mutate, isLoading, error } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
-  const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [] };
+  const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [], renewals: [] };
   const loading = isLoading && !data;
 
   // Flytt-flagga: in-/avflyttningar på gång den närmaste veckan (≤ 7 dagar, samma räknare som fliken).
@@ -238,6 +249,26 @@ export function MyDayView() {
       toast({ title: CHASE_TOAST[action] ?? "Sparat" });
     } catch {
       toast({ title: "Kunde inte spara", variant: "destructive" });
+    }
+  }
+
+  // Färdigt uppföljnings-SMS för jaga-kortet — sparas som UTKAST, skickas aldrig direkt.
+  async function chaseDraftSms(item: ChaseRow) {
+    if (!item.ownerPhone) return;
+    try {
+      await crmFetchJson("/api/crm/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          toPhone: item.ownerPhone,
+          draft: true,
+          ownerId: item.ownerId ?? undefined,
+          body: ownerFollowUpSms(item.ownerName, item.address),
+        }),
+      });
+      toast({ title: "SMS-utkast skapat — godkänn i Utkast-panelen" });
+    } catch {
+      toast({ title: "Kunde inte skapa utkast", variant: "destructive" });
     }
   }
 
@@ -437,6 +468,10 @@ export function MyDayView() {
         </div>
       )}
 
+      {/* Svar + Förlängningar: dagens viktigaste — inkommande och utgående pengar. */}
+      <RepliesPanel />
+      <RenewalsPanel renewals={queues.renewals} onChanged={() => mutate()} />
+
       {counts.moveSchedule > 0 && (
         <button
           onClick={() => router.push("/crm/flyttar")}
@@ -560,11 +595,14 @@ export function MyDayView() {
                 today={today}
                 onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
                 onAction={(action) => chaseAction(item.propertyId, action)}
+                onDraftSms={() => chaseDraftSms(item)}
               />
             )}
           />
         </div>
       )}
+
+      <DraftsPanel />
 
       <div className="mt-12 flex justify-end items-end gap-3 pr-2">
         <div className="flex flex-col items-end gap-2 mb-5 max-w-sm">
@@ -841,11 +879,13 @@ function ChaseCard({
   today,
   onOpen,
   onAction,
+  onDraftSms,
 }: {
   item: ChaseRow;
   today: string;
   onOpen: () => void;
   onAction: (action: string) => void | Promise<void>;
+  onDraftSms: () => void | Promise<void>;
 }) {
   const [busy, setBusy] = useState(false);
   async function act(action: string) {
@@ -859,12 +899,17 @@ function ChaseCard({
   }
   const overdue = !!item.earliestDate && item.earliestDate <= today;
   return (
-    <div className="p-3 rounded-lg bg-white border">
+    <div className={`p-3 rounded-lg bg-white border ${item.hasReply ? "border-blue-300" : ""}`}>
       <button className="w-full text-left" onClick={onOpen}>
         <div className="font-medium text-sm truncate">{item.address ?? "(adress saknas)"}</div>
         <div className="text-xs text-muted-foreground truncate">
           {[item.ownerName, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
         </div>
+        {item.hasReply && (
+          <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1">
+            💬 Har svarat — läs i Svar-panelen
+          </span>
+        )}
         <div className="text-xs mt-1">
           {item.sourcing ? (
             <span className="italic text-nordic-500">Uthyrarkontakt att följa upp</span>
@@ -882,6 +927,20 @@ function ChaseCard({
         )}
       </button>
       <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t">
+        {item.ownerPhone && (
+          <button
+            onClick={async () => {
+              setBusy(true);
+              await onDraftSms();
+              setBusy(false);
+            }}
+            disabled={busy}
+            className="text-[11px] px-1.5 py-0.5 rounded border border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-medium disabled:opacity-40"
+            title="Färdigt uppföljnings-SMS läggs som utkast — inget skickas direkt"
+          >
+            ✉️ SMS-utkast
+          </button>
+        )}
         {(["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
           <button
             key={a}

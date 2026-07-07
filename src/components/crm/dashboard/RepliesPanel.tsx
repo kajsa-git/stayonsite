@@ -1,0 +1,184 @@
+"use client";
+
+// Svar-panelen i Min dag: inkommande iMessage/SMS som Mac-agenten läst in ur
+// chat.db (endast kända CRM-nummer). Härifrån: öppna JA-flödet (uthyrare),
+// öppna företaget, spara ett svar som UTKAST eller markera läst.
+import { toast } from "@/components/ui/use-toast";
+import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import useSWR from "swr";
+import { PublishFlowDialog } from "./PublishFlowDialog";
+
+export interface InboxRow {
+  id: string;
+  fromPhone: string;
+  body: string;
+  service: string | null;
+  sentAt: string;
+  isRead: boolean;
+  ownerId: string | null;
+  contactId: string | null;
+  companyId: string | null;
+  ownerName: string | null;
+  contactName: string | null;
+  companyName: string | null;
+}
+
+const looksLikeYes = (body: string) => /(^|\s)(ja|japp|jajamen|absolut|gärna|ok(ej)?|👍)([!.,\s]|$)/i.test(body);
+
+function timeLabel(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString("sv-SE", { timeZone: "Europe/Stockholm", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }) {
+  const router = useRouter();
+  const { data, mutate } = useSWR<InboxRow[]>("/api/crm/inbox?unread=1", swrFetcher, { refreshInterval: 15000 });
+  const rows = data ?? [];
+  const [publishFor, setPublishFor] = useState<InboxRow | null>(null);
+  const [replyFor, setReplyFor] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  if (rows.length === 0) return null;
+
+  async function markRead(id: string) {
+    try {
+      await crmFetchJson(`/api/crm/inbox/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isRead: true }),
+      });
+      mutate();
+    } catch (e) {
+      toast({ title: "Kunde inte markera som läst", description: crmErrorMessage(e), variant: "destructive" });
+    }
+  }
+
+  async function saveReplyDraft(row: InboxRow) {
+    if (!replyText.trim() || busy) return;
+    setBusy(true);
+    try {
+      await crmFetchJson("/api/crm/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          toPhone: row.fromPhone,
+          body: replyText.trim(),
+          draft: true,
+          ownerId: row.ownerId ?? undefined,
+          contactId: row.contactId ?? undefined,
+        }),
+      });
+      setReplyFor(null);
+      setReplyText("");
+      toast({ title: "Svar sparat som utkast — godkänn i Utkast-panelen" });
+      onDraftCreated?.();
+    } catch (e) {
+      toast({ title: "Kunde inte spara utkast", description: crmErrorMessage(e), variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const btn = "text-[11px] px-2 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40 transition-colors";
+
+  return (
+    <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50/40 p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <span>💬</span>
+        <h2 className="text-sm font-semibold text-nordic-900">Svar</h2>
+        <span className="text-xs font-bold text-blue-800 bg-blue-100 rounded-full px-2 py-0.5">{rows.length}</span>
+        <span className="text-[11px] text-muted-foreground ml-1 hidden sm:inline">
+          Inkommande SMS från kända kontakter — läses in automatiskt från din Mac
+        </span>
+      </div>
+      <div className="space-y-2">
+        {rows.map((r) => {
+          const who = r.ownerName
+            ? `${r.ownerName} · uthyrare`
+            : r.companyName
+              ? `${r.contactName ?? r.companyName} · ${r.companyName}`
+              : formatPhoneSv(r.fromPhone);
+          return (
+            <div key={r.id} className="rounded-lg bg-white border p-3">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span className="font-medium text-sm">{who}</span>
+                {r.ownerId && looksLikeYes(r.body) && (
+                  <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-green-100 text-green-800">Ser ut som ett JA</span>
+                )}
+                <span className="text-[11px] text-muted-foreground ml-auto">{timeLabel(r.sentAt)}</span>
+              </div>
+              <p className="text-sm text-nordic-800 mt-1 whitespace-pre-wrap break-words line-clamp-4">{r.body}</p>
+              <div className="flex flex-wrap items-center gap-1 mt-2 pt-2 border-t border-dashed">
+                {r.ownerId && (
+                  <button
+                    className="text-[11px] px-2 py-0.5 rounded border border-green-300 bg-green-50 text-green-800 hover:bg-green-100 font-semibold transition-colors"
+                    onClick={() => setPublishFor(r)}
+                  >
+                    🚀 Publicera & länka
+                  </button>
+                )}
+                {r.companyId && (
+                  <button className={btn} onClick={() => router.push(`/crm/company/${r.companyId}`)}>
+                    Öppna företag
+                  </button>
+                )}
+                <button
+                  className={btn}
+                  onClick={() => {
+                    setReplyFor(replyFor === r.id ? null : r.id);
+                    setReplyText("");
+                  }}
+                >
+                  ↩ Svara (utkast)
+                </button>
+                <button className={btn} onClick={() => markRead(r.id)}>
+                  ✓ Läst
+                </button>
+              </div>
+              {replyFor === r.id && (
+                <div className="mt-2 space-y-1.5">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    rows={3}
+                    placeholder={`Svar till ${who}…`}
+                    className="w-full border rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+                  />
+                  <div className="flex gap-1.5">
+                    <button
+                      className="text-[11px] px-2 py-1 rounded border border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100 font-semibold disabled:opacity-40 transition-colors"
+                      disabled={busy || !replyText.trim()}
+                      onClick={() => saveReplyDraft(r)}
+                    >
+                      Spara som utkast
+                    </button>
+                    <button className={btn} onClick={() => setReplyFor(null)}>
+                      Avbryt
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {publishFor && (
+        <PublishFlowDialog
+          ownerId={publishFor.ownerId!}
+          ownerName={publishFor.ownerName}
+          ownerPhone={publishFor.fromPhone}
+          open
+          onOpenChange={(o) => {
+            if (!o) setPublishFor(null);
+          }}
+          onDrafted={onDraftCreated}
+        />
+      )}
+    </div>
+  );
+}

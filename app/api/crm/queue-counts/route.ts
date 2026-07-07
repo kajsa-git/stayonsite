@@ -1,8 +1,8 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { todayStockholm, plusDaysStockholm } from "@/lib/crm/date";
-import { companies, matches, ownerOutreach, requests } from "@/lib/crm/schema";
-import { and, eq, inArray, isNull, lte } from "drizzle-orm";
+import { companies, inboxMessages, matches, outboxMessages, ownerOutreach, requests } from "@/lib/crm/schema";
+import { and, eq, gte, inArray, isNotNull, isNull, lte, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -15,7 +15,7 @@ export async function GET() {
   // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
   const horizon = plusDaysStockholm(7);
 
-  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps, moveRows] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
 
     // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL
@@ -64,6 +64,28 @@ export async function GET() {
       })
       .from(requests)
       .where(inArray(requests.status, ["won", "invoiced"])),
+
+    // Olästa inkommande svar (Svar-panelen).
+    db.select({ id: inboxMessages.id }).from(inboxMessages).where(eq(inboxMessages.isRead, false)),
+
+    // Väntande SMS-utkast (Utkast-panelen).
+    db.select({ id: outboxMessages.id }).from(outboxMessages).where(eq(outboxMessages.status, "draft")),
+
+    // Förlängningar: samma fönster som /api/crm/queues (−7…+30 dagar).
+    db
+      .select({ companyId: requests.companyId })
+      .from(requests)
+      .innerJoin(companies, eq(requests.companyId, companies.id))
+      .where(
+        and(
+          inArray(requests.status, ["won", "invoiced"]),
+          isNotNull(requests.endDate),
+          gte(requests.endDate, plusDaysStockholm(-7)),
+          lte(requests.endDate, plusDaysStockholm(30)),
+          or(isNull(requests.endDateOngoing), eq(requests.endDateOngoing, false)),
+          or(isNull(companies.followUpDate), lte(companies.followUpDate, today)),
+        ),
+      ),
   ]);
 
   const chaseProps = new Set<string>();
@@ -83,5 +105,8 @@ export async function GET() {
     toInvoice: toInvoiceRows.length,
     chaseLandlords: chaseProps.size,
     moveSchedule,
+    replies: unreadReplies.length,
+    drafts: draftRows.length,
+    renewals: renewalRows.length,
   });
 }

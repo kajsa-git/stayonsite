@@ -12,6 +12,8 @@ const MAX_BODY_CHARS = 1600;
 
 // POST — köa ett meddelande. Mac-agenten plockar upp det inom ~30 s och
 // skickar via Messages.app (iMessage, fallback SMS).
+// Med { draft: true } sparas det i stället som UTKAST: agenten ser det aldrig
+// (den claimar bara status='queued') förrän det godkänns via PATCH /messages/[id].
 export async function POST(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,6 +34,7 @@ export async function POST(req: NextRequest) {
       id: nanoid(),
       toPhone,
       body,
+      status: raw.draft === true ? "draft" : "queued",
       ownerId: typeof raw.ownerId === "string" ? raw.ownerId : null,
       contactId: typeof raw.contactId === "string" ? raw.contactId : null,
     })
@@ -40,9 +43,16 @@ export async function POST(req: NextRequest) {
 }
 
 // GET ?phone=+46… — senaste meddelandena till ett nummer (för dialogens historik).
+// GET ?status=draft — väntande utkast (Utkast-panelen i Min dag).
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const status = req.nextUrl.searchParams.get("status");
+  if (status === "draft") {
+    const rows = await db.select().from(outboxMessages).where(eq(outboxMessages.status, "draft")).orderBy(desc(outboxMessages.createdAt)).limit(100);
+    return NextResponse.json(rows);
+  }
 
   const phone = normalizePhoneE164(req.nextUrl.searchParams.get("phone"));
   const rows = phone

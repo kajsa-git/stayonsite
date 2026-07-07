@@ -405,3 +405,31 @@ export type Email = typeof emails.$inferSelect;
 export type EmailInsert = typeof emails.$inferInsert;
 export type OwnerOutreach = typeof ownerOutreach.$inferSelect;
 export type OwnerOutreachInsert = typeof ownerOutreach.$inferInsert;
+
+// Inkommande iMessage/SMS-svar: Mac-agenten läser ~/Library/Messages/chat.db och
+// postar hit — ENDAST avsändare vars nummer redan finns i CRM:et (ägare/kontakter),
+// övriga meddelanden lämnas orörda på Macen. guid = chat.db:s meddelande-guid →
+// idempotent ingest (unikt index). Visas i Min dag ("Svar") och på korten.
+export const inboxMessages = sqliteTable("crm_inbox_messages", {
+  id: text("id").primaryKey(),
+  guid: text("guid").notNull(),
+  fromPhone: text("from_phone").notNull(), // E.164
+  body: text("body").notNull(),
+  service: text("service"), // iMessage | SMS
+  sentAt: text("sent_at").notNull(), // när meddelandet togs emot (ISO, från Apple-epoch)
+  ownerId: text("owner_id"), // matchad uthyrare (lös referens — FK är av i libSQL)
+  contactId: text("contact_id"),
+  companyId: text("company_id"), // via matchad kontakt
+  isRead: integer("is_read", { mode: "boolean" }).default(false).notNull(),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  uniqueIndex("crm_inbox_messages_guid_idx").on(t.guid),
+  index("crm_inbox_messages_from_phone_idx").on(t.fromPhone),
+  index("crm_inbox_messages_is_read_idx").on(t.isRead),
+  index("crm_inbox_messages_owner_id_idx").on(t.ownerId),
+  index("crm_inbox_messages_company_id_idx").on(t.companyId),
+  index("crm_inbox_messages_sent_at_idx").on(t.sentAt),
+]);
+
+export type InboxMessage = typeof inboxMessages.$inferSelect;
+export type InboxMessageInsert = typeof inboxMessages.$inferInsert;

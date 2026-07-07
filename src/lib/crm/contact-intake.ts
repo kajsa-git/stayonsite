@@ -204,6 +204,11 @@ async function createCompanyRequest(
     indexRequest(request.id),
   ]);
 
+  // Auto-förslag även för webbleads (interna suggested-rader, inga utskick).
+  // Fel får aldrig blockera intaget — leadet är redan sparat.
+  const { autoSuggestMatches } = await import("./auto-suggest");
+  await autoSuggestMatches(request.id).catch((e) => console.error("auto-suggest (web lead):", e));
+
   return { company, contact, request };
 }
 
