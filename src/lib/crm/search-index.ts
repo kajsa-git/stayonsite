@@ -154,7 +154,7 @@ function ownerRow(o: Owner, propertyCount?: number): SearchIndexInsert {
       o.followUpReason,
       o.followUpNote,
     ),
-    route: `/crm/properties?ownerId=${o.id}`,
+    route: `/crm/uthyrare/${o.id}`,
   };
 }
 

@@ -3,7 +3,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
-import { Building2, CalendarDays, Home, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
+import { Building2, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -72,6 +72,7 @@ export function MobileTabBar() {
 
           <div className="mt-4 space-y-1">
             <MoreLink label="Översikt" onClick={() => go("/crm/oversikt")} />
+            <MoreLink label="Uthyrare" icon={KeyRound} onClick={() => go("/crm/uthyrare")} />
             <MoreLink
               label="In- & avflyttningar"
               badge={counts.moveSchedule}

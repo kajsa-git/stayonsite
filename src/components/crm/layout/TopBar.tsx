@@ -15,6 +15,7 @@ const NAV_ITEMS: { href: string; label: string; exact?: boolean; title?: string 
   { href: "/crm/oversikt", label: "Översikt" },
   { href: "/crm/foretag", label: "Företagsbank" },
   { href: "/crm/properties", label: "Objektsbank" },
+  { href: "/crm/uthyrare", label: "Uthyrare" },
   { href: "/crm/flyttar", label: "In- & avflyttningar", title: "In- & avflyttningar att hantera" },
   { href: "/crm/sok", label: "Sök" },
 ];

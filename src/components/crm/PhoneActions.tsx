@@ -9,7 +9,7 @@ import { SendMessageDialog } from "./SendMessageDialog";
 // samt köar iMessage/SMS via CRM:ts utkorg (orange) — skickas av Mac-agenten.
 // Renderar inget om numret inte går att tolka. stopPropagation så klick inte triggar
 // en ev. klickbar rad runtomkring.
-export function PhoneActions({ phone, className = "" }: { phone?: string | null; className?: string }) {
+export function PhoneActions({ phone, ownerId, className = "" }: { phone?: string | null; ownerId?: string; className?: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const wa = whatsappHref(phone);
   const sms = smsHref(phone);
@@ -50,7 +50,7 @@ export function PhoneActions({ phone, className = "" }: { phone?: string | null;
           >
             <Send className="h-3 w-3" />
           </button>
-          {dialogOpen && <SendMessageDialog phone={phone} open={dialogOpen} onOpenChange={setDialogOpen} />}
+          {dialogOpen && <SendMessageDialog phone={phone} ownerId={ownerId} open={dialogOpen} onOpenChange={setDialogOpen} />}
         </>
       )}
     </span>

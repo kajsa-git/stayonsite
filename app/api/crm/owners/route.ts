@@ -33,6 +33,12 @@ export async function GET(req: NextRequest) {
       createdAt: owners.createdAt,
       updatedAt: owners.updatedAt,
       propertyCount: sql<number>`count(${properties.id})`,
+      // Additiva aggregat för uthyrarlistan — OwnerPicker delar endpointen och
+      // ignorerar extrafält, så formen får aldrig ändras, bara utökas.
+      publishedCount: sql<number>`sum(case when ${properties.published} = 1 then 1 else 0 end)`,
+      // Senaste SMS (in eller ut) taggat med ownerId — medvetet bara inkorgen;
+      // kontakt-taggade rader räknas inte här (tidslinjen fångar dem via telefon).
+      lastSmsAt: sql<string | null>`(select max(sent_at) from crm_inbox_messages where owner_id = ${owners.id})`,
     })
     .from(owners)
     .leftJoin(properties, eq(properties.ownerId, owners.id));

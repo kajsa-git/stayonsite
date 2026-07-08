@@ -28,10 +28,12 @@ const STATUS_LABEL: Record<OutboxMessage["status"], { label: string; cls: string
 // inom ~30 s. Visar även de senaste meddelandena till numret med status.
 export function SendMessageDialog({
   phone,
+  ownerId,
   open,
   onOpenChange,
 }: {
   phone: string;
+  ownerId?: string; // kopplar utskicket till uthyraren i historik/tidslinje
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -52,7 +54,7 @@ export function SendMessageDialog({
       await crmFetchJson("/api/crm/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toPhone: e164, body: body.trim() }),
+        body: JSON.stringify({ toPhone: e164, body: body.trim(), ownerId }),
       });
       setBody("");
       mutate();

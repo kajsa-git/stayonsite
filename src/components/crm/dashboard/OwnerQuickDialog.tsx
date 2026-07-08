@@ -6,7 +6,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatPhoneSv, smsHref, whatsappHref } from "@/lib/crm/phone-links";
 import { swrFetcher } from "@/lib/crm/fetcher";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
@@ -62,7 +62,18 @@ export function OwnerQuickDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{data?.name ?? "Uthyrare"}</DialogTitle>
+          <DialogTitle className="flex items-center gap-3">
+            {data?.name ?? "Uthyrare"}
+            <button
+              onClick={() => {
+                onOpenChange(false);
+                router.push(`/crm/uthyrare/${ownerId}`);
+              }}
+              className="text-xs font-normal underline text-nordic-600 hover:text-nordic-900 inline-flex items-center gap-0.5"
+            >
+              Öppna uthyrarsidan <ArrowRight className="h-3 w-3" />
+            </button>
+          </DialogTitle>
         </DialogHeader>
         {isLoading || !data ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground py-6 justify-center">
