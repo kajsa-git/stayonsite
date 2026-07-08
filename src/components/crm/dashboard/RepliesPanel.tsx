@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/use-toast";
 import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { OwnerQuickDialog } from "./OwnerQuickDialog";
 import { PublishFlowDialog } from "./PublishFlowDialog";
@@ -44,15 +44,31 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
   const [replyText, setReplyText] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (rows.length === 0) return null;
+  // Ett kort per avsändare: senaste olästa visas, resten prickas av i klump.
+  // Hela tråden finns på uthyrarsidan/i Messages — Min dag ska bara visa "senaste läget".
+  const groups = useMemo(() => {
+    const byPhone = new Map<string, { latest: InboxRow; ids: string[] }>();
+    for (const r of rows) {
+      const g = byPhone.get(r.fromPhone);
+      if (g) g.ids.push(r.id);
+      else byPhone.set(r.fromPhone, { latest: r, ids: [r.id] }); // rows är sorterade nyast först
+    }
+    return [...byPhone.values()];
+  }, [rows]);
 
-  async function markRead(id: string) {
+  if (groups.length === 0) return null;
+
+  async function markRead(ids: string[]) {
     try {
-      await crmFetchJson(`/api/crm/inbox/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isRead: true }),
-      });
+      await Promise.all(
+        ids.map((id) =>
+          crmFetchJson(`/api/crm/inbox/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isRead: true }),
+          }),
+        ),
+      );
       mutate();
     } catch (e) {
       toast({ title: "Kunde inte markera som läst", description: crmErrorMessage(e), variant: "destructive" });
@@ -60,8 +76,8 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
   }
 
   // Skickar direkt (köas → Mac-agenten skickar inom ~30 s, aldrig 21–08) och
-  // markerar svaret som hanterat — ett klick, klart.
-  async function sendReply(row: InboxRow) {
+  // markerar HELA avsändarens olästa som hanterade — ett klick, klart.
+  async function sendReply(row: InboxRow, ids: string[]) {
     if (!replyText.trim() || busy) return;
     setBusy(true);
     try {
@@ -77,12 +93,7 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
       });
       setReplyFor(null);
       setReplyText("");
-      await crmFetchJson(`/api/crm/inbox/${row.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isRead: true }),
-      }).catch(() => undefined); // svaret är viktigast — läst-markeringen får inte stoppa flödet
-      mutate();
+      await markRead(ids).catch(() => undefined); // svaret är viktigast — läst-markeringen får inte stoppa flödet
       toast({ title: "Svar skickas inom ~30 sek via Messages" });
     } catch (e) {
       toast({ title: "Kunde inte skicka", description: crmErrorMessage(e), variant: "destructive" });
@@ -98,13 +109,13 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
       <div className="flex items-center gap-2 mb-3">
         <span>💬</span>
         <h2 className="text-sm font-semibold text-nordic-900">Svar</h2>
-        <span className="text-xs font-bold text-blue-800 bg-blue-100 rounded-full px-2 py-0.5">{rows.length}</span>
+        <span className="text-xs font-bold text-blue-800 bg-blue-100 rounded-full px-2 py-0.5">{groups.length}</span>
         <span className="text-[11px] text-muted-foreground ml-1 hidden sm:inline">
           Inkommande SMS från kända kontakter — läses in automatiskt från din Mac
         </span>
       </div>
       <div className="space-y-2">
-        {rows.map((r) => {
+        {groups.map(({ latest: r, ids }) => {
           const who = r.ownerName
             ? `${r.ownerName} · uthyrare`
             : r.companyName
@@ -125,6 +136,18 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                 </p>
               )}
               <p className="text-sm text-nordic-800 mt-1 whitespace-pre-wrap break-words line-clamp-4">{r.body}</p>
+              {ids.length > 1 && (
+                <button
+                  className="text-[11px] text-muted-foreground italic mt-0.5 underline decoration-dotted"
+                  onClick={() => {
+                    if (r.ownerId) router.push(`/crm/uthyrare/${r.ownerId}`);
+                    else if (r.companyId) router.push(`/crm/company/${r.companyId}`);
+                  }}
+                  title="Hela tråden finns på uthyrarsidan"
+                >
+                  +{ids.length - 1} äldre {ids.length - 1 === 1 ? "oläst" : "olästa"} — se hela tråden
+                </button>
+              )}
               <div className="flex flex-wrap items-center gap-1 mt-2 pt-2 border-t border-dashed">
                 {r.ownerId && (
                   <button
@@ -153,8 +176,8 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                 >
                   ↩ Svara
                 </button>
-                <button className={btn} onClick={() => markRead(r.id)}>
-                  ✓ Läst
+                <button className={btn} onClick={() => markRead(ids)}>
+                  ✓ Läst{ids.length > 1 ? ` (${ids.length})` : ""}
                 </button>
               </div>
               {replyFor === r.id && (
@@ -170,7 +193,7 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                     <button
                       className="text-[11px] px-2 py-1 rounded border border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100 font-semibold disabled:opacity-40 transition-colors"
                       disabled={busy || !replyText.trim()}
-                      onClick={() => sendReply(r)}
+                      onClick={() => sendReply(r, ids)}
                     >
                       Skicka
                     </button>
