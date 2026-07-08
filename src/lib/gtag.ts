@@ -1,3 +1,5 @@
+import { updateClarityConsent } from './clarity'
+
 declare global {
   interface Window {
     gtag: (...args: unknown[]) => void
@@ -25,6 +27,7 @@ export function getStoredConsent(): ConsentChoice | null {
 export function updateConsent(choice: ConsentChoice) {
   if (typeof window === 'undefined') return
   localStorage.setItem(CONSENT_KEY, choice)
+  updateClarityConsent(choice === 'granted')
   if (!window.gtag) return
   window.gtag('consent', 'update', {
     ad_storage: choice,
