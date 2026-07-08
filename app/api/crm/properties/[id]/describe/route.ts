@@ -3,9 +3,9 @@ import { db } from "@/lib/crm/db";
 import { propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -47,18 +47,33 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     b.availableTo && `Tillgänglig till: ${b.availableTo}`,
   ].filter(Boolean) as string[];
 
-  // Bilder för vision (presignerade R2-URL:er, primär först, max 6).
+  // Bilder för vision: hämtas från R2 och konverteras server-side till JPEG
+  // (max 1024 px, base64). URL-läget föll på verkligheten: många uppladdningar
+  // är AVIF (stöds inte av vision-API:t) eller mobilfoton > 5 MB — båda gav
+  // "Claude API 400" och stoppade JA-flödet. sharp normaliserar allt.
   const imgRows = await db
     .select({ key: propertyImages.key })
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, id))
     .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt))
     .limit(6);
-  const imageUrls = await Promise.all(
-    imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }), { expiresIn: 600 })),
-  );
+  const imageBlocks = (
+    await Promise.all(
+      imgRows.map(async (im) => {
+        try {
+          const obj = await r2.send(new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }));
+          const raw = Buffer.from(await obj.Body!.transformToByteArray());
+          const jpeg = await sharp(raw).rotate().resize({ width: 1024, withoutEnlargement: true }).jpeg({ quality: 72 }).toBuffer();
+          return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: jpeg.toString("base64") } };
+        } catch (e) {
+          console.error(`describe: hoppar över bild ${im.key}:`, e);
+          return null; // en trasig bild ska inte stoppa hela beskrivningen
+        }
+      }),
+    )
+  ).filter((b): b is NonNullable<typeof b> => b !== null);
 
-  if (facts.length === 0 && imageUrls.length === 0) {
+  if (facts.length === 0 && imageBlocks.length === 0) {
     return NextResponse.json({ error: "Fyll i lite data eller ladda upp bilder först." }, { status: 400 });
   }
 
@@ -71,8 +86,7 @@ Förbjudet: hitta inte på fakta, ingen reklamfluff, inga superlativ-staplar, oc
 Objektdata:
 ${facts.length ? facts.map((f) => `- ${f}`).join("\n") : "(ingen strukturerad data angiven)"}`;
 
-  const content: unknown[] = [{ type: "text", text: instructions }];
-  for (const url of imageUrls) content.push({ type: "image", source: { type: "url", url } });
+  const content: unknown[] = [{ type: "text", text: instructions }, ...imageBlocks];
 
   let data: { content?: { type: string; text?: string }[] };
   try {
