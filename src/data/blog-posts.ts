@@ -534,6 +534,24 @@ export const blogPosts: BlogPost[] = [
     tags: ['infrastruktur', 'ostlänken', 'norrbotniabanan', 'upphandling', 'personalboende', 'entreprenörer'],
     readingTime: 9,
   },
+  {
+    slug: 'foretagsbostader-nya-regler-juli-2026-guide',
+    title: {
+      sv: 'Företagsbostäder enligt nya reglerna från 1 juli 2026 – guide för arbetsgivare',
+      en: 'Corporate Housing Under New Rules from July 1, 2026 – Employer Guide',
+      pl: 'Mieszkania służbowe według nowych przepisów od 1 lipca 2026 – przewodnik dla pracodawców',
+    },
+    description: {
+      sv: 'Nya regler för företagsbostäder från 1 juli. Förenklad blockhyra, delningsbostäder och flexiblare avtal. Praktisk guide för byggföretag.',
+      en: 'New rules for corporate housing from July 1. Simplified block rentals, co-living spaces, and flexible contracts. Practical guide for construction companies.',
+      pl: 'Nowe przepisy dotyczące mieszkań służbowych od 1 lipca. Uproszczone wynajem zbiorowy, wspólne mieszkania i elastyczne umowy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-08',
+    category: 'Guide',
+    tags: ['företagsbostäder', 'blockhyra', 'nya-regler-2026', 'lagstiftning', 'personalboende'],
+    readingTime: 9,
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
