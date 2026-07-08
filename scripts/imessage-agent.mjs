@@ -141,7 +141,15 @@ async function ingestIncoming() {
   try {
     db = new dbMod.DatabaseSync(CHAT_DB, { readOnly: true });
   } catch (e) {
-    console.error(`${ts()} inbox: kunde inte öppna chat.db (Full Disk Access för node?): ${e?.message ?? e}`);
+    // Vanligaste orsaken: node saknar Full diskåtkomst (TCC). Agenten kör var
+    // 30:e sekund — logga max en gång i timmen så loggen inte dränks.
+    const state = readState();
+    if (!state.lastFdaErrAt || Date.now() - state.lastFdaErrAt > 3600_000) {
+      console.error(
+        `${ts()} inbox: kunde inte öppna chat.db — ge node Full diskåtkomst (Systeminställningar → Integritet & säkerhet → Full diskåtkomst → lägg till ${process.execPath}): ${e?.message ?? e}`,
+      );
+      writeState({ ...state, lastFdaErrAt: Date.now() });
+    }
     return;
   }
 
@@ -160,15 +168,16 @@ async function ingestIncoming() {
 
     // date räknas om till ms i SQL: ns-rådata (~8e17) spränger JS-number och får
     // node:sqlite att kasta RangeError. Tröskeln skiljer ns (nya macOS) från
-    // sekunder (mycket gamla databaser).
+    // sekunder (mycket gamla databaser). BÅDA riktningarna läses (is_from_me
+    // avgör direction) så att Kajsas egna Messages-svar också når CRM-historiken.
     const rows = db
       .prepare(
         `SELECT m.ROWID AS rowid, m.guid AS guid, m.text AS text, m.attributedBody AS ab,
                 CASE WHEN m.date > 100000000000 THEN m.date / 1000000 ELSE m.date * 1000 END AS date_ms,
-                m.service AS service, h.id AS handle
+                m.service AS service, m.is_from_me AS is_from_me, h.id AS handle
          FROM message m
          JOIN handle h ON h.ROWID = m.handle_id
-         WHERE m.is_from_me = 0 AND m.ROWID > ?
+         WHERE m.ROWID > ?
          ORDER BY m.ROWID ASC
          LIMIT 500`,
       )
@@ -187,6 +196,7 @@ async function ingestIncoming() {
         fromPhone: handle,
         body,
         service: r.service ? String(r.service) : null,
+        direction: Number(r.is_from_me) === 1 ? "out" : "in",
         sentAt: appleMsToIso(r.date_ms),
       });
     }
@@ -275,10 +285,16 @@ async function sendQueued() {
 }
 
 // Inläsning först (svaren ska in även om utskicksdelen felar), sedan utskick.
+// Båda faserna felskyddade: en nätverkstimeout ska ge EN loggrad, inte en
+// ohanterad krasch-trace i launchd-loggen var 30:e sekund.
 try {
   await ingestIncoming();
 } catch (e) {
   console.error(`${ts()} inbox: oväntat fel: ${e?.message ?? e}`);
 }
-await sendQueued();
+try {
+  await sendQueued();
+} catch (e) {
+  console.error(`${ts()} utskick: nätverksfel: ${e?.message ?? e}`);
+}
 process.exit(0);

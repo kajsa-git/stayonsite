@@ -413,10 +413,11 @@ export type OwnerOutreachInsert = typeof ownerOutreach.$inferInsert;
 export const inboxMessages = sqliteTable("crm_inbox_messages", {
   id: text("id").primaryKey(),
   guid: text("guid").notNull(),
-  fromPhone: text("from_phone").notNull(), // E.164
+  fromPhone: text("from_phone").notNull(), // E.164 — motpartens nummer oavsett riktning
   body: text("body").notNull(),
   service: text("service"), // iMessage | SMS
-  sentAt: text("sent_at").notNull(), // när meddelandet togs emot (ISO, från Apple-epoch)
+  direction: text("direction").notNull().default("in"), // in = från kontakten | out = Kajsas svar (från Messages)
+  sentAt: text("sent_at").notNull(), // när meddelandet togs emot/skickades (ISO, från Apple-epoch)
   ownerId: text("owner_id"), // matchad uthyrare (lös referens — FK är av i libSQL)
   contactId: text("contact_id"),
   companyId: text("company_id"), // via matchad kontakt

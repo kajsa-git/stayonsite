@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   const list = Array.isArray(raw.messages) ? raw.messages.slice(0, MAX_BATCH) : [];
   if (list.length === 0) return NextResponse.json({ inserted: 0 });
 
-  type Incoming = { guid: string; fromPhone: string; body: string; service: string | null; sentAt: string };
+  type Incoming = { guid: string; fromPhone: string; body: string; service: string | null; sentAt: string; direction: "in" | "out" };
   const cleaned: Incoming[] = [];
   for (const m of list) {
     if (typeof m !== "object" || m === null) continue;
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       body: body || "[tomt meddelande / kunde inte läsa text]",
       service: typeof r.service === "string" ? r.service : null,
       sentAt,
+      direction: r.direction === "out" ? "out" : "in",
     });
   }
   if (cleaned.length === 0) return NextResponse.json({ inserted: 0 });
@@ -91,10 +92,13 @@ export async function POST(req: NextRequest) {
       fromPhone: m.fromPhone,
       body: m.body,
       service: m.service,
+      direction: m.direction,
       sentAt: m.sentAt,
       ownerId: ownerByPhone.get(m.fromPhone) ?? null,
       contactId: contact?.id ?? null,
       companyId: contact?.companyId ?? null,
+      // Kajsas egna svar är historik, inte att-göra — landar aldrig i Svar-kön.
+      isRead: m.direction === "out",
     };
   });
 

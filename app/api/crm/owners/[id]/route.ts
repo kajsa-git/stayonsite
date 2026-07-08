@@ -8,6 +8,34 @@ import { owners, properties } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+// GET — uthyrarkortet: ägaren + kompakt objektlista i ett svar (Min dag-dialogen).
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await requireApprovedSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const [owner] = await db.select().from(owners).where(eq(owners.id, id));
+  if (!owner) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const props = await db
+    .select({
+      id: properties.id,
+      address: properties.address,
+      city: properties.city,
+      status: properties.status,
+      published: properties.published,
+      prospektPublished: properties.prospektPublished,
+      slug: properties.slug,
+      bedrooms: properties.bedrooms,
+      beds: properties.beds,
+      rentIn: properties.rentIn,
+      rentOut: properties.rentOut,
+    })
+    .from(properties)
+    .where(eq(properties.ownerId, id));
+  return NextResponse.json({ ...owner, properties: props });
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

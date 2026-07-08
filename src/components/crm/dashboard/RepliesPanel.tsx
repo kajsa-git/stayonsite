@@ -9,6 +9,7 @@ import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
+import { OwnerQuickDialog } from "./OwnerQuickDialog";
 import { PublishFlowDialog } from "./PublishFlowDialog";
 
 export interface InboxRow {
@@ -24,6 +25,7 @@ export interface InboxRow {
   ownerName: string | null;
   contactName: string | null;
   companyName: string | null;
+  repliedTo: { body: string; sentAt: string | null } | null;
 }
 
 const looksLikeYes = (body: string) => /(^|\s)(ja|japp|jajamen|absolut|gärna|ok(ej)?|👍)([!.,\s]|$)/i.test(body);
@@ -39,6 +41,7 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
   const { data, mutate } = useSWR<InboxRow[]>("/api/crm/inbox?unread=1", swrFetcher, { refreshInterval: 15000 });
   const rows = data ?? [];
   const [publishFor, setPublishFor] = useState<InboxRow | null>(null);
+  const [ownerCardFor, setOwnerCardFor] = useState<InboxRow | null>(null);
   const [replyFor, setReplyFor] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -112,6 +115,14 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                 )}
                 <span className="text-[11px] text-muted-foreground ml-auto">{timeLabel(r.sentAt)}</span>
               </div>
+              {r.repliedTo && (
+                <p
+                  className="text-[11px] text-muted-foreground italic mt-0.5 line-clamp-1"
+                  title={r.repliedTo.body}
+                >
+                  ↳ Svar på ditt SMS{r.repliedTo.sentAt ? ` ${r.repliedTo.sentAt.slice(5, 16)}` : ""}: ”{r.repliedTo.body}”
+                </p>
+              )}
               <p className="text-sm text-nordic-800 mt-1 whitespace-pre-wrap break-words line-clamp-4">{r.body}</p>
               <div className="flex flex-wrap items-center gap-1 mt-2 pt-2 border-t border-dashed">
                 {r.ownerId && (
@@ -120,6 +131,11 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                     onClick={() => setPublishFor(r)}
                   >
                     🚀 Publicera & länka
+                  </button>
+                )}
+                {r.ownerId && (
+                  <button className={btn} onClick={() => setOwnerCardFor(r)}>
+                    👤 Uthyrarkort
                   </button>
                 )}
                 {r.companyId && (
@@ -177,6 +193,15 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
             if (!o) setPublishFor(null);
           }}
           onDrafted={onDraftCreated}
+        />
+      )}
+      {ownerCardFor && (
+        <OwnerQuickDialog
+          ownerId={ownerCardFor.ownerId!}
+          open
+          onOpenChange={(o) => {
+            if (!o) setOwnerCardFor(null);
+          }}
         />
       )}
     </div>
