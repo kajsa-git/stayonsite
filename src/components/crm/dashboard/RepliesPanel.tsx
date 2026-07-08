@@ -28,8 +28,6 @@ export interface InboxRow {
   repliedTo: { body: string; sentAt: string | null } | null;
 }
 
-const looksLikeYes = (body: string) => /(^|\s)(ja|japp|jajamen|absolut|gärna|ok(ej)?|👍)([!.,\s]|$)/i.test(body);
-
 function timeLabel(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
@@ -116,9 +114,6 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
             <div key={r.id} className="rounded-lg bg-white border p-3">
               <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                 <span className="font-medium text-sm">{who}</span>
-                {r.ownerId && looksLikeYes(r.body) && (
-                  <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-green-100 text-green-800">Ser ut som ett JA</span>
-                )}
                 <span className="text-[11px] text-muted-foreground ml-auto">{timeLabel(r.sentAt)}</span>
               </div>
               {r.repliedTo && (
