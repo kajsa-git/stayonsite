@@ -15,3 +15,8 @@ export function updateClarityConsent(granted: boolean) {
   if (!initialized) return
   Clarity.consent(granted)
 }
+
+export function clarityEvent(name: string) {
+  if (!initialized) return
+  Clarity.event(name)
+}

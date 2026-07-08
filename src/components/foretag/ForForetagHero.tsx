@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
-import { trackFormSubmit } from '@/lib/gtag';
+import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
@@ -34,6 +34,13 @@ const ForForetagHero = () => {
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
+  const formStarted = useRef(false);
+
+  const handleFormFocus = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    trackFormStart();
+  };
 
   const t = (sv: string, en: string, pl: string) => {
     if (language === 'en') return en;
@@ -194,7 +201,7 @@ const ForForetagHero = () => {
                     {t('Vi återkommer inom 24 timmar', "We'll get back to you within 24 hours", 'Skontaktujemy się w ciągu 24 godzin')}
                   </p>
 
-                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+                  <form ref={formRef} onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-3 md:space-y-4">
                     {/* City + People side by side */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">

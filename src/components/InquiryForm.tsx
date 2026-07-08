@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { trackFormSubmit } from '@/lib/gtag';
+import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { isValidPhoneNumber } from '@/lib/contact';
 import {
@@ -22,6 +22,13 @@ const InquiryForm = () => {
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
+  const formStarted = useRef(false);
+
+  const handleFormFocus = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    trackFormStart();
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,9 +94,10 @@ const InquiryForm = () => {
       {formSuccess ? (
         <FormSuccess />
       ) : (
-        <form 
-          ref={formRef} 
-          onSubmit={handleSubmit} 
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          onFocus={handleFormFocus}
           className="space-y-7"
         >
           <InquiryFormFields

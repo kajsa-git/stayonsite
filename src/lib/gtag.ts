@@ -1,4 +1,4 @@
-import { updateClarityConsent } from './clarity'
+import { clarityEvent, updateClarityConsent } from './clarity'
 
 declare global {
   interface Window {
@@ -46,16 +46,25 @@ function fireConversion(label: string) {
 
 export function trackPhoneClick() {
   fireConversion(GA_ADS_CALL_LABEL)
+  clarityEvent('phone_click')
 }
 
 export function trackFormSubmit() {
   fireConversion(GA_ADS_FORM_LABEL)
+  clarityEvent('form_submit')
 }
 
 export function trackEmailClick() {
   fireConversion(GA_ADS_EMAIL_LABEL)
+  clarityEvent('email_click')
 }
 
 export function trackWhatsAppClick() {
   fireConversion(GA_ADS_WHATSAPP_LABEL)
+  clarityEvent('whatsapp_click')
+}
+
+// Clarity-only (ingen Google Ads-konvertering) — funnelsteg "började fylla i formulär"
+export function trackFormStart() {
+  clarityEvent('form_start')
 }

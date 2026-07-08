@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
-import { trackFormSubmit } from '@/lib/gtag';
+import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
@@ -31,6 +31,14 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const formStarted = useRef(false);
+
+  const handleFormFocus = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    trackFormStart();
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setEmailError('');
@@ -118,7 +126,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
 
   return (
     <div className="mt-6 lg:mt-0 w-full max-w-xl lg:max-w-none bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 md:gap-4">
           {/* Ort */}
           <div className="sm:col-span-8">
