@@ -1,13 +1,15 @@
 "use client";
 
 // Svar-panelen i Min dag: inkommande iMessage/SMS som Mac-agenten läst in ur
-// chat.db (endast kända CRM-nummer). Härifrån: öppna JA-flödet (uthyrare),
-// öppna företaget, spara ett svar som UTKAST eller markera läst.
+// chat.db (endast kända CRM-nummer). Ett kort per avsändare (senaste svaret).
+// Härifrån: öppna JA-flödet (uthyrare), uthyrarkortet/företaget, svara direkt
+// eller markera läst. Hela panelen är fällbar (läget sparas i localStorage).
 import { toast } from "@/components/ui/use-toast";
 import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { OwnerQuickDialog } from "./OwnerQuickDialog";
 import { PublishFlowDialog } from "./PublishFlowDialog";
@@ -43,6 +45,18 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
   const [replyFor, setReplyFor] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [busy, setBusy] = useState(false);
+  // Hela panelen fällbar — läget minns mellan sidladdningar.
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem("crm_replies_collapsed") === "1") setCollapsed(true);
+  }, []);
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("crm_replies_collapsed", next ? "1" : "0");
+      return next;
+    });
+  }
 
   // Ett kort per avsändare: senaste olästa visas, resten prickas av i klump.
   // Hela tråden finns på uthyrarsidan/i Messages — Min dag ska bara visa "senaste läget".
@@ -106,15 +120,23 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
 
   return (
     <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50/40 p-4">
-      <div className="flex items-center gap-2 mb-3">
+      <button
+        onClick={toggleCollapsed}
+        className="flex items-center gap-2 w-full text-left"
+        aria-expanded={!collapsed}
+        title={collapsed ? "Visa svar" : "Fäll ihop"}
+      >
+        <ChevronDown className={`h-4 w-4 text-blue-800 shrink-0 transition-transform ${collapsed ? "-rotate-90" : ""}`} />
         <span>💬</span>
         <h2 className="text-sm font-semibold text-nordic-900">Svar</h2>
         <span className="text-xs font-bold text-blue-800 bg-blue-100 rounded-full px-2 py-0.5">{groups.length}</span>
         <span className="text-[11px] text-muted-foreground ml-1 hidden sm:inline">
-          Inkommande SMS från kända kontakter — läses in automatiskt från din Mac
+          {collapsed
+            ? "Klicka för att visa"
+            : "Inkommande SMS från kända kontakter — läses in automatiskt från din Mac"}
         </span>
-      </div>
-      <div className="space-y-2">
+      </button>
+      <div className={`space-y-2 ${collapsed ? "hidden" : "mt-3"}`}>
         {groups.map(({ latest: r, ids }) => {
           const who = r.ownerName
             ? `${r.ownerName} · uthyrare`
