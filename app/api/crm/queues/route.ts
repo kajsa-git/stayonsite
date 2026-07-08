@@ -107,6 +107,8 @@ export async function GET() {
           gte(requests.endDate, plusDaysStockholm(-7)),
           lte(requests.endDate, plusDaysStockholm(30)),
           or(isNull(requests.endDateOngoing), eq(requests.endDateOngoing, false)),
+          isNull(requests.renewalDismissedAt), // "Förlängs ej" tryckt → dölj
+          isNull(requests.moveOutDoneAt), // redan utflyttad → inget att förlänga
         ),
       )
       .orderBy(asc(requests.endDate)),

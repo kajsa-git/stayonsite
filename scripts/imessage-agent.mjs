@@ -287,7 +287,11 @@ function preferSms(chatDb, toPhone) {
 
 function openChatDbReadonly(dbMod) {
   try {
-    return new dbMod.DatabaseSync(CHAT_DB, { readOnly: true });
+    const db = new dbMod.DatabaseSync(CHAT_DB, { readOnly: true });
+    // Messages skriver ofta i databasen — utan busy_timeout kastar frågor SQLITE_BUSY
+    // och tjänstevalet föll tyst tillbaka på iMessage (hände 2026-07-08, två utskick).
+    db.exec("PRAGMA busy_timeout = 3000");
+    return db;
   } catch {
     return null; // FDA saknas/låst — tjänstevalet faller tillbaka på default
   }

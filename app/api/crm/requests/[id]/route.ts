@@ -32,6 +32,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     "startDate", "endDate", "endDateOngoing", "projectDurationMonths", "budgetMax",
     "furnishedRequired", "garageRequired", "monthlyValue", "billingProjectId", "wonPropertyId",
     "lostReason", "notes", "moveInChecklist", "moveOutChecklist", "moveInDoneAt", "moveOutDoneAt",
+    "renewalDismissedAt",
   ] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) if (key in body) data[key] = body[key];

@@ -156,6 +156,9 @@ export const requests = sqliteTable("crm_requests", {
   moveOutChecklist: text("move_out_checklist", { mode: "json" }).$type<string[]>(),
   moveInDoneAt: text("move_in_done_at"),
   moveOutDoneAt: text("move_out_done_at"),
+  // "Förlängs ej": kunden har flyttat/avböjt förlängning → döljer kortet i
+  // Min dags förlängningsradar. Rör inte affärsstatus eller avflyttens checklista.
+  renewalDismissedAt: text("renewal_dismissed_at"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
 }, (t) => [

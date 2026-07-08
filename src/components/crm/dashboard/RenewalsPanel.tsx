@@ -51,6 +51,25 @@ export function RenewalsPanel({ renewals, onChanged }: { renewals: RenewalRow[];
     }
   }
 
+  // "Förlängs ej": kunden har flyttat/avböjt — döljer kortet permanent. Affären
+  // förblir fakturerad; avflytten hanteras som vanligt under In- & avflyttningar.
+  async function dismissRenewal(r: RenewalRow) {
+    setBusyId(r.requestId);
+    try {
+      await crmFetchJson(`/api/crm/requests/${r.requestId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ renewalDismissedAt: new Date().toISOString() }),
+      });
+      toast({ title: "Markerad: förlängs ej" });
+      onChanged();
+    } catch (e) {
+      toast({ title: "Kunde inte spara", description: crmErrorMessage(e), variant: "destructive" });
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   async function snooze(r: RenewalRow) {
     setBusyId(r.requestId);
     try {
@@ -137,6 +156,14 @@ export function RenewalsPanel({ renewals, onChanged }: { renewals: RenewalRow[];
                 </button>
                 <button className={btn} disabled={busyId !== null} onClick={() => snooze(r)}>
                   Återkomst +7 d
+                </button>
+                <button
+                  className="text-[11px] px-2 py-0.5 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-40 transition-colors"
+                  disabled={busyId !== null}
+                  title="Kunden förlänger inte — döljer kortet (avflytten hanterar du under In- & avflyttningar)"
+                  onClick={() => dismissRenewal(r)}
+                >
+                  ✕ Förlängs ej
                 </button>
               </div>
               {editorFor === r.requestId && (

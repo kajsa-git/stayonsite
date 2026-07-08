@@ -84,6 +84,8 @@ export async function GET() {
           lte(requests.endDate, plusDaysStockholm(30)),
           or(isNull(requests.endDateOngoing), eq(requests.endDateOngoing, false)),
           or(isNull(companies.followUpDate), lte(companies.followUpDate, today)),
+          isNull(requests.renewalDismissedAt),
+          isNull(requests.moveOutDoneAt),
         ),
       ),
   ]);
