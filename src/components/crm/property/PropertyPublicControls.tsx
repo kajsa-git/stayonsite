@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { crmFetchJson } from "@/lib/crm/fetcher";
 import { publicDisplayName } from "@/lib/crm/slug";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import { PublishConfirmSmsDialog } from "./PublishConfirmSmsDialog";
 import { ShareLinkButton } from "./ShareLinkButton";
 
 // Publicering — hemsidan (published) och prospekt-länken (prospektPublished) styrs
@@ -15,11 +18,28 @@ export function PropertyPublicControls({
   property: PropertyWithOwner;
   onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
 }) {
+  const [smsDialogOpen, setSmsDialogOpen] = useState(false);
   const displayName = publicDisplayName(property.publicName, {
     city: property.city,
     bedrooms: property.bedrooms,
     beds: property.beds,
   });
+
+  // Efter publicering: erbjud bekräftelse-SMS till uthyraren — men bara om numret
+  // finns, publik URL finns, och länken inte redan skickats/utkastats till numret.
+  async function maybeOfferConfirmSms() {
+    const { ownerPhone, slug } = property;
+    if (!ownerPhone || !slug) return;
+    try {
+      const history = await crmFetchJson<{ body: string }[]>(
+        `/api/crm/messages?phone=${encodeURIComponent(ownerPhone)}`,
+      );
+      if (history.some((m) => m.body.includes(`/boenden/${slug}`))) return;
+    } catch {
+      /* historiken är bara en dubblettspärr — erbjud hellre än att tyst låta bli */
+    }
+    setSmsDialogOpen(true);
+  }
 
   const toggleCls = (on: boolean) =>
     `text-sm px-3 py-1.5 rounded-md border font-semibold transition-colors ${
@@ -36,12 +56,15 @@ export function PropertyPublicControls({
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={async () => {
+              const publishing = !property.published;
               try {
-                await onUpdate({ published: !property.published });
-                toast({ title: property.published ? "Borttagen från hemsidan" : "Publicerad på hemsidan" });
+                await onUpdate({ published: publishing });
+                toast({ title: publishing ? "Publicerad på hemsidan" : "Borttagen från hemsidan" });
               } catch {
                 /* feltoast visas av onUpdate */
+                return;
               }
+              if (publishing) await maybeOfferConfirmSms();
             }}
             className={toggleCls(!!property.published)}
           >
@@ -88,6 +111,17 @@ export function PropertyPublicControls({
           )}
         </div>
       </div>
+
+      {smsDialogOpen && property.ownerId && property.ownerPhone && property.slug && (
+        <PublishConfirmSmsDialog
+          open={smsDialogOpen}
+          onOpenChange={setSmsDialogOpen}
+          ownerId={property.ownerId}
+          ownerName={property.ownerName}
+          ownerPhone={property.ownerPhone}
+          slug={property.slug}
+        />
+      )}
     </div>
   );
 }
