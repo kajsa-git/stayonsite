@@ -113,7 +113,7 @@ const ForForetagHero = () => {
     'text-[10px] font-bold uppercase tracking-widest text-white/50 ml-1';
 
   return (
-    <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-16 pb-8 md:pt-28 md:pb-16 bg-primary">
+    <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-28 pb-8 md:pb-16 bg-primary">
       {/* Background image */}
       <motion.div
         initial={{ scale: 1.1, opacity: 0 }}

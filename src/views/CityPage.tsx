@@ -605,7 +605,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
         primaryLabel={translate('Skicka förfrågan', 'Send inquiry', 'Wyślij zapytanie')}
         phoneLabel={translate('Ring oss', 'Call us', 'Zadzwoń')}
       />
-      <FloatingPhoneButton />
+      <FloatingPhoneButton className="bottom-24 md:bottom-6" />
     </div>
   );
 };

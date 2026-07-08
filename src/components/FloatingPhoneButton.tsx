@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { trackWhatsAppClick } from '@/lib/gtag';
+import { cn } from '@/lib/utils';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
-const FloatingPhoneButton = () => {
+const FloatingPhoneButton = ({ className }: { className?: string }) => {
   const { t } = useLanguage();
   const [hideButton, setHideButton] = useState(false);
 
@@ -32,7 +33,7 @@ const FloatingPhoneButton = () => {
   if (hideButton) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 xl:hidden">
+    <div className={cn('fixed bottom-6 right-6 z-50 xl:hidden', className)}>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
