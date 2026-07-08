@@ -16,8 +16,10 @@ const greet = (name: string | null | undefined) => {
 };
 
 // Länk-SMS efter publicering (JA-flödet) — samma text som kampanjens godkända.
+// Länken skrivs UTAN https:// — operatörernas smishing-filter stoppar https-länkar
+// i SMS (verifierat 2026-07-08: error 4 med https, levererat med www).
 export function publishedLinkSms(ownerName: string | null | undefined, slug: string): string {
-  return `${greet(ownerName)} Tack för ditt svar 😊 Nu ligger ditt boende ute på vår hemsida: https://www.stayonsite.se/boenden/${slug}\nExakt adress visas inte publikt. Hör av dig om du vill ändra eller lägga till något. /Kajsa, StayOnSite`;
+  return `${greet(ownerName)} Tack för ditt svar 😊 Nu ligger ditt boende ute på vår hemsida: www.stayonsite.se/boenden/${slug}\nExakt adress visas inte publikt. Hör av dig om du vill ändra eller lägga till något. /Kajsa, StayOnSite`;
 }
 
 // Jaga uthyrare: förslag skickat, väntar på svar.
