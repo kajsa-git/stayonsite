@@ -68,6 +68,9 @@ export function PublishFlowDialog({
   const props = data ?? [];
   const [busyId, setBusyId] = useState<string | null>(null);
   const [step, setStep] = useState<string>("");
+  // Länk-SMS visas alltid som redigerbar text innan det skickas.
+  const [smsFor, setSmsFor] = useState<string | null>(null);
+  const [smsText, setSmsText] = useState("");
 
   async function ensureDescription(p: PropRow): Promise<void> {
     if (p.publicDescription?.trim()) return;
@@ -112,15 +115,28 @@ export function PublishFlowDialog({
     return updated?.slug ?? null;
   }
 
-  async function draftLinkSms(slug: string) {
-    if (!ownerPhone) return;
-    setStep("Skapar SMS-utkast…");
-    await crmFetchJson("/api/crm/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ toPhone: ownerPhone, ownerId, draft: true, body: publishedLinkSms(ownerName, slug) }),
-    });
-    onDrafted?.();
+  async function sendLinkSms(propId: string) {
+    if (!ownerPhone || !smsText.trim()) return;
+    setBusyId(propId);
+    try {
+      await crmFetchJson("/api/crm/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ toPhone: ownerPhone, ownerId, body: smsText.trim() }),
+      });
+      toast({ title: "Länk-SMS skickas inom ~30 sek" });
+      setSmsFor(null);
+      onDrafted?.();
+    } catch (e) {
+      toast({ title: "Kunde inte skicka", description: crmErrorMessage(e), variant: "destructive" });
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  function openSmsEditor(p: PropRow, slug: string) {
+    setSmsText(publishedLinkSms(ownerName, slug));
+    setSmsFor(p.id);
   }
 
   async function run(p: PropRow, what: "describe" | "publish" | "sms" | "all") {
@@ -130,15 +146,14 @@ export function PublishFlowDialog({
       if (what === "publish") await publish(p);
       if (what === "sms") {
         if (!p.slug) throw new Error("Publik URL saknas — publicera först.");
-        await draftLinkSms(p.slug);
-        toast({ title: "Länk-SMS sparat som utkast — godkänn i Utkast-panelen" });
+        openSmsEditor(p, p.slug);
       }
       if (what === "all") {
         await ensureDescription(p);
         const slug = p.published && p.slug ? p.slug : await publish(p);
         if (slug && ownerPhone) {
-          await draftLinkSms(slug);
-          toast({ title: "Klart: beskrivning + publicerad + SMS-utkast (godkänn i Utkast-panelen)" });
+          openSmsEditor(p, slug);
+          toast({ title: "Beskrivning + publicering klar — justera SMS:et och skicka" });
         } else if (slug) {
           toast({ title: "Klart: beskrivning + publicerad (uthyraren saknar telefonnummer för SMS)" });
         } else {
@@ -164,7 +179,7 @@ export function PublishFlowDialog({
         </DialogHeader>
         <p className="text-xs text-muted-foreground -mt-1">
           Beskrivning skrivs av AI, objektet publiceras (endast postnummer visas, aldrig adress) och länk-SMS:et
-          läggs som <b>utkast</b> — inget skickas förrän du godkänner det.
+          skickas direkt till uthyraren.
         </p>
         {isLoading ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground py-6 justify-center">
@@ -201,7 +216,7 @@ export function PublishFlowDialog({
                     Publicera
                   </button>
                   <button className={btn} disabled={busyId !== null || !p.published || !p.slug || !ownerPhone} onClick={() => run(p, "sms")}>
-                    Länk-SMS-utkast
+                    Skicka länk-SMS
                   </button>
                   {p.published && p.slug && (
                     <a
@@ -217,6 +232,29 @@ export function PublishFlowDialog({
                 {busyId === p.id && (
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" /> {step || "Arbetar…"}
+                  </div>
+                )}
+                {smsFor === p.id && (
+                  <div className="mt-2 space-y-1.5">
+                    <p className="text-[11px] font-medium text-nordic-700">Länk-SMS — justera om du vill, sedan skicka:</p>
+                    <textarea
+                      value={smsText}
+                      onChange={(e) => setSmsText(e.target.value)}
+                      rows={4}
+                      className="w-full border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400"
+                    />
+                    <div className="flex gap-1.5">
+                      <button
+                        className="text-[11px] px-2.5 py-1 rounded border border-green-300 bg-green-50 text-green-800 hover:bg-green-100 font-semibold disabled:opacity-40 transition-colors"
+                        disabled={busyId !== null || !smsText.trim()}
+                        onClick={() => sendLinkSms(p.id)}
+                      >
+                        Skicka
+                      </button>
+                      <button className={btn} onClick={() => setSmsFor(null)}>
+                        Avbryt
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

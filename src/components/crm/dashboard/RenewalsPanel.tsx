@@ -28,25 +28,24 @@ export function RenewalsPanel({ renewals, onChanged }: { renewals: RenewalRow[];
   const router = useRouter();
   const today = todayStockholm();
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editorFor, setEditorFor] = useState<string | null>(null);
+  const [smsText, setSmsText] = useState("");
 
   if (renewals.length === 0) return null;
 
-  async function draftSms(r: RenewalRow) {
-    if (!r.contactPhone) return;
+  async function sendSms(r: RenewalRow) {
+    if (!r.contactPhone || !smsText.trim()) return;
     setBusyId(r.requestId);
     try {
       await crmFetchJson("/api/crm/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          toPhone: r.contactPhone,
-          draft: true,
-          body: renewalSms(r.contactName, r.city, r.endDate),
-        }),
+        body: JSON.stringify({ toPhone: r.contactPhone, body: smsText.trim() }),
       });
-      toast({ title: "Förläng-SMS sparat som utkast — godkänn i Utkast-panelen" });
+      toast({ title: "Förläng-SMS skickas inom ~30 sek" });
+      setEditorFor(null);
     } catch (e) {
-      toast({ title: "Kunde inte skapa utkast", description: crmErrorMessage(e), variant: "destructive" });
+      toast({ title: "Kunde inte skicka", description: crmErrorMessage(e), variant: "destructive" });
     } finally {
       setBusyId(null);
     }
@@ -125,10 +124,13 @@ export function RenewalsPanel({ renewals, onChanged }: { renewals: RenewalRow[];
                 <button
                   className="text-[11px] px-2 py-0.5 rounded border border-orange-300 bg-orange-50 text-orange-800 hover:bg-orange-100 font-semibold disabled:opacity-40 transition-colors"
                   disabled={busyId !== null || !r.contactPhone}
-                  title={r.contactPhone ? "" : "Kontakten saknar telefonnummer"}
-                  onClick={() => draftSms(r)}
+                  title={r.contactPhone ? "Förifyllt SMS — justera och skicka" : "Kontakten saknar telefonnummer"}
+                  onClick={() => {
+                    if (editorFor !== r.requestId) setSmsText(renewalSms(r.contactName, r.city, r.endDate));
+                    setEditorFor(editorFor === r.requestId ? null : r.requestId);
+                  }}
                 >
-                  ✉️ Förläng-SMS (utkast)
+                  ✉️ Förläng-SMS
                 </button>
                 <button className={btn} onClick={() => router.push(`/crm/company/${r.companyId}?request=${r.requestId}`)}>
                   Öppna
@@ -137,6 +139,28 @@ export function RenewalsPanel({ renewals, onChanged }: { renewals: RenewalRow[];
                   Återkomst +7 d
                 </button>
               </div>
+              {editorFor === r.requestId && (
+                <div className="mt-2 space-y-1.5">
+                  <textarea
+                    value={smsText}
+                    onChange={(e) => setSmsText(e.target.value)}
+                    rows={3}
+                    className="w-full border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400"
+                  />
+                  <div className="flex gap-1.5">
+                    <button
+                      className="text-[11px] px-2 py-1 rounded border border-orange-300 bg-orange-50 text-orange-800 hover:bg-orange-100 font-semibold disabled:opacity-40"
+                      disabled={busyId !== null || !smsText.trim()}
+                      onClick={() => sendSms(r)}
+                    >
+                      Skicka
+                    </button>
+                    <button className={btn} onClick={() => setEditorFor(null)}>
+                      Avbryt
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}

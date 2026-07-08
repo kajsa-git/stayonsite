@@ -67,7 +67,7 @@ const STEPS = [
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
   { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
   { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing." },
-  { emoji: "✉️", title: "Utkast", text: "SMS som CRM:et förberett. Inget skickas förrän du godkänner det här." },
+  { emoji: "✉️", title: "Utkast", text: "Kvarvarande sparade utkast. Knapparna i panelerna skickar numera direkt." },
 ];
 
 // Kanoniska status-etiketter + färger (delas med övriga vyer).
@@ -252,23 +252,23 @@ export function MyDayView() {
     }
   }
 
-  // Färdigt uppföljnings-SMS för jaga-kortet — sparas som UTKAST, skickas aldrig direkt.
-  async function chaseDraftSms(item: ChaseRow) {
-    if (!item.ownerPhone) return;
+  // Uppföljnings-SMS från jaga-kortet: förifylld text som Kajsa kan justera → skickas
+  // vid klick (kön → agenten inom ~30 s).
+  async function chaseSendSms(item: ChaseRow, body: string) {
+    if (!item.ownerPhone || !body.trim()) return;
     try {
       await crmFetchJson("/api/crm/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           toPhone: item.ownerPhone,
-          draft: true,
           ownerId: item.ownerId ?? undefined,
-          body: ownerFollowUpSms(item.ownerName, item.address),
+          body: body.trim(),
         }),
       });
-      toast({ title: "SMS-utkast skapat — godkänn i Utkast-panelen" });
+      toast({ title: "Uppföljnings-SMS skickas inom ~30 sek" });
     } catch {
-      toast({ title: "Kunde inte skapa utkast", variant: "destructive" });
+      toast({ title: "Kunde inte skicka", variant: "destructive" });
     }
   }
 
@@ -595,7 +595,7 @@ export function MyDayView() {
                 today={today}
                 onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
                 onAction={(action) => chaseAction(item.propertyId, action)}
-                onDraftSms={() => chaseDraftSms(item)}
+                onSendSms={(body) => chaseSendSms(item, body)}
               />
             )}
           />
@@ -879,15 +879,17 @@ function ChaseCard({
   today,
   onOpen,
   onAction,
-  onDraftSms,
+  onSendSms,
 }: {
   item: ChaseRow;
   today: string;
   onOpen: () => void;
   onAction: (action: string) => void | Promise<void>;
-  onDraftSms: () => void | Promise<void>;
+  onSendSms: (body: string) => void | Promise<void>;
 }) {
   const [busy, setBusy] = useState(false);
+  const [smsOpen, setSmsOpen] = useState(false);
+  const [smsText, setSmsText] = useState("");
   async function act(action: string) {
     if (
       action === "off_market" &&
@@ -929,16 +931,15 @@ function ChaseCard({
       <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t">
         {item.ownerPhone && (
           <button
-            onClick={async () => {
-              setBusy(true);
-              await onDraftSms();
-              setBusy(false);
+            onClick={() => {
+              if (!smsOpen) setSmsText(ownerFollowUpSms(item.ownerName, item.address));
+              setSmsOpen(!smsOpen);
             }}
             disabled={busy}
             className="text-[11px] px-1.5 py-0.5 rounded border border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-medium disabled:opacity-40"
-            title="Färdigt uppföljnings-SMS läggs som utkast — inget skickas direkt"
+            title="Förifyllt uppföljnings-SMS — justera och skicka"
           >
-            ✉️ SMS-utkast
+            ✉️ Uppföljnings-SMS
           </button>
         )}
         {(["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
@@ -959,6 +960,36 @@ function ChaseCard({
           Anteckning
         </button>
       </div>
+      {smsOpen && (
+        <div className="mt-2 space-y-1.5">
+          <textarea
+            value={smsText}
+            onChange={(e) => setSmsText(e.target.value)}
+            rows={3}
+            className="w-full border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-400"
+          />
+          <div className="flex gap-1.5">
+            <button
+              className="text-[11px] px-2 py-1 rounded border border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-semibold disabled:opacity-40"
+              disabled={busy || !smsText.trim()}
+              onClick={async () => {
+                setBusy(true);
+                await onSendSms(smsText);
+                setBusy(false);
+                setSmsOpen(false);
+              }}
+            >
+              Skicka
+            </button>
+            <button
+              className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100"
+              onClick={() => setSmsOpen(false)}
+            >
+              Avbryt
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

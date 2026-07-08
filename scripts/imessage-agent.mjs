@@ -233,9 +233,19 @@ async function ingestIncoming() {
 
 // Skicka via Messages.app. AppleScript-strängen escapas (backslash + citattecken);
 // själva texten skickas som variabel så inga andra tecken kan bryta scriptet.
-function sendViaMessages(toPhone, body) {
+// forceSms=true hoppar över iMessage helt — Apples registry ljuger ibland
+// (iMessage "finns" men levereras aldrig, error 22), då är äkta SMS enda vägen.
+function sendViaMessages(toPhone, body, forceSms = false) {
   const esc = (s) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-  const script = `
+  const script = forceSms
+    ? `
+tell application "Messages"
+  set msgText to "${esc(body)}"
+  set smsSvc to 1st account whose service type = SMS and enabled is true
+  send msgText to participant "${esc(toPhone)}" of smsSvc
+  return "SMS (tvingad)"
+end tell`
+    : `
 tell application "Messages"
   set msgText to "${esc(body)}"
   try
@@ -253,7 +263,90 @@ end tell`;
   return execFileSync("osascript", ["-e", script], { encoding: "utf8", timeout: 120_000 }).trim();
 }
 
-async function sendQueued() {
+// Tjänsteval utifrån leveranshistorik: misslyckade iMessage till numret (30 dgr)
+// eller senaste lyckade utskicket gick som SMS → tvinga SMS. Ingen historik → default.
+function preferSms(chatDb, toPhone) {
+  if (!chatDb) return false;
+  try {
+    const sinceNs = (Date.now() - 30 * 86400_000 - APPLE_EPOCH_MS) * 1e6;
+    const rows = chatDb
+      .prepare(
+        `SELECT m.service AS service, m.error AS error
+         FROM message m JOIN handle h ON h.ROWID = m.handle_id
+         WHERE m.is_from_me = 1 AND h.id = ? AND m.date > ?
+         ORDER BY m.date DESC LIMIT 20`,
+      )
+      .all(toPhone, sinceNs);
+    if (rows.some((r) => r.service === "iMessage" && Number(r.error ?? 0) > 0)) return true;
+    const lastOk = rows.find((r) => Number(r.error ?? 0) === 0);
+    return lastOk?.service === "SMS";
+  } catch {
+    return false;
+  }
+}
+
+function openChatDbReadonly(dbMod) {
+  try {
+    return new dbMod.DatabaseSync(CHAT_DB, { readOnly: true });
+  } catch {
+    return null; // FDA saknas/låst — tjänstevalet faller tillbaka på default
+  }
+}
+
+// Leveranskoll: allt agenten skickat verifieras i efterhand mot chat.db.
+// error > 0 → rapportera failed till CRM:et (status flippas sent → failed).
+// Poster äldre än 30 min utan fel anses levererade och släpps.
+async function verifyDeliveries(chatDb) {
+  if (!chatDb) return;
+  const state = readState();
+  const pending = Array.isArray(state.pendingChecks) ? state.pendingChecks : [];
+  if (pending.length === 0) return;
+
+  const keep = [];
+  for (const p of pending) {
+    const ageMs = Date.now() - p.sentAtMs;
+    if (ageMs < 60_000) {
+      keep.push(p); // för färskt — felkoder hinner inte alltid sättas
+      continue;
+    }
+    let verdict = "unknown";
+    try {
+      const sinceNs = (p.sentAtMs - 120_000 - APPLE_EPOCH_MS) * 1e6;
+      const rows = chatDb
+        .prepare(
+          `SELECT m.text AS text, m.attributedBody AS ab, m.service AS service, m.error AS error
+           FROM message m JOIN handle h ON h.ROWID = m.handle_id
+           WHERE m.is_from_me = 1 AND h.id = ? AND m.date > ?`,
+        )
+        .all(p.toPhone, sinceNs);
+      const needle = Buffer.from(p.bodyPrefix);
+      const match = rows.filter((r) => {
+        const t = (r.text ?? "").toString();
+        return t.includes(p.bodyPrefix) || (r.ab ? Buffer.from(r.ab).includes(needle) : false);
+      });
+      if (match.some((m) => Number(m.error ?? 0) > 0) && !match.some((m) => Number(m.error ?? 0) === 0)) verdict = "failed";
+      else if (match.length > 0) verdict = "ok";
+    } catch {
+      /* chat.db-läsfel — försök igen nästa tick */
+    }
+
+    if (verdict === "failed") {
+      const failedMatch = "levererades aldrig (iMessage-fel i chat.db) — nästa utskick till numret tvingas som SMS";
+      await fetch(`${BASE}/api/crm/messages/agent`, {
+        method: "POST",
+        headers: { ...AUTH, "content-type": "application/json" },
+        body: JSON.stringify({ id: p.id, ok: false, error: failedMatch }),
+      }).catch(() => undefined);
+      console.log(`${ts()} leveranskoll: ${p.id} -> ${p.toPhone} EJ levererat — flaggat som failed`);
+    } else if (verdict === "unknown" && ageMs < 30 * 60_000) {
+      keep.push(p); // inte hittat än — ge det mer tid
+    }
+    // ok eller >30 min utan spår → släpp posten
+  }
+  writeState({ ...readState(), pendingChecks: keep.slice(-200) });
+}
+
+async function sendQueued(chatDb) {
   if (isQuietHours(stockholmHour())) return; // tysta timmar: rör inte ens kön
 
   const res = await fetch(`${BASE}/api/crm/messages/agent`, { headers: AUTH });
@@ -269,7 +362,7 @@ async function sendQueued() {
     let error = null;
     let via = "";
     try {
-      via = sendViaMessages(msg.toPhone, msg.body);
+      via = sendViaMessages(msg.toPhone, msg.body, preferSms(chatDb, msg.toPhone));
       ok = true;
     } catch (e) {
       error = String(e?.message ?? e).slice(0, 400);
@@ -279,22 +372,47 @@ async function sendQueued() {
       headers: { ...AUTH, "content-type": "application/json" },
       body: JSON.stringify({ id: msg.id, ok, error }),
     }).catch((e) => console.error(`${ts()} kunde inte rapportera ${msg.id}: ${e}`));
+    if (ok) {
+      // Lägg i leveranskollens kö — verifieras mot chat.db kommande ticks.
+      const state = readState();
+      const pending = Array.isArray(state.pendingChecks) ? state.pendingChecks : [];
+      pending.push({ id: msg.id, toPhone: msg.toPhone, bodyPrefix: msg.body.slice(0, 40), sentAtMs: Date.now() });
+      writeState({ ...state, pendingChecks: pending.slice(-200) });
+    }
     console.log(`${ts()} ${msg.id} -> ${msg.toPhone}: ${ok ? `skickat via ${via}` : `FEL: ${error}`}`);
     await new Promise((r) => setTimeout(r, 1500)); // paus mellan utskick — snällt mot Messages
   }
 }
 
-// Inläsning först (svaren ska in även om utskicksdelen felar), sedan utskick.
-// Båda faserna felskyddade: en nätverkstimeout ska ge EN loggrad, inte en
+// Inläsning först (svaren ska in även om utskicksdelen felar), sedan leveranskoll
+// på tidigare utskick, sedan nya utskick med historikbaserat tjänsteval.
+// Alla faser felskyddade: en nätverkstimeout ska ge EN loggrad, inte en
 // ohanterad krasch-trace i launchd-loggen var 30:e sekund.
 try {
   await ingestIncoming();
 } catch (e) {
   console.error(`${ts()} inbox: oväntat fel: ${e?.message ?? e}`);
 }
+let sendChatDb = null;
 try {
-  await sendQueued();
+  const dbMod = await import("node:sqlite");
+  sendChatDb = openChatDbReadonly(dbMod);
+} catch {
+  /* node:sqlite saknas — tjänstevalet faller tillbaka på default */
+}
+try {
+  await verifyDeliveries(sendChatDb);
+} catch (e) {
+  console.error(`${ts()} leveranskoll: fel: ${e?.message ?? e}`);
+}
+try {
+  await sendQueued(sendChatDb);
 } catch (e) {
   console.error(`${ts()} utskick: nätverksfel: ${e?.message ?? e}`);
+}
+try {
+  sendChatDb?.close();
+} catch {
+  /* redan stängd */
 }
 process.exit(0);

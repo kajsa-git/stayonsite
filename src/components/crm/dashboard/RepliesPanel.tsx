@@ -61,7 +61,9 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
     }
   }
 
-  async function saveReplyDraft(row: InboxRow) {
+  // Skickar direkt (köas → Mac-agenten skickar inom ~30 s, aldrig 21–08) och
+  // markerar svaret som hanterat — ett klick, klart.
+  async function sendReply(row: InboxRow) {
     if (!replyText.trim() || busy) return;
     setBusy(true);
     try {
@@ -71,17 +73,21 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
         body: JSON.stringify({
           toPhone: row.fromPhone,
           body: replyText.trim(),
-          draft: true,
           ownerId: row.ownerId ?? undefined,
           contactId: row.contactId ?? undefined,
         }),
       });
       setReplyFor(null);
       setReplyText("");
-      toast({ title: "Svar sparat som utkast — godkänn i Utkast-panelen" });
-      onDraftCreated?.();
+      await crmFetchJson(`/api/crm/inbox/${row.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isRead: true }),
+      }).catch(() => undefined); // svaret är viktigast — läst-markeringen får inte stoppa flödet
+      mutate();
+      toast({ title: "Svar skickas inom ~30 sek via Messages" });
     } catch (e) {
-      toast({ title: "Kunde inte spara utkast", description: crmErrorMessage(e), variant: "destructive" });
+      toast({ title: "Kunde inte skicka", description: crmErrorMessage(e), variant: "destructive" });
     } finally {
       setBusy(false);
     }
@@ -150,7 +156,7 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                     setReplyText("");
                   }}
                 >
-                  ↩ Svara (utkast)
+                  ↩ Svara
                 </button>
                 <button className={btn} onClick={() => markRead(r.id)}>
                   ✓ Läst
@@ -169,9 +175,9 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                     <button
                       className="text-[11px] px-2 py-1 rounded border border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100 font-semibold disabled:opacity-40 transition-colors"
                       disabled={busy || !replyText.trim()}
-                      onClick={() => saveReplyDraft(r)}
+                      onClick={() => sendReply(r)}
                     >
-                      Spara som utkast
+                      Skicka
                     </button>
                     <button className={btn} onClick={() => setReplyFor(null)}>
                       Avbryt
