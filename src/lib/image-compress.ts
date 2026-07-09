@@ -2,8 +2,9 @@
 // har en hård gräns på ~4,5 MB per request — moderna mobilfoton spränger den
 // och ger "Uppladdning misslyckades (413)". 2000 px räcker gott för annonser
 // och prospekt, så vi skalar ner i webbläsaren innan uppladdning (snabbare på
-// mobil dessutom). Misslyckas avkodningen (t.ex. HEIC i vissa webbläsare)
-// returneras originalet orört — då gäller serverns vanliga felhantering.
+// mobil dessutom). Allt online körs i WebP (Kajsas beslut 2026-07-09) — JPEG
+// är fallback för äldre webbläsare vars canvas inte kan koda WebP. Misslyckas
+// avkodningen helt (t.ex. HEIC i vissa webbläsare) returneras originalet orört.
 export async function compressImage(
   file: File,
   opts?: { maxDim?: number; quality?: number },
@@ -19,8 +20,8 @@ export async function compressImage(
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
     const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
 
-    // Redan liten i både pixlar och bytes → rör inte filen.
-    if (scale === 1 && file.size < 1_200_000) {
+    // Redan liten i pixlar, rimlig i bytes OCH redan webp → rör inte filen.
+    if (scale === 1 && file.size < 1_200_000 && file.type === "image/webp") {
       bitmap.close();
       return file;
     }
@@ -38,11 +39,17 @@ export async function compressImage(
     ctx.drawImage(bitmap, 0, 0, w, h);
     bitmap.close();
 
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    // WebP först; webbläsare utan WebP-kodning faller tillbaka på PNG eller null
+    // enligt spec — då kodar vi om till JPEG istället.
+    let blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", quality));
+    if (!blob || blob.type !== "image/webp") {
+      blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    }
     if (!blob || blob.size >= file.size) return file; // vann inget — behåll originalet
 
-    const name = file.name.replace(/\.[a-z0-9]+$/i, "") + ".jpg";
-    return new File([blob], name, { type: "image/jpeg" });
+    const ext = blob.type === "image/webp" ? ".webp" : ".jpg";
+    const name = file.name.replace(/\.[a-z0-9]+$/i, "") + ext;
+    return new File([blob], name, { type: blob.type });
   } catch {
     return file;
   }
