@@ -6,7 +6,9 @@ import { db } from '@/lib/crm/db'
 import { properties } from '@/lib/crm/schema'
 import { CONTENT_UPDATED } from '@/lib/seo-utils'
 
-export const dynamic = 'force-static'
+// Vid förfrågan, inte vid bygge: bygget når inte Turso → boenden saknades alltid.
+// Sitemap-anrop är sällsynta (crawlers), så SSR-kostnaden är noll i praktiken.
+export const dynamic = 'force-dynamic'
 
 const BASE = 'https://www.stayonsite.se'
 
@@ -124,8 +126,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  // Publicerade, lediga boenden med slug. Byggtids-snapshot — uppdateras vid nästa deploy.
-  // try/catch så att ett DB-fel aldrig kraschar bygget av sitemap.
+  // Publicerade, lediga boenden med slug — hämtas VID FÖRFRÅGAN (force-dynamic
+  // nedan): Vercel-bygget når inte Turso, så byggtids-snapshotten blev alltid tom.
+  // try/catch så att ett DB-fel aldrig kraschar sitemapen.
   let boendePages: MetadataRoute.Sitemap = []
   try {
     const rows = await db

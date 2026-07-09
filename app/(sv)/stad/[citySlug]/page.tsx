@@ -11,9 +11,11 @@ export function generateStaticParams() {
   return cities.map((city) => ({ citySlug: city.slug }))
 }
 
-// ISR: stadssidorna byggs om varje timme så "Lediga boenden just nu"-sektionen
-// följer publiceringsläget i CRM:et utan att kräva deploy.
-export const revalidate = 3600
+// Runtime-rendering: Vercel-BYGGET når inte Turso (sitemapen har varit tomt på
+// boenden av samma skäl), så ISR/byggtids-snapshot ger tomma "Lediga boenden"-
+// sektioner. Vid förfrågan finns DB:n alltid → sektionen är alltid korrekt.
+// ~32 sidor × låg trafik gör SSR-kostnaden försumbar.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> {
   const { citySlug } = await params
