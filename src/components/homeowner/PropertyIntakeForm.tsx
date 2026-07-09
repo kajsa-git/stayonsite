@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
+import { compressImage } from "@/lib/image-compress";
 import { cn } from "@/lib/utils";
 
 type IntakeFormState = {
@@ -403,7 +404,10 @@ export function PropertyIntakeForm() {
     try {
       const body = new FormData();
       body.append("payload", JSON.stringify(payload()));
-      files.forEach((file) => body.append("images", file));
+      // Alla bilder går i SAMMA request (Vercel-tak ~4,5 MB totalt) — komprimera
+      // hårdare här än i CRM:et så även 10 mobilfoton ryms tillsammans.
+      const compressed = await Promise.all(files.map((file) => compressImage(file, { maxDim: 1600, quality: 0.78 })));
+      compressed.forEach((file) => body.append("images", file));
       const response = await fetch("/api/crm/property-intake", { method: "POST", body });
       const result = await response.json().catch(() => null) as {
         success?: boolean;

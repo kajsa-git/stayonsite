@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
+import { compressImage } from "@/lib/image-compress";
 
 interface Image {
   id: string;
@@ -46,8 +47,10 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
     try {
       // Varje fil i sin egen try/catch — ett nätverksfel på en bild får aldrig
       // avbryta hela batchen eller hoppa över mutate().
-      for (const file of list) {
+      for (const raw of list) {
         try {
+          // Krymp i webbläsaren: Vercel svarar 413 på filer nära 4,5 MB.
+          const file = await compressImage(raw);
           const fd = new FormData();
           fd.append("file", file);
           const res = await fetch(`/api/crm/properties/${propertyId}/images`, { method: "POST", body: fd });
