@@ -7,7 +7,8 @@ const SchablonavdragSkattBlockhyraHusagare2026 = () => {
   return (
     <BlogLayout post={post}>
       <p>
-        Den 1 juli 2026 träder den mest omfattande reformen av privatuthyrningslagen sedan 2012 i kraft. För husägare som överväger att hyra ut till företag &mdash; särskilt för personalboende inom bygg-, energi- och infrastruktursektorn &mdash; innebär förändringarna både nya möjligheter och viktiga skattekonsekvenser att förstå.
+        Den 1 juli 2026 träder den mest omfattande reformen av privatuthyrningslagen sedan 2012 i kraft. För husägare som överväger att hyra ut till företag &mdash; särskilt för personalboende inom bygg-, energi- och infrastruktursektorn &mdash; innebär förändringarna både nya möjligheter och viktiga skattekonsekvenser att förstå. En översikt av hela reformen finns i vår guide till{' '}
+        <Link href="/blogg/privatuthyrningslagen-reform-2026">nya privatuthyrningslagen 2026</Link>.
       </p>
       
       <p>

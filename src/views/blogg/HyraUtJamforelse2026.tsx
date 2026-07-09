@@ -59,7 +59,10 @@ const HyraUtJamforelse2026 = () => {
       <p>
         StayOnSite besiktigar och fotodokumenterar bostaden innan inflyttning. Du tecknar ett avtal
         med StayOnSite och får din hyra den 25:e varje månad, oavsett om bostaden är belagd eller
-        inte. Kontakten med de faktiska boende sköts helt av StayOnSite.
+        inte. Kontakten med de faktiska boende sköts helt av StayOnSite. Hela processen, steg för
+        steg, beskriver vi i{' '}
+        <Link href="/blogg/sa-fungerar-det-fran-intresse-till-forsta-hyran">så fungerar det
+        &mdash; från intresse till första hyran</Link>.
       </p>
 
       <blockquote>
@@ -239,7 +242,9 @@ const HyraUtJamforelse2026 = () => {
       <p>
         En husägare som hyr ut för 12 000 kr per månad via Samtrygg förlorar 21 600 kr per år
         i avgifter. Över tre år är det 64 800 kr. Det är pengar som stannar hos husägaren med
-        StayOnSites modell.
+        StayOnSites modell. Vill du veta vad som blir kvar efter skatt? Se vår guide om{' '}
+        <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">schablonavdrag och
+        skatt vid uthyrning</Link>.
       </p>
 
       <h2>Vilket alternativ passar dig?</h2>

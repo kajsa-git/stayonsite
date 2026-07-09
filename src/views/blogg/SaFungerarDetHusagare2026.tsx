@@ -34,7 +34,9 @@ const SaFungerarDetHusagare2026 = () => {
       <p>
         Till skillnad från plattformar som Samtrygg (15 % avgift) och Qasa (4,95 %) tar
         StayOnSite <strong>0 procent i avgift av husägaren</strong>. Det vi kommer överens
-        om får du alltid helt utan avdrag.
+        om får du alltid helt utan avdrag. Se vår{' '}
+        <Link href="/blogg/hyra-ut-jamforelse-stayonsite-vs-andra-2026">jämförelse av
+        uthyrningstjänster</Link> för siffrorna sida vid sida.
       </p>
 
       <h2>De fem stegen - från intresse till hyra</h2>
@@ -262,7 +264,10 @@ const SaFungerarDetHusagare2026 = () => {
         En möblerad villa i exempelvis <Link href="/stad/oskarshamn">Oskarshamn</Link> eller{' '}
         <Link href="/stad/ludvika">Ludvika</Link> med 3 sovrum, fullt kök och internet.
         Fast månadshyra: <strong>25 000 kr</strong>. Inga avdrag, inga avgifter.
-        Det ger 300 000 kr per år i garanterad inkomst.
+        Det ger 300 000 kr per år i garanterad inkomst. Hur mycket som blir kvar efter
+        skatt räknar vi på i guiden om{' '}
+        <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">schablonavdrag
+        och skatt vid uthyrning</Link>.
       </p>
 
       <h3>Scenario B: Större hus med 5+ sovrum nära industriprojekt</h3>

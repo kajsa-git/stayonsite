@@ -11,7 +11,10 @@ const BlockhyraRegler2026 = () => {
       </p>
 
       <p>
-        I denna guide går vi igenom exakt vad som ändras, hur ditt företag påverkas och hur du bäst förbereder er inför 1 juli.
+        I denna guide går vi igenom exakt vad som ändras, hur ditt företag påverkas och hur du
+        bäst förbereder er inför 1 juli. Hyr ditt företag av privatpersoner? Då påverkas ni
+        också av <Link href="/blogg/privatuthyrningslagen-reform-2026">nya
+        privatuthyrningslagen 2026</Link>, som vi går igenom i en separat guide.
       </p>
 
       <h2>Vad är blockhyra och hur fungerar det idag?</h2>
