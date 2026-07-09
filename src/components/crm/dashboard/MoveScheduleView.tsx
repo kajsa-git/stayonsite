@@ -4,6 +4,7 @@ import { toast } from "@/components/ui/use-toast";
 import {
   MOVE_IN_CHECKLIST,
   MOVE_OUT_CHECKLIST,
+  isChecklistItemDone,
   isMoveInChecklistComplete,
   isMoveOutChecklistComplete,
   type ChecklistItem,
@@ -66,9 +67,7 @@ export function MoveScheduleView() {
     return true;
   }
 
-  async function toggleItem(kind: "in" | "out", item: MoveItem, key: string) {
-    const has = item.checklist.includes(key);
-    const next = has ? item.checklist.filter((k) => k !== key) : [...item.checklist, key];
+  async function applyChecklist(kind: "in" | "out", item: MoveItem, next: string[]) {
     const field = kind === "in" ? "moveInChecklist" : "moveOutChecklist";
     await mutate(
       async () => {
@@ -81,6 +80,19 @@ export function MoveScheduleView() {
         revalidate: true,
       },
     );
+  }
+
+  async function toggleItem(kind: "in" | "out", item: MoveItem, key: string) {
+    const has = item.checklist.includes(key);
+    await applyChecklist(kind, item, has ? item.checklist.filter((k) => k !== key) : [...item.checklist, key]);
+  }
+
+  // Valpunkt (t.ex. skick med/utan foton): välj ett alternativ, rensa systrarna.
+  // Klick på redan valt alternativ bockar av punkten helt.
+  async function chooseOption(kind: "in" | "out", item: MoveItem, optionKey: string, allOptionKeys: string[]) {
+    const has = item.checklist.includes(optionKey);
+    const base = item.checklist.filter((k) => !allOptionKeys.includes(k));
+    await applyChecklist(kind, item, has ? base : [...base, optionKey]);
   }
 
   async function markDone(kind: "in" | "out", item: MoveItem) {
@@ -156,6 +168,7 @@ export function MoveScheduleView() {
             template={MOVE_IN_CHECKLIST}
             items={moveIns}
             onToggle={toggleItem}
+            onChooseOption={chooseOption}
             onDone={markDone}
             onUndo={undoDone}
           />
@@ -166,6 +179,7 @@ export function MoveScheduleView() {
             template={MOVE_OUT_CHECKLIST}
             items={moveOuts}
             onToggle={toggleItem}
+            onChooseOption={chooseOption}
             onDone={markDone}
             onUndo={undoDone}
           />
@@ -182,6 +196,7 @@ function Column({
   template,
   items,
   onToggle,
+  onChooseOption,
   onDone,
   onUndo,
 }: {
@@ -191,6 +206,7 @@ function Column({
   template: ChecklistItem[];
   items: MoveItem[];
   onToggle: (kind: "in" | "out", item: MoveItem, key: string) => void;
+  onChooseOption: (kind: "in" | "out", item: MoveItem, optionKey: string, allOptionKeys: string[]) => void;
   onDone: (kind: "in" | "out", item: MoveItem) => void;
   onUndo: (kind: "in" | "out", item: MoveItem) => void;
 }) {
@@ -212,7 +228,7 @@ function Column({
           <p className="text-sm text-muted-foreground italic">Inget på gång</p>
         ) : (
           open.map((item) => (
-            <MoveCard key={item.requestId} kind={kind} item={item} template={template} onToggle={onToggle} onDone={onDone} />
+            <MoveCard key={item.requestId} kind={kind} item={item} template={template} onToggle={onToggle} onChooseOption={onChooseOption} onDone={onDone} />
           ))
         )}
       </div>
@@ -257,17 +273,19 @@ function MoveCard({
   item,
   template,
   onToggle,
+  onChooseOption,
   onDone,
 }: {
   kind: "in" | "out";
   item: MoveItem;
   template: ChecklistItem[];
   onToggle: (kind: "in" | "out", item: MoveItem, key: string) => void;
+  onChooseOption: (kind: "in" | "out", item: MoveItem, optionKey: string, allOptionKeys: string[]) => void;
   onDone: (kind: "in" | "out", item: MoveItem) => void;
 }) {
   const router = useRouter();
   const complete = kind === "in" ? isMoveInChecklistComplete(item.checklist) : isMoveOutChecklistComplete(item.checklist);
-  const checkedCount = template.filter((t) => item.checklist.includes(t.key)).length;
+  const checkedCount = template.filter((t) => isChecklistItemDone(t, item.checklist)).length;
 
   const diff = differenceInCalendarDays(parseISO(item.date), new Date());
   const overdue = diff < 0;
@@ -300,6 +318,39 @@ function MoveCard({
 
         <div className="mt-3 space-y-1.5">
           {template.map((t) => {
+            // Valpunkt: rubrik + två ömsesidigt uteslutande knappar (t.ex. skick med/utan foton).
+            if (t.options) {
+              const allKeys = t.options.map((o) => o.key);
+              const done = isChecklistItemDone(t, item.checklist);
+              return (
+                <div key={t.key} className="text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className={`h-4 w-4 shrink-0 rounded border flex items-center justify-center text-[10px] ${done ? "bg-[#ff6300] border-[#ff6300] text-white" : "border-nordic-300"}`}>
+                      {done ? "✓" : ""}
+                    </span>
+                    <span className={done ? "line-through text-muted-foreground" : ""}>{t.label}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mt-1 ml-6">
+                    {t.options.map((o) => {
+                      const active = item.checklist.includes(o.key);
+                      return (
+                        <button
+                          key={o.key}
+                          onClick={() => onChooseOption(kind, item, o.key, allKeys)}
+                          className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                            active
+                              ? "bg-[#ff6300] text-white border-[#ff6300] font-medium"
+                              : "bg-white text-nordic-700 border-input hover:bg-nordic-100"
+                          }`}
+                        >
+                          {active ? "✓ " : ""}{o.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            }
             const checked = item.checklist.includes(t.key);
             return (
               <label key={t.key} className="flex items-center gap-2 text-sm cursor-pointer select-none">
