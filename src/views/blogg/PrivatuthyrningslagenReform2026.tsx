@@ -142,7 +142,10 @@ const PrivatuthyrningslagenReform2026 = () => {
       <p>
         <strong>Besparing: 3 000 kr per år</strong> vid en månadshyra på 15 000 kr. För
         husägare som hyr ut till ett lägre belopp &mdash; exempelvis 8 000 kr per månad
-        (96 000 kr/år) &mdash; blir besparingen proportionellt ännu viktigare.
+        (96 000 kr/år) &mdash; blir besparingen proportionellt ännu viktigare. Vill du
+        räkna på fler scenarier? Läs vår fördjupning om{' '}
+        <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">schablonavdrag
+        och skatt vid uthyrning</Link>.
       </p>
 
       <h3>2. Uthyrning av upp till 2 bostäder utan näringsverksamhet</h3>
@@ -206,7 +209,9 @@ const PrivatuthyrningslagenReform2026 = () => {
 
       <p>
         I praktiken innebär det att det blir enklare och tryggare för husägare att hyra ut
-        till företag som StayOnSite. Du tecknar ett avtal med oss, vi sköter resten.
+        till företag som StayOnSite. Du tecknar ett avtal med oss, vi sköter resten. I vår
+        guide om att <Link href="/blogg/hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare">hyra
+        ut med blockhyra som husägare</Link> går vi igenom modellen steg för steg.
       </p>
 
       <h3>4. Fri hyressättning vid nyuthyrning bekräftas</h3>
@@ -402,7 +407,9 @@ const PrivatuthyrningslagenReform2026 = () => {
         Till skillnad från konkurrenter som Samtrygg (15 % avgift) och Qasa (4,95 %) tar
         StayOnSite <strong>0 procent i avgift</strong> från husägaren. Din avtalade hyra
         betalas ut i sin helhet &mdash; inga dolda avdrag, inga serviceavgifter, inga
-        provisioner.
+        provisioner. Se hela vår{' '}
+        <Link href="/blogg/hyra-ut-jamforelse-stayonsite-vs-andra-2026">jämförelse av
+        uthyrningstjänster</Link> för detaljerna.
       </p>
 
       <blockquote>
@@ -431,11 +438,19 @@ const PrivatuthyrningslagenReform2026 = () => {
         tryggare uthyrning.
       </p>
 
+      <p>
+        Är du själv ett företag som söker boende åt din personal? Läs mer om vårt{' '}
+        <Link href="/for-foretag">företagsboende i hela Sverige</Link>.
+      </p>
+
       <h3>Vi sköter allt det praktiska</h3>
 
       <p>
         Kontraktshantering, nyckelöverlämning, felanmälan och kontakt med hyresgästen &mdash;
         allt sköts av StayOnSite. Du får din hyra utan att behöva lyfta ett finger.
+        Nyfiken på processen? Läs{' '}
+        <Link href="/blogg/sa-fungerar-det-fran-intresse-till-forsta-hyran">så fungerar
+        det &mdash; från intresse till första hyran</Link>.
       </p>
 
       <h2>Vanliga frågor om nya privatuthyrningslagen</h2>
@@ -484,16 +499,16 @@ const PrivatuthyrningslagenReform2026 = () => {
 
       <p>
         Den nya privatuthyrningslagen gör det enklare, tryggare och mer lönsamt att hyra ut
-        sin bostad i Sverige. Oavsett om du har en villa i Boden, en lägenhet i Göteborg
-        eller en sommarstuga i Jämtland, finns det nu starkare incitament än någonsin att
-        bli uthyrare.
+        sin bostad i Sverige. Oavsett om du har en villa i Boden, en lägenhet i{' '}
+        <Link href="/stad/goteborg">Göteborg</Link> eller en sommarstuga i Jämtland, finns
+        det nu starkare incitament än någonsin att bli uthyrare.
       </p>
 
       <p>
         <strong>
-          Vill du veta vad din bostad kan ge i hyra?{' '}
-          <Link href="/for-husagare">Gå till vår husägarsida</Link> och få en kostnadsfri
-          värdering &mdash; eller ring oss på{' '}
+          Vill du veta vad din bostad kan ge i hyra? Läs mer om att{' '}
+          <Link href="/for-husagare">hyra ut din bostad till företag</Link> och få en
+          kostnadsfri värdering &mdash; eller ring oss på{' '}
           <a href="tel:+46762498486">076-249 84 86</a>.
         </strong>
       </p>
