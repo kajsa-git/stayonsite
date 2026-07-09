@@ -3,7 +3,8 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
-import { Building2, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
+import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
+import { Building2, Calculator, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,6 +28,7 @@ export function MobileTabBar() {
   const { data: session } = useSession();
   const [moreOpen, setMoreOpen] = useState(false);
   const [showNewCompany, setShowNewCompany] = useState(false);
+  const [showCalc, setShowCalc] = useState(false);
 
   // Flyttar bor inne i "Mer" → flagga flikens prick när det finns något att hantera.
   const morePending = counts.moveSchedule > 0;
@@ -73,6 +75,7 @@ export function MobileTabBar() {
           <div className="mt-4 space-y-1">
             <MoreLink label="Översikt" onClick={() => go("/crm/oversikt")} />
             <MoreLink label="Uthyrare" icon={KeyRound} onClick={() => go("/crm/uthyrare")} />
+            <MoreLink label="Vinstkalkylator" icon={Calculator} onClick={() => { setMoreOpen(false); setShowCalc(true); }} />
             <MoreLink
               label="In- & avflyttningar"
               badge={counts.moveSchedule}
@@ -112,6 +115,7 @@ export function MobileTabBar() {
       </Sheet>
 
       <NewCompanyModal open={showNewCompany} onClose={() => setShowNewCompany(false)} />
+      <ProfitCalculatorDialog open={showCalc} onOpenChange={setShowCalc} />
     </>
   );
 }

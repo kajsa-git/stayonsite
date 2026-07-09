@@ -3,9 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
+import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
 import { useGlobalSearch } from "@/components/crm/search/GlobalSearch";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
-import { ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
+import { Calculator, ChevronLeft, ChevronRight, LogOut, Plus, Search } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -34,6 +35,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
   const { counts } = useQueueCounts();
   const { open: openSearch } = useGlobalSearch();
   const [showNewCompany, setShowNewCompany] = useState(false);
+  const [showCalc, setShowCalc] = useState(false);
 
   return (
     <div className="h-14 border-b bg-white flex items-center px-4 gap-4 sticky top-0 z-40">
@@ -121,6 +123,16 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           {counts.toInvoice} fakturera
         </Badge>
 
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => setShowCalc(true)}
+          title="Vinstkalkylator"
+        >
+          <Calculator className="h-4 w-4" />
+        </Button>
+
           <Button
           variant="outline"
           size="sm"
@@ -156,6 +168,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       </div>
 
       <NewCompanyModal open={showNewCompany} onClose={() => setShowNewCompany(false)} />
+      <ProfitCalculatorDialog open={showCalc} onOpenChange={setShowCalc} />
     </div>
   );
 }
