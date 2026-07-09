@@ -43,14 +43,26 @@ import StickyContact from '@/components/StickyContact';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 
+// Publicerade boenden i staden (skickas bara med från svenska stadssidan).
+// Typen dupliceras medvetet — importeras den från crm/city-listings dras
+// db-modulen in i klientbunten.
+interface CityListingItem {
+  slug: string;
+  name: string;
+  postalCode: string | null;
+  bedrooms: number | null;
+  beds: number | null;
+}
+
 interface CityPageProps {
   citySlug: string;
   locale: 'sv' | 'en' | 'pl';
   city: City;
   nearbyCities: City[];
+  listings?: CityListingItem[];
 }
 
-const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
+const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPageProps) => {
   const { language, setLanguage } = useLanguage();
 
   useEffect(() => {
@@ -437,6 +449,67 @@ const CityPage = ({ citySlug, locale, city, nearbyCities }: CityPageProps) => {
             </div>
           </div>
         </section>
+
+        {/* Lediga boenden just nu — intern länkning stadssida → objektsidor (SEO)
+            + levande bevis på utbud. Renderas bara på svenska sidan med träffar. */}
+        {listings && listings.length > 0 && (
+          <section className="section-spacing bg-white border-t border-nordic-100">
+            <div className="container mx-auto px-6 md:px-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
+                  <div>
+                    <h2 className="text-3xl font-bold text-nordic-900">
+                      Lediga företagsboenden i {city.name} just nu
+                    </h2>
+                    <p className="text-gray-600 mt-2">
+                      {listings.length === 1
+                        ? 'Ett publicerat boende redo för inflytt — hör av dig för visning.'
+                        : `${listings.length} publicerade boenden redo för inflytt — hör av dig för visning.`}
+                    </p>
+                  </div>
+                  <Link
+                    href="/boenden"
+                    className="inline-flex items-center gap-1.5 text-[#ff6300] font-medium mt-4 md:mt-0 hover:underline shrink-0"
+                  >
+                    Se alla lediga boenden
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  {listings.map((l) => (
+                    <Link key={l.slug} href={`/boenden/${l.slug}`} className="group">
+                      <Card className="h-full transition-shadow group-hover:shadow-md">
+                        <CardHeader>
+                          <CardTitle className="flex items-start gap-2 text-lg leading-snug">
+                            <Building className="h-5 w-5 text-[#ff6300] shrink-0 mt-0.5" />
+                            {l.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+                            {l.postalCode && (
+                              <span className="inline-flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                {l.postalCode} {city.name}
+                              </span>
+                            )}
+                            {l.bedrooms != null && <Badge variant="secondary">{l.bedrooms} sovrum</Badge>}
+                            {l.beds != null && <Badge variant="secondary">{l.beds} bäddar</Badge>}
+                          </div>
+                          <p className="text-sm text-[#ff6300] font-medium mt-4 inline-flex items-center gap-1">
+                            Se boendet
+                            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Process */}
         <section className="section-spacing bg-white border-t border-nordic-100">

@@ -77,11 +77,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Fyll i lite data eller ladda upp bilder först." }, { status: 400 });
   }
 
+  // Skala anspråken efter underlaget: med 1–2 bilder får modellen inte skriva
+  // en hel annons "från Eden" — bara det som syns + datan, hellre kortare.
+  const thinEvidence = imageBlocks.length <= 2;
   const instructions = `Du skriver en extern bostadsbeskrivning för ett seriöst svenskt corporate housing-bolag (StayOnSite). Beskrivningen visas publikt för företag som söker boende åt personal.
 
-Skriv på svenska, 2–4 meningar, saklig och förtroendeingivande B2B-ton. Beskriv det som faktiskt syns på bilderna och framgår av datan (standard, ljus, möblering, läge-känsla).
+Du har ${imageBlocks.length === 0 ? "inga bilder" : imageBlocks.length === 1 ? "EN bild" : `${imageBlocks.length} bilder`} att utgå från.
+${thinEvidence ? "OBS — tunt underlag: beskriv ENDAST det som faktiskt syns och det som står i objektdatan. Nämn inga rum, våningar eller egenskaper du inte ser. Skriv hellre 2 korta meningar än att fylla ut." : "Skriv 2–4 meningar utifrån det som faktiskt syns på bilderna och framgår av datan (standard, ljus, möblering, läge-känsla)."}
 
-Förbjudet: hitta inte på fakta, ingen reklamfluff, inga superlativ-staplar, och nämn ALDRIG exakt gatuadress, hyresvärd/ägare eller pris. Svara ENBART med beskrivningstexten, inget annat.
+Saklig och förtroendeingivande B2B-ton på svenska. Förbjudet: hitta inte på fakta, beskriv inte rum som varken syns på bild eller finns i datan, ingen reklamfluff, inga superlativ-staplar, och nämn ALDRIG exakt gatuadress, hyresvärd/ägare eller pris. Svara ENBART med beskrivningstexten, inget annat.
 
 Objektdata:
 ${facts.length ? facts.map((f) => `- ${f}`).join("\n") : "(ingen strukturerad data angiven)"}`;

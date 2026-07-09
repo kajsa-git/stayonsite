@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
 import { cities, getNearbyCities } from '@/data/cities'
+import { getCityListings } from '@/lib/crm/city-listings'
 import { getLocalizedText, getLocalizedKeywords } from '@/lib/utils'
 import { truncateDescription } from '@/lib/seo-utils'
 import CityPage from '@/views/CityPage'
@@ -9,6 +10,10 @@ import CityPage from '@/views/CityPage'
 export function generateStaticParams() {
   return cities.map((city) => ({ citySlug: city.slug }))
 }
+
+// ISR: stadssidorna byggs om varje timme så "Lediga boenden just nu"-sektionen
+// följer publiceringsläget i CRM:et utan att kräva deploy.
+export const revalidate = 3600
 
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> {
   const { citySlug } = await params
@@ -38,5 +43,6 @@ export default async function Page({ params }: { params: Promise<{ citySlug: str
   const { citySlug } = await params
   const city = cities.find((c) => c.slug === citySlug)
   if (!city) notFound()
-  return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCities(citySlug)} />
+  const listings = await getCityListings(city.name)
+  return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCities(citySlug)} listings={listings} />
 }
