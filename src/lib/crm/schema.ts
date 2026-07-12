@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import type { KalkylScenario } from "./kalkyl";
 
 // Auth.js required tables — column types must match @auth/drizzle-adapter expectations exactly
 export const users = sqliteTable("crm_users", {
@@ -274,6 +275,9 @@ export const matches = sqliteTable("crm_matches", {
   sentAt: text("sent_at"),
   followUpDate: text("follow_up_date"), // jaga hyresvärd: när höra av sig igen
   followUpReason: text("follow_up_reason"), // kort anledning för uppföljningen
+  // Scenariokalkyl för paret förfrågan × boende — bara antaganden lagras,
+  // nyckeltalen räknas vid visning. Se src/lib/crm/kalkyl.ts.
+  kalkyl: text("kalkyl", { mode: "json" }).$type<KalkylScenario[]>(),
   notes: text("notes"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [

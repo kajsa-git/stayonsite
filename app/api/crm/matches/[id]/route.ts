@@ -1,6 +1,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
+import { sanitizeKalkyl } from "@/lib/crm/kalkyl";
 import { matches } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -19,11 +20,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   // Whitelist redigerbara fält — klienten får aldrig repeka requestId/propertyId eller byta id.
-  const ALLOWED = ["status", "matchScore", "followUpDate", "followUpReason", "notes"] as const;
+  const ALLOWED = ["status", "matchScore", "followUpDate", "followUpReason", "notes", "kalkyl"] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) {
     if (key in body) data[key] = body[key];
   }
+  if ("kalkyl" in data) data.kalkyl = sanitizeKalkyl(data.kalkyl);
   // Stamp sentAt when a suggestion is marked as sent
   if (body.status === "sent") {
     data.sentAt = new Date().toISOString();

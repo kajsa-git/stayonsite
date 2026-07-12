@@ -23,10 +23,12 @@ export async function GET(req: NextRequest) {
       sentAt: matches.sentAt,
       followUpDate: matches.followUpDate,
       followUpReason: matches.followUpReason,
+      kalkyl: matches.kalkyl,
       notes: matches.notes,
       createdAt: matches.createdAt,
       propertyAddress: properties.address,
       propertyCity: properties.city,
+      propertyRentIn: properties.rentIn,
       propertyRentOut: properties.rentOut,
     })
     .from(matches)

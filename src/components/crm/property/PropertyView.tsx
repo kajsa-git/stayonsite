@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
-import { Home, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Calculator, Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
@@ -46,6 +47,7 @@ const fetcher = swrFetcher;
 export function PropertyView({ property, onUpdate, onDelete, startEditing }: Props) {
   const [editing, setEditing] = useState(!!startEditing);
   const [matchOpen, setMatchOpen] = useState(false);
+  const [calcOpen, setCalcOpen] = useState(false);
   const [newLink, setNewLink] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
@@ -114,6 +116,9 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCalcOpen(true)}>
+            <Calculator className="h-3.5 w-3.5" /> Kalkyl
+          </Button>
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setMatchOpen(true)}>
             <Home className="h-3.5 w-3.5" /> Matcha mot förfrågan
           </Button>
@@ -122,6 +127,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           </Button>
         </div>
       </div>
+
+      {/* Snabbkalkyl förifylld med objektets hyror — sparar inget, se dialogen. */}
+      <ProfitCalculatorDialog
+        open={calcOpen}
+        onOpenChange={setCalcOpen}
+        initialRentIn={property.rentIn}
+        initialRentOut={property.rentOut}
+      />
 
       <MatchToRequestModal
         propertyId={property.id}

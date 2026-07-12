@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/matching";
+import type { KalkylScenario } from "@/lib/crm/kalkyl";
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
@@ -20,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 import { MatchScore } from "./MatchScore";
+import { KalkylScenarioChips, MatchKalkyl } from "./MatchKalkyl";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { plusDaysStockholm } from "@/lib/crm/date";
@@ -38,8 +40,10 @@ interface MatchRow {
   sentAt: string | null;
   followUpDate: string | null;
   followUpReason: string | null;
+  kalkyl: KalkylScenario[] | null;
   propertyAddress: string | null;
   propertyCity: string | null;
+  propertyRentIn: number | null;
   propertyRentOut: number | null;
 }
 
@@ -412,7 +416,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       {m.status !== "accepted" && (
                         <button
                           onClick={() => {
-                            setWonValue(m.propertyRentOut?.toString() ?? request.monthlyValue?.toString() ?? "");
+                            // Kalkylens första scenario (Bas) vinner över objektets listpris.
+                            setWonValue(
+                              m.kalkyl?.[0]?.rentOut?.toString() ??
+                                m.propertyRentOut?.toString() ??
+                                request.monthlyValue?.toString() ??
+                                ""
+                            );
                             setConfirmAccept(m);
                           }}
                           className="text-xs px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 flex items-center gap-1"
@@ -434,6 +444,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         <Trash2 className="h-3 w-3" />
                       </button>
                     </div>
+                    <MatchKalkyl
+                      matchId={m.id}
+                      kalkyl={m.kalkyl}
+                      propertyRentIn={m.propertyRentIn}
+                      propertyRentOut={m.propertyRentOut}
+                      request={request}
+                      onSaved={() => mutateMatches()}
+                    />
                   </div>
                 ))}
               </div>
@@ -644,6 +662,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               value={wonValue}
               onChange={(e) => setWonValue(e.target.value)}
             />
+            <KalkylScenarioChips kalkyl={confirmAccept?.kalkyl} onPick={(v) => setWonValue(String(v))} />
           </div>
 
           <p className="text-sm text-muted-foreground">
