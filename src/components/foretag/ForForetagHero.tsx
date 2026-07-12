@@ -340,6 +340,38 @@ const ForForetagHero = () => {
                 'Tak, wszystkie zakwaterowania są w pełni umeblowane. Pracownicy mogą się wprowadzić od razu.'
               ),
             },
+            {
+              q: t('Vad ingår i priset?', 'What is included in the price?', 'Co jest wliczone w cenę?'),
+              a: t(
+                'Allt: hyra, el, vatten, internet, städning och sängkläder – till ett fast månadspris per person. En kontaktperson genom hela projektet, inga dolda avgifter.',
+                'Everything: rent, utilities, internet, cleaning and bed linen – at a fixed monthly price per person. One contact person throughout the project, no hidden fees.',
+                'Wszystko: czynsz, media, internet, sprzątanie i pościel – w stałej cenie miesięcznej za osobę. Jedna osoba kontaktowa przez cały projekt, bez ukrytych opłat.'
+              ),
+            },
+            {
+              q: t('Hur fungerar faktureringen?', 'How does invoicing work?', 'Jak działa fakturowanie?'),
+              a: t(
+                'Ni får en samlad företagsfaktura per adress och månad, med 10 dagars betalningsvillkor som standard. Projektmärkning på fakturan är möjlig för er internredovisning.',
+                'You receive one consolidated corporate invoice per address and month, with 10-day payment terms as standard. Project labelling on the invoice is available for your internal accounting.',
+                'Otrzymują Państwo jedną zbiorczą fakturę firmową na adres i miesiąc, standardowo z 10-dniowym terminem płatności. Możliwe jest oznaczenie projektu na fakturze.'
+              ),
+            },
+            {
+              q: t('Vad är minsta avtalstid?', 'What is the minimum contract length?', 'Jaki jest minimalny okres umowy?'),
+              a: t(
+                'Tre månader. Någon övre gräns finns inte – många kunder behåller samma adresser i 18–24 månader, och vid förlängning justeras avtalet utan att ni behöver boka om.',
+                'Three months. There is no upper limit – many clients keep the same addresses for 18–24 months, and on extension the contract is adjusted without rebooking.',
+                'Trzy miesiące. Nie ma górnej granicy – wielu klientów zatrzymuje te same adresy na 18–24 miesiące, a przy przedłużeniu umowa jest dostosowywana bez ponownej rezerwacji.'
+              ),
+            },
+            {
+              q: t('Ordnar ni boende för både arbetslag och familjer?', 'Do you arrange housing for both crews and families?', 'Czy organizują Państwo zakwaterowanie dla ekip i rodzin?'),
+              a: t(
+                'Ja. Vi ordnar boenden för montörsteam, ingenjörer och medföljande familjer – ofta på långa kontrakt. Växer teamet under projektet löser vi fler platser inom samma avtal.',
+                'Yes. We arrange housing for installation crews, engineers and accompanying families – often on long contracts. If the team grows during the project, we add capacity within the same agreement.',
+                'Tak. Organizujemy zakwaterowanie dla ekip montażowych, inżynierów i towarzyszących rodzin – często na długie umowy. Gdy zespół rośnie, dodajemy miejsca w ramach tej samej umowy.'
+              ),
+            },
           ];
 
           return (
