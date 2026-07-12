@@ -21,6 +21,7 @@ export type TranslationKey =
   | "hero.ctaWhatsapp"
   | "hero.ctaSubtext"
   | "hero.responseTime"
+  | "hero.homeownerLink"
   | "hero.metrics.proposal.value"
   | "hero.metrics.proposal.description"
   | "hero.metrics.moveIn.value"
@@ -405,6 +406,7 @@ export const translations: Record<
     "hero.ctaWhatsapp": "Chatta på WhatsApp",
     "hero.ctaSubtext": "+46 73-628 77 09 · Telefon / Mail / WhatsApp",
     "hero.responseTime": "Svar inom 15 minuter vardagar",
+    "hero.homeownerLink": "Är du husägare? Hyr ut din bostad till företag",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "Första boendeförslaget",
     "hero.metrics.moveIn.value": "48 h",
@@ -890,6 +892,7 @@ export const translations: Record<
     "hero.ctaWhatsapp": "Chat on WhatsApp",
     "hero.ctaSubtext": "+46 73 628 77 09 · Phone / Email / WhatsApp",
     "hero.responseTime": "Replies within 15 minutes on weekdays",
+    "hero.homeownerLink": "Are you a homeowner? Rent out your property to companies",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "First housing proposal",
     "hero.metrics.moveIn.value": "48 h",
@@ -1378,6 +1381,7 @@ export const translations: Record<
     "hero.ctaWhatsapp": "Napisz na WhatsApp",
     "hero.ctaSubtext": "+46 73 628 77 09 · Telefon / E-mail / WhatsApp",
     "hero.responseTime": "Odpowiedź w 15 minut w dni robocze",
+    "hero.homeownerLink": "Masz nieruchomość? Wynajmij ją firmom",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "Pierwsza propozycja zakwaterowania",
     "hero.metrics.moveIn.value": "48 h",

@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import HomeownerHero from '@/components/homeowner/HomeownerHero';
 import SEO from '@/components/SEO';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { trackPhoneClick } from '@/lib/gtag';
 import { useTranslation } from '@/hooks/use-translation';
 import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
@@ -14,7 +15,6 @@ import { useState } from 'react';
 
 const ForHusagare = () => {
   const { t } = useTranslation();
-  const { language } = useLanguage();
 
   const structuredData = [
     {
@@ -56,44 +56,12 @@ const ForHusagare = () => {
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': [
-        {
-          '@type': 'Question',
-          'name': language === 'en' ? 'Does it cost anything?' : language === 'pl' ? 'Czy to coś kosztuje?' : 'Kostar det något?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': language === 'en'
-              ? 'No. You pay nothing to us. We rent your property at a fixed amount every month - no deductions. We earn from the price difference with the corporate client.'
-              : language === 'pl'
-              ? 'Nie. Nie płacisz nam nic. Wynajmujemy Twoją nieruchomość za stałą kwotę co miesiąc - bez potrąceń.'
-              : 'Nej. Du betalar ingenting till oss. Vi hyr din bostad till ett fast belopp varje månad - utan avdrag. Vi tjänar på prisskillnaden gentemot företagskunden.',
-          },
-        },
-        {
-          '@type': 'Question',
-          'name': language === 'en' ? 'Who lives in my house?' : language === 'pl' ? 'Kto mieszka w moim domu?' : 'Vilka bor i mitt hus?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': language === 'en'
-              ? 'Professional corporate tenants - installers, engineers and project teams working temporarily in the area. Never private individuals.'
-              : language === 'pl'
-              ? 'Profesjonalni najemcy firmowi - monterzy, inżynierowie i zespoły projektowe.'
-              : 'Professionella företagshyresgäster - montörer, ingenjörer och projektteam som arbetar tillfälligt i området. Aldrig privatpersoner.',
-          },
-        },
-        {
-          '@type': 'Question',
-          'name': language === 'en' ? 'How long is the contract?' : language === 'pl' ? 'Jak długi jest kontrakt?' : 'Hur lång är avtalstiden?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': language === 'en'
-              ? "We decide that together. Contract length is tailored to the tenant's project and your preferences as a property owner – always in open dialogue until everyone is satisfied."
-              : language === 'pl'
-              ? 'Ustalamy to wspólnie. Czas trwania umowy dostosowujemy do projektu najemcy i Twoich oczekiwań – zawsze w otwartym dialogu.'
-              : 'Det bestämmer vi tillsammans. Avtalstiden anpassas efter hyresgästens projekt och dina önskemål som hyresvärd – alltid i öppen dialog tills alla parter är nöjda.',
-          },
-        },
-      ],
+      // Speglar den synliga FAQ-sektionen (FAQ_ITEMS) — alla 9 frågor, inkl. skatt, försäkring och hyressättning
+      'mainEntity': FAQ_ITEMS.map((item) => ({
+        '@type': 'Question',
+        'name': item.q,
+        'acceptedAnswer': { '@type': 'Answer', 'text': item.a },
+      })),
     },
   ];
 
@@ -260,14 +228,22 @@ const ForHusagare = () => {
             <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
               Ring oss för ett kostnadsfritt samtal om din bostad och din stad. De flesta husägare får ett konkret förslag inom 1–2 veckor.
             </p>
-            <a
-              href="tel:+46762498486"
-              onClick={trackPhoneClick}
-              className="inline-flex items-center justify-center gap-3 rounded-full h-14 px-8 bg-accent hover:bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              <Phone className="h-5 w-5" />
-              Ring oss: 076-249 84 86
-            </a>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href="tel:+46762498486"
+                onClick={trackPhoneClick}
+                className="inline-flex items-center justify-center gap-3 rounded-full h-14 px-8 bg-accent hover:bg-accent text-white text-base font-bold shadow-2xl shadow-accent/40 transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                <Phone className="h-5 w-5" />
+                Ring oss: 076-249 84 86
+              </a>
+              <Link
+                href="/registrera-bostad"
+                className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-8 bg-white/10 border border-white/20 text-white text-base font-bold hover:bg-white/20 transition-colors"
+              >
+                Registrera din bostad
+              </Link>
+            </div>
             <div className="flex items-center justify-center gap-6 mt-10 text-white/40 text-sm">
               <span>0% avgift</span>
               <span>·</span>
@@ -278,6 +254,8 @@ const ForHusagare = () => {
           </div>
         </section>
       </main>
+      <Footer />
+      <FloatingPhoneButton />
     </div>
   );
 };

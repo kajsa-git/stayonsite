@@ -47,7 +47,9 @@ const References = () => {
   const reviewSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://www.stayonsite.se/#organization",
     "name": "StayOnSite",
+    "url": "https://www.stayonsite.se",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": RATING_VALUE,

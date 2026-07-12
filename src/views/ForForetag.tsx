@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import FloatingPhoneButton from '@/components/FloatingPhoneButton';
+import References from '@/components/References';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { cities } from '@/data/cities';
 import ForForetagHero from '@/components/foretag/ForForetagHero';
 
@@ -39,11 +40,6 @@ const ForForetag = () => {
         name: 'Sweden',
       },
       serviceType: 'Corporate Worker Accommodation',
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: RATING_VALUE,
-        reviewCount: REVIEW_COUNT,
-      },
     },
     {
       '@context': 'https://schema.org',
@@ -115,6 +111,9 @@ const ForForetag = () => {
       <main className="flex-grow">
         <ForForetagHero />
 
+        {/* Social proof: 14 Google-omdömen + track record — samma sektion som startsidan */}
+        <References />
+
         {/* Stads-hubb: funnlar köpare till rätt ort + intern länkkraft till stadssidorna */}
         <section className="py-16 bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-12 max-w-5xl">
@@ -146,6 +145,7 @@ const ForForetag = () => {
         </section>
       </main>
       <Footer />
+      <FloatingPhoneButton />
     </div>
   );
 };

@@ -15,7 +15,6 @@ import StickyContact from '@/components/StickyContact';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
-import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import { usePathname } from 'next/navigation';
 
 const Index = () => {
@@ -65,12 +64,6 @@ const Index = () => {
       'https://www.facebook.com/stayonsite',
       'https://www.linkedin.com/company/stayonsite'
     ],
-    'aggregateRating': {
-      '@type': 'AggregateRating',
-      'ratingValue': RATING_VALUE,
-      'reviewCount': REVIEW_COUNT,
-      'bestRating': '5'
-    },
     'areaServed': [
       { '@type': 'City', 'name': 'Stockholm' },
       { '@type': 'City', 'name': 'Göteborg' },
