@@ -28,7 +28,7 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-const MODEL = 'claude-sonnet-4-5-20250929';
+const MODEL = 'claude-sonnet-5';
 const MAX_TOKENS = 12000;
 const MAX_RETRIES = 3;
 
@@ -146,6 +146,7 @@ Svara i EXAKT detta JSON-format (inget annat):
   "descEn": "Short English description (max 160 chars)",
   "descPl": "Krótki opis po polsku (max 160 znaków)",
   "category": "Guide|Marknad|Lagstiftning|Analys|Tips",
+  "audience": "foretag|husagare|bada",
   "tags": ["tag1", "tag2", "tag3"],
   "readingTime": 8,
   "componentName": "PascalCaseComponentName",
@@ -198,8 +199,10 @@ KRAV:
 4. Använd <Link href="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
 5. Länka till andra artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
 6. Avsluta med en CTA som nämner StayOnSite, telefonnummer 076-249 84 86, och länkar till /for-foretag och /for-husagare
-7. Framhäv StayOnSites USP: 0% avgift, garanterad hyra, professionella hyresgäster, svar inom 24h
+7. Framhäv StayOnSites USP: 0% avgift för husägare, garanterad hyra, professionella hyresgäster, boendeplan inom 24 timmar (vi återkommer alltid inom en arbetsdag – ofta inom några timmar)
 8. HTML-entiteter: använd &mdash; &ndash; &quot; etc. (inte unicode)
+9. Avsluta med en <h2>Vanliga frågor</h2>-sektion (före CTA:n) med 3-4 <h3>-frågor och korta konkreta svar (2-4 meningar) — de blir FAQ-schema
+10. COPY-REGLER (får inte brytas): Lova aldrig "allt ingår"/all-inclusive — skriv "vanligtvis ingår X; exakt omfattning avtalas per projekt". StayOnSites eget pris anges ENDAST som "från 5 900 kr per person och månad" (hitta inte på andra StayOnSite-priser). Grundat 2016. Betyg 5,0 på Google.
 
 ⚠️ BRAND SAFETY:
 - SÖK och VERIFIERA att alla nämnda företag/projekt fortfarande är aktiva innan du skriver om dem
@@ -264,7 +267,46 @@ Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera
   throw new Error('Could not extract TSX from response. Response starts with:\n' + allText.slice(0, 500));
 }
 
-// ---------- Step 2b: Validate city links ----------
+// ---------- Step 2b: Extract SEO/GEO data (snabba svar + FAQ) ----------
+async function extractSeoData(tsx) {
+  console.log('[article] Extracting keyTakeaways + faq from article...');
+
+  const res = await callClaude([
+    {
+      role: 'user',
+      content: `Här är en svensk bloggartikel (React TSX) för stayonsite.se:
+
+\`\`\`tsx
+${tsx}
+\`\`\`
+
+Extrahera ur artikelns FAKTISKA innehåll:
+
+- "keyTakeaways": 3-5 punkter på SVENSKA. Varje punkt ska vara ett konkret, fristående, citerbart faktum ur artikeln — specifika siffror, datum, lagar, priser där artikeln har dem. Ingen marknadsföring, inga vaga påståenden. Max ~160 tecken per punkt.
+- "faq": artikelns "Vanliga frågor"-sektion som [{"q": "...", "a": "..."}]. Kondensera varje svar till 1-3 meningar med artikelns egna formuleringar. Max 6 st. Om sektionen saknas: null.
+
+Svara med ENDAST en JSON-objekt, ingen annan text:
+{"keyTakeaways": ["...", "..."], "faq": [{"q": "...", "a": "..."}] }`
+    }
+  ]);
+
+  const textBlocks = res.content.filter(b => b.type === 'text');
+  if (textBlocks.length === 0) throw new Error('No text in SEO extraction response');
+  const allText = textBlocks.map(b => b.text).join('\n');
+
+  const jsonBlockMatch = allText.match(/```(?:json)?\s*\n(\{[\s\S]*?\})\s*\n```/);
+  const rawJsonMatch = allText.match(/(\{[\s\S]*"keyTakeaways"[\s\S]*\})/);
+  const jsonStr = jsonBlockMatch?.[1] || rawJsonMatch?.[1];
+  if (!jsonStr) throw new Error('No JSON in SEO extraction response');
+
+  const seo = JSON.parse(jsonStr);
+  if (!Array.isArray(seo.keyTakeaways) || seo.keyTakeaways.length === 0) {
+    throw new Error('SEO extraction returned no keyTakeaways');
+  }
+  return seo;
+}
+
+// ---------- Step 2c: Validate city links ----------
 function validateCityLinks(tsx) {
   // Find all <Link href="/stad/SLUG"> references
   const linkPattern = /<Link href="\/stad\/([^"]+)">/g;
@@ -389,28 +431,40 @@ ${tsx}`
 }
 
 // ---------- Step 3: Update files ----------
-function updateBlogPosts(topic) {
+function updateBlogPosts(topic, seo) {
   console.log('[article] Updating blog-posts.ts...');
   const today = new Date().toISOString().split('T')[0];
+  const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+  const AUDIENCES = ['foretag', 'husagare', 'bada'];
+  const audience = AUDIENCES.includes(topic.audience) ? topic.audience : 'bada';
+
+  let seoFields = `    audience: '${audience}',\n`;
+  if (seo?.keyTakeaways?.length) {
+    seoFields += `    keyTakeaways: [\n${seo.keyTakeaways.map(k => `      '${esc(k)}',`).join('\n')}\n    ],\n`;
+  }
+  if (seo?.faq?.length) {
+    seoFields += `    faq: [\n${seo.faq.map(f => `      {\n        q: '${esc(f.q)}',\n        a: '${esc(f.a)}',\n      },`).join('\n')}\n    ],\n`;
+  }
 
   const newEntry = `  {
     slug: '${topic.slug}',
     title: {
-      sv: '${topic.titleSv.replace(/'/g, "\\'")}',
-      en: '${topic.titleEn.replace(/'/g, "\\'")}',
-      pl: '${topic.titlePl.replace(/'/g, "\\'")}',
+      sv: '${esc(topic.titleSv)}',
+      en: '${esc(topic.titleEn)}',
+      pl: '${esc(topic.titlePl)}',
     },
     description: {
-      sv: '${topic.descSv.replace(/'/g, "\\'")}',
-      en: '${topic.descEn.replace(/'/g, "\\'")}',
-      pl: '${topic.descPl.replace(/'/g, "\\'")}',
+      sv: '${esc(topic.descSv)}',
+      en: '${esc(topic.descEn)}',
+      pl: '${esc(topic.descPl)}',
     },
     author: 'Kajsa Sihlén',
     publishedDate: '${today}',
     category: '${topic.category}',
-    tags: [${topic.tags.map(t => `'${t}'`).join(', ')}],
+    tags: [${topic.tags.map(t => `'${esc(t)}'`).join(', ')}],
     readingTime: ${topic.readingTime},
-  }`;
+${seoFields}  }`;
 
   // Insert before the closing ];
   // Existing last entry already ends with a trailing comma, so don't add one.
@@ -566,8 +620,18 @@ async function main() {
   writeFileSync(articlePath, tsx + '\n');
   console.log(`[article] Written: ${articlePath}`);
 
-  // Step 4: Update blog-posts.ts
-  updateBlogPosts(topic);
+  // Step 4: Extract snabba svar + FAQ ur artikeln (mjuk fallback — artikeln
+  // publiceras även utan; BlogLayout renderar bara det som finns)
+  let seo = null;
+  try {
+    seo = await withRetry(() => extractSeoData(tsx), 'SEO extraction');
+    console.log(`[article] ✅ ${seo.keyTakeaways.length} snabba svar${seo.faq?.length ? `, ${seo.faq.length} FAQ` : ''}`);
+  } catch (err) {
+    console.warn(`[article] ⚠️  SEO extraction failed (${err.message}) — publishing without keyTakeaways/faq`);
+  }
+
+  // Step 4b: Update blog-posts.ts
+  updateBlogPosts(topic, seo);
 
   // Step 5: Update blog page import map (sitemap auto-generates from blog-posts.ts)
   updateBlogPage(topic);
