@@ -278,6 +278,19 @@ export const matches = sqliteTable("crm_matches", {
   // Scenariokalkyl för paret förfrågan × boende — bara antaganden lagras,
   // nyckeltalen räknas vid visning. Se src/lib/crm/kalkyl.ts.
   kalkyl: text("kalkyl", { mode: "json" }).$type<KalkylScenario[]>(),
+  // Stämplade affärsvillkor — låses när erbjudandet skickas (offer*, stämpel = sentAt)
+  // respektive när villkoren bekräftas med uthyraren (promised*, stämpel = promisedAt).
+  // Objektets rentIn/rentOut kan ändras efteråt; dessa fält skrivs ALDRIG om.
+  offerRentOut: real("offer_rent_out"), // pris till kund för denna affär, kr/mån
+  offerStartDate: text("offer_start_date"),
+  offerEndDate: text("offer_end_date"),
+  offerOngoing: integer("offer_ongoing", { mode: "boolean" }), // löpande, som requests.endDateOngoing
+  offerNote: text("offer_note"), // extern notis till kund — visas i erbjudandelänken
+  promisedRentIn: real("promised_rent_in"), // hyra utlovad till uthyraren, kr/mån
+  promisedStartDate: text("promised_start_date"),
+  promisedEndDate: text("promised_end_date"),
+  promisedConditions: text("promised_conditions"), // villkor mot uthyraren (uppsägning, städ …)
+  promisedAt: text("promised_at"),
   notes: text("notes"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [
@@ -441,3 +454,54 @@ export const inboxMessages = sqliteTable("crm_inbox_messages", {
 
 export type InboxMessage = typeof inboxMessages.$inferSelect;
 export type InboxMessageInsert = typeof inboxMessages.$inferInsert;
+
+// Tokeniserade externa länkar — kundens erbjudandesida (/erbjudande/<token>) och
+// uthyrarens sida (fas 3). token = nanoid(32) och ÄR behörigheten: den som har
+// länken ser sin projektion av affären. En aktiv länk per (audience, ärende);
+// rotation = återkalla + skapa ny. Lösa referenser — FK är av i libSQL, radering
+// sker via cascade-delete.ts.
+export const shareLinks = sqliteTable("crm_share_links", {
+  id: text("id").primaryKey(),
+  token: text("token").notNull(), // nanoid(32) — URL-kapabilitet, delas aldrig upp per fält
+  audience: text("audience").notNull(), // tenant | landlord
+  requestId: text("request_id").notNull(),
+  matchId: text("match_id"), // null för tenant (hela erbjudandet); sätts för landlord (en affär, fas 3)
+  createdBy: text("created_by"), // crm_users.id
+  revokedAt: text("revoked_at"), // null = aktiv
+  expiresAt: text("expires_at"), // valfri TTL
+  lastViewedAt: text("last_viewed_at"),
+  viewCount: integer("view_count").default(0).notNull(),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  uniqueIndex("crm_share_links_token_idx").on(t.token),
+  index("crm_share_links_request_id_idx").on(t.requestId),
+  index("crm_share_links_match_id_idx").on(t.matchId),
+]);
+
+export type ShareLink = typeof shareLinks.$inferSelect;
+export type ShareLinkInsert = typeof shareLinks.$inferInsert;
+
+// Signerade avtal: kundens uppdragsbekräftelse (request-scope, gate i erbjudandelänken)
+// och uthyrarens uthyrningsuppdrag (owner+property-scope, fas 3). Avtalstexterna
+// versioneras i kod (src/lib/crm/avtal.ts) — ny version ⇒ befintlig accept matchar
+// inte längre och gaten visas igen. Raden är ett bevis: skrivs aldrig om, bara till.
+export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
+  id: text("id").primaryKey(),
+  agreementType: text("agreement_type").notNull(), // uppdragsbekraftelse | uthyrningsuppdrag
+  version: text("version").notNull(), // måste matcha aktuell version i avtal.ts
+  requestId: text("request_id"), // kundscope (uppdragsbekräftelse)
+  ownerId: text("owner_id"), // uthyrarscope (uthyrningsuppdrag, fas 3)
+  propertyId: text("property_id"), // uthyrarscope (uthyrningsuppdrag, fas 3)
+  shareLinkId: text("share_link_id"), // via vilken länk godkännandet gjordes
+  acceptedName: text("accepted_name").notNull(), // namnet parten skrev vid godkännandet
+  acceptedAt: text("accepted_at").notNull(), // ISO-stämpel
+  userAgent: text("user_agent"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_agreement_acceptances_request_id_idx").on(t.requestId),
+  index("crm_agreement_acceptances_owner_id_idx").on(t.ownerId),
+  index("crm_agreement_acceptances_type_idx").on(t.agreementType),
+]);
+
+export type AgreementAcceptance = typeof agreementAcceptances.$inferSelect;
+export type AgreementAcceptanceInsert = typeof agreementAcceptances.$inferInsert;

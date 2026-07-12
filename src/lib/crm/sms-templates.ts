@@ -22,6 +22,12 @@ export function publishedLinkSms(ownerName: string | null | undefined, slug: str
   return `${greet(ownerName)} Tack för ditt svar 😊 Nu ligger ditt boende ute på vår hemsida: www.stayonsite.se/boenden/${slug}\nExakt adress visas inte publikt. Hör av dig om du vill ändra eller lägga till något. /Kajsa, StayOnSite`;
 }
 
+// Erbjudandelänk till företagskontakt — kundens personliga sida med förslag,
+// pris och uppdragsbekräftelse (gaten). Länk utan https:// av samma smishing-skäl.
+export function offerLinkSms(contactName: string | null | undefined, token: string): string {
+  return `${greet(contactName)} Här är ert boendeförslag från StayOnSite: www.stayonsite.se/erbjudande/${token}\nLänken är personlig för er — där ser ni objekt, pris och kan godkänna uppdraget. Hör av dig vid frågor. /Kajsa, StayOnSite`;
+}
+
 // Jaga uthyrare: förslag skickat, väntar på svar.
 export function ownerFollowUpSms(ownerName: string | null | undefined, address: string | null | undefined): string {
   const what = address ? `angående ${address}` : "angående ditt boende";

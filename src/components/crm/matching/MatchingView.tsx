@@ -22,6 +22,14 @@ import { useState } from "react";
 import useSWR from "swr";
 import { MatchScore } from "./MatchScore";
 import { KalkylScenarioChips, MatchKalkyl } from "./MatchKalkyl";
+import {
+  formatKr,
+  formatPeriod,
+  PromiseTermsDialog,
+  SendOfferDialog,
+  type DealTermsMatch,
+} from "./DealTermsDialogs";
+import { OfferLinkPanel } from "./OfferLinkPanel";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { plusDaysStockholm } from "@/lib/crm/date";
@@ -32,7 +40,7 @@ interface Props {
   companyInvoiceEmail: string | null;
 }
 
-interface MatchRow {
+interface MatchRow extends DealTermsMatch {
   id: string;
   propertyId: string;
   status: string;
@@ -77,6 +85,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const router = useRouter();
   const [detailProperty, setDetailProperty] = useState<PropertyWithOwner | null>(null);
   const [confirmAccept, setConfirmAccept] = useState<MatchRow | null>(null);
+  const [sendOffer, setSendOffer] = useState<MatchRow | null>(null);
+  const [promiseTerms, setPromiseTerms] = useState<MatchRow | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
@@ -355,6 +365,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             </dl>
           </div>
 
+          <OfferLinkPanel requestId={request.id} />
+
           <div className="bg-white rounded-xl border p-4">
             <h2 className="text-sm font-semibold mb-3">Förslag ({matches.length})</h2>
             {matches.length === 0 ? (
@@ -381,6 +393,23 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
+                    {(m.offerRentOut != null || m.promisedAt) && (
+                      <div className="mb-2 space-y-0.5 text-xs">
+                        {m.offerRentOut != null && (
+                          <div className="text-blue-800">
+                            Erbjudet kund: <span className="font-medium">{formatKr(m.offerRentOut)}</span>
+                            {formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing) &&
+                              ` · ${formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing)}`}
+                          </div>
+                        )}
+                        {m.promisedAt && (
+                          <div className="text-emerald-800">
+                            Lovat uthyrare: <span className="font-medium">{formatKr(m.promisedRentIn) ?? "—"}</span>
+                            {` · bekräftat ${m.promisedAt.slice(0, 10)}`}
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {distances[m.propertyId] && (
                       <div className="-mt-1 mb-2 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700">
                         <Navigation className="h-3 w-3" />
@@ -407,18 +436,29 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         />
                       </div>
                     )}
-                    <div className="flex gap-1">
+                    <div className="flex flex-wrap gap-1">
                       {m.status === "suggested" && (
-                        <button onClick={() => setMatchStatus(m.id, "sent")} className="text-xs px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 flex items-center gap-1">
-                          <Send className="h-3 w-3" /> Skickad
+                        <button onClick={() => setSendOffer(m)} className="text-xs px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 flex items-center gap-1">
+                          <Send className="h-3 w-3" /> Skicka erbjudande
+                        </button>
+                      )}
+                      {m.status === "sent" && (
+                        <button onClick={() => setSendOffer(m)} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1" title="Ändra det stämplade erbjudandet">
+                          <Pencil className="h-3 w-3" /> Erbjudande
+                        </button>
+                      )}
+                      {m.status !== "rejected" && (
+                        <button onClick={() => setPromiseTerms(m)} className="text-xs px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" title="Bekräfta vad uthyraren lovas för den här affären">
+                          {m.promisedAt ? "Löfte ✓" : "Villkor uthyrare"}
                         </button>
                       )}
                       {m.status !== "accepted" && (
                         <button
                           onClick={() => {
-                            // Kalkylens första scenario (Bas) vinner över objektets listpris.
+                            // Stämplat erbjudande vinner; annars kalkylens Bas-scenario, sedan listpris.
                             setWonValue(
-                              m.kalkyl?.[0]?.rentOut?.toString() ??
+                              m.offerRentOut?.toString() ??
+                                m.kalkyl?.[0]?.rentOut?.toString() ??
                                 m.propertyRentOut?.toString() ??
                                 request.monthlyValue?.toString() ??
                                 ""
@@ -622,6 +662,19 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       </div>
 
       <PropertyDetailModal property={detailProperty} onClose={() => setDetailProperty(null)} />
+
+      <SendOfferDialog
+        match={sendOffer}
+        request={request}
+        onClose={() => setSendOffer(null)}
+        onSaved={() => mutateMatches()}
+      />
+      <PromiseTermsDialog
+        match={promiseTerms}
+        request={request}
+        onClose={() => setPromiseTerms(null)}
+        onSaved={() => mutateMatches()}
+      />
 
       <Dialog
         open={!!confirmAccept}

@@ -6,6 +6,7 @@ import {
   isMoveOutChecklistComplete,
 } from "@/lib/crm/move-checklists";
 import { deleteRequestDeep } from "@/lib/crm/cascade-delete";
+import { revokeLinksForRequest } from "@/lib/crm/share-links";
 import { indexProperty, indexRequest, removeFromIndex } from "@/lib/crm/search-index";
 import { matches, properties, requests } from "@/lib/crm/schema";
 import { and, eq, inArray, ne } from "drizzle-orm";
@@ -72,6 +73,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .returning();
 
   await indexRequest(id).catch((e) => console.error("search-index request:", e));
+
+  // Avslutat ärende → inga externa länkar ska överleva. Kundens erbjudandesida
+  // svarar 404 direkt efter Nej tack/Arkiverad.
+  if (data.status === "lost" || data.status === "archived") {
+    await revokeLinksForRequest(id).catch((e) => console.error("share-link revocation:", e));
+  }
 
   // Dubbelboknings-spärr: när ett objekt vinns/fakureras, spegla det på objektet
   // och dra tillbaka andra företags öppna förslag på samma objekt.

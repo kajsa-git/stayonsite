@@ -86,13 +86,16 @@ async function geocodeArea(
 }
 
 // Laddar ett publikt objekt via slug ELLER id (slug först, id som fallback för äldre prospekt-länkar).
-// Två oberoende ytor:
+// Tre oberoende ytor:
 //   surface: "web"      → publika listsidan/detaljsidan. Kräver published = true OCH status = available.
 //   surface: "prospekt" → delbar prospekt-länk. Kräver prospektPublished = true (oberoende av status/hemsida).
+//   surface: "offer"    → kundens erbjudandelänk (/erbjudande/<token>). Ingen publiceringsgate här —
+//                         åtkomsten styrs av share-länkens token + att erbjudandet är skickat
+//                         (se deal-projection.ts). Samma tenant-säkra kolumner som övriga ytor.
 // Returnerar null om objektet saknas eller inte får visas på den begärda ytan.
 export async function loadPublicProperty(
   idOrSlug: string,
-  opts: { surface: "web" | "prospekt" },
+  opts: { surface: "web" | "prospekt" | "offer" },
 ): Promise<PublicProperty | null> {
   const bySlug = await db.select(PUBLIC_COLUMNS).from(properties).where(eq(properties.slug, idOrSlug)).limit(1);
   const [row] = bySlug.length
@@ -101,7 +104,7 @@ export async function loadPublicProperty(
   if (!row) return null;
   if (opts.surface === "web") {
     if (!row.published || row.status !== "available") return null;
-  } else {
+  } else if (opts.surface === "prospekt") {
     if (!row.prospektPublished) return null;
   }
 

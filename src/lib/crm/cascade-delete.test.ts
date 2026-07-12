@@ -14,6 +14,7 @@ import {
 import * as schema from "./schema";
 
 const {
+  agreementAcceptances,
   companies,
   contacts,
   emails,
@@ -25,6 +26,7 @@ const {
   propertyImages,
   propertyNotes,
   requests,
+  shareLinks,
 } = schema;
 
 type DB = LibSQLDatabase<typeof schema>;
@@ -120,6 +122,25 @@ describe("deleteRequestDeep", () => {
     const [outreach] = await db.select({ id: ownerOutreach.id, requestId: ownerOutreach.requestId }).from(ownerOutreach);
     expect(outreach.requestId).toBeNull();
   });
+
+  it("raderar förfrågans delningslänkar och avtalsgodkännanden", async () => {
+    await db.insert(companies).values({ id: "c1", name: "Acme" });
+    await db.insert(requests).values({ id: "r1", companyId: "c1", status: "matching" });
+    await db.insert(requests).values({ id: "r2", companyId: "c1", status: "incoming" });
+    await db.insert(shareLinks).values({ id: "sl1", token: "t1", audience: "tenant", requestId: "r1" });
+    await db.insert(shareLinks).values({ id: "sl2", token: "t2", audience: "tenant", requestId: "r2" });
+    await db.insert(agreementAcceptances).values({
+      id: "a1", agreementType: "uppdragsbekraftelse", version: "2026-07-12",
+      requestId: "r1", acceptedName: "Anna", acceptedAt: "2026-07-12T08:00:00Z",
+    });
+
+    await db.transaction((tx) => deleteRequestDeep(tx, "r1"));
+
+    // Bara r1:s länk och godkännande försvinner — r2:s länk står kvar.
+    const remaining = await db.select({ id: shareLinks.id }).from(shareLinks);
+    expect(remaining.map((l) => l.id)).toEqual(["sl2"]);
+    expect(await db.$count(agreementAcceptances)).toBe(0);
+  });
 });
 
 describe("deletePropertyDeep", () => {
@@ -144,6 +165,21 @@ describe("deletePropertyDeep", () => {
     expect(await db.$count(requests)).toBe(1);
     const [req] = await db.select({ id: requests.id, wonPropertyId: requests.wonPropertyId }).from(requests);
     expect(req.wonPropertyId).toBeNull();
+  });
+
+  it("raderar match-scopade delningslänkar men lämnar förfrågans kundlänk", async () => {
+    await db.insert(companies).values({ id: "c1", name: "Acme" });
+    await db.insert(properties).values({ id: "p1" });
+    await db.insert(requests).values({ id: "r1", companyId: "c1", status: "matching" });
+    await db.insert(matches).values({ id: "m1", requestId: "r1", propertyId: "p1", status: "sent" });
+    // Uthyrarlänk knuten till matchen (fas 3-scope) + kundlänk på förfrågan.
+    await db.insert(shareLinks).values({ id: "sl1", token: "t1", audience: "landlord", requestId: "r1", matchId: "m1" });
+    await db.insert(shareLinks).values({ id: "sl2", token: "t2", audience: "tenant", requestId: "r1" });
+
+    await db.transaction((tx) => deletePropertyDeep(tx, "p1"));
+
+    const remaining = await db.select({ id: shareLinks.id }).from(shareLinks);
+    expect(remaining.map((l) => l.id)).toEqual(["sl2"]);
   });
 });
 

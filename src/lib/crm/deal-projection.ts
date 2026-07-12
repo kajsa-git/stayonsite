@@ -1,0 +1,191 @@
+// Rollfiltrerade projektioner av en affär — EN modul äger sanningen om vem som
+// ser vad. Generaliserar allowlist-mönstret från public-property.ts:
+//
+//   internt   → rå sanning, ingen projektion (skyddas av requireApprovedSession)
+//   tenant    → kundens erbjudande: stämplade offer_*-villkor + tenant-säkra
+//               objektfält. ALDRIG rentIn, marginal, kalkyl, matchScore, notes,
+//               adress eller något owner-fält.
+//   landlord  → (fas 3) uthyrarens löfte: promised_*-villkor + eget objekt.
+//               ALDRIG rentOut, marginal eller kundföretagets identitet.
+//
+// Projektioner byggs fält-för-fält från explicita typer — aldrig genom att
+// stryka nycklar ur hela rader. Nya fält läcker alltså inte av misstag.
+//
+// Medvetet beslut: objektets presentation (bilder, beskrivning) är LEVANDE och
+// följer objektet, medan affärsvillkoren (pris, period) är stämplade på matchen
+// och aldrig skrivs om av senare objektändringar.
+import { and, desc, eq } from "drizzle-orm";
+import { UPPDRAGSBEKRAFTELSE } from "./avtal";
+import { db } from "./db";
+import { loadPublicProperty, type PublicProperty } from "./public-property";
+import {
+  agreementAcceptances,
+  companies,
+  matches,
+  requests,
+  type AgreementAcceptance,
+  type Match,
+} from "./schema";
+
+// ---- Intern sanning -------------------------------------------------------
+
+export interface DealTruth {
+  request: {
+    id: string;
+    requestNumber: number | null;
+    status: string;
+    city: string | null;
+    persons: number | null;
+    startDate: string | null;
+    endDate: string | null;
+    endDateOngoing: boolean | null;
+  };
+  companyName: string | null;
+  matches: Match[];
+  // Senaste godkännande av uppdragsbekräftelsen för AKTUELL version, om något.
+  acceptance: AgreementAcceptance | null;
+}
+
+export async function loadDealTruth(requestId: string): Promise<DealTruth | null> {
+  const [request] = await db
+    .select({
+      id: requests.id,
+      requestNumber: requests.requestNumber,
+      status: requests.status,
+      city: requests.city,
+      persons: requests.persons,
+      startDate: requests.startDate,
+      endDate: requests.endDate,
+      endDateOngoing: requests.endDateOngoing,
+      companyId: requests.companyId,
+    })
+    .from(requests)
+    .where(eq(requests.id, requestId))
+    .limit(1);
+  if (!request) return null;
+
+  const [company] = await db
+    .select({ name: companies.name })
+    .from(companies)
+    .where(eq(companies.id, request.companyId))
+    .limit(1);
+
+  const matchRows = await db.select().from(matches).where(eq(matches.requestId, requestId));
+
+  const [acceptance] = await db
+    .select()
+    .from(agreementAcceptances)
+    .where(
+      and(
+        eq(agreementAcceptances.requestId, requestId),
+        eq(agreementAcceptances.agreementType, UPPDRAGSBEKRAFTELSE.type),
+        eq(agreementAcceptances.version, UPPDRAGSBEKRAFTELSE.version)
+      )
+    )
+    .orderBy(desc(agreementAcceptances.acceptedAt))
+    .limit(1);
+
+  return {
+    request: {
+      id: request.id,
+      requestNumber: request.requestNumber,
+      status: request.status,
+      city: request.city,
+      persons: request.persons,
+      startDate: request.startDate,
+      endDate: request.endDate,
+      endDateOngoing: request.endDateOngoing,
+    },
+    companyName: company?.name ?? null,
+    matches: matchRows,
+    acceptance: acceptance ?? null,
+  };
+}
+
+// ---- Kundens projektion ----------------------------------------------------
+
+// Ett erbjudet objekt så som kunden ser det. property är tenant-säker per
+// PUBLIC_COLUMNS (postnummer + stad, aldrig adress; aldrig owner-*; aldrig priser
+// från objektet — priset kunden ser är det STÄMPLADE offerRentOut).
+export interface TenantOfferItem {
+  matchId: string;
+  status: "sent" | "accepted" | "unavailable";
+  offerRentOut: number | null;
+  offerStartDate: string | null;
+  offerEndDate: string | null;
+  offerOngoing: boolean | null;
+  offerNote: string | null;
+  property: PublicProperty | null; // null om objektet raderats — kortet visas ändå som otillgängligt
+}
+
+export interface TenantOfferView {
+  requestNumber: number | null;
+  companyName: string | null; // kundens EGET namn — personaliserar sidan, läcker inget
+  city: string | null;
+  persons: number | null;
+  startDate: string | null;
+  endDate: string | null;
+  endDateOngoing: boolean | null;
+  agreementAccepted: boolean;
+  acceptedName: string | null;
+  acceptedAt: string | null;
+  offers: TenantOfferItem[];
+}
+
+// Kundens statusläsning av en match. Avvisad EFTER skick (t.ex. "Objektet togs av
+// annan kund") blir "unavailable" — kortet gråas ut men försvinner aldrig; länken
+// är ett sanningsenligt protokoll över vad som erbjudits.
+function tenantStatus(m: Match): TenantOfferItem["status"] {
+  if (m.status === "accepted") return "accepted";
+  if (m.status === "sent") return "sent";
+  return "unavailable";
+}
+
+export function projectTenant(truth: DealTruth, publicProps: Map<string, PublicProperty | null>): TenantOfferView {
+  const offers = truth.matches
+    .filter((m) => m.sentAt != null) // kunden ser bara det som faktiskt skickats
+    .sort((a, b) => (a.sentAt! < b.sentAt! ? -1 : 1))
+    .map((m): TenantOfferItem => ({
+      matchId: m.id,
+      status: tenantStatus(m),
+      offerRentOut: m.offerRentOut,
+      offerStartDate: m.offerStartDate,
+      offerEndDate: m.offerEndDate,
+      offerOngoing: m.offerOngoing,
+      offerNote: m.offerNote,
+      property: publicProps.get(m.propertyId) ?? null,
+    }));
+
+  return {
+    requestNumber: truth.request.requestNumber,
+    companyName: truth.companyName,
+    city: truth.request.city,
+    persons: truth.request.persons,
+    startDate: truth.request.startDate,
+    endDate: truth.request.endDate,
+    endDateOngoing: truth.request.endDateOngoing,
+    agreementAccepted: truth.acceptance != null,
+    acceptedName: truth.acceptance?.acceptedName ?? null,
+    acceptedAt: truth.acceptance?.acceptedAt ?? null,
+    offers,
+  };
+}
+
+// Allt-i-ett för erbjudandesidan: sanning + tenant-säkra objekt + projektion.
+// Returnerar null för okänd förfrågan eller avslutat ärende (länkarna ska då
+// redan vara återkallade — det här är bältet till hängslena).
+export async function loadTenantOffer(requestId: string): Promise<TenantOfferView | null> {
+  const truth = await loadDealTruth(requestId);
+  if (!truth) return null;
+  if (truth.request.status === "lost" || truth.request.status === "archived") return null;
+
+  const sentPropertyIds = [...new Set(truth.matches.filter((m) => m.sentAt != null).map((m) => m.propertyId))];
+  const publicProps = new Map<string, PublicProperty | null>();
+  await Promise.all(
+    sentPropertyIds.map(async (id) => {
+      publicProps.set(id, await loadPublicProperty(id, { surface: "offer" }));
+    })
+  );
+
+  return projectTenant(truth, publicProps);
+}

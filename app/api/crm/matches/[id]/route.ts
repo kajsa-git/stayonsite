@@ -20,12 +20,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   // Whitelist redigerbara fält — klienten får aldrig repeka requestId/propertyId eller byta id.
-  const ALLOWED = ["status", "matchScore", "followUpDate", "followUpReason", "notes", "kalkyl"] as const;
+  const ALLOWED = [
+    "status", "matchScore", "followUpDate", "followUpReason", "notes", "kalkyl",
+    // Stämplade affärsvillkor (fas 1) — erbjudandet till kund resp. löftet till uthyraren.
+    "offerRentOut", "offerStartDate", "offerEndDate", "offerOngoing", "offerNote",
+    "promisedRentIn", "promisedStartDate", "promisedEndDate", "promisedConditions",
+  ] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) {
     if (key in body) data[key] = body[key];
   }
   if ("kalkyl" in data) data.kalkyl = sanitizeKalkyl(data.kalkyl);
+  // Löftesstämpeln sätts av servern i samma ögonblick villkoren bekräftas —
+  // klienten kan aldrig backdatera ett löfte.
+  if (["promisedRentIn", "promisedStartDate", "promisedEndDate", "promisedConditions"].some((k) => k in data)) {
+    data.promisedAt = new Date().toISOString();
+  }
   // Stamp sentAt when a suggestion is marked as sent
   if (body.status === "sent") {
     data.sentAt = new Date().toISOString();
