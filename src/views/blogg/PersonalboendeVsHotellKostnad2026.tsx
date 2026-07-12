@@ -329,7 +329,8 @@ const PersonalboendeVsHotellKostnad2026 = () => {
 
       <p>
         En viktig punkt när du jämför alternativ är att förstå vad som ingår. StayOnSites
-        pris inkluderar el, vatten, wifi och hantering. Hotellets grundpris inkluderar
+        pris inkluderar vanligtvis el, vatten, wifi och hantering &mdash; exakt omfattning
+        avtalas per projekt. Hotellets grundpris inkluderar
         städning men inte mat. Airbnb-priset kan se lågt ut men saknar städning under
         vistelsen och tillkommer med serviceavgifter. Egen hantering saknar allt utom
         boendet i sig - el och wifi kan tillkomma separat.

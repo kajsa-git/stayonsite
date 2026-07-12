@@ -29,7 +29,7 @@ const ZakwaterowanieFirmowe = () => {
       'telephone': '+46 76-249 84 86',
       'url': 'https://www.stayonsite.se'
     },
-    'description': 'W pełni umeblowane mieszkania dla zespołów biznesowych w całej Szwecji. Elastyczne warunki, cena all-inclusive.',
+    'description': 'W pełni umeblowane mieszkania dla zespołów biznesowych w całej Szwecji. Elastyczne warunki, stała cena miesięczna.',
     'areaServed': {
       '@type': 'Country',
       'name': 'Sweden'
@@ -57,7 +57,7 @@ const ZakwaterowanieFirmowe = () => {
     },
     {
       question: "Co jest wliczone w cenę?",
-      answer: "Cena all-inclusive obejmuje: w pełni umeblowane mieszkania, media (prąd, woda, ogrzewanie), szybki internet, sprzątanie, pościel i wyposażenie kuchni. Bez ukrytych opłat."
+      answer: "Stała cena miesięczna zazwyczaj obejmuje: w pełni umeblowane mieszkanie, media (prąd, woda, ogrzewanie), szybki internet, sprzątanie, pościel i wyposażenie kuchni – dokładny zakres ustalany jest osobno dla każdego projektu. Bez ukrytych opłat."
     },
     {
       question: "Jak szybko możecie zorganizować zakwaterowanie?",
@@ -132,7 +132,7 @@ const ZakwaterowanieFirmowe = () => {
               <p
                 className="text-xl md:text-2xl text-white/80 font-light leading-relaxed mb-8 max-w-2xl"
               >
-                W pełni umeblowane mieszkania dla Twojego zespołu. Elastyczne warunki, cena all-inclusive, dedykowane wsparcie. Dostępne w całej Szwecji.
+                W pełni umeblowane mieszkania dla Twojego zespołu. Elastyczne warunki, stała cena miesięczna, dedykowane wsparcie. Dostępne w całej Szwecji.
               </p>
 
               <DirectContact language="pl" className="mb-10" />
@@ -143,7 +143,7 @@ const ZakwaterowanieFirmowe = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-wrap gap-6 text-white/70"
               >
-                {['Od 30 dni', 'Cena all-inclusive', 'Odpowiedź tego samego dnia'].map((item, i) => (
+                {['Od 30 dni', 'Stała cena miesięczna', 'Odpowiedź tego samego dnia'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-accent" />
                     <span className="text-sm font-medium">{item}</span>

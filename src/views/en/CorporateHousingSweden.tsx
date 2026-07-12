@@ -30,7 +30,7 @@ const CorporateHousingSweden = () => {
       'telephone': '+46 76-249 84 86',
       'url': 'https://www.stayonsite.se'
     },
-    'description': 'Fully furnished apartments for business teams across Sweden. Flexible terms, all-inclusive pricing. The professional Airbnb alternative.',
+    'description': 'Fully furnished apartments for business teams across Sweden. Flexible terms, fixed monthly pricing. The professional Airbnb alternative.',
     'areaServed': {
       '@type': 'Country',
       'name': 'Sweden'
@@ -58,7 +58,7 @@ const CorporateHousingSweden = () => {
     },
     {
       question: "What's included in the price?",
-      answer: "Everything. All-inclusive pricing covers fully furnished apartments, utilities (electricity, water, heating), high-speed internet, weekly cleaning, bed linens, kitchen equipment, and a dedicated contact person. No hidden fees, no broker commissions. We have arranged over 500 all-inclusive accommodations since 2016 with a 4.9/5 customer rating."
+      answer: "Typically a fully furnished apartment, utilities (electricity, water, heating), high-speed internet, cleaning, bed linens, kitchen equipment and a dedicated contact person – the exact scope is agreed per project. No hidden fees, no broker commissions. We have arranged over 500 accommodations since 2016 with a 5.0/5 customer rating."
     },
     {
       question: "How quickly can you arrange accommodation?",
@@ -133,7 +133,7 @@ const CorporateHousingSweden = () => {
               <p
                 className="text-xl md:text-2xl text-white/80 font-light leading-relaxed mb-8 max-w-2xl"
               >
-                Fully furnished apartments for your business team. Flexible terms, all-inclusive pricing, dedicated support. Available across Sweden.
+                Fully furnished apartments for your business team. Flexible terms, fixed monthly pricing, dedicated support. Available across Sweden.
               </p>
 
               <DirectContact language="en" className="mb-10" />
@@ -144,7 +144,7 @@ const CorporateHousingSweden = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-wrap gap-6 text-white/70"
               >
-                {['30+ day flexible terms', 'All-inclusive pricing', 'Same day response'].map((item, i) => (
+                {['30+ day flexible terms', 'Fixed monthly pricing', 'Same day response'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-accent" />
                     <span className="text-sm font-medium">{item}</span>

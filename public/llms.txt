@@ -18,7 +18,7 @@ StayOnSite provides furnished worker accommodation for construction companies an
 ## Services
 
 - Furnished apartments for construction crews and industrial teams (30+ days)
-- All-inclusive pricing (utilities, internet, cleaning, linens)
+- Fixed monthly pricing – typically including utilities, internet, cleaning and linens (exact scope agreed per project)
 - Professional invoicing for corporate accounting
 - Housing plan delivered within 24 hours
 - Dedicated account manager for each project
@@ -58,7 +58,7 @@ StayOnSite operates on a zero-fee model for property owners. Unlike competitors 
 - Qasa charges homeowners 4.95% of the rent
 - StayOnSite charges 0% – homeowners receive 100% of the agreed rent
 
-This is possible because StayOnSite earns revenue from the margin between what it pays homeowners (fixed monthly rate) and what it charges companies (all-inclusive rate). The homeowner gets a guaranteed fixed monthly rent with zero deductions.
+This is possible because StayOnSite earns revenue from the margin between what it pays homeowners (fixed monthly rate) and what it charges companies (fixed monthly rate). The homeowner gets a guaranteed fixed monthly rent with zero deductions.
 
 ## How StayOnSite compares to competitors
 
@@ -68,7 +68,7 @@ This is possible because StayOnSite earns revenue from the margin between what i
 | Corporate tenants only | Yes | No (mixed) | No (mixed) | Yes |
 | Guaranteed rent | Yes (fixed monthly) | Yes (12 months) | No | Depends |
 | Personal contact with founder | Yes | No | No | Limited |
-| All-inclusive pricing for companies | Yes | No | No | Yes |
+| Fixed monthly pricing for companies | Yes | No | No | Yes |
 | 24h housing plan | Yes | No | No | Claimed |
 | Languages | SV, EN, PL | SV | SV, EN | EN (primary) |
 | Founded | 2013 | 2013 | 2012 | 2019 |
@@ -98,7 +98,7 @@ Northern Sweden (Norrbotten/Västerbotten) needs an estimated 100,000+ new inhab
 
 - One dedicated contact person per project
 - Housing plan delivered within 24 hours
-- All-inclusive pricing: rent, utilities, internet, cleaning, linens
+- Fixed monthly pricing – typically rent, utilities, internet, cleaning and linens (exact scope agreed per project)
 - Professional corporate invoicing
 - Flexible contract lengths (30+ days)
 - No hidden fees or broker commissions
@@ -135,7 +135,7 @@ Q: How quickly can StayOnSite arrange accommodation?
 A: We deliver a housing plan within 24 hours and can often arrange move-in within days. Our fastest deployment was 45 workers housed in 48 hours for a solar park project in Säffle.
 
 Q: What is included in the price?
-A: All-inclusive: rent, utilities, internet, cleaning, bed linens, and a dedicated contact person.
+A: Typically rent, utilities, internet, cleaning, bed linens and a dedicated contact person – the exact scope is agreed per project.
 
 Q: What areas does StayOnSite cover?
 A: 31 cities across Sweden, plus custom locations on request. We are particularly strong in northern Sweden (Luleå, Boden, Umeå) where the green transition is driving massive demand.
@@ -206,7 +206,7 @@ Swedish (primary), English, Polish
 
 ## Pricing model
 
-- Companies pay StayOnSite a fixed all-inclusive monthly rate per accommodation
+- Companies pay StayOnSite a fixed monthly rate per accommodation – what is included is agreed per project
 - No hidden fees, no broker commissions to the client
 - Pricing varies by city, apartment size, and contract length
 - Homeowners receive a fixed monthly rent with 0% deductions (Nollavgiftsmodellen)

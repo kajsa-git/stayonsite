@@ -596,7 +596,7 @@ export const translations: Record<
 
     "why.title": "Varför StayOnSite",
     "why.subtitle":
-      "500+ ordnade boenden sedan 2016. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 4,9 av 5.",
+      "500+ ordnade boenden sedan 2016. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 5,0 av 5.",
     "why.steps.plan.title": "Planering & förslag",
     "why.steps.plan.description":
       "Boendeförslag inom 24 timmar – första svar ofta inom några timmar. Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar i vårt nätverk av 40+ städer och svarar med färdiga alternativ inklusive adress, planritning och pris.",
@@ -691,7 +691,7 @@ export const translations: Record<
     "homeowner.guarantee.support.title": "Personlig support dygnet runt",
     "homeowner.guarantee.support.description": "Kajsa ringer dig inom 24 timmar efter registrering. Därefter har du alltid en direkt linje till teamet – samma person varje gång. Inga telefonköer, inga mellanhänder.",
     "homeowner.guarantee.badge": "100+ nöjda husägare",
-    "homeowner.guarantee.badgeDescription": "Vi har hjälpt hundratals husägare att tjäna passiv inkomst med trygghet – utan en enda tvist. 4,9 av 5 i kundbetyg.",
+    "homeowner.guarantee.badgeDescription": "Vi har hjälpt hundratals husägare att tjäna passiv inkomst med trygghet – utan en enda tvist. 5,0 av 5 i kundbetyg.",
 
     "homeowner.process.title": "Så enkelt fungerar det",
     "homeowner.process.subtitle":
@@ -1084,7 +1084,7 @@ export const translations: Record<
 
     "why.title": "Why StayOnSite",
     "why.subtitle":
-      "500+ accommodations arranged since 2016. We handle planning, contracts, and operations so you stay on schedule. 4.9 out of 5 customer rating.",
+      "500+ accommodations arranged since 2016. We handle planning, contracts, and operations so you stay on schedule. 5.0 out of 5 customer rating.",
     "why.steps.plan.title": "Planning & proposals",
     "why.steps.plan.description":
       "Housing proposals within 24 hours – first reply often within hours. Send your inquiry via form, email, or WhatsApp. We map local landlords across our 40+ city network and respond with ready options including address, floor plan, and pricing.",
@@ -1576,7 +1576,7 @@ export const translations: Record<
 
     "why.title": "Dlaczego StayOnSite",
     "why.subtitle":
-      "Ponad 500 zorganizowanych zakwaterowań od 2013 roku. Przejmujemy planowanie, umowy i eksploatację. Ocena klientów: 4,9 na 5.",
+      "Ponad 500 zorganizowanych zakwaterowań od 2016 roku. Przejmujemy planowanie, umowy i eksploatację. Ocena klientów: 5,0 na 5.",
     "why.steps.plan.title": "Planowanie i propozycje",
     "why.steps.plan.description":
       "Propozycje zakwaterowania w ciągu 24 godzin – pierwsza odpowiedź często w kilka godzin. Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Analizujemy sieć właścicieli w ponad 40 miastach i odpowiadamy gotowymi opcjami z adresem, planem i ceną.",

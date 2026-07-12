@@ -136,7 +136,7 @@ const PersonalboendeVanligaFragor2026 = () => {
         <li>Köksutrustning och porslin</li>
         <li>Tvättmaskin och torktumlare</li>
         <li>Möblerat vardagsrum och matplats</li>
-        <li>Bredbandsinternet ingår alltid</li>
+        <li>Bredbandsinternet ingår som standard</li>
       </ul>
 
       <p>

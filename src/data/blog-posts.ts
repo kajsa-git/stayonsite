@@ -42,7 +42,7 @@ export const blogPosts: BlogPost[] = [
     readingTime: 8,
     audience: 'foretag',
     keyTakeaways: [
-      'Personalboende kostar 250–550 kr per person och natt mot hotellets 900–1 800 kr — ett team på 10 sparar 60–75 procent jämfört med hotell.',
+      'Personalboende kostar ca 200–550 kr per person och natt (från 5 900 kr per person och månad) mot hotellets 900–1 800 kr — ett team på 10 sparar 60–75 procent.',
       'Boverket: Sverige behöver bygga ca 67 000 bostäder per år till 2030, men 2025 påbörjades bara ca 30 000 — ett gap på 35 000 bostäder per år.',
       'Arbetsmiljöverkets föreskrifter AFS 2020:1 kräver att arbetsgivarens tillfälliga boende har enskilda sovplatser, kök, hygienutrymmen och brandskydd.',
       'Privatuthyrningslagen (2012:978) gäller när uthyraren är privatperson; hyr ett företag ut gäller hyreslagen, och blockhyra regleras i 1 § tredje stycket.',
@@ -533,7 +533,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         q: 'Är boendet möblerat?',
-        a: 'Ja, allt boende är fullt möblerat: sängar med sängkläder, fullt utrustat kök, tvättmaskin, torktumlare och bredband ingår alltid. Personalen flyttar in med enbart personligt bagage.',
+        a: 'Ja, allt boende är fullt möblerat: sängar med sängkläder, fullt utrustat kök, tvättmaskin, torktumlare och bredband ingår som standard. Personalen flyttar in med enbart personligt bagage.',
       },
       {
         q: 'Hur fungerar faktureringen?',

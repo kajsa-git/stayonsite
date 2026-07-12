@@ -221,9 +221,9 @@ const OmOss = () => {
             </h2>
             <p className="text-nordic-600 text-center mb-12 max-w-2xl mx-auto">
               {t(
-                'Allt ingår i ett fast månadspris. Inga dolda avgifter.',
-                'Everything included in one fixed monthly price. No hidden fees.',
-                'Wszystko w jednej stałej cenie miesięcznej. Bez ukrytych opłat.'
+                'Ett fast månadspris utan dolda avgifter – exakt vad som ingår avtalas utifrån projektets behov.',
+                'One fixed monthly price with no hidden fees – exactly what is included is agreed based on the needs of each project.',
+                'Jedna stała cena miesięczna bez ukrytych opłat – dokładny zakres ustalany jest według potrzeb projektu.'
               )}
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">

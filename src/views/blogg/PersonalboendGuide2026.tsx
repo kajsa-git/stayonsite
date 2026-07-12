@@ -134,7 +134,7 @@ const PersonalboendGuide2026 = () => {
           </tr>
           <tr>
             <td>Personalboende (StayOnSite)</td>
-            <td>250&ndash;550 kr</td>
+            <td>200&ndash;550 kr</td>
             <td>1 månad</td>
             <td>Billigast, kontrakt, hemkänsla</td>
             <td>Kräver framförhållning</td>
