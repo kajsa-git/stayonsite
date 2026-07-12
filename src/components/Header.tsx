@@ -178,7 +178,7 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
               <Link
-                href="/blogg"
+                href="/om-oss"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
                   useScrolledStyle
@@ -186,7 +186,7 @@ const Header = () => {
                     : "text-white/80 hover:text-white"
                 )}
               >
-                Blogg
+                {t("nav.about")}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
             </div>
@@ -280,11 +280,11 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  href="/blogg"
+                  href="/om-oss"
                   className="block px-4 py-2 text-primary font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Blogg
+                  {t("nav.about")}
                 </Link>
               </li>
               <li className="pt-4">
