@@ -343,9 +343,9 @@ const ForForetagHero = () => {
             {
               q: t('Vad ingår i priset?', 'What is included in the price?', 'Co jest wliczone w cenę?'),
               a: t(
-                'Allt: hyra, el, vatten, internet, städning och sängkläder – till ett fast månadspris per person. En kontaktperson genom hela projektet, inga dolda avgifter.',
-                'Everything: rent, utilities, internet, cleaning and bed linen – at a fixed monthly price per person. One contact person throughout the project, no hidden fees.',
-                'Wszystko: czynsz, media, internet, sprzątanie i pościel – w stałej cenie miesięcznej za osobę. Jedna osoba kontaktowa przez cały projekt, bez ukrytych opłat.'
+                'Vanligtvis hyra, el, vatten, internet, städning och sängkläder – till ett fast månadspris per person. Exakt vad som ingår avtalas separat utifrån projektets förutsättningar. En kontaktperson genom hela projektet, inga dolda avgifter.',
+                'Typically rent, utilities, internet, cleaning and bed linen – at a fixed monthly price per person. Exactly what is included is agreed separately based on the circumstances of each project. One contact person throughout the project, no hidden fees.',
+                'Zazwyczaj czynsz, media, internet, sprzątanie i pościel – w stałej cenie miesięcznej za osobę. Dokładny zakres ustalany jest osobno w zależności od warunków projektu. Jedna osoba kontaktowa przez cały projekt, bez ukrytych opłat.'
               ),
             },
             {
