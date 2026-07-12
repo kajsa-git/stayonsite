@@ -528,9 +528,9 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 </h2>
                 <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
                   {translate(
-                    `Ring, mejla eller skicka WhatsApp. Vi svarar inom 15 minuter och återkommer med boendeplan för ${city.name} inom 24 timmar.`,
-                    `Call, email or WhatsApp us. We respond within 15 minutes and return with a housing plan for ${city.name} within 24 hours.`,
-                    `Zadzwoń, napisz e-mail albo WhatsApp. Odpowiadamy w 15 minut i przygotowujemy plan zakwaterowania w ${city.name} w 24 godziny.`
+                    `Ring, mejla eller skicka WhatsApp. Vi återkommer alltid inom en arbetsdag – ofta inom några timmar – med en boendeplan för ${city.name}.`,
+                    `Call, email or WhatsApp us. We always get back to you within one business day – often within hours – with a housing plan for ${city.name}.`,
+                    `Zadzwoń, napisz e-mail albo WhatsApp. Zawsze odpowiadamy w ciągu jednego dnia roboczego – często w kilka godzin – z planem zakwaterowania w ${city.name}.`
                   )}
                 </p>
               </div>

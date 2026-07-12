@@ -405,7 +405,7 @@ export const translations: Record<
     "hero.ctaPhone": "Ring oss nu",
     "hero.ctaWhatsapp": "Chatta på WhatsApp",
     "hero.ctaSubtext": "+46 73-628 77 09 · Telefon / Mail / WhatsApp",
-    "hero.responseTime": "Svar inom 15 minuter vardagar",
+    "hero.responseTime": "Svar inom en arbetsdag – ofta inom några timmar",
     "hero.homeownerLink": "Är du husägare? Hyr ut din bostad till företag",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "Första boendeförslaget",
@@ -424,7 +424,7 @@ export const translations: Record<
       "Fyll i vårt enkla formulär med detaljer om era behov",
     "services.process.step2.title": "Snabbt svar",
     "services.process.step2.description":
-      "Vi svarar via mail eller WhatsApp – oftast inom 15 minuter, alltid inom ett dygn",
+      "Vi svarar via mail eller WhatsApp – alltid inom en arbetsdag, ofta inom några timmar",
     "services.process.step3.title": "Bekräftelse",
     "services.process.step3.description":
       "Välj det alternativ som passar er bäst, och vi bokar det åt er",
@@ -433,7 +433,7 @@ export const translations: Record<
       "Era arbetare får all information de behöver för en smidig inflyttning",
     "services.security.title": "Trygghet genom erfaren partner",
     "services.security.description":
-      "Inga mellanhänder, inga vänteköer. Ni når oss direkt och vi återkopplar – oftast inom 15 minuter, alltid inom ett dygn. 10+ års erfarenhet från byggbranschen.",
+      "Inga mellanhänder, inga vänteköer. Ni når oss direkt och vi återkopplar – alltid inom en arbetsdag, ofta inom några timmar. 10+ års erfarenhet från byggbranschen.",
     "services.whyus.title": "Varför välja oss?",
     "services.whyus.point1": "Snabba svar inom 24 timmar",
     "services.whyus.point2": "Boenden över hela Sverige",
@@ -548,7 +548,7 @@ export const translations: Record<
       "Kort om hur vi jobbar, hur snabbt det går och vad som ingår.",
     "faq.tagline": "Vanliga frågor",
     "faq.question1": "Hur snabbt kan ni ordna boende?",
-    "faq.answer1": "Inom 24 timmar. Vi presenterar boendeförslag samma dag som förfrågan kommer in – i akuta fall inom 3 timmar. Enligt Byggföretagen planerar allt fler byggbolag med kort varsel när projektstart skjuts fram, och vår genomsnittliga svarstid ligger under 3 timmar för befintliga kunder.",
+    "faq.answer1": "Vi återkommer alltid inom en arbetsdag – ofta inom några timmar. Boendeförslag presenterar vi normalt inom 24 timmar från förfrågan. Enligt Byggföretagen planerar allt fler byggbolag med kort varsel när projektstart skjuts fram, så snabb återkoppling är en del av vårt arbetssätt.",
     "faq.question2": "Vilka städer täcker ni?",
     "faq.answer2":
       "Över 40 städer i hela Sverige – från Malmö i söder till Luleå i norr. Vi täcker alla de 19 största byggmarknaderna plus specialorter som Boden, Oskarshamn och Säffle där stora energi- och infrastrukturprojekt pågår. Enligt Boverkets byggprognos (december 2025) beräknas 35 000 bostäder påbörjas under 2026, vilket driver behovet av tillfälligt personalboende i hela landet.",
@@ -589,7 +589,7 @@ export const translations: Record<
     "floatingPhone.tooltip": "Ring oss direkt på +46 73-628 77 09",
     "floatingPhone.whatsapp": "Skriv på WhatsApp",
     "floatingPhone.whatsappTooltip":
-      "Skriv till oss på WhatsApp – svar inom 15 minuter på vardagar",
+      "Skriv till oss på WhatsApp – svar inom en arbetsdag, ofta inom några timmar",
     "stickyContact.title": "Behöver ni boende?",
     "stickyContact.subtitle": "Hör av dig via telefon eller mail",
     "stickyContact.call": "Ring nu",
@@ -599,7 +599,7 @@ export const translations: Record<
       "500+ ordnade boenden sedan 2016. Vi hjälper ert företag med boenden i hela Sverige – från smarta lägenheter till rymliga villor. Alltid fullt möblerade och inflyttningsklara, med en genomsnittlig kundnöjdhet på 4,9 av 5.",
     "why.steps.plan.title": "Planering & förslag",
     "why.steps.plan.description":
-      "Boendeförslag inom 24 timmar – ofta inom 3 timmar. Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar i vårt nätverk av 40+ städer och svarar med färdiga alternativ inklusive adress, planritning och pris.",
+      "Boendeförslag inom 24 timmar – första svar ofta inom några timmar. Skicka förfrågan via formulär, mail eller WhatsApp. Vi kartlägger lokala värdar i vårt nätverk av 40+ städer och svarar med färdiga alternativ inklusive adress, planritning och pris.",
     "why.steps.plan.cta": "Skicka förfrågan →",
     "why.steps.contracts.title": "Kontrakt & inflytt",
     "why.steps.contracts.description":
@@ -632,7 +632,7 @@ export const translations: Record<
     "case.cta.button": "Skicka ett mail",
     "case.cta.description": "Vi hjälper dig hela vägen. Hör av dig till oss direkt för ett personligt svar!",
     "case.cta.callDirect": "Ring direkt: 076-249 84 86",
-    "case.cta.responseTime": "Svar inom 15 minuter",
+    "case.cta.responseTime": "Svar inom en arbetsdag",
 
 
     "references.stats.happyClients": "Nöjda kunder",
@@ -891,7 +891,7 @@ export const translations: Record<
     "hero.ctaPhone": "Call us now",
     "hero.ctaWhatsapp": "Chat on WhatsApp",
     "hero.ctaSubtext": "+46 73 628 77 09 · Phone / Email / WhatsApp",
-    "hero.responseTime": "Replies within 15 minutes on weekdays",
+    "hero.responseTime": "Reply within one business day – often within hours",
     "hero.homeownerLink": "Are you a homeowner? Rent out your property to companies",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "First housing proposal",
@@ -910,7 +910,7 @@ export const translations: Record<
       "Fill out our simple form with details about your needs",
     "services.process.step2.title": "Quick response",
     "services.process.step2.description":
-      "We respond via email or WhatsApp – usually within 15 minutes, always within 24 hours",
+      "We respond via email or WhatsApp – always within one business day, often within hours",
     "services.process.step3.title": "Confirmation",
     "services.process.step3.description":
       "Choose the option that suits you best, and we book it for you",
@@ -919,16 +919,16 @@ export const translations: Record<
       "Your workers get all the information they need for a smooth move-in",
     "services.security.title": "Security through an experienced partner",
     "services.security.description":
-      "No middlemen, no queues. You reach us directly and we respond – usually within 15 minutes, always within 24 hours. 10+ years of construction experience.",
+      "No middlemen, no queues. You reach us directly and we respond – always within one business day, often within hours. 10+ years of construction experience.",
     "services.whyus.title": "Why choose us?",
     "services.whyus.point1": "Quick responses within 24 hours",
     "services.whyus.point2": "Accommodations throughout Sweden",
     "services.whyus.point3": "Smooth process from start to finish",
     "services.whyus.point4": "Over 10 years of experience",
     "services.card1.title": "Planning & proposals",
-    "services.card1.highlight": "Response within 15 minutes",
+    "services.card1.highlight": "Response within one business day",
     "services.card1.description":
-      "Send inquiry via form, email, or WhatsApp. We map local landlords and return with 2–3 suitable options – usually within 15 minutes, always within 24 hours.",
+      "Send inquiry via form, email, or WhatsApp. We map local landlords and return with 2–3 suitable options – always within one business day, often within hours.",
     "services.card1.bullet1": "Nationwide network of landlords",
     "services.card1.bullet2": "Options with private or shared bedrooms",
     "services.card1.bullet3": "Furnished homes with common areas",
@@ -1035,7 +1035,7 @@ export const translations: Record<
     "faq.subtitle": "How we work, how fast we move, and what’s included.",
     "faq.tagline": "FAQ",
     "faq.question1": "How quickly can you arrange accommodation?",
-    "faq.answer1": "Within 24 hours. We present accommodation options the same day your inquiry arrives – in urgent cases within 3 hours. According to Byggföretagen (the Swedish Construction Federation), more construction companies plan with shorter lead times as project timelines shift, and our average response time is under 3 hours for existing clients.",
+    "faq.answer1": "We always get back to you within one business day – often within hours. Housing proposals are normally presented within 24 hours of your inquiry. According to Byggföretagen (the Swedish Construction Federation), more construction companies plan with shorter lead times as project timelines shift, so fast response is part of how we work.",
     "faq.question2": "Which cities do you cover?",
     "faq.answer2":
       "Over 40 cities across Sweden – from Malmö in the south to Luleå in the north. We cover all 19 major construction markets plus specialized locations like Boden, Oskarshamn and Säffle where large energy and infrastructure projects are underway. According to Boverket's building forecast (December 2025), 35,000 homes are expected to start in 2026, driving demand for temporary worker housing nationwide.",
@@ -1076,10 +1076,10 @@ export const translations: Record<
     "floatingPhone.tooltip": "Call us directly at +46 73-628 77 09",
     "floatingPhone.whatsapp": "Message on WhatsApp",
     "floatingPhone.whatsappTooltip":
-      "Message us on WhatsApp—responses within 15 minutes on weekdays",
+      "Message us on WhatsApp — reply within one business day, often within hours",
     "stickyContact.title": "Need housing?",
     "stickyContact.subtitle":
-      "Don't hesitate to reach out – we respond within 15 minutes on weekdays",
+      "Don't hesitate to reach out – we always respond within one business day, often within hours",
     "stickyContact.call": "Call now",
 
     "why.title": "Why StayOnSite",
@@ -1087,7 +1087,7 @@ export const translations: Record<
       "500+ accommodations arranged since 2016. We handle planning, contracts, and operations so you stay on schedule. 4.9 out of 5 customer rating.",
     "why.steps.plan.title": "Planning & proposals",
     "why.steps.plan.description":
-      "Housing proposals within 24 hours – often within 3 hours. Send your inquiry via form, email, or WhatsApp. We map local landlords across our 40+ city network and respond with ready options including address, floor plan, and pricing.",
+      "Housing proposals within 24 hours – first reply often within hours. Send your inquiry via form, email, or WhatsApp. We map local landlords across our 40+ city network and respond with ready options including address, floor plan, and pricing.",
     "why.steps.plan.cta": "Send inquiry →",
     "why.steps.contracts.title": "Contracts & move-ins",
     "why.steps.contracts.description":
@@ -1121,7 +1121,7 @@ export const translations: Record<
     "case.cta.button": "Send an email",
     "case.cta.description": "We help you every step of the way. Contact us directly for a personal response!",
     "case.cta.callDirect": "Call directly: 076-249 84 86",
-    "case.cta.responseTime": "Response within 15 minutes",
+    "case.cta.responseTime": "Response within one business day",
 
     "references.stats.happyClients": "Happy clients",
     "references.stats.accommodations": "Accommodations arranged",
@@ -1380,7 +1380,7 @@ export const translations: Record<
     "hero.ctaPhone": "Zadzwoń teraz",
     "hero.ctaWhatsapp": "Napisz na WhatsApp",
     "hero.ctaSubtext": "+46 73 628 77 09 · Telefon / E-mail / WhatsApp",
-    "hero.responseTime": "Odpowiedź w 15 minut w dni robocze",
+    "hero.responseTime": "Odpowiedź w ciągu dnia roboczego – często w kilka godzin",
     "hero.homeownerLink": "Masz nieruchomość? Wynajmij ją firmom",
     "hero.metrics.proposal.value": "24 h",
     "hero.metrics.proposal.description": "Pierwsza propozycja zakwaterowania",
@@ -1399,7 +1399,7 @@ export const translations: Record<
       "Wypełnij nasz prosty formularz, podając szczegóły dotyczące Twoich potrzeb.",
     "services.process.step2.title": "Szybka odpowiedź",
     "services.process.step2.description":
-      "Odpowiadamy przez e-mail lub WhatsApp – zwykle w 15 minut, zawsze w ciągu doby",
+      "Odpowiadamy przez e-mail lub WhatsApp – zawsze w ciągu jednego dnia roboczego, często w kilka godzin",
     "services.process.step3.title": "Potwierdzenie",
     "services.process.step3.description":
       "Wybierz najlepszą dla siebie opcję, a my dokonamy rezerwacji.",
@@ -1409,16 +1409,16 @@ export const translations: Record<
     "services.security.title":
       "Bezpieczeństwo dzięki doświadczonemu partnerowi",
     "services.security.description":
-      "Bez pośredników, bez kolejek. Kontaktujecie się bezpośrednio z nami i odpowiadamy – zwykle w 15 minut, zawsze w ciągu doby. Ponad 10 lat doświadczenia w branży budowlanej.",
+      "Bez pośredników, bez kolejek. Kontaktujecie się bezpośrednio z nami i odpowiadamy – zawsze w ciągu jednego dnia roboczego, często w kilka godzin. Ponad 10 lat doświadczenia w branży budowlanej.",
     "services.whyus.title": "Dlaczego my?",
     "services.whyus.point1": "Szybkie odpowiedzi w ciągu 24 godzin",
     "services.whyus.point2": "Zakwaterowanie w całej Szwecji",
     "services.whyus.point3": "Sprawny proces od początku do końca",
     "services.whyus.point4": "Ponad 10 lat doświadczenia",
     "services.card1.title": "Planowanie i propozycje",
-    "services.card1.highlight": "Odpowiedź w 15 minut",
+    "services.card1.highlight": "Odpowiedź w ciągu dnia roboczego",
     "services.card1.description":
-      "Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Mapujemy lokalnych gospodarzy i wracamy z 2–3 odpowiednimi opcjami – zwykle w 15 minut, zawsze w ciągu doby.",
+      "Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Mapujemy lokalnych gospodarzy i wracamy z 2–3 odpowiednimi opcjami – zawsze w ciągu jednego dnia roboczego, często w kilka godzin.",
     "services.card1.bullet1": "Ogólnopolska sieć gospodarzy",
     "services.card1.bullet2": "Opcje z własnymi lub wspólnymi sypialniami",
     "services.card1.bullet3": "Umeblowane domy z miejscami wspólnymi",
@@ -1524,7 +1524,7 @@ export const translations: Record<
     "faq.subtitle": "Jak działamy, jak szybko reagujemy i co obejmuje usługa.",
     "faq.tagline": "FAQ",
     "faq.question1": "Jak szybko możecie zorganizować zakwaterowanie?",
-    "faq.answer1": "W ciągu 24 godzin. Przedstawiamy propozycje zakwaterowania tego samego dnia. W nagłych przypadkach – w ciągu 3 godzin. Według Byggföretagen (Szwedzkiej Federacji Budownictwa) coraz więcej firm budowlanych planuje na krótki termin. Nasz średni czas odpowiedzi to poniżej 3 godzin dla stałych klientów.",
+    "faq.answer1": "Zawsze odpowiadamy w ciągu jednego dnia roboczego – często w kilka godzin. Propozycje zakwaterowania przedstawiamy zwykle w ciągu 24 godzin od zapytania. Według Byggföretagen (Szwedzkiej Federacji Budownictwa) coraz więcej firm budowlanych planuje na krótki termin, więc szybka odpowiedź to część naszego sposobu pracy.",
     "faq.question2": "W jakich miastach działacie?",
     "faq.answer2":
       "Ponad 40 miast w całej Szwecji – od Malmö na południu po Luleå na północy. Obejmujemy wszystkie 19 głównych rynków budowlanych oraz specjalne lokalizacje jak Boden, Oskarshamn i Säffle, gdzie trwają duże projekty energetyczne i infrastrukturalne. Według prognozy Boverket (grudzień 2025) w 2026 roku rozpocznie się budowa 35 000 mieszkań, co napędza zapotrzebowanie na tymczasowe zakwaterowanie pracownicze.",
@@ -1568,10 +1568,10 @@ export const translations: Record<
       "Zadzwoń do nas bezpośrednio pod numer +46 73-628 77 09",
     "floatingPhone.whatsapp": "Napisz na WhatsApp",
     "floatingPhone.whatsappTooltip":
-      "Napisz do nas na WhatsApp – odpowiadamy w 15 minut w dni robocze",
+      "Napisz do nas na WhatsApp – odpowiadamy zawsze w ciągu dnia roboczego, często w kilka godzin",
     "stickyContact.title": "Potrzebujesz zakwaterowania?",
     "stickyContact.subtitle":
-      "Nie wahaj się z nami skontaktować – odpowiadamy w 15 minut w dni robocze",
+      "Nie wahaj się z nami skontaktować – odpowiadamy zawsze w ciągu dnia roboczego, często w kilka godzin",
     "stickyContact.call": "Zadzwoń teraz",
 
     "why.title": "Dlaczego StayOnSite",
@@ -1579,7 +1579,7 @@ export const translations: Record<
       "Ponad 500 zorganizowanych zakwaterowań od 2013 roku. Przejmujemy planowanie, umowy i eksploatację. Ocena klientów: 4,9 na 5.",
     "why.steps.plan.title": "Planowanie i propozycje",
     "why.steps.plan.description":
-      "Propozycje zakwaterowania w ciągu 24 godzin – często w 3 godziny. Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Analizujemy sieć właścicieli w ponad 40 miastach i odpowiadamy gotowymi opcjami z adresem, planem i ceną.",
+      "Propozycje zakwaterowania w ciągu 24 godzin – pierwsza odpowiedź często w kilka godzin. Wyślij zapytanie przez formularz, e-mail lub WhatsApp. Analizujemy sieć właścicieli w ponad 40 miastach i odpowiadamy gotowymi opcjami z adresem, planem i ceną.",
     "why.steps.plan.cta": "Wyślij zapytanie →",
     "why.steps.contracts.title": "Umowy i wprowadzki",
     "why.steps.contracts.description":
@@ -1613,7 +1613,7 @@ export const translations: Record<
     "case.cta.button": "Wyślij e-mail",
     "case.cta.description": "Pomagamy na każdym kroku. Skontaktuj się z nami bezpośrednio, aby uzyskać osobistą odpowiedź!",
     "case.cta.callDirect": "Zadzwoń: 076-249 84 86",
-    "case.cta.responseTime": "Odpowiedź w ciągu 15 minut",
+    "case.cta.responseTime": "Odpowiedź w ciągu dnia roboczego",
 
     "references.stats.happyClients": "Zadowoleni klienci",
     "references.stats.accommodations": "Zapewnione zakwaterowania",

@@ -62,7 +62,7 @@ const CorporateHousingSweden = () => {
     },
     {
       question: "How quickly can you arrange accommodation?",
-      answer: "Within 24 hours – often within 3 hours for existing clients. We respond the same day and can have accommodation ready within 48 hours for urgent requests. Our fastest setup: 45 installers housed in Säffle within 48 hours for a solar park project. For planned projects, 1–2 weeks lead time ensures optimal location and pricing."
+      answer: "We always get back to you within one business day – often within hours – and can have accommodation ready within 48 hours for urgent requests. Our fastest setup: 45 installers housed in Säffle within 48 hours for a solar park project. For planned projects, 1–2 weeks lead time ensures optimal location and pricing."
     }
   ];
 

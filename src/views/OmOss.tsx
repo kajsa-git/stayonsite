@@ -342,9 +342,9 @@ const OmOss = () => {
             </h2>
             <p className="text-nordic-600 text-center mb-10">
               {t(
-                'Ring, mejla eller skriv på WhatsApp – vi återkommer inom 24 timmar.',
-                'Call, email or message us on WhatsApp – we get back to you within 24 hours.',
-                'Zadzwoń, napisz e-mail lub na WhatsApp – odpowiadamy w ciągu 24 godzin.'
+                'Ring, mejla eller skriv på WhatsApp – vi återkommer alltid inom en arbetsdag, ofta inom några timmar.',
+                'Call, email or message us on WhatsApp – we always get back to you within one business day, often within hours.',
+                'Zadzwoń, napisz e-mail lub na WhatsApp – zawsze odpowiadamy w ciągu jednego dnia roboczego, często w kilka godzin.'
               )}
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">

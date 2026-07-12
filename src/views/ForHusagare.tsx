@@ -247,7 +247,7 @@ const ForHusagare = () => {
             <div className="flex items-center justify-center gap-6 mt-10 text-white/40 text-sm">
               <span>0% avgift</span>
               <span>·</span>
-              <span>Svar inom 24h</span>
+              <span>Svar inom en arbetsdag</span>
               <span>·</span>
               <span>Ingen bindning</span>
             </div>

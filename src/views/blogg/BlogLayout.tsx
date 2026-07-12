@@ -112,10 +112,10 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       heading: language === 'sv' ? 'Vill du hyra ut din bostad till företag?' : language === 'en' ? 'Want to rent out your home to companies?' : 'Chcesz wynająć swój dom firmom?',
       text:
         language === 'sv'
-          ? 'Trygga företagskontrakt med långa hyrestider, hyra utbetald varje månad och 0 % i avgift. Registrera din bostad så återkommer vi inom 24 timmar.'
+          ? 'Trygga företagskontrakt med långa hyrestider, hyra utbetald varje månad och 0 % i avgift. Registrera din bostad så återkommer vi alltid inom en arbetsdag – ofta inom några timmar.'
           : language === 'en'
-            ? 'Secure corporate contracts with long tenancies, rent paid every month and 0% in fees. Register your property and we get back to you within 24 hours.'
-            : 'Bezpieczne umowy firmowe na długi okres, czynsz wypłacany co miesiąc i 0% prowizji. Zarejestruj swoją nieruchomość, a odezwiemy się w 24 godziny.',
+            ? 'Secure corporate contracts with long tenancies, rent paid every month and 0% in fees. Register your property and we always get back to you within one business day – often within hours.'
+            : 'Bezpieczne umowy firmowe na długi okres, czynsz wypłacany co miesiąc i 0% prowizji. Zarejestruj swoją nieruchomość, a odezwiemy się w ciągu dnia roboczego – często w kilka godzin.',
       primaryLabel: language === 'sv' ? 'Registrera din bostad' : language === 'en' ? 'Register your property' : 'Zarejestruj nieruchomość',
       primaryHref: '/registrera-bostad',
       secondaryLabel: language === 'sv' ? 'Så fungerar det' : language === 'en' ? 'How it works' : 'Jak to działa',
@@ -125,10 +125,10 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       heading: language === 'sv' ? 'Behöver ni boende – eller vill du hyra ut?' : language === 'en' ? 'Need housing – or want to rent out?' : 'Szukasz zakwaterowania – czy chcesz wynająć?',
       text:
         language === 'sv'
-          ? 'Vi ordnar personalboende åt arbetslag och familjer i hela Sverige, och tar löpande emot nya bostäder från husägare. Svar inom 24 timmar.'
+          ? 'Vi ordnar personalboende åt arbetslag och familjer i hela Sverige, och tar löpande emot nya bostäder från husägare. Vi återkommer alltid inom en arbetsdag – ofta inom några timmar.'
           : language === 'en'
-            ? 'We arrange worker housing for crews and families across Sweden, and continuously take on new properties from homeowners. Response within 24 hours.'
-            : 'Organizujemy zakwaterowanie dla ekip i rodzin w całej Szwecji i stale przyjmujemy nowe nieruchomości. Odpowiedź w 24 godziny.',
+            ? 'We arrange worker housing for crews and families across Sweden, and continuously take on new properties from homeowners. We always reply within one business day – often within hours.'
+            : 'Organizujemy zakwaterowanie dla ekip i rodzin w całej Szwecji i stale przyjmujemy nowe nieruchomości. Zawsze odpowiadamy w ciągu dnia roboczego – często w kilka godzin.',
       primaryLabel: language === 'sv' ? 'Få boendeförslag' : language === 'en' ? 'Get a housing proposal' : 'Otrzymaj propozycję',
       primaryHref: '/kontakt',
       secondaryLabel: language === 'sv' ? 'Hyr ut din bostad' : language === 'en' ? 'Rent out your property' : 'Wynajmij swoją nieruchomość',

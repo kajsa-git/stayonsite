@@ -159,7 +159,7 @@ const References = () => {
               <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.accommodations')}</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-semibold text-[#ff6300] mb-2">3h</div>
+              <div className="text-4xl font-semibold text-[#ff6300] mb-2">24h</div>
               <p className="text-sm text-nordic-900 font-light uppercase tracking-wide">{t('references.stats.responseTime')}</p>
             </div>
             <div className="text-center">

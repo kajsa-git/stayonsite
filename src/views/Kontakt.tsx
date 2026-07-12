@@ -75,13 +75,13 @@ const Kontakt = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title={t(
-          'Kontakta StayOnSite — Personalboende & Företagsbostäder | Svar inom 3h',
-          'Contact StayOnSite — Worker Accommodation & Corporate Housing | Reply within 3h',
-          'Skontaktuj się ze StayOnSite — Noclegi Pracownicze | Odpowiedź w 3h'
+          'Kontakta StayOnSite — Personalboende & Företagsbostäder | Svar inom en arbetsdag',
+          'Contact StayOnSite — Worker Accommodation & Corporate Housing | Reply within one business day',
+          'Skontaktuj się ze StayOnSite — Noclegi Pracownicze | Odpowiedź w ciągu dnia roboczego'
         )}
         description={t(
-          'Kontakta StayOnSite för personalboende och företagsbostäder i hela Sverige. Ring, mejla eller fyll i formuläret — vi svarar inom 3 timmar på vardagar.',
-          'Contact StayOnSite for worker accommodation and corporate housing across Sweden. Call, email or fill in the form — we reply within 3 hours on weekdays.',
+          'Kontakta StayOnSite för personalboende och företagsbostäder i hela Sverige. Ring, mejla eller fyll i formuläret — vi återkommer alltid inom en arbetsdag – ofta inom några timmar.',
+          'Contact StayOnSite for worker accommodation and corporate housing across Sweden. Call, email or fill in the form — we always reply within one business day – often within hours.',
           'Skontaktuj się ze StayOnSite w sprawie noclegów pracowniczych i mieszkań firmowych w całej Szwecji. Zadzwoń, napisz lub wypełnij formularz — odpowiadamy w ciągu 3 godzin w dni robocze.'
         )}
         canonical="https://www.stayonsite.se/kontakt"
@@ -106,8 +106,8 @@ const Kontakt = () => {
               </h1>
               <p className="text-xl text-white/80 font-light leading-relaxed max-w-2xl">
                 {t(
-                  'Vi svarar inom 3 timmar på vardagar. Ring, mejla eller fyll i formuläret.',
-                  'We reply within 3 hours on weekdays. Call, email or fill in the form.',
+                  'Vi återkommer alltid inom en arbetsdag – ofta inom några timmar. Ring, mejla eller fyll i formuläret.',
+                  'We always reply within one business day – often within hours. Call, email or fill in the form.',
                   'Odpowiadamy w ciągu 3 godzin w dni robocze. Zadzwoń, napisz lub wypełnij formularz.'
                 )}
               </p>
