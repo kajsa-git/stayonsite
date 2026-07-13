@@ -23,7 +23,7 @@ export async function GET() {
   const today = todayStockholm();
 
   // Wave 1: alla köer + chase-data parallellt
-  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseMatches, chaseOwners, renewalRows, unreadInboxOwners] = await Promise.all([
+  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, renewalRows, unreadInboxOwners] = await Promise.all([
     // Att kontakta: företag med återkomst idag eller försenad
     db
       .select()
@@ -43,30 +43,9 @@ export async function GET() {
       .from(requests)
       .where(eq(requests.status, "won")),
 
-    // Chase: förslag vars jaga-datum passerat
-    db
-      .select({
-        propertyId: matches.propertyId,
-        followUpDate: matches.followUpDate,
-        reason: matches.followUpReason,
-        address: properties.address,
-        ownerId: owners.id,
-        ownerName: owners.name,
-        ownerPhone: owners.phone,
-      })
-      .from(matches)
-      .innerJoin(requests, eq(matches.requestId, requests.id))
-      .leftJoin(properties, eq(matches.propertyId, properties.id))
-      .leftJoin(owners, eq(properties.ownerId, owners.id))
-      .where(
-        and(
-          inArray(matches.status, ["suggested", "sent"]),
-          lte(matches.followUpDate, today),
-          inArray(requests.status, ["incoming", "matching"]),
-        ),
-      ),
-
-    // Chase: öppna kontaktrundor vars nästa-uppföljning passerat
+    // Chase: öppna kontaktrundor vars nästa-uppföljning passerat.
+    // (Förslags-jakten togs bort 2026-07-13 — skickat erbjudande sätter i stället
+    // återkomst på KUNDEN; når vi inte uthyraren avböjs förslaget helt enkelt.)
     db
       .select({
         propertyId: ownerOutreach.propertyId,
@@ -202,17 +181,6 @@ export async function GET() {
     }
     return e;
   };
-  for (const m of chaseMatches) {
-    if (!m.propertyId) continue;
-    const e = ensure(m.propertyId);
-    e.address ??= m.address ?? null;
-    e.ownerId ??= m.ownerId ?? null;
-    e.ownerName ??= m.ownerName ?? null;
-    e.ownerPhone ??= m.ownerPhone ?? null;
-    if (m.followUpDate) e.dates.push(m.followUpDate);
-    if (m.reason) e.matchReasons.push(m.reason);
-    e.requestCount++;
-  }
   for (const o of chaseOwners) {
     const e = ensure(o.propertyId);
     e.address ??= o.address ?? null;

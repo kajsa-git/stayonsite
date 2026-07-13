@@ -2,7 +2,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
 import { sanitizeKalkyl } from "@/lib/crm/kalkyl";
-import { matches, matchEvents } from "@/lib/crm/schema";
+import { companies, matches, matchEvents, requests } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -43,18 +43,38 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Stamp sentAt when a suggestion is marked as sent
   if (body.status === "sent") {
     data.sentAt = new Date().toISOString();
-    // Skickat förslag utan uppföljningsdatum = garanterat tappad tråd. Sätt +3 dagar
-    // automatiskt om klienten inte anger något eget — det var så 10/10 skickade
-    // förslag hamnade förfallna utan att synas.
-    const [existing] = await db.select({ followUpDate: matches.followUpDate }).from(matches).where(eq(matches.id, id));
-    if (!("followUpDate" in body) && !existing?.followUpDate) {
-      data.followUpDate = plusDaysStockholm(3);
-      data.followUpReason = data.followUpReason ?? "Förslag skickat — väntar svar";
-    }
   }
 
   const [row] = await db.update(matches).set(data).where(eq(matches.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // Skickat erbjudande → återkomst på KUNDEN (+3 dagar, Att kontakta-kön) —
+  // det är kunden som ska svara, inte uthyraren (Kajsas beslut 2026-07-13;
+  // ersätter den gamla auto-uppföljningen på förslaget). En redan inplanerad
+  // TIDIGARE återkomst rörs inte.
+  if (body.status === "sent") {
+    try {
+      const target = plusDaysStockholm(3);
+      const [reqRow] = await db
+        .select({ companyId: requests.companyId })
+        .from(requests)
+        .where(eq(requests.id, row.requestId));
+      if (reqRow) {
+        const [comp] = await db
+          .select({ followUpDate: companies.followUpDate })
+          .from(companies)
+          .where(eq(companies.id, reqRow.companyId));
+        if (!comp?.followUpDate || comp.followUpDate > target) {
+          await db
+            .update(companies)
+            .set({ followUpDate: target, followUpReason: "Väntar svar på erbjudande" })
+            .where(eq(companies.id, reqRow.companyId));
+        }
+      }
+    } catch (e) {
+      console.error("kund-återkomst vid skickat erbjudande:", e);
+    }
+  }
 
   // Förhandlingen snurrar — varje omstämpling av villkor loggas med en kopia av
   // värdena (crm_match_events) så historiken aldrig går förlorad. Loggfel får

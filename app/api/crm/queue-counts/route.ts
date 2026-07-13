@@ -15,7 +15,7 @@ export async function GET() {
   // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
   const horizon = plusDaysStockholm(7);
 
-  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseMatchProps, chaseOwnerProps, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseOwnerProps, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
 
     // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL
@@ -36,18 +36,7 @@ export async function GET() {
       .from(requests)
       .where(eq(requests.status, "won")),
 
-    db
-      .select({ propertyId: matches.propertyId })
-      .from(matches)
-      .innerJoin(requests, eq(matches.requestId, requests.id))
-      .where(
-        and(
-          inArray(matches.status, ["suggested", "sent"]),
-          lte(matches.followUpDate, today),
-          inArray(requests.status, ["incoming", "matching"]),
-        ),
-      ),
-
+    // Förslags-jakten borttagen 2026-07-13 — bara kontaktrundorna jagar uthyrare.
     db
       .select({ propertyId: ownerOutreach.propertyId })
       .from(ownerOutreach)
@@ -91,7 +80,6 @@ export async function GET() {
   ]);
 
   const chaseProps = new Set<string>();
-  for (const m of chaseMatchProps) if (m.propertyId) chaseProps.add(m.propertyId);
   for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
 
   // Ohanterade in-/avflyttningar inom 3 dagar (förfallna räknas också): ej klarmarkerade.

@@ -32,7 +32,6 @@ import {
 import { OfferLinkPanel } from "./OfferLinkPanel";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { swrFetcher } from "@/lib/crm/fetcher";
-import { plusDaysStockholm } from "@/lib/crm/date";
 
 interface Props {
   request: Request;
@@ -58,7 +57,6 @@ interface MatchRow extends DealTermsMatch {
   landlordSignedAt: string | null;
 }
 
-const plusDays = plusDaysStockholm;
 
 const fetcher = swrFetcher;
 
@@ -82,7 +80,6 @@ const PROP_UNAVAILABLE: Record<string, string> = {
   off_market: "Av marknaden",
 };
 
-const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
 
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
@@ -224,14 +221,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
   // Endast Skickad/Avböjd här — accept hanteras av acceptMatch (vinst-kaskaden).
   async function setMatchStatus(id: string, status: string) {
-    // Skickad → default jaga-datum (+3 dagar). Avböjd → sluta jaga.
-    const extra: Record<string, unknown> =
-      status === "sent" ? { followUpDate: plusDays(3) } : status === "rejected" ? { followUpDate: null } : {};
     try {
       const res = await fetch(`/api/crm/matches/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, ...extra }),
+        body: JSON.stringify({ status }),
       });
       if (!res.ok) {
         toast({ title: "Kunde inte uppdatera förslaget", variant: "destructive" });
@@ -292,26 +286,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     }
   }
 
-  async function setMatchFollowUp(id: string, date: string) {
-    await fetch(`/api/crm/matches/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followUpDate: date || null }),
-    });
-    mutateMatches();
-    toast({ title: "Uppföljning sparad" });
-  }
-
-  async function setMatchReason(id: string, reason: string) {
-    await fetch(`/api/crm/matches/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followUpReason: reason || null }),
-    });
-    mutateMatches();
-    toast({ title: "Anledning sparad" });
-  }
-
   async function removeMatch(id: string) {
     await fetch(`/api/crm/matches/${id}`, { method: "DELETE" });
     mutateMatches();
@@ -346,11 +320,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <datalist id="followup-reasons">
-        {FOLLOWUP_REASONS.map((r) => (
-          <option key={r} value={r} />
-        ))}
-      </datalist>
       <div className="mb-6">
         <button
           onClick={() => router.push(`/crm/company/${request.companyId}`)}
@@ -462,26 +431,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       <div className="-mt-1 mb-2 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700">
                         <Navigation className="h-3 w-3" />
                         {distances[m.propertyId].distanceText} · {distances[m.propertyId].durationText} till arbetsplatsen
-                      </div>
-                    )}
-                    {(m.status === "suggested" || m.status === "sent") && (
-                      <div className="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-                        <span>📲 Följ upp:</span>
-                        <input
-                          type="date"
-                          value={m.followUpDate ?? ""}
-                          onChange={(e) => setMatchFollowUp(m.id, e.target.value)}
-                          className="border rounded px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        />
-                        <input
-                          list="followup-reasons"
-                          defaultValue={m.followUpReason ?? ""}
-                          onBlur={(e) => {
-                            if ((e.target.value || "") !== (m.followUpReason ?? "")) setMatchReason(m.id, e.target.value);
-                          }}
-                          placeholder="anledning"
-                          className="border rounded px-1.5 py-0.5 text-xs w-28 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        />
                       </div>
                     )}
                     {m.status !== "rejected" ? (
