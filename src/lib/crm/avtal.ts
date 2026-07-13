@@ -18,7 +18,7 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13",
+  version: "2026-07-13.2", // .2 = vitespunkt tillagd; redan signerade får godkänna om
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni Stayonsite i uppdrag att, för er räkning, " +
@@ -43,6 +43,12 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
         "Detta gäller under pågående uppdrag och i 12 månader från det datum då objektet först presenterades för er.",
     },
     {
+      heading: "Vite vid överträdelse",
+      body:
+        "Vid överträdelse av punkten om direktkontakt ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vitet påverkar inte Stayonsites rätt till ersättning för faktisk skada som överstiger vitet.",
+    },
+    {
       heading: "Sekretess",
       body:
         "Priser, villkor och övrig information i erbjudanden från Stayonsite är avsedda endast för er och ert företag. " +
@@ -56,11 +62,10 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   ],
 };
 
-// Uthyrarens avtal — signeras via uthyrarlänken (fas 3). Texten ligger klar här
-// så datamodellen och gaten kan återanvändas rakt av.
+// Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-12",
+  version: "2026-07-13.2", // .2 = vitespunkt tillagd; redan signerade får godkänna om
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger Stayonsite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -79,6 +84,12 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
       body:
         "Ni får inte själva kontakta, förhandla med eller ingå avtal med hyresgäster som Stayonsite presenterat. " +
         "Detta gäller under uppdraget och i 12 månader efter presentation.",
+    },
+    {
+      heading: "Vite vid överträdelse",
+      body:
+        "Vid överträdelse av punkten om direktkontakt ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vitet påverkar inte Stayonsites rätt till ersättning för faktisk skada som överstiger vitet.",
     },
     {
       heading: "Villkor via Stayonsite",
