@@ -21,6 +21,27 @@ function find(o: any, pred: (x: any) => boolean): any {
 const titleCase = (s: string) =>
   s.toLowerCase().replace(/(^|\s|-)([a-zåäö])/g, (_m, a, b) => a + b.toUpperCase());
 
+// Allabolag har två adressformat: dels separata fält (zipCode/postPlace), dels
+// hela adressen i addressLine ("Gatan 1, 123 45 Ort") med zipCode/postPlace = null
+// (formatbytet upptäckt 2026-07-13 — då försvann adressen ur uppslaget helt).
+function parseAddress(a: any): { street: string | null; postalCode: string | null; city: string | null } {
+  if (!a) return { street: null, postalCode: null, city: null };
+  if (a.zipCode && a.postPlace) {
+    return { street: a.addressLine || null, postalCode: String(a.zipCode), city: titleCase(String(a.postPlace)) };
+  }
+  const line = String(a.addressLine ?? "").trim();
+  if (!line) return { street: null, postalCode: null, city: null };
+  const m = line.match(/^(.*?),\s*(\d{3}\s?\d{2})\s+(.+)$/);
+  if (m) {
+    return {
+      street: m[1].trim(),
+      postalCode: m[2].replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2"),
+      city: titleCase(m[3].trim()),
+    };
+  }
+  return { street: line, postalCode: null, city: null };
+}
+
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,17 +62,25 @@ export async function GET(req: NextRequest) {
     const data = JSON.parse(m[1]);
 
     const c = find(data, (o: any) => o.orgnr === orgnr && (o.businessUnitType === "MAIN" || o.legalName || o.name));
-    const a = find(data, (o: any) => o.zipCode && o.postPlace && o.addressLine !== undefined);
-    if (!c && !a) return NextResponse.json({ found: false });
+    // Adressen ligger numera som fält direkt på företagsobjektet; trädsökningen
+    // på zipCode/postPlace behålls som fallback för äldre sidvarianter.
+    const rawAddr =
+      c?.visitorAddress ??
+      c?.postalAddress ??
+      c?.legalVisitorAddress ??
+      c?.legalPostalAddress ??
+      find(data, (o: any) => o.zipCode && o.postPlace && o.addressLine !== undefined);
+    const addr = parseAddress(rawAddr);
+    if (!c && !addr.street) return NextResponse.json({ found: false });
 
     return NextResponse.json({
       found: true,
       name: c?.legalName || c?.name || null,
       orgnr,
-      phone: c?.phone || null,
-      street: a?.addressLine || null,
-      postalCode: a?.zipCode || null,
-      city: a?.postPlace ? titleCase(a.postPlace) : null,
+      phone: c?.phone || c?.legalPhone || c?.mobile || null,
+      street: addr.street,
+      postalCode: addr.postalCode,
+      city: addr.city,
       country: "Sverige",
     });
   } catch {

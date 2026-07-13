@@ -16,6 +16,14 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
   const today = todayStockholm();
   const [saving, setSaving] = useState(false);
   const [looking, setLooking] = useState(false);
+  // Adress från org.nr-uppslaget — modalen har inga adressfält, men uppgifterna
+  // följer med när kunden skapas så kortet är komplett från start.
+  const [lookupAddress, setLookupAddress] = useState<{
+    street: string | null;
+    postalCode: string | null;
+    city: string | null;
+    country: string | null;
+  } | null>(null);
   const [form, setForm] = useState({
     name: "",
     orgNr: "",
@@ -41,7 +49,12 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
       const r = await fetch(`/api/crm/company-lookup?orgnr=${encodeURIComponent(orgnr)}`).then((x) => x.json());
       if (!r.found) { toast({ title: "Hittade inga uppgifter", variant: "destructive" }); return; }
       setForm((f) => ({ ...f, name: r.name || f.name, contactPhone: f.contactPhone || r.phone || "" }));
-      toast({ title: `Hämtade: ${r.name ?? ""}` });
+      setLookupAddress(
+        r.street || r.postalCode || r.city
+          ? { street: r.street ?? null, postalCode: r.postalCode ?? null, city: r.city ?? null, country: r.country ?? null }
+          : null
+      );
+      toast({ title: `Hämtade: ${r.name ?? ""}${r.city ? `, ${r.city}` : ""}` });
     } catch {
       toast({ title: "Uppslag misslyckades", variant: "destructive" });
     } finally {
@@ -65,6 +78,7 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
           leadSource: form.leadSource || null,
           followUpDate: form.followUpDate || null,
           followUpReason: form.followUpDate ? "Första kontakt" : null,
+          ...(lookupAddress ?? {}),
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -120,7 +134,7 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
                 disabled={looking}
                 className="inline-flex items-center gap-1 text-xs font-medium text-[#1c5fb5] hover:underline disabled:opacity-50"
               >
-                {looking ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />} Hämta namn
+                {looking ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />} Hämta uppgifter
               </button>
             </div>
             <input
@@ -129,6 +143,11 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
               className="w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] focus:outline-none focus:border-[#1c5fb5]"
               placeholder="556789-1234"
             />
+            {lookupAddress && (
+              <p className="mt-1 text-xs text-[#8a8a8a]">
+                Adress följer med: {[lookupAddress.street, lookupAddress.postalCode, lookupAddress.city].filter(Boolean).join(", ")}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-xs text-[#8a8a8a] uppercase tracking-wide font-medium">Webb</label>
