@@ -40,6 +40,13 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
   return `${greet(ownerName)} För att vi ska kunna hyra ut ditt boende behöver du signera vårt uppdragsavtal — kostnadsfritt och inte exklusivt, tar en minut: www.stayonsite.se/uthyrare/${token}\nHör av dig vid frågor. /Kajsa, StayOnSite`;
 }
 
+// Fristående uppdragsbekräftelse till kunden — skickas tidigt, innan erbjudandet
+// är klart. Lovar INTE objekt/pris (det gör offerLinkSms när förslaget skickats);
+// samma länk visar förslaget automatiskt när det stämplats.
+export function tenantAvtalSms(contactName: string | null | undefined, token: string): string {
+  return `${greet(contactName)} För att vi ska kunna ta fram boendeförslag åt er behöver ni godkänna vår uppdragsbekräftelse — kostnadsfritt och utan förpliktelser, tar en minut: www.stayonsite.se/erbjudande/${token}\nErt förslag dyker upp på samma sida så snart det är klart. /Kajsa, StayOnSite`;
+}
+
 // Jaga uthyrare: förslag skickat, väntar på svar.
 export function ownerFollowUpSms(ownerName: string | null | undefined, address: string | null | undefined): string {
   const what = address ? `angående ${address}` : "angående ditt boende";

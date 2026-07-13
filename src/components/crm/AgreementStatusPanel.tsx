@@ -9,7 +9,7 @@ import { ShareLinkButton } from "@/components/crm/property/ShareLinkButton";
 import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import type { ShareLink } from "@/lib/crm/schema";
-import { landlordAvtalStandaloneSms, offerLinkSms } from "@/lib/crm/sms-templates";
+import { landlordAvtalStandaloneSms, tenantAvtalSms } from "@/lib/crm/sms-templates";
 import { Copy, FileSignature, ShieldCheck, ShieldQuestion } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
@@ -87,10 +87,12 @@ export function AgreementStatusPanel({
 
   async function copySms() {
     if (!activeLink) return;
+    // Avtals-copy, inte erbjudande-copy — lovar inget objekt/pris förrän
+    // förslaget faktiskt är skickat (offerLinkSms används då, från matchningsvyn).
     const text =
       kind === "owner"
         ? landlordAvtalStandaloneSms(contactName, activeLink.token)
-        : offerLinkSms(contactName, activeLink.token);
+        : tenantAvtalSms(contactName, activeLink.token);
     try {
       await navigator.clipboard.writeText(text);
       toast({ title: "SMS-text kopierad (www-länk utan https)" });
