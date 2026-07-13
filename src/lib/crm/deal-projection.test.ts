@@ -95,6 +95,7 @@ function makeTruth(over: Partial<DealTruth> = {}): DealTruth {
       agreementType: "uppdragsbekraftelse",
       version: "2026-07-12",
       requestId: "r1",
+      companyId: "c1",
       ownerId: null,
       propertyId: null,
       shareLinkId: "sl1",

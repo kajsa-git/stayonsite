@@ -4,6 +4,7 @@
 // objektlista (länkar till Objektsbanken), SMS-kompositör (direktsändning),
 // samlad kommunikationstidslinje och e-posttråd. Objektredigering/publicering
 // bor kvar i Objektsbanken och JA-flödet.
+import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
 import { EmailThread } from "@/components/crm/email/EmailThread";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { toast } from "@/components/ui/use-toast";
@@ -187,6 +188,9 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
           />
         </label>
       </div>
+
+      {/* Uppdragsavtal — skickas fristående, tidigt; gäller alla objekt i 12 mån */}
+      <AgreementStatusPanel kind="owner" id={owner.id} contactName={owner.contactPerson ?? owner.name} />
 
       {/* Objekt */}
       <div className="rounded-xl border bg-white p-5">

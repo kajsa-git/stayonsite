@@ -1,6 +1,6 @@
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
-import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
-import { loadLandlordDeal } from "@/lib/crm/deal-projection";
+import { agreementValidUntil, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
+import { loadLandlordDeal, loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { notFound } from "next/navigation";
 
@@ -22,9 +22,54 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
   const { token } = await params;
 
   const link = await resolveShareLink(token);
-  if (!link || link.audience !== "landlord" || !link.matchId) notFound();
+  if (!link || link.audience !== "landlord" || (!link.matchId && !link.ownerId)) notFound();
 
-  const deal = await loadLandlordDeal(link.matchId);
+  // Fristående länk (uppdragsavtalet skickas före någon affär): gate → bekräftelsevy.
+  if (!link.matchId && link.ownerId) {
+    const standing = await loadLandlordStanding(link.ownerId);
+    if (!standing) notFound();
+    return (
+      <div className="min-h-screen pb-16">
+        <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
+          <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
+            <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
+            <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              Uthyrningsuppdrag
+            </span>
+          </div>
+        </header>
+        <div className="mx-auto max-w-3xl space-y-8 px-5 py-8">
+          {!standing.agreementAccepted ? (
+            <AgreementGate
+              token={token}
+              title={UTHYRNINGSUPPDRAG.title}
+              intro={UTHYRNINGSUPPDRAG.intro}
+              points={UTHYRNINGSUPPDRAG.points}
+              version={UTHYRNINGSUPPDRAG.version}
+              submitLabel="Godkänn uthyrningsuppdraget"
+              lang="sv"
+            />
+          ) : (
+            <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">
+              <h1 className="text-[1.8rem] leading-tight tracking-tight text-nordic-900" style={editorial}>
+                Uppdraget är signerat
+              </h1>
+              <p className="text-sm text-nordic-700">
+                Tack! Uthyrningsuppdraget signerades av {standing.acceptedName} den{" "}
+                {standing.acceptedAt?.slice(0, 10)} och gäller till{" "}
+                {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"}. Det omfattar alla era objekt
+                hos StayOnSite — när vi har en konkret uthyrning får ni villkoren bekräftade separat.
+              </p>
+              <p className="text-xs text-muted-foreground">Frågor? Hör av dig till Kajsa på StayOnSite.</p>
+            </div>
+          )}
+          <p className="text-center text-xs text-muted-foreground">StayOnSite · Corporate housing i hela Sverige</p>
+        </div>
+      </div>
+    );
+  }
+
+  const deal = await loadLandlordDeal(link.matchId!);
   if (!deal) notFound();
 
   const status = STATUS_LABEL[deal.status];

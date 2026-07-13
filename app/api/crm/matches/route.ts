@@ -1,4 +1,4 @@
-import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
+import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { agreementAcceptances, matches, properties } from "@/lib/crm/schema";
@@ -41,38 +41,40 @@ export async function GET(req: NextRequest) {
       propertyCity: properties.city,
       propertyRentIn: properties.rentIn,
       propertyRentOut: properties.rentOut,
+      propertyOwnerId: properties.ownerId,
     })
     .from(matches)
     .leftJoin(properties, eq(matches.propertyId, properties.id))
     .where(eq(matches.requestId, requestId))
     .orderBy(desc(matches.createdAt));
 
-  // Uthyrningsuppdragets signeringsstatus per objekt (gäller objektet, inte
-  // den enskilda affären) — så matchkortet kan visa "signerat av …".
-  const propertyIds = [...new Set(rows.map((r) => r.propertyId))];
-  const signed = propertyIds.length
+  // Uthyrningsuppdragets signeringsstatus — gäller UTHYRAREN (alla objekt) i 12
+  // mån. Bara GILTIGA signeringar visas (rätt version + inom giltighetstiden).
+  const ownerIds = [...new Set(rows.map((r) => r.propertyOwnerId).filter((v): v is string => !!v))];
+  const acceptRows = ownerIds.length
     ? await db
-        .select({
-          propertyId: agreementAcceptances.propertyId,
-          acceptedName: agreementAcceptances.acceptedName,
-          acceptedAt: agreementAcceptances.acceptedAt,
-        })
+        .select()
         .from(agreementAcceptances)
         .where(
           and(
-            inArray(agreementAcceptances.propertyId, propertyIds),
-            eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type),
-            eq(agreementAcceptances.version, UTHYRNINGSUPPDRAG.version)
+            inArray(agreementAcceptances.ownerId, ownerIds),
+            eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type)
           )
         )
+        .orderBy(desc(agreementAcceptances.acceptedAt))
     : [];
-  const signedByProperty = new Map(signed.map((s) => [s.propertyId, s]));
+  const signedByOwner = new Map<string, { acceptedName: string; acceptedAt: string }>();
+  for (const a of acceptRows) {
+    if (a.ownerId && !signedByOwner.has(a.ownerId) && isAcceptanceValid(a, UTHYRNINGSUPPDRAG)) {
+      signedByOwner.set(a.ownerId, { acceptedName: a.acceptedName, acceptedAt: a.acceptedAt });
+    }
+  }
 
   return NextResponse.json(
     rows.map((r) => ({
       ...r,
-      landlordSignedName: signedByProperty.get(r.propertyId)?.acceptedName ?? null,
-      landlordSignedAt: signedByProperty.get(r.propertyId)?.acceptedAt ?? null,
+      landlordSignedName: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedName) ?? null,
+      landlordSignedAt: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedAt) ?? null,
     }))
   );
 }

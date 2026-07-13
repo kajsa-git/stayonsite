@@ -464,8 +464,9 @@ export const shareLinks = sqliteTable("crm_share_links", {
   id: text("id").primaryKey(),
   token: text("token").notNull(), // nanoid(32) — URL-kapabilitet, delas aldrig upp per fält
   audience: text("audience").notNull(), // tenant | landlord
-  requestId: text("request_id").notNull(),
-  matchId: text("match_id"), // null för tenant (hela erbjudandet); sätts för landlord (en affär, fas 3)
+  requestId: text("request_id"), // kundlänk: satt. Fristående uthyrarlänk: null.
+  matchId: text("match_id"), // satt för affärsknuten uthyrarlänk (visar villkoren för en affär)
+  ownerId: text("owner_id"), // satt för FRISTÅENDE uthyrarlänk — uppdragsavtalet skickas före någon affär
   createdBy: text("created_by"), // crm_users.id
   revokedAt: text("revoked_at"), // null = aktiv
   expiresAt: text("expires_at"), // valfri TTL
@@ -476,6 +477,7 @@ export const shareLinks = sqliteTable("crm_share_links", {
   uniqueIndex("crm_share_links_token_idx").on(t.token),
   index("crm_share_links_request_id_idx").on(t.requestId),
   index("crm_share_links_match_id_idx").on(t.matchId),
+  index("crm_share_links_owner_id_idx").on(t.ownerId),
 ]);
 
 export type ShareLink = typeof shareLinks.$inferSelect;
@@ -489,9 +491,10 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
   id: text("id").primaryKey(),
   agreementType: text("agreement_type").notNull(), // uppdragsbekraftelse | uthyrningsuppdrag
   version: text("version").notNull(), // måste matcha aktuell version i avtal.ts
-  requestId: text("request_id"), // kundscope (uppdragsbekräftelse)
-  ownerId: text("owner_id"), // uthyrarscope (uthyrningsuppdrag, fas 3)
-  propertyId: text("property_id"), // uthyrarscope (uthyrningsuppdrag, fas 3)
+  requestId: text("request_id"), // via vilken förfrågan signeringen skedde (kund)
+  companyId: text("company_id"), // AVTALSSCOPE kund: uppdragsbekräftelsen gäller företaget i 12 mån
+  ownerId: text("owner_id"), // AVTALSSCOPE uthyrare: uthyrningsuppdraget gäller uthyraren (alla objekt) i 12 mån
+  propertyId: text("property_id"), // via vilket objekt signeringen skedde (affärsknuten uthyrarlänk)
   shareLinkId: text("share_link_id"), // via vilken länk godkännandet gjordes
   acceptedName: text("accepted_name").notNull(), // namnet parten skrev vid godkännandet
   acceptedAt: text("accepted_at").notNull(), // ISO-stämpel
@@ -501,6 +504,7 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [
   index("crm_agreement_acceptances_request_id_idx").on(t.requestId),
+  index("crm_agreement_acceptances_company_id_idx").on(t.companyId),
   index("crm_agreement_acceptances_owner_id_idx").on(t.ownerId),
   index("crm_agreement_acceptances_type_idx").on(t.agreementType),
 ]);

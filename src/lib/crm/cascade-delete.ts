@@ -46,6 +46,7 @@ export async function deleteCompanyDeep(tx: Tx, companyId: string): Promise<void
     await tx.delete(agreementAcceptances).where(inArray(agreementAcceptances.requestId, reqIds));
     await tx.update(ownerOutreach).set({ requestId: null }).where(inArray(ownerOutreach.requestId, reqIds));
   }
+  await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.companyId, companyId));
   await tx.delete(emails).where(eq(emails.companyId, companyId));
   await tx.delete(notes).where(eq(notes.companyId, companyId));
   await tx.delete(requests).where(eq(requests.companyId, companyId));
@@ -88,11 +89,14 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
 }
 
 // Uthyrare → nollställ alla lösa kopplingar (objekt, rundor, mejl) innan raderingen.
+// Avtalslänkar och signeringar raderas — de saknar mening utan uthyraren.
 export async function deleteOwnerDeep(tx: Tx, ownerId: string): Promise<void> {
   const now = new Date().toISOString();
   await tx.update(properties).set({ ownerId: null, updatedAt: now }).where(eq(properties.ownerId, ownerId));
   await tx.update(ownerOutreach).set({ ownerId: null }).where(eq(ownerOutreach.ownerId, ownerId));
   await tx.update(emails).set({ ownerId: null }).where(eq(emails.ownerId, ownerId));
+  await tx.delete(shareLinks).where(eq(shareLinks.ownerId, ownerId));
+  await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.ownerId, ownerId));
   await tx.delete(owners).where(eq(owners.id, ownerId));
 }
 

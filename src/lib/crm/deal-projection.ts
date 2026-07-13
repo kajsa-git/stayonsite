@@ -15,7 +15,7 @@
 // följer objektet, medan affärsvillkoren (pris, period) är stämplade på matchen
 // och aldrig skrivs om av senare objektändringar.
 import { and, desc, eq } from "drizzle-orm";
-import { UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "./avtal";
+import { isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "./avtal";
 import { db } from "./db";
 import { loadPublicProperty, type PublicProperty } from "./public-property";
 import {
@@ -74,18 +74,21 @@ export async function loadDealTruth(requestId: string): Promise<DealTruth | null
 
   const matchRows = await db.select().from(matches).where(eq(matches.requestId, requestId));
 
-  const [acceptance] = await db
+  // Uppdragsbekräftelsen gäller FÖRETAGET i 12 mån — en signering täcker alla
+  // förfrågningar under giltighetstiden. Bara en GILTIG acceptans räknas
+  // (rätt version + inom 12 mån); annars visas gaten igen.
+  const [latest] = await db
     .select()
     .from(agreementAcceptances)
     .where(
       and(
-        eq(agreementAcceptances.requestId, requestId),
-        eq(agreementAcceptances.agreementType, UPPDRAGSBEKRAFTELSE.type),
-        eq(agreementAcceptances.version, UPPDRAGSBEKRAFTELSE.version)
+        eq(agreementAcceptances.companyId, request.companyId),
+        eq(agreementAcceptances.agreementType, UPPDRAGSBEKRAFTELSE.type)
       )
     )
     .orderBy(desc(agreementAcceptances.acceptedAt))
     .limit(1);
+  const acceptance = isAcceptanceValid(latest, UPPDRAGSBEKRAFTELSE) ? latest : null;
 
   return {
     request: {
@@ -219,20 +222,22 @@ export async function loadLandlordDeal(matchId: string): Promise<LandlordDealVie
     ownerName = owner?.name ?? null;
   }
 
-  // Uthyrningsuppdraget gäller OBJEKTET (inte den enskilda affären) — signerat
-  // en gång täcker alla affärer på samma objekt, för aktuell avtalsversion.
-  const [acceptance] = await db
+  // Uthyrningsuppdraget gäller UTHYRAREN (alla objekt) i 12 mån — en signering
+  // täcker allt under giltighetstiden. Objekt utan ägare faller till objektscope.
+  const [latest] = await db
     .select()
     .from(agreementAcceptances)
     .where(
       and(
-        eq(agreementAcceptances.propertyId, match.propertyId),
-        eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type),
-        eq(agreementAcceptances.version, UTHYRNINGSUPPDRAG.version)
+        property.ownerId
+          ? eq(agreementAcceptances.ownerId, property.ownerId)
+          : eq(agreementAcceptances.propertyId, match.propertyId),
+        eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type)
       )
     )
     .orderBy(desc(agreementAcceptances.acceptedAt))
     .limit(1);
+  const acceptance = isAcceptanceValid(latest, UTHYRNINGSUPPDRAG) ? latest : null;
 
   return {
     ownerName,
@@ -245,6 +250,37 @@ export async function loadLandlordDeal(matchId: string): Promise<LandlordDealVie
     promisedConditions: match.promisedConditions,
     promisedAt: match.promisedAt,
     status: match.status === "accepted" ? "accepterad" : match.status === "rejected" ? "avslutad" : "vantar",
+    agreementAccepted: acceptance != null,
+    acceptedName: acceptance?.acceptedName ?? null,
+    acceptedAt: acceptance?.acceptedAt ?? null,
+  };
+}
+
+// Fristående uthyrarlänk (utan affär): uthyraren signerar uppdragsavtalet tidigt,
+// innan någon matchning finns. Efter signering visas en enkel bekräftelsevy.
+export interface LandlordStandingView {
+  ownerName: string | null;
+  agreementAccepted: boolean;
+  acceptedName: string | null;
+  acceptedAt: string | null;
+}
+
+export async function loadLandlordStanding(ownerId: string): Promise<LandlordStandingView | null> {
+  const [owner] = await db.select({ name: owners.name }).from(owners).where(eq(owners.id, ownerId)).limit(1);
+  if (!owner) return null;
+
+  const [latest] = await db
+    .select()
+    .from(agreementAcceptances)
+    .where(
+      and(eq(agreementAcceptances.ownerId, ownerId), eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type))
+    )
+    .orderBy(desc(agreementAcceptances.acceptedAt))
+    .limit(1);
+  const acceptance = isAcceptanceValid(latest, UTHYRNINGSUPPDRAG) ? latest : null;
+
+  return {
+    ownerName: owner.name,
     agreementAccepted: acceptance != null,
     acceptedName: acceptance?.acceptedName ?? null,
     acceptedAt: acceptance?.acceptedAt ?? null,

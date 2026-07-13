@@ -25,7 +25,7 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13.6", // .6 = huvudpunkten uppdelad i lättlästa underpunkter; omsignering krävs
+  version: "2026-07-13.7", // .7 = företagsscope + 12 mån giltighet uttalad; omsignering krävs
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni StayOnSite i uppdrag att, för er räkning, " +
@@ -63,7 +63,8 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
     {
       heading: "Godkännande",
       body:
-        "Genom att fylla i ert namn och godkänna bekräftelsen intygar ni att ni har läst och accepterar villkoren ovan.",
+        "Genom att fylla i ert namn och godkänna bekräftelsen intygar ni att ni har läst och accepterar villkoren ovan. " +
+        "Uppdragsbekräftelsen gäller i 12 månader från signering och kan därefter förnyas.",
     },
   ],
 };
@@ -71,11 +72,11 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.6", // .6 = huvudpunkten uppdelad i lättlästa underpunkter; omsignering krävs
+  version: "2026-07-13.7", // .7 = per uthyrare (era objekt) + 12 mån giltighet uttalad; omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
-    "Ni ger StayOnSite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
-    "ni kan när som helst dra tillbaka objektet.",
+    "Ni ger StayOnSite i uppdrag att hyra ut era objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
+    "ni kan när som helst dra tillbaka ett objekt. Uppdraget gäller i 12 månader från signering och kan därefter förnyas.",
   points: [
     {
       heading: "Kostnadsfritt för er",
@@ -150,7 +151,8 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
     {
       heading: "Approval",
       body:
-        "By entering your name and approving this confirmation, you certify that you have read and accept the terms above.",
+        "By entering your name and approving this confirmation, you certify that you have read and accept the terms above. " +
+        "The assignment confirmation is valid for 12 months from signing and can then be renewed.",
     },
   ],
 };
@@ -160,8 +162,8 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
   version: UTHYRNINGSUPPDRAG.version,
   title: "Letting Assignment",
   intro:
-    "You engage StayOnSite to let your property. The assignment is free of charge and non-exclusive — " +
-    "you may withdraw the property at any time.",
+    "You engage StayOnSite to let your properties. The assignment is free of charge and non-exclusive — " +
+    "you may withdraw a property at any time. The assignment is valid for 12 months from signing and can then be renewed.",
   points: [
     {
       heading: "Free of charge for you",
@@ -198,6 +200,27 @@ export const AGREEMENTS: Record<AgreementType, AgreementText> = {
 };
 
 export type AgreementLanguage = "sv" | "en";
+
+// Ett signerat uppdragsavtal gäller i 12 månader från signering (Kajsas beslut
+// 2026-07-13) — därefter, eller när avtalstexten versionbumpats, krävs
+// omsignering och gaten visas igen.
+export const AVTAL_GILTIGHET_MANADER = 12;
+
+export function agreementValidUntil(acceptedAt: string): string {
+  const d = new Date(acceptedAt);
+  d.setMonth(d.getMonth() + AVTAL_GILTIGHET_MANADER);
+  return d.toISOString().slice(0, 10);
+}
+
+// Giltig = rätt version OCH inom 12 månader från signering.
+export function isAcceptanceValid(
+  a: { version: string; acceptedAt: string } | null | undefined,
+  text: AgreementText
+): boolean {
+  if (!a) return false;
+  if (a.version !== text.version) return false;
+  return new Date(agreementValidUntil(a.acceptedAt)).getTime() >= Date.now();
+}
 
 // Avtalstext för given typ och besökarspråk. Bara sv/en finns — pl faller till en.
 export function agreementFor(type: AgreementType, lang: string): { text: AgreementText; language: AgreementLanguage } {

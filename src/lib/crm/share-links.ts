@@ -10,24 +10,30 @@ import { shareLinks, type ShareLink } from "./schema";
 export type ShareAudience = "tenant" | "landlord";
 
 // Returnerar befintlig aktiv länk för ärendet, annars skapas en ny.
+// Tre länktyper: kundlänk (requestId), affärsknuten uthyrarlänk (requestId+matchId)
+// och FRISTÅENDE uthyrarlänk (ownerId — uppdragsavtalet skickas före någon affär).
 export async function ensureShareLink(opts: {
   audience: ShareAudience;
-  requestId: string;
+  requestId?: string | null;
   matchId?: string | null;
+  ownerId?: string | null;
   userId?: string | null;
 }): Promise<ShareLink> {
   const matchId = opts.matchId ?? null;
+  const ownerId = opts.ownerId ?? null;
+  const requestId = opts.requestId ?? null;
+  if (!requestId && !ownerId) throw new Error("ensureShareLink: requestId eller ownerId krävs");
+
+  const scope = ownerId
+    ? eq(shareLinks.ownerId, ownerId)
+    : and(
+        eq(shareLinks.requestId, requestId!),
+        matchId ? eq(shareLinks.matchId, matchId) : isNull(shareLinks.matchId)
+      );
   const [existing] = await db
     .select()
     .from(shareLinks)
-    .where(
-      and(
-        eq(shareLinks.audience, opts.audience),
-        eq(shareLinks.requestId, opts.requestId),
-        matchId ? eq(shareLinks.matchId, matchId) : isNull(shareLinks.matchId),
-        isNull(shareLinks.revokedAt)
-      )
-    )
+    .where(and(eq(shareLinks.audience, opts.audience), scope, isNull(shareLinks.revokedAt)))
     .limit(1);
   if (existing) return existing;
 
@@ -37,8 +43,9 @@ export async function ensureShareLink(opts: {
       id: nanoid(),
       token: nanoid(32),
       audience: opts.audience,
-      requestId: opts.requestId,
+      requestId,
       matchId,
+      ownerId,
       createdBy: opts.userId ?? null,
     })
     .returning();

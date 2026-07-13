@@ -14,9 +14,18 @@ import { Copy, Eye, Link as LinkIcon, ShieldCheck, ShieldQuestion, Undo2 } from 
 import { useState } from "react";
 import useSWR from "swr";
 
+export interface AgreementStatus {
+  acceptedName: string;
+  acceptedAt: string;
+  version: string;
+  validUntil: string; // 12 mån från signering
+  valid: boolean; // rätt version + inom giltighetstiden
+  currentVersion: string;
+}
+
 interface PanelData {
   links: ShareLink[];
-  agreement: { acceptedName: string; acceptedAt: string; version: string } | null;
+  agreement: AgreementStatus | null;
 }
 
 export function OfferLinkPanel({
@@ -89,10 +98,25 @@ export function OfferLinkPanel({
     <div className="bg-white rounded-xl border p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold">Kundens länk</h2>
-        {data?.agreement ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800">
+        {data?.agreement?.valid ? (
+          <span
+            className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800"
+            title={`Gäller företaget — signerad version ${data.agreement.version}`}
+          >
             <ShieldCheck className="h-3 w-3" />
-            Uppdragsbekräftelse godkänd av {data.agreement.acceptedName} {data.agreement.acceptedAt.slice(0, 10)}
+            Uppdragsbekräftelse godkänd av {data.agreement.acceptedName} · giltig till {data.agreement.validUntil}
+          </span>
+        ) : data?.agreement ? (
+          <span
+            className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800"
+            title={
+              data.agreement.version !== data.agreement.currentVersion
+                ? `Signerad version ${data.agreement.version}, aktuell är ${data.agreement.currentVersion} — gaten visas igen i länken.`
+                : `Gick ut ${data.agreement.validUntil} — gaten visas igen i länken.`
+            }
+          >
+            <ShieldQuestion className="h-3 w-3" />
+            Uppdragsbekräftelse behöver omsignering
           </span>
         ) : (
           <span

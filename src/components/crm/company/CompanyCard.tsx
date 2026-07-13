@@ -1,4 +1,5 @@
 "use client";
+import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
 import { CompanyHeader } from "./CompanyHeader";
 import { CompanyInfo } from "./CompanyInfo";
 import { ContactsList } from "./ContactsList";
@@ -355,6 +356,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         </div>
       </div>
       <CompanyInfo company={company} onSave={handleSaveField} />
+
+      {/* Uppdragsbekräftelsen — gäller företaget i 12 mån, signeras via kundlänken */}
+      <div className="mb-6">
+        <AgreementStatusPanel kind="company" id={company.id} contactName={primaryContact?.name} />
+      </div>
 
       {/* Company-level dates + snabbval */}
       <div className="grid grid-cols-2 gap-4 mb-6">

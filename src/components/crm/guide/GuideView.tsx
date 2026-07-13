@@ -10,6 +10,7 @@ const SECTIONS = [
     title: "Ny förfrågan",
     steps: [
       "Förfrågningar landar som Inkommen — antingen från hemsidans formulär (företaget och kontakten skapas automatiskt) eller manuellt via Nytt företag → Ny förfrågan.",
+      "Skicka uppdragsavtalet FÖRST, fristående: kundens uppdragsbekräftelse via kundlänken (företagskortet visar status), uthyrarens uppdragsavtal via avtalslänken på uthyrarkortet. Signerade avtal gäller i 12 månader — korten visar giltigt till-datum och flaggar när omsignering behövs.",
       "Kontrollera stad, antal personer, period och budget. Sätt uppföljningsdatum om kunden ska jagas.",
       "Öppna Matcha förfrågan och sök i objektsbanken — filtrera på ort, bäddar, hyra, betyg och max km till arbetsadressen (kör-avstånd), eller sortera närmast först. Förslag läggs alltid till manuellt.",
     ],

@@ -34,6 +34,12 @@ export function landlordAvtalSms(ownerName: string | null | undefined, token: st
   return `${greet(ownerName)} Inför uthyrningen behöver du signera vårt uthyrningsuppdrag — kostnadsfritt och inte exklusivt: www.stayonsite.se/uthyrare/${token}\nDär ser du också vad vi kommit överens om. Hör av dig vid frågor. /Kajsa, StayOnSite`;
 }
 
+// Fristående uppdragsavtal till uthyraren — skickas tidigt, innan någon konkret
+// affär finns (avtalet gäller alla deras objekt i 12 månader).
+export function landlordAvtalStandaloneSms(ownerName: string | null | undefined, token: string): string {
+  return `${greet(ownerName)} För att vi ska kunna hyra ut ditt boende behöver du signera vårt uppdragsavtal — kostnadsfritt och inte exklusivt, tar en minut: www.stayonsite.se/uthyrare/${token}\nHör av dig vid frågor. /Kajsa, StayOnSite`;
+}
+
 // Jaga uthyrare: förslag skickat, väntar på svar.
 export function ownerFollowUpSms(ownerName: string | null | undefined, address: string | null | undefined): string {
   const what = address ? `angående ${address}` : "angående ditt boende";
