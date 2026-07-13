@@ -28,14 +28,8 @@ export function offerLinkSms(contactName: string | null | undefined, token: stri
   return `${greet(contactName)} Här är ert boendeförslag från StayOnSite: www.stayonsite.se/erbjudande/${token}\nLänken är personlig för er — där ser ni objekt, pris och kan godkänna uppdraget. Hör av dig vid frågor. /Kajsa, StayOnSite`;
 }
 
-// Uthyrningsuppdrag-signering till uthyraren — deras personliga sida där avtalet
-// signeras innan visning/uthyrning. Länk utan https:// av samma smishing-skäl.
-export function landlordAvtalSms(ownerName: string | null | undefined, token: string): string {
-  return `${greet(ownerName)} Inför uthyrningen behöver du signera vårt uthyrningsuppdrag — kostnadsfritt och inte exklusivt: www.stayonsite.se/uthyrare/${token}\nDär ser du också vad vi kommit överens om. Hör av dig vid frågor. /Kajsa, StayOnSite`;
-}
-
-// Fristående uppdragsavtal till uthyraren — skickas tidigt, innan någon konkret
-// affär finns (avtalet gäller alla deras objekt i 12 månader).
+// Uppdragsavtal till uthyraren — avtalet skickas alltid FÖRST, fristående
+// (gäller alla deras objekt i 12 månader). Länk utan https:// av smishing-skäl.
 export function landlordAvtalStandaloneSms(ownerName: string | null | undefined, token: string): string {
   return `${greet(ownerName)} För att vi ska kunna hyra ut ditt boende behöver du signera vårt uppdragsavtal — kostnadsfritt och inte exklusivt, tar en minut: www.stayonsite.se/uthyrare/${token}\nHör av dig vid frågor. /Kajsa, StayOnSite`;
 }

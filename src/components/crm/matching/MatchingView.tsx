@@ -16,7 +16,7 @@ import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
 import { ArrowUpRight, Loader2, Navigation, Pencil, Search, Trash2, X } from "lucide-react";
-import { landlordAvtalSms } from "@/lib/crm/sms-templates";
+import { landlordAvtalStandaloneSms } from "@/lib/crm/sms-templates";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -54,6 +54,7 @@ interface MatchRow extends DealTermsMatch {
   propertyCity: string | null;
   propertyRentIn: number | null;
   propertyRentOut: number | null;
+  propertyOwnerId: string | null;
   landlordSignedName: string | null;
   landlordSignedAt: string | null;
 }
@@ -319,22 +320,27 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     toast({ title: "Förslag borttaget" });
   }
 
-  // Uthyrarens signeringslänk (uthyrningsuppdraget) — skapa/återanvänd och
-  // kopiera färdig SMS-text (www-länk utan https, operatörsfilter-läxan).
+  // Uthyrarens signeringslänk — den FRISTÅENDE (ownerId-scope): uthyraren ser
+  // bara uppdragsavtalet + tacksida, inga affärsvillkor (avtalet kommer alltid
+  // först). Kopierar färdig SMS-text (www-länk utan https, operatörsfilter-läxan).
   async function shareLandlordLink(m: MatchRow) {
+    if (!m.propertyOwnerId) {
+      toast({ title: "Objektet saknar uthyrare — koppla en uthyrare först", variant: "destructive" });
+      return;
+    }
     try {
       const res = await fetch("/api/crm/share-links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId: request.id, matchId: m.id, audience: "landlord" }),
+        body: JSON.stringify({ ownerId: m.propertyOwnerId }),
       });
       if (!res.ok) {
         toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
         return;
       }
       const link = await res.json();
-      await navigator.clipboard.writeText(landlordAvtalSms(null, link.token));
-      toast({ title: "SMS-text kopierad — skicka till uthyraren så signerar de uthyrningsuppdraget" });
+      await navigator.clipboard.writeText(landlordAvtalStandaloneSms(null, link.token));
+      toast({ title: "SMS-text kopierad — uthyraren ser bara uppdragsavtalet" });
     } catch {
       toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
     }
