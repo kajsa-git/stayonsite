@@ -18,7 +18,7 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13.3", // .3 = avtalsförbud i st. f. kontaktförbud (direkt/indirekt); omsignering krävs
+  version: "2026-07-13.4", // .4 = praktisk direktkontakt (tillträde m.m.) uttryckligen ok; omsignering krävs
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni Stayonsite i uppdrag att, för er räkning, " +
@@ -33,8 +33,9 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
     {
       heading: "Stayonsite är er kontaktpart",
       body:
-        "All kontakt som rör presenterade objekt, priser, tillgänglighet och villkor ska gå via Stayonsite. " +
-        "Detta görs för att säkerställa tydlig kommunikation och korrekta villkor för alla parter.",
+        "Frågor om pris, tillgänglighet och villkor för presenterade objekt hanteras alltid av Stayonsite. " +
+        "Praktisk direktkontakt med uthyraren — till exempel kring visning, tillträde och nycklar — kan förekomma, " +
+        "men förhandling om pris och villkor sker aldrig direkt mellan er och uthyraren.",
     },
     {
       heading: "Inget avtal utanför Stayonsite",
@@ -67,7 +68,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.3", // .3 = avtalsförbud i st. f. kontaktförbud (direkt/indirekt); omsignering krävs
+  version: "2026-07-13.4", // .4 = praktisk direktkontakt (tillträde m.m.) uttryckligen ok; omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger Stayonsite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -97,7 +98,10 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
     },
     {
       heading: "Villkor via Stayonsite",
-      body: "Hyra och villkor för förmedlade affärer går alltid via Stayonsite.",
+      body:
+        "Hyra och villkor för förmedlade affärer går alltid via Stayonsite. " +
+        "Praktisk direktkontakt med hyresgästen — till exempel kring visning, tillträde och nycklar — kan förekomma, " +
+        "men förhandling om hyra och villkor sker aldrig direkt mellan er och hyresgästen.",
     },
   ],
 };
