@@ -143,7 +143,7 @@ export function OfferLinkPanel({
           {sentCount === 0 && (
             <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
               Inget erbjudande är skickat ännu — kunden ser bara uppdragsbekräftelsen och en väntsida.
-              Gör steg 3 (Skicka erbjudande) på ett förslag så dyker objektet upp i länken direkt.
+              Tryck Skicka erbjudande på ett förslag så dyker objektet upp i länken direkt.
             </p>
           )}
           <div className="flex flex-wrap items-center gap-2">
