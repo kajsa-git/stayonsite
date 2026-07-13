@@ -26,7 +26,6 @@ import { KalkylScenarioChips, MatchKalkyl } from "./MatchKalkyl";
 import {
   formatKr,
   formatPeriod,
-  PromiseTermsDialog,
   SendOfferDialog,
   type DealTermsMatch,
 } from "./DealTermsDialogs";
@@ -90,7 +89,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [detailProperty, setDetailProperty] = useState<PropertyWithOwner | null>(null);
   const [confirmAccept, setConfirmAccept] = useState<MatchRow | null>(null);
   const [sendOffer, setSendOffer] = useState<MatchRow | null>(null);
-  const [promiseTerms, setPromiseTerms] = useState<MatchRow | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
@@ -443,19 +441,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
-                    {(m.offerRentOut != null || m.promisedAt || m.landlordSignedAt) && (
+                    {(m.offerRentOut != null || m.landlordSignedAt) && (
                       <div className="mb-2 space-y-0.5 text-xs">
                         {m.offerRentOut != null && (
                           <div className="text-blue-800">
                             Erbjudet kund: <span className="font-medium">{formatKr(m.offerRentOut)}</span>
                             {formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing) &&
                               ` · ${formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing)}`}
-                          </div>
-                        )}
-                        {m.promisedAt && (
-                          <div className="text-emerald-800">
-                            Lovat uthyrare: <span className="font-medium">{formatKr(m.promisedRentIn) ?? "—"}</span>
-                            {` · bekräftat ${m.promisedAt.slice(0, 10)}`}
                           </div>
                         )}
                         {m.landlordSignedAt && (
@@ -505,12 +497,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                               title: "Uppdragsavtalet signeras alltid först — skapar signeringslänk och kopierar SMS-text",
                               done: !!m.landlordSignedAt,
                               onClick: () => shareLandlordLink(m),
-                            },
-                            {
-                              label: "Löfte uthyrare",
-                              title: "Bekräfta hyra och villkor med uthyraren — stämplas på affären",
-                              done: !!m.promisedAt,
-                              onClick: () => setPromiseTerms(m),
                             },
                             {
                               label: m.sentAt ? "Erbjudande" : "Skicka erbjudande",
@@ -777,12 +763,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         match={sendOffer}
         request={request}
         onClose={() => setSendOffer(null)}
-        onSaved={() => mutateMatches()}
-      />
-      <PromiseTermsDialog
-        match={promiseTerms}
-        request={request}
-        onClose={() => setPromiseTerms(null)}
         onSaved={() => mutateMatches()}
       />
 
