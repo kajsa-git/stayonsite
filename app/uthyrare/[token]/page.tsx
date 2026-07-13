@@ -56,6 +56,8 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               intro={UTHYRNINGSUPPDRAG.intro}
               points={UTHYRNINGSUPPDRAG.points}
               version={UTHYRNINGSUPPDRAG.version}
+              submitLabel="Godkänn uthyrningsuppdraget"
+              lang="sv"
             />
           </>
         ) : (

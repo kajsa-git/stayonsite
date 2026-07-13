@@ -497,6 +497,7 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
   acceptedAt: text("accepted_at").notNull(), // ISO-stämpel
   userAgent: text("user_agent"),
   ip: text("ip"), // klientens IP vid godkännandet (bevissäkring — nämns i avtalsfoten)
+  language: text("language"), // sv | en — vilken språkversion som visades vid godkännandet
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [
   index("crm_agreement_acceptances_request_id_idx").on(t.requestId),

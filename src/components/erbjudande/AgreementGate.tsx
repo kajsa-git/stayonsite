@@ -1,10 +1,12 @@
 "use client";
 
-// Uppdragsbekräftelse-gaten: visas i stället för erbjudandet tills kunden
-// godkänt aktuell avtalsversion med sitt namn. Godkännandet stämplas i
-// crm_agreement_acceptances via den token-gatade endpointen — sidan laddas
-// sedan om server-side och erbjudandet renderas.
+// Avtalsgaten: visas i stället för innehållet tills parten godkänt aktuell
+// avtalsversion med sitt namn. Godkännandet stämplas i crm_agreement_acceptances
+// via den token-gatade endpointen (inkl. vilken språkversion som visades) —
+// sidan laddas sedan om server-side och innehållet renderas.
+// Avtal finns bara på svenska och engelska; svenskan har företräde vid tolkning.
 
+import type { AgreementLanguage } from "@/lib/crm/avtal";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -13,31 +15,63 @@ interface AgreementPoint {
   body: string;
 }
 
+const UI: Record<AgreementLanguage, {
+  nameLabel: string;
+  namePlaceholder: string;
+  nameError: string;
+  genericError: string;
+  submitting: string;
+  footer: (version: string) => string;
+  svPrevails: string | null;
+}> = {
+  sv: {
+    nameLabel: "Godkänn med ditt namn",
+    namePlaceholder: "För- och efternamn",
+    nameError: "Skriv ditt för- och efternamn för att godkänna.",
+    genericError: "Något gick fel — försök igen.",
+    submitting: "Godkänner…",
+    footer: (v) => `Godkännandet registreras med namn, datum, IP-adress, språk och avtalsversion (${v}).`,
+    svPrevails: null,
+  },
+  en: {
+    nameLabel: "Approve with your name",
+    namePlaceholder: "First and last name",
+    nameError: "Enter your first and last name to approve.",
+    genericError: "Something went wrong — please try again.",
+    submitting: "Approving…",
+    footer: (v) => `Your approval is recorded with name, date, IP address, language and agreement version (${v}).`,
+    svPrevails: "This is a translation — in case of any discrepancy, the Swedish version prevails.",
+  },
+};
+
 export function AgreementGate({
   token,
   title,
   intro,
   points,
   version,
+  submitLabel,
+  lang = "sv",
 }: {
   token: string;
   title: string;
   intro: string;
   points: AgreementPoint[];
   version: string;
+  submitLabel: string;
+  lang?: AgreementLanguage;
 }) {
   const router = useRouter();
+  const ui = UI[lang];
   const [name, setName] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — människor ser aldrig fältet
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const submitLabel =
-    title === "Uthyrningsuppdrag" ? "Godkänn uthyrningsuppdraget" : "Godkänn uppdragsbekräftelsen";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (name.trim().length < 2) {
-      setError("Skriv ditt för- och efternamn för att godkänna.");
+      setError(ui.nameError);
       return;
     }
     setSubmitting(true);
@@ -46,16 +80,16 @@ export function AgreementGate({
       const res = await fetch(`/api/share/${token}/agreement`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), website }),
+        body: JSON.stringify({ name: name.trim(), website, language: lang }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        setError(j.error ?? "Något gick fel — försök igen.");
+        setError(j.error ?? ui.genericError);
         return;
       }
       router.refresh();
     } catch {
-      setError("Något gick fel — försök igen.");
+      setError(ui.genericError);
     } finally {
       setSubmitting(false);
     }
@@ -87,14 +121,14 @@ export function AgreementGate({
 
       <form onSubmit={submit} className="mt-8 space-y-3">
         <label htmlFor="agreement-name" className="block text-sm font-medium text-nordic-900">
-          Godkänn med ditt namn
+          {ui.nameLabel}
         </label>
         <input
           id="agreement-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="För- och efternamn"
+          placeholder={ui.namePlaceholder}
           autoComplete="name"
           className="w-full rounded-lg border border-nordic-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6300]/40"
         />
@@ -115,10 +149,11 @@ export function AgreementGate({
           disabled={submitting}
           className="inline-flex w-full items-center justify-center rounded-full bg-[#ff6300] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#e65800] disabled:opacity-60 sm:w-auto"
         >
-          {submitting ? "Godkänner…" : submitLabel}
+          {submitting ? ui.submitting : submitLabel}
         </button>
         <p className="text-xs text-muted-foreground">
-          Godkännandet registreras med namn, datum, IP-adress och avtalsversion ({version}).
+          {ui.footer(version)}
+          {ui.svPrevails && <> {ui.svPrevails}</>}
         </p>
       </form>
     </div>

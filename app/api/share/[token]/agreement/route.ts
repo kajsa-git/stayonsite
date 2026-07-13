@@ -32,6 +32,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
 
   const now = new Date().toISOString();
   const userAgent = req.headers.get("user-agent")?.slice(0, 400) ?? null;
+  // Vilken språkversion parten läste — bara sv/en finns, allt annat blir sv.
+  const language = body.language === "en" ? "en" : "sv";
   // Klientens IP för bevissäkring — på Vercel är första värdet i x-forwarded-for
   // den riktiga klienten (Vercel sätter headern själv, den kan inte spoofas förbi).
   const ip =
@@ -78,6 +80,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       acceptedAt: now,
       userAgent,
       ip,
+      language,
     });
     return NextResponse.json({ ok: true }, { status: 201 });
   }
@@ -105,6 +108,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     acceptedAt: now,
     userAgent,
     ip,
+    language,
   });
 
   return NextResponse.json({ ok: true }, { status: 201 });

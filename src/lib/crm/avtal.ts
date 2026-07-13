@@ -106,7 +106,113 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
   ],
 };
 
+// Engelska översättningar — SAMMA version som svenskan (en version = en innebörd,
+// två språkdräkter). Svenskan är originalet och har företräde vid tolkningskonflikt
+// (sägs uttryckligen i gaten på engelska). Avtal finns BARA på svenska och engelska
+// — polska besökare får den engelska texten (Kajsas beslut 2026-07-13).
+export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
+  type: "uppdragsbekraftelse",
+  version: UPPDRAGSBEKRAFTELSE.version,
+  title: "Assignment Confirmation",
+  intro:
+    "By approving this assignment confirmation, you engage Stayonsite to source and present housing proposals on your behalf. " +
+    "The assignment is free of charge and does not oblige you to rent any of the presented properties.",
+  points: [
+    {
+      heading: "Free of charge",
+      body:
+        "You pay nothing for Stayonsite sourcing and presenting housing proposals. " +
+        "You are not obliged to proceed with, book or rent any property that is presented.",
+    },
+    {
+      heading: "Stayonsite is your point of contact",
+      body:
+        "Questions about price, availability and terms for presented properties are always handled by Stayonsite. " +
+        "Practical direct contact with the landlord — for example regarding viewings, move-in and keys — may occur, " +
+        "but price and terms are never negotiated directly between you and the landlord.",
+    },
+    {
+      heading: "No agreements outside Stayonsite",
+      body:
+        "You undertake not to — directly or indirectly, for example through a group company, related party or other intermediary — " +
+        "enter into a lease or any other housing arrangement without Stayonsite's involvement, regarding properties presented by Stayonsite " +
+        "or other housing from the same landlord that you came into contact with through Stayonsite. " +
+        "This applies for the duration of the assignment and for 12 months from the date the property was first presented to you.",
+    },
+    {
+      heading: "Penalty upon breach",
+      body:
+        "In the event of a breach of the clause on agreements outside Stayonsite above, a contractual penalty equal to three (3) months' rent " +
+        "for the property in question applies, subject to a minimum of SEK 25,000. " +
+        "The penalty does not limit Stayonsite's right to compensation for actual damage exceeding the penalty.",
+    },
+    {
+      heading: "Confidentiality",
+      body:
+        "Prices, terms and other information in offers from Stayonsite are intended solely for you and your company. " +
+        "The information may not be shared outside your company without Stayonsite's written consent.",
+    },
+    {
+      heading: "Approval",
+      body:
+        "By entering your name and approving this confirmation, you certify that you have read and accept the terms above.",
+    },
+  ],
+};
+
+export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
+  type: "uthyrningsuppdrag",
+  version: UTHYRNINGSUPPDRAG.version,
+  title: "Letting Assignment",
+  intro:
+    "You engage Stayonsite to let your property. The assignment is free of charge and non-exclusive — " +
+    "you may withdraw the property at any time.",
+  points: [
+    {
+      heading: "Free of charge for you",
+      body: "Stayonsite charges the tenant, never you as the landlord.",
+    },
+    {
+      heading: "You decide",
+      body: "No lease is entered into without your confirmation, and you may decline any proposal without giving a reason.",
+    },
+    {
+      heading: "No agreements outside Stayonsite",
+      body:
+        "You undertake not to — directly or indirectly, for example through a related party, another company or other intermediary — " +
+        "enter into a lease or any other arrangement without Stayonsite's involvement with tenants presented by Stayonsite, " +
+        "whether for the property in question or any other housing you offer. " +
+        "This applies for the duration of the assignment and for 12 months after presentation.",
+    },
+    {
+      heading: "Penalty upon breach",
+      body:
+        "In the event of a breach of the clause on agreements outside Stayonsite above, a contractual penalty equal to three (3) months' rent " +
+        "for the property in question applies, subject to a minimum of SEK 25,000. " +
+        "The penalty does not limit Stayonsite's right to compensation for actual damage exceeding the penalty.",
+    },
+    {
+      heading: "Terms via Stayonsite",
+      body:
+        "Rent and terms for brokered deals always go through Stayonsite. " +
+        "Practical direct contact with the tenant — for example regarding viewings, move-in and keys — may occur, " +
+        "but rent and terms are never negotiated directly between you and the tenant.",
+    },
+  ],
+};
+
 export const AGREEMENTS: Record<AgreementType, AgreementText> = {
   uppdragsbekraftelse: UPPDRAGSBEKRAFTELSE,
   uthyrningsuppdrag: UTHYRNINGSUPPDRAG,
 };
+
+export type AgreementLanguage = "sv" | "en";
+
+// Avtalstext för given typ och besökarspråk. Bara sv/en finns — pl faller till en.
+export function agreementFor(type: AgreementType, lang: string): { text: AgreementText; language: AgreementLanguage } {
+  if (lang === "sv") return { text: AGREEMENTS[type], language: "sv" };
+  return {
+    text: type === "uppdragsbekraftelse" ? UPPDRAGSBEKRAFTELSE_EN : UTHYRNINGSUPPDRAG_EN,
+    language: "en",
+  };
+}

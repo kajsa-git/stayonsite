@@ -47,21 +47,28 @@ export async function ensureShareLink(opts: {
 
 // Slår upp en länk via token. Returnerar null för okänd, återkallad eller
 // utgången länk — anroparen svarar 404 utan att skilja på fallen (en kapabilitets-
-// URL ska inte läcka VARFÖR den slutade fungera). Bumpar visningsstatistik.
-export async function resolveShareLink(token: string): Promise<ShareLink | null> {
+// URL ska inte läcka VARFÖR den slutade fungera). Bumpar visningsstatistik som
+// standard — generateMetadata skickar trackView: false så en sidvisning inte
+// räknas dubbelt (metadata + sida körs båda per request).
+export async function resolveShareLink(
+  token: string,
+  opts?: { trackView?: boolean }
+): Promise<ShareLink | null> {
   if (!token || token.length > 64) return null;
   const [link] = await db.select().from(shareLinks).where(eq(shareLinks.token, token)).limit(1);
   if (!link) return null;
   if (link.revokedAt) return null;
   if (link.expiresAt && link.expiresAt < new Date().toISOString()) return null;
 
-  try {
-    await db
-      .update(shareLinks)
-      .set({ lastViewedAt: new Date().toISOString(), viewCount: link.viewCount + 1 })
-      .where(eq(shareLinks.id, link.id));
-  } catch {
-    // Statistiken är inte värd att fälla sidvisningen för.
+  if (opts?.trackView !== false) {
+    try {
+      await db
+        .update(shareLinks)
+        .set({ lastViewedAt: new Date().toISOString(), viewCount: link.viewCount + 1 })
+        .where(eq(shareLinks.id, link.id));
+    } catch {
+      // Statistiken är inte värd att fälla sidvisningen för.
+    }
   }
   return link;
 }

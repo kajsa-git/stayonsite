@@ -2,7 +2,7 @@ import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { OFFER_T } from "@/components/erbjudande/erbjudande-i18n";
 import { LANGS, T, pickLang } from "@/components/prospekt/prospekt-i18n";
 import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase";
-import { UPPDRAGSBEKRAFTELSE } from "@/lib/crm/avtal";
+import { agreementFor } from "@/lib/crm/avtal";
 import { loadTenantOffer, type TenantOfferItem } from "@/lib/crm/deal-projection";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { ArrowRight } from "lucide-react";
@@ -11,10 +11,22 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
+// Länkförhandsvisningen speglar det kunden landar på: uppdragsbekräftelsen före
+// signering, boendeförslaget efter. (Meddelandeappar cachar förhandsvisningen vid
+// utskicket — då är gaten aktiv, så titeln stämmer.) trackView: false så att
+// metadata-uppslag inte dubbelräknar sidvisningen.
 export async function generateMetadata(
-  { searchParams }: { searchParams: Promise<{ lang?: string | string[] }> },
+  { params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ lang?: string | string[] }> },
 ): Promise<Metadata> {
+  const { token } = await params;
   const lang = pickLang((await searchParams).lang);
+  const link = await resolveShareLink(token, { trackView: false });
+  if (!link || link.audience !== "tenant") return { title: `${OFFER_T[lang].tagline} — StayOnSite` };
+  const offer = await loadTenantOffer(link.requestId);
+  if (offer && !offer.agreementAccepted) {
+    const { text } = agreementFor("uppdragsbekraftelse", lang);
+    return { title: `${text.title} — StayOnSite` };
+  }
   return { title: `${OFFER_T[lang].tagline} — StayOnSite` };
 }
 
@@ -64,13 +76,21 @@ export default async function ErbjudandePage(
 
       <div className="mx-auto max-w-3xl space-y-8 px-5 py-8">
         {gated ? (
-          <AgreementGate
-            token={token}
-            title={UPPDRAGSBEKRAFTELSE.title}
-            intro={UPPDRAGSBEKRAFTELSE.intro}
-            points={UPPDRAGSBEKRAFTELSE.points}
-            version={UPPDRAGSBEKRAFTELSE.version}
-          />
+          (() => {
+            // Avtal finns bara på svenska och engelska — pl-besökare får engelskan.
+            const { text, language } = agreementFor("uppdragsbekraftelse", lang);
+            return (
+              <AgreementGate
+                token={token}
+                title={text.title}
+                intro={text.intro}
+                points={text.points}
+                version={text.version}
+                submitLabel={language === "sv" ? "Godkänn uppdragsbekräftelsen" : "Approve the assignment confirmation"}
+                lang={language}
+              />
+            );
+          })()
         ) : (
           <>
             {/* Intro */}
