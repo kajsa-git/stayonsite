@@ -15,13 +15,15 @@
 // följer objektet, medan affärsvillkoren (pris, period) är stämplade på matchen
 // och aldrig skrivs om av senare objektändringar.
 import { and, desc, eq } from "drizzle-orm";
-import { UPPDRAGSBEKRAFTELSE } from "./avtal";
+import { UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "./avtal";
 import { db } from "./db";
 import { loadPublicProperty, type PublicProperty } from "./public-property";
 import {
   agreementAcceptances,
   companies,
   matches,
+  owners,
+  properties,
   requests,
   type AgreementAcceptance,
   type Match,
@@ -168,6 +170,84 @@ export function projectTenant(truth: DealTruth, publicProps: Map<string, PublicP
     acceptedName: truth.acceptance?.acceptedName ?? null,
     acceptedAt: truth.acceptance?.acceptedAt ?? null,
     offers,
+  };
+}
+
+// ---- Uthyrarens projektion (uthyrarlänken /uthyrare/<token>) ----------------
+
+// Uthyraren ser SITT objekt (adressen är deras egen — ok), vad de lovats
+// (promised_*) och affärens läge. ALDRIG: utpris/offer_*, marginal, kalkyl,
+// matchpoäng, kundföretagets identitet eller interna anteckningar.
+export interface LandlordDealView {
+  ownerName: string | null;
+  propertyAddress: string | null;
+  propertyCity: string | null;
+  persons: number | null;
+  promisedRentIn: number | null;
+  promisedStartDate: string | null;
+  promisedEndDate: string | null;
+  promisedConditions: string | null;
+  promisedAt: string | null;
+  status: "vantar" | "accepterad" | "avslutad";
+  agreementAccepted: boolean;
+  acceptedName: string | null;
+  acceptedAt: string | null;
+}
+
+export async function loadLandlordDeal(matchId: string): Promise<LandlordDealView | null> {
+  const [match] = await db.select().from(matches).where(eq(matches.id, matchId)).limit(1);
+  if (!match) return null;
+
+  const [request] = await db
+    .select({ status: requests.status, persons: requests.persons })
+    .from(requests)
+    .where(eq(requests.id, match.requestId))
+    .limit(1);
+  if (!request) return null;
+  if (request.status === "lost" || request.status === "archived") return null;
+
+  const [property] = await db
+    .select({ address: properties.address, city: properties.city, ownerId: properties.ownerId })
+    .from(properties)
+    .where(eq(properties.id, match.propertyId))
+    .limit(1);
+  if (!property) return null;
+
+  let ownerName: string | null = null;
+  if (property.ownerId) {
+    const [owner] = await db.select({ name: owners.name }).from(owners).where(eq(owners.id, property.ownerId)).limit(1);
+    ownerName = owner?.name ?? null;
+  }
+
+  // Uthyrningsuppdraget gäller OBJEKTET (inte den enskilda affären) — signerat
+  // en gång täcker alla affärer på samma objekt, för aktuell avtalsversion.
+  const [acceptance] = await db
+    .select()
+    .from(agreementAcceptances)
+    .where(
+      and(
+        eq(agreementAcceptances.propertyId, match.propertyId),
+        eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type),
+        eq(agreementAcceptances.version, UTHYRNINGSUPPDRAG.version)
+      )
+    )
+    .orderBy(desc(agreementAcceptances.acceptedAt))
+    .limit(1);
+
+  return {
+    ownerName,
+    propertyAddress: property.address,
+    propertyCity: property.city,
+    persons: request.persons,
+    promisedRentIn: match.promisedRentIn,
+    promisedStartDate: match.promisedStartDate,
+    promisedEndDate: match.promisedEndDate,
+    promisedConditions: match.promisedConditions,
+    promisedAt: match.promisedAt,
+    status: match.status === "accepted" ? "accepterad" : match.status === "rejected" ? "avslutad" : "vantar",
+    agreementAccepted: acceptance != null,
+    acceptedName: acceptance?.acceptedName ?? null,
+    acceptedAt: acceptance?.acceptedAt ?? null,
   };
 }
 

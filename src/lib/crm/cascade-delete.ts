@@ -74,6 +74,7 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
   if (matchIds.length) {
     await tx.delete(shareLinks).where(inArray(shareLinks.matchId, matchIds));
   }
+  await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.propertyId, propertyId));
   await tx.delete(matches).where(eq(matches.propertyId, propertyId));
   await tx.delete(ownerOutreach).where(eq(ownerOutreach.propertyId, propertyId));
   await tx.delete(propertyNotes).where(eq(propertyNotes.propertyId, propertyId));

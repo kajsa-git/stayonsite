@@ -132,6 +132,34 @@ describe("projectTenant — fältläckage", () => {
   });
 });
 
+describe("LandlordDealView — fältläckage (typnivå)", () => {
+  it("uthyrarens vy saknar utpris, kalkyl, matchpoäng och kundens identitet", async () => {
+    // Vyn byggs fält-för-fält i loadLandlordDeal — här låser vi kontraktet:
+    // typen får inte växa med känsliga fält utan att detta test uppdateras medvetet.
+    const { loadLandlordDeal } = await import("./deal-projection");
+    void loadLandlordDeal; // typkontrollen nedan är själva testet
+    const allowedKeys: Record<keyof import("./deal-projection").LandlordDealView, true> = {
+      ownerName: true,
+      propertyAddress: true,
+      propertyCity: true,
+      persons: true,
+      promisedRentIn: true,
+      promisedStartDate: true,
+      promisedEndDate: true,
+      promisedConditions: true,
+      promisedAt: true,
+      status: true,
+      agreementAccepted: true,
+      acceptedName: true,
+      acceptedAt: true,
+    };
+    const forbidden = ["offerRentOut", "companyName", "kalkyl", "matchScore", "notes", "rentOut", "budgetMax"];
+    for (const key of forbidden) {
+      expect(key in allowedKeys, `känsligt fält "${key}" i LandlordDealView`).toBe(false);
+    }
+  });
+});
+
 describe("projectTenant — vad kunden ser", () => {
   it("tar bara med skickade erbjudanden", () => {
     const truth = makeTruth({

@@ -15,7 +15,8 @@ import type { KalkylScenario } from "@/lib/crm/kalkyl";
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
-import { ArrowUpRight, Check, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { ArrowUpRight, Check, FileSignature, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { landlordAvtalSms } from "@/lib/crm/sms-templates";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -53,6 +54,8 @@ interface MatchRow extends DealTermsMatch {
   propertyCity: string | null;
   propertyRentIn: number | null;
   propertyRentOut: number | null;
+  landlordSignedName: string | null;
+  landlordSignedAt: string | null;
 }
 
 const plusDays = plusDaysStockholm;
@@ -316,6 +319,27 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     toast({ title: "Förslag borttaget" });
   }
 
+  // Uthyrarens signeringslänk (uthyrningsuppdraget) — skapa/återanvänd och
+  // kopiera färdig SMS-text (www-länk utan https, operatörsfilter-läxan).
+  async function shareLandlordLink(m: MatchRow) {
+    try {
+      const res = await fetch("/api/crm/share-links", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId: request.id, matchId: m.id, audience: "landlord" }),
+      });
+      if (!res.ok) {
+        toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
+        return;
+      }
+      const link = await res.json();
+      await navigator.clipboard.writeText(landlordAvtalSms(null, link.token));
+      toast({ title: "SMS-text kopierad — skicka till uthyraren så signerar de uthyrningsuppdraget" });
+    } catch {
+      toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       <datalist id="followup-reasons">
@@ -413,7 +437,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
-                    {(m.offerRentOut != null || m.promisedAt) && (
+                    {(m.offerRentOut != null || m.promisedAt || m.landlordSignedAt) && (
                       <div className="mb-2 space-y-0.5 text-xs">
                         {m.offerRentOut != null && (
                           <div className="text-blue-800">
@@ -426,6 +450,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           <div className="text-emerald-800">
                             Lovat uthyrare: <span className="font-medium">{formatKr(m.promisedRentIn) ?? "—"}</span>
                             {` · bekräftat ${m.promisedAt.slice(0, 10)}`}
+                          </div>
+                        )}
+                        {m.landlordSignedAt && (
+                          <div className="text-emerald-800">
+                            Uthyrningsuppdrag: <span className="font-medium">signerat av {m.landlordSignedName}</span>
+                            {` · ${m.landlordSignedAt.slice(0, 10)}`}
                           </div>
                         )}
                       </div>
@@ -470,6 +500,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       {m.status !== "rejected" && (
                         <button onClick={() => setPromiseTerms(m)} className="text-xs px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" title="Bekräfta vad uthyraren lovas för den här affären">
                           {m.promisedAt ? "Löfte ✓" : "Villkor uthyrare"}
+                        </button>
+                      )}
+                      {m.status !== "rejected" && !m.landlordSignedAt && (
+                        <button onClick={() => shareLandlordLink(m)} className="text-xs px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 flex items-center gap-1" title="Skapa uthyrarens signeringslänk och kopiera SMS-text">
+                          <FileSignature className="h-3 w-3" /> Avtal uthyrare
                         </button>
                       )}
                       {m.status !== "accepted" && (

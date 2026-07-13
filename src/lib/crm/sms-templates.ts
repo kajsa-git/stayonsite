@@ -28,6 +28,12 @@ export function offerLinkSms(contactName: string | null | undefined, token: stri
   return `${greet(contactName)} Här är ert boendeförslag från StayOnSite: www.stayonsite.se/erbjudande/${token}\nLänken är personlig för er — där ser ni objekt, pris och kan godkänna uppdraget. Hör av dig vid frågor. /Kajsa, StayOnSite`;
 }
 
+// Uthyrningsuppdrag-signering till uthyraren — deras personliga sida där avtalet
+// signeras innan visning/uthyrning. Länk utan https:// av samma smishing-skäl.
+export function landlordAvtalSms(ownerName: string | null | undefined, token: string): string {
+  return `${greet(ownerName)} Inför uthyrningen behöver du signera vårt uthyrningsuppdrag — kostnadsfritt och inte exklusivt: www.stayonsite.se/uthyrare/${token}\nDär ser du också vad vi kommit överens om. Hör av dig vid frågor. /Kajsa, StayOnSite`;
+}
+
 // Jaga uthyrare: förslag skickat, väntar på svar.
 export function ownerFollowUpSms(ownerName: string | null | undefined, address: string | null | undefined): string {
   const what = address ? `angående ${address}` : "angående ditt boende";

@@ -1,7 +1,8 @@
+import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { matches, properties } from "@/lib/crm/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { agreementAcceptances, matches, properties } from "@/lib/crm/schema";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -46,7 +47,34 @@ export async function GET(req: NextRequest) {
     .where(eq(matches.requestId, requestId))
     .orderBy(desc(matches.createdAt));
 
-  return NextResponse.json(rows);
+  // Uthyrningsuppdragets signeringsstatus per objekt (gäller objektet, inte
+  // den enskilda affären) — så matchkortet kan visa "signerat av …".
+  const propertyIds = [...new Set(rows.map((r) => r.propertyId))];
+  const signed = propertyIds.length
+    ? await db
+        .select({
+          propertyId: agreementAcceptances.propertyId,
+          acceptedName: agreementAcceptances.acceptedName,
+          acceptedAt: agreementAcceptances.acceptedAt,
+        })
+        .from(agreementAcceptances)
+        .where(
+          and(
+            inArray(agreementAcceptances.propertyId, propertyIds),
+            eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type),
+            eq(agreementAcceptances.version, UTHYRNINGSUPPDRAG.version)
+          )
+        )
+    : [];
+  const signedByProperty = new Map(signed.map((s) => [s.propertyId, s]));
+
+  return NextResponse.json(
+    rows.map((r) => ({
+      ...r,
+      landlordSignedName: signedByProperty.get(r.propertyId)?.acceptedName ?? null,
+      landlordSignedAt: signedByProperty.get(r.propertyId)?.acceptedAt ?? null,
+    }))
+  );
 }
 
 export async function POST(req: NextRequest) {
