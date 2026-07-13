@@ -107,12 +107,14 @@ export default async function ErbjudandePage(
                 {tr.heading(offer.companyName)}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                {[
-                  offer.offers.length > 0 ? tr.intro(offer.offers.length) : null,
-                  offer.persons ? tr.persons(offer.persons) : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+                {(() => {
+                  // Räkna bara aktiva förslag — objekt som blivit otillgängliga visas
+                  // som historik men ska inte räknas in i "vi föreslår N objekt".
+                  const active = offer.offers.filter((o) => o.status !== "unavailable").length;
+                  return [active > 0 ? tr.intro(active) : null, offer.persons ? tr.persons(offer.persons) : null]
+                    .filter(Boolean)
+                    .join(" · ");
+                })()}
               </p>
             </div>
 

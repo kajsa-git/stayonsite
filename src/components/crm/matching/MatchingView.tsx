@@ -394,7 +394,16 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           <OfferLinkPanel requestId={request.id} sentCount={matches.filter((m) => m.sentAt != null).length} />
 
           <div className="bg-white rounded-xl border p-4">
-            <h2 className="text-sm font-semibold mb-3">Förslag ({matches.length})</h2>
+            {/* Räknaren visar AKTIVA förslag — avböjda ligger kvar i listan som historik
+                men ska inte se ut som pågående arbete. */}
+            <h2 className="text-sm font-semibold mb-3">
+              Förslag ({matches.filter((m) => m.status !== "rejected").length})
+              {matches.some((m) => m.status === "rejected") && (
+                <span className="ml-1.5 font-normal text-xs text-muted-foreground">
+                  · {matches.filter((m) => m.status === "rejected").length} avböjda
+                </span>
+              )}
+            </h2>
             {matches.length === 0 ? (
               <p className="text-sm text-muted-foreground italic">Inga förslag tillagda ännu.</p>
             ) : (
