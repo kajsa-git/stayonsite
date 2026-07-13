@@ -20,7 +20,7 @@ const SECTIONS = [
     title: "Matchning & erbjudande",
     steps: [
       "Lägg till objekt som förslag från listan till höger. Kalkylen på varje förslag räknar marginal per scenario — Bas-scenariot förifyller allt senare.",
-      "Stegen på förslagskortet går i ordning — säkra uthyraren innan kunden får pris: 1) Löfte uthyrare stämplar hyra och villkor (och markerar öppen jaga-runda som bekräftad). 2) Avtal uthyrare skapar signeringslänken för uthyrningsuppdraget och kopierar SMS-texten. 3) Skicka erbjudande stämplar kundens pris, period och notis på affären — villkoren ligger fast även om objektets listpriser ändras efteråt. 4) Acceptera när kunden tackat ja.",
+      "Stegen på förslagskortet går i ordning — avtalet alltid först, och säkra uthyraren innan kunden får pris: 1) Avtal uthyrare — uppdragsavtalet signeras alltid först (grönt direkt om uthyraren redan signerat vid onboarding). 2) Löfte uthyrare stämplar hyra och villkor (och markerar öppen jaga-runda som bekräftad). 3) Skicka erbjudande stämplar kundens pris, period och notis på affären — villkoren ligger fast även om objektets listpriser ändras efteråt. 4) Acceptera när kunden tackat ja.",
       "Skapa kundlänken i panelen Kundens länk och dela via SMS-knappen (färdig text med www-länk — https-länkar fastnar i operatörsfiltren). Första gången kunden öppnar länken signeras uppdragsbekräftelsen — före dess visas inget erbjudande. Panelen visar när kunden öppnat sidan.",
       "Kundens sida visar alltid det stämplade priset — aldrig adress, uthyrare eller inpris.",
       "Boka aldrig visning förrän båda avtalen är signerade: uppdragsbekräftelsen (badge i panelen) och uthyrningsuppdraget ('signerat av …' på kortet).",

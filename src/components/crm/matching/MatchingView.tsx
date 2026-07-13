@@ -487,24 +487,24 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       </div>
                     )}
                     {m.status !== "rejected" ? (
-                      // Affärens steg i rekommenderad ordning: säkra uthyraren (löfte +
-                      // signerat uthyrningsuppdrag) INNAN kunden får pris, acceptera sist.
-                      // Klart = grönt ✓, nästa steg markeras, kommande dämpas — allt
-                      // förblir klickbart om ordningen behöver frångås.
+                      // Affärens steg i rekommenderad ordning: uppdragsavtalet ALLTID först
+                      // (grönt direkt om uthyraren signerade vid onboarding), sedan löftet,
+                      // sedan kundens erbjudande, acceptera sist. Klart = grönt ✓, nästa steg
+                      // markeras, kommande dämpas — allt förblir klickbart vid behov.
                       <div className="flex flex-wrap items-center gap-1">
                         {(() => {
                           const steps = [
+                            {
+                              label: "Avtal uthyrare",
+                              title: "Uppdragsavtalet signeras alltid först — skapar signeringslänk och kopierar SMS-text",
+                              done: !!m.landlordSignedAt,
+                              onClick: () => shareLandlordLink(m),
+                            },
                             {
                               label: "Löfte uthyrare",
                               title: "Bekräfta hyra och villkor med uthyraren — stämplas på affären",
                               done: !!m.promisedAt,
                               onClick: () => setPromiseTerms(m),
-                            },
-                            {
-                              label: "Avtal uthyrare",
-                              title: "Signeringslänk för uthyrningsuppdraget — kopierar SMS-text",
-                              done: !!m.landlordSignedAt,
-                              onClick: () => shareLandlordLink(m),
                             },
                             {
                               label: m.sentAt ? "Erbjudande" : "Skicka erbjudande",
