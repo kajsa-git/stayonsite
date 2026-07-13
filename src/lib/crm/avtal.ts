@@ -18,7 +18,7 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13.4", // .4 = praktisk direktkontakt (tillträde m.m.) uttryckligen ok; omsignering krävs
+  version: "2026-07-13.5", // .5 = kontaktpart + avtalsförbud ihopslagna till en punkt; omsignering krävs
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni StayOnSite i uppdrag att, för er räkning, " +
@@ -31,24 +31,19 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
         "Ni är inte skyldiga att gå vidare med, boka eller hyra något objekt som presenteras.",
     },
     {
-      heading: "StayOnSite är er kontaktpart",
+      heading: "Affären går alltid via StayOnSite",
       body:
-        "Frågor om pris, tillgänglighet och villkor för presenterade objekt hanteras alltid av StayOnSite. " +
-        "Praktisk direktkontakt med uthyraren — till exempel kring visning, tillträde och nycklar — kan förekomma, " +
-        "men förhandling om pris och villkor sker aldrig direkt mellan er och uthyraren.",
-    },
-    {
-      heading: "Inget avtal utanför StayOnSite",
-      body:
+        "Frågor om pris, tillgänglighet och villkor hanteras alltid av StayOnSite — praktisk direktkontakt med uthyraren, " +
+        "till exempel kring visning, tillträde och nycklar, kan förekomma. " +
         "Ni förbinder er att inte — direkt eller indirekt, till exempel genom annat bolag i samma koncern, närstående eller annan mellanhand — " +
-        "ingå hyresavtal eller annan överenskommelse om boende utan StayOnSites medverkan, avseende objekt som StayOnSite presenterat för er " +
-        "eller annat boende hos samma uthyrare som ni fått kontakt med genom StayOnSite. " +
+        "förhandla om eller ingå hyresavtal eller annan överenskommelse om boende utan StayOnSites medverkan, " +
+        "avseende objekt som StayOnSite presenterat för er eller annat boende hos samma uthyrare som ni fått kontakt med genom StayOnSite. " +
         "Detta gäller under pågående uppdrag och i 12 månader från det datum då objektet först presenterades för er.",
     },
     {
       heading: "Vite vid överträdelse",
       body:
-        "Vid överträdelse av punkten om avtal utanför StayOnSite ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vid överträdelse av föregående punkt utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
         "Vitet påverkar inte StayOnSites rätt till ersättning för faktisk skada som överstiger vitet.",
     },
     {
@@ -68,7 +63,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.4", // .4 = praktisk direktkontakt (tillträde m.m.) uttryckligen ok; omsignering krävs
+  version: "2026-07-13.5", // .5 = villkorspunkt + avtalsförbud ihopslagna till en punkt; omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger StayOnSite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -83,25 +78,20 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
       body: "Inget hyresavtal ingås utan er bekräftelse, och ni kan tacka nej till förslag utan motivering.",
     },
     {
-      heading: "Inget avtal utanför StayOnSite",
+      heading: "Affären går alltid via StayOnSite",
       body:
+        "Hyra och villkor för förmedlade affärer hanteras alltid av StayOnSite — praktisk direktkontakt med hyresgästen, " +
+        "till exempel kring visning, tillträde och nycklar, kan förekomma. " +
         "Ni förbinder er att inte — direkt eller indirekt, till exempel genom närstående, annat bolag eller annan mellanhand — " +
-        "ingå hyresavtal eller annan överenskommelse utan StayOnSites medverkan med hyresgäster som StayOnSite presenterat, " +
+        "förhandla om eller ingå hyresavtal eller annan överenskommelse utan StayOnSites medverkan med hyresgäster som StayOnSite presenterat, " +
         "vare sig det gäller det aktuella objektet eller annat boende ni erbjuder. " +
         "Detta gäller under uppdraget och i 12 månader efter presentation.",
     },
     {
       heading: "Vite vid överträdelse",
       body:
-        "Vid överträdelse av punkten om avtal utanför StayOnSite ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vid överträdelse av föregående punkt utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
         "Vitet påverkar inte StayOnSites rätt till ersättning för faktisk skada som överstiger vitet.",
-    },
-    {
-      heading: "Villkor via StayOnSite",
-      body:
-        "Hyra och villkor för förmedlade affärer går alltid via StayOnSite. " +
-        "Praktisk direktkontakt med hyresgästen — till exempel kring visning, tillträde och nycklar — kan förekomma, " +
-        "men förhandling om hyra och villkor sker aldrig direkt mellan er och hyresgästen.",
     },
   ],
 };
@@ -125,24 +115,19 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
         "You are not obliged to proceed with, book or rent any property that is presented.",
     },
     {
-      heading: "StayOnSite is your point of contact",
+      heading: "The deal always goes through StayOnSite",
       body:
-        "Questions about price, availability and terms for presented properties are always handled by StayOnSite. " +
-        "Practical direct contact with the landlord — for example regarding viewings, move-in and keys — may occur, " +
-        "but price and terms are never negotiated directly between you and the landlord.",
-    },
-    {
-      heading: "No agreements outside StayOnSite",
-      body:
+        "Questions about price, availability and terms are always handled by StayOnSite — practical direct contact with the landlord, " +
+        "for example regarding viewings, move-in and keys, may occur. " +
         "You undertake not to — directly or indirectly, for example through a group company, related party or other intermediary — " +
-        "enter into a lease or any other housing arrangement without StayOnSite's involvement, regarding properties presented by StayOnSite " +
-        "or other housing from the same landlord that you came into contact with through StayOnSite. " +
+        "negotiate or enter into a lease or any other housing arrangement without StayOnSite's involvement, " +
+        "regarding properties presented by StayOnSite or other housing from the same landlord that you came into contact with through StayOnSite. " +
         "This applies for the duration of the assignment and for 12 months from the date the property was first presented to you.",
     },
     {
       heading: "Penalty upon breach",
       body:
-        "In the event of a breach of the clause on agreements outside StayOnSite above, a contractual penalty equal to three (3) months' rent " +
+        "In the event of a breach of the preceding clause, a contractual penalty equal to three (3) months' rent " +
         "for the property in question applies, subject to a minimum of SEK 25,000. " +
         "The penalty does not limit StayOnSite's right to compensation for actual damage exceeding the penalty.",
     },
@@ -177,26 +162,21 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
       body: "No lease is entered into without your confirmation, and you may decline any proposal without giving a reason.",
     },
     {
-      heading: "No agreements outside StayOnSite",
+      heading: "The deal always goes through StayOnSite",
       body:
+        "Rent and terms for brokered deals are always handled by StayOnSite — practical direct contact with the tenant, " +
+        "for example regarding viewings, move-in and keys, may occur. " +
         "You undertake not to — directly or indirectly, for example through a related party, another company or other intermediary — " +
-        "enter into a lease or any other arrangement without StayOnSite's involvement with tenants presented by StayOnSite, " +
+        "negotiate or enter into a lease or any other arrangement without StayOnSite's involvement with tenants presented by StayOnSite, " +
         "whether for the property in question or any other housing you offer. " +
         "This applies for the duration of the assignment and for 12 months after presentation.",
     },
     {
       heading: "Penalty upon breach",
       body:
-        "In the event of a breach of the clause on agreements outside StayOnSite above, a contractual penalty equal to three (3) months' rent " +
+        "In the event of a breach of the preceding clause, a contractual penalty equal to three (3) months' rent " +
         "for the property in question applies, subject to a minimum of SEK 25,000. " +
         "The penalty does not limit StayOnSite's right to compensation for actual damage exceeding the penalty.",
-    },
-    {
-      heading: "Terms via StayOnSite",
-      body:
-        "Rent and terms for brokered deals always go through StayOnSite. " +
-        "Practical direct contact with the tenant — for example regarding viewings, move-in and keys — may occur, " +
-        "but rent and terms are never negotiated directly between you and the tenant.",
     },
   ],
 };
