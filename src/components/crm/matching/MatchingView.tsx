@@ -15,7 +15,7 @@ import type { KalkylScenario } from "@/lib/crm/kalkyl";
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
-import { ArrowUpRight, Check, FileSignature, Loader2, Navigation, Pencil, Search, Send, Trash2, X } from "lucide-react";
+import { ArrowUpRight, Loader2, Navigation, Pencil, Search, Trash2, X } from "lucide-react";
 import { landlordAvtalSms } from "@/lib/crm/sms-templates";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
@@ -486,59 +486,89 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         />
                       </div>
                     )}
-                    <div className="flex flex-wrap gap-1">
-                      {m.status === "suggested" && (
-                        <button onClick={() => setSendOffer(m)} className="text-xs px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 flex items-center gap-1">
-                          <Send className="h-3 w-3" /> Skicka erbjudande
-                        </button>
-                      )}
-                      {m.status === "sent" && (
-                        <button onClick={() => setSendOffer(m)} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1" title="Ändra det stämplade erbjudandet">
-                          <Pencil className="h-3 w-3" /> Erbjudande
-                        </button>
-                      )}
-                      {m.status !== "rejected" && (
-                        <button onClick={() => setPromiseTerms(m)} className="text-xs px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" title="Bekräfta vad uthyraren lovas för den här affären">
-                          {m.promisedAt ? "Löfte ✓" : "Villkor uthyrare"}
-                        </button>
-                      )}
-                      {m.status !== "rejected" && !m.landlordSignedAt && (
-                        <button onClick={() => shareLandlordLink(m)} className="text-xs px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 flex items-center gap-1" title="Skapa uthyrarens signeringslänk och kopiera SMS-text">
-                          <FileSignature className="h-3 w-3" /> Avtal uthyrare
-                        </button>
-                      )}
-                      {m.status !== "accepted" && (
-                        <button
-                          onClick={() => {
-                            // Stämplat erbjudande vinner; annars kalkylens Bas-scenario, sedan listpris.
-                            setWonValue(
-                              m.offerRentOut?.toString() ??
-                                m.kalkyl?.[0]?.rentOut?.toString() ??
-                                m.propertyRentOut?.toString() ??
-                                request.monthlyValue?.toString() ??
-                                ""
-                            );
-                            setConfirmAccept(m);
-                          }}
-                          className="text-xs px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 flex items-center gap-1"
-                        >
-                          <Check className="h-3 w-3" /> Acceptera
-                        </button>
-                      )}
-                      {m.status !== "rejected" && (
-                        <button onClick={() => setMatchStatus(m.id, "rejected")} className="text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100">
+                    {m.status !== "rejected" ? (
+                      // Affärens steg i rekommenderad ordning: säkra uthyraren (löfte +
+                      // signerat uthyrningsuppdrag) INNAN kunden får pris, acceptera sist.
+                      // Klart = grönt ✓, nästa steg markeras, kommande dämpas — allt
+                      // förblir klickbart om ordningen behöver frångås.
+                      <div className="flex flex-wrap items-center gap-1">
+                        {(() => {
+                          const steps = [
+                            {
+                              label: "Löfte uthyrare",
+                              title: "Bekräfta hyra och villkor med uthyraren — stämplas på affären",
+                              done: !!m.promisedAt,
+                              onClick: () => setPromiseTerms(m),
+                            },
+                            {
+                              label: "Avtal uthyrare",
+                              title: "Signeringslänk för uthyrningsuppdraget — kopierar SMS-text",
+                              done: !!m.landlordSignedAt,
+                              onClick: () => shareLandlordLink(m),
+                            },
+                            {
+                              label: m.sentAt ? "Erbjudande" : "Skicka erbjudande",
+                              title: "Stämpla kundens pris och period — dela sedan kundlänken i panelen ovan",
+                              done: !!m.sentAt,
+                              onClick: () => setSendOffer(m),
+                            },
+                            {
+                              label: "Acceptera",
+                              title: "Kunden har tackat ja — stäng affären som vunnen",
+                              done: m.status === "accepted",
+                              onClick: () => {
+                                // Stämplat erbjudande vinner; annars kalkylens Bas-scenario, sedan listpris.
+                                setWonValue(
+                                  m.offerRentOut?.toString() ??
+                                    m.kalkyl?.[0]?.rentOut?.toString() ??
+                                    m.propertyRentOut?.toString() ??
+                                    request.monthlyValue?.toString() ??
+                                    ""
+                                );
+                                setConfirmAccept(m);
+                              },
+                            },
+                          ];
+                          const currentIdx = steps.findIndex((s) => !s.done);
+                          return steps.map((s, i) => (
+                            <button
+                              key={s.label}
+                              onClick={s.onClick}
+                              title={s.title}
+                              className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
+                                s.done
+                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                  : i === currentIdx
+                                    ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200 hover:bg-blue-100"
+                                    : "border-input bg-white text-muted-foreground hover:bg-muted"
+                              }`}
+                            >
+                              <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                                s.done ? "bg-emerald-600 text-white" : i === currentIdx ? "bg-blue-600 text-white" : "bg-nordic-100 text-nordic-600"
+                              }`}>
+                                {s.done ? "✓" : i + 1}
+                              </span>
+                              {s.label}
+                            </button>
+                          ));
+                        })()}
+                        <button onClick={() => setMatchStatus(m.id, "rejected")} className="text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 ml-auto">
                           Avböj
                         </button>
-                      )}
-                      {m.status === "rejected" && (
+                        <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground" title="Ta bort förslag">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-1">
                         <button onClick={() => setMatchStatus(m.id, "sent")} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1">
                           <Pencil className="h-3 w-3" /> Ändra
                         </button>
-                      )}
-                      <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground ml-auto" title="Ta bort förslag">
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    </div>
+                        <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground ml-auto" title="Ta bort förslag">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
                     <MatchKalkyl
                       matchId={m.id}
                       kalkyl={m.kalkyl}
