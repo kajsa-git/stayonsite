@@ -18,7 +18,7 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13.2", // .2 = vitespunkt tillagd; redan signerade får godkänna om
+  version: "2026-07-13.3", // .3 = avtalsförbud i st. f. kontaktförbud (direkt/indirekt); omsignering krävs
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni Stayonsite i uppdrag att, för er räkning, " +
@@ -37,15 +37,17 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
         "Detta görs för att säkerställa tydlig kommunikation och korrekta villkor för alla parter.",
     },
     {
-      heading: "Ingen direktkontakt med uthyrare",
+      heading: "Inget avtal utanför Stayonsite",
       body:
-        "Ni får inte själva kontakta, förhandla med eller ingå avtal direkt med uthyrare eller boendeleverantörer avseende objekt som Stayonsite har presenterat för er. " +
+        "Ni förbinder er att inte — direkt eller indirekt, till exempel genom annat bolag i samma koncern, närstående eller annan mellanhand — " +
+        "ingå hyresavtal eller annan överenskommelse om boende utan Stayonsites medverkan, avseende objekt som Stayonsite presenterat för er " +
+        "eller annat boende hos samma uthyrare som ni fått kontakt med genom Stayonsite. " +
         "Detta gäller under pågående uppdrag och i 12 månader från det datum då objektet först presenterades för er.",
     },
     {
       heading: "Vite vid överträdelse",
       body:
-        "Vid överträdelse av punkten om direktkontakt ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vid överträdelse av punkten om avtal utanför Stayonsite ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
         "Vitet påverkar inte Stayonsites rätt till ersättning för faktisk skada som överstiger vitet.",
     },
     {
@@ -65,7 +67,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.2", // .2 = vitespunkt tillagd; redan signerade får godkänna om
+  version: "2026-07-13.3", // .3 = avtalsförbud i st. f. kontaktförbud (direkt/indirekt); omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger Stayonsite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -80,15 +82,17 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
       body: "Inget hyresavtal ingås utan er bekräftelse, och ni kan tacka nej till förslag utan motivering.",
     },
     {
-      heading: "Ingen direktkontakt med hyresgäster",
+      heading: "Inget avtal utanför Stayonsite",
       body:
-        "Ni får inte själva kontakta, förhandla med eller ingå avtal med hyresgäster som Stayonsite presenterat. " +
+        "Ni förbinder er att inte — direkt eller indirekt, till exempel genom närstående, annat bolag eller annan mellanhand — " +
+        "ingå hyresavtal eller annan överenskommelse utan Stayonsites medverkan med hyresgäster som Stayonsite presenterat, " +
+        "vare sig det gäller det aktuella objektet eller annat boende ni erbjuder. " +
         "Detta gäller under uppdraget och i 12 månader efter presentation.",
     },
     {
       heading: "Vite vid överträdelse",
       body:
-        "Vid överträdelse av punkten om direktkontakt ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
+        "Vid överträdelse av punkten om avtal utanför Stayonsite ovan utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
         "Vitet påverkar inte Stayonsites rätt till ersättning för faktisk skada som överstiger vitet.",
     },
     {
