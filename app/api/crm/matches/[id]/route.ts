@@ -2,9 +2,13 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
 import { sanitizeKalkyl } from "@/lib/crm/kalkyl";
-import { matches } from "@/lib/crm/schema";
+import { matches, matchEvents } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
+
+const OFFER_KEYS = ["offerRentOut", "offerStartDate", "offerEndDate", "offerOngoing", "offerNote"] as const;
+const PROMISE_KEYS = ["promisedRentIn", "promisedStartDate", "promisedEndDate", "promisedConditions"] as const;
 
 const VALID = ["suggested", "sent", "accepted", "rejected"];
 
@@ -51,6 +55,48 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const [row] = await db.update(matches).set(data).where(eq(matches.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // Förhandlingen snurrar — varje omstämpling av villkor loggas med en kopia av
+  // värdena (crm_match_events) så historiken aldrig går förlorad. Loggfel får
+  // inte fälla skrivningen: villkoren är redan sparade på affären.
+  try {
+    const events: (typeof matchEvents.$inferInsert)[] = [];
+    if (OFFER_KEYS.some((k) => k in data)) {
+      events.push({
+        id: nanoid(),
+        matchId: id,
+        requestId: row.requestId,
+        actor: "internal",
+        type: "offer_terms",
+        data: {
+          rentOut: row.offerRentOut,
+          startDate: row.offerStartDate,
+          endDate: row.offerEndDate,
+          ongoing: row.offerOngoing,
+          note: row.offerNote,
+        },
+      });
+    }
+    if (PROMISE_KEYS.some((k) => k in data)) {
+      events.push({
+        id: nanoid(),
+        matchId: id,
+        requestId: row.requestId,
+        actor: "internal",
+        type: "promised_terms",
+        data: {
+          rentIn: row.promisedRentIn,
+          startDate: row.promisedStartDate,
+          endDate: row.promisedEndDate,
+          conditions: row.promisedConditions,
+        },
+      });
+    }
+    if (events.length) await db.insert(matchEvents).values(events);
+  } catch (e) {
+    console.error("match-event log:", e);
+  }
+
   return NextResponse.json(row);
 }
 

@@ -19,6 +19,7 @@ const {
   contacts,
   emails,
   matches,
+  matchEvents,
   notes,
   ownerOutreach,
   owners,
@@ -123,23 +124,30 @@ describe("deleteRequestDeep", () => {
     expect(outreach.requestId).toBeNull();
   });
 
-  it("raderar förfrågans delningslänkar och avtalsgodkännanden", async () => {
+  it("raderar förfrågans delningslänkar, avtalsgodkännanden och händelselogg", async () => {
     await db.insert(companies).values({ id: "c1", name: "Acme" });
+    await db.insert(properties).values({ id: "p1" });
     await db.insert(requests).values({ id: "r1", companyId: "c1", status: "matching" });
     await db.insert(requests).values({ id: "r2", companyId: "c1", status: "incoming" });
+    await db.insert(matches).values({ id: "m1", requestId: "r1", propertyId: "p1", status: "sent" });
     await db.insert(shareLinks).values({ id: "sl1", token: "t1", audience: "tenant", requestId: "r1" });
     await db.insert(shareLinks).values({ id: "sl2", token: "t2", audience: "tenant", requestId: "r2" });
     await db.insert(agreementAcceptances).values({
       id: "a1", agreementType: "uppdragsbekraftelse", version: "2026-07-12",
       requestId: "r1", acceptedName: "Anna", acceptedAt: "2026-07-12T08:00:00Z",
     });
+    await db.insert(matchEvents).values({
+      id: "ev1", matchId: "m1", requestId: "r1", actor: "internal", type: "offer_terms",
+      data: { rentOut: 24500 },
+    });
 
     await db.transaction((tx) => deleteRequestDeep(tx, "r1"));
 
-    // Bara r1:s länk och godkännande försvinner — r2:s länk står kvar.
+    // Bara r1:s länk, godkännande och händelser försvinner — r2:s länk står kvar.
     const remaining = await db.select({ id: shareLinks.id }).from(shareLinks);
     expect(remaining.map((l) => l.id)).toEqual(["sl2"]);
     expect(await db.$count(agreementAcceptances)).toBe(0);
+    expect(await db.$count(matchEvents)).toBe(0);
   });
 });
 

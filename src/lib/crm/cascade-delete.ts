@@ -8,6 +8,7 @@ const {
   contacts,
   emails,
   matches,
+  matchEvents,
   notes,
   ownerOutreach,
   owners,
@@ -40,6 +41,7 @@ export async function deleteCompanyDeep(tx: Tx, companyId: string): Promise<void
   const reqIds = reqRows.map((r) => r.id);
   if (reqIds.length) {
     await tx.delete(matches).where(inArray(matches.requestId, reqIds));
+    await tx.delete(matchEvents).where(inArray(matchEvents.requestId, reqIds));
     await tx.delete(shareLinks).where(inArray(shareLinks.requestId, reqIds));
     await tx.delete(agreementAcceptances).where(inArray(agreementAcceptances.requestId, reqIds));
     await tx.update(ownerOutreach).set({ requestId: null }).where(inArray(ownerOutreach.requestId, reqIds));
@@ -55,6 +57,7 @@ export async function deleteCompanyDeep(tx: Tx, companyId: string): Promise<void
 // ownerOutreach.requestId nollställs.
 export async function deleteRequestDeep(tx: Tx, requestId: string): Promise<void> {
   await tx.delete(matches).where(eq(matches.requestId, requestId));
+  await tx.delete(matchEvents).where(eq(matchEvents.requestId, requestId));
   await tx.delete(shareLinks).where(eq(shareLinks.requestId, requestId));
   await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.requestId, requestId));
   await tx.update(ownerOutreach).set({ requestId: null }).where(eq(ownerOutreach.requestId, requestId));
@@ -73,6 +76,7 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
   const matchIds = matchRows.map((m) => m.id);
   if (matchIds.length) {
     await tx.delete(shareLinks).where(inArray(shareLinks.matchId, matchIds));
+    await tx.delete(matchEvents).where(inArray(matchEvents.matchId, matchIds));
   }
   await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.propertyId, propertyId));
   await tx.delete(matches).where(eq(matches.propertyId, propertyId));

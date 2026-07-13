@@ -21,9 +21,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { swrFetcher } from "@/lib/crm/fetcher";
 import type { KalkylScenario } from "@/lib/crm/kalkyl";
-import type { Request } from "@/lib/crm/schema";
+import type { MatchEvent, Request } from "@/lib/crm/schema";
 import { useState } from "react";
+import useSWR from "swr";
 
 // Det matchdialogerna behöver veta — delmängd av MatchingViews MatchRow.
 export interface DealTermsMatch {
@@ -64,6 +66,42 @@ async function patchMatch(id: string, body: Record<string, unknown>): Promise<bo
     body: JSON.stringify(body),
   });
   return res.ok;
+}
+
+// Förhandlingshistorik i dialogerna: tidigare stämplingar av samma villkorsgrupp,
+// nyast först. Priser/löptid snurrar mellan visning och slutgiltigt avtal —
+// här syns vad som erbjöds/lovades när.
+function TermsHistory({ matchId, type }: { matchId: string; type: "offer_terms" | "promised_terms" }) {
+  const { data: events } = useSWR<MatchEvent[]>(`/api/crm/matches/${matchId}/events`, swrFetcher);
+  const rows = (events ?? []).filter((e) => e.type === type);
+  if (rows.length === 0) return null;
+
+  const line = (e: MatchEvent): string => {
+    const d = (e.data ?? {}) as Record<string, unknown>;
+    const kr = typeof d.rentOut === "number" ? d.rentOut : typeof d.rentIn === "number" ? d.rentIn : null;
+    const period = d.ongoing
+      ? `${d.startDate ?? "?"} → tills vidare`
+      : d.startDate || d.endDate
+        ? `${d.startDate ?? "?"} → ${d.endDate ?? "?"}`
+        : null;
+    const extra = (d.note ?? d.conditions) as string | null;
+    return [kr != null ? `${kr.toLocaleString("sv-SE")} kr/mån` : "—", period, extra].filter(Boolean).join(" · ");
+  };
+
+  return (
+    <div className="rounded-md border bg-muted/30 px-3 py-2">
+      <p className="text-xs font-medium text-muted-foreground mb-1">
+        Historik ({rows.length} {rows.length === 1 ? "stämpling" : "stämplingar"})
+      </p>
+      <ul className="space-y-0.5 max-h-28 overflow-y-auto">
+        {rows.slice(0, 8).map((e) => (
+          <li key={e.id} className="text-xs text-muted-foreground">
+            <span className="tabular-nums text-nordic-500">{(e.createdAt ?? "").slice(0, 16)}</span> — {line(e)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export function SendOfferDialog({
@@ -201,7 +239,7 @@ function SendOfferForm({
       </label>
 
       <div className="space-y-1">
-        <Label htmlFor="offer-note">Notis till kund (visas i erbjudandelänken)</Label>
+        <Label htmlFor="offer-note">Notis till kund — t.ex. vad som ingår i just den här affären</Label>
         <Textarea
           id="offer-note"
           value={note}
@@ -210,6 +248,8 @@ function SendOfferForm({
           rows={2}
         />
       </div>
+
+      <TermsHistory matchId={match.id} type="offer_terms" />
 
       <DialogFooter>
         <Button variant="ghost" onClick={onClose} disabled={saving}>
@@ -381,6 +421,8 @@ function PromiseTermsForm({
       <p className="text-sm text-muted-foreground">
         Villkoren stämplas på affären och en öppen jaga-runda för objektet markeras som bekräftad.
       </p>
+
+      <TermsHistory matchId={match.id} type="promised_terms" />
 
       <DialogFooter>
         <Button variant="ghost" onClick={onClose} disabled={saving}>

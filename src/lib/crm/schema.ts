@@ -507,3 +507,23 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
 
 export type AgreementAcceptance = typeof agreementAcceptances.$inferSelect;
 export type AgreementAcceptanceInsert = typeof agreementAcceptances.$inferInsert;
+
+// Händelselogg per affär — varje omstämpling av villkor sparas med en KOPIA av
+// värdena. Förhandlingen snurrar (pris, löptid, vad som ingår) mellan visning
+// och slutgiltigt avtal; loggen är spåret som visar vad som erbjöds/lovades när.
+// Raderna skrivs aldrig om, bara till. Lösa referenser — radering via cascade-delete.ts.
+export const matchEvents = sqliteTable("crm_match_events", {
+  id: text("id").primaryKey(),
+  matchId: text("match_id").notNull(),
+  requestId: text("request_id"), // denormaliserat för tidslinje per förfrågan
+  actor: text("actor").notNull(), // internal | tenant | landlord
+  type: text("type").notNull(), // offer_terms | promised_terms | ...
+  data: text("data", { mode: "json" }).$type<Record<string, unknown>>(), // kopia av villkoren vid stämplingen
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_match_events_match_id_idx").on(t.matchId),
+  index("crm_match_events_request_id_idx").on(t.requestId),
+]);
+
+export type MatchEvent = typeof matchEvents.$inferSelect;
+export type MatchEventInsert = typeof matchEvents.$inferInsert;
