@@ -168,15 +168,13 @@ export async function GET() {
     ownerName: string | null;
     ownerPhone: string | null;
     dates: string[];
-    matchReasons: string[];
     ownerReason: string | null;
-    requestCount: number;
   };
   const byProperty = new Map<string, Acc>();
   const ensure = (id: string): Acc => {
     let e = byProperty.get(id);
     if (!e) {
-      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, dates: [], matchReasons: [], ownerReason: null, requestCount: 0 };
+      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, dates: [], ownerReason: null };
       byProperty.set(id, e);
     }
     return e;
@@ -200,9 +198,7 @@ export async function GET() {
       ownerName: e.ownerName,
       ownerPhone: e.ownerPhone,
       earliestDate: e.dates.length ? [...e.dates].sort()[0] : null,
-      reason: e.ownerReason ?? e.matchReasons[0] ?? null,
-      requestCount: e.requestCount,
-      sourcing: e.requestCount === 0,
+      reason: e.ownerReason ?? null,
       hasReply: e.ownerId ? unreadOwnerSet.has(e.ownerId) : false,
     }))
     .sort((a, b) => (a.earliestDate ?? "").localeCompare(b.earliestDate ?? ""));

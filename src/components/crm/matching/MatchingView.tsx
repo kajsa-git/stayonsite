@@ -32,6 +32,9 @@ import {
 import { OfferLinkPanel } from "./OfferLinkPanel";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { PropertyEditModal } from "../property/PropertyEditModal";
+import { LandlordLogDialog } from "./LandlordLogDialog";
+import { PhoneActions } from "@/components/crm/PhoneActions";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Props {
@@ -90,6 +93,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   // Redigeringsmodalen härleds via id ur SWR-listan (inte en snapshot) — så
   // formuläret resynkas när mutate() hämtat om objektet efter sparning.
   const [editPropertyId, setEditPropertyId] = useState<string | null>(null);
+  const [logPropertyId, setLogPropertyId] = useState<string | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
@@ -423,6 +427,28 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
+                    {(() => {
+                      // Uthyrarkontakten direkt på kortet — ring/SMS + kontaktlogg
+                      // utan att lämna matchningen. Datat finns redan i objektlistan.
+                      const p = properties.find((x) => x.id === m.propertyId);
+                      if (!p?.ownerName && !p?.ownerPhone) return null;
+                      return (
+                        <div className="flex flex-wrap items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+                          <span className="truncate">
+                            {p?.ownerName ?? "Uthyrare"}
+                            {p?.ownerPhone ? ` · ${formatPhoneSv(p.ownerPhone)}` : ""}
+                          </span>
+                          {p?.ownerPhone && <PhoneActions phone={p.ownerPhone} ownerId={p.ownerId ?? undefined} />}
+                          <button
+                            onClick={() => setLogPropertyId(m.propertyId)}
+                            className="rounded border border-input bg-white px-1.5 py-0.5 text-[11px] hover:bg-muted"
+                            title="Läs och skriv kontaktlogg för uthyraren"
+                          >
+                            Logg
+                          </button>
+                        </div>
+                      );
+                    })()}
                     {(m.offerRentOut != null || m.landlordSignedAt) && (
                       <div className="mb-2 space-y-0.5 text-xs">
                         {m.offerRentOut != null && (
@@ -729,6 +755,19 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           mutateMatches();
         }}
       />
+
+      {(() => {
+        const p = logPropertyId ? properties.find((x) => x.id === logPropertyId) : null;
+        return (
+          <LandlordLogDialog
+            propertyId={logPropertyId}
+            propertyAddress={p?.address}
+            ownerName={p?.ownerName}
+            ownerPhone={p?.ownerPhone}
+            onClose={() => setLogPropertyId(null)}
+          />
+        );
+      })()}
 
       <SendOfferDialog
         match={sendOffer}

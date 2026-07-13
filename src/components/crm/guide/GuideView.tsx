@@ -19,9 +19,9 @@ const SECTIONS = [
     id: "matchning",
     title: "Matchning & erbjudande",
     steps: [
-      "Lägg till objekt som förslag från listan till höger. Kalkylen på varje förslag räknar marginal per scenario — Bas-scenariot förifyller allt senare.",
+      "Lägg till objekt som förslag från listan till höger. Kalkylen på varje förslag räknar marginal per scenario — Bas-scenariot förifyller allt senare. Klicka på objektnamnet på förslagskortet för att redigera objektet direkt i en modal (priser, bäddar, beskrivning) utan att lämna vyn — pilen ↗ öppnar Objektsbanken.",
       "Stegen på förslagskortet går i ordning — avtalet alltid först: 1) Avtal uthyrare — uppdragsavtalet signeras alltid först (grönt direkt om uthyraren redan signerat vid onboarding). 2) Skicka erbjudande stämplar kundens pris, period och notis på affären — villkoren ligger fast även om objektets listpriser ändras efteråt, och en återkomst sätts på kunden (+3 dagar, 'Väntar svar på erbjudande') i Att kontakta-kön. 3) Acceptera när kunden tackat ja. Uthyrarens exakta villkor (hyra, period, uppsägning) fylls i vid det skarpa kontraktet.",
-      "Skapa kundlänken i panelen Kundens länk och dela via SMS-knappen (färdig text med www-länk — https-länkar fastnar i operatörsfiltren). Första gången kunden öppnar länken signeras uppdragsbekräftelsen — före dess visas inget erbjudande. Panelen visar när kunden öppnat sidan.",
+      "Skapa kundlänken i panelen Kundens länk och dela via SMS-knappen — texten väljer rätt copy själv: avtalsutskicket ('Bifogar uppdragsbekräftelse …') innan erbjudandet är skickat, erbjudandetexten därefter. Länken skrivs alltid som www utan https (operatörsfiltren). Första gången kunden öppnar länken signeras uppdragsbekräftelsen; finns inget skickat erbjudande ser de sedan en väntsida som automatiskt byts mot förslaget. Panelen visar när kunden öppnat sidan.",
       "Kundens sida visar alltid det stämplade priset — aldrig adress, uthyrare eller inpris.",
       "Boka aldrig visning förrän båda avtalen är signerade: uppdragsbekräftelsen (badge i panelen) och uthyrningsuppdraget ('signerat av …' på kortet).",
     ],
@@ -45,13 +45,15 @@ const SECTIONS = [
       "Fakturerad kräver inflyttningsdatum + utflyttningsdatum (eller löpande). In- och avflytt bockas av i checklistorna; klarmarkerad avflytt gör objektet tillgängligt igen.",
       "Tackar kunden nej: sätt Nej tack med anledning — kundlänken dör automatiskt.",
       "Förlängningsradarn flaggar vunna affärer som närmar sig slutdatum — förläng eller avfärda.",
+      "Nästa steg efter accept blir det skarpa kontraktet: genereras ur affärens stämplade villkor och signeras av båda parter via var sin länk (byggs härnäst — tills dess hanteras kontraktet som idag).",
     ],
   },
   {
     id: "min-dag",
     title: "Min dag & köerna",
     steps: [
-      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Att kontakta (uppföljningar som förfallit), Öppna uppdrag, Ska faktureras och Följ upp uthyrare.",
+      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Att kontakta (kundåterkomster — inklusive de automatiska 'Väntar svar på erbjudande' som sätts när ett erbjudande skickas), Öppna uppdrag, Ska faktureras och Följ upp uthyrare.",
+      "Följ upp uthyrare innehåller BARA kontaktrundor (bilder, publicerings-ja, onboarding) — affärer bevakas inte där. Kunder bevakas via företagets återkomst; når du inte en uthyrare om ett förslag avböjer du förslaget.",
       "Arbetsläget (öppna en kö) går igenom ärendena ett i taget så inget hoppas över.",
       "Footern längst ner visar dagens köer var du än är — siffrorna är klickbara.",
     ],

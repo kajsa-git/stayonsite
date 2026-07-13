@@ -66,7 +66,7 @@ const STEPS = [
   { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
   { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
-  { emoji: "☎️", title: "Följ upp uthyrare", text: "Hyresvärdar att höra av sig till — för förslag som väntar svar eller för sourcing." },
+  { emoji: "☎️", title: "Följ upp uthyrare", text: "Kontaktrundor att följa upp — bilder, publicerings-ja och onboarding." },
   { emoji: "✉️", title: "Utkast", text: "Kvarvarande sparade utkast. Knapparna i panelerna skickar numera direkt." },
 ];
 
@@ -166,8 +166,6 @@ interface ChaseRow {
   ownerPhone: string | null;
   earliestDate: string | null;
   reason: string | null;
-  requestCount: number;
-  sourcing: boolean;
   hasReply: boolean;
 }
 
@@ -913,13 +911,7 @@ function ChaseCard({
           </span>
         )}
         <div className="text-xs mt-1">
-          {item.sourcing ? (
-            <span className="italic text-nordic-500">Uthyrarkontakt att följa upp</span>
-          ) : (
-            <span className="text-amber-700 font-medium">
-              {item.requestCount === 1 ? "Skickat förslag väntar svar" : `${item.requestCount} skickade förslag väntar svar`}
-            </span>
-          )}
+          <span className="italic text-nordic-500">Uthyrarkontakt att följa upp</span>
           {item.reason && <span className="text-muted-foreground"> · {item.reason}</span>}
         </div>
         {item.earliestDate && (
