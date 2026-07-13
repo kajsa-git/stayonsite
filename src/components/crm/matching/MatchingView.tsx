@@ -31,6 +31,7 @@ import {
 } from "./DealTermsDialogs";
 import { OfferLinkPanel } from "./OfferLinkPanel";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
+import { PropertyEditModal } from "../property/PropertyEditModal";
 import { swrFetcher } from "@/lib/crm/fetcher";
 
 interface Props {
@@ -86,6 +87,9 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [detailProperty, setDetailProperty] = useState<PropertyWithOwner | null>(null);
   const [confirmAccept, setConfirmAccept] = useState<MatchRow | null>(null);
   const [sendOffer, setSendOffer] = useState<MatchRow | null>(null);
+  // Redigeringsmodalen härleds via id ur SWR-listan (inte en snapshot) — så
+  // formuläret resynkas när mutate() hämtat om objektet efter sparning.
+  const [editPropertyId, setEditPropertyId] = useState<string | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
@@ -104,7 +108,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     availableDates: false,
     showWeak: false,
   });
-  const { data: properties = [], isLoading } = useSWR<PropertyWithOwner[]>(`/api/crm/properties?q=`, fetcher);
+  const { data: properties = [], isLoading, mutate: mutateProperties } = useSWR<PropertyWithOwner[]>(`/api/crm/properties?q=`, fetcher);
+  const editProperty = editPropertyId ? (properties.find((p) => p.id === editPropertyId) ?? null) : null;
   const { data: matches = [], mutate: mutateMatches } = useSWR<MatchRow[]>(
     `/api/crm/matches?requestId=${request.id}`,
     fetcher
@@ -393,14 +398,22 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                 {matches.map((m) => (
                   <div key={m.id} className="border rounded-lg p-2.5 text-sm">
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <button
-                        onClick={() => router.push(`/crm/properties?id=${m.propertyId}`)}
-                        className="font-medium truncate text-left hover:text-primary-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded inline-flex items-center gap-1"
-                        title="Öppna i Objektsbanken"
-                      >
-                        {m.propertyAddress ?? "(bostad)"}
-                        <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
-                      </button>
+                      <span className="inline-flex items-center gap-1 min-w-0">
+                        <button
+                          onClick={() => setEditPropertyId(m.propertyId)}
+                          className="font-medium truncate text-left hover:text-primary-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded"
+                          title="Redigera objektet direkt här"
+                        >
+                          {m.propertyAddress ?? "(bostad)"}
+                        </button>
+                        <button
+                          onClick={() => router.push(`/crm/properties?id=${m.propertyId}`)}
+                          className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+                          title="Öppna i Objektsbanken"
+                        >
+                          <ArrowUpRight className="h-3 w-3" />
+                        </button>
+                      </span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${MATCH_STATUS_CLS[m.status]}`}>
                         {MATCH_STATUS_LABEL[m.status]}
                       </span>
@@ -707,6 +720,15 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       </div>
 
       <PropertyDetailModal property={detailProperty} onClose={() => setDetailProperty(null)} />
+
+      <PropertyEditModal
+        property={editProperty}
+        onClose={() => setEditPropertyId(null)}
+        onSaved={() => {
+          mutateProperties();
+          mutateMatches();
+        }}
+      />
 
       <SendOfferDialog
         match={sendOffer}
