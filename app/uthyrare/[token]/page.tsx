@@ -52,13 +52,16 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
           ) : (
             <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">
               <h1 className="text-[1.8rem] leading-tight tracking-tight text-nordic-900" style={editorial}>
-                Uppdraget är signerat
+                Tack — uppdraget är signerat
               </h1>
               <p className="text-sm text-nordic-700">
-                Tack! Uthyrningsuppdraget signerades av {standing.acceptedName} den{" "}
-                {standing.acceptedAt?.slice(0, 10)} och gäller till{" "}
-                {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"}. Det omfattar alla era objekt
-                hos StayOnSite — när vi har en konkret uthyrning får ni villkoren bekräftade separat.
+                Signerat av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Uppdraget gäller till{" "}
+                {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"} och omfattar alla objekt ni
+                hyr ut genom StayOnSite.
+              </p>
+              <p className="text-sm text-nordic-700">
+                Nästa steg: när vi har en hyresgäst till ert boende hör vi av oss med hyra, period och övriga
+                villkor. Inget hyrs ut utan ert godkännande.
               </p>
               <p className="text-xs text-muted-foreground">Frågor? Hör av dig till Kajsa på StayOnSite.</p>
             </div>
