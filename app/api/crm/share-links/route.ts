@@ -30,6 +30,7 @@ async function agreementStatus(column: ScopeColumn, id: string, text: AgreementT
     .limit(1);
   if (!latest) return null;
   return {
+    id: latest.id, // för annullering (DELETE /api/crm/agreement-acceptances/[id])
     acceptedName: latest.acceptedName,
     acceptedAt: latest.acceptedAt,
     version: latest.version,

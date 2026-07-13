@@ -15,6 +15,7 @@ import { useState } from "react";
 import useSWR from "swr";
 
 interface AgreementStatus {
+  id: string;
   acceptedName: string;
   acceptedAt: string;
   version: string;
@@ -85,6 +86,32 @@ export function AgreementStatusPanel({
     return data?.links.find((l) => l.requestId)?.requestId ?? null;
   }
 
+  // Annullera signeringen — INTE samma sak som att återkalla länken (länken är
+  // dörren, signeringen är avtalet). Destruktivt ⇒ explicit bekräftelse.
+  async function annulSignature() {
+    if (!a) return;
+    if (
+      !window.confirm(
+        `Annullera signeringen av ${a.acceptedName} (${a.acceptedAt.slice(0, 10)})? ` +
+          "Parten måste signera om via länken. Detta kan inte ångras."
+      )
+    ) {
+      return;
+    }
+    setWorking(true);
+    try {
+      const res = await fetch(`/api/crm/agreement-acceptances/${a.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        toast({ title: "Kunde inte annullera signeringen", variant: "destructive" });
+        return;
+      }
+      mutate();
+      toast({ title: "Signeringen annullerad — gaten visas igen i länken" });
+    } finally {
+      setWorking(false);
+    }
+  }
+
   async function copySms() {
     if (!activeLink) return;
     // Avtals-copy, inte erbjudande-copy — lovar inget objekt/pris förrän
@@ -129,6 +156,16 @@ export function AgreementStatusPanel({
             <ShieldQuestion className="h-3 w-3" />
             Ej signerat
           </span>
+        )}
+        {a && (
+          <button
+            onClick={annulSignature}
+            disabled={working}
+            className="text-[11px] text-red-700 underline decoration-red-300 hover:decoration-red-700 disabled:opacity-50"
+            title="Tar bort signeringen — parten måste signera om via länken. Återkallning av länken gör INTE detta."
+          >
+            Annullera signering
+          </button>
         )}
       </div>
 
