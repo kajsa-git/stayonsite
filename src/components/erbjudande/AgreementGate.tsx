@@ -6,14 +6,9 @@
 // sidan laddas sedan om server-side och innehållet renderas.
 // Avtal finns bara på svenska och engelska; svenskan har företräde vid tolkning.
 
-import type { AgreementLanguage } from "@/lib/crm/avtal";
+import type { AgreementLanguage, AgreementPoint } from "@/lib/crm/avtal";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-interface AgreementPoint {
-  heading: string;
-  body: string;
-}
 
 const UI: Record<AgreementLanguage, {
   nameLabel: string;
@@ -113,7 +108,15 @@ export function AgreementGate({
             </span>
             <div>
               <h2 className="text-base font-semibold text-nordic-900">{p.heading}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-nordic-700">{p.body}</p>
+              {p.body && <p className="mt-1 text-sm leading-relaxed text-nordic-700">{p.body}</p>}
+              {p.bullets && (
+                <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-nordic-700">
+                  {p.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              )}
+              {p.note && <p className="mt-2 text-sm text-muted-foreground">{p.note}</p>}
             </div>
           </li>
         ))}

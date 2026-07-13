@@ -7,18 +7,25 @@
 
 export type AgreementType = "uppdragsbekraftelse" | "uthyrningsuppdrag";
 
+export interface AgreementPoint {
+  heading: string;
+  body?: string; // löpande text
+  bullets?: string[]; // underpunkter — för längre punkter som ska vara lättlästa
+  note?: string; // avslutande rad (t.ex. giltighetstid), renderas diskret
+}
+
 export interface AgreementText {
   type: AgreementType;
   version: string; // ISO-datum då texten senast ändrades
   title: string;
   intro: string;
-  points: { heading: string; body: string }[];
+  points: AgreementPoint[];
 }
 
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-13.5", // .5 = kontaktpart + avtalsförbud ihopslagna till en punkt; omsignering krävs
+  version: "2026-07-13.6", // .6 = huvudpunkten uppdelad i lättlästa underpunkter; omsignering krävs
   title: "Uppdragsbekräftelse",
   intro:
     "Genom att godkänna denna uppdragsbekräftelse ger ni StayOnSite i uppdrag att, för er räkning, " +
@@ -32,13 +39,14 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
     },
     {
       heading: "Affären går alltid via StayOnSite",
-      body:
-        "Frågor om pris, tillgänglighet och villkor hanteras alltid av StayOnSite — praktisk direktkontakt med uthyraren, " +
-        "till exempel kring visning, tillträde och nycklar, kan förekomma. " +
-        "Ni förbinder er att inte — direkt eller indirekt, till exempel genom annat bolag i samma koncern, närstående eller annan mellanhand — " +
-        "förhandla om eller ingå hyresavtal eller annan överenskommelse om boende utan StayOnSites medverkan, " +
-        "avseende objekt som StayOnSite presenterat för er eller annat boende hos samma uthyrare som ni fått kontakt med genom StayOnSite. " +
-        "Detta gäller under pågående uppdrag och i 12 månader från det datum då objektet först presenterades för er.",
+      bullets: [
+        "Pris, tillgänglighet och villkor hanteras alltid av StayOnSite.",
+        "Praktisk direktkontakt med uthyraren går bra — till exempel kring visning, tillträde och nycklar.",
+        "Ni förbinder er att inte förhandla om eller ingå hyresavtal eller annan boendeöverenskommelse utan StayOnSites medverkan — " +
+          "varken direkt eller indirekt (till exempel genom annat bolag i samma koncern, närstående eller annan mellanhand). " +
+          "Detta omfattar objekt som StayOnSite presenterat för er, och annat boende hos samma uthyrare som ni fått kontakt med genom StayOnSite.",
+      ],
+      note: "Åtagandet gäller under pågående uppdrag och i 12 månader från att ett objekt först presenterades för er.",
     },
     {
       heading: "Vite vid överträdelse",
@@ -63,7 +71,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.5", // .5 = villkorspunkt + avtalsförbud ihopslagna till en punkt; omsignering krävs
+  version: "2026-07-13.6", // .6 = huvudpunkten uppdelad i lättlästa underpunkter; omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger StayOnSite i uppdrag att hyra ut ert objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -79,13 +87,14 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
     },
     {
       heading: "Affären går alltid via StayOnSite",
-      body:
-        "Hyra och villkor för förmedlade affärer hanteras alltid av StayOnSite — praktisk direktkontakt med hyresgästen, " +
-        "till exempel kring visning, tillträde och nycklar, kan förekomma. " +
-        "Ni förbinder er att inte — direkt eller indirekt, till exempel genom närstående, annat bolag eller annan mellanhand — " +
-        "förhandla om eller ingå hyresavtal eller annan överenskommelse utan StayOnSites medverkan med hyresgäster som StayOnSite presenterat, " +
-        "vare sig det gäller det aktuella objektet eller annat boende ni erbjuder. " +
-        "Detta gäller under uppdraget och i 12 månader efter presentation.",
+      bullets: [
+        "Hyra och villkor för förmedlade affärer hanteras alltid av StayOnSite.",
+        "Praktisk direktkontakt med hyresgästen går bra — till exempel kring visning, tillträde och nycklar.",
+        "Ni förbinder er att inte förhandla om eller ingå hyresavtal eller annan överenskommelse utan StayOnSites medverkan " +
+          "med hyresgäster som StayOnSite presenterat — varken direkt eller indirekt (till exempel genom närstående, annat bolag eller annan mellanhand). " +
+          "Detta gäller både det aktuella objektet och annat boende ni erbjuder.",
+      ],
+      note: "Åtagandet gäller under uppdraget och i 12 månader efter presentation.",
     },
     {
       heading: "Vite vid överträdelse",
@@ -116,13 +125,14 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
     },
     {
       heading: "The deal always goes through StayOnSite",
-      body:
-        "Questions about price, availability and terms are always handled by StayOnSite — practical direct contact with the landlord, " +
-        "for example regarding viewings, move-in and keys, may occur. " +
-        "You undertake not to — directly or indirectly, for example through a group company, related party or other intermediary — " +
-        "negotiate or enter into a lease or any other housing arrangement without StayOnSite's involvement, " +
-        "regarding properties presented by StayOnSite or other housing from the same landlord that you came into contact with through StayOnSite. " +
-        "This applies for the duration of the assignment and for 12 months from the date the property was first presented to you.",
+      bullets: [
+        "Price, availability and terms are always handled by StayOnSite.",
+        "Practical direct contact with the landlord is fine — for example regarding viewings, move-in and keys.",
+        "You undertake not to negotiate or enter into a lease or any other housing arrangement without StayOnSite's involvement — " +
+          "neither directly nor indirectly (for example through a group company, related party or other intermediary). " +
+          "This covers properties presented by StayOnSite, and other housing from the same landlord that you came into contact with through StayOnSite.",
+      ],
+      note: "This commitment applies for the duration of the assignment and for 12 months from the date a property was first presented to you.",
     },
     {
       heading: "Penalty upon breach",
@@ -163,13 +173,14 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
     },
     {
       heading: "The deal always goes through StayOnSite",
-      body:
-        "Rent and terms for brokered deals are always handled by StayOnSite — practical direct contact with the tenant, " +
-        "for example regarding viewings, move-in and keys, may occur. " +
-        "You undertake not to — directly or indirectly, for example through a related party, another company or other intermediary — " +
-        "negotiate or enter into a lease or any other arrangement without StayOnSite's involvement with tenants presented by StayOnSite, " +
-        "whether for the property in question or any other housing you offer. " +
-        "This applies for the duration of the assignment and for 12 months after presentation.",
+      bullets: [
+        "Rent and terms for brokered deals are always handled by StayOnSite.",
+        "Practical direct contact with the tenant is fine — for example regarding viewings, move-in and keys.",
+        "You undertake not to negotiate or enter into a lease or any other arrangement without StayOnSite's involvement " +
+          "with tenants presented by StayOnSite — neither directly nor indirectly (for example through a related party, another company or other intermediary). " +
+          "This covers both the property in question and any other housing you offer.",
+      ],
+      note: "This commitment applies for the duration of the assignment and for 12 months after presentation.",
     },
     {
       heading: "Penalty upon breach",
