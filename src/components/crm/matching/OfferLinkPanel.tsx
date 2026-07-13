@@ -9,7 +9,7 @@ import { ShareLinkButton } from "@/components/crm/property/ShareLinkButton";
 import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import type { ShareLink } from "@/lib/crm/schema";
-import { offerLinkSms } from "@/lib/crm/sms-templates";
+import { offerLinkSms, tenantAvtalSms } from "@/lib/crm/sms-templates";
 import { Copy, Eye, Link as LinkIcon, ShieldCheck, ShieldQuestion, Undo2 } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
@@ -86,9 +86,18 @@ export function OfferLinkPanel({
 
   async function copySmsText() {
     if (!tenantLink) return;
+    // Copy efter läge: inget erbjudande skickat ⇒ avtals-SMS (lovar inget objekt/pris),
+    // annars erbjudande-SMS. Samma länk i båda — sidan växlar själv.
+    const text =
+      sentCount === 0 ? tenantAvtalSms(contactName, tenantLink.token) : offerLinkSms(contactName, tenantLink.token);
     try {
-      await navigator.clipboard.writeText(offerLinkSms(contactName, tenantLink.token));
-      toast({ title: "SMS-text kopierad (länk utan https — leveranssäkert)" });
+      await navigator.clipboard.writeText(text);
+      toast({
+        title:
+          sentCount === 0
+            ? "Avtals-SMS kopierad — erbjudande-texten används när förslaget är skickat"
+            : "SMS-text kopierad (länk utan https — leveranssäkert)",
+      });
     } catch {
       toast({ title: "Kunde inte kopiera", variant: "destructive" });
     }
