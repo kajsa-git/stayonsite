@@ -31,6 +31,8 @@ export function AgreementGate({
   const [website, setWebsite] = useState(""); // honeypot — människor ser aldrig fältet
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const submitLabel =
+    title === "Uthyrningsuppdrag" ? "Godkänn uthyrningsuppdraget" : "Godkänn uppdragsbekräftelsen";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,18 +69,23 @@ export function AgreementGate({
       >
         {title}
       </h1>
-      <p className="mt-3 text-sm text-nordic-700">{intro}</p>
+      <p className="mt-3 max-w-3xl text-base leading-relaxed text-nordic-700">{intro}</p>
 
-      <ul className="mt-6 space-y-4">
-        {points.map((p) => (
-          <li key={p.heading} className="rounded-xl bg-nordic-50 px-4 py-3">
-            <p className="text-sm font-semibold text-nordic-900">{p.heading}</p>
-            <p className="mt-0.5 text-sm text-nordic-700">{p.body}</p>
+      <ol className="mt-8 space-y-5">
+        {points.map((p, index) => (
+          <li key={p.heading} className="grid gap-3 sm:grid-cols-[2.25rem_1fr]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-nordic-50 text-sm font-semibold text-nordic-900">
+              {index + 1}
+            </span>
+            <div>
+              <h2 className="text-base font-semibold text-nordic-900">{p.heading}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-nordic-700">{p.body}</p>
+            </div>
           </li>
         ))}
-      </ul>
+      </ol>
 
-      <form onSubmit={submit} className="mt-6 space-y-3">
+      <form onSubmit={submit} className="mt-8 space-y-3">
         <label htmlFor="agreement-name" className="block text-sm font-medium text-nordic-900">
           Godkänn med ditt namn
         </label>
@@ -108,10 +115,10 @@ export function AgreementGate({
           disabled={submitting}
           className="inline-flex w-full items-center justify-center rounded-full bg-[#ff6300] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#e65800] disabled:opacity-60 sm:w-auto"
         >
-          {submitting ? "Godkänner…" : "Godkänn och visa förslaget"}
+          {submitting ? "Godkänner…" : submitLabel}
         </button>
         <p className="text-xs text-muted-foreground">
-          Godkännandet registreras med namn, datum och avtalsversion ({version}).
+          Godkännandet registreras med namn, datum, IP-adress och avtalsversion ({version}).
         </p>
       </form>
     </div>

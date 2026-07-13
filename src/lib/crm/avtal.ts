@@ -18,29 +18,40 @@ export interface AgreementText {
 // Kundens avtal — gate i erbjudandelänken (/erbjudande/<token>).
 export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   type: "uppdragsbekraftelse",
-  version: "2026-07-12",
+  version: "2026-07-13",
   title: "Uppdragsbekräftelse",
   intro:
-    "Genom att godkänna bekräftar ni att Stayonsite tar uppdraget att hitta boende för er räkning. " +
-    "Bekräftelsen är kostnadsfri och innebär ingen skyldighet att hyra.",
+    "Genom att godkänna denna uppdragsbekräftelse ger ni Stayonsite i uppdrag att, för er räkning, " +
+    "ta fram och presentera boendeförslag. Uppdraget är kostnadsfritt för er och innebär ingen skyldighet att hyra något av de objekt som presenteras.",
   points: [
     {
-      heading: "Kostnadsfritt och utan förpliktelser",
-      body: "Ni förbinder er inte att hyra något av de objekt som presenteras, och uppdraget kostar er ingenting.",
+      heading: "Kostnadsfritt uppdrag",
+      body:
+        "Ni betalar ingenting för att Stayonsite tar fram och presenterar boendeförslag. " +
+        "Ni är inte skyldiga att gå vidare med, boka eller hyra något objekt som presenteras.",
     },
     {
-      heading: "Stayonsite är er motpart",
-      body: "All kontakt om objekt, priser och villkor går via Stayonsite — det är så vi kan hålla ihop affären för alla parter.",
+      heading: "Stayonsite är er kontaktpart",
+      body:
+        "All kontakt som rör presenterade objekt, priser, tillgänglighet och villkor ska gå via Stayonsite. " +
+        "Detta görs för att säkerställa tydlig kommunikation och korrekta villkor för alla parter.",
     },
     {
       heading: "Ingen direktkontakt med uthyrare",
       body:
-        "Ni får inte själva kontakta, förhandla med eller ingå avtal med uthyrare vars objekt Stayonsite presenterat. " +
-        "Detta gäller under uppdraget och i 12 månader efter att ett objekt presenterats.",
+        "Ni får inte själva kontakta, förhandla med eller ingå avtal direkt med uthyrare eller boendeleverantörer avseende objekt som Stayonsite har presenterat för er. " +
+        "Detta gäller under pågående uppdrag och i 12 månader från det datum då objektet först presenterades för er.",
     },
     {
       heading: "Sekretess",
-      body: "Priser och villkor i erbjudandet är framtagna för er och delas inte vidare utanför ert företag.",
+      body:
+        "Priser, villkor och övrig information i erbjudanden från Stayonsite är avsedda endast för er och ert företag. " +
+        "Informationen får inte delas vidare utanför ert företag utan skriftligt godkännande från Stayonsite.",
+    },
+    {
+      heading: "Godkännande",
+      body:
+        "Genom att fylla i ert namn och godkänna bekräftelsen intygar ni att ni har läst och accepterar villkoren ovan.",
     },
   ],
 };

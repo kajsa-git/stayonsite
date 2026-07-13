@@ -232,6 +232,13 @@
       "when": 1783987200002,
       "tag": "0032_avtal",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1784073600000,
+      "tag": "0033_acceptance_ip",
+      "breakpoints": true
     }
   ]
 }

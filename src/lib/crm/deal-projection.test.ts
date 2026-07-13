@@ -101,6 +101,7 @@ function makeTruth(over: Partial<DealTruth> = {}): DealTruth {
       acceptedName: "Anna Andersson",
       acceptedAt: "2026-07-12T08:00:00Z",
       userAgent: "test",
+      ip: "203.0.113.7",
       createdAt: "2026-07-12T08:00:00Z",
     },
     ...over,

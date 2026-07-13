@@ -32,6 +32,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
 
   const now = new Date().toISOString();
   const userAgent = req.headers.get("user-agent")?.slice(0, 400) ?? null;
+  // Klientens IP för bevissäkring — på Vercel är första värdet i x-forwarded-for
+  // den riktiga klienten (Vercel sätter headern själv, den kan inte spoofas förbi).
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    null;
 
   if (link.audience === "landlord") {
     if (!link.matchId) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -71,6 +77,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       acceptedName: name,
       acceptedAt: now,
       userAgent,
+      ip,
     });
     return NextResponse.json({ ok: true }, { status: 201 });
   }
@@ -97,6 +104,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     acceptedName: name,
     acceptedAt: now,
     userAgent,
+    ip,
   });
 
   return NextResponse.json({ ok: true }, { status: 201 });
