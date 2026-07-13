@@ -61,6 +61,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${BASE}/en/about`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${BASE}/pl/zakwaterowanie-firmowe`,
       lastModified: today,
       changeFrequency: 'monthly',
@@ -75,12 +81,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${BASE}/en/blog`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
     ...blogPosts.map((post) => ({
       url: `${BASE}/blogg/${post.slug}`,
       lastModified: post.updatedDate || post.publishedDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
+      ...(post.en
+        ? {
+            alternates: {
+              languages: {
+                sv: `${BASE}/blogg/${post.slug}`,
+                en: `${BASE}/en/blog/${post.en.slug}`,
+              },
+            },
+          }
+        : {}),
     })),
+    ...blogPosts
+      .filter((post) => post.en)
+      .map((post) => ({
+        url: `${BASE}/en/blog/${post.en!.slug}`,
+        lastModified: post.updatedDate || post.publishedDate,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+        alternates: {
+          languages: {
+            sv: `${BASE}/blogg/${post.slug}`,
+            en: `${BASE}/en/blog/${post.en!.slug}`,
+          },
+        },
+      })),
   ]
 
   const cityPages: MetadataRoute.Sitemap = cities.flatMap((city) => {

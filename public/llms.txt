@@ -187,6 +187,13 @@ In-depth guides on worker accommodation, block rental (blockhyra), the 2026 rent
 - Förbered er innan infrastrukturkontrakten tecknas hösten 2026 – boendeguide för entreprenörer: https://www.stayonsite.se/blogg/forbered-infrastrukturkontrakt-2026-boende-entreprenorer-guide
 - Företagsbostäder enligt nya reglerna från 1 juli 2026 – guide för arbetsgivare: https://www.stayonsite.se/blogg/foretagsbostader-nya-regler-juli-2026-guide
 
+## Guides and articles (English)
+
+- Worker Accommodation vs Hotel: Cost Comparison: https://www.stayonsite.se/en/blog/worker-accommodation-vs-hotel-cost-comparison
+- Worker Accommodation in Sweden: FAQ: https://www.stayonsite.se/en/blog/worker-accommodation-sweden-faq
+- Housing for Foreign Construction Workers in Sweden 2026: https://www.stayonsite.se/en/blog/housing-foreign-construction-workers-sweden-2026
+- Corporate Housing in Sweden: New Rules July 2026: https://www.stayonsite.se/en/blog/corporate-housing-sweden-new-rules-july-2026
+
 ## Languages
 
 Swedish (primary), English, Polish
@@ -200,7 +207,9 @@ Swedish (primary), English, Polish
 - Zakwaterowanie Firmowe (PL): https://www.stayonsite.se/pl/zakwaterowanie-firmowe
 - About Us: https://www.stayonsite.se/om-oss
 - Contact: https://www.stayonsite.se/kontakt
-- Blog: https://www.stayonsite.se/blogg
+- Blog (SV): https://www.stayonsite.se/blogg
+- Blog (EN): https://www.stayonsite.se/en/blog
+- About Us (EN): https://www.stayonsite.se/en/about
 - City pages follow the pattern: https://www.stayonsite.se/stad/{city-slug}
   Example: https://www.stayonsite.se/stad/stockholm
 

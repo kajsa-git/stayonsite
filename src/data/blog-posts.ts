@@ -20,6 +20,12 @@ export interface BlogPost {
   keyTakeaways?: string[];
   /** Q&A som redan finns synligt i artikeln — genererar FAQPage-schema. */
   faq?: BlogFaqItem[];
+  /** Engelsk version — finns bara för översatta artiklar (route: /en/blog/<slug>). */
+  en?: {
+    slug: string;
+    keyTakeaways?: string[];
+    faq?: BlogFaqItem[];
+  };
 }
 
 export const blogPosts: BlogPost[] = [
@@ -544,6 +550,42 @@ export const blogPosts: BlogPost[] = [
         a: 'Tre månader — den kortaste period som fungerar ekonomiskt för fastighetsägarna. Kortare projekt kan ibland lösas ändå, och någon övre gräns för avtalstid finns inte.',
       },
     ],
+    en: {
+      slug: 'worker-accommodation-sweden-faq',
+      keyTakeaways: [
+        'StayOnSite presents a housing plan within 24 hours; for urgent needs, move-in can often be arranged within the same week.',
+        'Worker accommodation costs from SEK 5,900 per person per month — hotels cost SEK 27,000–45,000 per person per month (SEK 900–1,500 per night).',
+        'StayOnSite covers 40+ cities in Sweden, with extra capacity in Luleå, Boden, Oskarshamn and Gävle.',
+        'Invoicing is done as one consolidated company invoice per address and month, with 10-day payment terms and the option to add project references.',
+        'The minimum contract length is three months; there is no upper limit — clients have kept the same addresses for 18–24 months.',
+      ],
+      faq: [
+        {
+          q: 'How quickly can you arrange accommodation?',
+          a: 'In a typical case, a housing plan is presented within 24 hours with available addresses, number of beds and price per person. For urgent needs, move-in can often be arranged within the same week.',
+        },
+        {
+          q: 'What does worker accommodation cost?',
+          a: 'From SEK 5,900 per person per month for fully furnished accommodation. A hotel night costs SEK 900–1,500, which is SEK 27,000–45,000 per person per month — worker accommodation costs a fraction of that.',
+        },
+        {
+          q: 'Which cities do you cover?',
+          a: 'StayOnSite operates in 40+ cities from Malmö to Luleå, with high demand in Luleå, Boden, Oskarshamn, Gävle, Falun and Säffle, among others.',
+        },
+        {
+          q: 'Is the accommodation furnished?',
+          a: 'Yes, all accommodation is fully furnished: beds with bed linen, a fully equipped kitchen, washing machine, tumble dryer and broadband are included as standard. Staff move in with only their personal luggage.',
+        },
+        {
+          q: 'How does invoicing work?',
+          a: 'You receive one consolidated company invoice per address and month with 10-day payment terms as standard. Project references on the invoice are available for your internal accounting.',
+        },
+        {
+          q: 'What is the minimum contract length?',
+          a: 'Three months — the shortest period that works economically for the property owners. Shorter projects can sometimes be solved anyway, and there is no upper limit on contract length.',
+        },
+      ],
+    },
   },
   {
     slug: 'personalboende-vs-hotell-kostnad-jamforelse',
@@ -588,6 +630,34 @@ export const blogPosts: BlogPost[] = [
         a: 'Med StayOnSite justeras avtalet vid förlängning utan att ni behöver boka om från noll. Med hotell eller Airbnb riskerar ni att boendena är bokade av andra och teamet behöver flytta mitt i projektet.',
       },
     ],
+    en: {
+      slug: 'worker-accommodation-vs-hotel-cost-comparison',
+      keyTakeaways: [
+        'Worker accommodation via StayOnSite costs from SEK 5,900 per person per month; hotels SEK 15,000–30,000 and Airbnb SEK 8,000–15,000 per person per month.',
+        'Example calculation for 10 people over 3 months: worker accommodation approx. SEK 177,000 versus approx. SEK 540,000 for hotels — a difference of more than SEK 330,000 per project.',
+        'A hotel night outside the major cities costs SEK 700–1,000, which adds up to SEK 21,000–30,000 per person per month over 30 nights.',
+        'Self-management carries an internal cost of SEK 15,000–25,000 when a project manager spends 20–30 hours arranging housing for a team.',
+        'Hotels without kitchens add food costs of SEK 100–200 per person per day — an extra SEK 30,000–60,000 per month for a team of 10.',
+      ],
+      faq: [
+        {
+          q: 'Can we book StayOnSite at short notice?',
+          a: 'StayOnSite recommends 2–4 weeks of lead time for the best availability. In some cities, shorter notice can work — contact us directly to check availability in the city in question.',
+        },
+        {
+          q: 'How does invoicing work for Airbnb in practice?',
+          a: 'Airbnb issues a receipt but not an invoice with a VAT specification in the legal sense. This makes VAT deductions harder and can create problems in accounting and audits.',
+        },
+        {
+          q: 'Can StayOnSite handle a mixed team of Swedish and foreign workers?',
+          a: 'Yes. StayOnSite provides service and communication in Swedish, English and Polish — a concrete advantage when the team is international.',
+        },
+        {
+          q: 'What happens if the project is extended?',
+          a: 'With StayOnSite, the contract is adjusted for the extension without you having to rebook from scratch. With hotels or Airbnb, you risk the accommodation being booked by others, forcing the team to move in the middle of the project.',
+        },
+      ],
+    },
   },
   {
     slug: 'blockhyra-nya-regler-juli-2026-guide-foretag',
@@ -966,6 +1036,16 @@ export const blogPosts: BlogPost[] = [
       'Personalboende kostar typiskt 8 000–15 000 kr per person och månad, jämfört med 18 000–35 000 kr för hotell.',
       'Planera boende minst 3–6 månader före projektstart – i Luleå, Kiruna, Boden och Skellefteå är personalboenden ofta fullbokade månader i förväg.',
     ],
+    en: {
+      slug: 'housing-foreign-construction-workers-sweden-2026',
+      keyTakeaways: [
+        '76 percent of the member companies of Byggföretagen (the Swedish Construction Federation) report difficulties recruiting, and one in four recruitment attempts fails completely, according to the 2025/2026 survey by Svenskt Näringsliv (the Confederation of Swedish Enterprise).',
+        'In 2025 there were nearly 75,000 posted workers in Sweden according to Arbetsmiljöverket (the Swedish Work Environment Authority), with the largest increases in Norrbotten and Gävleborg.',
+        'From 28 January 2026, ID06 cards require identification with a valid passport or a national ID card accepted as a travel document within the EU/EEA.',
+        'Worker accommodation typically costs SEK 8,000–15,000 per person per month on the open market, compared with SEK 18,000–35,000 for hotels; via StayOnSite from SEK 5,900 per person per month.',
+        'Plan housing at least 3–6 months before project start – in Luleå, Kiruna, Boden and Skellefteå, worker accommodation is often fully booked months in advance.',
+      ],
+    },
   },
   {
     slug: 'forbered-infrastrukturkontrakt-2026-boende-entreprenorer-guide',
@@ -1040,6 +1120,38 @@ export const blogPosts: BlogPost[] = [
         a: 'Förmånsvärdet av fri bostad kan bli skattepliktigt för den anställde, medan hyreskostnaden är avdragsgill för arbetsgivaren. För fastighetsägaren beskattas hyresintäkten, men schablonavdrag på 50 000 kr per år kan gälla vid privatuthyrning.',
       },
     ],
+    en: {
+      slug: 'corporate-housing-sweden-new-rules-july-2026',
+      keyTakeaways: [
+        'In May 2026, the Riksdag (the Swedish Parliament) passed the government bill \'En mer flexibel hyresmarknad\' (A More Flexible Rental Market); the legislative changes for corporate housing take effect on July 1, 2026.',
+        'Blockhyra (block rental) requires at least three apartments; hyresnämnden (the Rent Tribunal) now reviews the purpose of the block rental, not the individual contract terms.',
+        'A subtenant cannot claim a first-hand lease if the rental period is shorter than one year; after one year, besittningsskydd (security of tenure) may start to apply.',
+        'Privatuthyrningslagen (the Private Rental Act) now covers renting out up to two homes at the same time without it being classified as business activity.',
+        'Housing construction is expected to increase from around 30,900 housing starts in 2025 to 37,000 in 2026, according to Byggfakta.',
+      ],
+      faq: [
+        {
+          q: 'Are the new rules mandatory from July 1, 2026?',
+          a: 'Yes, the legislative changes take effect on July 1, 2026. Existing agreements remain valid, but new agreements must comply with the new rules.',
+        },
+        {
+          q: 'Can we rent fewer than three apartments as corporate housing?',
+          a: 'Fewer than three apartments does not count as blockhyra (block rental). Companies can instead rent one or two homes from a private individual under privatuthyrningslagen (the Private Rental Act), or from a professional property owner under regular tenancy rules.',
+        },
+        {
+          q: 'Do we as a company need a permit from the Rent Tribunal?',
+          a: 'With block rental, it is the property owner who applies for the permit, and hyresnämnden (the Rent Tribunal) reviews the purpose of the block rental. As a company, you need to work with the property owner to ensure the permit is applied for and granted.',
+        },
+        {
+          q: 'What happens if an employee wants to stay on after the project ends?',
+          a: 'A subtenant cannot claim a first-hand lease if the rental period is shorter than one year, but after one year security of tenure may start to apply. Use clearly time-limited agreements and communicate this to your employees.',
+        },
+        {
+          q: 'How is corporate housing taxed?',
+          a: 'The benefit value of free housing may be taxable for the employee, while the rental cost is deductible for the employer. For the property owner, rental income is taxed, but a standard deduction (schablonavdrag) of SEK 50,000 per year may apply for private rentals.',
+        },
+      ],
+    },
   },
 ];
 
@@ -1049,6 +1161,10 @@ export function getBlogPost(slug: string): BlogPost | undefined {
 
 export function getAllBlogSlugs(): string[] {
   return blogPosts.map(p => p.slug);
+}
+
+export function getBlogPostByEnSlug(enSlug: string): BlogPost | undefined {
+  return blogPosts.find(p => p.en?.slug === enSlug);
 }
 
 /** Relaterade artiklar via delade taggar (2 p) och kategori (1 p), nyast först vid lika poäng. */

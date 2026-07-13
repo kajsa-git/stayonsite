@@ -72,6 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     articleTags: post.tags,
     hreflangs: [
       { lang: 'sv', href: articleUrl },
+      ...(post.en ? [{ lang: 'en', href: `https://www.stayonsite.se/en/blog/${post.en.slug}` }] : []),
       { lang: 'x-default', href: articleUrl },
     ],
     locale: 'sv',

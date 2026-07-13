@@ -21,7 +21,14 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const title = post.title[language] || post.title.sv;
   const description = post.description[language] || post.description.sv;
 
-  const articleUrl = `https://www.stayonsite.se/blogg/${post.slug}`;
+  // Engelsk variant renderas på /en/blog/<en.slug> — språket styrs av URL:en via LanguageContext
+  const enVariant = language === 'en' ? post.en : undefined;
+  const articleUrl = enVariant
+    ? `https://www.stayonsite.se/en/blog/${enVariant.slug}`
+    : `https://www.stayonsite.se/blogg/${post.slug}`;
+  const blogIndexPath = enVariant ? '/en/blog' : '/blogg';
+  const keyTakeaways = enVariant ? enVariant.keyTakeaways : post.keyTakeaways;
+  const faq = enVariant ? enVariant.faq : post.faq;
   const modifiedDate = post.updatedDate || post.publishedDate;
   const isUpdated = Boolean(post.updatedDate && post.updatedDate !== post.publishedDate);
   const relatedPosts = getRelatedPosts(post.slug);
@@ -67,26 +74,26 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       wordCount: post.readingTime * 250,
       articleSection: post.category,
       keywords: post.tags.join(', '),
-      inLanguage: 'sv',
+      inLanguage: enVariant ? 'en' : 'sv',
       isAccessibleForFree: true,
-      ...(post.keyTakeaways?.length ? { abstract: post.keyTakeaways.join(' ') } : {}),
+      ...(keyTakeaways?.length ? { abstract: keyTakeaways.join(' ') } : {}),
     },
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'StayOnSite', item: 'https://www.stayonsite.se' },
-        { '@type': 'ListItem', position: 2, name: 'Blogg', item: 'https://www.stayonsite.se/blogg' },
-        { '@type': 'ListItem', position: 3, name: title, item: `https://www.stayonsite.se/blogg/${post.slug}` },
+        { '@type': 'ListItem', position: 2, name: enVariant ? 'Blog' : 'Blogg', item: `https://www.stayonsite.se${blogIndexPath}` },
+        { '@type': 'ListItem', position: 3, name: title, item: articleUrl },
       ],
     },
   ];
 
-  if (post.faq?.length) {
+  if (faq?.length) {
     structuredData.push({
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: post.faq.map((item) => ({
+      mainEntity: faq.map((item) => ({
         '@type': 'Question',
         name: item.q,
         acceptedAnswer: { '@type': 'Answer', text: item.a },
@@ -159,7 +166,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         {/* Article Header */}
         <section className="bg-primary text-white pt-32 pb-16">
           <div className="container mx-auto px-6 md:px-12 max-w-4xl">
-            <Link href="/blogg" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
+            <Link href={blogIndexPath} className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
               <ArrowLeft size={16} />
               {language === 'sv' ? 'Tillbaka till bloggen' : language === 'en' ? 'Back to blog' : 'Wróć do bloga'}
             </Link>
@@ -187,13 +194,13 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         {/* Article Content */}
         <section className="py-16">
           <div className="container mx-auto px-6 md:px-12 max-w-3xl">
-            {post.keyTakeaways && post.keyTakeaways.length > 0 && (
+            {keyTakeaways && keyTakeaways.length > 0 && (
               <div className="mb-12 bg-nordic-50 border border-nordic-100 rounded-2xl p-6 md:p-8">
                 <h2 className="font-display text-xl font-semibold text-nordic-900 mb-4">
                   {language === 'sv' ? 'Snabba svar' : language === 'en' ? 'Quick answers' : 'Szybkie odpowiedzi'}
                 </h2>
                 <ul className="space-y-3">
-                  {post.keyTakeaways.map((item) => (
+                  {keyTakeaways.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-nordic-700 leading-relaxed">
                       <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-1" />
                       <span>{item}</span>
@@ -219,7 +226,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
                 {relatedPosts.map((related) => (
                   <Link
                     key={related.slug}
-                    href={`/blogg/${related.slug}`}
+                    href={language === 'en' && related.en ? `/en/blog/${related.en.slug}` : `/blogg/${related.slug}`}
                     className="group flex flex-col bg-white rounded-2xl border border-nordic-200 p-6 hover:border-accent transition-colors"
                   >
                     <span className="text-xs font-bold uppercase tracking-wider text-accent mb-3">

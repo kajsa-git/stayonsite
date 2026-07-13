@@ -18,20 +18,26 @@ const BlogIndex = () => {
     return sv;
   };
 
+  // På /en/blog listas bara artiklar som finns översatta
+  const visiblePosts = language === 'en' ? blogPosts.filter((p) => p.en) : blogPosts;
+  const postHref = (post: (typeof blogPosts)[number]) =>
+    language === 'en' && post.en ? `/en/blog/${post.en.slug}` : `/blogg/${post.slug}`;
+  const indexUrl = language === 'en' ? 'https://www.stayonsite.se/en/blog' : 'https://www.stayonsite.se/blogg';
+
   const collectionSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     'name': t('Blogg \u2014 StayOnSite', 'Blog \u2014 StayOnSite', 'Blog \u2014 StayOnSite'),
     'description': t('Artiklar om personalboende, f\u00f6retagsbost\u00e4der, nya lagar och marknadstrender i Sverige.', 'Articles about worker accommodation, corporate housing, new regulations and market trends in Sweden.', 'Artyku\u0142y o zakwaterowaniu pracowniczym i trendach rynkowych w Szwecji.'),
-    'url': 'https://www.stayonsite.se/blogg',
+    'url': indexUrl,
     'mainEntity': {
       '@type': 'ItemList',
-      'itemListElement': [...blogPosts]
+      'itemListElement': [...visiblePosts]
         .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
         .map((post, i) => ({
           '@type': 'ListItem',
           'position': i + 1,
-          'url': `https://www.stayonsite.se/blogg/${post.slug}`,
+          'url': `https://www.stayonsite.se${postHref(post)}`,
           'name': post.title[language] || post.title.sv,
         })),
     },
@@ -68,13 +74,13 @@ const BlogIndex = () => {
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-12">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[...blogPosts].sort((a, b) => b.publishedDate.localeCompare(a.publishedDate)).map((post) => {
+              {[...visiblePosts].sort((a, b) => b.publishedDate.localeCompare(a.publishedDate)).map((post) => {
                 const title = post.title[language] || post.title.sv;
                 const desc = post.description[language] || post.description.sv;
                 return (
                   <Link
                     key={post.slug}
-                    href={`/blogg/${post.slug}`}
+                    href={postHref(post)}
                     className="group bg-white rounded-2xl border border-nordic-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-accent/30 flex flex-col"
                   >
                     <div className="p-8 flex-grow">
