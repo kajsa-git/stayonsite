@@ -409,7 +409,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             </dl>
           </div>
 
-          <OfferLinkPanel requestId={request.id} />
+          <OfferLinkPanel requestId={request.id} sentCount={matches.filter((m) => m.sentAt != null).length} />
 
           <div className="bg-white rounded-xl border p-4">
             <h2 className="text-sm font-semibold mb-3">Förslag ({matches.length})</h2>

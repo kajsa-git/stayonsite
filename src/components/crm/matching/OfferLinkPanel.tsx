@@ -19,7 +19,17 @@ interface PanelData {
   agreement: { acceptedName: string; acceptedAt: string; version: string } | null;
 }
 
-export function OfferLinkPanel({ requestId, contactName }: { requestId: string; contactName?: string | null }) {
+export function OfferLinkPanel({
+  requestId,
+  contactName,
+  sentCount = 0,
+}: {
+  requestId: string;
+  contactName?: string | null;
+  // Antal skickade erbjudanden på förfrågan — utan något visar kundlänken bara
+  // uppdragsbekräftelsen + en väntsida, så panelen varnar tydligt.
+  sentCount?: number;
+}) {
   const { data, mutate } = useSWR<PanelData>(`/api/crm/share-links?requestId=${requestId}`, swrFetcher);
   const [working, setWorking] = useState(false);
 
@@ -97,6 +107,12 @@ export function OfferLinkPanel({ requestId, contactName }: { requestId: string; 
 
       {tenantLink ? (
         <>
+          {sentCount === 0 && (
+            <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              Inget erbjudande är skickat ännu — kunden ser bara uppdragsbekräftelsen och en väntsida.
+              Gör steg 3 (Skicka erbjudande) på ett förslag så dyker objektet upp i länken direkt.
+            </p>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <ShareLinkButton
               path={`/erbjudande/${tenantLink.token}`}

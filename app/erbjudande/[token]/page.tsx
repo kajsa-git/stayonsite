@@ -116,6 +116,15 @@ export default async function ErbjudandePage(
               </p>
             </div>
 
+            {/* Länken kan delas (och avtalet signeras) innan erbjudandet stämplats —
+                då visas en lugn väntsida i stället för en tom lista. Sidan är levande:
+                objekten dyker upp här så fort "Skicka erbjudande" görs i CRM:et. */}
+            {offer.offers.length === 0 && (
+              <div className="rounded-2xl border bg-white p-8 text-center">
+                <p className="text-base font-semibold text-nordic-900">{tr.emptyTitle}</p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">{tr.emptyBody}</p>
+              </div>
+            )}
             {offer.offers.map((item) => (
               <OfferBlock key={item.matchId} item={item} lang={lang} />
             ))}

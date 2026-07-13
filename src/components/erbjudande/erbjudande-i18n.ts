@@ -17,6 +17,8 @@ export const OFFER_T: Record<Lang, {
   priceLocked: string;
   status: { sent: string; accepted: string; unavailable: string };
   unavailableInfo: string;
+  emptyTitle: string;
+  emptyBody: string;
   ctaTitle: string;
   ctaSub: string;
   ctaButton: string;
@@ -40,6 +42,9 @@ export const OFFER_T: Record<Lang, {
     priceLocked: "Priset gäller er för detta objekt och ändras inte i efterhand.",
     status: { sent: "Erbjudet", accepted: "Accepterat", unavailable: "Inte längre tillgängligt" },
     unavailableInfo: "Objektet har gått till en annan hyresgäst eller tagits av marknaden.",
+    emptyTitle: "Ert förslag förbereds",
+    emptyBody:
+      "Vi färdigställer just nu ert boendeförslag. Den här sidan uppdateras automatiskt så snart förslaget är klart — ni behöver inte göra något mer.",
     ctaTitle: "Vill ni gå vidare eller har frågor?",
     ctaSub: "Hör av er till StayOnSite så hjälper vi er vidare — ofta med svar inom 24 timmar.",
     ctaButton: "Kontakta oss",
@@ -63,6 +68,9 @@ export const OFFER_T: Record<Lang, {
     priceLocked: "This price applies to you for this property and will not change afterwards.",
     status: { sent: "Offered", accepted: "Accepted", unavailable: "No longer available" },
     unavailableInfo: "The property has gone to another tenant or been taken off the market.",
+    emptyTitle: "Your proposal is being prepared",
+    emptyBody:
+      "We are finalising your housing proposal. This page updates automatically as soon as it is ready — no further action is needed.",
     ctaTitle: "Want to proceed or have questions?",
     ctaSub: "Get in touch with StayOnSite and we'll help you further — usually a reply within 24 hours.",
     ctaButton: "Contact us",
@@ -86,6 +94,9 @@ export const OFFER_T: Record<Lang, {
     priceLocked: "Ta cena dotyczy Was dla tego obiektu i nie zmieni się później.",
     status: { sent: "Zaproponowane", accepted: "Zaakceptowane", unavailable: "Już niedostępne" },
     unavailableInfo: "Obiekt trafił do innego najemcy lub został wycofany z rynku.",
+    emptyTitle: "Wasza propozycja jest przygotowywana",
+    emptyBody:
+      "Właśnie finalizujemy Waszą propozycję zakwaterowania. Ta strona zaktualizuje się automatycznie, gdy będzie gotowa — nie musicie nic robić.",
     ctaTitle: "Chcecie przejść dalej lub macie pytania?",
     ctaSub: "Skontaktujcie się ze StayOnSite, a pomożemy dalej — zwykle odpowiadamy w ciągu 24 godzin.",
     ctaButton: "Skontaktuj się",
