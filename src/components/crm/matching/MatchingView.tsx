@@ -96,6 +96,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     minBeds: request.persons?.toString() ?? "",
     maxRent: request.budgetMax?.toString() ?? "",
     minRating: "",
+    maxKm: "",
+    nearestFirst: false,
     availableOnly: true,
     hideSuggested: false,
     furnished: !!request.furnishedRequired,
@@ -140,6 +142,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     !!filters.minBeds ||
     !!filters.maxRent ||
     !!filters.minRating ||
+    !!filters.maxKm ||
+    filters.nearestFirst ||
     !filters.availableOnly ||
     filters.hideSuggested ||
     filters.furnished ||
@@ -165,6 +169,20 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   })();
   const distances = useDistances(workplaceAddress, distDests);
 
+  // Avståndsfilter + närmast-sortering appliceras EFTER scored (distanserna
+  // hämtas för scored-listan — att filtrera scored på avstånd vore cirkulärt).
+  // Okänt avstånd exkluderas när ett maxvärde satts och sorteras alltid sist.
+  const maxMeters = filters.maxKm ? parseFloat(filters.maxKm) * 1000 : null;
+  const visible = scored
+    .filter(({ property }) => maxMeters == null || (distances[property.id]?.meters ?? Infinity) <= maxMeters)
+    .sort((a, b) =>
+      filters.nearestFirst
+        ? (distances[a.property.id]?.meters ?? Infinity) - (distances[b.property.id]?.meters ?? Infinity)
+        : 0
+    );
+  const distancesLoading =
+    !!workplaceAddress && distDests.length > 0 && Object.keys(distances).length === 0;
+
   function resetFilters() {
     setFilters({
       q: "",
@@ -172,6 +190,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       minBeds: "",
       maxRent: "",
       minRating: "",
+      maxKm: "",
+      nearestFirst: false,
       availableOnly: true,
       hideSuggested: false,
       furnished: false,
@@ -504,7 +524,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           <div className="bg-white rounded-xl border p-3 space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-sm font-semibold">Sök bostäder</h2>
-              <span className="text-xs text-muted-foreground">{scored.length} av {properties.length}</span>
+              <span className="text-xs text-muted-foreground">{visible.length} av {properties.length}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="col-span-2 relative">
@@ -547,8 +567,27 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                 className="h-8 text-xs"
                 placeholder="Min betyg (0–10)"
               />
+              <Input
+                type="number"
+                min="0"
+                value={filters.maxKm}
+                onChange={(e) => setFilters((f) => ({ ...f, maxKm: e.target.value }))}
+                className="h-8 text-xs"
+                placeholder="Max km till arbetsplatsen"
+                title="Kör-avstånd från förfrågans arbetsadress"
+                disabled={!workplaceAddress}
+              />
             </div>
+            {filters.maxKm && !workplaceAddress && (
+              <p className="text-xs text-amber-700">Förfrågan saknar arbetsadress — avstånd kan inte beräknas.</p>
+            )}
+            {filters.maxKm && distancesLoading && (
+              <p className="text-xs text-muted-foreground">Hämtar kör-avstånd…</p>
+            )}
             <div className="flex flex-wrap gap-1.5">
+              <FilterPill active={filters.nearestFirst} onClick={() => setFilters((f) => ({ ...f, nearestFirst: !f.nearestFirst }))}>
+                Närmast först
+              </FilterPill>
               <FilterPill active={filters.availableOnly} onClick={() => setFilters((f) => ({ ...f, availableOnly: !f.availableOnly }))}>
                 Endast lediga
               </FilterPill>
@@ -590,12 +629,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                 </div>
               ))}
             </div>
-          ) : scored.length === 0 ? (
+          ) : visible.length === 0 ? (
             <p className="text-sm text-muted-foreground italic">
               {isFiltered ? "Inga bostäder matchar filtren — justera eller rensa." : "Inga bostäder inlagda ännu."}
             </p>
           ) : (
-            scored.map(({ property, score, chips }) => {
+            visible.map(({ property, score, chips }) => {
               const already = suggestedIds.has(property.id);
               return (
                 <div key={property.id} className="bg-white rounded-xl border p-4 hover:border-nordic-300 hover:shadow-sm transition-all">

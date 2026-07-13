@@ -11,7 +11,7 @@ const SECTIONS = [
     steps: [
       "Förfrågningar landar som Inkommen — antingen från hemsidans formulär (företaget och kontakten skapas automatiskt) eller manuellt via Nytt företag → Ny förfrågan.",
       "Kontrollera stad, antal personer, period och budget. Sätt uppföljningsdatum om kunden ska jagas.",
-      "Öppna Matcha förfrågan — automatiska förslag ligger ofta redan där (poäng per stad, bäddar, budget, datum).",
+      "Öppna Matcha förfrågan och sök i objektsbanken — filtrera på ort, bäddar, hyra, betyg och max km till arbetsadressen (kör-avstånd), eller sortera närmast först. Förslag läggs alltid till manuellt.",
     ],
   },
   {

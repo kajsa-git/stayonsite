@@ -1,5 +1,4 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
-import { autoSuggestMatches } from "@/lib/crm/auto-suggest";
 import { db } from "@/lib/crm/db";
 import { indexRequest } from "@/lib/crm/search-index";
 import { requests } from "@/lib/crm/schema";
@@ -51,8 +50,5 @@ export async function POST(req: NextRequest) {
   });
 
   await indexRequest(id).catch((e) => console.error("search-index request:", e));
-  // Auto-förslag direkt vid skapande (interna suggested-rader, inga utskick) —
-  // ny förfrågan ska aldrig ligga dagar utan ett enda förslag.
-  await autoSuggestMatches(id).catch((e) => console.error("auto-suggest:", e));
   return NextResponse.json(result, { status: 201 });
 }
