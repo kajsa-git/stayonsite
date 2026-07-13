@@ -19,11 +19,11 @@ const SECTIONS = [
     title: "Matchning & erbjudande",
     steps: [
       "Lägg till objekt som förslag från listan till höger. Kalkylen på varje förslag räknar marginal per scenario — Bas-scenariot förifyller allt senare.",
-      "Skapa kundlänken i panelen Kundens länk. Första gången kunden öppnar den signeras uppdragsbekräftelsen (ingen direktkontakt med uthyrare, inga prisdiskussioner utanför Stayonsite) — före dess visas inget erbjudande.",
+      "Skapa kundlänken i panelen Kundens länk. Första gången kunden öppnar den signeras uppdragsbekräftelsen (ingen direktkontakt med uthyrare, inga prisdiskussioner utanför StayOnSite) — före dess visas inget erbjudande.",
       "Skicka erbjudande stämplar pris, period och notis på affären. Villkoren ligger fast även om objektets listpriser ändras efteråt — kundens sida visar alltid det stämplade priset, aldrig adress, uthyrare eller inpris.",
       "Dela länken via SMS-knappen (färdig text med www-länk — https-länkar fastnar i operatörsfiltren). Panelen visar när kunden öppnat sidan.",
       "Villkor uthyrare stämplar vad uthyraren lovats (hyra, period, villkor) och markerar en öppen jaga-runda som bekräftad.",
-      "Avtal uthyrare skapar uthyrarens signeringslänk och kopierar SMS-texten. Uthyraren signerar uthyrningsuppdraget (ingen direktkontakt med hyresgästen, villkor via Stayonsite) innan visning — kortet visar 'signerat av …' när det är klart. Boka aldrig visning förrän båda avtalen är signerade.",
+      "Avtal uthyrare skapar uthyrarens signeringslänk och kopierar SMS-texten. Uthyraren signerar uthyrningsuppdraget (ingen direktkontakt med hyresgästen, villkor via StayOnSite) innan visning — kortet visar 'signerat av …' när det är klart. Boka aldrig visning förrän båda avtalen är signerade.",
     ],
   },
   {

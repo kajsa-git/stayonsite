@@ -497,7 +497,7 @@ export const translations: Record<
       "Rekommenderar varmt. Hela upplevelsen: positiv, lösningsorienterad och snabb på bollen. Boende blev perfekt.",
     "references.testimonial10.author": "Lovisa Åberg Bydén",
     "references.testimonial11.quote":
-      "Stayonsite har mycket bra och smidiga processer. Kommunikation, service och samarbete håller en hög nivå.",
+      "StayOnSite har mycket bra och smidiga processer. Kommunikation, service och samarbete håller en hög nivå.",
     "references.testimonial11.author": "Christopher",
     "references.testimonial12.quote":
       "Allt funkade jättebra. Kajsa är professionell och är till stor hjälp med förmedlingen och kontakten med hyresgästen.",
