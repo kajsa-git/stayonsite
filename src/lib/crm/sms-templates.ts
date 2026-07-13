@@ -30,8 +30,9 @@ export function offerLinkSms(contactName: string | null | undefined, token: stri
 
 // Uppdragsavtal till uthyraren — avtalet skickas alltid FÖRST, fristående
 // (gäller alla deras objekt i 12 månader). Länk utan https:// av smishing-skäl.
+// Ordalydelsen är Kajsas egen (2026-07-13) — ändra inte utan hennes ok.
 export function landlordAvtalStandaloneSms(ownerName: string | null | undefined, token: string): string {
-  return `${greet(ownerName)} För att vi ska kunna hyra ut ditt boende behöver du signera vårt uppdragsavtal — kostnadsfritt och inte exklusivt, tar en minut: www.stayonsite.se/uthyrare/${token}\nHör av dig vid frågor. /Kajsa, StayOnSite`;
+  return `${greet(ownerName)}\nHär kommer uppdragsavtalet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
 }
 
 // Fristående uppdragsbekräftelse till kunden — skickas tidigt, innan erbjudandet
