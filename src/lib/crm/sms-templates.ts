@@ -37,8 +37,9 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
 // Fristående uppdragsbekräftelse till kunden — skickas tidigt, innan erbjudandet
 // är klart. Lovar INTE objekt/pris (det gör offerLinkSms när förslaget skickats);
 // samma länk visar förslaget automatiskt när det stämplats.
+// Ordalydelsen är Kajsas egen (2026-07-13) — ändra inte utan hennes ok.
 export function tenantAvtalSms(contactName: string | null | undefined, token: string): string {
-  return `${greet(contactName)} För att vi ska kunna ta fram boendeförslag åt er behöver ni godkänna vår uppdragsbekräftelse — kostnadsfritt och utan förpliktelser, tar en minut: www.stayonsite.se/erbjudande/${token}\nErt förslag dyker upp på samma sida så snart det är klart. /Kajsa, StayOnSite`;
+  return `${greet(contactName)}\nBifogar uppdragsbekräftelse www.stayonsite.se/erbjudande/${token}\n\nBoendeförslag dyker upp på samma sida så snart det är klart.\nMvh Kajsa\nStayOnSite`;
 }
 
 // Jaga uthyrare: förslag skickat, väntar på svar.
