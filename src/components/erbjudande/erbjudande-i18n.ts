@@ -1,6 +1,6 @@
-// Strängar för kundens erbjudandesida (/erbjudande/<token>). Samma Lang/pickLang
-// som prospektet — avtalsgaten (uppdragsbekräftelsen) är dock alltid svensk,
-// texten i src/lib/crm/avtal.ts är originalet som godkänns.
+// Strängar för kundens erbjudandesida (/erbjudande/<token>). Erbjudandet finns
+// på sv/en/pl — men AVTALEN bara på svenska och engelska: medan gaten är uppe
+// visar språkväljaren bara SV/EN och pl-besökare får den engelska avtalstexten.
 
 import type { Lang } from "@/components/prospekt/prospekt-i18n";
 

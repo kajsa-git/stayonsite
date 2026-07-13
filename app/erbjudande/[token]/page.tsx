@@ -59,12 +59,17 @@ export default async function ErbjudandePage(
             {tr.tagline}
           </span>
           <div className="ml-auto flex items-center gap-1">
-            {LANGS.map((l) => (
+            {/* Avtalet finns bara på sv/en — medan gaten är uppe döljs PL
+                (pl-besökare ser den engelska avtalstexten). Efter signering
+                är erbjudandet trespråkigt som vanligt. */}
+            {(gated ? LANGS.filter((l) => l.code !== "pl") : LANGS).map((l) => (
               <a
                 key={l.code}
                 href={`?lang=${l.code}`}
                 className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
-                  l.code === lang ? "bg-nordic-900 text-white" : "text-muted-foreground hover:bg-nordic-100"
+                  l.code === lang || (gated && lang === "pl" && l.code === "en")
+                    ? "bg-nordic-900 text-white"
+                    : "text-muted-foreground hover:bg-nordic-100"
                 }`}
               >
                 {l.label}
