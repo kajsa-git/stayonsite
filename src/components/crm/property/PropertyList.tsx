@@ -9,7 +9,9 @@ import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher, CrmFetchError } fr
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
-import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
+import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, PASTE_SOURCES, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
+import { parsePastedListing } from "@/lib/crm/import/paste";
+import { detectListing, type DetectedListing } from "@/lib/crm/import/url";
 import { ChevronDown, ChevronLeft, ChevronsUpDown, ChevronUp, Download, DownloadCloud, Image as ImageIcon, LayoutList, Loader2, Plus, Search, Table2 } from "lucide-react";
 
 type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
@@ -640,6 +642,10 @@ function PropertyForm({
   const [pendingImages, setPendingImages] = useState<string[]>([]);
   // Dubblett-varning: sätts när importen hittar ett befintligt objekt med samma länk/adress.
   const [dupe, setDupe] = useState<{ existing: { id: string; address: string | null; city: string | null }; listing: ImportedListing } | null>(null);
+  // Hemnet/Booli: Cloudflare blockerar server-hämtning → Kajsa klistrar in sidtexten
+  // (Cmd+A, Cmd+C i annonsen) som parseas klient-side.
+  const [pasteFor, setPasteFor] = useState<DetectedListing | null>(null);
+  const [pasteText, setPasteText] = useState("");
 
   // Förifyller formuläret från en hämtad annons (sparar inget — Kajsa granskar och sparar).
   function applyListing(listing: ImportedListing) {
@@ -656,9 +662,17 @@ function PropertyForm({
   }
 
   // Hämtar en Qasa-/Airbnb-annons. force=true hoppar över dubblett-varningen ("Importera ändå").
+  // Hemnet/Booli kan inte hämtas server-side (botskydd) → växla till klistra-in-läget.
   async function runImport(force = false) {
     const url = importUrl.trim();
     if (!url || importing) return;
+    const detected = detectListing(url);
+    if (detected && PASTE_SOURCES.has(detected.source)) {
+      setPasteFor(detected);
+      setPasteText("");
+      return;
+    }
+    setPasteFor(null);
     setImporting(true);
     try {
       const { listing, existing } = await crmFetchJson<{
@@ -707,14 +721,14 @@ function PropertyForm({
       {/* Snabbimport från annonslänk — förifyller fälten nedan för granskning */}
       <div className="rounded-md border border-dashed border-nordic-300 bg-nordic-50/60 p-3 space-y-2">
         <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-          <DownloadCloud className="h-3.5 w-3.5" /> Importera från Qasa- eller Airbnb-länk
+          <DownloadCloud className="h-3.5 w-3.5" /> Importera från Qasa-, Airbnb-, Hemnet- eller Booli-länk
         </label>
         <div className="flex gap-2">
           <Input
             value={importUrl}
             onChange={(e) => setImportUrl(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); runImport(); } }}
-            placeholder="https://qasa.com/se/sv/home/… eller https://airbnb.se/rooms/…"
+            placeholder="qasa.com/… · airbnb.se/… · hemnet.se/bostad/… · booli.se/bostad/…"
             className="h-8 text-sm"
           />
           <Button
@@ -729,6 +743,49 @@ function PropertyForm({
             {importing ? "Hämtar…" : "Hämta"}
           </Button>
         </div>
+        {pasteFor && (
+          <div className="rounded-md border border-blue-200 bg-blue-50 p-2.5 text-xs space-y-2">
+            <p className="text-blue-900">
+              {SOURCE_LABEL[pasteFor.source]} blockerar automatisk hämtning — men du kommer åt sidan.
+              Öppna annonsen i webbläsaren, markera allt (<kbd>Cmd+A</kbd>), kopiera (<kbd>Cmd+C</kbd>) och
+              klistra in här:
+            </p>
+            <textarea
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              rows={4}
+              placeholder="Klistra in hela sidans text här…"
+              className="w-full rounded border border-input bg-white px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-500"
+            />
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                size="sm"
+                className="text-xs"
+                disabled={!pasteText.trim()}
+                onClick={() => {
+                  const listing = parsePastedListing(
+                    pasteFor.source as "hemnet" | "booli",
+                    pasteText,
+                    pasteFor.canonicalUrl
+                  );
+                  if (!listing.address && !listing.squareMeters && !listing.city) {
+                    toast({ title: "Kunde inte tolka texten — kopierade du hela sidan?", variant: "destructive" });
+                    return;
+                  }
+                  applyListing(listing);
+                  setPasteFor(null);
+                  setPasteText("");
+                }}
+              >
+                Läs in
+              </Button>
+              <Button type="button" size="sm" variant="ghost" className="text-xs" onClick={() => setPasteFor(null)}>
+                Avbryt
+              </Button>
+            </div>
+          </div>
+        )}
         {dupe && (
           <div className="rounded-md border border-amber-300 bg-amber-50 p-2.5 text-xs space-y-2">
             <p className="font-medium text-amber-900">

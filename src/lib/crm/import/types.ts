@@ -3,12 +3,20 @@
 // INGA db-/drizzle-importer här — filen ska kunna köras både i klienten och i parsern.
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 
-export type ListingSource = "qasa" | "airbnb";
+export type ListingSource = "qasa" | "airbnb" | "hemnet" | "booli";
 
 export const SOURCE_LABEL: Record<ListingSource, string> = {
   qasa: "Qasa",
   airbnb: "Airbnb",
+  hemnet: "Hemnet",
+  booli: "Booli",
 };
+
+// Hemnet/Booli ligger bakom Cloudflares botskydd — server-hämtning är omöjlig
+// (verifierat 2026-07-14: curl, node-fetch och headless Chrome blockeras alla).
+// I stället klistrar Kajsa in sidans text (Cmd+A, Cmd+C i annonsen) som parseas
+// klient-side i paste.ts. Qasa/Airbnb hämtas server-side som vanligt.
+export const PASTE_SOURCES: ReadonlySet<ListingSource> = new Set(["hemnet", "booli"]);
 
 export interface ImportedListing {
   source: ListingSource;

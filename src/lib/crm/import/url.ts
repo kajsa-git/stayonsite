@@ -38,5 +38,17 @@ export function detectListing(raw: string): DetectedListing | null {
     if (m) return { source: "airbnb", id: m[1], canonicalUrl: clean };
   }
 
+  // Hemnet: https://www.hemnet.se/bostad/lagenhet-2rum-arsta-...-21755129 (id sist i sluggen)
+  if (host === "hemnet.se" || host.endsWith(".hemnet.se")) {
+    const m = path.match(/\/bostad\/(?:[a-z0-9-]*-)?(\d+)\/?$/);
+    if (m) return { source: "hemnet", id: m[1], canonicalUrl: clean };
+  }
+
+  // Booli: https://www.booli.se/bostad/4393931 (även /annons/<id> för aktiva annonser)
+  if (host === "booli.se" || host.endsWith(".booli.se")) {
+    const m = path.match(/\/(?:bostad|annons)\/(\d+)/);
+    if (m) return { source: "booli", id: m[1], canonicalUrl: clean };
+  }
+
   return null;
 }
