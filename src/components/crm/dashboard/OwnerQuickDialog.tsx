@@ -98,7 +98,7 @@ export function OwnerQuickDialog({
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-muted-foreground">Telefon:</span> {formatPhoneSv(data.phone)}
                   <a className="text-[11px] underline text-nordic-600" href={smsHref(data.phone) ?? "#"}>SMS</a>
-                  <a className="text-[11px] underline text-nordic-600" href={whatsappHref(data.phone) ?? "#"}>WhatsApp</a>
+                  <a className="text-[11px] underline text-nordic-600" href={whatsappHref(data.phone) ?? "#"} target="_blank" rel="noopener noreferrer">WhatsApp</a>
                   <a className="text-[11px] underline text-nordic-600" href={`tel:${data.phone}`}>Ring</a>
                 </div>
               )}

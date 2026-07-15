@@ -80,7 +80,7 @@ describe("formatPhoneSv", () => {
 
 describe("whatsappHref / smsHref", () => {
   it("bygger korrekta länkar", () => {
-    expect(whatsappHref("070-123 45 67")).toBe("whatsapp://send?phone=46701234567");
+    expect(whatsappHref("070-123 45 67")).toBe("https://wa.me/46701234567");
     expect(smsHref("070-123 45 67")).toBe("sms:+46701234567");
   });
 

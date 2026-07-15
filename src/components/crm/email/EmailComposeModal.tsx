@@ -78,6 +78,10 @@ export function EmailComposeModal({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // bodyEmpty i state — useEditor re-renderar inte React vid varje tangenttryck,
+  // så knappens disabled måste uppdateras via onUpdate (annars förblir Skicka
+  // grå trots ifylld text). break-words så långa länkar aldrig spränger bredden.
+  const [bodyEmpty, setBodyEmpty] = useState(true);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -87,9 +91,10 @@ export function EmailComposeModal({
     content: "",
     editorProps: {
       attributes: {
-        class: "min-h-[140px] text-sm px-3 py-2 focus:outline-none",
+        class: "min-h-[140px] text-sm px-3 py-2 focus:outline-none break-words [overflow-wrap:anywhere]",
       },
     },
+    onUpdate: ({ editor }) => setBodyEmpty(!editor.getText().trim()),
   });
 
   useEffect(() => {
@@ -99,6 +104,7 @@ export function EmailComposeModal({
     setSubject(defaultSubject ?? "");
     setError(null);
     editor?.commands.setContent("");
+    setBodyEmpty(true);
   }, [open, defaultTo, defaultSubject, contactId, editor]);
 
   function handleSelectContact(c: ContactOption) {
@@ -148,15 +154,16 @@ export function EmailComposeModal({
   }
 
   const hasMultipleContacts = contacts.length > 1;
-  const bodyEmpty = !editor?.getText().trim();
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && !sending && onClose()}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Skriv mejl</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
+        {/* min-w-0 så en lång länk i meddelandet inte tvingar grid-kolumnen
+            bredare än modalen (då spräcktes bredden och fälten flöt ut). */}
+        <div className="space-y-3 min-w-0">
           {hasMultipleContacts && (
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Välj kontakt</label>
@@ -252,6 +259,7 @@ export function EmailComposeModal({
           <Button
             onClick={handleSend}
             disabled={sending || !to.trim() || !subject.trim() || bodyEmpty}
+            title={bodyEmpty ? "Skriv ett meddelande först" : undefined}
           >
             {sending ? "Skickar…" : "Skicka"}
           </Button>

@@ -63,11 +63,14 @@ export function formatPhoneSv(stored: string | null | undefined): string | null 
   return `${national.slice(0, areaLen)}-${groupSubscriber(national.slice(areaLen))}`;
 }
 
-// whatsapp://-schemat öppnar WhatsApp-skrivbordsappen (eller mobilappen) direkt,
-// utan omväg via wa.me/webben. Kräver siffror med landskod, utan inledande +.
+// Metas officiella klick-till-chatt (https://wa.me/<siffror utan +>). Fungerar
+// pålitligt på alla plattformar — öppnar chatten mot RÄTT nummer, på mobil direkt
+// i appen och på desktop i WhatsApp-appen/webben. Det gamla whatsapp://send-schemat
+// öppnade ofta appen utan att välja mottagaren (särskilt på desktop), därav
+// "länkas inte till rätt nummer".
 export function whatsappHref(raw: string | null | undefined, defaultCc = SWEDEN_CC): string | null {
   const e164 = normalizePhoneE164(raw, defaultCc);
-  return e164 ? `whatsapp://send?phone=${e164.slice(1)}` : null;
+  return e164 ? `https://wa.me/${e164.slice(1)}` : null;
 }
 
 // sms: öppnar telefonens/Macens meddelandeapp med numret förifyllt.

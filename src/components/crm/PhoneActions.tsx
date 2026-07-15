@@ -20,6 +20,8 @@ export function PhoneActions({ phone, ownerId, className = "" }: { phone?: strin
       {wa && (
         <a
           href={wa}
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
           title="Skicka WhatsApp"
           aria-label="Skicka WhatsApp"
