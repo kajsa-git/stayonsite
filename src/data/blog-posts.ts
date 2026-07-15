@@ -1153,6 +1153,50 @@ export const blogPosts: BlogPost[] = [
       ],
     },
   },
+  {
+    slug: 'elnatsutbyggnad-nordsyd-personalboende-guide-2026',
+    title: {
+      sv: 'Elnätsutbyggnaden NordSyd 2026–2035: var behövs personalboende för kraftledningsprojekten?',
+      en: 'Sweden\'s NordSyd Grid Expansion 2026–2035: Where Worker Accommodation Will Be Needed',
+      pl: 'Rozbudowa sieci NordSyd 2026–2035: gdzie będzie potrzebne zakwaterowanie dla monterów?',
+    },
+    description: {
+      sv: 'Svenska kraftnät investerar 180 miljarder kr i stamnätet till 2035. Se vilka regioner som behöver personalboende för elmontörer.',
+      en: 'Svenska kraftnät invests SEK 180bn in the grid by 2035. See which regions will need worker accommodation for grid crews.',
+      pl: 'Svenska kraftnät zainwestuje 180 mld SEK w sieć do 2035 r. Sprawdź, gdzie będzie potrzebne zakwaterowanie dla monterów.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-15',
+    category: 'Analys',
+    tags: ['elnät', 'kraftledningar', 'personalboende', 'Svenska kraftnät', 'NordSyd'],
+    readingTime: 9,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Satsningen omfattar cirka 180 miljarder kronor under perioden 2026–2035 för stamnätet.',
+      'NordSyd kostar över 100 miljarder kronor och berör åtta län: Västernorrland, Jämtland, Gävleborg, Dalarna, Värmland, Västmanland, Uppsala och Stockholm.',
+      'Investeringstakten ökar från 9 miljarder kronor 2025 till 20 miljarder kronor per år 2026 och 2027.',
+      'Överföringskapaciteten mellan elområde 2 och 3 ska öka från 7 300 MW till cirka 10 500 MW när NordSyd är klart i slutet av 2030-talet.',
+      'Branschen bedöms behöva 100 000 nya tekniker och ingenjörer de kommande tio åren för energiomställningen.',
+    ],
+    faq: [
+      {
+        q: 'Vilka regioner påverkas mest av elnätsutbyggnaden 2026–2035?',
+        a: 'Störst byggvolym väntas i NordSyd-länen (Västernorrland, Jämtland, Gävleborg, Dalarna, Värmland, Västmanland, Uppsala och Stockholm), men även Norrbotten, Västerbotten, Skåne och Gotland har egna stora investeringsprogram.',
+      },
+      {
+        q: 'När behöver entreprenörer säkra personalboende inför ett kraftledningsprojekt?',
+        a: 'Boende bör bokas redan i anbudsskedet, innan upphandling avgörs, eftersom lokalt boendeutbud i glesbygd ofta är begränsat och konkurrensen kan vara hög under intensiva byggperioder.',
+      },
+      {
+        q: 'Vilka yrkesgrupper behöver boende längs kraftledningskorridorerna?',
+        a: 'Linjemontörer, ställverkstekniker, byggledare, projektledare samt konsulter inom miljö, geoteknik och arkeologi rör sig längs korridorerna under olika projektfaser.',
+      },
+      {
+        q: 'Hur snabbt kan StayOnSite ta fram en boendeplan för ett kraftledningsprojekt?',
+        a: 'Man återkommer alltid inom en arbetsdag, ofta inom några timmar, och kan i regel presentera en konkret boendeplan inom 24 timmar från första kontakt.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
