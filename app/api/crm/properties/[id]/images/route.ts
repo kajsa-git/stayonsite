@@ -34,6 +34,45 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   return NextResponse.json(withUrls);
 }
 
+// PATCH — spara bildernas visningsordning ({ order: [imageId, …], hela listan}).
+// Första bilden blir huvudbild — galleri, OG-bild och listminiatyr pekar då
+// alltid på samma bild (alla ytor sorterar isPrimary först, sedan sortOrder).
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await requireApprovedSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const body = await req.json().catch(() => ({}));
+  const order: unknown = body.order;
+  if (!Array.isArray(order) || order.length === 0 || order.some((x) => typeof x !== "string")) {
+    return NextResponse.json({ error: "order måste vara en lista med bild-id:n" }, { status: 400 });
+  }
+
+  const rows = await db
+    .select({ id: propertyImages.id })
+    .from(propertyImages)
+    .where(eq(propertyImages.propertyId, id));
+  const known = new Set(rows.map((r) => r.id));
+  const distinct = new Set(order as string[]);
+  if (distinct.size !== known.size || order.length !== known.size || (order as string[]).some((x) => !known.has(x))) {
+    return NextResponse.json(
+      { error: "Ordningen matchar inte objektets bilder — ladda om sidan och försök igen" },
+      { status: 409 },
+    );
+  }
+
+  await db.transaction(async (tx) => {
+    for (let i = 0; i < order.length; i++) {
+      await tx
+        .update(propertyImages)
+        .set({ sortOrder: i, isPrimary: i === 0 })
+        .where(eq(propertyImages.id, order[i] as string));
+    }
+  });
+
+  return NextResponse.json({ ok: true });
+}
+
 // POST — upload an image (multipart form-data, field "file")
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireApprovedSession();

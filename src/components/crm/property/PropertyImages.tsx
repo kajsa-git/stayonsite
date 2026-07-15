@@ -22,6 +22,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
     fetcher
   );
   const [uploading, setUploading] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -77,6 +78,35 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
         title: ok > 0 ? `${ok} av ${list.length} uppladdade — ${failed} misslyckades` : "Uppladdningen misslyckades",
         variant: "destructive",
       });
+    }
+  }
+
+  // Flytta en bild ett steg och spara hela ordningen. Första bilden blir
+  // huvudbild (samma regel som servern) så badgen flyttar med direkt.
+  async function move(from: number, to: number) {
+    if (reordering || to < 0 || to >= images.length) return;
+    const next = [...images];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    const withPrimary = next.map((img, idx) => ({ ...img, isPrimary: idx === 0 }));
+    setReordering(true);
+    try {
+      await mutate(
+        async () => {
+          const res = await fetch(`/api/crm/properties/${propertyId}/images`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ order: next.map((img) => img.id) }),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          return withPrimary;
+        },
+        { optimisticData: withPrimary, rollbackOnError: true, revalidate: false }
+      );
+    } catch {
+      toast({ title: "Kunde inte spara ordningen", variant: "destructive" });
+    } finally {
+      setReordering(false);
     }
   }
 
@@ -169,6 +199,26 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
               >
                 <X className="h-3.5 w-3.5" />
               </button>
+              {images.length > 1 && (
+                <div className="absolute bottom-1 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => move(i, i - 1)}
+                    disabled={reordering || i === 0}
+                    className="h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-30 disabled:hover:bg-black/60"
+                    title="Flytta tidigare"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={() => move(i, i + 1)}
+                    disabled={reordering || i === images.length - 1}
+                    className="h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-30 disabled:hover:bg-black/60"
+                    title="Flytta senare"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
