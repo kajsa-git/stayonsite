@@ -26,6 +26,7 @@ interface Props {
   open: boolean;
   defaultTo?: string;
   defaultSubject?: string;
+  defaultBody?: string; // HTML — förifylld brödtext (t.ex. erbjudandemall)
   threadId?: string;
   companyId?: string;
   contactId?: string;
@@ -64,6 +65,7 @@ export function EmailComposeModal({
   open,
   defaultTo,
   defaultSubject,
+  defaultBody,
   threadId,
   companyId,
   contactId,
@@ -103,9 +105,9 @@ export function EmailComposeModal({
     setSelectedContactId(contactId ?? "");
     setSubject(defaultSubject ?? "");
     setError(null);
-    editor?.commands.setContent("");
-    setBodyEmpty(true);
-  }, [open, defaultTo, defaultSubject, contactId, editor]);
+    editor?.commands.setContent(defaultBody ?? "");
+    setBodyEmpty(!editor?.getText().trim());
+  }, [open, defaultTo, defaultSubject, defaultBody, contactId, editor]);
 
   function handleSelectContact(c: ContactOption) {
     setTo(c.email);

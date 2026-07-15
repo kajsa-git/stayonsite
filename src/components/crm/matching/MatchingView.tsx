@@ -16,7 +16,6 @@ import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { toast } from "@/components/ui/use-toast";
 import { ArrowUpRight, Loader2, Navigation, Pencil, Search, Trash2, X } from "lucide-react";
-import { landlordAvtalStandaloneSms } from "@/lib/crm/sms-templates";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -30,6 +29,7 @@ import {
   type DealTermsMatch,
 } from "./DealTermsDialogs";
 import { OfferLinkPanel } from "./OfferLinkPanel";
+import { LandlordAgreementShareDialog, type LandlordShareTarget } from "./LandlordAgreementShareDialog";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { PropertyEditModal } from "../property/PropertyEditModal";
 import { LandlordLogDialog } from "./LandlordLogDialog";
@@ -94,6 +94,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   // formuläret resynkas när mutate() hämtat om objektet efter sparning.
   const [editPropertyId, setEditPropertyId] = useState<string | null>(null);
   const [logPropertyId, setLogPropertyId] = useState<string | null>(null);
+  const [landlordShare, setLandlordShare] = useState<LandlordShareTarget | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
@@ -303,28 +304,19 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
   // Uthyrarens signeringslänk — den FRISTÅENDE (ownerId-scope): uthyraren ser
   // bara uppdragsavtalet + tacksida, inga affärsvillkor (avtalet kommer alltid
-  // först). Kopierar färdig SMS-text (www-länk utan https, operatörsfilter-läxan).
-  async function shareLandlordLink(m: MatchRow) {
+  // först). Öppnar delningsdialogen (SMS/WhatsApp/kopiera/mejl direkt till uthyraren).
+  function shareLandlordLink(m: MatchRow) {
     if (!m.propertyOwnerId) {
       toast({ title: "Objektet saknar uthyrare — koppla en uthyrare först", variant: "destructive" });
       return;
     }
-    try {
-      const res = await fetch("/api/crm/share-links", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ownerId: m.propertyOwnerId }),
-      });
-      if (!res.ok) {
-        toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
-        return;
-      }
-      const link = await res.json();
-      await navigator.clipboard.writeText(landlordAvtalStandaloneSms(null, link.token));
-      toast({ title: "SMS-text kopierad — uthyraren ser bara uppdragsavtalet" });
-    } catch {
-      toast({ title: "Kunde inte skapa uthyrarlänken", variant: "destructive" });
-    }
+    const p = properties.find((x) => x.id === m.propertyId);
+    setLandlordShare({
+      ownerId: m.propertyOwnerId,
+      ownerName: p?.ownerName ?? null,
+      ownerPhone: p?.ownerPhone ?? null,
+      ownerEmail: p?.ownerEmail ?? null,
+    });
   }
 
   return (
@@ -391,7 +383,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             </dl>
           </div>
 
-          <OfferLinkPanel requestId={request.id} sentCount={matches.filter((m) => m.sentAt != null).length} />
+          <OfferLinkPanel
+            requestId={request.id}
+            companyId={request.companyId}
+            city={request.city}
+            sentCount={matches.filter((m) => m.sentAt != null).length}
+          />
 
           <div className="bg-white rounded-xl border p-4">
             {/* Räknaren visar AKTIVA förslag — avböjda ligger kvar i listan som historik
@@ -777,6 +774,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           />
         );
       })()}
+
+      <LandlordAgreementShareDialog target={landlordShare} onClose={() => setLandlordShare(null)} />
 
       <SendOfferDialog
         match={sendOffer}

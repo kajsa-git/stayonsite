@@ -5,12 +5,13 @@
 // Länken är kapabiliteten — återkallning är därför en (lätt) destruktiv åtgärd
 // och kräver bekräftelse.
 
+import { EmailComposeModal } from "@/components/crm/email/EmailComposeModal";
 import { ShareLinkButton } from "@/components/crm/property/ShareLinkButton";
 import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
-import type { ShareLink } from "@/lib/crm/schema";
-import { offerLinkSms, tenantAvtalSms } from "@/lib/crm/sms-templates";
-import { Copy, Eye, Link as LinkIcon, ShieldCheck, ShieldQuestion, Undo2 } from "lucide-react";
+import type { Contact, ShareLink } from "@/lib/crm/schema";
+import { offerEmailHtml, offerLinkSms, tenantAvtalSms } from "@/lib/crm/sms-templates";
+import { Copy, Eye, Link as LinkIcon, Mail, ShieldCheck, ShieldQuestion, Undo2 } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -30,19 +31,28 @@ interface PanelData {
 
 export function OfferLinkPanel({
   requestId,
+  companyId,
+  city,
   contactName,
   sentCount = 0,
 }: {
   requestId: string;
+  companyId: string;
+  city?: string | null;
   contactName?: string | null;
   // Antal skickade erbjudanden på förfrågan — utan något visar kundlänken bara
   // uppdragsbekräftelsen + en väntsida, så panelen varnar tydligt.
   sentCount?: number;
 }) {
   const { data, mutate } = useSWR<PanelData>(`/api/crm/share-links?requestId=${requestId}`, swrFetcher);
+  // Kontakter för mejlutskicket — mottagare + kontaktväljare i mejlmodalen.
+  const { data: company } = useSWR<{ contacts: Contact[] }>(`/api/crm/companies/${companyId}`, swrFetcher);
   const [working, setWorking] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const tenantLink = data?.links.find((l) => l.audience === "tenant" && !l.matchId && !l.revokedAt) ?? null;
+  const contacts = (company?.contacts ?? []).filter((c) => c.email);
+  const primaryEmail = (contacts.find((c) => c.isPrimary) ?? contacts[0])?.email ?? "";
 
   async function createLink() {
     setWorking(true);
@@ -161,6 +171,13 @@ export function OfferLinkPanel({
               <Copy className="h-4 w-4" /> SMS-text
             </button>
             <button
+              onClick={() => setEmailOpen(true)}
+              className="inline-flex items-center gap-1.5 h-9 px-3 text-sm rounded-md border border-input bg-white hover:bg-muted transition-colors"
+              title="Skriv mejl med länken i den interna klienten (förifyllt)"
+            >
+              <Mail className="h-4 w-4" /> Mejl
+            </button>
+            <button
               onClick={revokeLink}
               disabled={working}
               className="inline-flex items-center gap-1.5 h-9 px-3 text-sm rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors ml-auto"
@@ -189,6 +206,19 @@ export function OfferLinkPanel({
             <LinkIcon className="h-4 w-4" /> {working ? "Skapar…" : "Skapa kundlänk"}
           </button>
         </div>
+      )}
+
+      {tenantLink && (
+        <EmailComposeModal
+          open={emailOpen}
+          companyId={companyId}
+          contacts={contacts.map((c) => ({ id: c.id, name: c.name, email: c.email! }))}
+          defaultTo={primaryEmail}
+          defaultSubject={city ? `Boende – ${city}` : "Boendeförslag – StayOnSite"}
+          defaultBody={offerEmailHtml(contactName, city, tenantLink.token)}
+          onClose={() => setEmailOpen(false)}
+          onSent={() => setEmailOpen(false)}
+        />
       )}
     </div>
   );

@@ -35,12 +35,44 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
   return `${greet(ownerName)}\nHär kommer uppdragsavtalet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
 }
 
+// Uppdragsavtal-MEJL till uthyraren — HTML för interna klienten, full https-länk.
+export function landlordAvtalEmailHtml(ownerName: string | null | undefined, token: string): string {
+  const first = firstNameOf(ownerName);
+  const hej = first ? `Hej ${first},` : "Hej,";
+  const url = `https://www.stayonsite.se/uthyrare/${token}`;
+  return (
+    `<p>${hej}</p>` +
+    `<p>Här kommer uppdragsavtalet:<br><a href="${url}">${url}</a></p>` +
+    `<p>Det är kostnadsfritt och inte exklusivt och tar en minut att signera.</p>` +
+    `<p>Mvh Kajsa<br>StayOnSite</p>`
+  );
+}
+
 // Fristående uppdragsbekräftelse till kunden — skickas tidigt, innan erbjudandet
 // är klart. Lovar INTE objekt/pris (det gör offerLinkSms när förslaget skickats);
 // samma länk visar förslaget automatiskt när det stämplats.
 // Ordalydelsen är Kajsas egen (2026-07-13) — ändra inte utan hennes ok.
 export function tenantAvtalSms(contactName: string | null | undefined, token: string): string {
   return `${greet(contactName)}\nBifogar uppdragsbekräftelse www.stayonsite.se/erbjudande/${token}\n\nBoendeförslag dyker upp på samma sida så snart det är klart.\nMvh Kajsa\nStayOnSite`;
+}
+
+// Erbjudande-MEJL till kunden — HTML för den interna mejlklienten. I mejl används
+// full https-länk (klickbar, inget smishing-filter som i SMS). Kajsas ordalydelse.
+export function offerEmailHtml(
+  contactName: string | null | undefined,
+  city: string | null | undefined,
+  token: string
+): string {
+  const first = firstNameOf(contactName);
+  const hej = first ? `Hej ${first},` : "Hej,";
+  const url = `https://www.stayonsite.se/erbjudande/${token}`;
+  const plats = city ? ` i ${city}` : "";
+  return (
+    `<p>${hej}</p>` +
+    `<p>Här ser du förslag på boende${plats}:<br><a href="${url}">${url}</a></p>` +
+    `<p>Hör av dig med frågor eller om du vill boka boendet.</p>` +
+    `<p>Mvh Kajsa<br>StayOnSite</p>`
+  );
 }
 
 // Jaga uthyrare: förslag skickat, väntar på svar.
