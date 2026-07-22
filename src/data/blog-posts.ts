@@ -1197,6 +1197,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'kriminalvarden-anstaltsbygge-personalboende-2026',
+    title: {
+      sv: 'Kriminalvårdens fängelseutbyggnad: så påverkas behovet av personalboende',
+      en: 'Sweden\'s Prison Expansion: Growing Demand for Worker Accommodation',
+      pl: 'Rozbudowa więzień w Szwecji: rosnące zapotrzebowanie na zakwaterowanie pracowników',
+    },
+    description: {
+      sv: 'Kriminalvården bygger ut med tusentals nya platser på ~50 orter. Så säkrar byggföretag personalboende till projekten.',
+      en: 'Sweden\'s prison system is expanding at ~50 sites nationwide. Here\'s how construction firms secure worker housing.',
+      pl: 'System więzienny w Szwecji rozbudowuje się w ~50 lokalizacjach. Jak firmy budowlane zapewniają zakwaterowanie pracownikom.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-22',
+    category: 'Analys',
+    tags: ['kriminalvården', 'anstaltsbygge', 'personalboende', 'byggprojekt', 'infrastruktur'],
+    readingTime: 8,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Kriminalvården planerar cirka 11 000 nya fasta platser på tio år, till totalt cirka 19 500 platser – mer än en fördubbling.',
+      'I april 2026 beslutade regeringen om nya hyresavtal för Södertälje, Karlskoga, Hisingen, Värnamo, Trelleborg och Västervik.',
+      'Anstalt Trelleborg blir cirka 110 000 kvadratmeter, med byggstart 2026 och drift från cirka 2030–2031, och sysselsätter uppemot 1 000 medarbetare vid spadtaget.',
+      'Kristianstad Vä:s andra etapp ger cirka 400 nya platser, vilket totalt för båda etapperna ger cirka 600 platser.',
+      'Flera hyresavtal löper på 25 år, medan Västerviks avtal gäller i 18 år och 7 månader med tillträde 2026.',
+    ],
+    faq: [
+      {
+        q: 'Hur många nya anstaltsplatser planeras totalt i Sverige?',
+        a: 'Kriminalvården planerar omkring 11 000 nya fasta platser under en tioårsperiod, vilket mer än fördubblar dagens kapacitet, med utbyggnad etappvis fram mot mitten av 2030-talet.',
+      },
+      {
+        q: 'Vilka orter är mest aktuella just nu?',
+        a: 'Trelleborg, Värnamo, Södertälje, Karlskoga, Hisingen och Västervik ingår i ett samlat regeringsbeslut om nya hyresavtal, medan Kristianstad/Vä byggs ut i separata etapper.',
+      },
+      {
+        q: 'Varför räcker inte lokal arbetskraft till dessa projekt?',
+        a: 'Anstalter i högre säkerhetsklass kräver specialistkompetens som sällan finns på mindre orter, och byggtiderna är ofta fyra till sex år, vilket kräver en stabil, inflyttad arbetsstyrka.',
+      },
+      {
+        q: 'Hur bör byggföretag planera personalboende för säkerhetsklassade projekt?',
+        a: 'Planeringen bör ske redan i anbudsskedet, med hänsyn till hela byggtiden, bostadsmarknadens begränsningar och eventuella krav på bakgrundskontroller för boendeplatser nära byggarbetsplatsen.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
