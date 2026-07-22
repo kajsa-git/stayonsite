@@ -72,7 +72,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-13.7", // .7 = per uthyrare (era objekt) + 12 mån giltighet uttalad; omsignering krävs
+  version: "2026-07-16.8", // .8 = icke-exklusivitet uttalad: ingen skyldighet att hyra ut via oss, fritt hyra ut till ej förmedlade; omsignering krävs
   title: "Uthyrningsuppdrag",
   intro:
     "Ni ger StayOnSite i uppdrag att hyra ut era objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
@@ -85,6 +85,14 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
     {
       heading: "Ni bestämmer",
       body: "Inget hyresavtal ingås utan er bekräftelse, och ni kan tacka nej till förslag utan motivering.",
+    },
+    {
+      heading: "Inte exklusivt — inga åtaganden utan förmedlad hyresgäst",
+      bullets: [
+        "Uppdraget innebär ingen skyldighet att hyra ut era objekt via StayOnSite.",
+        "Ni får självklart hyra ut till hyresgäster som inte förmedlats av StayOnSite — egna kontakter, egna kanaler eller andra förmedlare.",
+        "Förmedlar StayOnSite ingen hyresgäst har ni inga åtaganden enligt detta uppdrag.",
+      ],
     },
     {
       heading: "Affären går alltid via StayOnSite",
@@ -172,6 +180,14 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
     {
       heading: "You decide",
       body: "No lease is entered into without your confirmation, and you may decline any proposal without giving a reason.",
+    },
+    {
+      heading: "Non-exclusive — no obligations unless we introduce a tenant",
+      bullets: [
+        "The assignment does not oblige you to let your properties through StayOnSite.",
+        "You are of course free to let to tenants not introduced by StayOnSite — your own contacts, your own channels or other agents.",
+        "If StayOnSite does not introduce a tenant, this assignment imposes no obligations on you.",
+      ],
     },
     {
       heading: "The deal always goes through StayOnSite",
