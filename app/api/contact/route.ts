@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { mapWebSubmissionToCrm, type WebSubmission } from "@/lib/crm/contact-intake";
+import { loadLandlordStanding } from "@/lib/crm/deal-projection";
+import { ensureShareLink } from "@/lib/crm/share-links";
 
 // Node-runtime route handler. Importing @/lib/crm/* directly lets Next.js bundle
 // the CRM intake into the function — the old standalone api/contact.ts function
@@ -345,6 +347,29 @@ export async function POST(req: NextRequest) {
       console.error("CRM intake mapping failed", err);
     }
 
+    // Del 2 för husägarformuläret: privatpersoner får uthyrningsuppdraget direkt
+    // i formuläret (samma flöde och länktyp som /registrera-bostad — påminnelse-
+    // cronen plockar upp osignerade automatiskt). LP-formuläret (lp-homeowner) är
+    // medvetet undantaget: annonstrafik ska inte auto-påminnas utan Kajsas beslut.
+    // Får aldrig fälla mejlvägen — leadet är redan sparat.
+    let agreement: { token: string; alreadySigned: boolean } | null = null;
+    if (
+      submission.formType === "homeowner" &&
+      crmResult &&
+      "owner" in crmResult &&
+      crmResult.owner?.ownerType === "privatperson"
+    ) {
+      try {
+        const [standing, link] = await Promise.all([
+          loadLandlordStanding(crmResult.owner.id),
+          ensureShareLink({ audience: "landlord", ownerId: crmResult.owner.id }),
+        ]);
+        agreement = { token: link.token, alreadySigned: standing?.agreementAccepted ?? false };
+      } catch (err) {
+        console.error("Homeowner agreement link failed", err);
+      }
+    }
+
     // Notisen till oss varnar om leadet inte kom in i CRM automatiskt.
     const email = buildEmail(submission, ip, req.headers.get("user-agent") ?? undefined, crmResult != null, crmError);
 
@@ -376,7 +401,7 @@ export async function POST(req: NextRequest) {
       }).catch((err) => console.error("Confirmation email failed", err));
     }
 
-    return NextResponse.json({ success: true, provider: "resend", crm: crmResult ? "mapped" : "skipped" });
+    return NextResponse.json({ success: true, provider: "resend", crm: crmResult ? "mapped" : "skipped", agreement });
   } catch (err) {
     console.error("Contact form error", err);
     return NextResponse.json({ success: false, error: "contact_form_submission_failed" }, { status: 500 });

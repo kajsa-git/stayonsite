@@ -12,6 +12,8 @@ import {
   getContactFormErrorMessage,
   submitContactForm,
 } from '@/lib/contact-form';
+import { AgreementGate } from '@/components/erbjudande/AgreementGate';
+import { agreementFor } from '@/lib/crm/avtal';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -161,6 +163,10 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
+  // Del 2 (uthyrningsuppdraget) — visas inline i panelen efter inskicket för
+  // privatpersoner. null-outcome = gaten visas just nu.
+  const [agreement, setAgreement] = useState<{ token: string; alreadySigned: boolean } | null>(null);
+  const [agreementOutcome, setAgreementOutcome] = useState<'signed' | 'skipped' | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -182,7 +188,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
     setIsSubmitting(true);
 
     try {
-      await submitContactForm({
+      const result = await submitContactForm({
         formType: 'homeowner',
         locale: language,
         page: window.location.pathname,
@@ -199,15 +205,21 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
       });
       setFormSuccess(true);
       trackFormSubmit();
-      toast({
-        title: t('homeowner.conversion.successTitle' as TranslationKey),
-        description: t('homeowner.conversion.successText' as TranslationKey),
-      });
 
-      setTimeout(() => {
-        setFormSuccess(false);
-        if (formRef.current) formRef.current.reset();
-      }, 8000);
+      if (result.agreement && !result.agreement.alreadySigned) {
+        // Del 2: uthyrningsuppdraget tar över panelen — ingen auto-reset som
+        // rycker undan avtalet medan det läses.
+        setAgreement(result.agreement);
+      } else {
+        toast({
+          title: t('homeowner.conversion.successTitle' as TranslationKey),
+          description: t('homeowner.conversion.successText' as TranslationKey),
+        });
+        setTimeout(() => {
+          setFormSuccess(false);
+          if (formRef.current) formRef.current.reset();
+        }, 8000);
+      }
     } catch (error) {
       toast({
         title: t('homeowner.form.error') || 'Error',
@@ -308,7 +320,52 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
             className="w-full lg:w-[440px] lg:flex-shrink-0 order-1 lg:order-2"
           >
             <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
-              {formSuccess ? (
+              {formSuccess && agreement && !agreement.alreadySigned && agreementOutcome === null ? (
+                (() => {
+                  // Del 2: samma avtalstext och signeringsendpoint som /uthyrare/<token>.
+                  // Avtal finns bara på sv/en — pl får engelska (Kajsas beslut 2026-07-13).
+                  const { text: agreementText, language: agreementLang } = agreementFor('uthyrningsuppdrag', language);
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3 rounded-xl border border-green-400/30 bg-green-500/15 p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <p className="text-sm leading-relaxed text-white/90">
+                          {tr(
+                            'Tack! Din bostad är registrerad. Ett steg kvar: godkänn uthyrningsuppdraget nedan — kostnadsfritt, inte exklusivt och du förbinder dig inte att hyra ut något.',
+                            'Thanks! Your property is registered. One step left: approve the letting assignment below — free of charge, non-exclusive and no obligation to let anything.',
+                            'Dziękujemy! Twoja nieruchomość jest zarejestrowana. Został jeden krok: zatwierdź poniżej zlecenie wynajmu — bezpłatne i niewyłączne.'
+                          )}
+                        </p>
+                      </div>
+                      <AgreementGate
+                        token={agreement.token}
+                        title={agreementText.title}
+                        intro={agreementText.intro}
+                        points={agreementText.points}
+                        version={agreementText.version}
+                        submitLabel={agreementLang === 'sv' ? 'Godkänn uthyrningsuppdraget' : 'Approve the letting assignment'}
+                        lang={agreementLang}
+                        onAccepted={() => setAgreementOutcome('signed')}
+                      />
+                      <div className="text-center">
+                        <button
+                          type="button"
+                          onClick={() => setAgreementOutcome('skipped')}
+                          className="text-xs text-white/70 underline underline-offset-2 transition-colors hover:text-white"
+                        >
+                          {tr(
+                            'Hoppa över just nu — jag godkänner senare',
+                            'Skip for now — I will approve later',
+                            'Pomiń na razie — zatwierdzę później'
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : formSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center py-8">
                   <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -321,6 +378,32 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                   <p className="text-white/70">
                     {t('homeowner.conversion.successText' as TranslationKey)}
                   </p>
+                  {agreementOutcome === 'signed' && (
+                    <p className="mt-4 rounded-xl border border-green-400/30 bg-green-500/15 px-4 py-3 text-sm text-green-200">
+                      {tr(
+                        'Uthyrningsuppdraget är godkänt — allt är klart från din sida.',
+                        'The letting assignment is approved — all done on your side.',
+                        'Zlecenie wynajmu zatwierdzone — wszystko gotowe.'
+                      )}
+                    </p>
+                  )}
+                  {agreementOutcome === 'skipped' && agreement && (
+                    <p className="mt-4 text-sm text-white/75">
+                      {tr(
+                        'Du kan godkänna uthyrningsuppdraget när som helst via ',
+                        'You can approve the letting assignment any time via ',
+                        'Możesz zatwierdzić zlecenie wynajmu w dowolnym momencie przez '
+                      )}
+                      <a href={`/uthyrare/${agreement.token}`} className="font-semibold underline underline-offset-2">
+                        {tr('din personliga länk', 'your personal link', 'swój osobisty link')}
+                      </a>
+                      {tr(
+                        ' — vi skickar också en påminnelse via mejl.',
+                        " — we'll also send a reminder by email.",
+                        ' — wyślemy też przypomnienie e-mailem.'
+                      )}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <>

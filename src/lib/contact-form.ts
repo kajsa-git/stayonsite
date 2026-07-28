@@ -9,6 +9,9 @@ export interface ContactFormResponse {
   success: boolean;
   provider?: string;
   error?: string;
+  // Husägarformuläret (privatperson): token till uthyrningsuppdraget som visas
+  // som del 2 direkt i formuläret. null/undefined för övriga formulärtyper.
+  agreement?: { token: string; alreadySigned: boolean } | null;
 }
 
 export interface ContactFormSubmission {
@@ -39,13 +42,14 @@ export async function submitContactForm(
     success?: boolean;
     error?: string;
     provider?: string;
+    agreement?: { token: string; alreadySigned: boolean } | null;
   } | null;
 
   if (!response.ok || !result?.success) {
     throw new Error(result?.error || 'contact_form_request_failed');
   }
 
-  return { success: true, provider: result?.provider };
+  return { success: true, provider: result?.provider, agreement: result?.agreement ?? null };
 }
 
 export function getContactFormErrorMessage(
