@@ -1241,6 +1241,94 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'vad-kostar-personalboende-sverige-2026-verkliga-priser',
+    title: {
+      sv: 'Vad kostar personalboende i Sverige 2026? Verkliga priser stad för stad',
+      en: 'What Does Worker Accommodation in Sweden Cost in 2026? Real Prices City by City',
+      pl: 'Ile kosztuje zakwaterowanie pracownicze w Szwecji 2026? Prawdziwe ceny miasto po mieście',
+    },
+    description: {
+      sv: 'Faktiska priser ur vår portfölj: 38 objekt i juli 2026. Snittpris per bäddplats, hela hus stad för stad och vad som driver priset.',
+      en: 'Actual prices from our portfolio: 38 properties in July 2026. Average price per bed, whole houses city by city and what drives the price.',
+      pl: 'Rzeczywiste ceny z naszego portfela: 38 obiektów w lipcu 2026. Średnia cena za łóżko i całe domy miasto po mieście.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-28',
+    category: 'Analys',
+    tags: ['personalboende', 'priser', 'företagsbostäder', 'kostnadsjämförelse', 'budget'],
+    readingTime: 6,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Snittpriset per bäddplats i StayOnSites bestånd är cirka 7 000 kr per månad (38 objekt, juli 2026); instegspriset är 5 900 kr per person och månad.',
+      'Ett helt möblerat hus för ett arbetslag på 5–7 personer kostar typiskt 28 000–42 000 kr per månad i svenska industristäder.',
+      'Kiruna är dyrast per bäddplats (ca 8 000 kr/mån) drivet av gruvnäringen och stadsomvandlingen; Luleå och Mönsterås ligger runt 6 100 kr.',
+      'Motsvarande hotellboende utanför storstäderna kostar 21 000–30 000 kr per person och månad — tre till fyra gånger priset för en bäddplats i personalboende.',
+      'Räkneexempel: 6 montörer i Kiruna i 5 månader kostar ca 185 000 kr i ett helt hus mot ca 810 000 kr på hotell.',
+    ],
+    faq: [
+      {
+        q: 'Vad kostar personalboende per person och månad?',
+        a: 'Från 5 900 kr per person och månad. Snittet i StayOnSites bestånd är cirka 7 000 kr per bäddplats (38 objekt, juli 2026), och priset per person sjunker med antalet bäddar i boendet.',
+      },
+      {
+        q: 'Varför är Kiruna dyrast per bäddplats?',
+        a: 'Efterfrågan från gruvnäringen och stadsomvandlingen är hög samtidigt som utbudet av större bostäder är begränsat. Snittet i Kiruna ligger runt 8 000 kr per bäddplats mot cirka 6 100 kr i Luleå och Mönsterås.',
+      },
+      {
+        q: 'Vad ingår i hyran?',
+        a: 'Typiskt möblering, el, värme, vatten och wifi. Sängkläder, löpande städning och annan service avtalas separat utifrån projektets förutsättningar.',
+      },
+      {
+        q: 'Är det billigare att hyra ett helt hus än enskilda bäddplatser?',
+        a: 'Ja, nästan alltid. Ett hus med sex till åtta bäddar ger lägst kostnad per person och håller ihop teamet på ett ställe, vilket underlättar vid skiftgång och samåkning.',
+      },
+    ],
+  },
+  {
+    slug: 'lagenhetshotell-eller-foretagsbostad-2026',
+    title: {
+      sv: 'Lägenhetshotell eller företagsbostad? Så väljer ni rätt 2026',
+      en: 'Aparthotel or Corporate Housing? How to Choose in 2026',
+      pl: 'Aparthotel czy mieszkanie firmowe? Jak wybrać w 2026',
+    },
+    description: {
+      sv: 'Skillnaden mellan lägenhetshotell och företagsbostad: priser, avtal, kök och parkering. Med räkneexempel för ett montörsteam på 6 personer.',
+      en: 'The difference between aparthotels and corporate housing: prices, contracts, kitchens and parking. With a worked example for a crew of 6.',
+      pl: 'Różnica między aparthotelem a mieszkaniem firmowym: ceny, umowy, kuchnie i parking. Z przykładem dla ekipy 6 osób.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-28',
+    category: 'Guide',
+    tags: ['lägenhetshotell', 'företagsbostäder', 'korttidsboende', 'longstay', 'kostnadsjämförelse'],
+    readingTime: 6,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Lägenhetshotell kostar typiskt 12 000–25 000 kr per person och månad på longstay-avtal; en företagsbostad kostar från 5 900 kr per person och månad.',
+      'Lägenhetshotell finns nästan bara i storstäder och större regionstäder — på industriorter som Boden, Oskarshamn och Mönsterås är alternativet hotell, pendling eller företagsbostad.',
+      'Räkneexempel: 6 montörer i Luleå i 4 månader kostar ca 168 000 kr i ett helt hus mot ca 336 000 kr på lägenhetshotell — halva kostnaden.',
+      'Tumregel: under en månad eller enstaka resenärer — lägenhetshotell; en månad eller mer, team eller mindre ort — företagsbostad.',
+      'En företagsbostad ger fullt kök, tvättmaskin och plats för servicebilar; lägenhetshotellet ger reception och löpande städning.',
+    ],
+    faq: [
+      {
+        q: 'Är lägenhetshotell och företagslägenhet samma sak?',
+        a: 'Nej. Ett lägenhetshotell är ett hotellkoncept med reception och nattpriser. En företagslägenhet är en vanlig bostad som hyrs möblerad på månadsavtal med företaget som avtalspart — utan hotellservice och till betydligt lägre månadskostnad.',
+      },
+      {
+        q: 'Finns lägenhetshotell i mindre städer?',
+        a: 'Sällan. Kedjorna finns i storstäderna och de större regionstäderna. På industriorter som Boden, Mönsterås eller Oskarshamn står valet i praktiken mellan vanligt hotell, pendling eller en företagsbostad.',
+      },
+      {
+        q: 'Vad är billigast för ett team på sex personer eller fler?',
+        a: 'Ett helt hus som företagsbostad. Per bäddplats landar det på cirka 6 000–8 000 kr per månad, mot typiskt 12 000–25 000 kr per person på lägenhetshotell och 21 000–30 000 kr på vanligt hotell.',
+      },
+      {
+        q: 'Ingår städning i en företagsbostad?',
+        a: 'Slutstädning ingår. Löpande städning under vistelsen avtalas separat utifrån projektets förutsättningar — många team föredrar att sköta den själva och hålla nere kostnaden.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
