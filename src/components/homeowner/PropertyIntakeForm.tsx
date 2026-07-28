@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Phone, Upload, X } from "lucide-react";
+import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
+import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { compressImage } from "@/lib/image-compress";
 import { cn } from "@/lib/utils";
 
@@ -241,7 +243,14 @@ export function PropertyIntakeForm() {
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [success, setSuccess] = useState<{ propertyId: string; imageCount: number; imageErrors: string[] } | null>(null);
+  const [success, setSuccess] = useState<{
+    propertyId: string;
+    imageCount: number;
+    imageErrors: string[];
+    agreement: { token: string; alreadySigned: boolean } | null;
+  } | null>(null);
+  // Del 2 (uthyrningsuppdraget): null = visas just nu, annars utfallet.
+  const [agreementOutcome, setAgreementOutcome] = useState<"signed" | "skipped" | null>(null);
 
   const progress = ((step + 1) / steps.length) * 100;
 
@@ -414,6 +423,7 @@ export function PropertyIntakeForm() {
         propertyId?: string;
         imageCount?: number;
         imageErrors?: string[];
+        agreement?: { token: string; alreadySigned: boolean } | null;
         error?: string;
       } | null;
 
@@ -425,12 +435,56 @@ export function PropertyIntakeForm() {
         propertyId: result.propertyId,
         imageCount: result.imageCount ?? 0,
         imageErrors: result.imageErrors ?? [],
+        agreement: result.agreement ?? null,
       });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setSubmitError("Det gick inte att skicka just nu. Försök igen eller ring 076-249 84 86.");
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  // Del 2 av registreringen: uthyrningsuppdraget visas direkt efter inskicket
+  // (privatpersoner som inte redan signerat). Hoppar man över mejlar vi en
+  // påminnelse med samma länk — se cron:en i app/api/cron/agreement-reminders.
+  if (success && success.agreement && !success.agreement.alreadySigned && agreementOutcome === null) {
+    return (
+      <section className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl space-y-5">
+          <div className="flex items-start gap-3 rounded-md border border-green-200 bg-white p-5 shadow-sm">
+            <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-700" />
+            <div>
+              <p className="text-base font-semibold text-nordic-950">Del 1 av 2 klar — bostaden är mottagen.</p>
+              <p className="mt-1 text-sm leading-6 text-nordic-700">
+                Ett steg kvar: läs igenom och godkänn uthyrningsuppdraget nedan. Det är kostnadsfritt,
+                inte exklusivt och du förbinder dig inte att hyra ut något.
+              </p>
+            </div>
+          </div>
+
+          <AgreementGate
+            token={success.agreement.token}
+            title={UTHYRNINGSUPPDRAG.title}
+            intro={UTHYRNINGSUPPDRAG.intro}
+            points={UTHYRNINGSUPPDRAG.points}
+            version={UTHYRNINGSUPPDRAG.version}
+            submitLabel="Godkänn uthyrningsuppdraget"
+            lang="sv"
+            onAccepted={() => setAgreementOutcome("signed")}
+          />
+
+          <div className="flex flex-col gap-3 rounded-md border border-nordic-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-nordic-700">
+              Vill du läsa i lugn och ro? Du kan godkänna senare — vi skickar en påminnelse med länken.
+            </p>
+            <Button type="button" variant="outline" className="min-h-11 shrink-0" onClick={() => setAgreementOutcome("skipped")}>
+              Hoppa över just nu
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   if (success) {
@@ -445,6 +499,24 @@ export function PropertyIntakeForm() {
             Vi går igenom uppgifterna och hör av oss <strong>inom 24 timmar</strong>. Inget publiceras
             innan vi har stämt av med dig.
           </p>
+
+          {agreementOutcome === "signed" && (
+            <p className="mt-4 rounded-md border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-900">
+              Uthyrningsuppdraget är godkänt — allt är klart från din sida.
+            </p>
+          )}
+          {agreementOutcome === "skipped" && success.agreement && (
+            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p className="font-medium">Uthyrningsuppdraget är inte godkänt ännu.</p>
+              <p className="mt-1">
+                Du kan göra det när som helst via{" "}
+                <a href={`/uthyrare/${success.agreement.token}`} className="font-semibold underline">
+                  din personliga länk
+                </a>
+                {" "}— vi skickar också en påminnelse.
+              </p>
+            </div>
+          )}
 
           <div className="mt-5 space-y-1 rounded-md bg-nordic-50 p-4 text-sm text-nordic-800">
             <p>Bilder mottagna: <span className="font-semibold">{success.imageCount}</span></p>
@@ -488,7 +560,8 @@ export function PropertyIntakeForm() {
               <div>
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#0f766e]">
                   <Home className="h-4 w-4" />
-                  Registrera bostad
+                  {/* Privatpersoner får uthyrningsuppdraget som del 2 direkt efter inskicket. */}
+                  {form.ownerType === "privatperson" ? "Registrera bostad · Del 1 av 2" : "Registrera bostad"}
                 </div>
                 <h1 className="mt-2 text-2xl font-semibold text-nordic-950 sm:text-3xl">Fyll i bostadsuppgifter</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-nordic-700">

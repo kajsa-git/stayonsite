@@ -1,4 +1,7 @@
 {
+  "crons": [
+    { "path": "/api/cron/agreement-reminders", "schedule": "0 7 * * *" }
+  ],
   "headers": [
     {
       "source": "/_next/static/(.*)",

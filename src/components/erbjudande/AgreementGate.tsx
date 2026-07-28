@@ -47,6 +47,7 @@ export function AgreementGate({
   version,
   submitLabel,
   lang = "sv",
+  onAccepted,
 }: {
   token: string;
   title: string;
@@ -55,6 +56,9 @@ export function AgreementGate({
   version: string;
   submitLabel: string;
   lang?: AgreementLanguage;
+  // Utan callback laddas sidan om server-side (token-gatade sidorna). Med callback
+  // (t.ex. bostadsregistreringens del 2) hanterar anroparen fortsättningen själv.
+  onAccepted?: () => void;
 }) {
   const router = useRouter();
   const ui = UI[lang];
@@ -82,7 +86,8 @@ export function AgreementGate({
         setError(j.error ?? ui.genericError);
         return;
       }
-      router.refresh();
+      if (onAccepted) onAccepted();
+      else router.refresh();
     } catch {
       setError(ui.genericError);
     } finally {

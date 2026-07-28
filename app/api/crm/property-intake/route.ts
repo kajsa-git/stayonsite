@@ -1,12 +1,14 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
+import { loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { appendPropertyIntakeImageSummary, createPropertyIntake, propertyIntakeSchema } from "@/lib/crm/property-intake";
 import { db } from "@/lib/crm/db";
 import { imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { propertyImages } from "@/lib/crm/schema";
+import { ensureShareLink } from "@/lib/crm/share-links";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -118,12 +120,31 @@ export async function POST(req: NextRequest) {
 
     await appendPropertyIntakeImageSummary(property.id, imageCount, imageErrors.length);
 
+    // Del 2 av registreringen: privatpersoner får uthyrningsuppdraget direkt efter
+    // inskicket. Fristående uthyrarlänk (ownerId, createdBy null = intagsflödet) —
+    // samma länk återanvänds i påminnelsemejlen tills uppdraget är signerat.
+    // Får aldrig fälla intaget — bostaden är redan sparad.
+    const ownerId = owner?.id ?? property.ownerId ?? null;
+    let agreement: { token: string; alreadySigned: boolean } | null = null;
+    if (parsed.data.ownerType === "privatperson" && ownerId) {
+      try {
+        const [standing, link] = await Promise.all([
+          loadLandlordStanding(ownerId),
+          ensureShareLink({ audience: "landlord", ownerId }),
+        ]);
+        agreement = { token: link.token, alreadySigned: standing?.agreementAccepted ?? false };
+      } catch (error) {
+        console.error("Intake agreement link failed", error);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       propertyId: property.id,
-      ownerId: owner?.id ?? property.ownerId ?? null,
+      ownerId,
       imageCount,
       imageErrors,
+      agreement,
     }, { status: 201 });
   } catch (error) {
     console.error("Property intake failed", error);

@@ -512,6 +512,27 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
 export type AgreementAcceptance = typeof agreementAcceptances.$inferSelect;
 export type AgreementAcceptanceInsert = typeof agreementAcceptances.$inferInsert;
 
+// Påminnelselogg för osignerade uthyrningsuppdrag från bostadsregistreringen.
+// Del 2 av formuläret (signeringen) kan hoppas över — cron:en
+// app/api/cron/agreement-reminders skickar då påminnelser med signeringslänken
+// och loggar varje utskick här. Raderna skrivs aldrig om, bara till.
+// Lösa referenser — FK är av i libSQL, radering via cascade-delete.ts.
+export const agreementReminders = sqliteTable("crm_agreement_reminders", {
+  id: text("id").primaryKey(),
+  ownerId: text("owner_id").notNull(),
+  shareLinkId: text("share_link_id"),
+  channel: text("channel").notNull(), // email | crm_followup (uthyrare utan e-post → uppföljningskön)
+  recipient: text("recipient"), // e-postadressen vid channel=email
+  reminderNo: integer("reminder_no").notNull(), // 1 | 2 — max två påminnelser per uthyrare
+  sentAt: text("sent_at").notNull(),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_agreement_reminders_owner_id_idx").on(t.ownerId),
+]);
+
+export type AgreementReminder = typeof agreementReminders.$inferSelect;
+export type AgreementReminderInsert = typeof agreementReminders.$inferInsert;
+
 // Händelselogg per affär — varje omstämpling av villkor sparas med en KOPIA av
 // värdena. Förhandlingen snurrar (pris, löptid, vad som ingår) mellan visning
 // och slutgiltigt avtal; loggen är spåret som visar vad som erbjöds/lovades när.
