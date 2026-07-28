@@ -5,7 +5,7 @@
  * datum när stads-/sidinnehåll uppdateras på riktigt. Blogg och boenden har egna
  * datum och påverkas inte.
  */
-export const CONTENT_UPDATED = '2026-06-13'
+export const CONTENT_UPDATED = '2026-07-28'
 
 /**
  * Truncate a description to fit within meta description limits (155 chars).

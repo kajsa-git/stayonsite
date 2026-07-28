@@ -179,7 +179,35 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       pl: `Zakwaterowanie firmowe i pracownicze w ${city.name} kosztuje od 5 900 SEK miesięcznie. Cena zależy od liczby osób, standardu i długości najmu — ale zawsze znacznie taniej niż hotel. Ofertę otrzymasz w 24 godziny.`,
     },
   };
-  const faqItems = [pricingFaq, ...city.faq];
+  // Varianttäckning: "personalbostäder {stad}" rankar strax utanför sida 1 (GSC)
+  // utan att termen förekommer på sidan — FAQ:n ger den naturlig on-page-förekomst.
+  const staffHousingFaq = {
+    question: {
+      sv: `Har ni personalbostäder i ${city.name} för längre projekt?`,
+      en: `Do you offer staff housing in ${city.name} for longer projects?`,
+      pl: `Czy oferujecie kwatery pracownicze w ${city.name} na dłuższe projekty?`,
+    },
+    answer: {
+      sv: `Ja, våra personalbostäder i ${city.name} hyrs ut möblerade och är anpassade för längre uppdrag — från enskilda företagslägenheter till hela hus för team. Avtal från en månad och uppåt, med en kontaktperson under hela projektet.`,
+      en: `Yes, our staff housing in ${city.name} is rented furnished and suited to longer assignments — from individual corporate apartments to entire houses for teams. Contracts from one month and up, with one contact person throughout the project.`,
+      pl: `Tak, nasze kwatery pracownicze w ${city.name} wynajmujemy umeblowane, dostosowane do dłuższych zleceń — od pojedynczych mieszkań firmowych po całe domy dla ekip. Umowy od miesiąca wzwyż, z jednym opiekunem przez cały projekt.`,
+    },
+  };
+  // Boendetyps-varianter: korttidsboende/långtidsboende/longstay/lägenhetshotell
+  // söks med stad men saknar on-page-förekomst i mallen.
+  const stayTypeFaq = {
+    question: {
+      sv: `Erbjuder ni korttidsboende och longstay i ${city.name}?`,
+      en: `Do you offer short-term and long-stay housing in ${city.name}?`,
+      pl: `Czy oferujecie zakwaterowanie krótko- i długoterminowe w ${city.name}?`,
+    },
+    answer: {
+      sv: `Ja. Vi ordnar korttidsboende från en månad och långtidsboende — longstay-avtal som löper över ett år eller mer — i ${city.name}. Boendena är ett alternativ till lägenhetshotell: möblerat och med slutstädning, men oftast till lägre månadskostnad eftersom ni hyr hela bostaden.`,
+      en: `Yes. We arrange short-term housing from one month and long-stay contracts running a year or more in ${city.name}. Our housing is an alternative to aparthotels: furnished with final cleaning, but usually at a lower monthly cost since you rent the whole home.`,
+      pl: `Tak. Organizujemy zakwaterowanie krótkoterminowe od miesiąca oraz umowy długoterminowe na rok lub dłużej w ${city.name}. Nasze mieszkania to alternatywa dla aparthoteli: umeblowane, ze sprzątaniem końcowym, zwykle przy niższym miesięcznym koszcie, bo wynajmujecie całe mieszkanie.`,
+    },
+  };
+  const faqItems = [pricingFaq, staffHousingFaq, stayTypeFaq, ...city.faq];
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -277,7 +305,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 <span className="hidden md:block w-px h-4 bg-white/20"></span>
                 <span className="text-xs uppercase tracking-[0.25em] text-white/70 font-bold">
                   {translate(
-                    `Personalboende & montörboende`,
+                    `Företagsbostäder & personalbostäder`,
                     `Worker & crew accommodation`,
                     `Noclegi pracownicze i montażowe`
                   )}
@@ -410,14 +438,14 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 <div>
                   <h2 className="text-3xl font-bold text-nordic-900">
                     {translate(
-                      `Möblerade företagsboenden i ${city.name}`,
+                      `Möblerade personalbostäder i ${city.name}`,
                       `Furnished worker accommodation in ${city.name}`,
                       `Umeblowane kwatery pracownicze w ${city.name}`
                     )}
                   </h2>
                   <p className="text-gray-600 mt-2">
                     {translate(
-                      'Kort restid, plats för servicebilar och gemensamma ytor för långa uppdrag.',
+                      'Företagslägenheter och hus med kort restid, plats för servicebilar och gemensamma ytor för långa uppdrag.',
                       'Short travel times, parking for vans and shared spaces for long deployments.',
                       'Krótki dojazd, miejsce na auta serwisowe i wspólne przestrzenie przy długich kontraktach.'
                     )}

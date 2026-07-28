@@ -78,7 +78,7 @@ export const cities: City[] = [
       'Slussen, rozbudowa metra i Trasa Zachodnia utrzymują stały wysoki popyt na zakwaterowanie firmowe w Sztokholmie. Oferujemy umeblowane mieszkania firmowe i noclegi pracownicze w Hammarby Sjöstad, Solna, Liljeholmen i Sundbyberg — zawsze blisko placu budowy, z parkingiem dla aut serwisowych. Stałe umowy miesięczne, pełny plan zakwaterowania w 24 godziny i dedykowany opiekun przez cały projekt.'
     ),
     keywords: lk(
-      ['företagsboende stockholm', 'personalboende stockholm', 'företagslägenheter stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm'],
+      ['företagsboende stockholm', 'personalboende stockholm', 'företagslägenheter stockholm', 'företagsbostäder stockholm', 'personalbostäder stockholm', 'företagslägenhet uthyres stockholm', 'byggboende stockholm', 'boende byggarbetare stockholm', 'montörboende stockholm', 'tillfälligt boende företag stockholm', 'boende stockholm'],
       ['corporate housing stockholm', 'corporate apartments stockholm', 'furnished apartments stockholm', 'staff housing stockholm', 'construction crew accommodation stockholm', 'temporary housing stockholm sweden'],
       ['zakwaterowanie pracownicze sztokholm', 'mieszkania firmowe sztokholm', 'noclegi dla ekip sztokholm', 'noclegi dla budowlańców sztokholm szwecja', 'kwatery pracownicze sztokholm', 'tymczasowe zakwaterowanie sztokholm szwecja']
     ),
@@ -152,6 +152,10 @@ export const cities: City[] = [
       {
         question: ls('Tar ni hand om städning mellan passen?', 'Do you handle cleaning between shifts?', 'Czy zajmujecie się sprzątaniem między zmianami?'),
         answer: ls('Ja, slutstädning och regelbunden genomgång ingår i våra Stockholmsboenden.', 'Yes, final cleaning and regular inspections are included in our Stockholm housing.', 'Tak, sprzątanie końcowe i regularne przeglądy są wliczone w nasze noclegi w Sztokholmie.')
+      },
+      {
+        question: ls('Vilka företagslägenheter finns uthyres i Stockholm just nu?', 'Which corporate apartments are currently available for rent in Stockholm?', 'Jakie mieszkania firmowe są obecnie dostępne w Sztokholmie?'),
+        answer: ls('Utbudet skiftar från vecka till vecka. Just nu har vi företagslägenheter uthyres i bland annat Hammarby Sjöstad, Solna, Liljeholmen och Årsta. Skicka en förfrågan med antal personer och datum så får ni en aktuell lista med adresser och priser inom 24 timmar.', 'Availability changes from week to week. We currently have corporate apartments for rent in Hammarby Sjöstad, Solna, Liljeholmen and Årsta, among other areas. Send an inquiry with headcount and dates and you receive a current list with addresses and prices within 24 hours.', 'Dostępność zmienia się z tygodnia na tydzień. Obecnie mamy mieszkania firmowe do wynajęcia m.in. w Hammarby Sjöstad, Solnie, Liljeholmen i Årsta. Wyślij zapytanie z liczbą osób i terminem, a w 24 godziny otrzymasz aktualną listę z adresami i cenami.'),
       },
       {
         question: ls('Vad kostar företagsboende i Stockholm?', 'What does corporate housing in Stockholm cost?', 'Ile kosztuje zakwaterowanie firmowe w Sztokholmie?'),

@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
 import { cities, getNearbyCities } from '@/data/cities'
 import { getCityListings } from '@/lib/crm/city-listings'
-import { getLocalizedText, getLocalizedKeywords } from '@/lib/utils'
-import { truncateDescription } from '@/lib/seo-utils'
+import { getLocalizedKeywords } from '@/lib/utils'
 import CityPage from '@/views/CityPage'
 
 export function generateStaticParams() {
@@ -27,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   const pl = `https://www.stayonsite.se/pl/zakwaterowanie/${city.slug}`
 
   return buildMetadata({
-    title: `Företagsboende & företagslägenheter i ${city.name} | StayOnSite`,
-    description: truncateDescription(getLocalizedText(city.intro, 'sv')),
+    title: `Företagsboende & företagsbostäder i ${city.name} | StayOnSite`,
+    description: `Möblerade företagsbostäder, personalboende och företagslägenheter i ${city.name} från 5 900 kr/mån. Boendeplan med adresser och priser inom 24 timmar.`,
     keywords: getLocalizedKeywords(city.keywords, 'sv').join(', ') + ', StayOnSite',
     canonical: sv,
     hreflangs: [
