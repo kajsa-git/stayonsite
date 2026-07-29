@@ -1329,6 +1329,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'nya-byggregler-juli-2026-ombyggnad-personalboende',
+    title: {
+      sv: 'Nya byggregler från juli 2026: Så påverkas ombyggnad till personalboende',
+      en: 'New Building Regulations July 2026: Impact on Converting Property to Worker Housing',
+      pl: 'Nowe przepisy budowlane od lipca 2026: Wpływ na przebudowę na zakwaterowanie pracownicze',
+    },
+    description: {
+      sv: 'Boverkets nya byggregler ersatte BBR fullt ut 1 juli 2026. Så påverkar det dig som vill bygga om till blockhyra.',
+      en: 'Boverket\'s new building rules fully replaced BBR on July 1, 2026. How this affects converting property for block rental.',
+      pl: 'Nowe przepisy Boverket zastąpiły BBR od 1 lipca 2026. Jak to wpływa na przebudowę na najem blokowy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-07-29',
+    category: 'Lagstiftning',
+    tags: ['byggregler', 'BBR', 'brandskydd', 'ombyggnad', 'blockhyra'],
+    readingTime: 7,
+    audience: 'husagare',
+    keyTakeaways: [
+      'Från 1 juli 2026 gäller Boverkets nya byggregler fullt ut - övergångsperioden med BBR/EKS avslutades 30 juni 2026',
+      'Energikraven ligger kvar i gamla BBR (BBR 31) fram till 1 oktober 2026, som enda undantag',
+      'Ändrad användning, t.ex. förråd till sovrum, utlöser nya krav på utrymning och tätning av brandcellsgränser',
+      'Byggnader utan avstånd på minst åtta meter kräver brandteknisk konstruktion som brandcellsgräns eller brandvägg',
+      'Beslut om lov meddelat före 1 juli 2026 med val av äldre regler gäller även vid startbesked efter detta datum',
+    ],
+    faq: [
+      {
+        q: 'Måste jag följa de nya byggreglerna om jag redan har bygglov?',
+        a: 'Nej, inte nödvändigtvis. Om beslutet om lov meddelades före 1 juli 2026 och äldre regler valdes då gäller de även vid startbeskedet. För nya ansökningar gäller enbart det nya regelverket.',
+      },
+      {
+        q: 'Räcker det att åtgärden är bygglovsbefriad för att slippa brandkrav?',
+        a: 'Nej. En bygglovsbefriad åtgärd är inte detsamma som regelbefriad. Brandskydd, ventilation och VA-installationer är i regel fortsatt anmälningspliktiga.',
+      },
+      {
+        q: 'Vad händer med energikraven efter 1 oktober 2026?',
+        a: 'Fram till dess ligger energikraven kvar i gamla BBR. Efter 1 oktober 2026 väntas en ny grundförfattning för energihushållning träda i kraft, samordnad med EU:s direktiv om byggnaders energiprestanda.',
+      },
+      {
+        q: 'Kan jag bygga om ett garage till boenderum för uthyrning till byggpersonal?',
+        a: 'Ja, men det räknas som ändrad användning och utlöser krav på bland annat utrymningsvägar, brandcellsgränser, ventilation och ofta våtrumslösningar.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
