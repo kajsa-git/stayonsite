@@ -93,35 +93,40 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
         className="relative flex-1 max-w-sm hidden md:flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
       >
         <Search className="h-4 w-4 shrink-0" />
-        <span>Sök företag, förfrågan, objekt…</span>
+        <span className="truncate">Sök företag, förfrågan, objekt…</span>
         <kbd className="ml-auto text-[10px] border rounded px-1.5 py-0.5 bg-white shrink-0">⌘K</kbd>
       </button>
 
       <div className="hidden md:flex items-center gap-2 ml-auto shrink-0">
-        <Badge
-          variant="secondary"
-          className="cursor-pointer text-xs"
-          onClick={() => router.push("/crm")}
-          title="Återkomster idag"
-        >
-          {counts.followUps} återkomster
-        </Badge>
-        <Badge
-          variant="outline"
-          className="cursor-pointer text-xs"
-          onClick={() => router.push("/crm")}
-          title="Öppna uppdrag utan återkomst"
-        >
-          {counts.openWithoutFollowUp} öppna
-        </Badge>
-        <Badge
-          variant="outline"
-          className="cursor-pointer text-xs"
-          onClick={() => router.push("/crm")}
-          title="Ska faktureras"
-        >
-          {counts.toInvoice} fakturera
-        </Badge>
+        {/* Kö-badges dubblerar Min dags räknare — visas bara när de får plats.
+            Hela raden (logo+nav+sök+badges+knappar) kräver ~1570px, så 1600 är
+            första säkra brytpunkten; under den trängde badgen ut Ny kund. */}
+        <div className="hidden min-[1600px]:flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="cursor-pointer text-xs"
+            onClick={() => router.push("/crm")}
+            title="Återkomster idag"
+          >
+            {counts.followUps} återkomster
+          </Badge>
+          <Badge
+            variant="outline"
+            className="cursor-pointer text-xs"
+            onClick={() => router.push("/crm")}
+            title="Öppna uppdrag utan återkomst"
+          >
+            {counts.openWithoutFollowUp} öppna
+          </Badge>
+          <Badge
+            variant="outline"
+            className="cursor-pointer text-xs"
+            onClick={() => router.push("/crm")}
+            title="Ska faktureras"
+          >
+            {counts.toInvoice} fakturera
+          </Badge>
+        </div>
 
         <Button
           variant="ghost"
