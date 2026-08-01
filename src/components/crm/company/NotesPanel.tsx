@@ -7,7 +7,10 @@ import { sv } from "date-fns/locale";
 import { Check, ChevronDown, ChevronUp, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
+// "Anteckning" först och FÖRVALD — en snabbnotis ska inte råka loggas som
+// samtal; kontaktkanalerna väljs aktivt när en kontakt faktiskt skett.
 const CHANNELS = [
+  { value: "anteckning", label: "Anteckning" },
   { value: "samtal", label: "Samtal" },
   { value: "mejl", label: "Mejl" },
   { value: "whatsapp", label: "WhatsApp" },
@@ -18,6 +21,7 @@ const CHANNELS = [
 ];
 
 const CHANNEL_ICONS: Record<string, string> = {
+  anteckning: "🗒",
   samtal: "📞",
   mejl: "📧",
   whatsapp: "💬",
@@ -179,7 +183,7 @@ function NoteItem({
 
 export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Props) {
   const [expanded, setExpanded] = useState(false);
-  const [channel, setChannel] = useState("samtal");
+  const [channel, setChannel] = useState("anteckning");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
 

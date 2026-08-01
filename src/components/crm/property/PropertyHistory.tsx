@@ -60,15 +60,16 @@ const STATUS_BADGE: Record<string, string> = {
 const TERMINAL = ["bekraftad", "nej"];
 const isOpen = (s: string) => !TERMINAL.includes(s);
 
+// "Anteckning" först och FÖRVALD (samma princip som företagskortets anteckningar):
+// en snabbnotis ska inte råka loggas som samtal — kontaktkanal väljs aktivt.
 const CHANNELS = [
+  { value: "anteckning", label: "🗒 Anteckning" },
   { value: "samtal", label: "📞 Samtal" },
   { value: "mejl", label: "📧 Mejl" },
   { value: "whatsapp", label: "💬 WhatsApp" },
   { value: "messenger", label: "💬 Messenger" },
   { value: "sms", label: "✉️ SMS" },
   { value: "annat", label: "📝 Annat" },
-  // Ren anteckning på objektet — ingen kontakt har skett (Kajsas önskan 2026-08-01).
-  { value: "anteckning", label: "🗒 Anteckning" },
 ];
 
 const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
@@ -83,7 +84,7 @@ export function PropertyHistory({ property }: { property: Property }) {
     fetcher,
   );
 
-  const [channel, setChannel] = useState("samtal");
+  const [channel, setChannel] = useState("anteckning");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
 
