@@ -53,7 +53,7 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
         {/* Utrustning */}
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Utrustning</p>
-          <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm">
             <Item label="Tvättmaskin" value={p.washingMachines != null ? String(p.washingMachines) : "–"} />
             <Item label="Tumlare" value={p.dryers != null ? String(p.dryers) : "–"} />
             <Item label="Parkering" value={p.parkingSpaces != null ? String(p.parkingSpaces) : "–"} />

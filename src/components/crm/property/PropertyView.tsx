@@ -115,7 +115,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             {[property.postalCode, property.city].filter(Boolean).join(" ")}
           </p>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCalcOpen(true)}>
             <Calculator className="h-3.5 w-3.5" /> Kalkyl
           </Button>
@@ -177,7 +177,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           {/* Utrustning — visas alltid så man kan svara direkt */}
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Utrustning</p>
-            <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm">
               <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
               <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
               <Equip label="Diskmaskin" yes={!!property.dishwasher} />
@@ -193,7 +193,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           {(property.allIncluded || property.linensIncluded || property.heatWaterIncluded || property.excludedNote) && (
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Vad ingår i hyran</p>
-              <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm">
                 <Equip label="Allt ingår" yes={!!property.allIncluded} />
                 <Equip label="Sängkläder + handduk" yes={!!property.linensIncluded} />
                 <Equip label="Värme + varmvatten" yes={!!property.heatWaterIncluded} />

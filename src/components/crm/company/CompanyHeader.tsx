@@ -74,7 +74,7 @@ export function CompanyHeader({ company, primaryContact }: Props) {
             </span>
             {primaryContact.phone && (
               <span className="flex items-center gap-1.5">
-                <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
+                <a href={`tel:${primaryContact.phone}`} className={`flex items-center gap-1.5 whitespace-nowrap text-nordic-700 hover:text-primary-600 ${FOCUS}`}>
                   <Phone className="h-3.5 w-3.5 text-nordic-500" />
                   {formatPhoneSv(primaryContact.phone)}
                 </a>

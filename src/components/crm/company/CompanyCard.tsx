@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 
 const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
@@ -50,6 +50,8 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [quickAction, setQuickAction] = useState<"nej" | null>(null);
+  // Mobil-beslutsradens "Nej" skrollar hit — anledningsvalet öppnas i panelen.
+  const followUpPanelRef = useRef<HTMLDivElement>(null);
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
   const [quickBusy, setQuickBusy] = useState(false);
 
@@ -347,9 +349,17 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const primaryContact =
     (company.contacts ?? []).find((c) => c.isPrimary) ?? (company.contacts ?? [])[0] ?? null;
 
+  const hasActiveRequests = (company.requests ?? []).some(
+    (r) => r.status === "incoming" || r.status === "matching"
+  );
+  const hasOpenRequests = (company.requests ?? []).some((r) =>
+    ["incoming", "matching", "won"].includes(r.status)
+  );
+
   return (
-    <div>
-      <div className="flex items-start justify-between gap-3">
+    // pb på mobil: den fasta beslutsraden längst ner får inte täcka sista innehållet.
+    <div className="pb-24 md:pb-0">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <CompanyHeader company={company} primaryContact={primaryContact} />
         <div className="shrink-0 pt-1">
           <RatingControl value={company.rating} onChange={handleRating} label="Kund-skattning" />
@@ -363,13 +373,13 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       </div>
 
       {/* Company-level dates + snabbval */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2">
-          <div className="flex items-center justify-between mb-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div ref={followUpPanelRef} className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-y-1.5 mb-1">
             <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
               {/* Snabbval: Ska faktureras */}
-              {(company.requests ?? []).some((r) => r.status === "incoming" || r.status === "matching") && (
+              {hasActiveRequests && (
                 <button
                   onClick={handleBulkWon}
                   disabled={quickBusy}
@@ -380,7 +390,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
                 </button>
               )}
               {/* Snabbval: Nej */}
-              {(company.requests ?? []).some((r) => ["incoming", "matching", "won"].includes(r.status)) && (
+              {hasOpenRequests && (
                 <button
                   onClick={() => setQuickAction(quickAction === "nej" ? null : "nej")}
                   className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
@@ -469,7 +479,43 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
+      {/* Mobil beslutsrad: varje kort i kön ska landa i ett beslut — återkomst,
+          fakturering eller nej — och på mobil ska det vara ett tumtryck bort,
+          inte en skrollning upp till panelen. Ligger ovanför MobileTabBar (h-14). */}
+      <div
+        className="md:hidden fixed inset-x-0 z-40 flex gap-2 border-t bg-white/95 px-3 py-2 backdrop-blur"
+        style={{ bottom: "calc(3.5rem + env(safe-area-inset-bottom))" }}
+      >
+        <button
+          onClick={() => setFollowUpOpen(true)}
+          className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 text-sm font-semibold text-amber-900"
+        >
+          <CalendarClock className="h-4 w-4" />
+          Återkomst
+        </button>
+        {hasActiveRequests && (
+          <button
+            onClick={handleBulkWon}
+            disabled={quickBusy}
+            className="flex min-h-11 flex-1 items-center justify-center rounded-md bg-green-600 text-sm font-semibold text-white disabled:opacity-40"
+          >
+            ✓ Fakturera
+          </button>
+        )}
+        {hasOpenRequests && (
+          <button
+            onClick={() => {
+              setQuickAction("nej");
+              followUpPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }}
+            className="flex min-h-11 flex-1 items-center justify-center rounded-md border border-red-300 bg-red-50 text-sm font-semibold text-red-700"
+          >
+            ✕ Nej
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
           <ContactsList
             contacts={company.contacts ?? []}
