@@ -102,9 +102,11 @@ const References = () => {
                   key={index}
                   className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
                 >
-                  <div className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+                  {/* h-full/flex-1 bara från sm: på mobil (ett kort per vy) gav
+                      karusellens likhöjd ett stort tomrum inuti korta citat-kort. */}
+                  <div className="bg-white rounded-2xl p-8 border border-white shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col sm:h-full">
                     <StarRating />
-                    <p className="text-nordic-800 mt-4 mb-8 leading-relaxed font-light italic flex-1">
+                    <p className="text-nordic-800 mt-4 mb-6 sm:mb-8 leading-relaxed font-light italic sm:flex-1">
                       "{review.quote}"
                     </p>
                     <div className="flex items-center justify-between">

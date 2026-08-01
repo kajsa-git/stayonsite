@@ -46,8 +46,8 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
         <span className="sr-only">{listing.name}</span>
       </Link>
 
-      {/* Bild */}
-      <div className="relative aspect-[4/3] bg-nordic-100 overflow-hidden">
+      {/* Bild — lägre på mobil så kortet inte äter en hel skärmhöjd */}
+      <div className="relative aspect-[16/10] sm:aspect-[4/3] bg-nordic-100 overflow-hidden">
         {hasImages ? (
           <>
             <img
@@ -93,14 +93,9 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
 
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-semibold text-nordic-900 text-lg leading-tight">{listing.name}</h3>
-          {listing.postalCode && (
-            <span className="text-xs text-muted-foreground shrink-0 mt-0.5">{listing.postalCode}</span>
-          )}
-        </div>
+        <h3 className="font-semibold text-nordic-900 text-lg leading-tight mb-1">{listing.name}</h3>
 
-        {/* Nyckeltal */}
+        {/* Nyckeltal — postnumret hör hemma här med plats-ikon, inte som naken siffra vid rubriken */}
         <div className="flex flex-wrap gap-2 mb-3 text-sm text-nordic-700">
           {listing.bedrooms != null && (
             <span className="flex items-center gap-1">🛏 {listing.bedrooms} sovrum</span>
@@ -110,6 +105,9 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
           )}
           {listing.squareMeters != null && (
             <span className="flex items-center gap-1">📐 {listing.squareMeters} kvm</span>
+          )}
+          {listing.postalCode && (
+            <span className="flex items-center gap-1 text-muted-foreground">📍 {listing.postalCode}</span>
           )}
         </div>
 
@@ -125,7 +123,7 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
 
         {/* Beskrivning */}
         {listing.publicDescription && (
-          <p className="text-sm text-nordic-600 leading-relaxed mb-4 flex-1 line-clamp-3">
+          <p className="text-sm text-nordic-600 leading-relaxed mb-4 flex-1 line-clamp-2 sm:line-clamp-3">
             {listing.publicDescription}
           </p>
         )}
@@ -145,7 +143,7 @@ function FilterBtn({ children, active, onClick }: { children: React.ReactNode; a
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+      className={`shrink-0 whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
         active ? 'bg-[#0f1c2e] text-white border-[#0f1c2e]' : 'bg-white text-nordic-700 border-nordic-200 hover:border-nordic-400'
       }`}
     >
@@ -223,14 +221,25 @@ function InterestModal({ listing, onClose }: { listing: Listing; onClose: () => 
   )
 }
 
+const PAGE_SIZE = 12
+
 export function Boenden() {
   const { data: listings = [], isLoading } = useSWR<Listing[]>('/api/listings', fetcher)
   const [selected, setSelected] = useState<Listing | null>(null)
 
   const cities = [...new Set(listings.map(l => l.city).filter(Boolean) as string[])].sort()
   const [cityFilter, setCityFilter] = useState<string>('alla')
+  // Paginering i klienten: allt är redan hämtat, men 30+ kort i rad gör mobilsidan
+  // milslång — visa 12 åt gången. Filterbyte nollställer.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  const selectCity = (city: string) => {
+    setCityFilter(city)
+    setVisibleCount(PAGE_SIZE)
+  }
 
   const filtered = cityFilter === 'alla' ? listings : listings.filter(l => l.city === cityFilter)
+  const visible = filtered.slice(0, visibleCount)
 
   return (
     <>
@@ -247,14 +256,15 @@ export function Boenden() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-10">
-          {/* Stadsfilter */}
+          {/* Stadsfilter — en skrollbar rad på mobil (chipsen åt alla håll tog två
+              skärmhöjder innan första objektet), radbruten först från sm. */}
           {cities.length > 1 && (
-            <div className="flex flex-wrap gap-2 mb-8">
-              <FilterBtn active={cityFilter === 'alla'} onClick={() => setCityFilter('alla')}>
+            <div className="flex gap-2 mb-8 overflow-x-auto pb-2 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+              <FilterBtn active={cityFilter === 'alla'} onClick={() => selectCity('alla')}>
                 Alla orter
               </FilterBtn>
               {cities.map(city => (
-                <FilterBtn key={city} active={cityFilter === city} onClick={() => setCityFilter(city)}>
+                <FilterBtn key={city} active={cityFilter === city} onClick={() => selectCity(city)}>
                   {city}
                 </FilterBtn>
               ))}
@@ -282,11 +292,23 @@ export function Boenden() {
               </a>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map(listing => (
-                <PropertyCard key={listing.id} listing={listing} onInterest={setSelected} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visible.map(listing => (
+                  <PropertyCard key={listing.id} listing={listing} onInterest={setSelected} />
+                ))}
+              </div>
+              {filtered.length > visibleCount && (
+                <div className="mt-8 text-center">
+                  <button
+                    onClick={() => setVisibleCount(count => count + PAGE_SIZE)}
+                    className="min-h-11 rounded-xl border border-nordic-300 bg-white px-6 text-sm font-semibold text-nordic-800 transition-colors hover:border-nordic-500"
+                  >
+                    Visa fler boenden ({filtered.length - visibleCount} till)
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
           {/* Inte hittat rätt? */}
