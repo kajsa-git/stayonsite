@@ -68,7 +68,7 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
         {p.skick && (
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skick</p>
-            <p className="text-sm whitespace-pre-wrap">{p.skick}</p>
+            <p className="text-sm whitespace-pre-wrap break-words">{p.skick}</p>
           </div>
         )}
 
@@ -89,7 +89,7 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
         {p.notes && (
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Intern beskrivning</p>
-            <p className="text-sm whitespace-pre-wrap">{p.notes}</p>
+            <p className="text-sm whitespace-pre-wrap break-words">{p.notes}</p>
           </div>
         )}
       </DialogContent>

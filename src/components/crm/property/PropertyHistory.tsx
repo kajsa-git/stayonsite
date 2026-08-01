@@ -67,6 +67,8 @@ const CHANNELS = [
   { value: "messenger", label: "💬 Messenger" },
   { value: "sms", label: "✉️ SMS" },
   { value: "annat", label: "📝 Annat" },
+  // Ren anteckning på objektet — ingen kontakt har skett (Kajsas önskan 2026-08-01).
+  { value: "anteckning", label: "🗒 Anteckning" },
 ];
 
 const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];

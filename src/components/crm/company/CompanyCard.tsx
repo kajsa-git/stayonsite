@@ -54,6 +54,9 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const followUpPanelRef = useRef<HTMLDivElement>(null);
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
   const [quickBusy, setQuickBusy] = useState(false);
+  // Efter Fakturera/Nej: fråga vad som ska hända med återkomsten — varje beslut
+  // ska också landa i ett medvetet återkomstläge (sätt/flytta/ta bort/behåll).
+  const [followUpPrompt, setFollowUpPrompt] = useState<"won" | "nej" | null>(null);
 
   // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
   const selectedRequestId = selectedId ?? activeRequestId ?? null;
@@ -292,6 +295,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
         );
         toast({ title: "🎉 Ska faktureras!" });
+        setFollowUpPrompt("won");
       }
     } finally {
       setQuickBusy(false);
@@ -311,6 +315,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         toast({ title: `${failed} av ${open.length} kunde inte stängas`, variant: "destructive" });
       } else {
         toast({ title: "Förfrågningar stängda" });
+        setFollowUpPrompt("nej");
       }
     } finally {
       setQuickAction(null);
@@ -372,50 +377,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         <AgreementStatusPanel kind="company" id={company.id} contactName={primaryContact?.name} />
       </div>
 
-      {/* Company-level dates + snabbval */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div ref={followUpPanelRef} className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2">
-          <div className="flex flex-wrap items-center justify-between gap-y-1.5 mb-1">
-            <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
-            <div className="flex flex-wrap items-center gap-1">
-              {/* Snabbval: Ska faktureras */}
-              {hasActiveRequests && (
-                <button
-                  onClick={handleBulkWon}
-                  disabled={quickBusy}
-                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-green-300 bg-green-50 text-green-800 hover:bg-green-100 transition-colors disabled:opacity-40"
-                  title="Markera alla aktiva förfrågningar som ska faktureras"
-                >
-                  ✓ Ska faktureras
-                </button>
-              )}
-              {/* Snabbval: Nej */}
-              {hasOpenRequests && (
-                <button
-                  onClick={() => setQuickAction(quickAction === "nej" ? null : "nej")}
-                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
-                  title="Stäng alla öppna förfrågningar"
-                >
-                  ✕ Nej
-                </button>
-              )}
-              {company.followUpDate && (
-                <button
-                  onClick={handleClearFollowUp}
-                  className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-muted transition-colors"
-                >
-                  Ta bort återkomst
-                </button>
-              )}
-              <button
-                onClick={() => setFollowUpOpen(true)}
-                className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded border border-amber-300 bg-white text-amber-800 hover:bg-amber-100 transition-colors"
-              >
-                <CalendarClock className="h-3 w-3" />
-                {company.followUpDate ? "Ändra" : "Återkom"}
-              </button>
-            </div>
-          </div>
+      {/* Company-level dates + snabbval. Avslutsdatumet är bara en upplysning —
+          det får en liten ruta; beslutsytan (återkomsten) tar platsen. */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 mb-6">
+        <div ref={followUpPanelRef} className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2.5">
+          <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
 
           {company.followUpDate ? (
             <>
@@ -430,6 +396,45 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           ) : (
             <p className="text-sm text-muted-foreground italic">Ingen bokad återkomst</p>
           )}
+
+          {/* Beslutsknapparna — riktiga knappstorlekar även på desktop, det här
+              är kortets viktigaste yta. */}
+          <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+            {hasActiveRequests && (
+              <button
+                onClick={handleBulkWon}
+                disabled={quickBusy}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-green-300 bg-green-600 px-3 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-40"
+                title="Markera alla aktiva förfrågningar som ska faktureras"
+              >
+                ✓ Ska faktureras
+              </button>
+            )}
+            {hasOpenRequests && (
+              <button
+                onClick={() => setQuickAction(quickAction === "nej" ? null : "nej")}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-red-300 bg-red-50 px-3 text-sm font-semibold text-red-700 transition-colors hover:bg-red-100"
+                title="Stäng alla öppna förfrågningar"
+              >
+                ✕ Nej
+              </button>
+            )}
+            <button
+              onClick={() => setFollowUpOpen(true)}
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-amber-300 bg-white px-3 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-100"
+            >
+              <CalendarClock className="h-4 w-4" />
+              {company.followUpDate ? "Flytta återkomst" : "Sätt återkomst"}
+            </button>
+            {company.followUpDate && (
+              <button
+                onClick={handleClearFollowUp}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-input bg-white px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+              >
+                Ta bort återkomst
+              </button>
+            )}
+          </div>
 
           {/* Nej — inline anledningsval */}
           {quickAction === "nej" && (
@@ -469,15 +474,64 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           )}
         </div>
 
-        <div className="rounded-md border bg-muted/40 px-3 py-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-1">
-            <CheckCircle2 className="h-3 w-3" /> Senaste avslutsdatum
+        <div className="self-start rounded-md border bg-muted/40 px-3 py-2">
+          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1 whitespace-nowrap">
+            <CheckCircle2 className="h-3 w-3" /> Senaste avslut
           </span>
           <p className="text-sm font-medium text-nordic-800">
             {lastClosed ? format(new Date(lastClosed), "d MMM yyyy", { locale: sv }) : "—"}
           </p>
         </div>
       </div>
+
+      {/* Efter Fakturera/Nej: återkomsten ska inte bli hängande av bara farten —
+          fråga uttryckligen: sätt/flytta, ta bort eller behåll. */}
+      {followUpPrompt && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-4 sm:items-center"
+          onClick={() => setFollowUpPrompt(null)}
+        >
+          <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-semibold text-nordic-900">
+              {followUpPrompt === "won" ? "Markerat för fakturering ✓" : "Förfrågningarna är stängda"}
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {company.followUpDate
+                ? `Återkomsten ${company.followUpDate} ligger kvar — vad ska hända med den?`
+                : "Vill du boka en återkomst på företaget?"}
+            </p>
+            <div className="mt-4 space-y-2">
+              <button
+                onClick={() => {
+                  setFollowUpPrompt(null);
+                  setFollowUpOpen(true);
+                }}
+                className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 text-sm font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+              >
+                <CalendarClock className="h-4 w-4" />
+                {company.followUpDate ? "Flytta återkomsten" : "Sätt återkomst"}
+              </button>
+              {company.followUpDate && (
+                <button
+                  onClick={() => {
+                    setFollowUpPrompt(null);
+                    handleClearFollowUp();
+                  }}
+                  className="flex min-h-11 w-full items-center justify-center rounded-md border border-input bg-white text-sm font-medium text-nordic-800 transition-colors hover:bg-muted"
+                >
+                  Ta bort återkomsten
+                </button>
+              )}
+              <button
+                onClick={() => setFollowUpPrompt(null)}
+                className="flex min-h-11 w-full items-center justify-center rounded-md text-sm text-muted-foreground transition-colors hover:text-nordic-900"
+              >
+                {company.followUpDate ? "Behåll som den är" : "Ingen återkomst behövs"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobil beslutsrad: varje kort i kön ska landa i ett beslut — återkomst,
           fakturering eller nej — och på mobil ska det vara ett tumtryck bort,

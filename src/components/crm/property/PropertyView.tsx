@@ -12,6 +12,7 @@ import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { Calculator, Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
 import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
 import { PropertyImages } from "./PropertyImages";
 import { MatchToRequestModal } from "./MatchToRequestModal";
@@ -207,14 +208,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           {property.specialNote && (
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Särskilt att veta</p>
-              <p className="text-sm whitespace-pre-wrap">{property.specialNote}</p>
+              <p className="text-sm whitespace-pre-wrap break-words">{property.specialNote}</p>
             </div>
           )}
 
           {property.skick && (
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skick</p>
-              <p className="text-sm whitespace-pre-wrap">{property.skick}</p>
+              <p className="text-sm whitespace-pre-wrap break-words">{property.skick}</p>
             </div>
           )}
 
@@ -234,14 +235,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           {property.notes && (
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Intern beskrivning</p>
-              <p className="text-sm whitespace-pre-wrap">{property.notes}</p>
+              <p className="text-sm whitespace-pre-wrap break-words">{property.notes}</p>
             </div>
           )}
 
           {property.publicDescription && (
             <div className="rounded-md border border-green-200 bg-green-50/40 p-3">
               <p className="text-xs text-green-800 uppercase tracking-wide mb-1">Extern beskrivning (hemsida)</p>
-              <p className="text-sm whitespace-pre-wrap">{property.publicDescription}</p>
+              <p className="text-sm whitespace-pre-wrap break-words">{property.publicDescription}</p>
             </div>
           )}
         </div>
@@ -285,6 +286,16 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             </div>
             {property.ownerId && <OwnerObjectLinks ownerId={property.ownerId} currentPropertyId={property.id} />}
           </div>
+
+          {/* Uthyrningsuppdraget — skickat/signerat ska synas här också, inte bara
+              på uthyrarkortet (avtalet är ägar-scopat och gäller alla objekt). */}
+          {property.ownerId && (
+            <AgreementStatusPanel
+              kind="owner"
+              id={property.ownerId}
+              contactName={property.ownerContactPerson ?? property.ownerName ?? undefined}
+            />
+          )}
 
           {/* Kontakt & uppföljning (kontaktlogg + följ upp uthyrare ihopslaget) */}
           <div className="rounded-md border border-amber-200 bg-amber-50/50 p-3">

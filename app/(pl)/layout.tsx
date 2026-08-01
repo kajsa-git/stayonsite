@@ -7,7 +7,10 @@ export const metadata: Metadata = {
   icons: [
     { rel: 'icon', url: '/favicon.ico', sizes: 'any' },
     { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
   ],
+  manifest: '/site.webmanifest',
+  appleWebApp: { title: 'StayOnSite' },
   other: {
     'sitemap': '/sitemap.xml',
   },
