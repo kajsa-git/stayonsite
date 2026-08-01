@@ -48,7 +48,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const [row] = await db.update(matches).set(data).where(eq(matches.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  // Skickat erbjudande → återkomst på KUNDEN (+3 dagar, Att kontakta-kön) —
+  // Skickat erbjudande → återkomst på KUNDEN (+3 dagar, Återkomster-kön) —
   // det är kunden som ska svara, inte uthyraren (Kajsas beslut 2026-07-13;
   // ersätter den gamla auto-uppföljningen på förslaget). En redan inplanerad
   // TIDIGARE återkomst rörs inte.

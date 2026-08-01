@@ -24,7 +24,7 @@ export async function GET() {
 
   // Wave 1: alla köer + chase-data parallellt
   const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, renewalRows, unreadInboxOwners] = await Promise.all([
-    // Att kontakta: företag med återkomst idag eller försenad
+    // Återkomster: företag med återkomst idag eller försenad
     db
       .select()
       .from(companies)

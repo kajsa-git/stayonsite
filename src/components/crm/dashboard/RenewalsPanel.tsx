@@ -2,7 +2,7 @@
 
 // Förlängningsradarn: vunna/fakturerade affärer vars slutdatum är inom −7…+30
 // dagar. Härifrån: förläng-SMS som UTKAST, öppna företaget eller boka återkomst
-// (+7 d döljer kortet — kontakten är då schemalagd i "Att kontakta").
+// (+7 d döljer kortet — kontakten är då schemalagd i "Återkomster").
 import { toast } from "@/components/ui/use-toast";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
 import { crmErrorMessage, crmFetchJson } from "@/lib/crm/fetcher";

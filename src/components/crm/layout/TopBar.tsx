@@ -102,9 +102,9 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
           variant="secondary"
           className="cursor-pointer text-xs"
           onClick={() => router.push("/crm")}
-          title="Att kontakta idag"
+          title="Återkomster idag"
         >
-          {counts.followUps} kontakta
+          {counts.followUps} återkomster
         </Badge>
         <Badge
           variant="outline"

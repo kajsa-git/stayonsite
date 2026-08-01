@@ -63,7 +63,7 @@ const CHASE_TOAST: Record<string, string> = {
 const STEPS = [
   { emoji: "💬", title: "Svar", text: "Inkommande SMS från kända kontakter, inlästa från din Mac. Ja-svar → publicera & länka med ett klick." },
   { emoji: "🔁", title: "Förlängningar", text: "Avtal som närmar sig slutdatum. Skicka förläng-SMS (utkast) innan de rinner ut." },
-  { emoji: "📞", title: "Att kontakta", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
+  { emoji: "📞", title: "Återkomster", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
   { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
   { emoji: "☎️", title: "Följ upp uthyrare", text: "Kontaktrundor att följa upp — bilder, publicerings-ja och onboarding." },
@@ -513,7 +513,7 @@ export function MyDayView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           <QueueSection
-            title="Att kontakta"
+            title="Återkomster"
             emoji="📞"
             items={queues.followUps}
             emptyText="Inga återkomster idag"

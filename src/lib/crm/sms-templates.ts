@@ -98,7 +98,7 @@ export function renewalSms(
   return `${greet(contactName)} Ert boende${where} löper ut${when}. Vill ni förlänga, eller behöver ni boende till nästa projekt? Säg till så ordnar jag det. /Kajsa, StayOnSite`;
 }
 
-// Återkomst till företag (allmän uppföljning från "Att kontakta"-kön).
+// Återkomst till företag (allmän uppföljning från "Återkomster"-kön).
 export function companyFollowUpSms(contactName: string | null | undefined, reason: string | null | undefined): string {
   const why = reason ? ` (${reason.trim()})` : "";
   return `${greet(contactName)} Jag lovade återkomma${why} — hur ser det ut hos er? Behöver ni boende framöver hjälper jag gärna till. /Kajsa, StayOnSite`;
