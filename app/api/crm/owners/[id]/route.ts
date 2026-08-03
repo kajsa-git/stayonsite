@@ -3,6 +3,7 @@ import { db } from "@/lib/crm/db";
 import { normalizePhoneForStorage } from "@/lib/crm/phone-links";
 import { deleteOwnerDeep } from "@/lib/crm/cascade-delete";
 import { indexOwner, indexProperty, removeFromIndex } from "@/lib/crm/search-index";
+import { getOwnerDetail } from "@/lib/crm/owner-detail";
 import { reindexLinkedProperties } from "@/lib/crm/owners";
 import { owners, properties } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
@@ -14,26 +15,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const [owner] = await db.select().from(owners).where(eq(owners.id, id));
-  if (!owner) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const props = await db
-    .select({
-      id: properties.id,
-      address: properties.address,
-      city: properties.city,
-      status: properties.status,
-      published: properties.published,
-      prospektPublished: properties.prospektPublished,
-      slug: properties.slug,
-      bedrooms: properties.bedrooms,
-      beds: properties.beds,
-      rentIn: properties.rentIn,
-      rentOut: properties.rentOut,
-    })
-    .from(properties)
-    .where(eq(properties.ownerId, id));
-  return NextResponse.json({ ...owner, properties: props });
+  const detail = await getOwnerDetail(id);
+  if (!detail) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(detail);
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
