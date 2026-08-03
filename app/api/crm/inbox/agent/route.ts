@@ -3,11 +3,11 @@
 // nummer (ägare + kontakter) så att agenten ALDRIG läser andra konversationer ur
 // chat.db än de som hör till CRM:et. POST ingestar en batch meddelanden idempotent
 // (unikt guid-index → dubbletter ignoreras tyst).
+import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
 import { normalizePhoneE164 } from "@/lib/crm/phone-links";
 import { contacts, inboxMessages, owners } from "@/lib/crm/schema";
 import { inArray } from "drizzle-orm";
-import { timingSafeEqual } from "node:crypto";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,12 +17,7 @@ const MAX_BATCH = 200;
 const MAX_BODY_CHARS = 4000;
 
 function agentAuthorized(req: NextRequest): boolean {
-  const expected = process.env.CRM_AGENT_TOKEN;
-  if (!expected) return false; // token ej konfigurerad → endpointen är avstängd
-  const got = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  const a = Buffer.from(got);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return bearerAuthorized(req, process.env.CRM_AGENT_TOKEN);
 }
 
 // GET — alla kända telefonnummer (E.164) i CRM:et: uthyrare + företagskontakter.

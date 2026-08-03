@@ -1,20 +1,15 @@
 // Agent-endpoints för Mac-agenten (scripts/imessage-agent.mjs). Autentiseras med
 // statisk bearer-token (CRM_AGENT_TOKEN) i stället för session — agenten är headless.
+import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
 import { outboxMessages } from "@/lib/crm/schema";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
-import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 function agentAuthorized(req: NextRequest): boolean {
-  const expected = process.env.CRM_AGENT_TOKEN;
-  if (!expected) return false; // token ej konfigurerad → endpointen är avstängd
-  const got = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  const a = Buffer.from(got);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return bearerAuthorized(req, process.env.CRM_AGENT_TOKEN);
 }
 
 // GET — claima upp till 10 köade meddelanden (markeras "sending" atomiskt så en
