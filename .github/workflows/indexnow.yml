@@ -1,0 +1,36 @@
+name: IndexNow
+
+# Pingar IndexNow (Bing, Yandex m.fl. – Bing driver bl.a. ChatGPT-sök och Copilot)
+# efter varje push som påverkar sajten, så att ändrade sidor plockas upp snabbt.
+# Obs: article.yml pushar med GITHUB_TOKEN och triggar därför INTE denna workflow –
+# den har i stället ett eget ping-steg efter sin push.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'src/**'
+      - 'public/**'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      # Vercel bygger klart på ett par minuter – submitten hämtar URL:er från
+      # live-sitemapen, så deployen måste hinna bli klar först.
+      - name: Vänta på Vercel-deploy
+        run: sleep 240
+
+      - name: Ping IndexNow med alla sitemap-URL:er
+        run: node scripts/indexnow-submit.mjs --all

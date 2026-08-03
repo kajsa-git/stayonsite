@@ -119,6 +119,18 @@ const ForForetag = () => {
         },
         {
           '@type': 'Question',
+          name: t('Ordnar ni entreprenörsbostäder för underentreprenörer?', 'Do you arrange contractor accommodation for subcontractors?', 'Czy organizują Państwo zakwaterowanie dla podwykonawców?'),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: t(
+              'Ja. Vi ordnar entreprenörsbostäder åt både huvudentreprenörer och underentreprenörer – ofta flera bolag på samma projekt, med separata avtal och fakturor per bolag.',
+              'Yes. We arrange contractor accommodation for both main contractors and subcontractors – often several companies on the same project, with separate agreements and invoices per company.',
+              'Tak. Organizujemy zakwaterowanie zarówno dla głównych wykonawców, jak i podwykonawców – często kilka firm na tym samym projekcie, z osobnymi umowami i fakturami.'
+            ),
+          },
+        },
+        {
+          '@type': 'Question',
           name: t('Ordnar ni boende för både arbetslag och familjer?', 'Do you arrange housing for both crews and families?', 'Czy organizują Państwo zakwaterowanie dla ekip i rodzin?'),
           acceptedAnswer: {
             '@type': 'Answer',
@@ -161,6 +173,50 @@ const ForForetag = () => {
 
         {/* Social proof: 14 Google-omdömen + track record — samma sektion som startsidan */}
         <References />
+
+        {/* Entreprenörsbostäder/projektboende: egna sökord med volym men utan sida tidigare */}
+        <section className="py-16 border-t border-nordic-100">
+          <div className="container mx-auto px-6 md:px-12 max-w-5xl">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-nordic-900 mb-4">
+              {t('Entreprenörsbostäder och projektboende', 'Contractor accommodation and project housing', 'Zakwaterowanie dla wykonawców i ekip projektowych')}
+            </h2>
+            <div className="text-nordic-600 max-w-3xl space-y-4">
+              <p>
+                {t(
+                  'Bygg-, installations- och industriföretag som tar projekt på annan ort behöver ofta bostäder till hela arbetslag med kort varsel. Vi ordnar entreprenörsbostäder – möblerade hus och lägenheter nära arbetsplatsen – åt entreprenörer, underentreprenörer och montörsteam i hela Sverige.',
+                  'Construction, installation and industrial companies taking on projects away from home often need housing for entire crews at short notice. We arrange contractor accommodation – furnished houses and apartments close to the site – for contractors, subcontractors and installation teams across Sweden.',
+                  'Firmy budowlane, instalacyjne i przemysłowe realizujące projekty poza siedzibą często potrzebują zakwaterowania dla całych ekip w krótkim czasie. Organizujemy umeblowane domy i mieszkania blisko placu budowy – dla wykonawców, podwykonawców i ekip montażowych w całej Szwecji.'
+                )}
+              </p>
+              <p>
+                {language === 'en' ? (
+                  <>
+                    Project housing is scaled to your staffing: from two fitters in one apartment to rotating crews of 20+ across several addresses. You receive a housing plan within 24 hours and one consolidated invoice per address and month – whether the project is in{' '}
+                    <Link href="/stad/boden" className="text-accent hover:underline">Boden</Link>,{' '}
+                    <Link href="/stad/gavle" className="text-accent hover:underline">Gävle</Link>,{' '}
+                    <Link href="/stad/oskarshamn" className="text-accent hover:underline">Oskarshamn</Link>{' '}
+                    or in a smaller town with no hotel capacity.
+                  </>
+                ) : language === 'pl' ? (
+                  <>
+                    Zakwaterowanie dopasowujemy do obsady: od dwóch monterów w jednym mieszkaniu po rotacyjne ekipy 20+ osób w kilku lokalizacjach. Plan zakwaterowania otrzymują Państwo w ciągu 24 godzin, a rozliczenie to jedna zbiorcza faktura na adres i miesiąc – niezależnie od tego, czy projekt jest w{' '}
+                    <Link href="/stad/boden" className="text-accent hover:underline">Boden</Link>,{' '}
+                    <Link href="/stad/gavle" className="text-accent hover:underline">Gävle</Link>{' '}
+                    czy <Link href="/stad/oskarshamn" className="text-accent hover:underline">Oskarshamn</Link>.
+                  </>
+                ) : (
+                  <>
+                    Projektboendet anpassas efter bemanningen: från två montörer i en lägenhet till rotationslag på 20+ personer fördelade på flera adresser. Ni får en boendeplan inom 24 timmar och en samlad faktura per adress och månad – oavsett om projektet ligger i{' '}
+                    <Link href="/stad/boden" className="text-accent hover:underline">Boden</Link>,{' '}
+                    <Link href="/stad/gavle" className="text-accent hover:underline">Gävle</Link>,{' '}
+                    <Link href="/stad/oskarshamn" className="text-accent hover:underline">Oskarshamn</Link>{' '}
+                    eller på en mindre ort utan hotellkapacitet.
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Stads-hubb: funnlar köpare till rätt ort + intern länkkraft till stadssidorna */}
         <section className="py-16 bg-nordic-50 border-t border-nordic-100">
