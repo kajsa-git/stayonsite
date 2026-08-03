@@ -60,14 +60,16 @@ const CHASE_TOAST: Record<string, string> = {
   off_market: "Objektet markerat som av marknaden",
 };
 
+// Skrivna för någon som ALDRIG använt systemet — inga interna begrepp utan
+// förklaring. Korten är små (text-xs), håll varje text till 2–3 rader.
 const STEPS = [
-  { emoji: "💬", title: "Svar", text: "Inkommande SMS från kända kontakter, inlästa från din Mac. Ja-svar → publicera & länka med ett klick." },
-  { emoji: "🔁", title: "Förlängningar", text: "Avtal som närmar sig slutdatum. Skicka förläng-SMS (utkast) innan de rinner ut." },
-  { emoji: "📞", title: "Återkomster", text: "Företag du lovat höra av dig till idag. Ring eller mejla och boka ny återkomst." },
-  { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiva förfrågningar och ingen inplanerad återkomst. Sätt en återkomst så försvinner de härifrån." },
-  { emoji: "🧾", title: "Ska faktureras", text: "Vunna affärer — kunden har sagt ja och kontrakt signerat. Markera fakturerad när fakturan är skickad." },
-  { emoji: "☎️", title: "Följ upp uthyrare", text: "Kontaktrundor att följa upp — bilder, publicerings-ja och onboarding." },
-  { emoji: "✉️", title: "Utkast", text: "Kvarvarande sparade utkast. Knapparna i panelerna skickar numera direkt." },
+  { emoji: "💬", title: "Svar", text: "Inkomna SMS från uthyrare och kunder, automatiskt inlästa. Svarar en uthyrare ja på publicering kan du publicera och skicka länken med ett klick." },
+  { emoji: "🔁", title: "Förlängningar", text: "Pågående uthyrningar som snart når sitt slutdatum. Fråga kunden om förlängning innan avtalet rinner ut — färdigt SMS finns." },
+  { emoji: "📞", title: "Återkomster", text: "Företag du bokat att höra av dig till idag — skälet står på kortet. Avsluta alltid med ett beslut: ny återkomst, fakturering eller nej." },
+  { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiv förfrågan men ingen bokad återkomst — utan datum glöms de bort. Boka en återkomst så flyttas de till Återkomster." },
+  { emoji: "🧾", title: "Ska faktureras", text: "Affärer där kunden tackat ja. Skicka fakturan och markera som fakturerad — då är affären i hamn." },
+  { emoji: "☎️", title: "Följ upp uthyrare", text: "Uthyrare (husägare med bostäder) som vi väntar på något ifrån — bilder, pris, ok att publicera eller signerat uppdragsavtal. Kortet visar vad som väntas; ring eller SMS:a och bocka av." },
+  { emoji: "✉️", title: "Utkast", text: "Sparade meddelanden som aldrig skickades — skicka eller släng dem." },
 ];
 
 // Kanoniska status-etiketter + färger (delas med övriga vyer).
@@ -451,7 +453,9 @@ export function MyDayView() {
           </button>
           <p className="text-sm font-semibold text-amber-900 mb-1">Så funkar din dag 👋</p>
           <p className="text-xs text-amber-800/90 mb-3">
-            Varje kort är ett företag. Jobba dig igenom kolumnerna — klicka på ett kort för att öppna företaget, eller använd snabbvalen direkt på kortet.
+            Min dag samlar allt som väntar på dig just idag. Varje kort är ett företag eller en uthyrare —
+            jobba dig igenom kolumnerna, klicka på ett kort för att öppna det, eller använd snabbvalen
+            direkt på kortet. Målet: tom lista och ett beslut på varje kort.
           </p>
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
             {STEPS.map((s) => (

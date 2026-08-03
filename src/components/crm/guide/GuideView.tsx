@@ -53,7 +53,7 @@ const SECTIONS = [
     id: "min-dag",
     title: "Min dag & köerna",
     steps: [
-      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Återkomster (kundåterkomster — inklusive de automatiska 'Väntar svar på erbjudande' som sätts när ett erbjudande skickas), Öppna uppdrag, Ska faktureras och Följ upp uthyrare.",
+      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Återkomster (kundåterkomster — inklusive de automatiska 'Väntar svar på erbjudande' som sätts när ett erbjudande skickas), Öppna uppdrag, Ska faktureras och Följ upp uthyrare (uthyrare vi väntar på något ifrån — bilder, pris, publicerings-ok eller signerat uppdragsavtal).",
       "Följ upp uthyrare innehåller BARA kontaktrundor (bilder, publicerings-ja, onboarding) — affärer bevakas inte där. Kunder bevakas via företagets återkomst; når du inte en uthyrare om ett förslag avböjer du förslaget.",
       "Arbetsläget (öppna en kö) går igenom ärendena ett i taget så inget hoppas över.",
       "Footern längst ner visar dagens köer var du än är — siffrorna är klickbara.",
