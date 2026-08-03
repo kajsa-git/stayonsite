@@ -308,6 +308,7 @@ export const notes = sqliteTable("crm_notes", {
   channel: text("channel").notNull(),
   content: text("content").notNull(),
   authorId: text("author_id"),
+  source: text("source").notNull().default("crm"), // crm | mcp — vem skapade raden
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [
   index("crm_notes_company_id_idx").on(t.companyId),
@@ -346,6 +347,7 @@ export const propertyNotes = sqliteTable("crm_property_notes", {
   channel: text("channel").notNull(),
   content: text("content").notNull(),
   authorId: text("author_id"),
+  source: text("source").notNull().default("crm"), // crm | mcp — vem skapade raden
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 }, (t) => [
   index("crm_property_notes_property_id_idx").on(t.propertyId),
@@ -362,6 +364,7 @@ export const outboxMessages = sqliteTable("crm_outbox_messages", {
   contactId: text("contact_id"),
   status: text("status").notNull().default("queued"), // queued | sending | sent | failed
   error: text("error"),
+  source: text("source").notNull().default("crm"), // crm | mcp — vem skapade raden
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   sentAt: text("sent_at"),
 }, (t) => [

@@ -124,6 +124,10 @@ React Hook Form + Zod validation. Forms POST to FormSubmit.co (`https://formsubm
 | `ANTHROPIC_API_KEY` | GitHub Secret | Article auto-generation |
 | `NOTION_TOKEN` | `.env` + GitHub Secret | CRM reads/writes |
 | `NOTION_STANDUPS_PAGE_ID` | `.env` + GitHub Secret | Standup Notion page |
+| `CRM_AGENT_TOKEN` | `.env.local` + Vercel | Mac-agenten (iMessage) mot `/api/crm/*/agent` |
+| `CRM_MCP_TOKEN` | `.env.local` + Vercel | MCP-servern `/api/mcp` — läsverktyg (se `docs/mcp.md`) |
+| `CRM_MCP_WRITE_TOKEN` | `.env.local` + Vercel | MCP-servern — läs + icke-destruktiva skrivverktyg |
+| `BING_WEBMASTER_API_KEY` | `.env.local` | Bing Webmaster API — statistik via `node --env-file=.env.local scripts/bing-stats.mjs` |
 
 ## Team & Operations
 
@@ -156,6 +160,12 @@ All text pa sajten maste vara **trovarding och professionell** — inga generisk
 **Affarskritiska stader:** Boden ("boende boden" 320/man), Lulea ("boende lulea" 880/man), Oskarshamn ("boende oskarshamn" 480/man)
 
 **Statiska sidor:** `/for-foretag` -> "foretagsbostader" (590/man), "projektboende" (70/man). `/for-husagare` -> "hyra ut hus till foretag" (260/man)
+
+### Bing & IndexNow
+
+- Bing-profilen (2026-08-03): positionerna är bra (topp 1–9) men visningarna få — gapet är inlänkar/auktoritet, inte on-page. Regel-/lagändringsinnehåll (privatuthyrningslagen, blockhyra) driver ~43 % av Bing-synligheten.
+- IndexNow pingas automatiskt: `.github/workflows/indexnow.yml` (push till main) + eget steg i `article.yml` (dess `GITHUB_TOKEN`-push triggar inte andra workflows). Manuellt: `pnpm indexnow`.
+- Bing-statistik: `node --env-file=.env.local scripts/bing-stats.mjs` (BWT-webben är inte åtkomlig från Chrome-kontot — gå via API:t).
 
 ### Textriktlinjer
 

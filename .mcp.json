@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "stayonsite-crm": {
+      "type": "http",
+      "url": "${STAYONSITE_MCP_URL:-https://www.stayonsite.se/api/mcp/mcp}",
+      "headers": {
+        "Authorization": "Bearer ${CRM_MCP_WRITE_TOKEN}"
+      }
+    }
+  }
+}
