@@ -11,11 +11,16 @@ export function todayStockholm(): string {
   return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
-// Dagens svenska datum + n dagar. Räknas på en UTC-midnatt av dagens datum så att
+// Ett YYYY-MM-DD-datum + n dagar. Räknas på en UTC-midnatt av datumet så att
 // själva additionen är DST-/tidszonsoberoende.
-export function plusDaysStockholm(n: number): string {
-  const [y, m, d] = todayStockholm().split("-").map(Number);
+export function addDaysYmd(ymd: string, n: number): string {
+  const [y, m, d] = ymd.split("-").map(Number);
   const base = new Date(Date.UTC(y, m - 1, d));
   base.setUTCDate(base.getUTCDate() + n);
   return base.toISOString().slice(0, 10);
+}
+
+// Dagens svenska datum + n dagar.
+export function plusDaysStockholm(n: number): string {
+  return addDaysYmd(todayStockholm(), n);
 }

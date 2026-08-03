@@ -1,6 +1,11 @@
-import { db } from "@/lib/crm/db";
-import { companies, requests } from "@/lib/crm/schema";
 import { asc, eq, inArray, lte, sql } from "drizzle-orm";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
+import { todayStockholm } from "@/lib/crm/date";
+import { db as defaultDb } from "@/lib/crm/db";
+import * as schema from "@/lib/crm/schema";
+import { companies, requests } from "@/lib/crm/schema";
+
+type DB = LibSQLDatabase<typeof schema>;
 
 export type QueueItem = {
   itemId: string; // companyId always
@@ -31,8 +36,11 @@ export function isValidQueue(queue: string | null | undefined): queue is (typeof
 
 // Single source of truth for the navigable work-mode queues (used by the
 // /api/crm/queue-items route AND the work page server component).
-export async function fetchQueueItems(queue: string): Promise<QueueItem[]> {
-  const today = new Date().toISOString().split("T")[0];
+export async function fetchQueueItems(queue: string, opts?: { db?: DB }): Promise<QueueItem[]> {
+  const db = opts?.db ?? defaultDb;
+  // Svensk kalenderdag, samma som queue-counts — annars glider kön och
+  // badge-räknaren isär mellan midnatt och 01/02 svensk tid.
+  const today = todayStockholm();
 
   if (queue === "followups") {
     const rows = await db
