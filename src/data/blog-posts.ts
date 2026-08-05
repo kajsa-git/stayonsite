@@ -1373,6 +1373,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'byggavtalet-boendestandard-krav-personalboende-2026',
+    title: {
+      sv: 'Boendestandard i Byggavtalet 2026: Vad krävs av personalboendet?',
+      en: 'Housing Standards in Sweden\'s Construction Agreement 2026: What\'s Required?',
+      pl: 'Standard zakwaterowania w Byggavtalet 2026: Czego wymaga umowa branżowa?',
+    },
+    description: {
+      sv: 'Byggavtalet ställer krav på fri logi och boendestandard. Så vet byggföretag om personalboendet uppfyller kollektivavtalets krav 2026.',
+      en: 'The Swedish Byggavtalet sets rules for free lodging and housing standards. A practical guide for construction companies in 2026.',
+      pl: 'Byggavtalet określa wymogi dot. zakwaterowania pracowników. Praktyczny przewodnik dla firm budowlanych na 2026 rok.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-08-05',
+    category: 'Guide',
+    tags: ['byggavtalet', 'boendestandard', 'kollektivavtal', 'personalboende', 'traktamente'],
+    readingTime: 9,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Från 1 januari 2026 höjs högsta skattefria traktamentet från 435 kr till 450 kr per dag',
+      'Om arbetsgivaren tillhandahåller fri logi reduceras traktamentet med 35 procent',
+      'Rätt till traktamente eller fri logi gäller vid mer än 70 km mellan bostad och arbetsplats med övernattning',
+      'Enkelrum bör enligt Byggnads rekommendationer vara minst 8,5 kvadratmeter, och man ska inte behöva dela rum',
+      'Matplats ska vara minst 1,2 kvadratmeter per person och sängen minst 80×200 cm',
+    ],
+    faq: [
+      {
+        q: 'Måste arbetsgivaren alltid erbjuda fri logi enligt Byggavtalet?',
+        a: 'Nej, arbetsgivaren kan istället betala fullt traktamente och låta arbetstagaren ordna eget boende. Väljer man fri logi ska traktamentet reduceras enligt avtalets regler och boendet måste hålla kollektivavtalets standard.',
+      },
+      {
+        q: 'Vad händer om personalboendet inte håller rätt standard?',
+        a: 'Arbetstagaren kan ha rätt till kompensation i form av förrättningstillägg, vilket gör bristande standard till en direkt extra kostnad för arbetsgivaren.',
+      },
+      {
+        q: 'Gäller samma boendekrav vid korta och långa uppdrag?',
+        a: 'Grundkraven på rum, hygienutrymmen och matlagningsmöjligheter gäller oavsett uppdragets längd, men vid varaktig omplacering tillkommer särskilda regler om tillfällig bostad.',
+      },
+      {
+        q: 'Kan flera anställda dela boende för att sänka kostnaden?',
+        a: 'Delat boende är tillåtet i gemensamhetsutrymmen, men varje arbetstagare har rätt till ett eget sovrum om inget annat överenskommits, annars riskerar det förrättningstillägg.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
