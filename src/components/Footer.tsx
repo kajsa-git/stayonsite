@@ -4,12 +4,32 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackPhoneClick, trackWhatsAppClick, trackEmailClick } from '@/lib/gtag';
+// Sajtvid länksignal till de viktigaste stadssidorna med beskrivande ankartext —
+// utan den rankar startsidan i stället för stadssidan på "företagsboende <stad>".
+const popularCities: { slug: string; name: string }[] = [
+  { slug: 'stockholm', name: 'Stockholm' },
+  { slug: 'goteborg', name: 'Göteborg' },
+  { slug: 'boden', name: 'Boden' },
+  { slug: 'lulea', name: 'Luleå' },
+  { slug: 'gavle', name: 'Gävle' },
+  { slug: 'oskarshamn', name: 'Oskarshamn' },
+  { slug: 'umea', name: 'Umeå' },
+  { slug: 'vasteras', name: 'Västerås' },
+];
+
+const cityColumn = {
+  sv: { heading: 'Företagsboende per stad', label: (name: string) => `Företagsboende ${name}`, href: (slug: string) => `/stad/${slug}` },
+  en: { heading: 'Corporate housing by city', label: (name: string) => `Corporate housing ${name}`, href: (slug: string) => `/en/corporate-housing/${slug}` },
+  pl: { heading: 'Zakwaterowanie według miasta', label: (name: string) => `Zakwaterowanie ${name}`, href: (slug: string) => `/pl/zakwaterowanie/${slug}` },
+};
+
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
+  const cityCol = cityColumn[language] ?? cityColumn.sv;
   return <footer id="contact" className="bg-nordic-800 text-white nordic-texture border-t border-nordic-700">
       <div className="container mx-auto px-6 md:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-16">
           <div className="space-y-6">
             <p className="text-sm uppercase tracking-[0.4em] text-white/60">StayOnSite</p>
             <p className="text-white/80">
@@ -120,6 +140,20 @@ const Footer = () => {
                   Zakwaterowanie Firmowe (PL)
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-6 text-white">{cityCol.heading}</h3>
+            <ul className="grid grid-cols-1 gap-4">
+              {popularCities.map((city) => (
+                <li key={city.slug}>
+                  <a href={cityCol.href(city.slug)} className="font-light flex items-center hover:text-white transition-colors duration-300">
+                    <div className="h-px w-6 bg-white/40 mr-3"></div>
+                    {cityCol.label(city.name)}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

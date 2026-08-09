@@ -11,6 +11,7 @@ import { properties } from "@/lib/crm/schema"
 import { eq } from "drizzle-orm"
 import { loadPublicProperty } from "@/lib/crm/public-property"
 import { publicDisplayName } from "@/lib/crm/slug"
+import { cities } from "@/data/cities"
 import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase"
 
 export const dynamic = "force-dynamic"
@@ -74,6 +75,9 @@ export default async function BoendeDetailPage(
   const name = publicDisplayName(p.publicName, { city: p.city, bedrooms: p.bedrooms, beds: p.beds })
   const place = p.city ?? "Sverige"
   const canonical = `${BASE}/boenden/${p.slug ?? slug}`
+
+  const cityName = p.city?.trim().toLowerCase()
+  const cityPage = cityName ? cities.find((c) => c.name.toLowerCase() === cityName) : undefined
 
   const contactMsg = `Hej Kajsa! Jag är intresserad av "${name}" i ${place}. Kan ni berätta mer om tillgänglighet?`
   const mailHref = `mailto:kajsa@stayonsite.se?subject=${encodeURIComponent(`Intresseanmälan: ${name}`)}&body=${encodeURIComponent(contactMsg)}`
@@ -159,8 +163,8 @@ export default async function BoendeDetailPage(
             </p>
           </div>
 
-          {/* Sekundär CTA till listan */}
-          <div className="text-center">
+          {/* Sekundär CTA till listan + stadssidan (intern länkkraft till "företagsboende <stad>") */}
+          <div className="flex flex-col items-center gap-3 text-center">
             <Link
               href="/boenden"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
@@ -168,6 +172,15 @@ export default async function BoendeDetailPage(
               Se fler lediga boenden
               <ArrowRight className="h-4 w-4" />
             </Link>
+            {cityPage && (
+              <Link
+                href={`/stad/${cityPage.slug}`}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
+              >
+                Företagsboende {cityPage.name} – priser, områden och FAQ
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
           </div>
         </div>
       </main>
