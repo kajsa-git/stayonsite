@@ -46,6 +46,16 @@ const submissionSchema = z.discriminatedUnion("formType", [
       email: z.string().min(3).max(200).refine(isValidEmail),
       phone: z.string().min(6).max(50).refine(isValidPhone),
     }),
+    // Foretag two-step form: city + people + company + email + optional phone.
+    // Must come before the phone-required variant — zod tries union options in
+    // order and the older variant would match-and-strip the company key.
+    z.object({
+      city: z.string().min(2).max(100),
+      people: z.string().regex(/^\d{1,4}$/),
+      company: z.string().min(1).max(200),
+      email: z.string().min(3).max(200).refine(isValidEmail),
+      phone: z.string().min(6).max(50).refine(isValidPhone).optional(),
+    }),
     // New foretag conversion form: city + people + email + phone
     z.object({
       city: z.string().min(2).max(100),
@@ -104,6 +114,7 @@ function getSubject(s: Submission): string {
     const f = s.fields as Record<string, string>;
     const city = f.ort || f.city || "";
     const people = f.antal_personer || f.people || "";
+    if (f.company) return `Snabbförfrågan: ${f.company} – ${city} – ${people} pers`;
     return `Snabbförfrågan: ${city} – ${people} pers`;
   }
   if (s.formType === "inquiry") return "Ny förfrågan från StayOnSite";

@@ -21,7 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Send, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, Star } from 'lucide-react';
 import { cities } from '@/data/cities';
 
 type Lang = 'sv' | 'en' | 'pl';
@@ -33,6 +33,7 @@ const ForForetagHero = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [phoneError, setPhoneError] = useState('');
+  const [step, setStep] = useState<1 | 2>(1);
   const formRef = useRef<HTMLFormElement>(null);
   const formStarted = useRef(false);
 
@@ -48,14 +49,35 @@ const ForForetagHero = () => {
     return sv;
   };
 
+  const handleNext = () => {
+    const form = formRef.current;
+    if (!form) return;
+    const city = form.elements.namedItem('city');
+    const people = form.elements.namedItem('people');
+    if (city instanceof HTMLInputElement && !city.reportValidity()) return;
+    if (people instanceof HTMLInputElement && !people.reportValidity()) return;
+    setStep(2);
+    setTimeout(() => {
+      const company = form.elements.namedItem('company');
+      if (company instanceof HTMLInputElement) company.focus();
+    }, 50);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Enter i steg 1 ska gå vidare, inte skicka
+    if (step === 1) {
+      handleNext();
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
-    const phone = String(formData.get('phone') ?? '');
+    const phone = String(formData.get('phone') ?? '').trim();
 
     setPhoneError('');
 
-    if (!isValidPhoneNumber(phone)) {
+    if (phone && !isValidPhoneNumber(phone)) {
       setPhoneError(
         t(
           'Ange ett giltigt telefonnummer',
@@ -79,8 +101,9 @@ const ForForetagHero = () => {
         fields: {
           city: String(formData.get('city') ?? '').trim(),
           people: String(formData.get('people') ?? '').trim(),
+          company: String(formData.get('company') ?? '').trim(),
           email: String(formData.get('email') ?? '').trim(),
-          phone: phone.trim(),
+          ...(phone ? { phone } : {}),
         },
         utmParams,
       });
@@ -97,6 +120,7 @@ const ForForetagHero = () => {
 
       setTimeout(() => {
         setFormSuccess(false);
+        setStep(1);
         if (formRef.current) formRef.current.reset();
       }, 8000);
     } catch (error) {
@@ -117,7 +141,7 @@ const ForForetagHero = () => {
     'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
 
   const labelClass =
-    'text-[10px] font-bold uppercase tracking-widest text-white/50 ml-1';
+    'text-[10px] font-bold uppercase tracking-widest text-white/80 ml-1';
 
   return (
     <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-28 pb-8 md:pb-16 bg-primary">
@@ -195,108 +219,157 @@ const ForForetagHero = () => {
               ) : (
                 <>
                   <h2 className="text-lg md:text-xl font-bold text-white mb-1">
-                    {t('Få en offert', 'Get a quote', 'Otrzymaj ofertę')}
+                    {t('Få en offert för ert företag', 'Get a quote for your company', 'Otrzymaj ofertę dla swojej firmy')}
                   </h2>
-                  <p className="text-sm text-white/50 mb-4">
-                    {t('Vi återkommer inom 24 timmar', "We'll get back to you within 24 hours", 'Skontaktujemy się w ciągu 24 godzin')}
+                  <p className="text-sm text-white/70 mb-4">
+                    {t('För företag & team · Boende från 3 månader', 'For companies & teams · Housing from 3 months', 'Dla firm i zespołów · Zakwaterowanie od 3 miesięcy')}
                   </p>
 
                   <form ref={formRef} onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-3 md:space-y-4">
-                    {/* City + People side by side */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ff-city" className={labelClass}>
-                          {t('Ort', 'City', 'Miejscowość')}
-                        </Label>
-                        <Input
-                          id="ff-city"
-                          name="city"
-                          type="text"
-                          required
-                          className={inputClass}
-                          placeholder={t('t.ex. Luleå', 'e.g. Luleå', 'np. Luleå')}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ff-people" className={labelClass}>
-                          {t('Antal personer', 'People', 'Osoby')}
-                        </Label>
-                        <Input
-                          id="ff-people"
-                          name="people"
-                          type="number"
-                          required
-                          min={1}
-                          inputMode="numeric"
-                          className={inputClass}
-                          placeholder={t('t.ex. 10', 'e.g. 10', 'np. 10')}
-                        />
-                      </div>
-                    </div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                      {step === 1
+                        ? t('Steg 1 av 2', 'Step 1 of 2', 'Krok 1 z 2')
+                        : t('Steg 2 av 2', 'Step 2 of 2', 'Krok 2 z 2')}
+                    </p>
 
-                    {/* Email */}
-                    <div className="space-y-1.5">
-                      <Label htmlFor="ff-email" className={labelClass}>
-                        {t('E-post', 'Email', 'E-mail')}
-                      </Label>
-                      <Input
-                        id="ff-email"
-                        name="email"
-                        type="email"
-                        required
-                        autoComplete="email"
-                        inputMode="email"
-                        className={inputClass}
-                        placeholder={t('namn@foretag.se', 'name@company.com', 'nazwa@firma.pl')}
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div className="space-y-1.5">
-                      <Label htmlFor="ff-phone" className={labelClass}>
-                        {t('Telefon', 'Phone', 'Telefon')}
-                      </Label>
-                      <Input
-                        id="ff-phone"
-                        name="phone"
-                        type="tel"
-                        required
-                        autoComplete="tel"
-                        inputMode="tel"
-                        aria-invalid={Boolean(phoneError)}
-                        aria-describedby={phoneError ? 'ff-phone-error' : undefined}
-                        onChange={() => phoneError && setPhoneError('')}
-                        className={`${inputClass} ${phoneError ? 'ring-2 ring-red-400' : ''}`}
-                        placeholder="070-123 45 67"
-                      />
-                      {phoneError && (
-                        <p id="ff-phone-error" className="text-xs text-red-400">
-                          {phoneError}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Submit */}
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-13 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
-                    >
-                      {isSubmitting ? (
-                        <div className="flex items-center gap-3">
-                          <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                          <span>{t('Skickar...', 'Sending...', 'Wysyłanie...')}</span>
+                    {/* Steg 1: ort + antal — inputs förblir monterade (dolda) i steg 2 så
+                        FormData behåller värdena; required släpps då display:none-fält
+                        annars blockerar submit ("not focusable") */}
+                    <div className={step === 1 ? 'space-y-3 md:space-y-4' : 'hidden'}>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="ff-city" className={labelClass}>
+                            {t('Ort', 'City', 'Miejscowość')}
+                          </Label>
+                          <Input
+                            id="ff-city"
+                            name="city"
+                            type="text"
+                            required={step === 1}
+                            className={inputClass}
+                            placeholder={t('t.ex. Luleå', 'e.g. Luleå', 'np. Luleå')}
+                          />
                         </div>
-                      ) : (
-                        <>
-                          <span>{t('Få offert', 'Get quote', 'Otrzymaj ofertę')}</span>
-                          <Send size={18} />
-                        </>
-                      )}
-                    </Button>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="ff-people" className={labelClass}>
+                            {t('Antal personer', 'People', 'Osoby')}
+                          </Label>
+                          <Input
+                            id="ff-people"
+                            name="people"
+                            type="number"
+                            required={step === 1}
+                            min={1}
+                            inputMode="numeric"
+                            className={inputClass}
+                            placeholder={t('t.ex. 10', 'e.g. 10', 'np. 10')}
+                          />
+                        </div>
+                      </div>
+
+                      <Button
+                        type="button"
+                        onClick={handleNext}
+                        className="w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-13 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
+                      >
+                        <span>{t('Nästa', 'Next', 'Dalej')}</span>
+                        <ArrowRight size={18} />
+                      </Button>
+                    </div>
+
+                    {/* Steg 2: företag + kontaktuppgifter */}
+                    <div className={step === 2 ? 'space-y-3 md:space-y-4' : 'hidden'}>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="ff-company" className={labelClass}>
+                          {t('Företag', 'Company', 'Firma')}
+                        </Label>
+                        <Input
+                          id="ff-company"
+                          name="company"
+                          type="text"
+                          required={step === 2}
+                          autoComplete="organization"
+                          className={inputClass}
+                          placeholder={t('Ert företag AB', 'Your company Ltd', 'Twoja firma Sp. z o.o.')}
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div className="space-y-1.5">
+                        <Label htmlFor="ff-email" className={labelClass}>
+                          {t('E-post', 'Email', 'E-mail')}
+                        </Label>
+                        <Input
+                          id="ff-email"
+                          name="email"
+                          type="email"
+                          required={step === 2}
+                          autoComplete="email"
+                          inputMode="email"
+                          className={inputClass}
+                          placeholder={t('namn@foretag.se', 'name@company.com', 'nazwa@firma.pl')}
+                        />
+                      </div>
+
+                      {/* Phone (valfritt) */}
+                      <div className="space-y-1.5">
+                        <Label htmlFor="ff-phone" className={labelClass}>
+                          {t('Telefon (valfritt)', 'Phone (optional)', 'Telefon (opcjonalnie)')}
+                        </Label>
+                        <Input
+                          id="ff-phone"
+                          name="phone"
+                          type="tel"
+                          autoComplete="tel"
+                          inputMode="tel"
+                          aria-invalid={Boolean(phoneError)}
+                          aria-describedby={phoneError ? 'ff-phone-error' : undefined}
+                          onChange={() => phoneError && setPhoneError('')}
+                          className={`${inputClass} ${phoneError ? 'ring-2 ring-red-400' : ''}`}
+                          placeholder="070-123 45 67"
+                        />
+                        {phoneError && (
+                          <p id="ff-phone-error" className="text-xs text-red-400">
+                            {phoneError}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Submit */}
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-13 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
+                      >
+                        {isSubmitting ? (
+                          <div className="flex items-center gap-3">
+                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            <span>{t('Skickar...', 'Sending...', 'Wysyłanie...')}</span>
+                          </div>
+                        ) : (
+                          <>
+                            <span>{t('Få offert inom 24h', 'Get quote within 24h', 'Otrzymaj ofertę w 24h')}</span>
+                            <Send size={18} />
+                          </>
+                        )}
+                      </Button>
+
+                      <p className="text-xs text-white/60 text-center">
+                        {t('Ingen bindning · Svar inom 24 timmar', 'No commitment · Reply within 24 hours', 'Bez zobowiązań · Odpowiedź w ciągu 24 godzin')}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        className="flex items-center gap-1 mx-auto text-xs text-white/50 hover:text-white/80 transition-colors"
+                      >
+                        <ArrowLeft size={12} />
+                        {t('Tillbaka', 'Back', 'Wstecz')}
+                      </button>
+                    </div>
                   </form>
                 </>
               )}

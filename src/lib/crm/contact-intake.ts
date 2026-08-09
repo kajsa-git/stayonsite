@@ -105,11 +105,13 @@ async function ensureCompanyAndContact({
   email,
   phone: rawPhone,
   name,
+  companyName,
   submission,
 }: {
   email: string | null;
   phone: string | null;
   name?: string | null;
+  companyName?: string | null;
   submission: WebSubmission;
 }) {
   // Normalisera till E.164 innan både matchning och skrivning — annars missar
@@ -125,7 +127,7 @@ async function ensureCompanyAndContact({
     .insert(companies)
     .values({
       id: companyId,
-      name: await companyNameFrom(email, phone),
+      name: companyName ?? (await companyNameFrom(email, phone)),
       leadSource: "webb",
       languages: [submission.locale],
       followUpDate: today(),
@@ -166,12 +168,14 @@ async function createCompanyRequest(
   const email = clean(f.email) ?? (clean(f.kontakt)?.includes("@") ? clean(f.kontakt) : null);
   const phone = clean(f.phone) ?? (clean(f.kontakt)?.includes("@") ? null : clean(f.kontakt));
   const contactName = clean(f.contactName) ?? clean(f.name);
+  const companyName = clean(f.company);
   const message = clean(f.message);
 
   const { company, contact } = await ensureCompanyAndContact({
     email,
     phone,
     name: contactName,
+    companyName,
     submission,
   });
 
