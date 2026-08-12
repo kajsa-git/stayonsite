@@ -1417,6 +1417,49 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'vinteruthyrning-montorer-guide-2026',
+    title: {
+      sv: 'Vinteruthyrning till montörer 2026 – så förbereder du fastigheten för kalla månader',
+      en: 'Winter Rental to Construction Workers 2026 – Preparing Your Property for Cold Months',
+      pl: 'Wynajem zimowy dla monterów 2026 – jak przygotować nieruchomość na zimne miesiące',
+    },
+    description: {
+      sv: 'Praktisk guide för husägare som vill hyra ut till byggföretag under höst och vinter – värme, snöröjning, avtal och pris.',
+      en: 'Practical guide for homeowners renting to construction firms in autumn/winter – heating, snow, contracts and pricing.',
+      pl: 'Praktyczny przewodnik dla właścicieli domów wynajmujących firmom budowlanym jesienią i zimą – ogrzewanie, odśnieżanie, umowy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-08-12',
+    category: 'Tips',
+    tags: ['vinteruthyrning', 'personalboende', 'husägare', 'fastighetsförberedelse', 'byggföretag'],
+    readingTime: 7,
+    audience: 'husagare',
+    keyTakeaways: [
+      'I januari ökade antalet arbetslösa byggjobbare till högsta nivån på 16 år, delvis på grund av vargavintern 2025/2026.',
+      'Att sänka innetemperaturen med en grad minskar energianvändningen för uppvärmning med ungefär fem procent.',
+      'Traktamentsbeloppet är 450 kr per dag från och med den 1 januari 2026.',
+      'Elprisprognos kv1 2026 (exkl. moms): SE1 39 öre/kWh, SE2 34 öre/kWh, SE3 72 öre/kWh, SE4 83 öre/kWh.',
+    ],
+    faq: [
+      {
+        q: 'Hur lång framförhållning behöver jag som fastighetsägare inför vintersäsongen?',
+        a: 'Börja förberedelserna redan under tidig höst, särskilt om fastigheten har historik av frostkänsliga installationer. Snöröjningsavtal och kontroll av värmesystem bör vara klara innan de första kalla nätterna.',
+      },
+      {
+        q: 'Vad ingår vanligtvis i ett vinterboende för montörer?',
+        a: 'Vanligtvis ingår fungerande uppvärmning, snöröjd framkomlighet, belysning vid entréer och tydliga rutiner för elkostnad, men exakt omfattning avtalas per projekt.',
+      },
+      {
+        q: 'Hur undviker jag frusna rör om fastigheten står tom mellan uthyrningar?',
+        a: 'Håll aldrig en fastighet kallare än cirka 15 grader i utrymmen med vattenledningar, och se till att någon går igenom fastigheten regelbundet för att upptäcka läckor tidigt.',
+      },
+      {
+        q: 'Bör jag ha rörligt eller bundet elavtal under vintersäsongen?',
+        a: 'Det beror på elområde och riskvilja, eftersom priserna kan skilja sig avsevärt mellan till exempel SE1 och SE4 under en kall vinter, och det är viktigt att avtala tydligt om hur elkostnaden hanteras.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

@@ -39,6 +39,7 @@ import VadKostarPersonalboende2026 from '@/views/blogg/VadKostarPersonalboende20
 import LagenhetshotellEllerForetagsbostad2026 from '@/views/blogg/LagenhetshotellEllerForetagsbostad2026'
 import NyaByggreglerJuli2026Ombyggnad from '@/views/blogg/NyaByggreglerJuli2026Ombyggnad'
 import ByggavtaletBoendestandardGuide2026 from '@/views/blogg/ByggavtaletBoendestandardGuide2026'
+import VinteruthyrningMontorerGuide2026 from '@/views/blogg/VinteruthyrningMontorerGuide2026'
 
 const componentMap: Record<string, React.ComponentType> = {
   'personalboende-guide-2026': PersonalboendGuide2026,
@@ -55,7 +56,7 @@ const componentMap: Record<string, React.ComponentType> = {
   'personalboende-vanliga-fragor-byggforetag': PersonalboendeVanligaFragor2026,
   'personalboende-vs-hotell-kostnad-jamforelse': PersonalboendeVsHotellKostnad2026,  'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026': BlockhyraInfrastrukturprojekt2026,  'sommaruthyrning-montorer-guide-2026': SommaruthyrningMontorerGuide2026,  'schablonavdrag-skatt-blockhyra-husagare-2026': SchablonavdragSkattBlockhyraHusagare2026,  'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026': BostadsbyggandeAterhamtningPrognosArtikel,  'hyra-ut-blockhyra-privatuthyrningslagen-juli-2026-husagare': BlockhyraPrivatuthyrningJuli2026,  'infrastrukturplan-2026-2037-personalboende-guide': InfrastrukturplanPersonalboende2026,  'kompetensbristen-byggsektorn-2026-praktisk-rekryteringsguide': KompetensbristenByggsektorn2026,  'nya-hyreslagen-juli-2026-foretag-personalboende-guide': NyaHyreslagenJuli2026ForetagPersonalboende,  'forbered-fastighet-blockhyra-infrastruktursatsning-2026': ForeberedFastighetBlockhyraInfrastruktur2026,  'blockhyra-personalbostader-nya-regler-implementering-2026': BlockhyraPersonalbostaderNyaReglerImplementering2026,  'boende-utlandska-arbetare-bygg-praktisk-guide-2026': BoendeUtlandskaArbetareByggGuide2026,  'forbered-infrastrukturkontrakt-2026-boende-entreprenorer-guide': ForberedInfrastrukturkontrakt2026Guide,  'foretagsbostader-nya-regler-juli-2026-guide': ForetagsbostaderNyaReglerJuli2026Guide,  'elnatsutbyggnad-nordsyd-personalboende-guide-2026': ElnatsutbyggnadNordSydPersonalboende,  'kriminalvarden-anstaltsbygge-personalboende-2026': KriminalvardenAnstaltsbyggePersonalboende,
   'vad-kostar-personalboende-sverige-2026-verkliga-priser': VadKostarPersonalboende2026,
-  'lagenhetshotell-eller-foretagsbostad-2026': LagenhetshotellEllerForetagsbostad2026,  'nya-byggregler-juli-2026-ombyggnad-personalboende': NyaByggreglerJuli2026Ombyggnad,  'byggavtalet-boendestandard-krav-personalboende-2026': ByggavtaletBoendestandardGuide2026,
+  'lagenhetshotell-eller-foretagsbostad-2026': LagenhetshotellEllerForetagsbostad2026,  'nya-byggregler-juli-2026-ombyggnad-personalboende': NyaByggreglerJuli2026Ombyggnad,  'byggavtalet-boendestandard-krav-personalboende-2026': ByggavtaletBoendestandardGuide2026,  'vinteruthyrning-montorer-guide-2026': VinteruthyrningMontorerGuide2026,
 }
 
 export function generateStaticParams() {
