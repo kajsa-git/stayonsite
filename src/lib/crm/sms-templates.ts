@@ -35,6 +35,16 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
   return `${greet(ownerName)}\nHär kommer uppdragsavtalet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
 }
 
+// Kvitto vid bostadsintag när e-post saknas — skickas AUTOMATISKT (transaktions-
+// kvitto på husägarens eget inskick, inte kampanj). Samma länk som mejlet:
+// publiceringsgodkännande + uppdragssignering på ett ställe. Länk utan https://.
+export function intakeConfirmSms(ownerName: string | null | undefined, token: string | null): string {
+  const link = token
+    ? `\nPå din sida kan du godkänna publicering och signera uppdraget: www.stayonsite.se/uthyrare/${token}`
+    : "";
+  return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi granskar uppgifterna och hör av oss inom 24 timmar.${link}\n/Kajsa, StayOnSite`;
+}
+
 // Uppdragsavtal-MEJL till uthyraren — HTML för interna klienten, full https-länk.
 export function landlordAvtalEmailHtml(ownerName: string | null | undefined, token: string): string {
   const first = firstNameOf(ownerName);

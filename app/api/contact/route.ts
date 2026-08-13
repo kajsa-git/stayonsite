@@ -180,7 +180,7 @@ function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true, crmEr
   return { subject, text, html, replyTo, customerEmail };
 }
 
-function buildConfirmationEmail(s: Submission): { subject: string; text: string; html: string } {
+function buildConfirmationEmail(s: Submission, landlordToken?: string | null): { subject: string; text: string; html: string } {
   const pl = s.locale === "pl";
 
   // Primary language block (sv default, pl if Polish)
@@ -221,10 +221,21 @@ function buildConfirmationEmail(s: Submission): { subject: string; text: string;
     ? "We received your inquiry – StayOnSite"
     : "Vi har fått din förfrågan / We received your inquiry – StayOnSite";
 
+  // Husägare: den egna sidan (publiceringsgodkännande + uppdragssignering) —
+  // länken ska överleva att fliken stängs, därför alltid med i kvittomejlet.
+  const landlordUrl = landlordToken ? `https://www.stayonsite.se/uthyrare/${landlordToken}` : null;
+
   const text = [
     `${primary.greeting} / ${en.greeting}`, "",
     primary.body.replace(/<[^>]+>/g, ""),
     en.body.replace(/<[^>]+>/g, ""), "",
+    ...(landlordUrl
+      ? [
+          "Din sida hos oss — godkänn publicering av annonsen och signera uthyrningsuppdraget när det passar (tar under en minut, exakt adress visas aldrig publikt):",
+          landlordUrl,
+          "",
+        ]
+      : []),
     primary.urgent, en.urgent, "076-249 84 86", "",
     `${primary.signoff},\nKajsa Sihlén\n${primary.title}`, "",
     "076-249 84 86", "kajsa@stayonsite.se", "www.stayonsite.se",
@@ -280,6 +291,20 @@ function buildConfirmationEmail(s: Submission): { subject: string; text: string;
               </td>
             </tr>
           </table>
+
+          ${landlordUrl ? `<!-- Husägarens egen sida: publicering + uppdrag -->
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 28px;width:100%;">
+            <tr>
+              <td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px 20px;">
+                <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f1c2e;">Din sida hos oss — två snabba steg</p>
+                <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#374151;">
+                  1. Godkänn att annonsen får visas online — exakt adress visas aldrig publikt.<br>
+                  2. Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.
+                </p>
+                <a href="${landlordUrl}" style="display:inline-block;background:#ff6300;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:50px;text-decoration:none;">Öppna din sida</a>
+              </td>
+            </tr>
+          </table>` : ""}
 
           <!-- Urgent CTA -->
           <p style="margin:0 0 4px;font-size:14px;color:#6b7280;">${esc(primary.urgent)}</p>
@@ -402,7 +427,7 @@ export async function POST(req: NextRequest) {
 
     // Send confirmation to customer if we have their email
     if (email.customerEmail) {
-      const confirmation = buildConfirmationEmail(submission);
+      const confirmation = buildConfirmationEmail(submission, agreement?.token ?? null);
       await resend.emails.send({
         from: process.env.RESEND_FROM || "StayOnSite <onboarding@resend.dev>",
         to: email.customerEmail,

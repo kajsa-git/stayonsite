@@ -1,6 +1,8 @@
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
+import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { agreementValidUntil, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { loadLandlordDeal, loadLandlordStanding } from "@/lib/crm/deal-projection";
+import { loadPublishConsentState } from "@/lib/crm/publish-consent";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { notFound } from "next/navigation";
 
@@ -24,21 +26,34 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
   const link = await resolveShareLink(token);
   if (!link || link.audience !== "landlord" || (!link.matchId && !link.ownerId)) notFound();
 
-  // Fristående länk (uppdragsavtalet skickas före någon affär): gate → bekräftelsevy.
+  // Fristående länk (uppdragsavtalet skickas före någon affär): uthyrarens egen
+  // sida med två block — publiceringsgodkännandet (lätt, ett klick) överst och
+  // uthyrningsuppdraget (gaten) under. Ordningen är medveten: publicering är
+  // huvudmålet, avtalet det mjuka andra steget.
   if (!link.matchId && link.ownerId) {
     const standing = await loadLandlordStanding(link.ownerId);
     if (!standing) notFound();
+    const consent = await loadPublishConsentState(link.ownerId);
+    const pendingAddresses = consent.pending.map((p) => [p.address, p.city].filter(Boolean).join(", ")).filter(Boolean);
+    const showConsent = consent.pending.length > 0 || consent.consented.length > 0;
     return (
       <div className="min-h-screen pb-16">
         <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
           <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
             <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
             <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Uthyrningsuppdrag
+              Din sida hos StayOnSite
             </span>
           </div>
         </header>
-        <div className="mx-auto max-w-3xl space-y-8 px-5 py-8">
+        <div className="mx-auto max-w-3xl space-y-6 px-5 py-8">
+          {showConsent && (
+            <PublishConsentCard
+              token={token}
+              addresses={pendingAddresses}
+              initiallyConsented={consent.pending.length === 0}
+            />
+          )}
           {!standing.agreementAccepted ? (
             <AgreementGate
               token={token}

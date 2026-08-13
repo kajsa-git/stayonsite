@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Phone, Upload, X } from "lucide-react";
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
+import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -251,6 +252,9 @@ export function PropertyIntakeForm() {
   } | null>(null);
   // Del 2 (uthyrningsuppdraget): null = visas just nu, annars utfallet.
   const [agreementOutcome, setAgreementOutcome] = useState<"signed" | "skipped" | null>(null);
+  // Publiceringsgodkännandet — lever över båda vyerna så kortet inte nollställs
+  // när man går vidare från del 2 till tack-sidan.
+  const [publishConsented, setPublishConsented] = useState(false);
 
   const progress = ((step + 1) / steps.length) * 100;
 
@@ -455,13 +459,20 @@ export function PropertyIntakeForm() {
           <div className="flex items-start gap-3 rounded-md border border-green-200 bg-white p-5 shadow-sm">
             <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-700" />
             <div>
-              <p className="text-base font-semibold text-nordic-950">Del 1 av 2 klar — bostaden är mottagen.</p>
+              <p className="text-base font-semibold text-nordic-950">Bostaden är mottagen — vi hör av oss inom 24 timmar.</p>
               <p className="mt-1 text-sm leading-6 text-nordic-700">
-                Ett steg kvar: läs igenom och godkänn uthyrningsuppdraget nedan. Det är kostnadsfritt,
-                inte exklusivt och du förbinder dig inte att hyra ut något.
+                Två snabba steg kvar, båda tar under en minut: godkänn att annonsen får visas online,
+                och signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.
               </p>
             </div>
           </div>
+
+          <PublishConsentCard
+            token={success.agreement.token}
+            addresses={[[form.address, form.city].filter(Boolean).join(", ")].filter(Boolean)}
+            initiallyConsented={publishConsented}
+            onConsented={() => setPublishConsented(true)}
+          />
 
           <AgreementGate
             token={success.agreement.token}
@@ -505,16 +516,34 @@ export function PropertyIntakeForm() {
               Uthyrningsuppdraget är godkänt — allt är klart från din sida.
             </p>
           )}
+          {publishConsented && (
+            <p className="mt-4 rounded-md border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-900">
+              Publiceringen är godkänd — vi lägger ut annonsen efter granskning och skickar länken.
+            </p>
+          )}
           {agreementOutcome === "skipped" && success.agreement && (
             <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
               <p className="font-medium">Uthyrningsuppdraget är inte godkänt ännu.</p>
               <p className="mt-1">
                 Du kan göra det när som helst via{" "}
                 <a href={`/uthyrare/${success.agreement.token}`} className="font-semibold underline">
-                  din personliga länk
+                  din personliga sida
                 </a>
-                {" "}— vi skickar också en påminnelse.
+                {" "}— {publishConsented ? "vi har mejlat dig länken." : "där kan du också godkänna publiceringen. Länken finns i mejlet du fått."}
               </p>
+            </div>
+          )}
+
+          {/* Redan signerade ägare hoppar över del 2-vyn — publiceringsfrågan
+              ska ändå ställas för det nya objektet. */}
+          {success.agreement && !publishConsented && agreementOutcome === null && (
+            <div className="mt-5">
+              <PublishConsentCard
+                token={success.agreement.token}
+                addresses={[[form.address, form.city].filter(Boolean).join(", ")].filter(Boolean)}
+                initiallyConsented={false}
+                onConsented={() => setPublishConsented(true)}
+              />
             </div>
           )}
 

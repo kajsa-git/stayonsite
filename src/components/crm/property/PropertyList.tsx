@@ -330,6 +330,13 @@ export function PropertyList() {
                   Nytt bostadsintag
                 </span>
               )}
+              {/* Uthyraren har godkänt att annonsen visas online — objektet är
+                  redo att publiceras så fort granskningen är gjord. */}
+              {!p.published && p.publishConsentAt && (
+                <span className="mt-1 ml-1 inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-800">
+                  Publicering godkänd
+                </span>
+              )}
             </div>
             {p.thumbnailUrl ? (
               // eslint-disable-next-line @next/next/no-img-element

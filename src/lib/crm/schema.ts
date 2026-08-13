@@ -225,6 +225,12 @@ export const properties = sqliteTable("crm_properties", {
   status: text("status").default("available"),
   published: integer("published", { mode: "boolean" }).default(false), // visas i publika listan /boenden (kräver även status=available)
   prospektPublished: integer("prospekt_published", { mode: "boolean" }).default(false), // delbar /prospekt-länk aktiv (oberoende av hemsidan/status)
+  // Uthyrarens publiceringsgodkännande — bevis, skrivs aldrig om när satt.
+  // Godkännandet är att annonsen FÅR visas online; Kajsa publicerar fortfarande manuellt.
+  publishConsentAt: text("publish_consent_at"),
+  publishConsentName: text("publish_consent_name"),
+  publishConsentSource: text("publish_consent_source"), // web | sms | crm
+  publishConsentIp: text("publish_consent_ip"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
 }, (t) => [
