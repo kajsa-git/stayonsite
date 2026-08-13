@@ -42,3 +42,16 @@ competitor-research-*.md
 .agents/
 .claude/skills/
 skills-lock.json
+
+# TypeScript byggcache
+*.tsbuildinfo
+
+# Claude Code lokalt (projektskills spåras dock)
+.claude/*
+!.claude/skills/
+
+# Engångsskriptens backuper & utskicksdata (PII — ska aldrig till git)
+scripts/*-backup.json
+scripts/sms-*
+scripts/resend-sms-*-log.json
+.claude/skills/shadcn
