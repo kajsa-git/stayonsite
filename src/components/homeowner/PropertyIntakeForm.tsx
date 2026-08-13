@@ -459,7 +459,7 @@ export function PropertyIntakeForm() {
           <div className="flex items-start gap-3 rounded-md border border-green-200 bg-white p-5 shadow-sm">
             <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-700" />
             <div>
-              <p className="text-base font-semibold text-nordic-950">Bostaden är mottagen — vi hör av oss inom 24 timmar.</p>
+              <p className="text-base font-semibold text-nordic-950">Bostaden är mottagen — tack!</p>
               <p className="mt-1 text-sm leading-6 text-nordic-700">
                 Två snabba steg kvar, båda tar under en minut: godkänn att annonsen får visas online,
                 och signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.
@@ -507,8 +507,8 @@ export function PropertyIntakeForm() {
           </div>
           <h1 className="mt-4 text-2xl font-semibold text-nordic-950 sm:text-3xl">Tack – vi har tagit emot din bostad!</h1>
           <p className="mt-3 text-base leading-7 text-nordic-800">
-            Vi går igenom uppgifterna och hör av oss <strong>inom 24 timmar</strong>. Inget publiceras
-            innan vi har stämt av med dig.
+            Vi går igenom uppgifter och bilder i lugn och ro — <strong>inget visas online utan ditt
+            godkännande</strong>, och du behöver inte göra något mer just nu.
           </p>
 
           {agreementOutcome === "signed" && (

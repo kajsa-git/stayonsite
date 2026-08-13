@@ -42,7 +42,7 @@ export function intakeConfirmSms(ownerName: string | null | undefined, token: st
   const link = token
     ? `\nPå din sida kan du godkänna publicering och signera uppdraget: www.stayonsite.se/uthyrare/${token}`
     : "";
-  return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi granskar uppgifterna och hör av oss inom 24 timmar.${link}\n/Kajsa, StayOnSite`;
+  return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi granskar uppgifterna — inget visas online utan ditt godkännande.${link}\n/Kajsa, StayOnSite`;
 }
 
 // Uppdragsavtal-MEJL till uthyraren — HTML för interna klienten, full https-länk.

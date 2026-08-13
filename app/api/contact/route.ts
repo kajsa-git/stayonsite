@@ -213,9 +213,31 @@ function buildConfirmationEmail(s: Submission, landlordToken?: string | null): {
     footer: "You received this email because you filled out a form on stayonsite.se",
   };
 
+  // Husägare får inget tidslöfte ("inom 24 timmar" = handläggningsskuld) och
+  // inget "konkret förslag" (kundspråk) — nästa kontakt är händelsestyrd.
+  // Kundformulären behåller 24h-löftet: det är säljlöftet mot företag.
+  const isHomeowner = s.formType === "homeowner" || s.formType === "lp-homeowner";
+  if (isHomeowner) {
+    primary.body = pl
+      ? "Dziękujemy za rejestrację. Sprawdzimy dane — nic nie zostanie opublikowane bez Twojej zgody i na razie nie musisz nic robić."
+      : "Tack för din registrering. Vi granskar uppgifterna — <strong>inget visas online utan ditt godkännande</strong>, och du behöver inte göra något mer just nu.";
+    primary.badge = pl ? "Nic nie pojawi się online bez Twojej zgody" : "Inget visas online utan ditt godkännande";
+    primary.urgent = pl ? "Masz pytania? Zadzwoń:" : "Har du frågor? Ring oss direkt:";
+    en.body =
+      "Thank you for registering your property. We review the details — <strong>nothing is shown online without your approval</strong>, and there is nothing more you need to do right now.";
+    en.badge = "Nothing goes online without your approval";
+    en.urgent = "Questions? Call us directly:";
+  }
+
   const showSecondary = s.locale !== "en";
 
-  const subject = pl
+  const subject = isHomeowner
+    ? pl
+      ? "Dziękujemy za rejestrację – StayOnSite"
+      : s.locale === "en"
+      ? "Thank you for registering your property – StayOnSite"
+      : "Tack för din registrering – StayOnSite"
+    : pl
     ? "Otrzymaliśmy Twoje zapytanie – StayOnSite"
     : s.locale === "en"
     ? "We received your inquiry – StayOnSite"

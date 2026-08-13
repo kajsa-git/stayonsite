@@ -1,7 +1,8 @@
 // Automatiska utskick vid bostadsintag — husägaren ska känna sig sedd direkt,
 // utan att Kajsa handlägger något. Rena byggfunktioner (testbara utan nät);
 // själva skicket görs av anroparen via Resend. Copy följer textriktlinjerna:
-// konkret, inga överdrifter ("inom 24 timmar", aldrig "snabbast i Sverige").
+// konkret, inga överdrifter — och INGA tidslöften ("inom 24 timmar" skapar en
+// handläggningsskuld; nästa kontakt är händelsestyrd: annons ute / hyresgäst).
 import { firstNameOf } from "./sms-templates";
 
 export interface BuiltEmail {
@@ -42,7 +43,7 @@ export function buildIntakeConfirmationEmail(args: {
   const text = [
     greeting,
     "",
-    `Tack — vi har tagit emot ${what}${bilder}. Vi granskar uppgifterna och hör av oss inom 24 timmar.`,
+    `Tack — vi har tagit emot ${what}${bilder}. Vi granskar uppgifter och bilder — inget visas online utan ditt godkännande, och du behöver inte göra något mer just nu.`,
     "",
     ...steps,
     steps.length ? "" : null,
@@ -57,7 +58,7 @@ export function buildIntakeConfirmationEmail(args: {
 
   const html = [
     `<p>${greeting}</p>`,
-    `<p>Tack — vi har tagit emot <strong>${what}</strong>${bilder}. Vi granskar uppgifterna och hör av oss inom 24 timmar.</p>`,
+    `<p>Tack — vi har tagit emot <strong>${what}</strong>${bilder}. Vi granskar uppgifter och bilder — inget visas online utan ditt godkännande, och du behöver inte göra något mer just nu.</p>`,
     ...(url
       ? [
           "<p>Två snabba steg när det passar dig — båda tar under en minut:</p>",
