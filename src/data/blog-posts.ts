@@ -1460,6 +1460,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'forsvarssatsning-2026-personalboende-byggforetag-guide',
+    title: {
+      sv: 'Försvarssatsningen 2026: vad byggföretag behöver veta om personalboende vid militära projekt',
+      en: 'Sweden\'s 2026 Defense Buildup: What Construction Companies Need to Know About Worker Housing',
+      pl: 'Zbrojenia Szwecji 2026: co firmy budowlane muszą wiedzieć o zakwaterowaniu pracowników',
+    },
+    description: {
+      sv: 'Försvarsanslagen ökar 18% 2026. Se hur byggföretag som vill vinna försvarskontrakt bör planera personalboende.',
+      en: 'Defense spending rises 18% in 2026. Learn how construction firms should plan worker housing for defense contracts.',
+      pl: 'Wydatki na obronę rosną o 18% w 2026. Jak firmy budowlane planują zakwaterowanie pracowników przy kontraktach obronnych.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-08-19',
+    category: 'Analys',
+    tags: ['försvarssatsning', 'fortifikationsverket', 'personalboende', 'infrastrukturkontrakt', 'byggkontrakt'],
+    readingTime: 8,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Försvarsanslagen ökar med 26,6 miljarder kr i budgetpropositionen för 2026 – en ökning med 18 % jämfört med 2025, totalt 175 miljarder kr.',
+      'Försvarsutgifterna väntas motsvara 2,8 % av BNP 2026, 3,1 % av BNP från 2028, och Natos mål är 3,5 % av BNP till 2030.',
+      'I juni 2025 enades alla riksdagspartier om en historisk försvarsutbyggnad för att nå Natos nya 3,5-procentsmål till 2030.',
+      'Enligt säkerhetsskyddslagen (2018:585) krävs säkerhetsprövning och registerkontroll via Säkerhetspolisen för befattningar i säkerhetsklass 1–3.',
+      'Regeringens mål är att halvera byggtiden för militära anläggningar, enligt infrastrukturminister Andreas Carlson.',
+    ],
+    faq: [
+      {
+        q: 'Vilka byggföretag berörs av försvarssatsningen 2026?',
+        a: 'Främst entreprenörer och underentreprenörer som bygger flygbaser, garnisoner och övningsfält, samt el- och VVS-installationsföretag. Även byggföretag utanför försvarsprojekt påverkas genom konkurrensen om samma yrkesgrupper.',
+      },
+      {
+        q: 'Måste alla som jobbar på ett försvarsprojekt säkerhetsprövas?',
+        a: 'Inte alla, men alla som kan komma i kontakt med säkerhetskänsliga uppgifter ska säkerhetsprövas enligt säkerhetsskyddslagen, och vissa befattningar kräver dessutom registerkontroll hos Säkerhetspolisen. Omfattningen avgörs av projektets och rollens säkerhetsklass.',
+      },
+      {
+        q: 'Hur påverkar snabbare tillståndsprocesser boendeplaneringen?',
+        a: 'Om regeringens mål att halvera byggtiden genomförs kan byggstarter komma med kortare varsel än idag. Boendelösningar behöver därför vara förhandlade och redo att aktiveras snabbt, inte planeras efter att bygglov är klart.',
+      },
+      {
+        q: 'Hur snabbt kan StayOnSite ta fram en boendeplan för ett försvarsprojekt?',
+        a: 'StayOnSite återkommer alltid inom en arbetsdag, ofta inom några timmar, och tar fram en boendeplan inom 24 timmar efter första kontakt. Det gör det möjligt att ha en lösning klar redan när anbudet lämnas.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
