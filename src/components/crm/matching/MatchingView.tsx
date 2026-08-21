@@ -18,7 +18,7 @@ import { toast } from "@/components/ui/use-toast";
 import { ArrowUpRight, Loader2, Navigation, Pencil, Search, Trash2, X } from "lucide-react";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import useSWR from "swr";
 import { MatchScore } from "./MatchScore";
 import { KalkylScenarioChips, MatchKalkyl } from "./MatchKalkyl";
@@ -59,6 +59,8 @@ interface MatchRow extends DealTermsMatch {
   propertyOwnerId: string | null;
   landlordSignedName: string | null;
   landlordSignedAt: string | null;
+  withdrawnAt: string | null;
+  withdrawnSentAt: string | null;
 }
 
 
@@ -67,15 +69,23 @@ const fetcher = swrFetcher;
 const MATCH_STATUS_LABEL: Record<string, string> = {
   suggested: "Förslag",
   sent: "Skickad",
+  withdrawn: "Tillbakadraget",
   accepted: "Accepterad",
   rejected: "Avböjd",
 };
 const MATCH_STATUS_CLS: Record<string, string> = {
   suggested: "bg-nordic-100 text-nordic-700",
   sent: "bg-blue-100 text-blue-800",
+  withdrawn: "bg-amber-100 text-amber-800",
   accepted: "bg-green-100 text-green-800",
   rejected: "bg-red-100 text-red-800",
 };
+
+// Tillbakadraget är ett härlett läge: villkor stämplas bara i skickaögonblicket,
+// så stämplade villkor utan sentAt kan bara betyda ett tillbakadraget erbjudande.
+function displayStatus(m: MatchRow): string {
+  return m.status === "suggested" && m.offerRentOut != null && !m.sentAt ? "withdrawn" : m.status;
+}
 
 // Varning på objekt som inte längre är lediga (taget av annan kund el. av marknaden)
 const PROP_UNAVAILABLE: Record<string, string> = {
@@ -96,6 +106,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [logPropertyId, setLogPropertyId] = useState<string | null>(null);
   const [landlordShare, setLandlordShare] = useState<LandlordShareTarget | null>(null);
   const [wonValue, setWonValue] = useState("");
+  const [showCriteria, setShowCriteria] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
@@ -335,10 +346,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           ← {companyName}
         </button>
         <h1 className="text-xl font-bold">Matcha förfrågan #{request.requestNumber}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        {/* Kriterierna är referens, inte arbetsyta — metarad som chips, hela
+            listan bakom "Visa alla kriterier" (ersätter Kriterier-kortet). */}
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           {[
             [request.street, request.postalCode, request.city].filter(Boolean).join(" ") || request.addressQuery || request.city,
-            request.persons && `${request.persons} pers.`,
+            request.persons && `${request.persons} personer`,
             (request.bedroomsFrom || request.bedroomsTo) &&
               `${request.bedroomsFrom ?? "?"}-${request.bedroomsTo ?? "?"} sovrum`,
             (request.bedsFrom || request.bedsTo) &&
@@ -346,15 +359,36 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             request.budgetMax && `≤ ${request.budgetMax.toLocaleString("sv-SE")} kr`,
             request.projectDurationMonths && `${request.projectDurationMonths} mån`,
             request.startDate,
+            (request.billingProjectId ?? request.requestNumber) &&
+              `Projekt-id ${request.billingProjectId ?? request.requestNumber}`,
           ]
             .filter(Boolean)
-            .join(" · ")}
-        </p>
+            .map((chip) => (
+              <span key={String(chip)} className="rounded-full bg-nordic-100 px-2.5 py-0.5 text-xs text-nordic-700">
+                {chip}
+              </span>
+            ))}
+          <button
+            onClick={() => setShowCriteria((v) => !v)}
+            className="text-xs text-primary-600 underline-offset-2 hover:underline"
+          >
+            {showCriteria ? "Dölj kriterier" : "Visa alla kriterier"}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        {/* Left: criteria + current proposals */}
+        {/* Left: affärspanel + current proposals (kriterier bakom toggle i sidhuvudet) */}
         <div className="space-y-6">
+          <OfferLinkPanel
+            requestId={request.id}
+            companyId={request.companyId}
+            city={request.city}
+            sentCount={matches.filter((m) => m.sentAt != null).length}
+            hasAccepted={matches.some((m) => m.status === "accepted") || request.status === "won"}
+          />
+
+          {showCriteria && (
           <div className="bg-white rounded-xl border p-4">
             <h2 className="text-sm font-semibold mb-3">Kriterier</h2>
             <dl className="space-y-2 text-sm">
@@ -388,13 +422,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               <Row label="Utflytt" value={request.endDate} />
             </dl>
           </div>
-
-          <OfferLinkPanel
-            requestId={request.id}
-            companyId={request.companyId}
-            city={request.city}
-            sentCount={matches.filter((m) => m.sentAt != null).length}
-          />
+          )}
 
           <div className="bg-white rounded-xl border p-4">
             {/* Räknaren visar AKTIVA förslag — avböjda ligger kvar i listan som historik
@@ -430,8 +458,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           <ArrowUpRight className="h-3 w-3" />
                         </button>
                       </span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${MATCH_STATUS_CLS[m.status]}`}>
-                        {MATCH_STATUS_LABEL[m.status]}
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${MATCH_STATUS_CLS[displayStatus(m)]}`}>
+                        {MATCH_STATUS_LABEL[displayStatus(m)]}
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground mb-2">
@@ -463,13 +491,24 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                     })()}
                     {(m.offerRentOut != null || m.landlordSignedAt) && (
                       <div className="mb-2 space-y-0.5 text-xs">
-                        {m.offerRentOut != null && (
-                          <div className="text-blue-800">
-                            Erbjudet kund: <span className="font-medium">{formatKr(m.offerRentOut)}</span>
-                            {formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing) &&
-                              ` · ${formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing)}`}
-                          </div>
-                        )}
+                        {m.offerRentOut != null &&
+                          (displayStatus(m) === "withdrawn" ? (
+                            // Historiken i klartext — villkoren ligger kvar som utgångsläge
+                            // för omskick, men raden får inte läsas som ett aktivt erbjudande.
+                            <div className="rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-amber-800">
+                              Tillbakadraget erbjudande: <span className="font-medium">{formatKr(m.offerRentOut)}</span>
+                              {formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing) &&
+                                ` · ${formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing)}`}
+                              {(m.withdrawnSentAt || m.withdrawnAt) &&
+                                ` · skickat ${m.withdrawnSentAt?.slice(0, 10) ?? "?"} → tillbakadraget ${m.withdrawnAt?.slice(0, 10) ?? "?"}`}
+                            </div>
+                          ) : (
+                            <div className="text-blue-800">
+                              Erbjudet kund: <span className="font-medium">{formatKr(m.offerRentOut)}</span>
+                              {formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing) &&
+                                ` · ${formatPeriod(m.offerStartDate, m.offerEndDate, m.offerOngoing)}`}
+                            </div>
+                          ))}
                         {m.landlordSignedAt && (
                           <div className="text-emerald-800">
                             Uthyrningsuppdrag: <span className="font-medium">signerat av {m.landlordSignedName}</span>
@@ -485,27 +524,33 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       </div>
                     )}
                     {m.status !== "rejected" ? (
-                      // Affärens steg i rekommenderad ordning: uppdragsavtalet ALLTID först
-                      // (grönt direkt om uthyraren signerade vid onboarding), sedan löftet,
-                      // sedan kundens erbjudande, acceptera sist. Klart = grönt ✓, nästa steg
-                      // markeras, kommande dämpas — allt förblir klickbart vid behov.
+                      // Kortet visar bara OBJEKTETS egna steg i två spår: uthyrarens
+                      // (uppdragsavtalet, alltid först — grönt direkt om uthyraren
+                      // signerade vid onboarding) och kundens (prisa & skicka → accept).
+                      // Det gemensamma — kundlänk, uppdragsbekräftelse — bor i
+                      // affärspanelen ovanför. Klart = grönt ✓, nästa steg markeras,
+                      // kommande dämpas — allt förblir klickbart vid behov.
                       <div className="flex flex-wrap items-center gap-1">
                         {(() => {
+                          const ds = displayStatus(m);
                           const steps = [
                             {
-                              label: "Avtal uthyrare",
-                              title: "Uppdragsavtalet signeras alltid först — skapar signeringslänk och kopierar SMS-text",
+                              group: "Uthyrare" as string | null,
+                              label: "Uthyrningsuppdrag",
+                              title: "Uppdragsavtalet med uthyraren signeras alltid först — skapar signeringslänk och kopierar SMS-text",
                               done: !!m.landlordSignedAt,
                               onClick: () => shareLandlordLink(m),
                             },
                             {
-                              label: m.sentAt ? "Erbjudande" : "Skicka erbjudande",
-                              title: "Stämpla kundens pris och period — dela sedan kundlänken i panelen ovan",
+                              group: "Kund" as string | null,
+                              label: m.sentAt ? "Skickat" : ds === "withdrawn" ? "Skicka igen" : "Prisa & skicka",
+                              title: "Stämpla kundens pris och period — objektet dyker upp i kundlänken direkt",
                               done: !!m.sentAt,
                               onClick: () => setSendOffer(m),
                             },
                             {
-                              label: "Acceptera",
+                              group: null as string | null,
+                              label: "Accept",
                               title: "Kunden har tackat ja — stäng affären som vunnen",
                               done: m.status === "accepted",
                               onClick: () => {
@@ -523,25 +568,34 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           ];
                           const currentIdx = steps.findIndex((s) => !s.done);
                           return steps.map((s, i) => (
-                            <button
-                              key={s.label}
-                              onClick={s.onClick}
-                              title={s.title}
-                              className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
-                                s.done
-                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                  : i === currentIdx
-                                    ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200 hover:bg-blue-100"
-                                    : "border-input bg-white text-muted-foreground hover:bg-muted"
-                              }`}
-                            >
-                              <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
-                                s.done ? "bg-emerald-600 text-white" : i === currentIdx ? "bg-blue-600 text-white" : "bg-nordic-100 text-nordic-600"
-                              }`}>
-                                {s.done ? "✓" : i + 1}
-                              </span>
-                              {s.label}
-                            </button>
+                            <Fragment key={s.label}>
+                              {s.group && (
+                                <>
+                                  {i > 0 && <span className="mx-0.5 h-5 w-px bg-border" />}
+                                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                    {s.group}
+                                  </span>
+                                </>
+                              )}
+                              <button
+                                onClick={s.onClick}
+                                title={s.title}
+                                className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
+                                  s.done
+                                    ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                    : i === currentIdx
+                                      ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200 hover:bg-blue-100"
+                                      : "border-input bg-white text-muted-foreground hover:bg-muted"
+                                }`}
+                              >
+                                <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                                  s.done ? "bg-emerald-600 text-white" : i === currentIdx ? "bg-blue-600 text-white" : "bg-nordic-100 text-nordic-600"
+                                }`}>
+                                  {s.done ? "✓" : i === currentIdx ? "→" : "·"}
+                                </span>
+                                {s.label}
+                              </button>
+                            </Fragment>
                           ));
                         })()}
                         {m.status === "sent" && (

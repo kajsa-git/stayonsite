@@ -15,6 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       id: matches.id,
       matchStatus: matches.status,
       sentAt: matches.sentAt,
+      offerRentOut: matches.offerRentOut, // för härlett "Tillbakadraget" (villkor utan sentAt)
       requestId: requests.id,
       requestNumber: requests.requestNumber,
       requestStatus: requests.status,

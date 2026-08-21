@@ -1,9 +1,10 @@
 "use client";
 
-// Kundlänk-panelen i matchningsvyn: skapa/dela/återkalla förfrågans
-// erbjudandelänk (/erbjudande/<token>) och se uppdragsbekräftelsens status.
-// Länken är kapabiliteten — återkallning är därför en (lätt) destruktiv åtgärd
-// och kräver bekräftelse.
+// Affärspanelen i matchningsvyn: kundens resa som milstolpar (länk skapad →
+// öppnad → uppdragsbekräftelse → erbjudande ute → accept) med en "Nästa steg"-
+// rad i klartext, plus skapa/dela/återkalla förfrågans erbjudandelänk
+// (/erbjudande/<token>). Länken är kapabiliteten — återkallning är därför en
+// (lätt) destruktiv åtgärd och kräver bekräftelse.
 
 import { EmailComposeModal } from "@/components/crm/email/EmailComposeModal";
 import { ShareLinkButton } from "@/components/crm/property/ShareLinkButton";
@@ -11,8 +12,8 @@ import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import type { Contact, ShareLink } from "@/lib/crm/schema";
 import { offerEmailHtml, offerLinkSms, tenantAvtalSms } from "@/lib/crm/sms-templates";
-import { Copy, Eye, Link as LinkIcon, Mail, ShieldCheck, ShieldQuestion, Undo2 } from "lucide-react";
-import { useState } from "react";
+import { Copy, Eye, Link as LinkIcon, Mail, Undo2 } from "lucide-react";
+import { Fragment, useState } from "react";
 import useSWR from "swr";
 
 export interface AgreementStatus {
@@ -35,14 +36,17 @@ export function OfferLinkPanel({
   city,
   contactName,
   sentCount = 0,
+  hasAccepted = false,
 }: {
   requestId: string;
   companyId: string;
   city?: string | null;
   contactName?: string | null;
   // Antal skickade erbjudanden på förfrågan — utan något visar kundlänken bara
-  // uppdragsbekräftelsen + en väntsida, så panelen varnar tydligt.
+  // uppdragsbekräftelsen + en väntsida.
   sentCount?: number;
+  // Något förslag accepterat (eller förfrågan vunnen) — sista milstolpen.
+  hasAccepted?: boolean;
 }) {
   const { data, mutate } = useSWR<PanelData>(`/api/crm/share-links?requestId=${requestId}`, swrFetcher);
   // Kontakter för mejlutskicket — mottagare + kontaktväljare i mejlmodalen.
@@ -53,6 +57,61 @@ export function OfferLinkPanel({
   const tenantLink = data?.links.find((l) => l.audience === "tenant" && !l.matchId && !l.revokedAt) ?? null;
   const contacts = (company?.contacts ?? []).filter((c) => c.email);
   const primaryEmail = (contacts.find((c) => c.isPrimary) ?? contacts[0])?.email ?? "";
+
+  // Milstolparna härleds ur data som redan finns: länken, dess visningar,
+  // uppdragsbekräftelsen, skickade erbjudanden och accept. "Var är vi?" ska
+  // gå att svara på utan att läsa någon brödtext.
+  const opened = (tenantLink?.viewCount ?? 0) > 0;
+  const agreementValid = !!data?.agreement?.valid;
+  const needsResign = !!data?.agreement && !data.agreement.valid;
+  const milestones = [
+    {
+      label: "Länk skapad",
+      done: !!tenantLink,
+      title: tenantLink ? "Kundens länk är aktiv" : "Kunden har ingen aktiv länk",
+    },
+    {
+      label: "Öppnad av kund",
+      done: opened,
+      title: tenantLink?.lastViewedAt
+        ? `Öppnad ${tenantLink.viewCount} ggr — senast ${tenantLink.lastViewedAt.slice(0, 16).replace("T", " ")}`
+        : "Kunden har inte öppnat länken ännu",
+    },
+    {
+      label: "Uppdragsbekräftelse",
+      done: agreementValid,
+      title: agreementValid
+        ? `Godkänd av ${data!.agreement!.acceptedName} · giltig till ${data!.agreement!.validUntil}`
+        : needsResign
+          ? "Behöver omsigneras — gaten visas igen i länken"
+          : "Kunden godkänner uppdragsbekräftelsen första gången länken öppnas",
+    },
+    {
+      label: "Erbjudande ute",
+      done: sentCount > 0,
+      title: sentCount > 0 ? `${sentCount} skickade erbjudanden syns i länken` : "Inget erbjudande skickat ännu",
+    },
+    {
+      label: "Accept",
+      done: hasAccepted,
+      title: hasAccepted ? "Kunden har accepterat" : "Väntar på kundens ja",
+    },
+  ];
+  const currentIdx = milestones.findIndex((m) => !m.done);
+  const nextStep =
+    currentIdx === -1
+      ? "Kunden har accepterat — affären ligger för fakturering."
+      : currentIdx === 0
+        ? "Skapa kundlänken och dela den — där godkänner kunden uppdragsbekräftelsen och ser sina förslag."
+        : currentIdx === 1
+          ? "Kunden har inte öppnat sin länk — påminn via SMS eller mejl."
+          : currentIdx === 2
+            ? needsResign
+              ? "Uppdragsbekräftelsen behöver omsigneras — be kunden öppna länken igen."
+              : "Kunden har öppnat länken men inte godkänt uppdragsbekräftelsen ännu."
+            : currentIdx === 3
+              ? "Prisa & skicka erbjudandet på ett förslag nedan — objektet dyker upp i kundens länk direkt."
+              : "Erbjudande ute — väntar på kundens svar. När de tackar ja: tryck Accept på förslaget.";
 
   async function createLink() {
     setWorking(true);
@@ -115,47 +174,35 @@ export function OfferLinkPanel({
 
   return (
     <div className="bg-white rounded-xl border p-4 space-y-3">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold">Kundens länk</h2>
-        {data?.agreement?.valid ? (
-          <span
-            className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800"
-            title={`Gäller företaget — signerad version ${data.agreement.version}`}
-          >
-            <ShieldCheck className="h-3 w-3" />
-            Uppdragsbekräftelse godkänd av {data.agreement.acceptedName} · giltig till {data.agreement.validUntil}
-          </span>
-        ) : data?.agreement ? (
-          <span
-            className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800"
-            title={
-              data.agreement.version !== data.agreement.currentVersion
-                ? `Signerad version ${data.agreement.version}, aktuell är ${data.agreement.currentVersion} — gaten visas igen i länken.`
-                : `Gick ut ${data.agreement.validUntil} — gaten visas igen i länken.`
-            }
-          >
-            <ShieldQuestion className="h-3 w-3" />
-            Uppdragsbekräftelse behöver omsignering
-          </span>
-        ) : (
-          <span
-            className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800"
-            title="Kunden godkänner uppdragsbekräftelsen första gången länken öppnas — före dess visas inget erbjudande."
-          >
-            <ShieldQuestion className="h-3 w-3" />
-            Uppdragsbekräftelse ej godkänd
-          </span>
-        )}
+      <h2 className="text-sm font-semibold">Affären med kunden</h2>
+
+      <div className="flex flex-wrap items-center gap-1">
+        {milestones.map((ms, i) => (
+          <Fragment key={ms.label}>
+            {i > 0 && <span className="text-[10px] text-nordic-300">›</span>}
+            <span
+              title={ms.title}
+              className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${
+                ms.done
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : i === currentIdx
+                    ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200"
+                    : "border-input bg-white text-muted-foreground"
+              }`}
+            >
+              {ms.done ? "✓ " : ""}
+              {ms.label}
+            </span>
+          </Fragment>
+        ))}
       </div>
+
+      <p className="rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-900">
+        <span className="font-semibold">Nästa steg:</span> {nextStep}
+      </p>
 
       {tenantLink ? (
         <>
-          {sentCount === 0 && (
-            <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              Inget erbjudande är skickat ännu — kunden ser bara uppdragsbekräftelsen och en väntsida.
-              Tryck Skicka erbjudande på ett förslag så dyker objektet upp i länken direkt.
-            </p>
-          )}
           <div className="flex flex-wrap items-center gap-2">
             <ShareLinkButton
               path={`/erbjudande/${tenantLink.token}`}
@@ -190,6 +237,7 @@ export function OfferLinkPanel({
             {tenantLink.lastViewedAt
               ? `Öppnad ${tenantLink.viewCount} ggr — senast ${tenantLink.lastViewedAt.slice(0, 16).replace("T", " ")}`
               : "Inte öppnad ännu"}
+            {tenantLink.createdAt ? ` · skapad ${tenantLink.createdAt.slice(0, 10)}` : ""}
           </p>
         </>
       ) : (

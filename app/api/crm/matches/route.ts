@@ -1,7 +1,7 @@
 import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { agreementAcceptances, matches, properties } from "@/lib/crm/schema";
+import { agreementAcceptances, matchEvents, matches, properties } from "@/lib/crm/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -70,11 +70,31 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Senaste tillbakadragningen per match — kortet visar "skickat X → tillbaka-
+  // draget Y" när erbjudandet dragits tillbaka. Händelsens data bär originalets
+  // sentAt (nollas på matchen vid tillbakadragandet), createdAt är själva draget.
+  const withdrawnRows = await db
+    .select({ matchId: matchEvents.matchId, data: matchEvents.data, createdAt: matchEvents.createdAt })
+    .from(matchEvents)
+    .where(and(eq(matchEvents.requestId, requestId), eq(matchEvents.type, "offer_withdrawn")))
+    .orderBy(desc(matchEvents.createdAt));
+  const withdrawnByMatch = new Map<string, { withdrawnAt: string | null; withdrawnSentAt: string | null }>();
+  for (const w of withdrawnRows) {
+    if (!withdrawnByMatch.has(w.matchId)) {
+      withdrawnByMatch.set(w.matchId, {
+        withdrawnAt: w.createdAt,
+        withdrawnSentAt: typeof w.data?.sentAt === "string" ? w.data.sentAt : null,
+      });
+    }
+  }
+
   return NextResponse.json(
     rows.map((r) => ({
       ...r,
       landlordSignedName: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedName) ?? null,
       landlordSignedAt: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedAt) ?? null,
+      withdrawnAt: withdrawnByMatch.get(r.id)?.withdrawnAt ?? null,
+      withdrawnSentAt: withdrawnByMatch.get(r.id)?.withdrawnSentAt ?? null,
     }))
   );
 }

@@ -15,6 +15,7 @@ interface MatchRow {
   id: string;
   matchStatus: string;
   sentAt: string | null;
+  offerRentOut: number | null;
   requestNumber: number | null;
   requestStatus: string;
   companyName: string;
@@ -33,9 +34,16 @@ const fetcher = swrFetcher;
 const MATCH_STATUS: Record<string, string> = {
   suggested: "Förslag",
   sent: "Skickad",
+  withdrawn: "Tillbakadraget",
   accepted: "Accepterad",
   rejected: "Avböjd",
 };
+
+// Samma härledning som i matchningsvyn: villkor stämplas bara vid skick, så
+// stämplade villkor utan sentAt = tillbakadraget erbjudande.
+function matchDisplayStatus(h: MatchRow): string {
+  return h.matchStatus === "suggested" && h.offerRentOut != null && !h.sentAt ? "withdrawn" : h.matchStatus;
+}
 
 // Kontaktrunda-pipeline mot uthyrare.
 const OPEN_STEPS: { value: string; label: string }[] = [
@@ -275,7 +283,7 @@ export function PropertyHistory({ property }: { property: Property }) {
                   {h.city && <span className="text-muted-foreground"> · {h.city}</span>}
                 </span>
                 <span className="text-xs text-muted-foreground shrink-0">
-                  {MATCH_STATUS[h.matchStatus] ?? h.matchStatus} · {REQ_STATUS[h.requestStatus] ?? h.requestStatus}
+                  {MATCH_STATUS[matchDisplayStatus(h)] ?? h.matchStatus} · {REQ_STATUS[h.requestStatus] ?? h.requestStatus}
                 </span>
               </div>
             ))}
