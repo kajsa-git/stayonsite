@@ -18,7 +18,7 @@ import { toast } from "@/components/ui/use-toast";
 import { ArrowUpRight, Loader2, Navigation, Pencil, Search, Trash2, X } from "lucide-react";
 import { useDistances } from "@/hooks/use-distances";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { MatchScore } from "./MatchScore";
 import { KalkylScenarioChips, MatchKalkyl } from "./MatchKalkyl";
@@ -377,7 +377,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      {/* Mobil: en kolumn (affären överst, objektsök under). Desktop: två. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: affärspanel + current proposals (kriterier bakom toggle i sidhuvudet) */}
         <div className="space-y-6">
           <OfferLinkPanel
@@ -530,26 +531,26 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       // Det gemensamma — kundlänk, uppdragsbekräftelse — bor i
                       // affärspanelen ovanför. Klart = grönt ✓, nästa steg markeras,
                       // kommande dämpas — allt förblir klickbart vid behov.
-                      <div className="flex flex-wrap items-center gap-1">
+                      // Tre sammanhållna kluster som radbryts som enheter (desktop OCH
+                      // mobil): uthyrarspåret, kundspåret, åtgärderna. Klart = ✓, aktuellt
+                      // steg = →, kommande visas utan symbol — allt förblir klickbart.
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                         {(() => {
                           const ds = displayStatus(m);
                           const steps = [
                             {
-                              group: "Uthyrare" as string | null,
                               label: "Uthyrningsuppdrag",
                               title: "Uppdragsavtalet med uthyraren signeras alltid först — skapar signeringslänk och kopierar SMS-text",
                               done: !!m.landlordSignedAt,
                               onClick: () => shareLandlordLink(m),
                             },
                             {
-                              group: "Kund" as string | null,
                               label: m.sentAt ? "Skickat" : ds === "withdrawn" ? "Skicka igen" : "Prisa & skicka",
                               title: "Stämpla kundens pris och period — objektet dyker upp i kundlänken direkt",
                               done: !!m.sentAt,
                               onClick: () => setSendOffer(m),
                             },
                             {
-                              group: null as string | null,
                               label: "Acceptera",
                               title: "Kunden har tackat ja — stäng affären som vunnen",
                               done: m.status === "accepted",
@@ -567,56 +568,68 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                             },
                           ];
                           const currentIdx = steps.findIndex((s) => !s.done);
-                          return steps.map((s, i) => (
-                            <Fragment key={s.label}>
-                              {s.group && (
-                                <>
-                                  {i > 0 && <span className="mx-0.5 h-5 w-px bg-border" />}
-                                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                                    {s.group}
-                                  </span>
-                                </>
-                              )}
-                              <button
-                                onClick={s.onClick}
-                                title={s.title}
-                                className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
-                                  s.done
-                                    ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                    : i === currentIdx
-                                      ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200 hover:bg-blue-100"
-                                      : "border-input bg-white text-muted-foreground hover:bg-muted"
-                                }`}
-                              >
+                          const chip = (s: (typeof steps)[number], i: number) => (
+                            <button
+                              key={s.label}
+                              onClick={s.onClick}
+                              title={s.title}
+                              className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
+                                s.done
+                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                  : i === currentIdx
+                                    ? "border-blue-300 bg-blue-50 text-blue-800 ring-1 ring-blue-200 hover:bg-blue-100"
+                                    : "border-input bg-white text-muted-foreground hover:bg-muted"
+                              }`}
+                            >
+                              {(s.done || i === currentIdx) && (
                                 <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
-                                  s.done ? "bg-emerald-600 text-white" : i === currentIdx ? "bg-blue-600 text-white" : "bg-nordic-100 text-nordic-600"
+                                  s.done ? "bg-emerald-600 text-white" : "bg-blue-600 text-white"
                                 }`}>
-                                  {s.done ? "✓" : i === currentIdx ? "→" : "·"}
+                                  {s.done ? "✓" : "→"}
                                 </span>
-                                {s.label}
-                              </button>
-                            </Fragment>
-                          ));
+                              )}
+                              {s.label}
+                            </button>
+                          );
+                          return (
+                            <>
+                              <span className="inline-flex items-center gap-1">
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                  Uthyrare
+                                </span>
+                                {chip(steps[0], 0)}
+                              </span>
+                              <span className="inline-flex items-center gap-1">
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                  Kund
+                                </span>
+                                {chip(steps[1], 1)}
+                                {chip(steps[2], 2)}
+                              </span>
+                            </>
+                          );
                         })()}
-                        {m.status === "sent" && (
-                          <button
-                            onClick={() => {
-                              if (!window.confirm("Dra tillbaka erbjudandet? Objektet försvinner från kundens sida tills du skickar ett nytt erbjudande. Pris och period sparas som utgångsläge."))
-                                return;
-                              setMatchStatus(m.id, "suggested");
-                            }}
-                            title="Ångra utskicket — kortet försvinner från kundlänken, till skillnad från Avböj som lämnar det gråat"
-                            className="text-xs px-2 py-1 rounded border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 ml-auto"
-                          >
-                            Dra tillbaka
+                        <span className="ml-auto inline-flex items-center gap-1">
+                          {m.status === "sent" && (
+                            <button
+                              onClick={() => {
+                                if (!window.confirm("Dra tillbaka erbjudandet? Objektet försvinner från kundens sida tills du skickar ett nytt erbjudande. Pris och period sparas som utgångsläge."))
+                                  return;
+                                setMatchStatus(m.id, "suggested");
+                              }}
+                              title="Ångra utskicket — kortet försvinner från kundlänken, till skillnad från Avböj som lämnar det gråat"
+                              className="text-xs px-2 py-1 rounded border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100"
+                            >
+                              Dra tillbaka
+                            </button>
+                          )}
+                          <button onClick={() => setMatchStatus(m.id, "rejected")} className="text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100">
+                            Avböj
                           </button>
-                        )}
-                        <button onClick={() => setMatchStatus(m.id, "rejected")} className={`text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 ${m.status === "sent" ? "" : "ml-auto"}`}>
-                          Avböj
-                        </button>
-                        <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground" title="Ta bort förslag">
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+                          <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground" title="Ta bort förslag">
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </span>
                       </div>
                     ) : (
                       <div className="flex flex-wrap gap-1">
