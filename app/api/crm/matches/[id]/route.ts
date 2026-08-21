@@ -44,6 +44,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (body.status === "sent") {
     data.sentAt = new Date().toISOString();
   }
+  // Spegeln av sent-stämpeln: status → suggested på ett skickat erbjudande är
+  // "dra tillbaka" — sentAt nollas så kortet försvinner från kundlänken (kunden
+  // ser väntsidan tills nästa skick). Villkoren (offer_*) behålls som utgångsläge
+  // vid omskick; själva tillbakadragningen loggas i crm_match_events nedan.
+  let withdrawnSentAt: string | null = null;
+  if (body.status === "suggested") {
+    const [current] = await db.select({ sentAt: matches.sentAt }).from(matches).where(eq(matches.id, id));
+    if (current?.sentAt) {
+      withdrawnSentAt = current.sentAt;
+      data.sentAt = null;
+    }
+  }
 
   const [row] = await db.update(matches).set(data).where(eq(matches.id, id)).returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -89,6 +101,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         actor: "internal",
         type: "offer_terms",
         data: {
+          rentOut: row.offerRentOut,
+          startDate: row.offerStartDate,
+          endDate: row.offerEndDate,
+          ongoing: row.offerOngoing,
+          note: row.offerNote,
+        },
+      });
+    }
+    if (withdrawnSentAt) {
+      events.push({
+        id: nanoid(),
+        matchId: id,
+        requestId: row.requestId,
+        actor: "internal",
+        type: "offer_withdrawn",
+        data: {
+          sentAt: withdrawnSentAt,
           rentOut: row.offerRentOut,
           startDate: row.offerStartDate,
           endDate: row.offerEndDate,

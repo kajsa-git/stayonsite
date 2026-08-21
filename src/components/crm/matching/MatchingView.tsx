@@ -229,7 +229,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     }
   }
 
-  // Endast Skickad/Avböjd här — accept hanteras av acceptMatch (vinst-kaskaden).
+  // Skickad/Avböjd/Tillbakadragen här — accept hanteras av acceptMatch (vinst-kaskaden).
+  // status → suggested på ett skickat erbjudande = dra tillbaka (servern nollar sentAt).
   async function setMatchStatus(id: string, status: string) {
     try {
       const res = await fetch(`/api/crm/matches/${id}`, {
@@ -242,7 +243,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         return;
       }
       mutateMatches();
-      toast({ title: status === "sent" ? "Markerat som skickad" : "Förslag avböjt" });
+      toast({
+        title:
+          status === "sent" ? "Markerat som skickad"
+          : status === "suggested" ? "Erbjudandet tillbakadraget"
+          : "Förslag avböjt",
+      });
     } catch {
       toast({ title: "Kunde inte uppdatera förslaget", variant: "destructive" });
     }
@@ -538,7 +544,20 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                             </button>
                           ));
                         })()}
-                        <button onClick={() => setMatchStatus(m.id, "rejected")} className="text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 ml-auto">
+                        {m.status === "sent" && (
+                          <button
+                            onClick={() => {
+                              if (!window.confirm("Dra tillbaka erbjudandet? Objektet försvinner från kundens sida tills du skickar ett nytt erbjudande. Pris och period sparas som utgångsläge."))
+                                return;
+                              setMatchStatus(m.id, "suggested");
+                            }}
+                            title="Ångra utskicket — kortet försvinner från kundlänken, till skillnad från Avböj som lämnar det gråat"
+                            className="text-xs px-2 py-1 rounded border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 ml-auto"
+                          >
+                            Dra tillbaka
+                          </button>
+                        )}
+                        <button onClick={() => setMatchStatus(m.id, "rejected")} className={`text-xs px-2 py-1 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 ${m.status === "sent" ? "" : "ml-auto"}`}>
                           Avböj
                         </button>
                         <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground" title="Ta bort förslag">
