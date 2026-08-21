@@ -550,7 +550,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                             },
                             {
                               group: null as string | null,
-                              label: "Accept",
+                              label: "Acceptera",
                               title: "Kunden har tackat ja — stäng affären som vunnen",
                               done: m.status === "accepted",
                               onClick: () => {

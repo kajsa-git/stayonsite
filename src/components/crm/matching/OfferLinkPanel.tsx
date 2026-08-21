@@ -111,7 +111,7 @@ export function OfferLinkPanel({
               : "Kunden har öppnat länken men inte godkänt uppdragsbekräftelsen ännu."
             : currentIdx === 3
               ? "Prisa & skicka erbjudandet på ett förslag nedan — objektet dyker upp i kundens länk direkt."
-              : "Erbjudande ute — väntar på kundens svar. När de tackar ja: tryck Accept på förslaget.";
+              : "Erbjudande ute — väntar på kundens svar. När de tackar ja: tryck Acceptera på förslaget.";
 
   async function createLink() {
     setWorking(true);
