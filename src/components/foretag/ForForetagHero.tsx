@@ -108,7 +108,7 @@ const ForForetagHero = () => {
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       toast({
         title: t('Tack!', 'Thank you!', 'Dziękujemy!'),
         description: t(

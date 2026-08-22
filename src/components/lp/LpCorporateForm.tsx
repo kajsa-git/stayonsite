@@ -52,7 +52,7 @@ const LpCorporateForm = ({ utmParams }: LpCorporateFormProps) => {
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       trackFbEvent('Lead');
       toast({ title: 'Thank you! We’ll be in touch within 24 hours.' });
     } catch (error) {

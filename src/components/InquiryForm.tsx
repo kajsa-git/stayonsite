@@ -62,7 +62,7 @@ const InquiryForm = () => {
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       toast({
         title: t('inquiry.form.success'),
         description: new Date().toLocaleTimeString()

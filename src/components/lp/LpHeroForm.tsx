@@ -59,7 +59,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       trackFbEvent('Lead');
       toast({
         title: t('homeowner.form.success'),

@@ -85,7 +85,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: emailValue, phone: phoneValue });
       toast({ title: t('heroForm.success') });
       setTimeout(() => {
         setFormSuccess(false);

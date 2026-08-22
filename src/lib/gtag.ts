@@ -49,7 +49,35 @@ export function trackPhoneClick() {
   clarityEvent('phone_click')
 }
 
-export function trackFormSubmit() {
+// Enhanced Conversions: Google-taggen får besökarens e-post/telefon (hashas av taggen innan
+// det skickas) så att konverteringen kan matchas även utan gclid. Kräver ad_user_data-samtycke,
+// vilket Consent Mode sköter — utan samtycke skickar taggen inget.
+export type LeadUserData = { email?: string; phone?: string }
+
+// Google kräver E.164 (+46701234567). Formulären tillåter 070-…, 0046…, +46…
+function toE164(phone: string): string | undefined {
+  const trimmed = phone.trim()
+  const digits = trimmed.replace(/\D/g, '')
+  if (!digits) return undefined
+  if (trimmed.startsWith('+')) return `+${digits}`
+  if (digits.startsWith('00')) return `+${digits.slice(2)}`
+  if (digits.startsWith('0')) return `+46${digits.slice(1)}`
+  return digits.length >= 10 ? `+${digits}` : undefined
+}
+
+export function setUserData(user: LeadUserData) {
+  if (typeof window === 'undefined' || !window.gtag) return
+  const data: Record<string, string> = {}
+  const email = user.email?.trim().toLowerCase()
+  if (email) data.email = email
+  const phone = user.phone ? toE164(user.phone) : undefined
+  if (phone) data.phone_number = phone
+  if (Object.keys(data).length === 0) return
+  window.gtag('set', 'user_data', data)
+}
+
+export function trackFormSubmit(user?: LeadUserData) {
+  if (user) setUserData(user)
   fireConversion(GA_ADS_FORM_LABEL)
   clarityEvent('form_submit')
 }

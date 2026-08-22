@@ -204,7 +204,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
         },
       });
       setFormSuccess(true);
-      trackFormSubmit();
+      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
 
       if (result.agreement && !result.agreement.alreadySigned) {
         // Del 2: uthyrningsuppdraget tar över panelen — ingen auto-reset som
