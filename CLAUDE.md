@@ -177,7 +177,7 @@ All text pa sajten maste vara **trovarding och professionell** — inga generisk
 ## Deployment
 
 - **Vercel project:** `stayonsite` (NOT `stayonsite-quick-lodgings-finder`)
-- **GitHub repo:** `Ac0AI/stayonsite-quick-lodgings-finder`
+- **GitHub repo:** `kajsa-git/stayonsite`
 - Auto-deploys on push to `main`. Security headers in `vercel.json`.
 - Domain: **stayonsite.se** (redirects to www.stayonsite.se)
 - `npx vercel --prod` deploys to a separate project — always use `git push` for production deploys.

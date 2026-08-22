@@ -27,7 +27,7 @@ StayOnSite helps construction companies find nearby accommodations for their wor
 
 ```bash
 # Clone the repository
-git clone https://github.com/Ac0AI/stayonsite.git
+git clone https://github.com/kajsa-git/stayonsite.git
 cd stayonsite
 
 # Install dependencies
