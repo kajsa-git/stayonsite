@@ -591,16 +591,18 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                               {s.label}
                             </button>
                           );
+                          // Varje spår är en egen mjuk zon — etiketten läses som rubrik
+                          // för blocket i stället för att flyta ihop med stegtexten.
                           return (
                             <>
-                              <span className="inline-flex items-center gap-1">
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                              <span className="inline-flex items-center gap-1.5 rounded-lg bg-nordic-100/60 py-1 pl-2 pr-1">
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-nordic-500">
                                   Uthyrare
                                 </span>
                                 {chip(steps[0], 0)}
                               </span>
-                              <span className="inline-flex items-center gap-1">
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                              <span className="inline-flex items-center gap-1.5 rounded-lg bg-nordic-100/60 py-1 pl-2 pr-1">
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-nordic-500">
                                   Kund
                                 </span>
                                 {chip(steps[1], 1)}
