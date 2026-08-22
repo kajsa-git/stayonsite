@@ -59,6 +59,26 @@ function sourceNotes(submission: WebSubmission, extra: Array<string | null | und
   ].filter(Boolean).join("\n");
 }
 
+// Privata mejlleverantörer — deras sajter får aldrig skrapas som företagsnamn
+// (annars döps företaget till "Gmail"/"Outlook", hänt t.o.m. 2026-08-22).
+// Träff → fallback på hela mejladressen, där t.ex. "orustindustri@hotmail.se"
+// åtminstone är igenkännbar.
+const FREEMAIL_DOMAINS = new Set([
+  "gmail.com", "googlemail.com",
+  "hotmail.com", "hotmail.se", "hotmail.co.uk", "hotmail.de",
+  "outlook.com", "outlook.se", "outlook.de", "live.com", "live.se", "msn.com",
+  "icloud.com", "me.com", "mac.com",
+  "yahoo.com", "yahoo.se", "yahoo.co.uk", "ymail.com",
+  "protonmail.com", "proton.me", "pm.me",
+  "telia.com", "telia.se", "bredband.net", "comhem.se", "tele2.se",
+  "bahnhof.se", "spray.se", "passagen.se", "swipnet.se", "glocalnet.net",
+  "aol.com", "gmx.com", "gmx.de", "mail.com", "fastmail.com", "yandex.com",
+]);
+
+export function isFreemailDomain(domain: string): boolean {
+  return FREEMAIL_DOMAINS.has(domain.trim().toLowerCase());
+}
+
 async function scrapeCompanyName(domain: string): Promise<string | null> {
   try {
     // domain kommer från en e-postadress (user-input) → SSRF-skyddad fetch:
@@ -79,8 +99,9 @@ async function scrapeCompanyName(domain: string): Promise<string | null> {
 }
 
 async function companyNameFrom(email: string | null, phone: string | null): Promise<string> {
-  const domain = email?.split("@")[1];
+  const domain = email?.split("@")[1]?.toLowerCase();
   if (domain) {
+    if (isFreemailDomain(domain)) return `Webbförfrågan · ${email}`;
     const scraped = await scrapeCompanyName(domain);
     if (scraped) return scraped;
     return `Webbförfrågan · ${domain}`;
