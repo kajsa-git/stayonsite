@@ -8,11 +8,19 @@
   <array>
     <string>/usr/local/bin/node</string>
     <string>/Users/kajsa/Projects/stayonsite/scripts/imessage-agent.mjs</string>
+    <string>--loop</string>
   </array>
-  <key>StartInterval</key>
-  <integer>30</integer>
+  <!-- KeepAlive-loop i stället för StartInterval: intervallspawns stryps av
+       macOS på batteridrift (upptäckt 2026-08-22) — en persistent process
+       med egen 30s-tick gör det inte. KeepAlive återstartar vid krasch. -->
+  <key>KeepAlive</key>
+  <true/>
   <key>RunAtLoad</key>
   <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
   <key>StandardOutPath</key>
   <string>/Users/kajsa/Library/Logs/stayonsite-imessage-agent.log</string>
   <key>StandardErrorPath</key>

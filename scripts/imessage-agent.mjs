@@ -392,31 +392,46 @@ async function sendQueued(chatDb) {
 // på tidigare utskick, sedan nya utskick med historikbaserat tjänsteval.
 // Alla faser felskyddade: en nätverkstimeout ska ge EN loggrad, inte en
 // ohanterad krasch-trace i launchd-loggen var 30:e sekund.
-try {
-  await ingestIncoming();
-} catch (e) {
-  console.error(`${ts()} inbox: oväntat fel: ${e?.message ?? e}`);
+async function runOnce() {
+  try {
+    await ingestIncoming();
+  } catch (e) {
+    console.error(`${ts()} inbox: oväntat fel: ${e?.message ?? e}`);
+  }
+  let sendChatDb = null;
+  try {
+    const dbMod = await import("node:sqlite");
+    sendChatDb = openChatDbReadonly(dbMod);
+  } catch {
+    /* node:sqlite saknas — tjänstevalet faller tillbaka på default */
+  }
+  try {
+    await verifyDeliveries(sendChatDb);
+  } catch (e) {
+    console.error(`${ts()} leveranskoll: fel: ${e?.message ?? e}`);
+  }
+  try {
+    await sendQueued(sendChatDb);
+  } catch (e) {
+    console.error(`${ts()} utskick: nätverksfel: ${e?.message ?? e}`);
+  }
+  try {
+    sendChatDb?.close();
+  } catch {
+    /* redan stängd */
+  }
 }
-let sendChatDb = null;
-try {
-  const dbMod = await import("node:sqlite");
-  sendChatDb = openChatDbReadonly(dbMod);
-} catch {
-  /* node:sqlite saknas — tjänstevalet faller tillbaka på default */
+
+// --loop (launchd KeepAlive): en process som lever och tickar själv var 30:e
+// sekund. StartInterval-spawns stryps av macOS på batteridrift — en persistent
+// process gör det inte, så SMS/inkorg rullar även utan laddare.
+if (process.argv.includes("--loop")) {
+  console.log(`${ts()} loop-läge: tickar var 30:e sekund`);
+  for (;;) {
+    await runOnce();
+    await new Promise((r) => setTimeout(r, 30_000));
+  }
+} else {
+  await runOnce();
+  process.exit(0);
 }
-try {
-  await verifyDeliveries(sendChatDb);
-} catch (e) {
-  console.error(`${ts()} leveranskoll: fel: ${e?.message ?? e}`);
-}
-try {
-  await sendQueued(sendChatDb);
-} catch (e) {
-  console.error(`${ts()} utskick: nätverksfel: ${e?.message ?? e}`);
-}
-try {
-  sendChatDb?.close();
-} catch {
-  /* redan stängd */
-}
-process.exit(0);
