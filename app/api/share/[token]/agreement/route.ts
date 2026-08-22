@@ -6,6 +6,7 @@
 // utgången/gammal version ⇒ ny rad läggs till (raderna är bevis och skrivs aldrig om).
 import { isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { db } from "@/lib/crm/db";
+import { recordPublishConsent } from "@/lib/crm/publish-consent";
 import { agreementAcceptances, matches, properties, requests } from "@/lib/crm/schema";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { and, desc, eq } from "drizzle-orm";
@@ -86,11 +87,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     }
     if (!ownerId && !propertyId) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+    // Bocken "visa annonsen online" i signeringsformuläret — förifylld, så
+    // godkännandet åker med signeringen. Idempotent (stämplade rader rörs ej).
+    const wantsPublishConsent = body.publishConsent === true && !!ownerId;
+    const stampConsent = () => recordPublishConsent({ ownerId: ownerId!, name, source: "web", ip });
+
     const existing = await latestAcceptance(
       ownerId ? { ownerId } : { propertyId: propertyId! },
       UTHYRNINGSUPPDRAG.type
     );
-    if (isAcceptanceValid(existing, UTHYRNINGSUPPDRAG)) return NextResponse.json({ ok: true });
+    if (isAcceptanceValid(existing, UTHYRNINGSUPPDRAG)) {
+      if (wantsPublishConsent) await stampConsent();
+      return NextResponse.json({ ok: true });
+    }
 
     await db.insert(agreementAcceptances).values({
       id: nanoid(),
@@ -106,6 +115,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       ip,
       language,
     });
+    if (wantsPublishConsent) await stampConsent();
     return NextResponse.json({ ok: true }, { status: 201 });
   }
 

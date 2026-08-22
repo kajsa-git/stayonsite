@@ -27,9 +27,9 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
   if (!link || link.audience !== "landlord" || (!link.matchId && !link.ownerId)) notFound();
 
   // Fristående länk (uppdragsavtalet skickas före någon affär): uthyrarens egen
-  // sida med två block — publiceringsgodkännandet (lätt, ett klick) överst och
-  // uthyrningsuppdraget (gaten) under. Ordningen är medveten: publicering är
-  // huvudmålet, avtalet det mjuka andra steget.
+  // sida. Publiceringsgodkännandet är en liten bock — förifylld inne i
+  // signeringsformuläret för osignerade; för redan signerade en egen kryssrad
+  // som sparar direkt (Kajsas riktning 2026-08-18: inget dramatiskt godkännande).
   if (!link.matchId && link.ownerId) {
     const standing = await loadLandlordStanding(link.ownerId);
     if (!standing) notFound();
@@ -47,7 +47,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
           </div>
         </header>
         <div className="mx-auto max-w-3xl space-y-6 px-5 py-8">
-          {showConsent && (
+          {standing.agreementAccepted && showConsent && (
             <PublishConsentCard
               token={token}
               addresses={pendingAddresses}
@@ -63,6 +63,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               version={UTHYRNINGSUPPDRAG.version}
               submitLabel="Godkänn uthyrningsuppdraget"
               lang="sv"
+              publishConsent={consent.pending.length > 0}
             />
           ) : (
             <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">

@@ -461,18 +461,11 @@ export function PropertyIntakeForm() {
             <div>
               <p className="text-base font-semibold text-nordic-950">Bostaden är mottagen — tack!</p>
               <p className="mt-1 text-sm leading-6 text-nordic-700">
-                Två snabba steg kvar, båda tar under en minut: godkänn att annonsen får visas online,
-                och signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.
+                Ett snabbt steg kvar, tar under en minut: signera uthyrningsuppdraget — kostnadsfritt
+                och inte exklusivt.
               </p>
             </div>
           </div>
-
-          <PublishConsentCard
-            token={success.agreement.token}
-            addresses={[[form.address, form.city].filter(Boolean).join(", ")].filter(Boolean)}
-            initiallyConsented={publishConsented}
-            onConsented={() => setPublishConsented(true)}
-          />
 
           <AgreementGate
             token={success.agreement.token}
@@ -482,7 +475,11 @@ export function PropertyIntakeForm() {
             version={UTHYRNINGSUPPDRAG.version}
             submitLabel="Godkänn uthyrningsuppdraget"
             lang="sv"
-            onAccepted={() => setAgreementOutcome("signed")}
+            publishConsent
+            onAccepted={({ publishConsented: consented }) => {
+              if (consented) setPublishConsented(true);
+              setAgreementOutcome("signed");
+            }}
           />
 
           <div className="flex flex-col gap-3 rounded-md border border-nordic-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
