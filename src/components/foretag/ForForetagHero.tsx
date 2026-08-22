@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
-import { isValidPhoneNumber } from '@/lib/contact';
+import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
 import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
@@ -21,7 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { ArrowLeft, ArrowRight, Send, Star } from 'lucide-react';
+import { Send, Star } from 'lucide-react';
 import { cities } from '@/data/cities';
 
 type Lang = 'sv' | 'en' | 'pl';
@@ -32,8 +32,8 @@ const ForForetagHero = () => {
   const utmParams = useUtmCapture();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
-  const [step, setStep] = useState<1 | 2>(1);
   const formRef = useRef<HTMLFormElement>(null);
   const formStarted = useRef(false);
 
@@ -49,33 +49,28 @@ const ForForetagHero = () => {
     return sv;
   };
 
-  const handleNext = () => {
-    const form = formRef.current;
-    if (!form) return;
-    const city = form.elements.namedItem('city');
-    const people = form.elements.namedItem('people');
-    if (city instanceof HTMLInputElement && !city.reportValidity()) return;
-    if (people instanceof HTMLInputElement && !people.reportValidity()) return;
-    setStep(2);
-    setTimeout(() => {
-      const company = form.elements.namedItem('company');
-      if (company instanceof HTMLInputElement) company.focus();
-    }, 50);
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Enter i steg 1 ska gå vidare, inte skicka
-    if (step === 1) {
-      handleNext();
-      return;
-    }
-
     const formData = new FormData(e.currentTarget);
+    const email = String(formData.get('email') ?? '').trim();
     const phone = String(formData.get('phone') ?? '').trim();
 
+    setEmailError('');
     setPhoneError('');
+
+    if (!isValidEmail(email)) {
+      setEmailError(
+        t(
+          'Ange en giltig e-postadress',
+          'Enter a valid email address',
+          'Podaj prawidłowy adres e-mail'
+        )
+      );
+      const emailInput = e.currentTarget.elements.namedItem('email');
+      if (emailInput instanceof HTMLInputElement) emailInput.focus();
+      return;
+    }
 
     if (phone && !isValidPhoneNumber(phone)) {
       setPhoneError(
@@ -102,13 +97,13 @@ const ForForetagHero = () => {
           city: String(formData.get('city') ?? '').trim(),
           people: String(formData.get('people') ?? '').trim(),
           company: String(formData.get('company') ?? '').trim(),
-          email: String(formData.get('email') ?? '').trim(),
+          email,
           ...(phone ? { phone } : {}),
         },
         utmParams,
       });
       setFormSuccess(true);
-      trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
+      trackFormSubmit({ email, phone });
       toast({
         title: t('Tack!', 'Thank you!', 'Dziękujemy!'),
         description: t(
@@ -120,7 +115,6 @@ const ForForetagHero = () => {
 
       setTimeout(() => {
         setFormSuccess(false);
-        setStep(1);
         if (formRef.current) formRef.current.reset();
       }, 8000);
     } catch (error) {
@@ -141,7 +135,7 @@ const ForForetagHero = () => {
     'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
 
   const labelClass =
-    'text-[10px] font-bold uppercase tracking-widest text-white/80 ml-1';
+    'text-xs font-bold uppercase tracking-widest text-white/80 ml-1';
 
   return (
     <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-28 pb-8 md:pb-16 bg-primary">
@@ -226,150 +220,129 @@ const ForForetagHero = () => {
                   </p>
 
                   <form ref={formRef} onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-3 md:space-y-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">
-                      {step === 1
-                        ? t('Steg 1 av 2', 'Step 1 of 2', 'Krok 1 z 2')
-                        : t('Steg 2 av 2', 'Step 2 of 2', 'Krok 2 z 2')}
+                    <p className="text-xs font-semibold text-white/60">
+                      {t('Fyra uppgifter · Svar inom 24 timmar', 'Four details · Reply within 24 hours', 'Cztery informacje · Odpowiedź w 24 godziny')}
                     </p>
 
-                    {/* Steg 1: ort + antal — inputs förblir monterade (dolda) i steg 2 så
-                        FormData behåller värdena; required släpps då display:none-fält
-                        annars blockerar submit ("not focusable") */}
-                    <div className={step === 1 ? 'space-y-3 md:space-y-4' : 'hidden'}>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <Label htmlFor="ff-city" className={labelClass}>
-                            {t('Ort', 'City', 'Miejscowość')}
-                          </Label>
-                          <Input
-                            id="ff-city"
-                            name="city"
-                            type="text"
-                            required={step === 1}
-                            className={inputClass}
-                            placeholder={t('t.ex. Luleå', 'e.g. Luleå', 'np. Luleå')}
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="ff-people" className={labelClass}>
-                            {t('Antal personer', 'People', 'Osoby')}
-                          </Label>
-                          <Input
-                            id="ff-people"
-                            name="people"
-                            type="number"
-                            required={step === 1}
-                            min={1}
-                            inputMode="numeric"
-                            className={inputClass}
-                            placeholder={t('t.ex. 10', 'e.g. 10', 'np. 10')}
-                          />
-                        </div>
-                      </div>
-
-                      <Button
-                        type="button"
-                        onClick={handleNext}
-                        className="w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-13 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
-                      >
-                        <span>{t('Nästa', 'Next', 'Dalej')}</span>
-                        <ArrowRight size={18} />
-                      </Button>
-                    </div>
-
-                    {/* Steg 2: företag + kontaktuppgifter */}
-                    <div className={step === 2 ? 'space-y-3 md:space-y-4' : 'hidden'}>
+                    <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label htmlFor="ff-company" className={labelClass}>
-                          {t('Företag', 'Company', 'Firma')}
+                        <Label htmlFor="ff-city" className={labelClass}>
+                          {t('Ort', 'City', 'Miejscowość')}
                         </Label>
                         <Input
-                          id="ff-company"
-                          name="company"
+                          id="ff-city"
+                          name="city"
                           type="text"
-                          required={step === 2}
-                          autoComplete="organization"
+                          required
+                          autoComplete="address-level2"
                           className={inputClass}
-                          placeholder={t('Ert företag AB', 'Your company Ltd', 'Twoja firma Sp. z o.o.')}
+                          placeholder={t('t.ex. Luleå', 'e.g. Luleå', 'np. Luleå')}
                         />
                       </div>
-
-                      {/* Email */}
                       <div className="space-y-1.5">
-                        <Label htmlFor="ff-email" className={labelClass}>
-                          {t('E-post', 'Email', 'E-mail')}
+                        <Label htmlFor="ff-people" className={labelClass}>
+                          {t('Antal personer', 'People', 'Osoby')}
                         </Label>
                         <Input
-                          id="ff-email"
-                          name="email"
-                          type="email"
-                          required={step === 2}
-                          autoComplete="email"
-                          inputMode="email"
+                          id="ff-people"
+                          name="people"
+                          type="number"
+                          required
+                          min={1}
+                          max={9999}
+                          inputMode="numeric"
                           className={inputClass}
-                          placeholder={t('namn@foretag.se', 'name@company.com', 'nazwa@firma.pl')}
+                          placeholder={t('t.ex. 10', 'e.g. 10', 'np. 10')}
                         />
                       </div>
-
-                      {/* Phone (valfritt) */}
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ff-phone" className={labelClass}>
-                          {t('Telefon (valfritt)', 'Phone (optional)', 'Telefon (opcjonalnie)')}
-                        </Label>
-                        <Input
-                          id="ff-phone"
-                          name="phone"
-                          type="tel"
-                          autoComplete="tel"
-                          inputMode="tel"
-                          aria-invalid={Boolean(phoneError)}
-                          aria-describedby={phoneError ? 'ff-phone-error' : undefined}
-                          onChange={() => phoneError && setPhoneError('')}
-                          className={`${inputClass} ${phoneError ? 'ring-2 ring-red-400' : ''}`}
-                          placeholder="070-123 45 67"
-                        />
-                        {phoneError && (
-                          <p id="ff-phone-error" className="text-xs text-red-400">
-                            {phoneError}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Submit */}
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-13 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
-                      >
-                        {isSubmitting ? (
-                          <div className="flex items-center gap-3">
-                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
-                            <span>{t('Skickar...', 'Sending...', 'Wysyłanie...')}</span>
-                          </div>
-                        ) : (
-                          <>
-                            <span>{t('Få offert inom 24h', 'Get quote within 24h', 'Otrzymaj ofertę w 24h')}</span>
-                            <Send size={18} />
-                          </>
-                        )}
-                      </Button>
-
-                      <p className="text-xs text-white/60 text-center">
-                        {t('Ingen bindning · Svar inom 24 timmar', 'No commitment · Reply within 24 hours', 'Bez zobowiązań · Odpowiedź w ciągu 24 godzin')}
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() => setStep(1)}
-                        className="flex items-center gap-1 mx-auto text-xs text-white/50 hover:text-white/80 transition-colors"
-                      >
-                        <ArrowLeft size={12} />
-                        {t('Tillbaka', 'Back', 'Wstecz')}
-                      </button>
                     </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="ff-company" className={labelClass}>
+                        {t('Företag', 'Company', 'Firma')}
+                      </Label>
+                      <Input
+                        id="ff-company"
+                        name="company"
+                        type="text"
+                        required
+                        autoComplete="organization"
+                        className={inputClass}
+                        placeholder={t('Ert företag AB', 'Your company Ltd', 'Twoja firma Sp. z o.o.')}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="ff-email" className={labelClass}>
+                        {t('E-post', 'Email', 'E-mail')}
+                      </Label>
+                      <Input
+                        id="ff-email"
+                        name="email"
+                        type="email"
+                        required
+                        autoComplete="email"
+                        inputMode="email"
+                        aria-invalid={Boolean(emailError)}
+                        aria-describedby={emailError ? 'ff-email-error' : undefined}
+                        onChange={() => emailError && setEmailError('')}
+                        className={`${inputClass} ${emailError ? 'ring-2 ring-red-400' : ''}`}
+                        placeholder={t('namn@foretag.se', 'name@company.com', 'nazwa@firma.pl')}
+                      />
+                      {emailError && (
+                        <p id="ff-email-error" role="alert" className="text-xs text-red-300">
+                          {emailError}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="ff-phone" className={labelClass}>
+                        {t('Telefon (valfritt)', 'Phone (optional)', 'Telefon (opcjonalnie)')}
+                      </Label>
+                      <Input
+                        id="ff-phone"
+                        name="phone"
+                        type="tel"
+                        autoComplete="tel"
+                        inputMode="tel"
+                        aria-invalid={Boolean(phoneError)}
+                        aria-describedby={phoneError ? 'ff-phone-error' : undefined}
+                        onChange={() => phoneError && setPhoneError('')}
+                        className={`${inputClass} ${phoneError ? 'ring-2 ring-red-400' : ''}`}
+                        placeholder="070-123 45 67"
+                      />
+                      {phoneError && (
+                        <p id="ff-phone-error" role="alert" className="text-xs text-red-300">
+                          {phoneError}
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="touch-manipulation w-full rounded-full bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-lg hover:shadow-accent/30 text-white font-bold h-12 md:h-14 text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-2"
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center gap-3">
+                          <svg aria-hidden="true" className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          <span>{t('Skickar...', 'Sending...', 'Wysyłanie...')}</span>
+                        </div>
+                      ) : (
+                        <>
+                          <span>{t('Få offert inom 24h', 'Get quote within 24h', 'Otrzymaj ofertę w 24h')}</span>
+                          <Send aria-hidden="true" size={18} />
+                        </>
+                      )}
+                    </Button>
+
+                    <p className="text-xs text-white/60 text-center">
+                      {t('Ingen bindning · Svar inom 24 timmar', 'No commitment · Reply within 24 hours', 'Bez zobowiązań · Odpowiedź w ciągu 24 godzin')}
+                    </p>
                   </form>
                 </>
               )}
