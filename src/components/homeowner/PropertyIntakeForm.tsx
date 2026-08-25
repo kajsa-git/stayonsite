@@ -58,6 +58,9 @@ type IntakeFormState = {
 
 type FieldErrors = Partial<Record<keyof IntakeFormState | "images", string>>;
 
+const MAX_IMAGE_COUNT = 10;
+const MAX_UPLOAD_IMAGE_BYTES = 4 * 1024 * 1024;
+
 const steps = [
   { title: "Kontakt", eyebrow: "1" },
   { title: "Adress", eyebrow: "2" },
@@ -321,7 +324,7 @@ export function PropertyIntakeForm() {
     if (targetStep === 5) {
       if (!form.consent) next.consent = "Godkänn att vi kontaktar dig om bostaden.";
       const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
-      if (files.length > 10) next.images = "Ladda upp max 10 bilder.";
+      if (files.length > MAX_IMAGE_COUNT) next.images = "Ladda upp max 10 bilder.";
       if (totalBytes > 60 * 1024 * 1024) next.images = "Bilderna får tillsammans vara max 60 MB.";
     }
     return next;
@@ -348,7 +351,7 @@ export function PropertyIntakeForm() {
 
   function onFilesChange(event: ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files ?? []);
-    setFiles((current) => [...current, ...selected].slice(0, 10));
+    setFiles((current) => [...current, ...selected].slice(0, MAX_IMAGE_COUNT));
     setErrors((current) => ({ ...current, images: undefined }));
   }
 
@@ -403,6 +406,52 @@ export function PropertyIntakeForm() {
     };
   }
 
+  async function uploadImages(propertyId: string, token: string | null) {
+    if (!files.length) return { imageCount: 0, imageErrors: [] as string[] };
+    if (!token) {
+      return {
+        imageCount: 0,
+        imageErrors: ["Bilderna kunde inte laddas upp automatiskt eftersom uppladdningslänken saknades."],
+      };
+    }
+
+    let imageCount = 0;
+    const imageErrors: string[] = [];
+    for (const [index, raw] of files.entries()) {
+      try {
+        const file = await compressImage(raw, { maxDim: 1400, quality: 0.72 });
+        if (file.size > MAX_UPLOAD_IMAGE_BYTES) {
+          imageErrors.push(`${raw.name || `bild ${index + 1}`}: bilden är för stor efter komprimering`);
+          continue;
+        }
+        const body = new FormData();
+        body.append("file", file);
+        body.append("sortOrder", String(index));
+        const response = await fetch(`/api/share/${token}/properties/${propertyId}/images`, { method: "POST", body });
+        if (!response.ok) {
+          const result = await response.json().catch(() => null) as { error?: string } | null;
+          imageErrors.push(`${raw.name || `bild ${index + 1}`}: ${result?.error ?? `uppladdning misslyckades (${response.status})`}`);
+          continue;
+        }
+        imageCount += 1;
+      } catch {
+        imageErrors.push(`${raw.name || `bild ${index + 1}`}: nätverksfel vid uppladdning`);
+      }
+    }
+
+    try {
+      await fetch(`/api/share/${token}/properties/${propertyId}/images`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ created: imageCount, failed: imageErrors.length }),
+      });
+    } catch {
+      // Bildsummeringen är bara intern CRM-hjälp; själva intaget är redan sparat.
+    }
+
+    return { imageCount, imageErrors };
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const allErrors = collectAllErrors();
@@ -417,10 +466,6 @@ export function PropertyIntakeForm() {
     try {
       const body = new FormData();
       body.append("payload", JSON.stringify(payload()));
-      // Alla bilder går i SAMMA request (Vercel-tak ~4,5 MB totalt) — komprimera
-      // hårdare här än i CRM:et så även 10 mobilfoton ryms tillsammans.
-      const compressed = await Promise.all(files.map((file) => compressImage(file, { maxDim: 1600, quality: 0.78 })));
-      compressed.forEach((file) => body.append("images", file));
       const response = await fetch("/api/crm/property-intake", { method: "POST", body });
       const result = await response.json().catch(() => null) as {
         success?: boolean;
@@ -435,10 +480,11 @@ export function PropertyIntakeForm() {
         throw new Error(result?.error ?? "property_intake_failed");
       }
 
+      const uploaded = await uploadImages(result.propertyId, result.agreement?.token ?? null);
       setSuccess({
         propertyId: result.propertyId,
-        imageCount: result.imageCount ?? 0,
-        imageErrors: result.imageErrors ?? [],
+        imageCount: (result.imageCount ?? 0) + uploaded.imageCount,
+        imageErrors: [...(result.imageErrors ?? []), ...uploaded.imageErrors],
         agreement: result.agreement ?? null,
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
