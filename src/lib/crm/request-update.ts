@@ -44,7 +44,6 @@ export async function applyRequestUpdate(
     indexRequest?: (id: string) => Promise<unknown>;
     indexProperty?: (id: string) => Promise<unknown>;
     revokeLinksForRequest?: (id: string) => Promise<unknown>;
-    createInvoiceDraft?: (id: string, merged: Request) => Promise<Partial<Request>>;
   },
 ): Promise<RequestUpdateResult> {
   const db = opts?.db ?? defaultDb;
@@ -81,21 +80,6 @@ export async function applyRequestUpdate(
     };
   }
 
-  let invoicePatch: Partial<Request> = {};
-  if (data.status === "invoiced" && opts?.createInvoiceDraft) {
-    try {
-      invoicePatch = await opts.createInvoiceDraft(id, merged as Request);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Kunde inte skapa fakturautkast i Fortnox.";
-      const status = typeof (e as { status?: unknown })?.status === "number" ? (e as { status: number }).status : 502;
-      return {
-        ok: false,
-        status,
-        body: { error: "fortnox_invoice_failed", message },
-      };
-    }
-  }
-
   // En in-/avflytt får bara klarmarkeras när hela checklistan är avbockad.
   if (data.moveInDoneAt && !isMoveInChecklistComplete(merged.moveInChecklist)) {
     return {
@@ -115,7 +99,7 @@ export async function applyRequestUpdate(
   const now = new Date().toISOString();
   const [row] = await db
     .update(requests)
-    .set({ ...data, ...invoicePatch, updatedAt: now, ...(data.status ? { statusChangedAt: now } : {}) })
+    .set({ ...data, updatedAt: now, ...(data.status ? { statusChangedAt: now } : {}) })
     .where(eq(requests.id, id))
     .returning();
 

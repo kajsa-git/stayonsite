@@ -156,24 +156,6 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
           />
           <Field label="Projekt-id faktura" value={request.billingProjectId ?? request.requestNumber?.toString()} />
           <Field label="Avtal" value={contractStatus} />
-          {request.fortnoxInvoiceNumber && (
-            <div>
-              <span className="text-xs text-muted-foreground">Fortnox: </span>
-              {request.fortnoxInvoiceUrl ? (
-                <a
-                  href={request.fortnoxInvoiceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-primary-700 underline-offset-2 hover:underline"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Faktura {request.fortnoxInvoiceNumber}
-                </a>
-              ) : (
-                <span className="text-sm">Faktura {request.fortnoxInvoiceNumber}</span>
-              )}
-            </div>
-          )}
           {request.lostReason && <Field label="Anledning" value={request.lostReason} />}
           {request.notes && (
             <div className="col-span-2">

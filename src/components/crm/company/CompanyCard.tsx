@@ -157,16 +157,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
       toast({ title: err?.message ?? "Kunde inte uppdatera status", variant: "destructive" });
       throw new Error(err?.error ?? "status_update_failed");
     }
-    const updated = await res.json().catch(() => null);
+    await res.json().catch(() => null);
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
     toast({
-      title:
-        status === "invoiced" && updated?.fortnoxInvoiceNumber
-          ? `Fakturautkast ${updated.fortnoxInvoiceNumber} skapat`
-          : status
-            ? "Status uppdaterad"
-            : "Sparat",
+      title: status ? "Status uppdaterad" : "Sparat",
     });
   }
 
