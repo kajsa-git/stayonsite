@@ -4,6 +4,7 @@ import { and, eq, gte, inArray, isNotNull, isNull, lte, or } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { addDaysYmd, todayStockholm } from "./date";
 import { db as defaultDb } from "./db";
+import { hasSignedMoveInContract } from "./move-checklists";
 import * as schema from "./schema";
 import { companies, inboxMessages, outboxMessages, ownerOutreach, requests } from "./schema";
 
@@ -12,6 +13,7 @@ type DB = LibSQLDatabase<typeof schema>;
 export interface QueueCounts {
   followUps: number;
   openWithoutFollowUp: number;
+  agreements: number;
   toInvoice: number;
   chaseLandlords: number;
   moveSchedule: number;
@@ -28,7 +30,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
   // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
   const horizon = addDaysYmd(today, 7);
 
-  const [followUps, openWithoutFollowUpRows, toInvoiceRows, chaseOwnerProps, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, wonRows, chaseOwnerProps, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
 
     // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL
@@ -43,9 +45,9 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
         ),
       ),
 
-    // Ska faktureras: företag med won-förfrågningar
+    // Avtal/Ska faktureras: won-förfrågningar delas på signerat skarpt avtal.
     db
-      .selectDistinct({ companyId: requests.companyId })
+      .select({ companyId: requests.companyId, moveInChecklist: requests.moveInChecklist })
       .from(requests)
       .where(eq(requests.status, "won")),
 
@@ -95,6 +97,13 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
   const chaseProps = new Set<string>();
   for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
 
+  const agreementCompanies = new Set<string>();
+  const toInvoiceCompanies = new Set<string>();
+  for (const r of wonRows) {
+    if (hasSignedMoveInContract(r.moveInChecklist)) toInvoiceCompanies.add(r.companyId);
+    else agreementCompanies.add(r.companyId);
+  }
+
   // Ohanterade in-/avflyttningar inom 3 dagar (förfallna räknas också): ej klarmarkerade.
   let moveSchedule = 0;
   for (const r of moveRows) {
@@ -105,7 +114,8 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
   return {
     followUps: followUps.length,
     openWithoutFollowUp: openWithoutFollowUpRows.length,
-    toInvoice: toInvoiceRows.length,
+    agreements: agreementCompanies.size,
+    toInvoice: toInvoiceCompanies.size,
     chaseLandlords: chaseProps.size,
     moveSchedule,
     replies: unreadReplies.length,

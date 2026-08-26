@@ -6,6 +6,7 @@ import { swrFetcher } from "@/lib/crm/fetcher";
 interface QueueCounts {
   followUps: number;
   openWithoutFollowUp: number;
+  agreements: number;
   toInvoice: number;
   chaseLandlords: number;
   moveSchedule: number;
@@ -19,7 +20,7 @@ export function useQueueCounts() {
   });
 
   return {
-    counts: data ?? { followUps: 0, openWithoutFollowUp: 0, toInvoice: 0, chaseLandlords: 0, moveSchedule: 0 },
+    counts: data ?? { followUps: 0, openWithoutFollowUp: 0, agreements: 0, toInvoice: 0, chaseLandlords: 0, moveSchedule: 0 },
     isLoading: !data && !error,
   };
 }

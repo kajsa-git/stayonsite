@@ -6,6 +6,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { db as defaultDb } from "./db";
 import {
   hasValidInvoiceDates,
+  hasSignedMoveInContract,
   isMoveInChecklistComplete,
   isMoveOutChecklistComplete,
 } from "./move-checklists";
@@ -43,6 +44,7 @@ export async function applyRequestUpdate(
     indexRequest?: (id: string) => Promise<unknown>;
     indexProperty?: (id: string) => Promise<unknown>;
     revokeLinksForRequest?: (id: string) => Promise<unknown>;
+    createInvoiceDraft?: (id: string, merged: Request) => Promise<Partial<Request>>;
   },
 ): Promise<RequestUpdateResult> {
   const db = opts?.db ?? defaultDb;
@@ -62,13 +64,36 @@ export async function applyRequestUpdate(
   if (!existing) return { ok: false, status: 404, body: { error: "Not found" } };
   const merged = { ...existing, ...data };
 
-  // Hård grind: fakturering kräver startdatum + (slutdatum ELLER löpande).
+  // Hård grind: fakturering kräver period + signerat skarpt avtal.
   if (data.status === "invoiced" && !hasValidInvoiceDates(merged)) {
     return {
       ok: false,
       status: 400,
       body: { error: "missing_dates", message: "Ange inflytt- och utflyttsdatum (eller löpande) innan fakturering." },
     };
+  }
+
+  if (data.status === "invoiced" && !hasSignedMoveInContract(merged.moveInChecklist)) {
+    return {
+      ok: false,
+      status: 400,
+      body: { error: "missing_contract", message: "Markera signerat avtal innan fakturering." },
+    };
+  }
+
+  let invoicePatch: Partial<Request> = {};
+  if (data.status === "invoiced" && opts?.createInvoiceDraft) {
+    try {
+      invoicePatch = await opts.createInvoiceDraft(id, merged as Request);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Kunde inte skapa fakturautkast i Fortnox.";
+      const status = typeof (e as { status?: unknown })?.status === "number" ? (e as { status: number }).status : 502;
+      return {
+        ok: false,
+        status,
+        body: { error: "fortnox_invoice_failed", message },
+      };
+    }
   }
 
   // En in-/avflytt får bara klarmarkeras när hela checklistan är avbockad.
@@ -90,7 +115,7 @@ export async function applyRequestUpdate(
   const now = new Date().toISOString();
   const [row] = await db
     .update(requests)
-    .set({ ...data, updatedAt: now, ...(data.status ? { statusChangedAt: now } : {}) })
+    .set({ ...data, ...invoicePatch, updatedAt: now, ...(data.status ? { statusChangedAt: now } : {}) })
     .where(eq(requests.id, id))
     .returning();
 

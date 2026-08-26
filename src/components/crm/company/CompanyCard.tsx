@@ -145,20 +145,29 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     }
   }
 
-  async function handleStatusChange(requestId: string, status: string, extra?: Record<string, unknown>) {
+  async function handleStatusChange(requestId: string, status: string | null, extra?: Record<string, unknown>) {
+    const body = status ? { status, ...extra } : { ...extra };
     const res = await fetch(`/api/crm/requests/${requestId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, ...extra }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => null);
       toast({ title: err?.message ?? "Kunde inte uppdatera status", variant: "destructive" });
       throw new Error(err?.error ?? "status_update_failed");
     }
+    const updated = await res.json().catch(() => null);
     mutate();
     router.refresh(); // re-fetch server-rendered queue list in work mode
-    toast({ title: "Status uppdaterad" });
+    toast({
+      title:
+        status === "invoiced" && updated?.fortnoxInvoiceNumber
+          ? `Fakturautkast ${updated.fortnoxInvoiceNumber} skapat`
+          : status
+            ? "Status uppdaterad"
+            : "Sparat",
+    });
   }
 
   async function handleRating(rating: number | null) {
@@ -294,7 +303,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         import("canvas-confetti").then((mod) =>
           mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ff6300", "#ffd700", "#22c55e", "#3b82f6"] }),
         );
-        toast({ title: "🎉 Ska faktureras!" });
+        toast({ title: "🎉 Vunnen — avtal nästa!" });
         setFollowUpPrompt("won");
       }
     } finally {
@@ -405,9 +414,9 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
                 onClick={handleBulkWon}
                 disabled={quickBusy}
                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-green-300 bg-green-600 px-3 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-40"
-                title="Markera alla aktiva förfrågningar som ska faktureras"
+                title="Markera alla aktiva förfrågningar som vunna och flytta dem till Avtal"
               >
-                ✓ Ska faktureras
+                ✓ Till avtal
               </button>
             )}
             {hasOpenRequests && (
@@ -493,7 +502,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         >
           <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-base font-semibold text-nordic-900">
-              {followUpPrompt === "won" ? "Markerat för fakturering ✓" : "Förfrågningarna är stängda"}
+              {followUpPrompt === "won" ? "Flyttat till avtal ✓" : "Förfrågningarna är stängda"}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {company.followUpDate

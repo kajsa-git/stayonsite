@@ -22,7 +22,7 @@ export type SearchEntityType = "company" | "contact" | "request" | "property" | 
 const REQUEST_STATUS_SV: Record<string, string> = {
   incoming: "inkommen ny förfrågan",
   matching: "matchar pågående",
-  won: "vunnen att fakturera",
+  won: "vunnen avtal fakturera",
   invoiced: "fakturerad",
   lost: "förlorad nej tack",
   archived: "arkiverad",

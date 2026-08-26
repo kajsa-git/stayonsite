@@ -13,7 +13,7 @@ interface Props {
   onEditRequest?: (request: Request) => void;
   onSelectRequest?: (id: string) => void;
   onMatch?: (id: string) => void;
-  onStatusChange?: (requestId: string, status: string, extra?: Record<string, unknown>) => Promise<void>;
+  onStatusChange?: (requestId: string, status: string | null, extra?: Record<string, unknown>) => Promise<void>;
 }
 
 const OPEN_STATUSES = ["incoming", "matching", "won"];

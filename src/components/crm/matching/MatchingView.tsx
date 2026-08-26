@@ -279,7 +279,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       if (!res.ok) throw new Error(`${url} → ${res.status}`);
     };
     try {
-      // Förfrågan blir won (Att fakturera) med valt objekt + värde FÖRST — om detta
+      // Förfrågan blir won (Avtal) med valt objekt + värde FÖRST — om detta
       // kärnsteg fallerar avbryts hela kaskaden innan något förslag stängts.
       await patch(`/api/crm/requests/${request.id}`, {
         status: "won",
@@ -300,7 +300,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       setConfirmAccept(null);
       mutateMatches();
       router.refresh();
-      toast({ title: "Affären flyttad till att fakturera" });
+      toast({ title: "Affären flyttad till Avtal" });
     } catch (err) {
       setAcceptError(
         "Något gick fel när affären skulle stängas. Kontrollera förslagens status nedan och försök igen."
@@ -915,7 +915,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Affären flyttas till <strong>Att fakturera</strong>.
+            Affären flyttas till <strong>Avtal</strong>.
             {(() => {
               const others = matches.filter((x) => x.id !== confirmAccept?.id && x.status !== "accepted" && x.status !== "rejected").length;
               return others > 0

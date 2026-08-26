@@ -1,6 +1,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
+import { hasSignedMoveInContract } from "@/lib/crm/move-checklists";
 import { companies, contacts, inboxMessages, matches, owners, ownerOutreach, properties, requests } from "@/lib/crm/schema";
 import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -14,6 +15,7 @@ const openRequestSelect = {
   companyId: requests.companyId,
   city: requests.city,
   status: requests.status,
+  moveInChecklist: requests.moveInChecklist,
 };
 
 export async function GET() {
@@ -37,7 +39,8 @@ export async function GET() {
       .from(requests)
       .where(inArray(requests.status, [...ACTIVE_STATUSES])),
 
-    // Ska faktureras: distinkta företag med won-förfrågningar
+    // Avtal/Ska faktureras: distinkta företag med won-förfrågningar.
+    // De delas efteråt beroende på om det skarpa avtalet är signerat.
     db
       .selectDistinct({ companyId: requests.companyId })
       .from(requests)
@@ -105,24 +108,24 @@ export async function GET() {
     .map((r) => r.companyId)
     .filter((id) => !followUpIds.has(id));
 
-  // Ska faktureras: alla företag med won-förfrågningar
-  const toInvoiceIds = wonRequestRows.map((r) => r.companyId).filter((id, i, a) => a.indexOf(id) === i);
+  // Avtal/Ska faktureras: alla företag med won-förfrågningar.
+  const wonCompanyIds = wonRequestRows.map((r) => r.companyId).filter((id, i, a) => a.indexOf(id) === i);
 
   // Alla relevanta company-IDs för request-hämtning
-  const allRelevantIds = [...new Set([...followUpIds, ...openWithoutFollowUpIds, ...toInvoiceIds])];
+  const allRelevantIds = [...new Set([...followUpIds, ...openWithoutFollowUpIds, ...wonCompanyIds])];
 
   const renewalCompanyIds = [...new Set(renewalRows.map((r) => r.companyId))];
 
   // Wave 2: företagsdata + öppna förfrågningar för alla relevanta företag
-  const [openWithoutFollowUpCompanies, toInvoiceCompanies, allOpenRequests, renewalCompanies, renewalContacts] = await Promise.all([
+  const [openWithoutFollowUpCompanies, wonCompanies, allOpenRequests, renewalCompanies, renewalContacts] = await Promise.all([
     openWithoutFollowUpIds.length
       ? db.select().from(companies).where(and(
           inArray(companies.id, openWithoutFollowUpIds),
           isNull(companies.followUpDate),
         )).orderBy(asc(companies.updatedAt))
       : Promise.resolve([]),
-    toInvoiceIds.length
-      ? db.select().from(companies).where(inArray(companies.id, toInvoiceIds)).orderBy(asc(companies.updatedAt))
+    wonCompanyIds.length
+      ? db.select().from(companies).where(inArray(companies.id, wonCompanyIds)).orderBy(asc(companies.updatedAt))
       : Promise.resolve([]),
     allRelevantIds.length
       ? db
@@ -158,7 +161,22 @@ export async function GET() {
 
   const followUps = followUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
   const openWithoutFollowUp = openWithoutFollowUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
-  const toInvoice = toInvoiceCompanies.map((c) => ({ ...c, openRequests: (reqsByCompany.get(c.id) ?? []).filter((r) => r.status === "won") }));
+  const agreements = wonCompanies
+    .map((c) => ({
+      ...c,
+      openRequests: (reqsByCompany.get(c.id) ?? []).filter(
+        (r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist),
+      ),
+    }))
+    .filter((c) => c.openRequests.length > 0);
+  const toInvoice = wonCompanies
+    .map((c) => ({
+      ...c,
+      openRequests: (reqsByCompany.get(c.id) ?? []).filter(
+        (r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist),
+      ),
+    }))
+    .filter((c) => c.openRequests.length > 0);
 
   // Dedupa chase-rader per objekt
   type Acc = {
@@ -224,5 +242,5 @@ export async function GET() {
       contactPhone: primaryContactByCompany.get(r.companyId)?.phone ?? null,
     }));
 
-  return NextResponse.json({ followUps, openWithoutFollowUp, toInvoice, chaseLandlords, renewals });
+  return NextResponse.json({ followUps, openWithoutFollowUp, agreements, toInvoice, chaseLandlords, renewals });
 }

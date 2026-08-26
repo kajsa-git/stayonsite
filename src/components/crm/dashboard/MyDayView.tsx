@@ -5,7 +5,7 @@ import { sv } from "date-fns/locale";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, LogIn, LogOut, X } from "lucide-react";
+import { ArrowRight, FileSignature, LogIn, LogOut, Send, X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
@@ -13,6 +13,12 @@ import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
+import {
+  hasMoveInContractSent,
+  hasSignedMoveInContract,
+  withMoveInContractSent,
+  withSignedMoveInContract,
+} from "@/lib/crm/move-checklists";
 import { ownerFollowUpSms } from "@/lib/crm/sms-templates";
 import { crmFetchJson } from "@/lib/crm/fetcher";
 import { DraftsPanel } from "./DraftsPanel";
@@ -65,9 +71,10 @@ const CHASE_TOAST: Record<string, string> = {
 const STEPS = [
   { emoji: "💬", title: "Svar", text: "Inkomna SMS från uthyrare och kunder, automatiskt inlästa. Svarar en uthyrare ja på publicering kan du publicera och skicka länken med ett klick." },
   { emoji: "🔁", title: "Förlängningar", text: "Pågående uthyrningar som snart når sitt slutdatum. Fråga kunden om förlängning innan avtalet rinner ut — färdigt SMS finns." },
-  { emoji: "📞", title: "Återkomster", text: "Företag du bokat att höra av dig till idag — skälet står på kortet. Avsluta alltid med ett beslut: ny återkomst, fakturering eller nej." },
+  { emoji: "📞", title: "Återkomster", text: "Företag du bokat att höra av dig till idag — skälet står på kortet. Avsluta alltid med ett beslut: ny återkomst, avtal/fakturering eller nej." },
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiv förfrågan men ingen bokad återkomst — utan datum glöms de bort. Boka en återkomst så flyttas de till Återkomster." },
-  { emoji: "🧾", title: "Ska faktureras", text: "Affärer där kunden tackat ja. Skicka fakturan och markera som fakturerad — då är affären i hamn." },
+  { emoji: "📝", title: "Avtal", text: "Affärer där kunden tackat ja men det skarpa avtalet återstår. Markera skickat och sedan signerat — då flyttas affären vidare." },
+  { emoji: "🧾", title: "Ska faktureras", text: "Affärer med signerat avtal. Skicka fakturan och markera som fakturerad — då är affären i hamn." },
   { emoji: "☎️", title: "Följ upp uthyrare", text: "Uthyrare (husägare med bostäder) som vi väntar på något ifrån — bilder, pris, ok att publicera eller signerat uppdragsavtal. Kortet visar vad som väntas; ring eller SMS:a och bocka av." },
   { emoji: "✉️", title: "Utkast", text: "Sparade meddelanden som aldrig skickades — skicka eller släng dem." },
 ];
@@ -149,6 +156,7 @@ interface OpenRequest {
   companyId: string;
   city?: string | null;
   status: string;
+  moveInChecklist?: string[] | null;
 }
 
 interface CompanyCard {
@@ -174,6 +182,7 @@ interface ChaseRow {
 interface QueueData {
   followUps: CompanyCard[];
   openWithoutFollowUp: CompanyCard[];
+  agreements: CompanyCard[];
   toInvoice: CompanyCard[];
   chaseLandlords: ChaseRow[];
   renewals: RenewalRow[];
@@ -215,7 +224,7 @@ export function MyDayView() {
   }
 
   const { data, mutate, isLoading, error } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
-  const queues = data ?? { followUps: [], openWithoutFollowUp: [], toInvoice: [], chaseLandlords: [], renewals: [] };
+  const queues = data ?? { followUps: [], openWithoutFollowUp: [], agreements: [], toInvoice: [], chaseLandlords: [], renewals: [] };
   const loading = isLoading && !data;
 
   // Flytt-flagga: in-/avflyttningar på gång den närmaste veckan (≤ 7 dagar, samma räknare som fliken).
@@ -337,7 +346,7 @@ export function MyDayView() {
       return;
     }
     fireConfetti();
-    toast({ title: active.length === 1 ? "🎉 Ska faktureras!" : `🎉 ${active.length} förfrågningar — ska faktureras!` });
+    toast({ title: active.length === 1 ? "🎉 Vunnen — avtal nästa!" : `🎉 ${active.length} förfrågningar — avtal nästa!` });
   }
 
   async function markLost(requests: OpenRequest[], reason: string) {
@@ -360,8 +369,50 @@ export function MyDayView() {
     toast({ title: requests.length === 1 ? "Förfrågan stängd" : `${requests.length} förfrågningar stängda` });
   }
 
+  async function markContractSent(requests: OpenRequest[]) {
+    const won = requests.filter((r) => r.status === "won" && !hasMoveInContractSent(r.moveInChecklist));
+    if (!won.length) return;
+    const results = await Promise.all(
+      won.map((r) =>
+        fetch(`/api/crm/requests/${r.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ moveInChecklist: withMoveInContractSent(r.moveInChecklist) }),
+        }).catch(() => ({ ok: false }) as Response),
+      ),
+    );
+    mutate();
+    const failed = results.filter((res) => !res.ok).length;
+    if (failed) {
+      toast({ title: `${failed} av ${won.length} kunde inte markeras`, variant: "destructive" });
+      return;
+    }
+    toast({ title: won.length === 1 ? "Avtal markerat skickat" : `${won.length} avtal markerade skickade` });
+  }
+
+  async function markContractSigned(requests: OpenRequest[]) {
+    const won = requests.filter((r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist));
+    if (!won.length) return;
+    const results = await Promise.all(
+      won.map((r) =>
+        fetch(`/api/crm/requests/${r.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ moveInChecklist: withSignedMoveInContract(r.moveInChecklist) }),
+        }).catch(() => ({ ok: false }) as Response),
+      ),
+    );
+    mutate();
+    const failed = results.filter((res) => !res.ok).length;
+    if (failed) {
+      toast({ title: `${failed} av ${won.length} kunde inte markeras`, variant: "destructive" });
+      return;
+    }
+    toast({ title: won.length === 1 ? "Signerat avtal — ska faktureras" : `${won.length} signerade avtal — ska faktureras` });
+  }
+
   async function markInvoiced(requests: OpenRequest[]) {
-    const won = requests.filter((r) => r.status === "won");
+    const won = requests.filter((r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist));
     if (!won.length) return;
     const results = await Promise.all(
       won.map((r) =>
@@ -388,7 +439,7 @@ export function MyDayView() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-[1600px] mx-auto p-6">
       <div className="mb-6 flex items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-nordic-900">Min dag</h1>
@@ -499,8 +550,8 @@ export function MyDayView() {
       )}
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, c) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+          {Array.from({ length: 5 }).map((_, c) => (
             <div key={c}>
               <div className="h-4 w-32 rounded bg-nordic-100 animate-pulse mb-3" />
               <div className="space-y-2">
@@ -515,7 +566,7 @@ export function MyDayView() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
           <QueueSection
             title="Återkomster"
             emoji="📞"
@@ -563,6 +614,30 @@ export function MyDayView() {
           />
 
           <QueueSection
+            title="Avtal"
+            emoji="📝"
+            items={queues.agreements}
+            emptyText="Inga avtal att hantera"
+            renderItem={(item) => (
+              <CompanyDayCard
+                key={item.id}
+                item={item}
+                today={today}
+                variant="agreement"
+                onOpen={() => {
+                  const req = item.openRequests.find((r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist));
+                  router.push(`/crm/work/agreement/${item.id}${req ? `?request=${req.id}` : ""}`);
+                }}
+                onSnooze={(days) => snoozeFollowUp(item.id, days)}
+                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
+                onMarkContractSent={() => markContractSent(item.openRequests)}
+                onMarkContractSigned={() => markContractSigned(item.openRequests)}
+                onMarkLost={(reason) => markLost(item.openRequests, reason)}
+              />
+            )}
+          />
+
+          <QueueSection
             title="Ska faktureras"
             emoji="🧾"
             items={queues.toInvoice}
@@ -574,7 +649,7 @@ export function MyDayView() {
                 today={today}
                 variant="invoice"
                 onOpen={() => {
-                  const req = item.openRequests.find((r) => r.status === "won");
+                  const req = item.openRequests.find((r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist));
                   router.push(`/crm/work/won/${item.id}${req ? `?request=${req.id}` : ""}`);
                 }}
                 onSnooze={(days) => snoozeFollowUp(item.id, days)}
@@ -708,7 +783,7 @@ function QBtn({
 
 // ─── Universellt företagskort med snabbval ────────────────────────────────────
 
-type CardVariant = "followup" | "open" | "invoice";
+type CardVariant = "followup" | "open" | "agreement" | "invoice";
 
 function CompanyDayCard({
   item,
@@ -718,6 +793,8 @@ function CompanyDayCard({
   onSnooze,
   onSchedule,
   onMarkWon,
+  onMarkContractSent,
+  onMarkContractSigned,
   onMarkInvoiced,
   onMarkLost,
   onClearFollowUp,
@@ -729,6 +806,8 @@ function CompanyDayCard({
   onSnooze: (days: number) => void | Promise<void>;
   onSchedule: (date: string, time: string) => void | Promise<void>;
   onMarkWon?: () => void | Promise<void>;
+  onMarkContractSent?: () => void | Promise<void>;
+  onMarkContractSigned?: () => void | Promise<void>;
   onMarkInvoiced?: () => void | Promise<void>;
   onMarkLost: (reason: string) => void | Promise<void>;
   onClearFollowUp?: () => void | Promise<void>;
@@ -747,9 +826,12 @@ function CompanyDayCard({
     try { await fn(); } finally { setBusy(false); setAction(null); }
   }
 
-  const activeRequests = item.openRequests.filter((r) => r.status !== "won");
+  const activeRequests = item.openRequests.filter((r) => r.status === "incoming" || r.status === "matching");
   const hasActive = activeRequests.length > 0;
   const wonRequests = item.openRequests.filter((r) => r.status === "won");
+  const unsignedWonRequests = wonRequests.filter((r) => !hasSignedMoveInContract(r.moveInChecklist));
+  const hasUnsignedContract = unsignedWonRequests.length > 0;
+  const hasUnsentContract = unsignedWonRequests.some((r) => !hasMoveInContractSent(r.moveInChecklist));
 
   return (
     <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300" : "border-border"}`}>
@@ -781,6 +863,16 @@ function CompanyDayCard({
             {item.openRequests.map((r) => (
               <span key={r.id} className={`inline-block text-[11px] px-1.5 py-0.5 rounded ${STATUS_STYLE[r.status] ?? "bg-gray-100 text-gray-700"}`}>
                 {r.city ? `${r.city} · ` : ""}{STATUS_LABEL[r.status] ?? r.status}
+                {r.status === "won" && (
+                  <>
+                    {" · "}
+                    {hasSignedMoveInContract(r.moveInChecklist)
+                      ? "Avtal signerat"
+                      : hasMoveInContractSent(r.moveInChecklist)
+                        ? "Avtal skickat"
+                        : "Avtal ej skickat"}
+                  </>
+                )}
               </span>
             ))}
           </div>
@@ -799,8 +891,26 @@ function CompanyDayCard({
         )}
         {variant !== "invoice" && hasActive && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkWon?.(); })}>
-            ✓ Ska faktureras
+            ✓ Till avtal
           </QBtn>
+        )}
+        {variant === "agreement" && hasUnsignedContract && (
+          <>
+            {hasUnsentContract && (
+              <QBtn disabled={busy} onClick={() => run(async () => { await onMarkContractSent?.(); })}>
+                <span className="inline-flex items-center gap-1">
+                  <Send className="h-3 w-3" />
+                  Avtal skickat
+                </span>
+              </QBtn>
+            )}
+            <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkContractSigned?.(); })}>
+              <span className="inline-flex items-center gap-1">
+                <FileSignature className="h-3 w-3" />
+                Signerat avtal
+              </span>
+            </QBtn>
+          </>
         )}
         {variant === "invoice" && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkInvoiced?.(); })}>

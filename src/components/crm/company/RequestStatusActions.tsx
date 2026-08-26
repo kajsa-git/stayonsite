@@ -16,14 +16,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Request } from "@/lib/crm/schema";
-import { hasValidInvoiceDates } from "@/lib/crm/move-checklists";
+import {
+  hasMoveInContractSent,
+  hasSignedMoveInContract,
+  hasValidInvoiceDates,
+  withMoveInContractSent,
+  withSignedMoveInContract,
+} from "@/lib/crm/move-checklists";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
-import { Archive, Home, Receipt, X } from "lucide-react";
+import { Archive, FileSignature, Home, Receipt, Send, X } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
   request: Request & { matchCount?: number };
-  onStatusChange: (requestId: string, status: string, extra?: Record<string, unknown>) => Promise<void>;
+  onStatusChange: (requestId: string, status: string | null, extra?: Record<string, unknown>) => Promise<void>;
   onMatch: (requestId: string) => void;
 }
 
@@ -43,9 +49,11 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
   const isWon = request.status === "won";
   if (!isIncoming && !isMatching && !isWon) return null;
 
-  const wonMissingDates = isWon && !hasValidInvoiceDates(request);
+  const contractSent = hasMoveInContractSent(request.moveInChecklist);
+  const contractSigned = hasSignedMoveInContract(request.moveInChecklist);
+  const wonMissingDates = isWon && contractSigned && !hasValidInvoiceDates(request);
 
-  async function run(status: string, extra?: Record<string, unknown>) {
+  async function run(status: string | null, extra?: Record<string, unknown>) {
     setBusy(true);
     try {
       await onStatusChange(request.id, status, extra);
@@ -76,7 +84,29 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
           </button>
         )}
 
-        {isWon && (
+        {isWon && !contractSigned && !contractSent && (
+          <button
+            className={`${btn} border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100`}
+            onClick={() => run(null, { moveInChecklist: withMoveInContractSent(request.moveInChecklist) })}
+            disabled={busy}
+          >
+            <Send className="h-3.5 w-3.5" />
+            Avtal skickat
+          </button>
+        )}
+
+        {isWon && !contractSigned && (
+          <button
+            className={`${btn} border-green-300 bg-green-50 text-green-800 hover:bg-green-100`}
+            onClick={() => run(null, { moveInChecklist: withSignedMoveInContract(request.moveInChecklist) })}
+            disabled={busy}
+          >
+            <FileSignature className="h-3.5 w-3.5" />
+            Signerat avtal
+          </button>
+        )}
+
+        {isWon && contractSigned && (
           <button
             className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100`}
             onClick={() => {
@@ -111,6 +141,12 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
         </button>
       </div>
 
+      {isWon && !contractSigned && contractSent && (
+        <p className="mt-2 text-[11px] text-blue-700 bg-blue-50 border border-blue-200 rounded px-2 py-1">
+          Avtal är markerat skickat — väntar på signering innan fakturering.
+        </p>
+      )}
+
       {/* Mjuk varning vid Vunnen: påminn om datum (blockerar inte förrän fakturering) */}
       {wonMissingDates && (
         <p className="mt-2 text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
@@ -125,7 +161,7 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
             <DialogTitle>Fakturera förfrågan #{request.requestNumber}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Ange uppdragets period innan fakturering. Detta driver in- och avflyttningslistan.
+            Ange uppdragets period. CRM:t skapar ett fakturautkast i Fortnox och markerar sedan förfrågan som fakturerad.
           </p>
           <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="space-y-1">
@@ -170,7 +206,7 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
               disabled={busy || !invoiceDatesValid}
             >
               <Receipt className="h-3.5 w-3.5 mr-1.5" />
-              Markera fakturerad
+              Skapa utkast & markera fakturerad
             </Button>
           </DialogFooter>
         </DialogContent>

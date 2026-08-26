@@ -43,17 +43,18 @@ const SECTIONS = [
     steps: [
       "Acceptera på ett förslag när kunden sagt ja: affären blir Vunnen, objektet reserveras och andra kunders öppna förslag på samma objekt stängs automatiskt (deras länkar visar \"inte längre tillgängligt\").",
       "Månadsvärdet förifylls från det stämplade erbjudandepriset — det är det som faktureras.",
+      "Efter accept hamnar affären i Avtal. Markera först att avtalet är skickat om du vill, och markera sedan Signerat avtal — då flyttas affären till Ska faktureras.",
       "Fakturerad kräver inflyttningsdatum + utflyttningsdatum (eller löpande). In- och avflytt bockas av i checklistorna; klarmarkerad avflytt gör objektet tillgängligt igen.",
       "Tackar kunden nej: sätt Nej tack med anledning — kundlänken dör automatiskt.",
       "Förlängningsradarn flaggar vunna affärer som närmar sig slutdatum — förläng eller avfärda.",
-      "Nästa steg efter accept blir det skarpa kontraktet: genereras ur affärens stämplade villkor och signeras av båda parter via var sin länk (byggs härnäst — tills dess hanteras kontraktet som idag).",
+      "Ska faktureras betyder att avtalet är klart; systemet nekar fakturering om Signerat avtal inte är markerat.",
     ],
   },
   {
     id: "min-dag",
     title: "Min dag & köerna",
     steps: [
-      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Återkomster (kundåterkomster — inklusive de automatiska 'Väntar svar på erbjudande' som sätts när ett erbjudande skickas), Öppna uppdrag, Ska faktureras och Följ upp uthyrare (uthyrare vi väntar på något ifrån — bilder, pris, publicerings-ok eller signerat uppdragsavtal).",
+      "Min dag är startpunkten varje morgon: Svar (inkomna SMS), Återkomster (kundåterkomster — inklusive de automatiska 'Väntar svar på erbjudande' som sätts när ett erbjudande skickas), Öppna uppdrag, Avtal, Ska faktureras och Följ upp uthyrare (uthyrare vi väntar på något ifrån — bilder, pris, publicerings-ok eller signerat uppdragsavtal).",
       "Följ upp uthyrare innehåller BARA kontaktrundor (bilder, publicerings-ja, onboarding) — affärer bevakas inte där. Kunder bevakas via företagets återkomst; når du inte en uthyrare om ett förslag avböjer du förslaget.",
       "Arbetsläget (öppna en kö) går igenom ärendena ett i taget så inget hoppas över.",
       "Footern längst ner visar dagens köer var du än är — siffrorna är klickbara.",

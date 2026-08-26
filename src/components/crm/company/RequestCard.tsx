@@ -6,6 +6,7 @@ import { sv } from "date-fns/locale";
 import { Pencil } from "lucide-react";
 import { RequestStatusActions } from "./RequestStatusActions";
 import { REQUEST_STATUS_LABEL as STATUS_LABELS } from "@/lib/crm/request-status";
+import { hasMoveInContractSent, hasSignedMoveInContract } from "@/lib/crm/move-checklists";
 
 const STATUS_COLORS: Record<string, string> = {
   incoming: "bg-blue-50 border-blue-200 text-blue-800",
@@ -23,16 +24,25 @@ interface Props {
   onSelect?: (id: string) => void;
   onEdit?: (request: Request) => void;
   onMatch?: (id: string) => void;
-  onStatusChange?: (requestId: string, status: string, extra?: Record<string, unknown>) => Promise<void>;
+  onStatusChange?: (requestId: string, status: string | null, extra?: Record<string, unknown>) => Promise<void>;
 }
 
 export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMatch, onStatusChange }: Props) {
   const colorClass = STATUS_COLORS[request.status] ?? STATUS_COLORS.incoming;
+  const contractStatus =
+    request.status === "won"
+      ? hasSignedMoveInContract(request.moveInChecklist)
+        ? "Signerat"
+        : hasMoveInContractSent(request.moveInChecklist)
+          ? "Skickat"
+          : "Ej skickat"
+      : null;
 
   if (compact) {
     const summary = [
       [request.street, request.postalCode, request.city].filter(Boolean).join(" ") || request.addressQuery || request.city,
       request.monthlyValue ? `${request.monthlyValue.toLocaleString("sv-SE")} kr` : null,
+      contractStatus ? `Avtal: ${contractStatus.toLowerCase()}` : null,
       request.lostReason,
     ]
       .filter(Boolean)
@@ -145,6 +155,25 @@ export function RequestCard({ request, isActive, compact, onSelect, onEdit, onMa
             }
           />
           <Field label="Projekt-id faktura" value={request.billingProjectId ?? request.requestNumber?.toString()} />
+          <Field label="Avtal" value={contractStatus} />
+          {request.fortnoxInvoiceNumber && (
+            <div>
+              <span className="text-xs text-muted-foreground">Fortnox: </span>
+              {request.fortnoxInvoiceUrl ? (
+                <a
+                  href={request.fortnoxInvoiceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-primary-700 underline-offset-2 hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Faktura {request.fortnoxInvoiceNumber}
+                </a>
+              ) : (
+                <span className="text-sm">Faktura {request.fortnoxInvoiceNumber}</span>
+              )}
+            </div>
+          )}
           {request.lostReason && <Field label="Anledning" value={request.lostReason} />}
           {request.notes && (
             <div className="col-span-2">

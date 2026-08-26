@@ -2,6 +2,7 @@ import { asc, eq, inArray, lte, sql } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { todayStockholm } from "@/lib/crm/date";
 import { db as defaultDb } from "@/lib/crm/db";
+import { hasSignedMoveInContract } from "@/lib/crm/move-checklists";
 import * as schema from "@/lib/crm/schema";
 import { companies, requests } from "@/lib/crm/schema";
 
@@ -22,11 +23,12 @@ export const REQUEST_QUEUE_STATUS: Record<string, string> = {
   won: "won",
 };
 
-export const VALID_QUEUES = ["followups", "incoming", "matching", "won"] as const;
+export const VALID_QUEUES = ["followups", "incoming", "matching", "agreement", "won"] as const;
 
 const REQUEST_QUEUE_LABEL: Record<string, string> = {
   incoming: "Ny förfrågan",
   matching: "Pågående matchning",
+  agreement: "Avtal",
   won: "Att fakturera",
 };
 
@@ -60,14 +62,20 @@ export async function fetchQueueItems(queue: string, opts?: { db?: DB }): Promis
     });
   }
 
-  const status = REQUEST_QUEUE_STATUS[queue];
+  const status = queue === "agreement" ? "won" : REQUEST_QUEUE_STATUS[queue];
   if (!status) return [];
 
-  const reqs = await db
+  const rows = await db
     .select()
     .from(requests)
     .where(eq(requests.status, status))
     .orderBy(sql`${requests.statusChangedAt} ASC NULLS LAST`);
+  const reqs =
+    queue === "agreement"
+      ? rows.filter((r) => !hasSignedMoveInContract(r.moveInChecklist))
+      : queue === "won"
+        ? rows.filter((r) => hasSignedMoveInContract(r.moveInChecklist))
+        : rows;
   if (reqs.length === 0) return [];
 
   const companyIds = [...new Set(reqs.map((r) => r.companyId))];

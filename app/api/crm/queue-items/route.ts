@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   const queue = req.nextUrl.searchParams.get("queue");
   if (!isValidQueue(queue)) {
-    return NextResponse.json({ error: "Invalid queue. Use followups, incoming, matching or won." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid queue. Use followups, incoming, matching, agreement or won." }, { status: 400 });
   }
 
   return NextResponse.json(await fetchQueueItems(queue));

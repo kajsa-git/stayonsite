@@ -17,6 +17,7 @@ const STATUS_OPTIONS = [
   { value: "", label: "Alla statusar" },
   { value: "incoming", label: "Inkommen" },
   { value: "matching", label: "Matchar" },
+  { value: "won", label: "Vunnen" },
   { value: "invoiced", label: "Fakturerad" },
   { value: "lost", label: "Nej tack" },
   { value: "archived", label: "Arkiverad" },

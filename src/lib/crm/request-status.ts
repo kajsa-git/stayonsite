@@ -1,6 +1,5 @@
 // Kanoniska etiketter för en förfrågans status. Importeras överallt en status visas
-// som badge, så samma tillstånd aldrig heter olika saker i olika vyer (tidigare hette
-// "won" t.ex. "Ska faktureras", "Vunnen · att fakturera" och "Vunnen" på olika ställen).
+// som badge, så samma tillstånd aldrig heter olika saker i olika vyer.
 //
 // OBS: detta är STATUS-etiketten (tillståndet). Kö-/kolumnnamn ("Ska faktureras",
 // "Öppna uppdrag" …) är ett separat, handlingsinriktat ordförråd och bor på annat håll.

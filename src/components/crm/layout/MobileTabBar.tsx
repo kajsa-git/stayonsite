@@ -89,6 +89,7 @@ export function MobileTabBar() {
             <div className="grid grid-cols-2 gap-2">
               <QueueStat value={counts.followUps} label="att kontakta" onClick={() => go("/crm")} />
               <QueueStat value={counts.openWithoutFollowUp} label="öppna uppdrag" onClick={() => go("/crm")} />
+              <QueueStat value={counts.agreements} label="avtal" onClick={() => go("/crm")} />
               <QueueStat value={counts.toInvoice} label="ska faktureras" onClick={() => go("/crm")} />
               <QueueStat value={counts.chaseLandlords} label="jaga hyresvärdar" onClick={() => go("/crm")} />
             </div>

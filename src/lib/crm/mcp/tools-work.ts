@@ -12,7 +12,7 @@ export function registerWorkTools(server: McpServer, opts?: { db?: DB }) {
       title: "Work queue items",
       description:
         "Items in a work queue: followups (dagens återkomster), incoming (nya förfrågningar), " +
-        `matching (pågående matchning) or won (att fakturera). ${BASE_URL_NOTE}`,
+        `matching (pågående matchning), agreement (avtal) or won (att fakturera). ${BASE_URL_NOTE}`,
       inputSchema: {
         queue: z.enum(VALID_QUEUES),
         limit: z.number().int().min(1).max(100).optional().describe("Max items, default 30"),

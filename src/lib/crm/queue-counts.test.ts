@@ -18,8 +18,10 @@ beforeEach(async () => {
   await db.insert(requests).values([
     // cB: öppen utan återkomst → openWithoutFollowUp
     { id: "r-open", companyId: "cB", status: "incoming" },
-    // cB: won → toInvoice + inflytt 2026-07-16 inom horisonten → moveSchedule
+    // cB: won utan signerat avtal → agreements + inflytt 2026-07-16 inom horisonten → moveSchedule
     { id: "r-won", companyId: "cB", status: "won", startDate: "2026-07-16" },
+    // cB: won med signerat avtal → toInvoice
+    { id: "r-won-signed", companyId: "cB", status: "won", moveInChecklist: ["contract"] },
     // cB: invoiced med slutdatum i förlängningsfönstret → renewals + avflytt inom horisonten → moveSchedule
     { id: "r-inv", companyId: "cB", status: "invoiced", startDate: "2026-06-01", endDate: "2026-07-20", moveInDoneAt: "2026-06-01 10:00:00" },
   ]);
@@ -44,6 +46,7 @@ describe("computeQueueCounts", () => {
     expect(c).toEqual({
       followUps: 1,
       openWithoutFollowUp: 1,
+      agreements: 1,
       toInvoice: 1,
       chaseLandlords: 1,
       moveSchedule: 2, // r-won inflytt 07-16 + r-inv avflytt 07-20, båda ≤ 2026-07-22

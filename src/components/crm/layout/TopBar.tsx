@@ -98,10 +98,8 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       </button>
 
       <div className="hidden md:flex items-center gap-2 ml-auto shrink-0">
-        {/* Kö-badges dubblerar Min dags räknare — visas bara när de får plats.
-            Hela raden (logo+nav+sök+badges+knappar) kräver ~1570px, så 1600 är
-            första säkra brytpunkten; under den trängde badgen ut Ny kund. */}
-        <div className="hidden min-[1600px]:flex items-center gap-2">
+        {/* Kö-badges dubblerar Min dags räknare — visas bara när de får plats. */}
+        <div className="hidden min-[1700px]:flex items-center gap-2">
           <Badge
             variant="secondary"
             className="cursor-pointer text-xs"
@@ -117,6 +115,14 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
             title="Öppna uppdrag utan återkomst"
           >
             {counts.openWithoutFollowUp} öppna
+          </Badge>
+          <Badge
+            variant="outline"
+            className="cursor-pointer text-xs"
+            onClick={() => router.push("/crm")}
+            title="Avtal att skicka eller få signerat"
+          >
+            {counts.agreements} avtal
           </Badge>
           <Badge
             variant="outline"

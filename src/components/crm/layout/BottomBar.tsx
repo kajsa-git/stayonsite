@@ -9,7 +9,7 @@ const GUIDE_LINKS = [
   { label: "Förfrågan", anchor: "forfragan" },
   { label: "Matchning", anchor: "matchning" },
   { label: "Uthyrare", anchor: "uthyrare" },
-  { label: "Fakturera", anchor: "vinna-fakturera" },
+  { label: "Avtal & faktura", anchor: "vinna-fakturera" },
 ];
 
 export function BottomBar() {
@@ -24,6 +24,9 @@ export function BottomBar() {
       </button>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.openWithoutFollowUp}</span> öppna uppdrag
+      </button>
+      <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
+        <span className="font-semibold text-foreground">{counts.agreements}</span> avtal
       </button>
       <button className="hover:text-foreground transition-colors" onClick={() => router.push("/crm")}>
         <span className="font-semibold text-foreground">{counts.toInvoice}</span> ska faktureras

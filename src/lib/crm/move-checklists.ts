@@ -28,6 +28,23 @@ export const MOVE_IN_CHECKLIST: ChecklistItem[] = [
   { key: "customer_info", label: "Kund informerad (adress, wifi, instruktioner)" },
 ];
 
+export const MOVE_IN_CONTRACT_SENT_KEY = "contract_sent";
+export const MOVE_IN_CONTRACT_SIGNED_KEY = "contract";
+
+export const hasMoveInContractSent = (checked: string[] | null | undefined) => {
+  const set = new Set(checked ?? []);
+  return set.has(MOVE_IN_CONTRACT_SENT_KEY) || set.has(MOVE_IN_CONTRACT_SIGNED_KEY);
+};
+
+export const hasSignedMoveInContract = (checked: string[] | null | undefined) =>
+  new Set(checked ?? []).has(MOVE_IN_CONTRACT_SIGNED_KEY);
+
+export const withMoveInContractSent = (checked: string[] | null | undefined) =>
+  Array.from(new Set([...(checked ?? []), MOVE_IN_CONTRACT_SENT_KEY]));
+
+export const withSignedMoveInContract = (checked: string[] | null | undefined) =>
+  Array.from(new Set([...(checked ?? []), MOVE_IN_CONTRACT_SENT_KEY, MOVE_IN_CONTRACT_SIGNED_KEY]));
+
 export const MOVE_OUT_CHECKLIST: ChecklistItem[] = [
   { key: "confirmed", label: "Slutdatum bekräftat med kund" },
   { key: "keys_back", label: "Nycklar återlämnade" },

@@ -7,6 +7,7 @@ export const QUEUE_LABELS: Record<string, string> = {
   followups: "Återkomster",
   incoming: "Nya förfrågningar",
   matching: "Pågående matchningar",
+  agreement: "Avtal",
   won: "Att fakturera",
 };
 
