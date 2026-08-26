@@ -1,5 +1,6 @@
-import { and, desc, eq, or } from "drizzle-orm";
+import { and, desc, eq, isNull, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { todayStockholm } from "./date";
 import { db } from "./db";
 import { normalizePhoneForStorage } from "./phone-links";
 import { safeFetchPublic } from "./safe-fetch";
@@ -40,7 +41,7 @@ function int(value: unknown): number | null {
 }
 
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  return todayStockholm();
 }
 
 function utmLine(submission: WebSubmission) {
@@ -57,6 +58,12 @@ function sourceNotes(submission: WebSubmission, extra: Array<string | null | und
     utmLine(submission) ? `UTM: ${utmLine(submission)}` : null,
     ...extra,
   ].filter(Boolean).join("\n");
+}
+
+function appendNote(existing: string | null, note: string) {
+  if (!existing) return note;
+  if (existing.includes(note)) return existing;
+  return `${existing}\n\n${note}`;
 }
 
 // Privata mejlleverantörer — deras sajter får aldrig skrapas som företagsnamn
@@ -232,9 +239,13 @@ async function createCompanyRequest(
   return { company, contact, request };
 }
 
-async function findOwner(email: string | null, phone: string | null): Promise<Owner | null> {
-  if (!email && !phone) return null;
-  const conditions = [email ? eq(owners.email, email) : null, phone ? eq(owners.phone, phone) : null].filter(Boolean);
+async function findOwner(email: string | null, phone: string | null, fallbackPhone?: string | null): Promise<Owner | null> {
+  const phoneCandidates = [...new Set([phone, fallbackPhone].filter(Boolean))] as string[];
+  if (!email && phoneCandidates.length === 0) return null;
+  const conditions = [
+    email ? eq(owners.email, email) : null,
+    ...phoneCandidates.map((candidate) => eq(owners.phone, candidate)),
+  ].filter(Boolean);
   const [owner] = await db
     .select()
     .from(owners)
@@ -243,18 +254,71 @@ async function findOwner(email: string | null, phone: string | null): Promise<Ow
   return owner ?? null;
 }
 
+async function markOwnerForWebFollowUp(
+  owner: Owner,
+  submission: WebSubmission,
+  contact: { email: string | null; phone: string | null },
+): Promise<Owner> {
+  const [updated] = await db
+    .update(owners)
+    .set({
+      email: contact.email ?? owner.email,
+      phone: contact.phone ?? owner.phone,
+      followUpDate: today(),
+      followUpReason: "Ny husägare från webb",
+      notes: appendNote(owner.notes, sourceNotes(submission)),
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(owners.id, owner.id))
+    .returning();
+
+  return updated ?? owner;
+}
+
+async function ensureOpenOwnerOutreach(propertyId: string, ownerId: string, reason: string) {
+  const [existing] = await db
+    .select()
+    .from(ownerOutreach)
+    .where(and(eq(ownerOutreach.propertyId, propertyId), isNull(ownerOutreach.concludedAt)))
+    .orderBy(desc(ownerOutreach.createdAt))
+    .limit(1);
+
+  if (existing) {
+    await db
+      .update(ownerOutreach)
+      .set({
+        ownerId,
+        nextFollowUpDate: today(),
+        nextFollowUpReason: reason,
+      })
+      .where(eq(ownerOutreach.id, existing.id));
+    return;
+  }
+
+  await db.insert(ownerOutreach).values({
+    id: nanoid(),
+    propertyId,
+    ownerId,
+    status: "ej_kontaktad",
+    startedAt: new Date().toISOString(),
+    nextFollowUpDate: today(),
+    nextFollowUpReason: reason,
+  });
+}
+
 async function createHomeownerLead(
   submission: WebSubmission,
 ): Promise<{ owner: Owner; property: Property | null }> {
   const f = submission.fields;
   const email = clean(f.email);
-  const phone = clean(f.phone);
+  const rawPhone = clean(f.phone);
+  const phone = normalizePhoneForStorage(rawPhone);
   const name = clean(f.name) ?? (phone ? `Husägare · ${phone}` : "Husägare från webb");
   const postalCode = clean(f.postalCode);
   const city = clean(f.city);
   const bedrooms = int(f.bedrooms);
 
-  let owner = await findOwner(email, phone);
+  let owner = await findOwner(email, phone, rawPhone);
   if (!owner) {
     const [row] = await db
       .insert(owners)
@@ -271,6 +335,8 @@ async function createHomeownerLead(
       })
       .returning();
     owner = row;
+  } else {
+    owner = await markOwnerForWebFollowUp(owner, submission, { email, phone });
   }
 
   let existingProperty: Property | undefined;
@@ -284,7 +350,8 @@ async function createHomeownerLead(
   }
 
   if (existingProperty) {
-    await indexOwner(owner.id);
+    await ensureOpenOwnerOutreach(existingProperty.id, owner.id, "Ny husägare från webb");
+    await Promise.all([indexOwner(owner.id), indexProperty(existingProperty.id)]);
     return { owner, property: existingProperty };
   }
 
@@ -307,15 +374,7 @@ async function createHomeownerLead(
     .returning();
 
   // Öppna en kontaktrunda så husägaren dyker upp i "Följ upp uthyrare" idag.
-  await db.insert(ownerOutreach).values({
-    id: nanoid(),
-    propertyId: property.id,
-    ownerId: owner.id,
-    status: "ej_kontaktad",
-    startedAt: new Date().toISOString(),
-    nextFollowUpDate: today(),
-    nextFollowUpReason: "Ny husägare från webb",
-  });
+  await ensureOpenOwnerOutreach(property.id, owner.id, "Ny husägare från webb");
 
   await Promise.all([indexOwner(owner.id), indexProperty(property.id)]);
   return { owner, property };

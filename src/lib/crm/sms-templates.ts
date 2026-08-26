@@ -45,6 +45,18 @@ export function intakeConfirmSms(ownerName: string | null | undefined, token: st
   return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi granskar uppgifterna — inget visas online utan ditt godkännande.${link}\n/Kajsa, StayOnSite`;
 }
 
+// För korta husägarlead från hemsidan/LP där vi bara har telefon + ev. ort:
+// nästa steg är komplett bostadsregistrering, inte signering.
+export function homeownerLeadIntakeSms(): string {
+  return [
+    "Hej! Tack för att du hörde av dig om din bostad.",
+    "Fyll gärna i bostaden här så vi kan bedöma och lägga ut den på hemsidan för uthyrning:",
+    "www.stayonsite.se/registrera-bostad",
+    "Mvh Kajsa",
+    "StayOnSite",
+  ].join("\n");
+}
+
 // Uppdragsavtal-MEJL till uthyraren — HTML för interna klienten, full https-länk.
 export function landlordAvtalEmailHtml(ownerName: string | null | undefined, token: string): string {
   const first = firstNameOf(ownerName);

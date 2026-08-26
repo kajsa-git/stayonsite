@@ -9,8 +9,8 @@ export interface ContactFormResponse {
   success: boolean;
   provider?: string;
   error?: string;
-  // Husägarformuläret (privatperson): token till uthyrningsuppdraget som visas
-  // som del 2 direkt i formuläret. null/undefined för övriga formulärtyper.
+  // Kompletta bostadsintaget returnerar uthyrningslänk från egen endpoint.
+  // Kontaktformuläret behåller fältet för bakåtkompatibilitet men returnerar null.
   agreement?: { token: string; alreadySigned: boolean } | null;
 }
 
