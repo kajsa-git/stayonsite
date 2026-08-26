@@ -26,6 +26,12 @@ interface Listing {
   imageUrls: string[]
 }
 
+interface ListingLink {
+  slug: string
+  name: string
+  city: string
+}
+
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (listing: Listing) => void }) {
@@ -223,9 +229,16 @@ function InterestModal({ listing, onClose }: { listing: Listing; onClose: () => 
 
 const PAGE_SIZE = 12
 
-export function Boenden() {
+export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] }) {
   const { data: listings = [], isLoading } = useSWR<Listing[]>('/api/listings', fetcher)
   const [selected, setSelected] = useState<Listing | null>(null)
+
+  const listingLinksByCity = listingLinks.reduce<Record<string, ListingLink[]>>((groups, listing) => {
+    const cityListings = groups[listing.city] ?? []
+    cityListings.push(listing)
+    groups[listing.city] = cityListings
+    return groups
+  }, {})
 
   const cities = [...new Set(listings.map(l => l.city).filter(Boolean) as string[])].sort()
   const [cityFilter, setCityFilter] = useState<string>('alla')
@@ -311,6 +324,47 @@ export function Boenden() {
             </>
           )}
 
+          {/* Server-renderad länkförteckning: gör alla publicerade detaljsidor
+              nåbara utan att besökaren eller sökroboten måste klicka paginering. */}
+          {listingLinks.length > 0 && (
+            <section className="mt-16" aria-labelledby="all-listings-heading">
+              <div className="mb-6">
+                <h2 id="all-listings-heading" className="text-2xl font-bold text-nordic-900">
+                  Alla lediga boenden per ort
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                  Öppna en ort för att se samtliga publicerade företagsboenden. Tillgängligheten kan ändras snabbt.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {Object.entries(listingLinksByCity).map(([city, cityListings]) => (
+                  <details key={city} className="group rounded-xl border border-nordic-200 bg-white p-4">
+                    <summary className="cursor-pointer list-none font-semibold text-nordic-900 marker:hidden">
+                      <span className="flex items-center justify-between gap-3">
+                        <span>{city}</span>
+                        <span className="text-xs font-medium text-nordic-500">
+                          {cityListings.length} {cityListings.length === 1 ? 'boende' : 'boenden'}
+                        </span>
+                      </span>
+                    </summary>
+                    <ul className="mt-3 space-y-2 border-t border-nordic-100 pt-3">
+                      {cityListings.map((listing) => (
+                        <li key={listing.slug}>
+                          <Link
+                            href={`/boenden/${listing.slug}`}
+                            className="text-sm text-nordic-700 underline decoration-nordic-300 underline-offset-4 transition-colors hover:text-[#e55a00]"
+                          >
+                            {listing.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Inte hittat rätt? */}
           {filtered.length > 0 && (
             <div className="mt-16 text-center bg-white rounded-2xl border border-nordic-100 p-8">
@@ -318,9 +372,9 @@ export function Boenden() {
               <p className="text-muted-foreground mb-6 max-w-md mx-auto text-sm">
                 Vi har tillgång till fler objekt och kan ofta hitta boenden som inte syns här. Berätta vad ni behöver.
               </p>
-              <a href="/#inquiry" className="inline-block bg-[#ff6300] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#e55a00] transition-colors text-sm">
+              <Link href="/#inquiry" className="inline-block bg-[#ff6300] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#e55a00] transition-colors text-sm">
                 Skicka en förfrågan
-              </a>
+              </Link>
             </div>
           )}
         </div>
