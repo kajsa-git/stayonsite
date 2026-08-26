@@ -1504,6 +1504,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'aurora-village-lulea-storsta-personalboende-sverige-2026',
+    title: {
+      sv: 'Aurora Village i Luleå: Vad Sveriges största personalboende betyder för branschen',
+      en: 'Aurora Village in Luleå: What Sweden\'s Largest Worker Accommodation Means for the Industry',
+      pl: 'Aurora Village w Luleå: Co największe zakwaterowanie pracownicze w Szwecji oznacza dla branży',
+    },
+    description: {
+      sv: 'Aurora Village i Luleå blir Sveriges största personalboende med plats för 2000 personer. Så påverkar trenden marknaden 2026.',
+      en: 'Aurora Village in Luleå becomes Sweden\'s largest worker accommodation for 2,000 people. How the trend affects the 2026 market.',
+      pl: 'Aurora Village w Luleå to największe zakwaterowanie pracownicze w Szwecji dla 2000 osób. Wpływ trendu na rynek 2026.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-08-26',
+    category: 'Analys',
+    tags: ['Aurora Village', 'Luleå', 'SSAB', 'personalboende', 'grön omställning', 'storskaligt boende'],
+    readingTime: 8,
+    audience: 'bada',
+    keyTakeaways: [
+      'Aurora Village på Storporsön, Luleå, ska rymma cirka 2 000 boenderum på 130 000 kvadratmeter fördelat på 39 byggnader.',
+      'Första etappen med 500 bostäder ska stå klar våren 2026, med SSAB som uppdragsgivare.',
+      'Adapteo bygger och äger fastigheterna, Strawberry Living driver anläggningen, Bjerking sköter projektering och Tengbom inredningskonceptet.',
+      'SSAB:s omställning innebär att bolaget går från att stå för sju procent av Sveriges CO2-utsläpp till noll.',
+      'Bygginvesteringarna väntas öka med fyra procent per år under 2026 och 2027, en sammantagen ökning på drygt åtta procent.',
+    ],
+    faq: [
+      {
+        q: 'Hur stort är Aurora Village jämfört med andra personalboenden i Sverige?',
+        a: 'Aurora Village är Sveriges största personalboende med cirka 2 000 boenderum, en skala som motsvarar Nordens största hotell sett till antal rum, och är betydligt större än tidigare projekt i städer som Stockholm, Göteborg eller Malmö.',
+      },
+      {
+        q: 'Vem bygger och driver Aurora Village?',
+        a: 'Fastigheterna byggs och ägs av Adapteo, driften sköts av Strawberry Living, projekteringen har gjorts av Bjerking och inredningskonceptet av Tengbom.',
+      },
+      {
+        q: 'Betyder Aurora Village att efterfrågan på mindre personalboende-lösningar minskar?',
+        a: 'Nej, stora byggprojekt och industrietableringar sker på fler orter än Luleå och många företag behöver fortfarande flexibla lösningar för mindre team eller kortare uppdrag, vilket snarare höjer standardförväntningarna på hela marknaden.',
+      },
+      {
+        q: 'Vad kan mindre boendebolag lära sig av projektet?',
+        a: 'Vikten av tydliga avtal, transparent prissättning och genomtänkt service, utan att någonsin lova "allt ingår" – det som faktiskt ingår i hyran bör alltid specificeras per projekt.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
