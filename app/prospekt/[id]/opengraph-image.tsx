@@ -7,6 +7,7 @@ import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { asc, desc, eq } from "drizzle-orm";
+import { prepareOgBackground } from "@/lib/crm/og-background";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -65,7 +66,8 @@ export default async function Image({ params }: { params: Promise<{ id: string }
 
   let bg: string | null = null;
   if (img) {
-    bg = await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: img.key }), { expiresIn: 60 * 10 });
+    const signedUrl = await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: img.key }), { expiresIn: 60 * 10 });
+    bg = await prepareOgBackground(signedUrl, img.key);
   }
 
   const features = [
