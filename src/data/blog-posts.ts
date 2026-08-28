@@ -1463,7 +1463,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'forsvarssatsning-2026-personalboende-byggforetag-guide',
     title: {
-      sv: 'Försvarssatsningen 2026: vad byggföretag behöver veta om personalboende vid militära projekt',
+      sv: 'Försvarssatsningen 2026: personalboende vid militära projekt',
       en: 'Sweden\'s 2026 Defense Buildup: What Construction Companies Need to Know About Worker Housing',
       pl: 'Zbrojenia Szwecji 2026: co firmy budowlane muszą wiedzieć o zakwaterowaniu pracowników',
     },
