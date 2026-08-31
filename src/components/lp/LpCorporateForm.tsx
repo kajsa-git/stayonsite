@@ -224,7 +224,7 @@ const LpCorporateForm = ({ utmParams }: LpCorporateFormProps) => {
                         )}
                       </Button>
                       <p className="text-center text-xs leading-relaxed text-primary/60">
-                        We offer furnished corporate housing for projects lasting from 3 months to several years.
+                        Flexible rental terms – from 3 months to several years.
                       </p>
                     </div>
                   </form>

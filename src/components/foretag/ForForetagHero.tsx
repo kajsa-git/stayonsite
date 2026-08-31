@@ -342,9 +342,9 @@ const ForForetagHero = () => {
 
                     <p className="text-xs text-white/60 text-center">
                       {t(
-                        'Vi erbjuder möblerade företagsboenden för projekt från 3 månader till flera år.',
-                        'We offer furnished corporate housing for projects lasting from 3 months to several years.',
-                        'Oferujemy umeblowane zakwaterowanie firmowe dla projektów trwających od 3 miesięcy do kilku lat.'
+                        'Flexibel hyresperiod – från 3 månader till flera år.',
+                        'Flexible rental terms – from 3 months to several years.',
+                        'Elastyczny okres najmu – od 3 miesięcy do kilku lat.'
                       )}
                     </p>
                   </form>

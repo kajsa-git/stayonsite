@@ -522,7 +522,7 @@ export const translations: Record<
     "heroForm.submit": "Få boendeförslag",
     "heroForm.success": "Tack! Vi återkommer inom 24 timmar.",
     "companyForm.durationNote":
-      "Vi erbjuder möblerade företagsboenden för projekt från 3 månader till flera år.",
+      "Flexibel hyresperiod – från 3 månader till flera år.",
 
     "inquiry.title": "Skicka en förfrågan",
     "inquiry.subtitle":
@@ -1012,7 +1012,7 @@ export const translations: Record<
     "heroForm.submit": "Get housing proposal",
     "heroForm.success": "Thanks! We'll get back within 24 hours.",
     "companyForm.durationNote":
-      "We offer furnished corporate housing for projects lasting from 3 months to several years.",
+      "Flexible rental terms – from 3 months to several years.",
 
     "inquiry.title": "Send an Inquiry",
     "inquiry.subtitle":
@@ -1503,7 +1503,7 @@ export const translations: Record<
     "heroForm.submit": "Uzyskaj propozycję",
     "heroForm.success": "Dziękujemy! Odezwiemy się w ciągu 24 godzin.",
     "companyForm.durationNote":
-      "Oferujemy umeblowane zakwaterowanie firmowe dla projektów trwających od 3 miesięcy do kilku lat.",
+      "Elastyczny okres najmu – od 3 miesięcy do kilku lat.",
 
     "inquiry.title": "Wyślij zapytanie",
     "inquiry.subtitle":
