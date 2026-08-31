@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import {
+  corporateQualificationRecipient,
+  type CorporateQualificationSubmissionLike,
+} from "@/lib/crm/corporate-qualification-email";
+import { sendCorporateQualificationEmail } from "@/lib/crm/corporate-qualification-workflow";
 import { mapWebSubmissionToCrm, type WebSubmission } from "@/lib/crm/contact-intake";
 import { isHomeownerLeadForm, queueHomeownerLeadIntakeSms } from "@/lib/crm/homeowner-automation";
 
@@ -419,16 +424,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "resend_error" }, { status: 502 });
     }
 
-    // Send confirmation to customer if we have their email
+    // Send confirmation to customer if we have their email. Corporate leads get
+    // the qualification email directly instead of a generic receipt, so Kajsa
+    // gets the facts needed to decide whether the request should move to matching.
     if (email.customerEmail) {
-      const confirmation = buildConfirmationEmail(submission, null);
-      await resend.emails.send({
-        from: process.env.RESEND_FROM || "StayOnSite <onboarding@resend.dev>",
-        to: email.customerEmail,
-        subject: confirmation.subject,
-        text: confirmation.text,
-        html: confirmation.html,
-      }).catch((err) => console.error("Confirmation email failed", err));
+      const qualificationSubmission = submission as CorporateQualificationSubmissionLike;
+      const qualificationRecipient = corporateQualificationRecipient(qualificationSubmission);
+      if (qualificationRecipient) {
+        if (crmResult && "company" in crmResult) {
+          const delivery = await sendCorporateQualificationEmail({ submission: qualificationSubmission, crmResult });
+          if (!delivery.sent) console.error("Corporate qualification email failed", delivery.error);
+        } else {
+          console.error("Corporate qualification skipped because CRM intake was not mapped", { recipient: qualificationRecipient });
+        }
+      } else {
+        const confirmation = buildConfirmationEmail(submission, null);
+        await resend.emails.send({
+          from: process.env.RESEND_FROM || "StayOnSite <onboarding@resend.dev>",
+          to: email.customerEmail,
+          subject: confirmation.subject,
+          text: confirmation.text,
+          html: confirmation.html,
+        }).catch((err) => console.error("Confirmation email failed", err));
+      }
     }
 
     // Telefon-only husägare (t.ex. LP-formuläret) får ett automatiskt SMS som

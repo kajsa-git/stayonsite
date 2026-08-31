@@ -25,6 +25,7 @@ const ALLOWED = [
   "contactId", "city", "postalCode", "street", "addressQuery", "status", "persons",
   "accommodationFrom", "accommodationTo", "bedroomsFrom", "bedroomsTo", "bedsFrom", "bedsTo",
   "startDate", "endDate", "endDateOngoing", "projectDurationMonths", "budgetMax",
+  "accommodationType", "parkingRequired", "kitchenRequired", "laundryRequired",
   "furnishedRequired", "garageRequired", "monthlyValue", "billingProjectId", "wonPropertyId",
   "lostReason", "notes", "moveInChecklist", "moveOutChecklist", "moveInDoneAt", "moveOutDoneAt",
   "renewalDismissedAt",

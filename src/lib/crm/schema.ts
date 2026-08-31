@@ -134,6 +134,10 @@ export const requests = sqliteTable("crm_requests", {
   endDateOngoing: integer("end_date_ongoing", { mode: "boolean" }), // löpande: avslut tills vidare (inget bestämt slutdatum)
   projectDurationMonths: integer("project_duration_months"),
   budgetMax: real("budget_max"), // vad kunden söker inom (behov)
+  accommodationType: text("accommodation_type"), // lägenhet | studio | hus | flera boenden | fritext
+  parkingRequired: integer("parking_required", { mode: "boolean" }),
+  kitchenRequired: integer("kitchen_required", { mode: "boolean" }),
+  laundryRequired: integer("laundry_required", { mode: "boolean" }),
   furnishedRequired: integer("furnished_required", { mode: "boolean" }),
   garageRequired: integer("garage_required", { mode: "boolean" }),
   monthlyValue: real("monthly_value"), // affärsvärde när fakturerad (utfall)
@@ -320,6 +324,37 @@ export const notes = sqliteTable("crm_notes", {
   index("crm_notes_company_id_idx").on(t.companyId),
 ]);
 
+// En rad per företagsförfrågan som fått ett automatiskt kvalificeringsmejl.
+// Den exakta Gmail-tråden gör att svar alltid kopplas till rätt förfrågan, även
+// när samma företag har flera öppna behov samtidigt.
+export const requestQualifications = sqliteTable("crm_request_qualifications", {
+  requestId: text("request_id")
+    .primaryKey()
+    .references(() => requests.id, { onDelete: "cascade" }),
+  companyId: text("company_id")
+    .notNull()
+    .references(() => companies.id, { onDelete: "cascade" }),
+  contactId: text("contact_id").references(() => contacts.id, { onDelete: "set null" }),
+  locale: text("locale").notNull().default("sv"),
+  subject: text("subject").notNull(),
+  status: text("status").notNull().default("sending"), // sending | pending | partial | complete | declined | failed
+  provider: text("provider"), // gmail | resend
+  providerMessageId: text("provider_message_id"),
+  gmailMessageId: text("gmail_message_id"),
+  gmailThreadId: text("gmail_thread_id"),
+  sentAt: text("sent_at"),
+  lastProcessedMessageId: text("last_processed_message_id"),
+  lastReplyAt: text("last_reply_at"),
+  attemptCount: integer("attempt_count").notNull().default(0),
+  lastError: text("last_error"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_request_qualifications_company_id_idx").on(t.companyId),
+  index("crm_request_qualifications_status_idx").on(t.status),
+  index("crm_request_qualifications_thread_id_idx").on(t.gmailThreadId),
+]);
+
 export type Company = typeof companies.$inferSelect;
 export type CompanyInsert = typeof companies.$inferInsert;
 export type Contact = typeof contacts.$inferSelect;
@@ -400,6 +435,7 @@ export const searchIndex = sqliteTable("crm_search_index", {
 export const emails = sqliteTable("crm_emails", {
   id: text("id").primaryKey(),
   companyId: text("company_id").references(() => companies.id, { onDelete: "cascade" }),
+  requestId: text("request_id").references(() => requests.id, { onDelete: "set null" }),
   contactId: text("contact_id").references(() => contacts.id, { onDelete: "set null" }),
   ownerId: text("owner_id").references(() => owners.id, { onDelete: "set null" }),
   direction: text("direction").notNull(), // 'out' | 'in'
@@ -416,6 +452,7 @@ export const emails = sqliteTable("crm_emails", {
   sentAt: text("sent_at").notNull(),
 }, (t) => [
   index("crm_emails_company_id_idx").on(t.companyId),
+  index("crm_emails_request_id_idx").on(t.requestId),
   index("crm_emails_owner_id_idx").on(t.ownerId),
   index("crm_emails_sent_at_idx").on(t.sentAt),
   // Idempotent Gmail-synk: samma meddelande får aldrig dubblas. NULL (utgående/manuella

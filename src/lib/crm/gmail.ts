@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { accounts } from "./schema";
+import { accounts, users } from "./schema";
 import { and, eq } from "drizzle-orm";
 
 // ─── Token-hantering ──────────────────────────────────────────────────────────
@@ -45,12 +45,41 @@ export class GmailAuthError extends Error {
   readonly isAuthError = true;
 }
 
+function mailboxAddress(value: string): string {
+  return value.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase() ?? value.trim().toLowerCase();
+}
+
+// Serverjobb har ingen webbsession. Hämta i stället den godkända CRM-användare
+// vars Google-konto motsvarar avsändaradressen och använd samma refresh-token som
+// CRM:s manuella Gmail-utskick.
+export async function gmailAutomationUserId(address = process.env.CRM_FROM ?? "kajsa@stayonsite.se"): Promise<string> {
+  const email = mailboxAddress(address);
+  const [row] = await db
+    .select({ userId: users.id })
+    .from(users)
+    .innerJoin(accounts, and(eq(accounts.userId, users.id), eq(accounts.provider, "google")))
+    .where(and(eq(users.email, email), eq(users.approved, true)))
+    .limit(1);
+  if (!row) throw new GmailAuthError(`Inget godkänt Google-konto hittades för ${email}.`);
+  return row.userId;
+}
+
 // ─── RFC 2822-byggare ─────────────────────────────────────────────────────────
 
 // Skydd mot header-injektion: ett header-värde får aldrig innehålla CR/LF (då kan
 // en angripare smuggla in extra headers eller en body). Vik ihop till mellanslag.
 function headerValue(v: string): string {
   return v.replace(/[\r\n]+/g, " ").trim();
+}
+
+// RFC 2047 krävs för icke-ASCII i exempelvis svenska/polska ämnesrader.
+// Utan detta kan Gmail acceptera rå UTF-8 men visa rubriken som mojibake hos
+// mottagaren ("några" blir exempelvis "nÃ¥gra").
+export function mimeHeaderValue(v: string): string {
+  const safe = headerValue(v);
+  return /[^\x20-\x7e]/.test(safe)
+    ? `=?UTF-8?B?${Buffer.from(safe, "utf8").toString("base64")}?=`
+    : safe;
 }
 
 function buildRfc2822(opts: {
@@ -65,7 +94,7 @@ function buildRfc2822(opts: {
   const boundary = `=_Part_${Date.now()}`;
   const from = headerValue(opts.from);
   const to = headerValue(opts.to);
-  const subject = headerValue(opts.subject);
+  const subject = mimeHeaderValue(opts.subject);
   let msg = `From: ${from}\r\nTo: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\n`;
   if (opts.inReplyTo) {
     const inReplyTo = headerValue(opts.inReplyTo);
@@ -119,6 +148,8 @@ export interface GmailMessage {
   date: string;
   text: string;
   html: string | null;
+  autoSubmitted: string;
+  precedence: string;
 }
 
 function header(msg: { payload: { headers: { name: string; value: string }[] } }, name: string) {
@@ -211,6 +242,8 @@ export async function gmailGetThread(userId: string, threadId: string): Promise<
       date: header(msg, "date"),
       text,
       html,
+      autoSubmitted: header(msg, "auto-submitted"),
+      precedence: header(msg, "precedence"),
     };
   });
 }
