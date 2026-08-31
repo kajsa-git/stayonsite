@@ -341,7 +341,11 @@ const ForForetagHero = () => {
                     </Button>
 
                     <p className="text-xs text-white/60 text-center">
-                      {t('Ingen bindning · Svar inom 24 timmar', 'No commitment · Reply within 24 hours', 'Bez zobowiązań · Odpowiedź w ciągu 24 godzin')}
+                      {t(
+                        'Vi erbjuder möblerade företagsboenden för projekt från 3 månader till flera år.',
+                        'We offer furnished corporate housing for projects lasting from 3 months to several years.',
+                        'Oferujemy umeblowane zakwaterowanie firmowe dla projektów trwających od 3 miesięcy do kilku lat.'
+                      )}
                     </p>
                   </form>
                 </>

@@ -225,20 +225,25 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
         </div>
 
         {/* Submit */}
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="h-12 w-full bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg shadow-accent/30 transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
-        >
-          {isSubmitting ? (
-            <Loader2 size={18} className="animate-spin" />
-          ) : (
-            <span className="flex items-center gap-2">
-              {t('heroForm.submit')}
-              <Send size={16} />
-            </span>
-          )}
-        </Button>
+        <div className="space-y-2">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="h-12 w-full bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg shadow-accent/30 transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
+          >
+            {isSubmitting ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <span className="flex items-center gap-2">
+                {t('heroForm.submit')}
+                <Send size={16} />
+              </span>
+            )}
+          </Button>
+          <p className="text-center text-xs leading-relaxed text-white/70">
+            {t('companyForm.durationNote')}
+          </p>
+        </div>
       </form>
     </div>
   );
