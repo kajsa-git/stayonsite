@@ -15,16 +15,20 @@ export function PropertyShowcase({
   data,
   lang,
   title,
+  descriptionOverride,
 }: {
   data: PublicProperty;
   lang: Lang;
   title: string;
+  descriptionOverride?: string;
 }) {
   const { row: p, images, mapCoords, mapArea } = data;
   const tr = T[lang];
 
   const description =
-    (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) || p.publicDescription;
+    descriptionOverride ||
+    (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) ||
+    p.publicDescription;
   const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
   // Vad ingår: AI-översättningen (inclusionsEn/Pl) vinner per post när den finns, annars
   // deterministisk ordbok (täcker hela Qasa-/Airbnb-importens ordförråd), annars källtexten.

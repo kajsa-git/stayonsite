@@ -8,6 +8,7 @@ import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { shouldValidatePublication, validatePublicationSeo } from "@/lib/crm/publication-seo";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireApprovedSession();
@@ -21,6 +22,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const [existing] = await db.select().from(properties).where(eq(properties.id, id));
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const values = await normalizePropertyWriteBody(body, existing);
+  const candidate = { ...existing, ...values };
+  if (shouldValidatePublication(existing, body, candidate)) {
+    const problem = await validatePublicationSeo(candidate);
+    if (problem) return NextResponse.json({ error: problem }, { status: 422 });
+  }
   const [row] = await db
     .update(properties)
     .set({ ...values, updatedAt: new Date().toISOString() })

@@ -49,7 +49,11 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
       .filter((r) => r.city && normalizeCity(r.city) === want)
       .map((r) => ({
         slug: r.slug as string,
-        name: publicDisplayName(r.publicName, { city: r.city, bedrooms: r.bedrooms, beds: r.beds }),
+        name: publicDisplayName(
+          r.publicName,
+          { city: r.city, bedrooms: r.bedrooms, beds: r.beds },
+          r.slug,
+        ),
         postalCode: r.postalCode,
         bedrooms: r.bedrooms,
         beds: r.beds,

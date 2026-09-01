@@ -19,11 +19,15 @@ export function PropertyPublicControls({
   onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
 }) {
   const [smsDialogOpen, setSmsDialogOpen] = useState(false);
-  const displayName = publicDisplayName(property.publicName, {
-    city: property.city,
-    bedrooms: property.bedrooms,
-    beds: property.beds,
-  });
+  const displayName = publicDisplayName(
+    property.publicName,
+    {
+      city: property.city,
+      bedrooms: property.bedrooms,
+      beds: property.beds,
+    },
+    property.slug,
+  );
 
   // Efter publicering: erbjud bekräftelse-SMS till uthyraren — men bara om numret
   // finns, publik URL finns, och länken inte redan skickats/utkastats till numret.

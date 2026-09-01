@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 import { ArrowLeft, ArrowRight, Mail, MessageSquare, Phone } from "lucide-react"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
@@ -11,6 +11,7 @@ import { properties } from "@/lib/crm/schema"
 import { eq } from "drizzle-orm"
 import { loadPublicProperty } from "@/lib/crm/public-property"
 import { publicDisplayName } from "@/lib/crm/slug"
+import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/public-seo"
 import { cities } from "@/data/cities"
 import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase"
 
@@ -26,6 +27,7 @@ async function lookupForMeta(idOrSlug: string) {
     slug: properties.slug,
     publicName: properties.publicName,
     city: properties.city,
+    squareMeters: properties.squareMeters,
     bedrooms: properties.bedrooms,
     beds: properties.beds,
     postalCode: properties.postalCode,
@@ -46,12 +48,23 @@ export async function generateMetadata(
   if (!p || !p.published || p.status !== "available") {
     return buildMetadata({ title: "Lediga boenden | StayOnSite", noindex: true, locale: "sv" })
   }
-  const name = publicDisplayName(p.publicName, { city: p.city, bedrooms: p.bedrooms, beds: p.beds })
+  const name = publicDisplayName(
+    p.publicName,
+    { city: p.city, bedrooms: p.bedrooms, beds: p.beds },
+    p.slug,
+  )
   const canonical = `${BASE}/boenden/${p.slug ?? slug}`
-  const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige"
-  const description =
-    p.publicDescription?.trim().slice(0, 160) ||
-    `${name} — möblerat företagsboende i ${place} via StayOnSite. Hör av dig för tillgänglighet och visning.`
+  const description = truncateSeoDescription(
+    publicPropertyDescription(p.publicDescription, {
+      name,
+      slug: p.slug,
+      city: p.city,
+      postalCode: p.postalCode,
+      squareMeters: p.squareMeters,
+      bedrooms: p.bedrooms,
+      beds: p.beds,
+    }),
+  )
   return buildMetadata({
     title: `${name} | StayOnSite`,
     description,
@@ -72,9 +85,24 @@ export default async function BoendeDetailPage(
   if (!data) notFound()
 
   const { row: p, images } = data
-  const name = publicDisplayName(p.publicName, { city: p.city, bedrooms: p.bedrooms, beds: p.beds })
+  if (p.slug && slug !== p.slug) permanentRedirect(`/boenden/${p.slug}`)
+
+  const name = publicDisplayName(
+    p.publicName,
+    { city: p.city, bedrooms: p.bedrooms, beds: p.beds },
+    p.slug,
+  )
   const place = p.city ?? "Sverige"
   const canonical = `${BASE}/boenden/${p.slug ?? slug}`
+  const description = publicPropertyDescription(p.publicDescription, {
+    name,
+    slug: p.slug,
+    city: p.city,
+    postalCode: p.postalCode,
+    squareMeters: p.squareMeters,
+    bedrooms: p.bedrooms,
+    beds: p.beds,
+  })
 
   const cityName = p.city?.trim().toLowerCase()
   const cityPage = cityName ? cities.find((c) => c.name.toLowerCase() === cityName) : undefined
@@ -89,7 +117,7 @@ export default async function BoendeDetailPage(
     "@type": "Accommodation",
     name,
     url: canonical,
-    ...(p.publicDescription ? { description: p.publicDescription } : {}),
+    description,
     ...(images[0] ? { image: images[0] } : {}),
     ...(p.city
       ? {
@@ -130,7 +158,7 @@ export default async function BoendeDetailPage(
             Alla lediga boenden
           </Link>
 
-          <PropertyShowcase data={data} lang="sv" title={name} />
+          <PropertyShowcase data={data} lang="sv" title={name} descriptionOverride={description} />
 
           {/* Intresse-CTA */}
           <div className="rounded-2xl border bg-white p-6 sm:p-8">

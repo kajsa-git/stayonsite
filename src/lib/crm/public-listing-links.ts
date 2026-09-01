@@ -28,11 +28,15 @@ export async function getPublicListingLinks(): Promise<PublicListingLink[]> {
 
     return rows.map((row) => ({
       slug: row.slug as string,
-      name: publicDisplayName(row.publicName, {
-        city: row.city,
-        bedrooms: row.bedrooms,
-        beds: row.beds,
-      }),
+      name: publicDisplayName(
+        row.publicName,
+        {
+          city: row.city,
+          bedrooms: row.bedrooms,
+          beds: row.beds,
+        },
+        row.slug,
+      ),
       city: row.city?.trim() || "Övriga Sverige",
     }));
   } catch {

@@ -32,7 +32,21 @@ export function buildPublicName(facts: NameFacts): string {
 export function publicDisplayName(
   publicName: string | null | undefined,
   facts: NameFacts,
+  slug?: string | null,
 ): string {
   const manual = (publicName ?? "").trim();
-  return manual || buildPublicName(facts);
+  const name = manual || buildPublicName(facts);
+  const normalizedSlug = slugify(slug ?? "");
+  const generatedRoot = slugify(name);
+
+  // ensureUniqueSlug() lägger -2, -3 … när flera objekt får samma auto-namn.
+  // Spegla den redan unika URL-markören i titel/H1 så att två publicerade
+  // bostäder aldrig får identiska SEO-rubriker. Den första behåller den korta
+  // grundrubriken; efterföljande blir t.ex. "… · bostad 2".
+  if (normalizedSlug.startsWith(`${generatedRoot}-`)) {
+    const suffix = normalizedSlug.slice(generatedRoot.length).match(/^-(\d+)$/)?.[1];
+    if (suffix) return `${name} · bostad ${suffix}`;
+  }
+
+  return name;
 }

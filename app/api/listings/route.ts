@@ -61,7 +61,11 @@ export async function GET() {
       );
       // name = redigerbar rubrik (faller tillbaka till deterministiskt SEO-namn).
       // slug = ren URL; faller tillbaka till id tills backfill/sparning satt en slug.
-      const name = publicDisplayName(p.publicName, { city: p.city, bedrooms: p.bedrooms, beds: p.beds });
+      const name = publicDisplayName(
+        p.publicName,
+        { city: p.city, bedrooms: p.bedrooms, beds: p.beds },
+        p.slug,
+      );
       return { ...p, name, slug: p.slug ?? p.id, imageUrls };
     }),
   );
