@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { qualificationExtractionSchema, qualificationIsComplete, stripQuotedReply } from "./corporate-qualification-workflow";
+import {
+  applyQualificationSemanticFallbacks,
+  qualificationExtractionSchema,
+  qualificationIsComplete,
+  stripQuotedReply,
+} from "./corporate-qualification-workflow";
 
 function parsed(overrides: Record<string, unknown> = {}) {
   return qualificationExtractionSchema.parse({
@@ -51,5 +56,16 @@ describe("corporate qualification workflow", () => {
 
   it("tar bort citerad tidigare tråd före AI-tolkning", () => {
     expect(stripQuotedReply("Start 15 september\nBudget 30 000 kr\n\nOn Mon, Kajsa wrote:\n> Från vilket datum?")).toBe("Start 15 september\nBudget 30 000 kr");
+  });
+
+  it("tolkar 'öppen till vilket som' som flexibel och besvarad boendetyp", () => {
+    const result = applyQualificationSemanticFallbacks(parsed({
+      accommodationType: null,
+      accommodationTypeAnswered: false,
+    }), "4. Öppen till vilket som");
+
+    expect(result.accommodationTypeAnswered).toBe(true);
+    expect(result.accommodationType).toBe("Flexibel – valfri boendetyp");
+    expect(qualificationIsComplete(result)).toBe(true);
   });
 });

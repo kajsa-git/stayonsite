@@ -58,6 +58,27 @@ export const qualificationExtractionSchema = z.object({
 
 export type QualificationExtraction = z.infer<typeof qualificationExtractionSchema>;
 
+const FLEXIBLE_ACCOMMODATION_PATTERNS = [
+  /\b(?:öppen (?:för|till)|vilket som|valfri(?:t)?|ingen preferens|spelar ingen roll)\b/i,
+  /\b(?:open to any|any(?:thing| type)? (?:works|is fine)|no preference|either works)\b/i,
+  /\b(?:dowoln(?:y|a|e)|bez preferencji|każd(?:y|a|e) rodzaj)\b/i,
+];
+
+// Flexibilitet är ett användbart svar, inte ett saknat svar. Reservregeln gör
+// vardagliga formuleringar begripliga även om AI-modellen är onödigt bokstavlig.
+export function applyQualificationSemanticFallbacks(
+  parsed: QualificationExtraction,
+  reply: string,
+): QualificationExtraction {
+  const flexibleAccommodation = FLEXIBLE_ACCOMMODATION_PATTERNS.some((pattern) => pattern.test(reply));
+  if (!flexibleAccommodation) return parsed;
+  return {
+    ...parsed,
+    accommodationType: parsed.accommodationType ?? "Flexibel – valfri boendetyp",
+    accommodationTypeAnswered: true,
+  };
+}
+
 function emailAddress(value: string): string {
   return value.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase() ?? value.trim().toLowerCase();
 }
@@ -156,7 +177,9 @@ Regler:
 - Hitta inte på. Saknas ett värde ska det vara null och motsvarande *Answered vara false.
 - Om kunden uttryckligen säger att budget saknas/är öppen är budgetAnswered true, budgetMonthly null och budgetText återger innebörden.
 - Om kunden säger att valfri ort/hela staden fungerar är locationAnswered true.
+- Om kunden är öppen för vilken boendetyp som helst (t.ex. "vilket som", "open to any" eller "dowolny") är accommodationTypeAnswered true och accommodationType beskriver att boendetypen är flexibel.
 - Om kunden säger att inga särskilda krav finns är requirementsAnswered true och kravfälten false.
+- Om budgeten anges som ett intervall ska budgetMonthly vara intervallets övre gräns och budgetText återge hela intervallet.
 - Datum ska vara YYYY-MM-DD när de går att fastställa säkert. Annars null och originalet i *Text.
 - confidence gäller hur säkert svaret hör till och beskriver denna boendeförfrågan.
 - declined är true bara när kunden tackar nej, avbryter eller säger att behovet inte längre finns.
@@ -184,7 +207,8 @@ Kundens nya svar:
   if (!response.ok) throw new Error(`Claude API ${response.status}: ${(await response.text()).slice(0, 250)}`);
   const data = await response.json() as { content?: Array<{ type: string; text?: string }> };
   const text = (data.content ?? []).filter((block) => block.type === "text").map((block) => block.text ?? "").join("");
-  return qualificationExtractionSchema.parse(extractJson(text));
+  const parsed = qualificationExtractionSchema.parse(extractJson(text));
+  return applyQualificationSemanticFallbacks(parsed, args.reply);
 }
 
 function compactSummary(parsed: QualificationExtraction): string {
