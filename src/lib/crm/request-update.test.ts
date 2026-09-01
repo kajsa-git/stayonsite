@@ -57,14 +57,49 @@ describe("applyRequestUpdate", () => {
     if (r.ok === false) expect(r.body.error).toBe("missing_contract");
   });
 
-  it("fakturering går igenom med datum och signerat avtal", async () => {
+  it("fakturering kör injicerat Fortnox-utkast innan status sparas", async () => {
+    let createdFor: string | null = null;
     const r = await applyRequestUpdate(
       "r1",
       { status: "invoiced", startDate: "2026-07-01", endDate: "2026-07-31", moveInChecklist: ["contract"] },
-      { db, ...noopEffects },
+      {
+        db,
+        ...noopEffects,
+        createInvoiceDraft: async (id) => {
+          createdFor = id;
+          return {
+            fortnoxInvoiceNumber: "1001",
+            fortnoxInvoiceUrl: "https://apps.fortnox.se/",
+            fortnoxInvoiceCreatedAt: "2026-07-01T10:00:00.000Z",
+            fortnoxInvoiceError: null,
+          };
+        },
+      },
     );
     expect(r.ok).toBe(true);
-    if (r.ok === true) expect(r.row.status).toBe("invoiced");
+    expect(createdFor).toBe("r1");
+    if (r.ok === true) {
+      expect(r.row.status).toBe("invoiced");
+      expect(r.row.fortnoxInvoiceNumber).toBe("1001");
+    }
+  });
+
+  it("fakturering sparar inte status invoiced om Fortnox-utkastet misslyckas", async () => {
+    const r = await applyRequestUpdate(
+      "r1",
+      { status: "invoiced", startDate: "2026-07-01", endDate: "2026-07-31", moveInChecklist: ["contract"] },
+      {
+        db,
+        ...noopEffects,
+        createInvoiceDraft: async () => {
+          throw new Error("Fortnox saknar koppling");
+        },
+      },
+    );
+    expect(r.ok).toBe(false);
+    if (r.ok === false) expect(r.body.error).toBe("fortnox_invoice_failed");
+    const [row] = await db.select().from(requests).where(eq(requests.id, "r1"));
+    expect(row.status).toBe("matching");
   });
 
   it("inflytt kan inte klarmarkeras med ofullständig checklista", async () => {
