@@ -13,6 +13,14 @@ export function isHomeownerLeadForm(formType: string): formType is "homeowner" |
   return formType === "homeowner" || formType === "lp-homeowner";
 }
 
+export function shouldQueueHomeownerLeadIntakeSms(opts: {
+  formType: string;
+  hasCrmOwner: boolean;
+  customerEmail?: string | null;
+}): boolean {
+  return opts.hasCrmOwner && isHomeownerLeadForm(opts.formType);
+}
+
 export async function queueHomeownerLeadIntakeSms(opts: {
   owner: Pick<Owner, "id" | "phone"> | null;
   fallbackPhone?: string | null;

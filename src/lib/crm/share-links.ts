@@ -19,10 +19,13 @@ export async function ensureShareLink(opts: {
   ownerId?: string | null;
   userId?: string | null;
 }): Promise<ShareLink> {
-  const matchId = opts.matchId ?? null;
-  const ownerId = opts.ownerId ?? null;
-  const requestId = opts.requestId ?? null;
-  if (!requestId && !ownerId) throw new Error("ensureShareLink: requestId eller ownerId krävs");
+  const ownerId = opts.audience === "tenant" ? null : (opts.ownerId ?? null);
+  const matchId = opts.audience === "tenant" || ownerId ? null : (opts.matchId ?? null);
+  const requestId = opts.audience === "landlord" && ownerId ? null : (opts.requestId ?? null);
+  if (opts.audience === "tenant" && !requestId) throw new Error("ensureShareLink: requestId krävs för kundlänk");
+  if (opts.audience === "landlord" && !ownerId && (!requestId || !matchId)) {
+    throw new Error("ensureShareLink: ownerId eller requestId + matchId krävs för uthyrarlänk");
+  }
 
   const scope = ownerId
     ? eq(shareLinks.ownerId, ownerId)

@@ -3,7 +3,8 @@ export type ContactFormType =
   | 'inquiry'
   | 'homeowner'
   | 'lp-homeowner'
-  | 'lp-corporate';
+  | 'lp-corporate'
+  | 'project-brief';
 
 export interface ContactFormResponse {
   success: boolean;

@@ -25,12 +25,15 @@ import type { Company, Request } from "@/lib/crm/schema";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarClock, CheckCircle2, Trash2 } from "lucide-react";
+import { CalendarClock, CheckCircle2, MapPin, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { formatRequestSearchAreas } from "@/lib/crm/request-search-areas";
+import { REQUEST_STATUS_LABEL } from "@/lib/crm/request-status";
 
 
 const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
+const SEARCH_AREA_STATUSES = ["incoming", "matching"];
 
 interface CompanyCardProps {
   companyId: string;
@@ -364,6 +367,14 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const hasOpenRequests = (company.requests ?? []).some((r) =>
     ["incoming", "matching", "won"].includes(r.status)
   );
+  const searchAreaRequests = (company.requests ?? [])
+    .filter((r) => SEARCH_AREA_STATUSES.includes(r.status) || r.id === selectedRequestId)
+    .filter((r) => formatRequestSearchAreas(r))
+    .sort((a, b) => {
+      if (a.id === selectedRequestId) return -1;
+      if (b.id === selectedRequestId) return 1;
+      return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
+    });
 
   return (
     // pb på mobil: den fasta beslutsraden längst ner får inte täcka sista innehållet.
@@ -584,6 +595,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           />
           <RequestsList
             requests={company.requests ?? []}
+            contacts={company.contacts ?? []}
             companyId={companyId}
             activeRequestId={selectedRequestId}
             onNewRequest={() => setRequestForm({ open: true, request: null })}
@@ -594,6 +606,11 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           />
         </div>
         <div className="space-y-8">
+          <SearchAreasPanel
+            requests={searchAreaRequests}
+            activeRequestId={selectedRequestId}
+            onSelect={setSelectedId}
+          />
           <NotesPanel
             notes={company.notes ?? []}
             companyId={companyId}
@@ -680,5 +697,61 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
         onSubmit={handleSaveRequest}
       />
     </div>
+  );
+}
+
+function SearchAreasPanel({
+  requests,
+  activeRequestId,
+  onSelect,
+}: {
+  requests: Request[];
+  activeRequestId?: string | null;
+  onSelect: (id: string) => void;
+}) {
+  if (requests.length === 0) return null;
+
+  return (
+    <section className="rounded-md border border-amber-200 bg-amber-50/70 p-3">
+      <div className="mb-2 flex items-center gap-1.5">
+        <MapPin className="h-4 w-4 text-amber-700" />
+        <span className="text-xs font-medium uppercase tracking-wide text-amber-800">
+          Sökområden att leta i
+        </span>
+      </div>
+
+      <div className="space-y-2">
+        {requests.map((request) => {
+          const areas = formatRequestSearchAreas(request);
+          if (!areas) return null;
+          const isActive = request.id === activeRequestId;
+
+          return (
+            <button
+              key={request.id}
+              type="button"
+              onClick={() => onSelect(request.id)}
+              className={`w-full rounded-md border bg-white px-3 py-2 text-left transition-colors hover:bg-amber-100/70 ${
+                isActive ? "border-amber-500 ring-2 ring-amber-200" : "border-amber-200"
+              }`}
+            >
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-amber-900">
+                  {request.requestNumber ? `#${request.requestNumber}` : "Förfrågan"} · {REQUEST_STATUS_LABEL[request.status] ?? request.status}
+                </span>
+                {isActive && (
+                  <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-900">
+                    Vald
+                  </span>
+                )}
+              </div>
+              <p className="text-sm font-medium text-amber-950 whitespace-pre-wrap break-words">
+                {areas}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }

@@ -42,6 +42,22 @@ export const verificationTokens = sqliteTable("crm_verification_tokens", {
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
 });
 
+// Externa CRM-kopplingar. Fortnox använder roterande refresh tokens, så token-
+// raden måste bo i databasen och bära ett kort lås runt refresh-anrop.
+export const integrations = sqliteTable("crm_integrations", {
+  provider: text("provider").primaryKey(), // fortnox
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenType: text("token_type"),
+  scope: text("scope"),
+  expiresAt: integer("expires_at", { mode: "timestamp_ms" }),
+  refreshTokenExpiresAt: integer("refresh_token_expires_at", { mode: "timestamp_ms" }),
+  refreshLockId: text("refresh_lock_id"),
+  refreshLockedUntil: text("refresh_locked_until"),
+  connectedAt: text("connected_at").default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
 export const companies = sqliteTable("crm_companies", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -142,6 +158,10 @@ export const requests = sqliteTable("crm_requests", {
   garageRequired: integer("garage_required", { mode: "boolean" }),
   monthlyValue: real("monthly_value"), // affärsvärde när fakturerad (utfall)
   billingProjectId: text("billing_project_id"), // Fortnox/projekt-id, default kan vara requestNumber
+  fortnoxInvoiceNumber: text("fortnox_invoice_number"),
+  fortnoxInvoiceUrl: text("fortnox_invoice_url"),
+  fortnoxInvoiceCreatedAt: text("fortnox_invoice_created_at"),
+  fortnoxInvoiceError: text("fortnox_invoice_error"),
   wonPropertyId: text("won_property_id"),
   lostReason: text("lost_reason"),
   // Annonsattribution: Google klick-ID (gclid) från landningssidan. Bärs hela
@@ -357,6 +377,8 @@ export const requestQualifications = sqliteTable("crm_request_qualifications", {
 
 export type Company = typeof companies.$inferSelect;
 export type CompanyInsert = typeof companies.$inferInsert;
+export type Integration = typeof integrations.$inferSelect;
+export type IntegrationInsert = typeof integrations.$inferInsert;
 export type Contact = typeof contacts.$inferSelect;
 export type ContactInsert = typeof contacts.$inferInsert;
 export type Owner = typeof owners.$inferSelect;

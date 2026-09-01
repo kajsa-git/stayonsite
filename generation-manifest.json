@@ -1,0 +1,33 @@
+{
+  "campaign": "StayOnSite — privata bostadsägare till företagsboende",
+  "generatedAt": "2026-08-31",
+  "method": "Built-in ImageGen base photography with deterministic Sharp post-production",
+  "brandColors": {
+    "primary": "#053C5E",
+    "accent": "#FF6300"
+  },
+  "cta": "Registrera din bostad",
+  "sourceBrief": "campaign-brief.md",
+  "assets": [
+    { "concept": "local-demand", "city": "Jönköping", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-jonkoping-1080x1350.png" },
+    { "concept": "local-demand", "city": "Jönköping", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-jonkoping-1080x1920.png" },
+    { "concept": "local-demand", "city": "Kiruna", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-kiruna-1080x1350.png" },
+    { "concept": "local-demand", "city": "Kiruna", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-kiruna-1080x1920.png" },
+    { "concept": "local-demand", "city": "Gävle", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-gavle-1080x1350.png" },
+    { "concept": "local-demand", "city": "Gävle", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-gavle-1080x1920.png" },
+    { "concept": "local-demand", "city": "Linköping", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-linkoping-1080x1350.png" },
+    { "concept": "local-demand", "city": "Linköping", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-linkoping-1080x1920.png" },
+    { "concept": "local-demand", "city": "Göteborg", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-goteborg-1080x1350.png" },
+    { "concept": "local-demand", "city": "Göteborg", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-goteborg-1080x1920.png" },
+    { "concept": "local-demand", "city": "Stockholm", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/local-demand/feed-stockholm-1080x1350.png" },
+    { "concept": "local-demand", "city": "Stockholm", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/local-demand/vertical-stockholm-1080x1920.png" },
+    { "concept": "zero-fee", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/zero-fee/feed-1080x1350.png" },
+    { "concept": "zero-fee", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/zero-fee/vertical-1080x1920.png" },
+    { "concept": "company-only", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/company-only/feed-1080x1350.png" },
+    { "concept": "company-only", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/company-only/vertical-1080x1920.png" },
+    { "concept": "property-type", "propertyType": "villa", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/property-types/villa/feed-1080x1350.png" },
+    { "concept": "property-type", "propertyType": "villa", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/property-types/villa/vertical-1080x1920.png" },
+    { "concept": "property-type", "propertyType": "radhus", "format": "feed", "width": 1080, "height": 1350, "path": "ad-assets/meta/property-types/radhus/feed-1080x1350.png" },
+    { "concept": "property-type", "propertyType": "radhus", "format": "stories-reels", "width": 1080, "height": 1920, "path": "ad-assets/meta/property-types/radhus/vertical-1080x1920.png" }
+  ]
+}

@@ -154,6 +154,18 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
               </Link>
               <Link
+                href="/projektboende"
+                className={cn(
+                  "text-[15px] font-medium transition-all duration-300 relative group",
+                  useScrolledStyle
+                    ? "text-primary/70 hover:text-primary"
+                    : "text-white/80 hover:text-white"
+                )}
+              >
+                Projektboende
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link
                 href="/for-husagare"
                 className={cn(
                   "text-[15px] font-medium transition-all duration-300 relative group",
@@ -258,6 +270,15 @@ const Header = () => {
                   className="block px-4 py-2 text-primary font-medium"
                 >
                   {t("nav.forCompanies")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/projektboende"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-4 py-2 text-primary font-medium"
+                >
+                  Projektboende
                 </Link>
               </li>
               <li>

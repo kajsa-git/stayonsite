@@ -2,8 +2,8 @@ import { buildMetadata } from '@/lib/metadata'
 import ForForetag from '@/views/ForForetag'
 
 export const metadata = buildMetadata({
-  title: 'Personalboende för företag i hela Sverige | StayOnSite',
-  description: 'StayOnSite ordnar personalboende för byggbolag och industriföretag i 40+ städer. Möblerade lägenheter, företagsfaktura, fast kontaktperson. Boendeplan inom 24h.',
+  title: 'Företagsbostäder & personalboende för projekt i Sverige | StayOnSite',
+  description: 'Företagsbostäder och personalboende för bygg, industri och montage i Sverige. Skicka projektbrief med ort, bemanning, datum och krav för jämförbar offert.',
   canonical: 'https://www.stayonsite.se/for-foretag',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/for-foretag' },

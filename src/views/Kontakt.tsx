@@ -6,6 +6,7 @@ import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import SEO from '@/components/SEO';
 import InquiryForm from '@/components/InquiryForm';
 import CityLinks from '@/components/CityLinks';
+import { COMPANY_FACTS } from '@/data/constants';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MessageCircle, MapPin, Clock } from 'lucide-react';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/gtag';
@@ -23,6 +24,7 @@ const Kontakt = () => {
     {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
+      '@id': `${COMPANY_FACTS.url}/#organization`,
       name: 'StayOnSite',
       legalName: 'StayOnSite AB',
       telephone: '+46762498486',
@@ -46,10 +48,7 @@ const Kontakt = () => {
         contactType: 'customer service',
         availableLanguage: ['Swedish', 'English', 'Polish'],
       },
-      sameAs: [
-        'https://www.facebook.com/stayonsite',
-        'https://www.linkedin.com/company/stayonsite',
-      ],
+      sameAs: [COMPANY_FACTS.googleBusinessProfile, COMPANY_FACTS.linkedIn],
     },
     {
       '@context': 'https://schema.org',

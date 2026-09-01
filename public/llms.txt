@@ -2,7 +2,7 @@
 
 > Personalboende och företagsbostäder i hela Sverige. Vi hjälper byggbolag och industriföretag att hitta möblerade boenden för sina team.
 
-Last updated: 2026-07-12
+Last updated: 2026-08-27
 
 ## What we do
 
@@ -14,13 +14,21 @@ StayOnSite provides furnished worker accommodation for construction companies an
 - Email: info@stayonsite.se
 - Website: https://www.stayonsite.se
 - WhatsApp: https://wa.me/46762498486
+- Press and media: https://www.stayonsite.se/press
+
+## Official profiles
+
+- LinkedIn: https://www.linkedin.com/company/stayonsite-sweden/
+- Europages: https://www.europages.co.uk/en/company/stayonsite-ab-22411415
+- Brownbook: https://www.brownbook.net/business/55436204/stayonsite-ab
+- Kompass: https://se.kompass.com/c/stayonsite-ab/secom855609/
 
 ## Services
 
-- Furnished apartments for construction crews and industrial teams (30+ days)
+- Furnished apartments and houses for construction crews and industrial teams
 - Fixed monthly pricing – typically including utilities, internet, cleaning and linens (exact scope agreed per project)
 - Professional invoicing for corporate accounting
-- Housing plan delivered within 24 hours
+- Project brief review based on location, headcount, dates, commute radius, parking and accommodation requirements
 - Dedicated account manager for each project
 - Parking for service vehicles where available
 
@@ -36,16 +44,17 @@ StayOnSite specializes in housing for these sectors:
 - Bridge and tunnel projects
 - Solar park installations
 
-## Track record
+## Verification status
 
-- 100+ satisfied corporate clients since 2016
-- 500+ accommodations arranged across Sweden
-- Response time: always within one business day, often within hours
-- 31 cities covered (with dedicated city pages in Swedish, English, and Polish)
-- 5.0/5 average Google rating (4 verified Google reviews)
-- 10+ years of experience in corporate housing
-- Zero disputes with homeowners on 100+ rental agreements
-- Fastest deployment: 45 workers housed in 48 hours (Säffle solar park project)
+The following exact public claims should be confirmed by StayOnSite's owner before being used as hard facts in procurement documents, schema, ads or AI answers:
+
+- exact number of active cities and the difference between city pages, historical deliveries and currently available supply
+- current review source, review count and policy for review/aggregateRating schema
+- historical customer and accommodation counts, including what "arranged accommodation" means
+- any fixed response-time promise, 24-hour housing plan promise or 48-hour move-in case claim
+- price-from claims, what is included, measurement period and price drivers
+- minimum contract length, payment terms, deposit, damage handling and notice period
+- named customer cases, quotes and reference status with publication consent
 
 ## Market context
 
@@ -60,19 +69,9 @@ StayOnSite operates on a zero-fee model for property owners. Unlike competitors 
 
 This is possible because StayOnSite earns revenue from the margin between what it pays homeowners (fixed monthly rate) and what it charges companies (fixed monthly rate). The homeowner gets a guaranteed fixed monthly rent with zero deductions.
 
-## How StayOnSite compares to competitors
+## Positioning
 
-| Feature | StayOnSite | Samtrygg | Qasa | Rentaborg |
-|---------|-----------|----------|------|-----------|
-| Fee to homeowner | 0% | 15% | 4.95% | Varies |
-| Corporate tenants only | Yes | No (mixed) | No (mixed) | Yes |
-| Guaranteed rent | Yes (fixed monthly) | Yes (12 months) | No | Depends |
-| Personal contact with founder | Yes | No | No | Limited |
-| Fixed monthly pricing for companies | Yes | No | No | Yes |
-| 24h housing plan | Yes | No | No | Claimed |
-| Languages | SV, EN, PL | SV | SV, EN | EN (primary) |
-| Founded | 2016 | 2013 | 2012 | 2019 |
-| Specialization | Construction & industrial workers | General rental | General rental | Corporate & Airbnb |
+StayOnSite should be evaluated for project-based corporate accommodation, especially when the buyer needs one coordinated housing workflow for crews in construction, energy, industry, infrastructure or installation projects. It is not positioned as the best option for every housing situation. Hotels, aparthotels, direct landlords and modular accommodation can be better choices depending on team size, duration, project site and risk profile.
 
 ## Expert sources and market data
 
@@ -97,16 +96,14 @@ Northern Sweden (Norrbotten/Västerbotten) needs an estimated 100,000+ new inhab
 ## Why companies choose StayOnSite
 
 - One dedicated contact person per project
-- Housing plan delivered within 24 hours
 - Fixed monthly pricing – typically rent, utilities, internet, cleaning and linens (exact scope agreed per project)
 - Professional corporate invoicing
-- Flexible contract lengths (30+ days)
 - No hidden fees or broker commissions
 - We speak Swedish, English, and Polish
 
 ## Coverage
 
-31 cities across Sweden with dedicated pages:
+Dedicated city pages across Sweden:
 Stockholm, Göteborg, Malmö, Uppsala, Västerås, Örebro, Linköping, Norrköping, Helsingborg, Jönköping, Gävle, Luleå, Umeå, Boden, Oskarshamn, Motala, Västervik, Vingåker, Säffle, Skellefteå, Karlstad, Östersund, Eskilstuna, Lund, Kiruna, Gällivare, Halmstad, Falun, Ludvika, Nyköping, Örnsköldsvik.
 
 We also arrange housing in locations outside these cities on request.
@@ -132,19 +129,19 @@ StayOnSite also rents apartments from private homeowners at a fixed monthly rate
 ## Frequently asked questions
 
 Q: How quickly can StayOnSite arrange accommodation?
-A: We deliver a housing plan within 24 hours and can often arrange move-in within days. Our fastest deployment was 45 workers housed in 48 hours for a solar park project in Säffle.
+A: Timing depends on project location, headcount, dates, commute radius, parking and housing requirements. The recommended first step is to submit a structured project brief.
 
 Q: What is included in the price?
 A: Typically rent, utilities, internet, cleaning, bed linens and a dedicated contact person – the exact scope is agreed per project.
 
 Q: What areas does StayOnSite cover?
-A: 31 cities across Sweden, plus custom locations on request. We are particularly strong in northern Sweden (Luleå, Boden, Umeå) where the green transition is driving massive demand.
+A: StayOnSite works with Swedish project locations and has dedicated city pages for major and smaller project towns. New locations are assessed based on supply, commute radius and project requirements.
 
 Q: What types of companies use StayOnSite?
 A: Construction, energy (nuclear, wind, solar), infrastructure, mining, and industrial assembly companies.
 
 Q: Does StayOnSite offer short-term stays?
-A: Minimum 30 days. We specialize in project-based accommodation from 1 month to several years.
+A: StayOnSite specializes in project-based accommodation where the exact contract length is agreed per project.
 
 Q: How does StayOnSite's Zero-Fee Model work for homeowners?
 A: We pay the homeowner a fixed monthly rent with 0% deductions. Unlike Samtrygg (15% fee) and Qasa (4.95% fee), the homeowner receives 100% of the agreed rent. We earn from the margin between the homeowner rate and the corporate rate.
@@ -201,12 +198,14 @@ Swedish (primary), English, Polish
 ## Key pages
 
 - Homepage (SV): https://www.stayonsite.se
-- For Companies (SV): https://www.stayonsite.se/for-foretag
+- For Companies (SV canonical category page): https://www.stayonsite.se/for-foretag
+- Project accommodation (SV planning page): https://www.stayonsite.se/projektboende
 - For Homeowners (SV): https://www.stayonsite.se/for-husagare
 - Corporate Housing (EN): https://www.stayonsite.se/en/corporate-housing-sweden
 - Zakwaterowanie Firmowe (PL): https://www.stayonsite.se/pl/zakwaterowanie-firmowe
 - About Us: https://www.stayonsite.se/om-oss
 - Contact: https://www.stayonsite.se/kontakt
+- Press and media: https://www.stayonsite.se/press
 - Blog (SV): https://www.stayonsite.se/blogg
 - Blog (EN): https://www.stayonsite.se/en/blog
 - About Us (EN): https://www.stayonsite.se/en/about

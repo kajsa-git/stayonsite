@@ -27,6 +27,7 @@ interface AgreementStatus {
 interface PanelData {
   links: ShareLink[];
   agreement: AgreementStatus | null;
+  requestIds?: string[];
 }
 
 // owner: fristående uthyrarlänk (/uthyrare/<token>, ownerId-scope).
@@ -47,6 +48,8 @@ export function AgreementStatusPanel({
   const [working, setWorking] = useState(false);
 
   const label = kind === "owner" ? "Uppdragsavtal (uthyrningsuppdrag)" : "Uppdragsbekräftelse";
+  const shareLabel = kind === "owner" ? "Dela uthyrarlänk" : "Dela kundlänk";
+  const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
   const activeLink =
     kind === "owner"
       ? (data?.links.find((l) => l.audience === "landlord" && l.ownerId === id && !l.revokedAt) ?? null)
@@ -58,7 +61,8 @@ export function AgreementStatusPanel({
     : null;
 
   async function createLink() {
-    if (kind === "company" && !activeLink && (data?.links ?? []).length === 0) {
+    const requestId = kind === "company" ? latestRequestIdFromLinks() : null;
+    if (kind === "company" && !requestId) {
       // Kundens avtalslänk är förfrågans kundlänk — utan förfrågan finns inget att länka till.
       toast({ title: "Skapa en förfrågan först — avtalslänken är kundens erbjudandelänk", variant: "destructive" });
       return;
@@ -68,7 +72,7 @@ export function AgreementStatusPanel({
       const res = await fetch("/api/crm/share-links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(kind === "owner" ? { ownerId: id } : { requestId: latestRequestIdFromLinks() }),
+        body: JSON.stringify(kind === "owner" ? { ownerId: id, audience: "landlord" } : { requestId, audience: "tenant" }),
       });
       if (!res.ok) {
         toast({ title: "Kunde inte skapa länken", variant: "destructive" });
@@ -83,7 +87,12 @@ export function AgreementStatusPanel({
 
   // Företagets kundlänkar ligger per förfrågan — ta senaste förfrågans.
   function latestRequestIdFromLinks(): string | null {
-    return data?.links.find((l) => l.requestId)?.requestId ?? null;
+    return (
+      data?.links.find((l) => l.audience === "tenant" && l.requestId)?.requestId ??
+      data?.requestIds?.[0] ??
+      data?.links.find((l) => l.requestId)?.requestId ??
+      null
+    );
   }
 
   // Annullera signeringen — INTE samma sak som att återkalla länken (länken är
@@ -172,7 +181,7 @@ export function AgreementStatusPanel({
       <div className="flex flex-wrap items-center gap-2">
         {path ? (
           <>
-            <ShareLinkButton path={path} label="Dela avtalslänk" />
+            <ShareLinkButton path={path} label={shareLabel} />
             <button
               onClick={copySms}
               className="inline-flex items-center gap-1.5 h-9 px-3 text-sm rounded-md border border-input bg-white hover:bg-muted transition-colors"
@@ -187,7 +196,7 @@ export function AgreementStatusPanel({
             disabled={working}
             className="inline-flex items-center gap-1.5 h-9 px-3 text-sm rounded-md border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
           >
-            <FileSignature className="h-4 w-4" /> {working ? "Skapar…" : "Skapa avtalslänk"}
+            <FileSignature className="h-4 w-4" /> {working ? "Skapar…" : createLabel}
           </button>
         )}
       </div>

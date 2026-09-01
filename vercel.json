@@ -1,6 +1,7 @@
 {
   "crons": [
-    { "path": "/api/cron/agreement-reminders", "schedule": "0 7 * * *" }
+    { "path": "/api/cron/agreement-reminders", "schedule": "0 7 * * *" },
+    { "path": "/api/cron/fortnox-keepalive", "schedule": "0 8 * * 1" }
   ],
   "headers": [
     {

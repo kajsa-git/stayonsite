@@ -20,7 +20,7 @@ import {
 import { indexCompany, indexContact, indexOwner, indexProperty, indexRequest } from "./search-index";
 
 export type WebSubmission = {
-  formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner" | "lp-corporate";
+  formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner" | "lp-corporate" | "project-brief";
   locale: "sv" | "en" | "pl";
   page: string;
   source?: string;
@@ -58,6 +58,33 @@ function sourceNotes(submission: WebSubmission, extra: Array<string | null | und
     utmLine(submission) ? `UTM: ${utmLine(submission)}` : null,
     ...extra,
   ].filter(Boolean).join("\n");
+}
+
+const PROJECT_BRIEF_LABELS: Record<string, string> = {
+  projectLocations: "Projektorter/arbetsplats",
+  people: "Antal personer",
+  moveInDate: "Inflyttningsdatum",
+  endDate: "Preliminärt slutdatum",
+  maximumCommuteMinutes: "Maximal pendlingstid",
+  parking: "Parkering/servicebilar",
+  roomPreference: "Rumstyp",
+  includedServices: "Krav på boendet",
+  rotation: "Rotation/volymändringar",
+  budget: "Budget",
+  legalCompany: "Juridiskt bolag",
+  invoiceReference: "Fakturareferens",
+  contactName: "Kontaktperson",
+};
+
+function projectBriefNote(submission: WebSubmission) {
+  if (submission.formType !== "project-brief") return null;
+  const rows = Object.entries(PROJECT_BRIEF_LABELS)
+    .map(([key, label]) => {
+      const value = clean(submission.fields[key]);
+      return value ? `${label}: ${value}` : null;
+    })
+    .filter(Boolean);
+  return rows.length ? ["Projektbrief", ...rows].join("\n") : null;
 }
 
 function appendNote(existing: string | null, note: string) {
@@ -191,7 +218,7 @@ async function createCompanyRequest(
   submission: WebSubmission,
 ): Promise<{ company: Company; contact: Contact | null; request: Request }> {
   const f = submission.fields;
-  const city = clean(f.ort) ?? clean(f.city);
+  const city = clean(f.ort) ?? clean(f.city) ?? clean(f.projectLocations);
   const persons = int(f.antal_personer) ?? int(f.people);
   const email = clean(f.email) ?? (clean(f.kontakt)?.includes("@") ? clean(f.kontakt) : null);
   const phone = clean(f.phone) ?? (clean(f.kontakt)?.includes("@") ? null : clean(f.kontakt));
@@ -222,6 +249,7 @@ async function createCompanyRequest(
       status: "incoming",
       billingProjectId: String(requestNumber),
       notes: sourceNotes(submission, [
+        projectBriefNote(submission),
         message ? `Meddelande:\n${message}` : null,
         email ? `E-post: ${email}` : null,
         phone ? `Telefon: ${phone}` : null,

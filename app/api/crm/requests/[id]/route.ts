@@ -1,6 +1,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { deleteRequestDeep } from "@/lib/crm/cascade-delete";
+import { createFortnoxInvoiceDraftPatch } from "@/lib/crm/fortnox";
 import { applyRequestUpdate } from "@/lib/crm/request-update";
 import { removeFromIndex } from "@/lib/crm/search-index";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,7 +15,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { id } = await params;
   const body = await req.json();
 
-  const result = await applyRequestUpdate(id, body);
+  const result = await applyRequestUpdate(id, body, {
+    createInvoiceDraft: (requestId, merged) => createFortnoxInvoiceDraftPatch(requestId, merged),
+  });
   // === false: tsconfig kör utan strictNullChecks, där narrowar inte !result.ok
   if (result.ok === false) return NextResponse.json(result.body, { status: result.status });
   return NextResponse.json(result.row);

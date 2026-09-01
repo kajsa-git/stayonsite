@@ -14,7 +14,8 @@ import {
 } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { ensureShareLink, type ShareAudience } from "@/lib/crm/share-links";
+import { parseShareLinkCreateInput } from "@/lib/crm/share-link-input";
+import { ensureShareLink } from "@/lib/crm/share-links";
 import { agreementAcceptances, requests, shareLinks } from "@/lib/crm/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -62,7 +63,8 @@ export async function GET(req: NextRequest) {
     const reqRows = await db
       .select({ id: requests.id })
       .from(requests)
-      .where(eq(requests.companyId, companyId));
+      .where(eq(requests.companyId, companyId))
+      .orderBy(desc(requests.createdAt));
     const reqIds = reqRows.map((r) => r.id);
     const links = reqIds.length
       ? await db
@@ -101,17 +103,16 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));
-  const requestId = typeof body.requestId === "string" ? body.requestId : null;
-  const ownerId = typeof body.ownerId === "string" ? body.ownerId : null;
-  if (!requestId && !ownerId) {
-    return NextResponse.json({ error: "requestId eller ownerId krävs" }, { status: 400 });
+  const parsed = parseShareLinkCreateInput(body);
+  if (parsed.ok === false) {
+    return NextResponse.json({ error: parsed.error }, { status: parsed.status });
   }
-  const audience: ShareAudience = body.audience === "landlord" || ownerId ? "landlord" : "tenant";
+  const { audience, requestId, matchId, ownerId } = parsed.input;
 
   const link = await ensureShareLink({
     audience,
     requestId,
-    matchId: typeof body.matchId === "string" ? body.matchId : null,
+    matchId,
     ownerId,
     userId: (session.user as { id?: string } | undefined)?.id ?? null,
   });

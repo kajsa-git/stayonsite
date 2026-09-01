@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTestDb, type TestDB } from "./test-db";
-import { isHomeownerLeadForm, queueHomeownerLeadIntakeSms } from "./homeowner-automation";
+import { isHomeownerLeadForm, queueHomeownerLeadIntakeSms, shouldQueueHomeownerLeadIntakeSms } from "./homeowner-automation";
 import { outboxMessages } from "./schema";
 
 let db: TestDB;
@@ -20,7 +20,29 @@ describe("homeowner lead automation", () => {
     expect(isHomeownerLeadForm("hero-intent")).toBe(false);
   });
 
-  it("köar SMS-kvitto med länk till komplett bostadsregistrering för telefon-only husägare", async () => {
+  it("köar intags-SMS för husägarlead även när e-post finns", () => {
+    expect(shouldQueueHomeownerLeadIntakeSms({
+      formType: "homeowner",
+      hasCrmOwner: true,
+      customerEmail: "dana@example.com",
+    })).toBe(true);
+    expect(shouldQueueHomeownerLeadIntakeSms({
+      formType: "lp-homeowner",
+      hasCrmOwner: true,
+      customerEmail: null,
+    })).toBe(true);
+    expect(shouldQueueHomeownerLeadIntakeSms({
+      formType: "homeowner",
+      hasCrmOwner: false,
+      customerEmail: "dana@example.com",
+    })).toBe(false);
+    expect(shouldQueueHomeownerLeadIntakeSms({
+      formType: "inquiry",
+      hasCrmOwner: true,
+    })).toBe(false);
+  });
+
+  it("köar SMS-kvitto med länk till komplett bostadsregistrering för husägare", async () => {
     const result = await queueHomeownerLeadIntakeSms({
       db,
       owner: { id: "owner-1", phone: "070-123 45 67" },

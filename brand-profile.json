@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "brand_name": "StayOnSite",
+  "website_url": "https://www.stayonsite.se",
+  "extracted_at": "2026-08-31T00:00:00+02:00",
+  "voice": {
+    "formal_casual": 4,
+    "rational_emotional": 3,
+    "playful_serious": 8,
+    "bold_subtle": 6,
+    "traditional_innovative": 5,
+    "expert_accessible": 7,
+    "descriptors": [
+      "professionell",
+      "trovärdig",
+      "rak",
+      "personlig"
+    ]
+  },
+  "colors": {
+    "primary": "#053C5E",
+    "secondary": [
+      "#FF6300",
+      "#F7F7F5",
+      "#587282"
+    ],
+    "forbidden": [
+      "neon pink",
+      "purple gradient"
+    ],
+    "background": "#F7F7F5",
+    "text": "#424343"
+  },
+  "typography": {
+    "heading_font": "Montserrat",
+    "body_font": "Inter",
+    "pairing_descriptor": "tydlig modern sans-serif med sober nordisk känsla"
+  },
+  "imagery": {
+    "style": "naturlig professionell bostadsfotografi med svensk vardagskänsla",
+    "subjects": [
+      "svenska villor, radhus och lägenheter",
+      "privata bostadsägare",
+      "välskötta möblerade hem",
+      "yrkespersoner som veckopendlar"
+    ],
+    "composition": "ren nordisk komposition, autentiska miljöer, tydlig huvudidé och generöst negativt utrymme för copy",
+    "forbidden": [
+      "generiska handslag",
+      "amerikanska förortshus",
+      "hotellrum",
+      "festscener",
+      "överdrivna leenden",
+      "lyx som känns orealistisk",
+      "AI-artefakter",
+      "vattenstämplar"
+    ]
+  },
+  "aesthetic": {
+    "mood_keywords": [
+      "trygg",
+      "nordisk",
+      "professionell",
+      "varm"
+    ],
+    "texture": "naturlig och lätt redaktionell",
+    "negative_space": "generous"
+  },
+  "brand_values": [
+    "trygg företagsuthyrning",
+    "inga avgifter för bostadsägaren",
+    "personlig kontakt",
+    "lokal efterfrågan",
+    "smidig helhetsprocess"
+  ],
+  "target_audience": {
+    "age_range": "vuxna privata bostadsägare; ålder används inte som Meta-targeting på grund av bostadskategorin",
+    "profession": "privatpersoner som äger en ägarlägenhet, villa, ett radhus, en separat uthyrningsdel eller en bostadsrätt med godkänd andrahandsuthyrning i eller nära en efterfrågad projektstad",
+    "pain_points": [
+      "oro för privat uthyrning och okända hyresgäster",
+      "avgifter som minskar hyran",
+      "administration, avtal och löpande kontakt",
+      "osäker efterfrågan utanför storstäderna",
+      "osäkerhet kring bostadsrättsföreningens tillstånd"
+    ],
+    "aspirations": [
+      "hyra ut till seriösa företag",
+      "få hela den avtalade hyran utan plattformsavgift",
+      "ha en tydlig kontaktperson",
+      "få en långsiktigare och enklare uthyrning"
+    ]
+  }
+}

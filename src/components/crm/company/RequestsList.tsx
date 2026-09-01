@@ -1,12 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import type { Request } from "@/lib/crm/schema";
+import type { Contact, Request } from "@/lib/crm/schema";
 import { Plus } from "lucide-react";
 import { RequestCard } from "./RequestCard";
 
 interface Props {
-  requests: Request[];
+  requests: (Request & { matchCount?: number })[];
+  contacts?: Contact[];
   companyId: string;
   activeRequestId?: string | null;
   onNewRequest: () => void;
@@ -18,18 +19,23 @@ interface Props {
 
 const OPEN_STATUSES = ["incoming", "matching", "won"];
 
-export function RequestsList({ requests, companyId, activeRequestId, onNewRequest, onEditRequest, onSelectRequest, onMatch, onStatusChange }: Props) {
+export function RequestsList({ requests, contacts = [], companyId, activeRequestId, onNewRequest, onEditRequest, onSelectRequest, onMatch, onStatusChange }: Props) {
   const sorted = [...requests].sort(
     (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
   );
   const open = sorted.filter((r) => OPEN_STATUSES.includes(r.status));
   const closed = sorted.filter((r) => !OPEN_STATUSES.includes(r.status));
+  const primaryContact = contacts.find((c) => c.isPrimary) ?? contacts[0] ?? null;
+  const contactsById = new Map(contacts.map((c) => [c.id, c]));
 
-  function renderCard(r: Request, compact = false) {
+  function renderCard(r: Request & { matchCount?: number }, compact = false) {
+    const requestContact = r.contactId ? contactsById.get(r.contactId) ?? primaryContact : primaryContact;
+
     return (
       <RequestCard
         key={r.id}
         request={r}
+        contact={requestContact}
         compact={compact}
         isActive={r.id === activeRequestId}
         onSelect={onSelectRequest}

@@ -15,6 +15,7 @@ import StickyContact from '@/components/StickyContact';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/hooks/use-translation';
+import { COMPANY_FACTS } from '@/data/constants';
 import { usePathname } from 'next/navigation';
 
 const Index = () => {
@@ -44,7 +45,7 @@ const Index = () => {
     'name': 'StayOnSite',
     'legalName': 'StayOnSite AB',
     'image': 'https://www.stayonsite.se/images/og-image.jpg',
-    '@id': 'https://www.stayonsite.se',
+    '@id': `${COMPANY_FACTS.url}/#organization`,
     'url': 'https://www.stayonsite.se',
     'telephone': '+46 76-249 84 86',
     'email': 'info@stayonsite.se',
@@ -60,10 +61,7 @@ const Index = () => {
       '@type': 'PostalAddress',
       'addressCountry': 'SE'
     },
-    'sameAs': [
-      'https://www.facebook.com/stayonsite',
-      'https://www.linkedin.com/company/stayonsite'
-    ],
+    'sameAs': [COMPANY_FACTS.googleBusinessProfile, COMPANY_FACTS.linkedIn],
     'areaServed': [
       { '@type': 'City', 'name': 'Stockholm' },
       { '@type': 'City', 'name': 'Göteborg' },

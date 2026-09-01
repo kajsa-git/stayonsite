@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/gtag';
 import { cities } from '@/data/cities';
-import { RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
+import { COMPANY_FACTS, RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
 import {
   Phone,
   Mail,
@@ -38,6 +38,7 @@ const OmOss = () => {
     {
       '@context': 'https://schema.org',
       '@type': 'LodgingBusiness',
+      '@id': `${COMPANY_FACTS.url}/#organization`,
       name: 'StayOnSite',
       legalName: 'StayOnSite AB',
       description: t(
@@ -48,6 +49,7 @@ const OmOss = () => {
       url: 'https://www.stayonsite.se',
       telephone: '+46762498486',
       email: 'info@stayonsite.se',
+      sameAs: [COMPANY_FACTS.googleBusinessProfile, COMPANY_FACTS.linkedIn],
       founder: {
         '@type': 'Person',
         name: 'Kajsa Sihlén',

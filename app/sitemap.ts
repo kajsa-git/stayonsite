@@ -37,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE}/projektboende`,
+      lastModified: today,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
       url: `${BASE}/om-oss`,
       lastModified: today,
       changeFrequency: 'monthly',
@@ -47,6 +53,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: today,
       changeFrequency: 'monthly',
       priority: 0.8,
+    },
+    {
+      url: `${BASE}/press`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${BASE}/boenden`,

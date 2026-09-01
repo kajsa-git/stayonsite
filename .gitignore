@@ -54,4 +54,8 @@ skills-lock.json
 scripts/*-backup.json
 scripts/sms-*
 scripts/resend-sms-*-log.json
+scripts/queue-fix-*-log.json
+
+# Lokala arbetsfiler (kontaktark, PDF-renderingar och bildextrakt)
+tmp/
 .claude/skills/shadcn
