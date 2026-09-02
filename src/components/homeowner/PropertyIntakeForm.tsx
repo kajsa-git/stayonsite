@@ -240,7 +240,7 @@ function Stepper({
   );
 }
 
-export function PropertyIntakeForm() {
+export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1" | "h2" } = {}) {
   const utmParams = useUtmCapture();
   const [form, setForm] = useState<IntakeFormState>(initialForm);
   const [step, setStep] = useState(0);
@@ -259,6 +259,7 @@ export function PropertyIntakeForm() {
   // Publiceringsgodkännandet — lever över båda vyerna så kortet inte nollställs
   // när man går vidare från del 2 till tack-sidan.
   const [publishConsented, setPublishConsented] = useState(false);
+  const Heading = headingLevel;
 
   const progress = ((step + 1) / steps.length) * 100;
 
@@ -517,7 +518,7 @@ export function PropertyIntakeForm() {
           <div className="flex items-start gap-3 rounded-md border border-green-200 bg-white p-5 shadow-sm">
             <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-700" />
             <div>
-              <p className="text-base font-semibold text-nordic-950">Bostaden är mottagen — tack!</p>
+              <p className="text-base font-semibold text-nordic-900">Bostaden är mottagen — tack!</p>
               <p className="mt-1 text-sm leading-6 text-nordic-700">
                 Ett snabbt steg kvar, tar under en minut: signera uthyrningsuppdraget — kostnadsfritt
                 och inte exklusivt.
@@ -560,7 +561,7 @@ export function PropertyIntakeForm() {
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
             <CheckCircle2 className="h-7 w-7 text-green-700" />
           </div>
-          <h1 className="mt-4 text-2xl font-semibold text-nordic-950 sm:text-3xl">Tack – vi har tagit emot din bostad!</h1>
+          <h1 className="mt-4 text-2xl font-semibold text-nordic-900 sm:text-3xl">Tack – vi har tagit emot din bostad!</h1>
           <p className="mt-3 text-base leading-7 text-nordic-800">
             Vi går igenom uppgifter och bilder i lugn och ro — <strong>inget visas online utan ditt
             godkännande</strong>, och du behöver inte göra något mer just nu.
@@ -606,7 +607,7 @@ export function PropertyIntakeForm() {
             <p>Bilder mottagna: <span className="font-semibold">{success.imageCount}</span></p>
             <p>
               Referens: <span className="font-mono font-semibold">{success.propertyId}</span>
-              <span className="text-nordic-600"> – uppge den gärna om du hör av dig.</span>
+              <span className="text-nordic-800"> – uppge den gärna om du hör av dig.</span>
             </p>
             {success.imageErrors.length > 0 && (
               <p className="pt-1 text-amber-800">
@@ -647,7 +648,7 @@ export function PropertyIntakeForm() {
                   {/* Privatpersoner får uthyrningsuppdraget som del 2 direkt efter inskicket. */}
                   {form.ownerType === "privatperson" ? "Registrera bostad · Del 1 av 2" : "Registrera bostad"}
                 </div>
-                <h1 className="mt-2 text-2xl font-semibold text-nordic-950 sm:text-3xl">Fyll i bostadsuppgifter</h1>
+                <Heading className="mt-2 text-2xl font-semibold text-nordic-900 sm:text-3xl">Fyll i bostadsuppgifter</Heading>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-nordic-700">
                   Tar några minuter att fylla i. Du kan hoppa över sådant du är osäker på, men adress, kontakt och antal sovrum/bäddar behövs för att vi ska kunna bedöma bostaden snabbt.
                 </p>
@@ -759,7 +760,7 @@ export function PropertyIntakeForm() {
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-nordic-900">Parkering</p>
-                  <p className="text-sm text-nordic-600">Välj det som stämmer – flera går bra.</p>
+                  <p className="text-sm text-nordic-800">Välj det som stämmer – flera går bra.</p>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {PARKING_OPTIONS.map((option) => (
                       <ToggleCard
@@ -815,7 +816,7 @@ export function PropertyIntakeForm() {
                 <div className="rounded-md border border-dashed border-nordic-300 bg-nordic-50 p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <Label htmlFor="images" className="text-base font-semibold text-nordic-950">Bilder</Label>
+                      <Label htmlFor="images" className="text-base font-semibold text-nordic-900">Bilder</Label>
                       <p className="mt-1 text-sm text-nordic-700">Ladda gärna upp utsida, kök, sovrum och badrum. Det går att skicka utan bilder.</p>
                     </div>
                     <label
