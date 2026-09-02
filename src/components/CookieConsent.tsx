@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react'
 import { Cookie } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { GA_ADS_ID, getStoredConsent, updateConsent } from '@/lib/gtag'
+import { META_PIXEL_ID } from '@/lib/meta-pixel'
 
 export default function CookieConsent() {
   const { t } = useLanguage()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (!GA_ADS_ID) return
+    if (!GA_ADS_ID && !META_PIXEL_ID) return
     const stored = getStoredConsent()
     if (stored) {
       updateConsent(stored)

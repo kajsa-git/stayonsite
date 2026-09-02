@@ -13,6 +13,7 @@ export interface ContactFormResponse {
   // Kompletta bostadsintaget returnerar uthyrningslänk från egen endpoint.
   // Kontaktformuläret behåller fältet för bakåtkompatibilitet men returnerar null.
   agreement?: { token: string; alreadySigned: boolean } | null;
+  metaEventId?: string;
 }
 
 export interface ContactFormSubmission {
@@ -27,6 +28,8 @@ export interface ContactFormSubmission {
 export async function submitContactForm(
   submission: ContactFormSubmission
 ): Promise<ContactFormResponse> {
+  const { getMetaTrackingContext } = await import('@/lib/meta-pixel');
+  const tracking = getMetaTrackingContext('Lead');
   const response = await fetch('/api/contact', {
     method: 'POST',
     headers: {
@@ -36,6 +39,7 @@ export async function submitContactForm(
     body: JSON.stringify({
       ...submission,
       startedAt: Date.now(),
+      ...(tracking ? { tracking } : {}),
     }),
   });
 
@@ -50,7 +54,12 @@ export async function submitContactForm(
     throw new Error(result?.error || 'contact_form_request_failed');
   }
 
-  return { success: true, provider: result?.provider, agreement: result?.agreement ?? null };
+  return {
+    success: true,
+    provider: result?.provider,
+    agreement: result?.agreement ?? null,
+    metaEventId: tracking?.eventId,
+  };
 }
 
 export function getContactFormErrorMessage(

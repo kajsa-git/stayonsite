@@ -6,11 +6,9 @@ import LpTrustBadges from '@/components/lp/LpTrustBadges';
 import LpTestimonials from '@/components/lp/LpTestimonials';
 import LpBottomCTA from '@/components/lp/LpBottomCTA';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
-import { useFacebookPixel } from '@/hooks/use-facebook-pixel';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 
 const LpHusagare = () => {
-  useFacebookPixel();
   const utmParams = useUtmCapture();
 
   return (

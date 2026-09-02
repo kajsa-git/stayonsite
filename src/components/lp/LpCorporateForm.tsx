@@ -37,7 +37,7 @@ const LpCorporateForm = ({ utmParams }: LpCorporateFormProps) => {
 
     setIsSubmitting(true);
     try {
-      await submitContactForm({
+      const result = await submitContactForm({
         formType: 'lp-corporate',
         locale: 'en',
         page: window.location.pathname,
@@ -53,7 +53,7 @@ const LpCorporateForm = ({ utmParams }: LpCorporateFormProps) => {
       });
       setFormSuccess(true);
       trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
-      trackFbEvent('Lead');
+      trackFbEvent('Lead', { content_name: 'lp-corporate' }, result.metaEventId);
       toast({ title: 'Thank you! We’ll be in touch within 24 hours.' });
     } catch (error) {
       toast({

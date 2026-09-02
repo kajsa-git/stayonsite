@@ -8,6 +8,7 @@ import {
 import { sendCorporateQualificationEmail } from "@/lib/crm/corporate-qualification-workflow";
 import { mapWebSubmissionToCrm, type WebSubmission } from "@/lib/crm/contact-intake";
 import { queueHomeownerLeadIntakeSms, shouldQueueHomeownerLeadIntakeSms } from "@/lib/crm/homeowner-automation";
+import { sendMetaLeadEvent } from "@/lib/meta-conversions";
 
 // Node-runtime route handler. Importing @/lib/crm/* directly lets Next.js bundle
 // the CRM intake into the function — the old standalone api/contact.ts function
@@ -35,6 +36,13 @@ const base = {
   startedAt: z.number().int().positive(),
   website: z.string().max(200).optional(),
   utmParams: z.record(z.string(), z.string()).optional(),
+  tracking: z.object({
+    consent: z.literal(true),
+    eventId: z.string().min(8).max(100),
+    eventSourceUrl: z.string().url().max(1000),
+    fbc: z.string().max(255).optional(),
+    fbp: z.string().max(255).optional(),
+  }).optional(),
 };
 
 const submissionSchema = z.discriminatedUnion("formType", [
@@ -511,6 +519,29 @@ export async function POST(req: NextRequest) {
         console.error("Homeowner confirmation SMS queue failed", err);
       }
     }
+
+    // Meta CAPI är en icke-kritisk mätkanal. Leadet ska alltid lyckas även om
+    // Meta är nere eller inte är konfigurerat. Samma eventId används av Pixeln
+    // i webbläsaren för deduplicering.
+    const metaTracking = submission.tracking?.consent &&
+      submission.tracking.eventId &&
+      submission.tracking.eventSourceUrl
+      ? {
+          consent: true as const,
+          eventId: submission.tracking.eventId,
+          eventSourceUrl: submission.tracking.eventSourceUrl,
+          fbc: submission.tracking.fbc,
+          fbp: submission.tracking.fbp,
+        }
+      : undefined;
+    await sendMetaLeadEvent(
+      {
+        formType: submission.formType,
+        fields: submission.fields as Record<string, string>,
+        tracking: metaTracking,
+      },
+      { ip, userAgent: req.headers.get("user-agent") ?? undefined }
+    ).catch((err) => console.error("Meta CAPI event failed", err));
 
     return NextResponse.json({ success: true, provider: "resend", crm: crmResult ? "mapped" : "skipped", agreement });
   } catch (err) {

@@ -14,6 +14,7 @@ export const GA_ADS_EMAIL_LABEL = process.env.NEXT_PUBLIC_GADS_EMAIL_LABEL ?? ''
 export const GA_ADS_WHATSAPP_LABEL = process.env.NEXT_PUBLIC_GADS_WHATSAPP_LABEL ?? ''
 
 const CONSENT_KEY = 'cookie-consent'
+export const CONSENT_CHANGE_EVENT = 'stayonsite:consent-change'
 
 export type ConsentChoice = 'granted' | 'denied'
 
@@ -28,6 +29,7 @@ export function updateConsent(choice: ConsentChoice) {
   if (typeof window === 'undefined') return
   localStorage.setItem(CONSENT_KEY, choice)
   updateClarityConsent(choice === 'granted')
+  window.dispatchEvent(new Event(CONSENT_CHANGE_EVENT))
   if (!window.gtag) return
   window.gtag('consent', 'update', {
     ad_storage: choice,

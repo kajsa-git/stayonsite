@@ -1,7 +1,6 @@
 'use client'
 
 import LpCorporateForm from '@/components/lp/LpCorporateForm';
-import { useFacebookPixel } from '@/hooks/use-facebook-pixel';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { trackPhoneClick } from '@/lib/gtag';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,6 @@ const BADGES = [
 ];
 
 const LpCorporateHousing = () => {
-  useFacebookPixel();
   const utmParams = useUtmCapture();
 
   const scrollToForm = () => {

@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import GoogleAdsScript from '@/components/GoogleAdsScript'
 import ClarityScript from '@/components/ClarityScript'
+import MetaPixelScript from '@/components/MetaPixelScript'
 import CookieConsent from '@/components/CookieConsent'
 import Providers from './providers'
 import './globals.css'
@@ -38,6 +39,7 @@ export function SharedBody({ children }: { children: React.ReactNode }) {
         <CookieConsent />
       </Providers>
       <GoogleAdsScript />
+      <MetaPixelScript />
       <ClarityScript />
       <Analytics />
       <SpeedInsights />

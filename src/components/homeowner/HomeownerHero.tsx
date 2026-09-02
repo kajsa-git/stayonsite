@@ -8,6 +8,7 @@ import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
 import { trackFormSubmit } from '@/lib/gtag';
+import { trackFbEvent } from '@/hooks/use-facebook-pixel';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -205,6 +206,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
       });
       setFormSuccess(true);
       trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
+      trackFbEvent('Lead', { content_name: 'homeowner' }, result.metaEventId);
 
       if (result.agreement && !result.agreement.alreadySigned) {
         // Del 2: uthyrningsuppdraget tar över panelen — ingen auto-reset som

@@ -47,7 +47,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
     setIsSubmitting(true);
 
     try {
-      await submitContactForm({
+      const result = await submitContactForm({
         formType: 'lp-homeowner',
         locale: language,
         page: window.location.pathname,
@@ -60,7 +60,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
       });
       setFormSuccess(true);
       trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
-      trackFbEvent('Lead');
+      trackFbEvent('Lead', { content_name: 'lp-homeowner' }, result.metaEventId);
       toast({
         title: t('homeowner.form.success'),
         description: new Date().toLocaleTimeString(),
