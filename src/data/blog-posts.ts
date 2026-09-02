@@ -1548,6 +1548,50 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'laddstationer-personalboende-husagare-guide-2026',
+    title: {
+      sv: 'Laddstationer vid personalboende: Guide för husägare 2026',
+      en: 'EV Charging at Worker Housing: A Property Owner\'s Guide 2026',
+      pl: 'Stacje ładowania przy mieszkaniach dla pracowników: przewodnik dla właścicieli 2026',
+    },
+    description: {
+      sv: 'Så installerar du laddstationer vid personalboende: bidrag, nya byggregler och vad byggföretag kräver 2026.',
+      en: 'How to install EV charging at worker housing: grants, new building rules and what construction firms require in 2026.',
+      pl: 'Jak zainstalować stacje ładowania przy mieszkaniach dla pracowników: dotacje, nowe przepisy i wymagania firm budowlanych 2026.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-09-02',
+    category: 'Tips',
+    tags: ['laddstation', 'elbil', 'husägare', 'blockhyra', 'fastighet'],
+    readingTime: 7,
+    audience: 'husagare',
+    keyTakeaways: [
+      'Boverkets nya föreskrifter BFS 2026:4 träder i kraft 1 juli 2026, med retroaktiva krav på befintliga lokalbyggnader från 1 januari 2027.',
+      'Befintliga lokalbyggnader med fler än 20 p-platser måste välja tomrör till 50 % av platserna eller minst en laddpunkt per 10 platser.',
+      'Ladda bilen-bidraget från Naturvårdsverket täcker upp till 15 000 kr per laddpunkt, men gäller endast företag och BRF, inte privatpersoner.',
+      'Grönt avdrag ger privata husägare 50 procent skattereduktion på arbete och material, med tak på 50 000 kr per person och år.',
+      'Hela processen från projektering till driftsättning av laddinfrastruktur tar normalt 6–9 månader.',
+    ],
+    faq: [
+      {
+        q: 'Måste jag installera laddstation för att hyra ut till byggföretag?',
+        a: 'Det finns inget generellt lagkrav för privata husägare idag, men allt fler byggföretag ställer det som praktiskt krav vid blockhyra. En laddstation ökar chansen att bli förstahandsval vid upphandling av personalboende.',
+      },
+      {
+        q: 'Kan jag få både Grönt avdrag och Ladda bilen-bidraget?',
+        a: 'Nej, man väljer det stöd som passar situationen. Grönt avdrag gäller privatpersoner som installerar i egen bostad, medan Ladda bilen-bidraget riktar sig till företag, BRF:er och organisationer.',
+      },
+      {
+        q: 'Vad händer om jag väntar med installationen till 2027?',
+        a: 'Om fastigheten omfattas av de retroaktiva kraven i BFS 2026:4 riskerar man att stå utan godkänd laddinfrastruktur när kravet träder i kraft 1 januari 2027. Eftersom processen ofta tar 6–9 månader är det klokt att påbörja planeringen i god tid.',
+      },
+      {
+        q: 'Behöver varje hyresgäst en egen mätare?',
+        a: 'Ja, vid uthyrning till flera hyresgäster eller ett byggföretag med flera fordon bör varje laddpunkt vara förberedd för individuell elmätning så att förbrukningen kan debiteras korrekt per fordon eller hyresgäst.',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
