@@ -68,8 +68,8 @@ function feedOverlay(kind, city) {
       <text class="font bold" x="72" y="925" font-size="76" fill="${COLORS.white}">${esc(city)}</text>
       <text class="font medium" x="72" y="982" font-size="30" fill="${COLORS.white}">Ägarlägenhet, villa, radhus</text>
       <text class="font medium" x="72" y="1022" font-size="30" fill="${COLORS.white}">eller separat uthyrningsdel?</text>
-      <text class="font medium" x="72" y="1090" font-size="28" fill="${COLORS.white}">För företagspersonal · 0 % avgift</text>
-      ${button(72, 1130, 438, 78, "REGISTRERA DIN BOSTAD", 25)}
+      <text class="font medium" x="72" y="1090" font-size="28" fill="${COLORS.white}">Företag söker boenden för sin personal</text>
+      ${button(72, 1130, 438, 78, "REGISTRERA BOSTADEN", 25)}
     `);
   }
 
@@ -78,18 +78,18 @@ function feedOverlay(kind, city) {
       <text class="font bold" x="72" y="842" font-size="29" letter-spacing="1.5" fill="${COLORS.orange}">PRIVAT BOSTADSÄGARE?</text>
       <text class="font bold" x="72" y="920" font-size="56" fill="${COLORS.white}">HYR UT TILL FÖRETAG</text>
       <rect x="72" y="964" width="312" height="76" rx="38" fill="${COLORS.orange}" />
-      <text class="font bold" x="228" y="1015" text-anchor="middle" font-size="34" fill="${COLORS.white}">0 % AVGIFT</text>
-      <text class="font medium" x="72" y="1095" font-size="27" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-      ${button(72, 1135, 438, 78, "REGISTRERA DIN BOSTAD", 25)}
+      <text class="font bold" x="228" y="1015" text-anchor="middle" font-size="34" fill="${COLORS.white}">DU FÅR BETALT</text>
+      <text class="font medium" x="72" y="1095" font-size="27" fill="${COLORS.white}">När ett företag hyr ditt boende.</text>
+      ${button(72, 1135, 438, 78, "REGISTRERA BOSTADEN", 25)}
     `);
   }
 
   return svg(1080, 1350, `${common}
     <text class="font bold" x="72" y="852" font-size="51" fill="${COLORS.white}">VI SÖKER PRIVATPERSONER</text>
     <text class="font bold" x="72" y="918" font-size="51" fill="${COLORS.white}">SOM VILL HYRA UT</text>
-    <text class="font medium" x="72" y="988" font-size="29" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-    <text class="font medium" x="72" y="1038" font-size="27" fill="${COLORS.white}">0 % avgift till StayOnSite.</text>
-    ${button(72, 1130, 438, 78, "REGISTRERA DIN BOSTAD", 25)}
+    <text class="font medium" x="72" y="988" font-size="29" fill="${COLORS.white}">Boendet hyrs endast av företag.</text>
+    <text class="font medium" x="72" y="1038" font-size="27" fill="${COLORS.white}">Du får betalt när bostaden hyrs ut.</text>
+    ${button(72, 1130, 438, 78, "REGISTRERA BOSTADEN", 25)}
   `);
 }
 
@@ -105,8 +105,8 @@ function verticalOverlay(kind, city) {
       <text class="font bold" x="112" y="515" font-size="78" fill="${COLORS.white}">${esc(city)}</text>
       <text class="font medium" x="112" y="584" font-size="34" fill="${COLORS.white}">Ägarlägenhet, villa, radhus</text>
       <text class="font medium" x="112" y="631" font-size="34" fill="${COLORS.white}">eller separat uthyrningsdel?</text>
-      <text class="font medium" x="112" y="700" font-size="31" fill="${COLORS.white}">För företagspersonal · 0 % avgift</text>
-      ${button(112, 744, 520, 86, "REGISTRERA DIN BOSTAD", 28)}
+      <text class="font medium" x="112" y="700" font-size="31" fill="${COLORS.white}">Företag söker boenden för sin personal</text>
+      ${button(112, 744, 520, 86, "REGISTRERA BOSTADEN", 28)}
     `);
   }
 
@@ -115,18 +115,18 @@ function verticalOverlay(kind, city) {
       <text class="font bold" x="112" y="420" font-size="30" letter-spacing="1.5" fill="${COLORS.orange}">PRIVAT BOSTADSÄGARE?</text>
       <text class="font bold" x="112" y="505" font-size="58" fill="${COLORS.white}">HYR UT TILL FÖRETAG</text>
       <rect x="112" y="552" width="330" height="82" rx="41" fill="${COLORS.orange}" />
-      <text class="font bold" x="277" y="607" text-anchor="middle" font-size="37" fill="${COLORS.white}">0 % AVGIFT</text>
-      <text class="font medium" x="112" y="690" font-size="30" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-      ${button(112, 742, 520, 86, "REGISTRERA DIN BOSTAD", 28)}
+      <text class="font bold" x="277" y="607" text-anchor="middle" font-size="37" fill="${COLORS.white}">DU FÅR BETALT</text>
+      <text class="font medium" x="112" y="690" font-size="30" fill="${COLORS.white}">När ett företag hyr ditt boende.</text>
+      ${button(112, 742, 520, 86, "REGISTRERA BOSTADEN", 28)}
     `);
   }
 
   return svg(1080, 1920, `${panel}
     <text class="font bold" x="112" y="430" font-size="52" fill="${COLORS.white}">VI SÖKER PRIVATPERSONER</text>
     <text class="font bold" x="112" y="500" font-size="52" fill="${COLORS.white}">SOM VILL HYRA UT</text>
-    <text class="font medium" x="112" y="580" font-size="32" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-    <text class="font medium" x="112" y="632" font-size="30" fill="${COLORS.white}">0 % avgift till StayOnSite.</text>
-    ${button(112, 712, 520, 86, "REGISTRERA DIN BOSTAD", 28)}
+    <text class="font medium" x="112" y="580" font-size="32" fill="${COLORS.white}">Boendet hyrs endast av företag.</text>
+    <text class="font medium" x="112" y="632" font-size="30" fill="${COLORS.white}">Du får betalt när bostaden hyrs ut.</text>
+    ${button(112, 712, 520, 86, "REGISTRERA BOSTADEN", 28)}
   `);
 }
 
@@ -144,9 +144,9 @@ function propertyFeedOverlay(property) {
     <rect x="72" y="778" width="58" height="6" rx="3" fill="${COLORS.orange}" />
     <text class="font bold" x="72" y="842" font-size="29" letter-spacing="1.5" fill="${COLORS.orange}">PRIVAT BOSTADSÄGARE?</text>
     <text class="font bold" x="72" y="920" font-size="58" fill="${COLORS.white}">HYR UT ${possessive}</text>
-    <text class="font medium" x="72" y="988" font-size="29" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-    <text class="font medium" x="72" y="1038" font-size="27" fill="${COLORS.white}">0 % avgift till StayOnSite.</text>
-    ${button(72, 1130, 438, 78, "REGISTRERA DIN BOSTAD", 25)}
+    <text class="font medium" x="72" y="988" font-size="29" fill="${COLORS.white}">Boendet hyrs endast av företag.</text>
+    <text class="font medium" x="72" y="1038" font-size="27" fill="${COLORS.white}">Du får betalt när bostaden hyrs ut.</text>
+    ${button(72, 1130, 438, 78, "REGISTRERA BOSTADEN", 25)}
   `);
 }
 
@@ -159,9 +159,9 @@ function propertyVerticalOverlay(property) {
     <rect x="112" y="345" width="64" height="7" rx="3.5" fill="${COLORS.orange}" />
     <text class="font bold" x="112" y="420" font-size="30" letter-spacing="1.5" fill="${COLORS.orange}">PRIVAT BOSTADSÄGARE?</text>
     <text class="font bold" x="112" y="510" font-size="60" fill="${COLORS.white}">HYR UT ${possessive}</text>
-    <text class="font medium" x="112" y="590" font-size="32" fill="${COLORS.white}">Boendet används av företagspersonal.</text>
-    <text class="font medium" x="112" y="642" font-size="30" fill="${COLORS.white}">0 % avgift till StayOnSite.</text>
-    ${button(112, 712, 520, 86, "REGISTRERA DIN BOSTAD", 28)}
+    <text class="font medium" x="112" y="590" font-size="32" fill="${COLORS.white}">Boendet hyrs endast av företag.</text>
+    <text class="font medium" x="112" y="642" font-size="30" fill="${COLORS.white}">Du får betalt när bostaden hyrs ut.</text>
+    ${button(112, 712, 520, 86, "REGISTRERA BOSTADEN", 28)}
   `);
 }
 

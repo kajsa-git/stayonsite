@@ -47,6 +47,10 @@ function hashedList(value?: string): string[] | undefined {
   return value ? [sha256(value)] : undefined
 }
 
+function isHomeownerForm(formType: string): boolean {
+  return formType.includes('homeowner') || formType === 'property-intake'
+}
+
 export function buildMetaLeadEvent(
   submission: MetaLeadSubmission,
   context: MetaLeadRequestContext,
@@ -84,7 +88,7 @@ export function buildMetaLeadEvent(
       ...(submission.tracking.fbp ? { fbp: submission.tracking.fbp } : {}),
     },
     custom_data: {
-      content_category: submission.formType.includes('homeowner') ? 'homeowner' : 'corporate',
+      content_category: isHomeownerForm(submission.formType) ? 'homeowner' : 'corporate',
       content_name: submission.formType,
     },
   }

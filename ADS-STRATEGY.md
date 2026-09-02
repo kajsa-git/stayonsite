@@ -14,7 +14,7 @@ Behåll ett Meta-annonskonto men dela verksamheten i två tydliga kampanjfamilje
 
 | Del | Status | Målgrupp | Konvertering | Landningssida |
 |---|---|---|---|---|
-| Bostadsägare / utbud | Aktiv nu | Privatpersoner som äger bostad | Godkänd formulärregistrering | `/lp/husagare` |
+| Bostadsägare / utbud | Aktiv nu | Privatpersoner som äger bostad | Slutförd bostadsregistrering | `/registrera-bostad` |
 | Företagskunder / efterfrågan | Förbereds, ej aktiv | Företag som behöver personalboende | Projektförfrågan | Separat företags-LP |
 
 Samma Pixel och framtida Conversions API kan användas, men kampanjer, annonser, mål och CRM-status ska hållas separata.
@@ -23,7 +23,7 @@ Samma Pixel och framtida Conversions API kan användas, men kampanjer, annonser,
 
 ### Huvudlöfte
 
-> Privat bostadsägare? Hyr ut ditt boende för företagspersonal – utan avgifter.
+> Få betalt när företag hyr ditt boende.
 
 ### Förtydligande
 
@@ -31,7 +31,7 @@ Samma Pixel och framtida Conversions API kan användas, men kampanjer, annonser,
 - Prioriterade objekt är ägarlägenheter, villor, radhus och separata uthyrningsdelar.
 - Bostadsrätter är relevanta när andrahandsuthyrningen är godkänd av föreningen eller Hyresnämnden. Formulera aldrig annonsen som att ägaren kan hoppa över ett tillstånd som krävs.
 - Bostaden ägs och registreras av en privatperson; den används som boende av företagspersonal.
-- Bostadsägaren betalar ingen avgift till StayOnSite.
+- Registreringen är kostnadsfri och inte bindande; det används som stödargument, inte som huvudbudskap.
 - Registreringen är första steget; matchning och villkor bekräftas innan avtal.
 
 ### CTA
@@ -81,29 +81,22 @@ Göteborg och Stockholm hålls i en separat uppsättning. De ger större räckvi
 ## Kreativa hypoteser
 
 1. **Privatägare → företagspersonal:** Privatpersonen äger och registrerar bostaden; företagspersonal använder den som boende.
-2. **0 % avgift:** Bostadsägaren betalar ingen avgift till StayOnSite.
+2. **Få betalt:** Bostadsägaren får betalt när ett företag hyr bostaden.
 3. **Vi söker i din stad:** Konkret efterfrågan i de städer där StayOnSite behöver fler boenden.
 
 Varje hypotes får både 4:5 och 9:16. Kör dem samtidigt; låt resultatet avgöra vinnare.
 
 ## Landningssida
 
-Rekommenderad destination är `https://www.stayonsite.se/lp/husagare` eftersom den redan:
+Rekommenderad destination är `https://www.stayonsite.se/registrera-bostad` eftersom den:
 
 - laddar Meta Pixel när miljövariabeln finns;
 - skickar `Lead` efter godkänt formulär;
 - sparar UTM-parametrar och `fbclid`;
-- skapar ett `lp-homeowner`-lead i CRM.
+- skapar bostaden direkt i CRM;
+- skickar samma `Lead` från Pixel och Conversions API med gemensamt `event_id`.
 
-Före lansering behöver första skärmen justeras så att den matchar annonsen. Nuvarande huvudbudskap “Tjäna 10 000–30 000 kr/mån” och “gratis intäktsbedömning” bör ersättas eller kompletteras med:
-
-- “Privat bostadsägare? Hyr ut för företagspersonal – utan avgifter”;
-- “Du äger bostaden. Boendet används av företagspersonal”;
-- CTA “Registrera din bostad”.
-
-Det minskar avhopp, gör erbjudandet mer trovärdigt och ger Meta renare konverteringsdata.
-
-Formuläret bör dessutom fråga efter bostadstyp och, för bostadsrätt, om tillstånd för andrahandsuthyrning redan finns. Det gör att CRM kan skilja vanliga klickleads från matchningsbara bostäder och senare ge Meta en bättre kvalitetssignal.
+Sidan är ett sexstegsformulär för kontakt, adress, bostad, utrustning, hyra och bilder. CTA och annonscopy ska därför alltid lova just **registrering av bostaden**, inte en snabb intäktsbedömning eller ett kort intresseformulär.
 
 ## Beslutsregler efter lansering
 

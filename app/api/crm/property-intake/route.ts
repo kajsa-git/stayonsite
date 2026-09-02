@@ -12,6 +12,7 @@ import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { outboxMessages, propertyImages } from "@/lib/crm/schema";
 import { ensureShareLink } from "@/lib/crm/share-links";
 import { intakeConfirmSms } from "@/lib/crm/sms-templates";
+import { sendMetaLeadEvent } from "@/lib/meta-conversions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -227,6 +228,36 @@ export async function POST(req: NextRequest) {
         console.error("Intake confirmation SMS queue failed", error);
       }
     }
+
+    // Skicka samma Lead-händelse som webbläsaren med identiskt event-id så att
+    // Meta kan deduplicera Pixel och Conversions API. Mätningen får aldrig
+    // påverka själva bostadsregistreringen.
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0]?.trim() : undefined;
+    const metaTracking = parsed.data.tracking?.consent
+      ? {
+          consent: true as const,
+          eventId: parsed.data.tracking.eventId,
+          eventSourceUrl: parsed.data.tracking.eventSourceUrl,
+          fbc: parsed.data.tracking.fbc,
+          fbp: parsed.data.tracking.fbp,
+        }
+      : undefined;
+
+    await sendMetaLeadEvent(
+      {
+        formType: "property-intake",
+        fields: {
+          name: parsed.data.ownerName,
+          email: parsed.data.ownerEmail ?? "",
+          phone: parsed.data.ownerPhone,
+          city: parsed.data.city,
+          postalCode: parsed.data.postalCode,
+        },
+        tracking: metaTracking,
+      },
+      { ip, userAgent: req.headers.get("user-agent") ?? undefined },
+    ).catch((error) => console.error("Property intake Meta CAPI event failed", error));
 
     return NextResponse.json({
       success: true,

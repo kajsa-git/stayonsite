@@ -110,6 +110,13 @@ export const propertyIntakeSchema = z
     startedAt: z.number().int().positive().optional().nullable(),
     website: z.string().trim().max(200).optional().nullable(),
     utmParams: z.record(z.string(), z.string()).optional().nullable(),
+    tracking: z.object({
+      consent: z.literal(true),
+      eventId: z.string().min(8).max(100),
+      eventSourceUrl: z.string().url().max(1000),
+      fbc: z.string().max(255).optional(),
+      fbp: z.string().max(255).optional(),
+    }).optional(),
     consent: z.literal(true),
   })
   .superRefine((input, ctx) => {

@@ -14,6 +14,7 @@ import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
 import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { compressImage } from "@/lib/image-compress";
+import { getMetaTrackingContext, trackMetaEvent } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
 
 type IntakeFormState = {
@@ -464,8 +465,12 @@ export function PropertyIntakeForm() {
     setIsSubmitting(true);
     setSubmitError("");
     try {
+      const tracking = getMetaTrackingContext("Lead");
       const body = new FormData();
-      body.append("payload", JSON.stringify(payload()));
+      body.append("payload", JSON.stringify({
+        ...payload(),
+        ...(tracking ? { tracking } : {}),
+      }));
       const response = await fetch("/api/crm/property-intake", { method: "POST", body });
       const result = await response.json().catch(() => null) as {
         success?: boolean;
@@ -478,6 +483,13 @@ export function PropertyIntakeForm() {
 
       if (!response.ok || !result?.success || !result.propertyId) {
         throw new Error(result?.error ?? "property_intake_failed");
+      }
+
+      if (tracking) {
+        trackMetaEvent("Lead", {
+          content_category: "homeowner",
+          content_name: "property-intake",
+        }, tracking.eventId);
       }
 
       const uploaded = await uploadImages(result.propertyId, result.agreement?.token ?? null);

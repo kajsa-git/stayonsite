@@ -58,4 +58,29 @@ describe('buildMetaLeadEvent', () => {
       fbp: 'fb.1.123.example',
     })
   })
+
+  it('classifies the complete property intake as a homeowner lead', () => {
+    const event = buildMetaLeadEvent(
+      {
+        formType: 'property-intake',
+        fields: {
+          name: 'Testperson',
+          phone: '0701234567',
+          city: 'Kiruna',
+          postalCode: '981 31',
+        },
+        tracking: {
+          consent: true,
+          eventId: 'lead-property-intake-123',
+          eventSourceUrl: 'https://www.stayonsite.se/registrera-bostad',
+        },
+      },
+      {},
+    )
+
+    expect(event?.custom_data).toEqual({
+      content_category: 'homeowner',
+      content_name: 'property-intake',
+    })
+  })
 })
