@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { crmFetchJson } from "@/lib/crm/fetcher";
+import { publicListingPatch } from "@/lib/crm/publication";
 import { publicDisplayName } from "@/lib/crm/slug";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PublishConfirmSmsDialog } from "./PublishConfirmSmsDialog";
@@ -51,6 +52,7 @@ export function PropertyPublicControls({
         ? "bg-green-100 text-green-800 border-green-300"
         : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
     }`;
+  const isPublic = !!property.published && property.status === "available";
 
   return (
     <div>
@@ -60,9 +62,9 @@ export function PropertyPublicControls({
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={async () => {
-              const publishing = !property.published;
+              const publishing = !isPublic;
               try {
-                await onUpdate({ published: publishing });
+                await onUpdate(publicListingPatch(publishing));
                 toast({ title: publishing ? "Publicerad på hemsidan" : "Borttagen från hemsidan" });
               } catch {
                 /* feltoast visas av onUpdate */
@@ -70,11 +72,11 @@ export function PropertyPublicControls({
               }
               if (publishing) await maybeOfferConfirmSms();
             }}
-            className={toggleCls(!!property.published)}
+            className={toggleCls(isPublic)}
           >
-            {property.published ? "✓ På hemsidan" : "Publicera på hemsidan"}
+            {isPublic ? "✓ På hemsidan" : "Publicera på hemsidan"}
           </button>
-          {property.published &&
+          {isPublic &&
             (property.slug ? (
               <ShareLinkButton
                 path={`/boenden/${property.slug}`}

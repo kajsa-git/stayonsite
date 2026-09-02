@@ -7,6 +7,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
+import { publicListingPatch } from "@/lib/crm/publication";
 import { publishedLinkSms } from "@/lib/crm/sms-templates";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -110,7 +111,7 @@ export function PublishFlowDialog({
     const updated = await crmFetchJson<{ slug?: string | null; published?: boolean }>(`/api/crm/properties/${p.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ published: true }),
+      body: JSON.stringify(publicListingPatch(true)),
     });
     return updated?.slug ?? null;
   }
@@ -150,7 +151,7 @@ export function PublishFlowDialog({
       }
       if (what === "all") {
         await ensureDescription(p);
-        const slug = p.published && p.slug ? p.slug : await publish(p);
+        const slug = p.published && p.status === "available" && p.slug ? p.slug : await publish(p);
         if (slug && ownerPhone) {
           openSmsEditor(p, slug);
           toast({ title: "Beskrivning + publicering klar — justera SMS:et och skicka" });
@@ -194,7 +195,7 @@ export function PublishFlowDialog({
                 <div className="font-medium text-sm">{p.address ?? "(adress saknas)"}{p.city ? ` · ${p.city}` : ""}</div>
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   <Badge ok={!!p.publicDescription?.trim()} yes="Beskrivning ✓" no="Beskrivning saknas" />
-                  <Badge ok={!!p.published} yes="Publicerad ✓" no="Ej publicerad" />
+                  <Badge ok={!!p.published && p.status === "available"} yes="Publicerad ✓" no="Ej publicerad" />
                   {p.status !== "available" && (
                     <span className="inline-block text-[11px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
                       Status: {p.status} — visas publikt först som Tillgänglig
@@ -212,13 +213,21 @@ export function PublishFlowDialog({
                   <button className={btn} disabled={busyId !== null || !!p.publicDescription?.trim()} onClick={() => run(p, "describe")}>
                     ✨ Beskrivning
                   </button>
-                  <button className={btn} disabled={busyId !== null || !!p.published} onClick={() => run(p, "publish")}>
+                  <button
+                    className={btn}
+                    disabled={busyId !== null || (!!p.published && p.status === "available")}
+                    onClick={() => run(p, "publish")}
+                  >
                     Publicera
                   </button>
-                  <button className={btn} disabled={busyId !== null || !p.published || !p.slug || !ownerPhone} onClick={() => run(p, "sms")}>
+                  <button
+                    className={btn}
+                    disabled={busyId !== null || !p.published || p.status !== "available" || !p.slug || !ownerPhone}
+                    onClick={() => run(p, "sms")}
+                  >
                     Skicka länk-SMS
                   </button>
-                  {p.published && p.slug && (
+                  {p.published && p.status === "available" && p.slug && (
                     <a
                       className="text-[11px] text-nordic-600 underline ml-auto"
                       href={`https://www.stayonsite.se/boenden/${p.slug}`}
