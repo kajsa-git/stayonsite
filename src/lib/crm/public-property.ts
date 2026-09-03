@@ -52,12 +52,13 @@ export type PublicProperty = {
 
 // Geokodar postnummer-OMRÅDET (aldrig exakt adress) via OSM Nominatim — server-side, ingen nyckel.
 // Landsmedvetet: svenskt postnummer formateras "XXX XX", annars används värdet rått. Resultatet cachas.
-async function geocodeArea(
+// Postnumret provas före orten: ortsnamn är inte alltid unika (t.ex. Vikbolandet finns även i Heby)
+// och Nominatim kan annars returnera rätt ortsnamn i fel län trots ett motstridigt postnummer.
+export function buildAreaGeocodeQueries(
   postalCode?: string | null,
   city?: string | null,
   country?: string | null,
-): Promise<{ lat: number; lng: number } | null> {
-  const headers = { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" };
+): string[] {
   const swede = isSwedishCountry(country);
   const postal = swede
     ? (postalCode ?? "").replace(/\s+/g, "").replace(/^(\d{3})(\d{2})$/, "$1 $2")
@@ -65,11 +66,20 @@ async function geocodeArea(
   const c = (city ?? "").trim();
   const countryName = swede ? "Sweden" : (country ?? "").trim();
   const cn = countryName ? `&country=${encodeURIComponent(countryName)}` : "";
-  const tries: string[] = [];
-  if (postal && c) tries.push(`postalcode=${encodeURIComponent(postal)}&city=${encodeURIComponent(c)}${cn}`);
-  if (postal) tries.push(`postalcode=${encodeURIComponent(postal)}${cn}`);
-  if (c) tries.push(`city=${encodeURIComponent(c)}${cn}`);
-  for (const params of tries) {
+  const queries: string[] = [];
+  if (postal) queries.push(`postalcode=${encodeURIComponent(postal)}${cn}`);
+  if (postal && c) queries.push(`postalcode=${encodeURIComponent(postal)}&city=${encodeURIComponent(c)}${cn}`);
+  if (c) queries.push(`city=${encodeURIComponent(c)}${cn}`);
+  return queries;
+}
+
+async function geocodeArea(
+  postalCode?: string | null,
+  city?: string | null,
+  country?: string | null,
+): Promise<{ lat: number; lng: number } | null> {
+  const headers = { "User-Agent": "StayOnSite/1.0 (kajsa@stayonsite.se)" };
+  for (const params of buildAreaGeocodeQueries(postalCode, city, country)) {
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&${params}`, {
         headers,
