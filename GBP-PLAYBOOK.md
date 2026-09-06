@@ -22,7 +22,7 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Webbplats | Köparsidan med UTM är aktiv | Behåll och följ trafiken separat i analysverktyget |
 | Adress | Fogdevreten 14 visas offentligt trots att redigeringsvyn saknar adress | Skicka den förberedda överklagan; platsen saknar permanent StayOnSite-skyltning och tar inte emot kunder |
 | Serviceområde | Sverige | Hantera profilen som serviceområdesverksamhet; hela Sverige är inte en lokal rankinggenväg |
-| Öppettider | Mån–fre 08:00–17:00 är inskickat och väntar på granskning | Använd kontakt-/verksamhetstid, inte tider som antyder drop-in på Fogdevreten |
+| Öppettider | Redigeringsvyn visar mån–fre 08:00–17:00 utan väntestatus; den publika panelen visar ännu den äldre 07–19-cachen | Använd kontakt-/verksamhetstid, inte tider som antyder drop-in på Fogdevreten; verifiera den publika panelen igen |
 | Attribut | Nästan tomt | Lägg bara till verifierbara attribut; ignorera irrelevanta kategoriförslag |
 | Inlägg | Första Gävle-inlägget är publicerat; sju förberedda inlägg återstår i kön | Aktivera de två kvalitetssäkrade köerna efter API-godkännandet |
 
