@@ -110,9 +110,9 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 4. Skapa en separat OAuth-klient och ge scope `https://www.googleapis.com/auth/business.manage`.
 5. Skapa en refresh token för `kajsa@stayonsite.se` med `pnpm gbp:authorize`. Klient- och tokenfilerna sparas utanför repot med filrättighet `600`. Återanvänd inte webbplatsens vanliga Auth.js-klient.
 6. Sätt lokalt: `GBP_CLIENT_ID`, `GBP_CLIENT_SECRET`, `GBP_REFRESH_TOKEN`.
-7. Kör `pnpm gbp:discover` för att hitta konto och plats. Sätt därefter `GBP_ACCOUNT_ID` och `GBP_LOCATION_ID`.
-8. Lägg de fem värdena som GitHub Actions-secrets.
-9. Kör workflow manuellt med `dry_run=true` och kontrollera payloaden.
+7. Kör `pnpm gbp:discover` som kontroll. Vid publicering hittar skriptet automatiskt den unika profilen med namnet `Stay On Site AB`; `GBP_ACCOUNT_ID` och `GBP_LOCATION_ID` behövs bara om Google-kontot senare får flera profiler med exakt samma namn.
+8. Lägg OAuth-klient-ID, OAuth-klienthemlighet och refresh token som GitHub Actions-secrets.
+9. Kör workflow manuellt med `dry_run=true` och kontrollera payloaden. Dry-run verifierar även att landningssidan och bilden är publikt driftsatta med rätt innehållstyp.
 10. Kör ett valt inlägg manuellt med `dry_run=false`. Kontrollera att Google godkänner text, bild och CTA.
 11. Sätt repo-variabeln `GBP_PUBLISH_ENABLED=true` för schemalagd publicering.
 

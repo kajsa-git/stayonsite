@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   addTracking,
   buildLocalPost,
+  resolvePublishingTarget,
   selectPost,
   validateQueue,
   verifyPublicPostResources,
@@ -76,6 +77,44 @@ describe("GBP post publisher", () => {
   it("allows an explicit post to be previewed before its scheduled date", () => {
     const future = post({ id: "campaign-future", publishAfter: "2026-12-01" });
     assert.equal(selectPost([future], { postId: "campaign-future", today: "2026-09-03" })?.id, "campaign-future");
+  });
+
+  it("auto-resolves a unique Stay On Site AB publishing target", () => {
+    const credentials = {
+      clientId: "client-id",
+      clientSecret: "client-secret",
+      refreshToken: "refresh-token",
+      accountId: undefined,
+      locationId: undefined,
+    };
+    const resolved = resolvePublishingTarget([
+      {
+        account: { name: "accounts/123", accountName: "StayOnSite" },
+        locations: [
+          { name: "locations/456", title: "Stay On Site AB" },
+          { name: "locations/789", title: "Annan profil" },
+        ],
+      },
+    ], credentials);
+
+    assert.equal(resolved.accountId, "accounts/123");
+    assert.equal(resolved.locationId, "locations/456");
+  });
+
+  it("refuses an ambiguous auto-discovered publishing target", () => {
+    const credentials = { accountId: undefined, locationId: undefined };
+    assert.throws(
+      () => resolvePublishingTarget([
+        {
+          account: { name: "accounts/123" },
+          locations: [
+            { name: "locations/456", title: "Stay On Site AB" },
+            { name: "locations/789", title: "Stay On Site AB" },
+          ],
+        },
+      ], credentials),
+      /Could not uniquely resolve GBP location/,
+    );
   });
 
   it("rejects phone numbers in summaries", () => {

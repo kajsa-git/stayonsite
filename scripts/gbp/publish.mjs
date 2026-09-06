@@ -235,6 +235,62 @@ export async function discoverLocations(accessToken) {
   return result;
 }
 
+function normalizeResourceId(value, prefixPattern) {
+  return value ? value.replace(prefixPattern, "") : null;
+}
+
+export function resolvePublishingTarget(discovery, credentials, expectedTitle = "Stay On Site AB") {
+  if (credentials.accountId && credentials.locationId) return credentials;
+
+  const expected = expectedTitle.trim().toLocaleLowerCase("sv-SE");
+  const configuredAccount = normalizeResourceId(credentials.accountId, /^accounts\//);
+  const configuredLocation = normalizeResourceId(
+    credentials.locationId,
+    /^(?:accounts\/[^/]+\/)?locations\//,
+  );
+
+  const matches = discovery.flatMap(({ account, locations }) => locations.map((location) => ({ account, location })))
+    .filter(({ account }) => {
+      const discoveredAccount = normalizeResourceId(account.name, /^accounts\//);
+      return !configuredAccount || configuredAccount === discoveredAccount;
+    })
+    .filter(({ location }) => {
+      const discoveredLocation = normalizeResourceId(
+        location.name,
+        /^(?:accounts\/[^/]+\/)?locations\//,
+      );
+      return !configuredLocation || configuredLocation === discoveredLocation;
+    })
+    .filter(({ location }) => location.title?.trim().toLocaleLowerCase("sv-SE") === expected);
+
+  if (matches.length !== 1) {
+    const available = discovery.flatMap(({ account, locations }) => locations.map((location) => (
+      `${location.title ?? "Namnlös profil"} (${account.name}/${location.name})`
+    )));
+    fail(
+      `Could not uniquely resolve GBP location titled "${expectedTitle}". `
+      + `Found ${matches.length} matches. Available: ${available.join(", ") || "none"}. `
+      + "Set GBP_ACCOUNT_ID and GBP_LOCATION_ID explicitly if needed.",
+    );
+  }
+
+  return {
+    ...credentials,
+    accountId: matches[0].account.name,
+    locationId: matches[0].location.name,
+  };
+}
+
+async function ensurePublishingTarget(accessToken, credentials) {
+  if (credentials.accountId && credentials.locationId) return credentials;
+  const discovery = await discoverLocations(accessToken);
+  return resolvePublishingTarget(
+    discovery,
+    credentials,
+    process.env.GBP_LOCATION_TITLE || "Stay On Site AB",
+  );
+}
+
 function locationParent({ accountId, locationId }) {
   if (!accountId) fail("Missing GBP_ACCOUNT_ID");
   if (!locationId) fail("Missing GBP_LOCATION_ID");
@@ -307,6 +363,7 @@ async function main() {
     }
     credentials = credentialsFromEnv();
     accessToken = await refreshAccessToken(credentials);
+    credentials = await ensurePublishingTarget(accessToken, credentials);
     existingUrls = await listLocalPostUrls(accessToken, credentials);
   }
 
@@ -322,7 +379,9 @@ async function main() {
     return;
   }
 
-  const payload = buildLocalPost(post);
+  const payload = args.dryRun
+    ? await verifyPublicPostResources(post)
+    : buildLocalPost(post);
   if (args.dryRun) {
     console.log(JSON.stringify({ mode: "dry-run", postId: post.id, payload }, null, 2));
     return;
