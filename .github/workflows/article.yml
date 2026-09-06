@@ -1,7 +1,9 @@
-name: Weekly Blog Article
+name: Biweekly Blog Article
 
 on:
-  # Every Wednesday at 09:00 CET (08:00 UTC)
+  # GitHub cron saknar ett exakt "varannan vecka"-uttryck. Flödet vaknar varje
+  # onsdag men publicerar bara på jämna ISO-veckor. Manuell körning publicerar
+  # alltid, oavsett vecka.
   schedule:
     - cron: '0 8 * * 3'
 
@@ -16,30 +18,56 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    concurrency:
+      group: biweekly-blog-publisher
+      cancel-in-progress: false
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
+      - name: Check publishing week
+        id: cadence
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "Manual run — publishing is enabled."
+            exit 0
+          fi
+
+          iso_week=$(date -u +%V)
+          if [ $((10#$iso_week % 2)) -eq 0 ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "ISO week $iso_week — publishing is enabled."
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "ISO week $iso_week — skipping this week."
+          fi
+
       - name: Checkout
+        if: steps.cadence.outputs.publish == 'true'
         uses: actions/checkout@v6
 
       - name: Setup Node
+        if: steps.cadence.outputs.publish == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
       - name: Generate article
+        if: steps.cadence.outputs.publish == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ARTICLE_TOPIC: ${{ inputs.topic }}
         run: |
-          if [ -n "${{ inputs.topic }}" ]; then
-            node scripts/generate-article.mjs --topic "${{ inputs.topic }}"
+          if [ -n "$ARTICLE_TOPIC" ]; then
+            node scripts/generate-article.mjs --topic "$ARTICLE_TOPIC"
           else
             node scripts/generate-article.mjs
           fi
 
       - name: Build to verify
+        if: steps.cadence.outputs.publish == 'true'
         id: build
         env:
           # Bygget importerar CRM-modulerna (libSQL-klient + Auth.js Drizzle-adapter)
@@ -63,27 +91,25 @@ jobs:
             app/(sv)/blogg/[slug]/page.tsx
           retention-days: 7
 
-      - name: Open draft pull request
-        id: draft
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Publish to main
+        if: steps.cadence.outputs.publish == 'true'
+        id: push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          BRANCH="automation/blog-$(date +%Y-%m-%d)-${GITHUB_RUN_ID}"
-          git switch -c "$BRANCH"
           git add -A
-          git diff --staged --quiet && echo "No changes" && echo "created=false" >> "$GITHUB_OUTPUT" && exit 0
-          git commit -m "blogg: utkast till veckoartikel $(date +%Y-%m-%d)
+          git diff --staged --quiet && echo "No changes" && echo "pushed=false" >> "$GITHUB_OUTPUT" && exit 0
+          git commit -m "blogg: ny artikel $(date +%Y-%m-%d)
 
-          AI-assisterat utkast genererat av article.yml för redaktionell granskning"
-          git push origin "$BRANCH"
-          gh pr create \
-            --draft \
-            --base main \
-            --head "$BRANCH" \
-            --title "Bloggutkast: $(date +%Y-%m-%d)" \
-            --body "Automatiskt framtaget artikelutkast. Kontrollera särskilt författarskap, primärkällor, lokala sakuppgifter, siffror och säljbudskap innan merge."
-          echo "created=true" >> "$GITHUB_OUTPUT"
+          AI-assisterad artikel som passerat käll-, innehålls- och byggkontroll"
+          git push origin main
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
 
-      # IndexNow körs av indexnow.yml först när det granskade utkastet mergas till main.
+      # Push med GITHUB_TOKEN triggar inte indexnow.yml, så den nya artikeln
+      # skickas till IndexNow här när Vercel hunnit publicera den.
+      - name: Ping IndexNow
+        if: steps.push.outputs.pushed == 'true'
+        run: |
+          echo "Väntar 120s på Vercel-deploy innan IndexNow-submit..."
+          sleep 120
+          node scripts/indexnow-submit.mjs --all

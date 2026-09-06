@@ -50,6 +50,17 @@ const PRIMARY_SOURCE_HOSTS = [
   'skolverket.se',
   'byggforetagen.se',
   'europa.eu',
+  'svk.se',
+  'fortifikationsverket.se',
+  'lkab.com',
+  'ssab.com',
+  'okg.se',
+  'uniper.energy',
+  'boden.se',
+  'lulea.se',
+  'oskarshamn.se',
+  'gavle.se',
+  'saffle.se',
 ];
 
 // Parse --topic flag
@@ -123,17 +134,31 @@ Datum: ${today}
 EXISTERANDE ARTIKLAR (undvik överlapp):
 ${existingSlugs.map(s => `- ${s}`).join('\n')}
 
-Sök på webben efter aktuella nyheter inom:
-- Svenska byggprojekt, infrastruktur, industrisatsningar
-- Bostadsmarknad, uthyrningslagar, skatteförändringar
-- Arbetskraftsinvandring, montörer, tillfälligt boende
-- Energi, grön omställning, datacenter
+INTERN SEO-PRIORITERING (använd för ämnesval, skriv inte ut sökvolymerna i artikeln):
+- boende luleå: 880 sökningar/månad
+- företagsbostäder: 590 sökningar/månad
+- boende oskarshamn: 480 sökningar/månad
+- boende boden: 320 sökningar/månad
+- hyra ut hus till företag: 260 sökningar/månad
+- projektboende: 70 sökningar/månad
+
+StayOnSites viktigaste affär är projekt utanför storstäderna. Prioritera därför
+Boden, Luleå, Oskarshamn, Gävle och Säffle samt liknande mindre projektorter.
+Rotera ort och målgrupp mellan publiceringarna. En bloggtext ska svara på en
+tydlig fråga runt sökordet, inte konkurrera med stadssidan om exakt samma breda
+sökintention.
+
+Sök på webben efter vad målgruppen faktiskt behöver hjälp med inom:
+- Bekräftade svenska byggprojekt, infrastruktur och industrisatsningar
+- Praktisk planering av projektboende och företagsbostäder på en specifik ort
+- Uthyrningslagar, skatt och avtal för husägare
+- Boende för montörer och tillfällig projektpersonal
 
 ⚠️ BRAND SAFETY — KRITISKT:
 Innan du föreslår ett ämne, SÖK och VERIFIERA att:
 - Alla företag/projekt du nämner fortfarande är AKTIVA (inte i konkurs, rekonstruktion, eller avbrutna)
 - Inga kontroverser pågår kring projekten (miljöskandaler, bedrägerier, strejker)
-- Statistik och siffror är från de senaste 6 månaderna
+- Statistik och siffror kommer från den färskaste relevanta originalkällan och har ett tydligt referensår
 - Myndighetsuttalanden är aktuella och inte tillbakadragna
 
 FÖRBJUDNA ÄMNEN (kan skada StayOnSites trovärdighet):
@@ -151,11 +176,12 @@ BRA ÄMNEN (trygga och hjälpsamma):
 - Regionala analyser (var behövs boende just nu?)
 
 Föreslå EN artikel som:
-1. Är aktuell och sökbar (folk googlar efter det)
+1. Har en tydlig, verklig sökintention och hjälper läsaren att fatta ett beslut
 2. Relaterar till personalboende eller fastighetsuthyrning
 3. Inte överlappar med existerande artiklar
 4. Riktar sig till antingen företag ELLER husägare
 5. INTE kan bli pinsam om ett nämnt företag/projekt får problem
+6. Är lokal när ämnet tjänar på det, med en namngiven ort och verifierbara lokala fakta
 
 Svara i EXAKT detta JSON-format (inget annat):
 {
@@ -168,6 +194,9 @@ Svara i EXAKT detta JSON-format (inget annat):
   "descPl": "Krótki opis po polsku (max 160 znaków)",
   "category": "Guide|Marknad|Lagstiftning|Analys|Tips",
   "audience": "foretag|husagare|bada",
+  "primaryKeyword": "ett naturligt primärt sökord",
+  "searchIntent": "frågan eller beslutet som läsaren vill få hjälp med",
+  "localFocus": "ortsnamn eller nationellt",
   "tags": ["tag1", "tag2", "tag3"],
   "readingTime": 8,
   "componentName": "PascalCaseComponentName",
@@ -211,30 +240,38 @@ Skriv en komplett React TSX-komponent för en bloggartikel.
 SLUG: ${topic.slug}
 OUTLINE: ${topic.outline}
 KATEGORI: ${topic.category}
+PRIMÄRT SÖKORD: ${topic.primaryKeyword}
+SÖKINTENTION: ${topic.searchIntent}
+LOKALT FOKUS: ${topic.localFocus}
 DATUM: ${today}
 
 KRAV:
-1. Artikeln ska vara 1000-1500 ord, på SVENSKA
-2. Länka centrala sakuppgifter direkt till minst 3 externa originalkällor med <a href="https://..." target="_blank" rel="noreferrer">Källägare – dokumenttitel</a>. Minst 2 ska vara primärkällor (myndighet, lagtext, kommun, projektägare eller ansvarig branschorganisation)
-3. Inkludera minst 1 tabell med data
-4. Använd <Link href="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
-5. Länka till andra artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
-6. Avsluta med en CTA som nämner StayOnSite, telefonnummer 076-249 84 86, och länkar till /for-foretag och /for-husagare
-7. Framhäv StayOnSites USP: 0% avgift för husägare, garanterad hyra, professionella hyresgäster, boendeplan inom 24 timmar (vi återkommer alltid inom en arbetsdag – ofta inom några timmar)
-8. HTML-entiteter: använd &mdash; &ndash; &quot; etc. (inte unicode)
-9. Avsluta med en <h2>Vanliga frågor</h2>-sektion (före CTA:n) med 3-4 <h3>-frågor och korta konkreta svar (2-4 meningar) — de blir FAQ-schema
-10. COPY-REGLER (får inte brytas): Lova aldrig "allt ingår"/all-inclusive — skriv "vanligtvis ingår X; exakt omfattning avtalas per projekt". StayOnSites eget pris anges ENDAST som "från 5 900 kr per person och månad" (hitta inte på andra StayOnSite-priser). Grundat 2016. Ange inte betyg eller antal omdömen i artikeln eftersom de ändras över tid.
+1. Artikeln ska vara 1000-1400 ord, på naturlig och professionell SVENSKA
+2. Besvara sökintentionen konkret redan i ingressen. En läsare ska förstå huvudsvaret inom cirka 100 ord
+3. Länka centrala sakuppgifter direkt till minst 3 externa originalkällor med <a href="https://..." target="_blank" rel="noreferrer">Källägare &ndash; dokumenttitel</a>. Minst 2 källor ska komma från följande godkända primärkälledomäner: ${PRIMARY_SOURCE_HOSTS.join(', ')}
+4. Använd exakta datum, orter, projektfaser och referensår när källorna stödjer det. Skilj tydligt mellan verifierade fakta och praktiska slutsatser
+5. Skriv för EN målgrupp och EN sökintention. Undvik breda bakgrundsavsnitt som inte hjälper läsaren
+6. Använd <Link href="/stad/SLUG"> för relevanta stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
+7. Länka till högst 2 verkligt relevanta artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
+8. Använd tabell endast när en jämförelse, tidslinje eller checklista blir tydligare av den. Hitta aldrig på tabelldata
+9. Avsluta med en kort CTA som nämner StayOnSite, telefonnummer 076-249 84 86 och länkar till den mest relevanta av /for-foretag eller /for-husagare
+10. Nämn StayOnSites erfarenhet sparsamt och bara med verifierbara uppgifter: grundat 2016, 0% avgift för husägare, garanterad hyra, professionella hyresgäster och boendeplan inom 24 timmar (vi återkommer alltid inom en arbetsdag, ofta inom några timmar)
+11. HTML-entiteter: använd &mdash; &ndash; &quot; etc. (inte unicode)
+12. Avsluta med en <h2>Vanliga frågor</h2>-sektion (före CTA:n) med 3-4 <h3>-frågor och korta, konkreta svar på frågor som hör till sökintentionen
+13. COPY-REGLER (får inte brytas): Lova aldrig "allt ingår"/all-inclusive — skriv "vanligtvis ingår X; exakt omfattning avtalas per projekt". StayOnSites eget pris anges ENDAST som "från 5 900 kr per person och månad" (hitta inte på andra StayOnSite-priser). Ange inte betyg eller antal omdömen eftersom de ändras över tid
+14. Undvik AI-schabloner och reklamord som "i dagens snabbrörliga värld", "skräddarsydd helhetslösning", "marknadsledande", "revolutionerande" och "oslagbar"
 
 ⚠️ BRAND SAFETY:
 - SÖK och VERIFIERA att alla nämnda företag/projekt fortfarande är aktiva innan du skriver om dem
 - Nämn ALDRIG företag i konkurs, rekonstruktion eller med pågående skandaler positivt
-- Använd bara statistik som du hittar via web search och som är från senaste 12 månaderna
+- Använd den färskaste relevanta statistiken från en originalkälla och ange vilket år eller vilken period den avser
 - Citera bara verkliga rapporter/uttalanden som du kan verifiera finns
 - Skriv inte ett direktcitat om du inte har verifierat den exakta ordalydelsen i originalkällan; parafrasera annars och länka källan
 - Hitta aldrig på en URL. Varje extern källänk ska vara en sida du faktiskt öppnat i webbsökningen
 - Om du är osäker på ett faktum — utelämna det istället för att gissa
-- Fokusera på BRANSCHÖVERGRIPANDE trender snarare än enskilda företag
+- Om artikeln är lokal: använd kommunens, myndighetens eller projektägarens egna uppgifter. Beskriv inte en planerad satsning som beslutad eller pågående
 - Skriv tidlöst: undvik "just nu", "nyligen" — använd specifika datum istället
+- Hitta aldrig på kundcase, egna observationer, beläggningsgrad, besparingar eller efterfrågan. Skriv inte "vi ser" eller "vi har hjälpt" utan underlag
 
 EXAKT TEMPLATE (följ denna):
 \`\`\`tsx
@@ -289,6 +326,44 @@ Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera
   if (reactMatch) return reactMatch[1].trim();
 
   throw new Error('Could not extract TSX from response. Response starts with:\n' + allText.slice(0, 500));
+}
+
+// ---------- Step 2b: Editorial pass ----------
+async function polishArticle(topic, tsx) {
+  console.log('[article] Running senior editorial pass...');
+
+  const res = await callClaude([
+    {
+      role: 'user',
+      content: `Du är senior svensk redaktör för ett seriöst B2B-bolag. Redigera TSX-artikeln nedan så att den blir konkret, trovärdig och användbar för den angivna sökintentionen.
+
+ÄMNE: ${topic.titleSv}
+PRIMÄRT SÖKORD: ${topic.primaryKeyword}
+SÖKINTENTION: ${topic.searchIntent}
+LOKALT FOKUS: ${topic.localFocus}
+
+REDAKTIONSKRAV:
+- Behåll alla verifierade externa käll-URL:er och ändra inte vad källorna påstås visa
+- Lägg inte till nya sakuppgifter, siffror, citat, kundcase eller URL:er
+- Gör huvudsvaret tydligt inom de första cirka 100 orden
+- Ta bort upprepningar, allmänna utfyllnadsstycken, AI-schabloner och överdriven reklam
+- Behåll en tydlig röd tråd för en målgrupp och en sökintention
+- Behåll relevanta lokala detaljer, datum och praktiska råd
+- Behåll 1000-1400 ord, Vanliga frågor, giltiga interna länkar och en kort CTA
+- Returnera hela komponenten som ren TSX, utan kodstaket eller kommentar utanför koden
+
+TSX:
+${tsx}`
+    }
+  ]);
+
+  const textBlocks = res.content.filter(b => b.type === 'text');
+  if (textBlocks.length === 0) throw new Error('No text in editorial response');
+  const allText = textBlocks.map(b => b.text).join('\n');
+  const tsxBlock = allText.match(/```tsx\s*\n([\s\S]*?)```/);
+  if (tsxBlock) return tsxBlock[1].trim();
+  if (allText.includes('BlogLayout') && allText.includes('export default')) return allText.trim();
+  throw new Error('Could not extract TSX from editorial response');
 }
 
 // ---------- Step 2b: Extract SEO/GEO data (snabba svar + FAQ) ----------
@@ -409,6 +484,61 @@ function validateJsx(tsx) {
   return errors;
 }
 
+function articleWordCount(tsx) {
+  const body = tsx.match(/<BlogLayout[^>]*>([\s\S]*?)<\/BlogLayout>/)?.[1] || tsx;
+  const text = body
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\{['"]\s*['"]\}/g, ' ')
+    .replace(/&[a-zA-Z0-9#]+;/g, ' ')
+    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9%]+/g, ' ')
+    .trim();
+  return text ? text.split(/\s+/).length : 0;
+}
+
+function validateContentQuality(tsx, topic) {
+  const errors = [];
+  const wordCount = articleWordCount(tsx);
+  const h2Count = (tsx.match(/<h2(?:\s|>)/g) || []).length;
+  const faqSection = tsx.match(/<h2[^>]*>Vanliga frågor<\/h2>([\s\S]*?)(?=<h2|$)/i)?.[1] || '';
+  const faqCount = (faqSection.match(/<h3(?:\s|>)/g) || []).length;
+  const bannedPhrases = [
+    'i dagens snabbrörliga värld',
+    'skräddarsydd helhetslösning',
+    'marknadsledande',
+    'revolutionerande',
+    'oslagbar',
+    'vi har hjälpt',
+    'vi ser en stor efterfrågan',
+  ];
+
+  if (wordCount < 900 || wordCount > 1600) {
+    errors.push(`brödtexten är cirka ${wordCount} ord; tillåtet intervall är 900-1600`);
+  }
+  if (h2Count < 4) errors.push(`bara ${h2Count} H2-rubriker; minst 4 krävs`);
+  if (faqCount < 3 || faqCount > 4) errors.push(`FAQ-sektionen har ${faqCount} frågor; 3-4 krävs`);
+  if (/<(?:motion\.)?h[12][^>]*style=["'][^"']*opacity\s*:\s*0/i.test(tsx) || /<motion\.h[12]/i.test(tsx)) {
+    errors.push('rubriken riskerar att vara osynlig i statisk HTML');
+  }
+  if (/\b(?:4[.,]\d|5[.,]0)\s*(?:av\s*5|\/\s*5|stjärn)/i.test(tsx)) {
+    errors.push('föränderligt betyg eller stjärnomdöme får inte anges');
+  }
+  for (const phrase of bannedPhrases) {
+    if (tsx.toLocaleLowerCase('sv').includes(phrase)) errors.push(`förbjuden schablon: "${phrase}"`);
+  }
+  if (!tsx.includes('076-249 84 86')) errors.push('CTA saknar telefonnumret 076-249 84 86');
+  if (!tsx.includes('href="/for-foretag"') && !tsx.includes('href="/for-husagare"')) {
+    errors.push('CTA saknar relevant konverteringslänk');
+  }
+  if (topic.localFocus.toLocaleLowerCase('sv') !== 'nationellt' && !tsx.includes('<Link href="/stad/')) {
+    errors.push(`lokal artikel om ${topic.localFocus} saknar länk till en giltig stadssida`);
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Redaktionell kvalitetskontroll misslyckades: ${errors.join('; ')}`);
+  }
+  console.log(`[article] ✅ Editorial quality passed (${wordCount} words, ${h2Count} H2, ${faqCount} FAQ)`);
+}
+
 function sourcePublisher(url) {
   const host = new URL(url).hostname.replace(/^www\./, '');
   const names = {
@@ -429,6 +559,17 @@ function sourcePublisher(url) {
     'tillvaxtverket.se': 'Tillväxtverket',
     'skolverket.se': 'Skolverket',
     'byggforetagen.se': 'Byggföretagen',
+    'svk.se': 'Svenska kraftnät',
+    'fortifikationsverket.se': 'Fortifikationsverket',
+    'lkab.com': 'LKAB',
+    'ssab.com': 'SSAB',
+    'okg.se': 'OKG',
+    'uniper.energy': 'Uniper',
+    'boden.se': 'Bodens kommun',
+    'lulea.se': 'Luleå kommun',
+    'oskarshamn.se': 'Oskarshamns kommun',
+    'gavle.se': 'Gävle kommun',
+    'saffle.se': 'Säffle kommun',
   };
   const matched = Object.keys(names).find((domain) => host === domain || host.endsWith(`.${domain}`));
   return matched ? names[matched] : host;
@@ -488,7 +629,10 @@ async function validateSourceLinks(tsx) {
         signal: AbortSignal.timeout(15000),
         headers: { 'user-agent': 'StayOnSite editorial source checker/1.0' },
       });
-      return { source, ok: res.status < 500, status: res.status };
+      // 401/403/405/429 betyder ofta att källan blockerar automatiska klienter,
+      // inte att sidan saknas. 404/410 och serverfel stoppar publiceringen.
+      const botBlocked = [401, 403, 405, 429].includes(res.status);
+      return { source, ok: (res.status >= 200 && res.status < 400) || botBlocked, status: res.status };
     } catch (error) {
       return { source, ok: false, status: error.message };
     }
@@ -552,7 +696,10 @@ ${tsx}`
 function updateBlogPosts(topic, seo, sources) {
   console.log('[article] Updating blog-posts.ts...');
   const today = new Date().toISOString().split('T')[0];
-  const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const esc = (s) => String(s)
+    .replace(/\r?\n/g, ' ')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'");
 
   const AUDIENCES = ['foretag', 'husagare', 'bada'];
   const audience = AUDIENCES.includes(topic.audience) ? topic.audience : 'bada';
@@ -622,6 +769,10 @@ function updateBlogPage(topic) {
 }
 
 function updateGbpQueue(topic) {
+  if (!existsSync(gbpQueuePath)) {
+    console.log('[article] GBP queue is not configured — skipping');
+    return;
+  }
   console.log('[article] Queueing Google Business Profile post...');
   const queue = JSON.parse(readFileSync(gbpQueuePath, 'utf-8'));
   if (!Array.isArray(queue.posts)) throw new Error('Invalid GBP post queue');
@@ -728,26 +879,61 @@ async function notifyNotionError(errorMsg) {
   }
 }
 
+function validateTopic(topic) {
+  if (!topic || typeof topic !== 'object' || Array.isArray(topic)) {
+    throw new Error('Topic should be a JSON object. Check --topic usage.');
+  }
+
+  const requiredTopicFields = [
+    'slug', 'titleSv', 'titleEn', 'titlePl', 'descSv', 'descEn', 'descPl',
+    'category', 'audience', 'primaryKeyword', 'searchIntent', 'localFocus',
+    'componentName', 'outline',
+  ];
+  const missingTopicFields = requiredTopicFields.filter((field) => !String(topic[field] || '').trim());
+  if (missingTopicFields.length > 0) {
+    throw new Error(`Topic metadata is missing: ${missingTopicFields.join(', ')}`);
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(topic.slug)) {
+    throw new Error(`Invalid slug: "${topic.slug}"`);
+  }
+  if (!/^[A-Z][A-Za-z0-9]*$/.test(topic.componentName)) {
+    throw new Error(`Invalid component name: "${topic.componentName}"`);
+  }
+  for (const field of ['descSv', 'descEn', 'descPl']) {
+    if ([...topic[field]].length > 160) throw new Error(`${field} exceeds 160 characters`);
+  }
+  if (!['Guide', 'Marknad', 'Lagstiftning', 'Analys', 'Tips'].includes(topic.category)) {
+    throw new Error(`Invalid category: "${topic.category}"`);
+  }
+  if (!['foretag', 'husagare', 'bada'].includes(topic.audience)) {
+    throw new Error(`Invalid audience: "${topic.audience}"`);
+  }
+  if (!Array.isArray(topic.tags) || topic.tags.length < 3 || topic.tags.length > 6) {
+    throw new Error('Topic must contain 3-6 tags');
+  }
+  if (!Number.isInteger(topic.readingTime) || topic.readingTime < 5 || topic.readingTime > 12) {
+    throw new Error('readingTime must be an integer between 5 and 12');
+  }
+  if (existingSlugs.includes(topic.slug)) {
+    throw new Error(`Slug "${topic.slug}" already exists!`);
+  }
+}
+
 // ---------- Main ----------
 async function main() {
   console.log('[article] Starting article generation...');
 
-  // Step 1: Pick topic (with retry)
-  const topic = await withRetry(() => pickTopic(), 'Topic picking');
-
-  // Validate topic
-  if (typeof topic === 'string') {
-    throw new Error('Topic should be a JSON object, got string. Check --topic usage.');
-  }
+  // Step 1: Pick and validate topic. Invalid model output is retried before
+  // article generation begins.
+  const topic = await withRetry(async () => {
+    const candidate = await pickTopic();
+    validateTopic(candidate);
+    return candidate;
+  }, 'Topic picking');
 
   console.log(`[article] Topic: ${topic.titleSv}`);
   console.log(`[article] Slug: ${topic.slug}`);
   console.log(`[article] Component: ${topic.componentName}`);
-
-  // Check for duplicate slug
-  if (existingSlugs.includes(topic.slug)) {
-    throw new Error(`Slug "${topic.slug}" already exists!`);
-  }
 
   // Step 2: Generate article TSX (with retry)
   const rawTsx = await withRetry(() => generateArticle(topic), 'Article generation');
@@ -779,27 +965,43 @@ async function main() {
     console.log('[article] ✅ JSX validation passed');
   }
 
+  // En separat redaktörspass stramar åt texten utan att lägga till nya fakta.
+  tsx = await withRetry(() => polishArticle(topic, tsx), 'Editorial pass');
+  tsx = tsx
+    .replace(/from\s+['"]next\/Link['"]/g, "from 'next/link'")
+    .replace(/from\s+['"]next\/Image['"]/g, "from 'next/image'");
+  tsx = validateCityLinks(tsx);
+
+  const editorialJsxErrors = validateJsx(tsx);
+  if (editorialJsxErrors.length > 0) {
+    tsx = await withRetry(() => fixJsxWithClaude(tsx, editorialJsxErrors), 'Editorial JSX fix');
+    tsx = validateCityLinks(tsx);
+    const remainingEditorialErrors = validateJsx(tsx);
+    if (remainingEditorialErrors.length > 0) {
+      throw new Error(`JSX validation failed after editorial pass: ${remainingEditorialErrors.join('; ')}`);
+    }
+  }
+
+  validateContentQuality(tsx, topic);
+
   // Sakuppgifter måste kunna följas till fungerande, synliga originalkällor.
   // Källor är ett hårt krav; en artikel utan verifierbara länkar publiceras inte.
   const sources = await validateSourceLinks(tsx);
 
-  // Step 3: Write article file
+  // Snabba svar och FAQ är en del av publiceringskravet, inte en mjuk fallback.
+  const seo = await withRetry(() => extractSeoData(tsx), 'SEO extraction');
+  if (!Array.isArray(seo.faq) || seo.faq.length < 3) {
+    throw new Error('SEO extraction returned fewer than 3 FAQ entries');
+  }
+  console.log(`[article] ✅ ${seo.keyTakeaways.length} snabba svar, ${seo.faq.length} FAQ`);
+
+  // Step 3: Write article file only after every editorial gate has passed.
   const articlePath = resolve(blogDir, `${topic.componentName}.tsx`);
   if (existsSync(articlePath)) {
     throw new Error(`File already exists: ${articlePath}`);
   }
   writeFileSync(articlePath, tsx + '\n');
   console.log(`[article] Written: ${articlePath}`);
-
-  // Step 4: Extract snabba svar + FAQ ur artikeln (mjuk fallback — artikeln
-  // publiceras även utan; BlogLayout renderar bara det som finns)
-  let seo = null;
-  try {
-    seo = await withRetry(() => extractSeoData(tsx), 'SEO extraction');
-    console.log(`[article] ✅ ${seo.keyTakeaways.length} snabba svar${seo.faq?.length ? `, ${seo.faq.length} FAQ` : ''}`);
-  } catch (err) {
-    console.warn(`[article] ⚠️  SEO extraction failed (${err.message}) — publishing without keyTakeaways/faq`);
-  }
 
   // Step 4b: Update blog-posts.ts
   updateBlogPosts(topic, seo, sources);
