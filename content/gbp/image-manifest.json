@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "policy": {
+    "usage": "Google Business Profile posts and business photos",
+    "captionPrefix": "Exempel på möblerat företagsboende i Gävle.",
+    "rules": [
+      "Use only properties where StayOnSite has confirmed publication rights.",
+      "Never describe an image as a currently available listing unless availability was checked the same day.",
+      "Do not add text overlays, filters, people, licence plates or exact street addresses.",
+      "Keep exported files between 10 KB and 5 MB and at least 720 x 720 px."
+    ]
+  },
+  "images": [
+    {
+      "file": "/images/gbp/gavle-company-housing-kitchen.jpg",
+      "sourcePropertyId": "AW84e_txV2-DlBBgUhNlq",
+      "sourcePropertySlug": "foretagsboende-gavle-3-sovrum-4",
+      "sourceImageIndex": 0,
+      "subject": "kitchen and dining area"
+    },
+    {
+      "file": "/images/gbp/gavle-project-housing-living-room.jpg",
+      "sourcePropertyId": "6AnRf-5F_QWEZzz5-TDiK",
+      "sourcePropertySlug": "foretagsboende-gavle-4-sovrum-3",
+      "sourceImageIndex": 3,
+      "subject": "living room"
+    },
+    {
+      "file": "/images/gbp/gavle-corporate-housing-bedroom.jpg",
+      "sourcePropertyId": "6AnRf-5F_QWEZzz5-TDiK",
+      "sourcePropertySlug": "foretagsboende-gavle-4-sovrum-3",
+      "sourceImageIndex": 5,
+      "subject": "bedroom"
+    },
+    {
+      "file": "/images/gbp/gavle-company-housing-bathroom.jpg",
+      "sourcePropertyId": "6AnRf-5F_QWEZzz5-TDiK",
+      "sourcePropertySlug": "foretagsboende-gavle-4-sovrum-3",
+      "sourceImageIndex": 0,
+      "subject": "bathroom"
+    },
+    {
+      "file": "/images/gbp/gavle-project-housing-hallway.jpg",
+      "sourcePropertyId": "6AnRf-5F_QWEZzz5-TDiK",
+      "sourcePropertySlug": "foretagsboende-gavle-4-sovrum-3",
+      "sourceImageIndex": 4,
+      "subject": "hallway and entrance"
+    },
+    {
+      "file": "/images/gbp/gavle-company-housing-exterior.jpg",
+      "sourcePropertyId": "AW84e_txV2-DlBBgUhNlq",
+      "sourcePropertySlug": "foretagsboende-gavle-3-sovrum-4",
+      "sourceImageIndex": 2,
+      "subject": "private garden and row-house exterior"
+    }
+  ]
+}

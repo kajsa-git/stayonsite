@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-06",
+  "posts": [
+    {
+      "id": "campaign-gavle-personalboende",
+      "lane": "campaign",
+      "publishAfter": "2026-09-07",
+      "languageCode": "sv-SE",
+      "summary": "Behöver ni personalboende i Gävle för ett arbetslag på tillfälligt uppdrag? StayOnSite samordnar möblerade hus och lägenheter för bygg-, industri-, energi- och montageprojekt. Ni får en kontaktväg från behovsbild och urval till avtal och inflyttning. Bilden visar ett exempel på möblerat företagsboende i Gävle. Läs mer om upplägg, områden och vanliga frågor.",
+      "targetPath": "/stad/gavle",
+      "image": "/images/gbp/gavle-project-housing-living-room.jpg",
+      "imageDescription": "Exempel på möblerat vardagsrum i ett företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-foretagsbostader-process",
+      "lane": "campaign",
+      "publishAfter": "2026-09-14",
+      "languageCode": "sv-SE",
+      "summary": "Företagsbostäder fungerar bäst när projektort, antal personer, datum och boendekrav är tydliga från start. StayOnSite hjälper företag att samla behovet, jämföra relevanta alternativ och hålla ihop kontakten fram till inflyttning. Bilden visar ett exempel på kök och matplats i ett möblerat boende i Gävle. Skicka en projektbrief så går vi igenom nästa steg.",
+      "targetPath": "/for-foretag",
+      "image": "/images/gbp/gavle-company-housing-kitchen.jpg",
+      "imageDescription": "Exempel på kök och matplats i ett möblerat företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-husagare-foretagsuthyrning",
+      "lane": "campaign",
+      "publishAfter": "2026-09-21",
+      "languageCode": "sv-SE",
+      "summary": "Har du ett möblerat hus eller radhus som passar för längre företagsuthyrning? StayOnSite matchar bostäder med företag som behöver boende för personal på projektort. Vi går igenom bostaden, målgruppen och upplägget innan den presenteras för en kund. Bilden visar ett av de Gävleboenden som används som exempel i vår boendebank. Läs hur uthyrning till företag fungerar.",
+      "targetPath": "/for-husagare",
+      "image": "/images/gbp/gavle-company-housing-exterior.jpg",
+      "imageDescription": "Exempel på radhus i Gävle som passar för företagsuthyrning.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-boden-projektboende",
+      "lane": "campaign",
+      "publishAfter": "2026-09-28",
+      "languageCode": "sv-SE",
+      "summary": "Projektboende i Boden behöver ofta planeras för skift, varierande bemanning och längre hyresperioder. StayOnSite hjälper bygg-, industri- och montageföretag att söka möblerade boenden utifrån arbetslagets faktiska behov. Bilden visar ett exempel på sovrum i ett av våra möblerade Gävleboenden. På stadssidan finns vägledning om områden, upplägg och vanliga frågor för Boden.",
+      "targetPath": "/stad/boden",
+      "image": "/images/gbp/gavle-corporate-housing-bedroom.jpg",
+      "imageDescription": "Exempel på möblerat sovrum i ett företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-funktionellt-personalboende",
+      "lane": "campaign",
+      "publishAfter": "2026-10-05",
+      "languageCode": "sv-SE",
+      "summary": "Ett fungerande personalboende handlar om mer än antal sängar. Kök, badrum, tvätt, förvaring, parkering och avstånd till arbetsplatsen påverkar vardagen under ett längre projekt. StayOnSite går igenom kraven innan vi tar fram alternativ. Bilden visar ett exempel på badrum i ett möblerat boende i Gävle. Läs mer om hur vi planerar boende för arbetslag.",
+      "targetPath": "/for-foretag",
+      "image": "/images/gbp/gavle-company-housing-bathroom.jpg",
+      "imageDescription": "Exempel på badrum i ett möblerat företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-lulea-personalboende",
+      "lane": "campaign",
+      "publishAfter": "2026-10-12",
+      "languageCode": "sv-SE",
+      "summary": "Söker ni personalboende i Luleå för ett kommande projekt? Börja med antal personer, önskat inflyttningsdatum, hyresperiod, fordon och krav på egna sovrum. Då blir urvalet mer träffsäkert och enklare att jämföra. Bilden visar ett exempel på gemensam yta i ett företagsboende i Gävle. Läs vår lokala vägledning för företagsboende i Luleå.",
+      "targetPath": "/stad/lulea",
+      "image": "/images/gbp/gavle-project-housing-living-room.jpg",
+      "imageDescription": "Exempel på gemensam yta i ett möblerat företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-en-kontaktvag",
+      "lane": "campaign",
+      "publishAfter": "2026-10-19",
+      "languageCode": "sv-SE",
+      "summary": "När bemanningen ändras under ett projekt behöver boendet kunna följas upp utan onödiga kontaktvägar. StayOnSite samordnar dialogen kring urval, avtal och inflyttning för företagsbostäder i Sverige. Bilden visar entré och hall i ett möblerat boende i Gävle. Beskriv projektorten, perioden och arbetslagets storlek så återkommer vi med frågor och nästa steg.",
+      "targetPath": "/for-foretag",
+      "image": "/images/gbp/gavle-project-housing-hallway.jpg",
+      "imageDescription": "Exempel på entré och hall i ett möblerat företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "campaign-oskarshamn-projektboende",
+      "lane": "campaign",
+      "publishAfter": "2026-10-26",
+      "languageCode": "sv-SE",
+      "summary": "För projektboende i Oskarshamn är framförhållning viktig, särskilt när flera personer behöver bo nära samma arbetsplats. StayOnSite söker möblerade hus och lägenheter utifrån projektets datum, storlek och praktiska krav. Bilden visar ett exempel på möblerat sovrum i Gävle. På stadssidan hittar ni information om företagsboende, områden och hur en förfrågan går till.",
+      "targetPath": "/stad/oskarshamn",
+      "image": "/images/gbp/gavle-corporate-housing-bedroom.jpg",
+      "imageDescription": "Exempel på möblerat sovrum i ett företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    }
+  ]
+}

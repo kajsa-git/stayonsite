@@ -1,0 +1,78 @@
+name: Google Business Profile Posts
+
+on:
+  schedule:
+    # Måndag: evergreen/lokal post. Fredag: senaste bloggartikeln.
+    # UTC ger 09:00 svensk vintertid och 10:00 svensk sommartid.
+    - cron: "0 8 * * 1"
+    - cron: "0 8 * * 5"
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "Vilken kö som ska användas"
+        required: true
+        default: "campaign"
+        type: choice
+        options:
+          - campaign
+          - article
+      post_id:
+        description: "Valfritt exakt post-id"
+        required: false
+        type: string
+      dry_run:
+        description: "Förhandsgranska utan publicering"
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: google-business-profile-posts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    # Schemat aktiveras först när API-åtkomsten är godkänd och repo-variabeln
+    # GBP_PUBLISH_ENABLED har satts till true. Manuell dry-run fungerar innan dess.
+    if: vars.GBP_PUBLISH_ENABLED == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Validera innehåll och bilder
+        run: node scripts/gbp/publish.mjs --validate
+
+      - name: Publicera eller förhandsgranska
+        env:
+          GBP_PUBLISH_ENABLED: ${{ vars.GBP_PUBLISH_ENABLED }}
+          GBP_CLIENT_ID: ${{ secrets.GBP_CLIENT_ID }}
+          GBP_CLIENT_SECRET: ${{ secrets.GBP_CLIENT_SECRET }}
+          GBP_REFRESH_TOKEN: ${{ secrets.GBP_REFRESH_TOKEN }}
+          GBP_ACCOUNT_ID: ${{ secrets.GBP_ACCOUNT_ID }}
+          GBP_LOCATION_ID: ${{ secrets.GBP_LOCATION_ID }}
+          MANUAL_LANE: ${{ inputs.lane }}
+          MANUAL_POST_ID: ${{ inputs.post_id }}
+          MANUAL_DRY_RUN: ${{ inputs.dry_run }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            args=(--lane "$MANUAL_LANE")
+            if [ -n "$MANUAL_POST_ID" ]; then args+=(--post-id "$MANUAL_POST_ID"); fi
+            if [ "$MANUAL_DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          elif [ "$EVENT_SCHEDULE" = "0 8 * * 1" ]; then
+            args=(--lane campaign)
+          else
+            args=(--lane article)
+          fi
+          node scripts/gbp/publish.mjs "${args[@]}"

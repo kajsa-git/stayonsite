@@ -10,6 +10,11 @@
     "lint": "eslint .",
     "test": "vitest",
     "indexnow": "node scripts/indexnow-submit.mjs",
+    "gbp:validate": "node scripts/gbp/publish.mjs --validate",
+    "gbp:test": "node --test scripts/gbp/publish.test.mjs",
+    "gbp:authorize": "node scripts/gbp/authorize.mjs",
+    "gbp:dry-run": "node scripts/gbp/publish.mjs --dry-run",
+    "gbp:discover": "node scripts/gbp/publish.mjs --discover",
     "db:studio": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs studio"
   },
   "dependencies": {
