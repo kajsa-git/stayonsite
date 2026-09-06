@@ -112,6 +112,7 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Begränsad refresh-token för endast `business.manage`: skapad i `~/.config/stayonsite/gbp-oauth-token.json` med filrättighet `600`.
 - Basic API Access ansökt via profillägaren `kajsa@stayonsite.se`. Google-ärende: `6-9607000041098`; angiven handläggningstid 7–10 arbetsdagar.
 - Ett riktigt `pnpm gbp:discover` når Google men svarar med `429 Quota exceeded`, vilket bekräftar nollkvot i väntan på godkännande. Google My Business API/Local Posts är ännu inte synligt för projektet och kan aktiveras först efter godkännande.
+- Codex-automationen `Aktivera GBP-publicering efter API-godkännande` testar åtkomsten varje vardag 09:15. Vid lyckad discovery validerar den kön, verifierar en GitHub Actions-torrkörning, aktiverar `GBP_PUBLISH_ENABLED` och pausar sedan sig själv. Den får inte skicka adressöverklagan eller ändra andra profilfält.
 - Google avvisade ändringen som skulle dölja Solna-adressen. Den publika profilen visar fortfarande Fogdevreten 14, medan redigeringsvyn samtidigt visar `Ingen adress, bara leveranser och tjänster i hemmet`. En EES-överklagan med saklig hänvisning till att platsen saknar skyltning och kundmottagning är förberedd men ännu inte inskickad.
 - Det rikstäckande serviceområdet `Sverige` har ersatts av tio precisa orter: Solna, Stockholm, Sundbyberg, Sollentuna, Järfälla kommun, Södertälje, Uppsala, Västerås, Eskilstuna och Gävle. Redigeringen är godkänd och aktiv.
 - Den spårbara webbplatslänken till `/for-foretag` är godkänd och aktiv i profilen.
