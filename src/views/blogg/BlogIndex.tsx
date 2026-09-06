@@ -7,7 +7,7 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPosts } from '@/data/blog-posts';
 import Link from 'next/link';
-import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { ArrowRight, Calendar, Clock, ShieldCheck, User } from 'lucide-react';
 
 const BlogIndex = () => {
   const { language } = useLanguage();
@@ -68,6 +68,35 @@ const BlogIndex = () => {
                 'Artyku\u0142y o zakwaterowaniu, wynajmie i trendach rynkowych.'
               )}
             </p>
+          </div>
+        </section>
+
+        <section className="border-b border-nordic-200 bg-nordic-50 py-8">
+          <div className="container mx-auto max-w-6xl px-6 md:px-12">
+            <div className="grid gap-5 md:grid-cols-2">
+              <Link href={language === 'en' ? '/en/about' : '/om-oss'} className="group flex items-start gap-4 rounded-2xl border border-nordic-200 bg-white p-5 transition hover:border-accent">
+                <User className="mt-0.5 h-6 w-6 shrink-0 text-accent" aria-hidden="true" />
+                <div>
+                  <p className="font-semibold text-nordic-900 group-hover:text-accent">
+                    {t('Kajsa Sihlén, grundare & VD', 'Kajsa Sihlén, founder & CEO', 'Kajsa Sihlén, założycielka i CEO')}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-nordic-600">
+                    {t('Innehållsansvarig med erfarenhet av personalboende sedan StayOnSite grundades 2016.', 'Editorial lead with worker accommodation experience since StayOnSite was founded in 2016.', 'Odpowiedzialna za treści i zakwaterowanie pracownicze od założenia StayOnSite w 2016 roku.')}
+                  </p>
+                </div>
+              </Link>
+              <Link href="/blogg/redaktionella-riktlinjer" className="group flex items-start gap-4 rounded-2xl border border-nordic-200 bg-white p-5 transition hover:border-accent">
+                <ShieldCheck className="mt-0.5 h-6 w-6 shrink-0 text-accent" aria-hidden="true" />
+                <div>
+                  <p className="font-semibold text-nordic-900 group-hover:text-accent">
+                    {t('Källor, uppdateringar och rättelser', 'Sources, updates and corrections', 'Źródła, aktualizacje i poprawki')}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-nordic-600">
+                    {t('Läs hur vi skiljer praktisk erfarenhet från lag, statistik och externa sakuppgifter.', 'Read how we distinguish operational experience from regulations, statistics and external facts.', 'Przeczytaj, jak odróżniamy praktyczne doświadczenie od przepisów, statystyk i faktów zewnętrznych.')}
+                  </p>
+                </div>
+              </Link>
+            </div>
           </div>
         </section>
 

@@ -43,8 +43,12 @@ import VinteruthyrningMontorerGuide2026 from '@/views/blogg/VinteruthyrningMonto
 import ForsvarssatsningPersonalboendeByggforetag2026 from '@/views/blogg/ForsvarssatsningPersonalboendeByggforetag2026'
 import AuroraVillageLuleaStorstaPersonalboende from '@/views/blogg/AuroraVillageLuleaStorstaPersonalboende'
 import LaddstationerPersonalboendeHusagareGuide from '@/views/blogg/LaddstationerPersonalboendeHusagareGuide'
+import PersonalboendeOkgOskarshamnGuide from '@/views/blogg/PersonalboendeOkgOskarshamnGuide'
+import PersonalboendeDalarnaGuide from '@/views/blogg/PersonalboendeDalarnaGuide'
 
 const componentMap: Record<string, React.ComponentType> = {
+  'personalboende-okg-oskarshamn-guide': PersonalboendeOkgOskarshamnGuide,
+  'personalboende-dalarna-falun-borlange-ludvika': PersonalboendeDalarnaGuide,
   'personalboende-guide-2026': PersonalboendGuide2026,
   'privatuthyrningslagen-reform-2026': PrivatuthyrningslagenReform2026,
   'gron-omstallning-norr-boende': GronOmstallningBoende,
@@ -79,7 +83,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     type: 'article',
     articlePublishedTime: `${post.publishedDate}T00:00:00Z`,
     articleModifiedTime: `${post.updatedDate || post.publishedDate}T00:00:00Z`,
-    articleAuthor: 'https://www.stayonsite.se',
+    articleAuthor: 'https://www.stayonsite.se/om-oss#kajsa-sihlen',
     articleSection: post.category,
     articleTags: post.tags,
     hreflangs: [

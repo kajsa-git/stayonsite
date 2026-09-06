@@ -80,7 +80,7 @@ const ForetagsbostaderNyaReglerJuli2026GuideEn = () => {
       </p>
 
       <p>
-        The Private Rental Act now covers renting out up to two residential homes at the same time, giving private individuals greater freedom to rent out to companies without it being classified as business activity.
+        The Private Rental Act can now cover renting out up to two separate residential homes at the same time. Whether the income is taxed as capital income or business income is a separate tax assessment.
       </p>
 
       <h2>Difference between corporate housing and private rental</h2>
@@ -258,7 +258,7 @@ const ForetagsbostaderNyaReglerJuli2026GuideEn = () => {
       <h3>How is corporate housing taxed?</h3>
 
       <p>
-        For the employee, the benefit value of free housing may be taxable if the housing is considered a benefit. For the employer, the rental cost is deductible. For the property owner, rental income is taxed, but a standard deduction (schablonavdrag) of SEK 50,000 per year may apply for private rentals. Read more in our{' '}
+        For the employee, the benefit value of free housing may be taxable if the housing is considered a benefit. The employer&apos;s right to deduct the cost depends on the circumstances. For private rentals, the Swedish Tax Agency states a maximum standard deduction (schablonavdrag) of SEK 40,000 per home and year. Read more in our{' '}
         <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">guide on tax and the standard deduction for block rental</Link>.
       </p>
 

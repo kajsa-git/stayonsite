@@ -62,6 +62,43 @@ interface CityPageProps {
   listings?: CityListingItem[];
 }
 
+interface LocalGuide {
+  href: string;
+  title: string;
+  description: string;
+}
+
+const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
+  oskarshamn: [
+    {
+      href: '/blogg/personalboende-okg-oskarshamn-guide',
+      title: 'Planera personalboende vid OKG',
+      description: 'Checklista för skift, restid, parkering och ansvar vid arbete i Simpevarp.',
+    },
+  ],
+  falun: [
+    {
+      href: '/blogg/personalboende-dalarna-falun-borlange-ludvika',
+      title: 'Personalboende i Dalarna',
+      description: 'Jämför Falun, Borlänge och Ludvika utifrån arbetsplats och aktuell projekttidplan.',
+    },
+  ],
+  borlange: [
+    {
+      href: '/blogg/personalboende-dalarna-falun-borlange-ludvika',
+      title: 'Personalboende i Dalarna',
+      description: 'Jämför Falun, Borlänge och Ludvika utifrån arbetsplats och aktuell projekttidplan.',
+    },
+  ],
+  ludvika: [
+    {
+      href: '/blogg/personalboende-dalarna-falun-borlange-ludvika',
+      title: 'Personalboende i Dalarna',
+      description: 'Jämför Falun, Borlänge och Ludvika utifrån arbetsplats och aktuell projekttidplan.',
+    },
+  ],
+};
+
 const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPageProps) => {
   const { language, setLanguage } = useLanguage();
 
@@ -83,6 +120,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
   const heroHeading = getLocalizedText(city.heroHook, language);
   const heroDescription = getLocalizedText(city.intro, language);
   const localizedKeywords = getLocalizedKeywords(city.keywords, language);
+  const localGuides = LOCAL_GUIDES[city.slug] ?? [];
   
   // Construct canonical and hreflang URLs
   const baseUrl = 'https://www.stayonsite.se';
@@ -429,6 +467,38 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
             </div>
           </div>
         </section>
+
+        {language === 'sv' && localGuides.length > 0 && (
+          <section className="border-t border-nordic-100 bg-white py-12">
+            <div className="container mx-auto px-6 md:px-8">
+              <div className="mx-auto max-w-5xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+                  Lokal projektguide
+                </p>
+                <div className="mt-4 grid gap-4">
+                  {localGuides.map((guide) => (
+                    <Link
+                      key={guide.href}
+                      href={guide.href}
+                      className="group flex flex-col justify-between gap-4 rounded-2xl border border-nordic-200 bg-nordic-50 p-6 transition hover:border-accent md:flex-row md:items-center"
+                    >
+                      <div>
+                        <h2 className="text-xl font-semibold text-nordic-900 group-hover:text-accent">
+                          {guide.title}
+                        </h2>
+                        <p className="mt-2 text-gray-600">{guide.description}</p>
+                      </div>
+                      <span className="inline-flex shrink-0 items-center gap-2 font-semibold text-accent">
+                        Läs guiden
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Neighborhoods */}
         <section className="section-spacing bg-nordic-50 border-t border-nordic-100">

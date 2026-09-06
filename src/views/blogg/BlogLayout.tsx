@@ -7,8 +7,9 @@ import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { BlogPost } from '@/data/blog-posts';
 import { getRelatedPosts } from '@/data/blog-posts';
+import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Calendar, CheckCircle2, Clock, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, CheckCircle2, Clock, ExternalLink, ShieldCheck, User } from 'lucide-react';
 
 interface BlogLayoutProps {
   post: BlogPost;
@@ -29,15 +30,18 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const blogIndexPath = enVariant ? '/en/blog' : '/blogg';
   const keyTakeaways = enVariant ? enVariant.keyTakeaways : post.keyTakeaways;
   const faq = enVariant ? enVariant.faq : post.faq;
+  const sources = post.sources;
   const modifiedDate = post.updatedDate || post.publishedDate;
   const isUpdated = Boolean(post.updatedDate && post.updatedDate !== post.publishedDate);
   const relatedPosts = getRelatedPosts(post.slug);
   const audience = post.audience ?? 'bada';
+  const authorUrl = language === 'en' ? '/en/about' : '/om-oss';
+  const editorialUrl = '/blogg/redaktionella-riktlinjer';
 
   const structuredData: Record<string, unknown>[] = [
     {
       '@context': 'https://schema.org',
-      '@type': 'Article',
+      '@type': 'BlogPosting',
       headline: title,
       description: description,
       image: {
@@ -48,19 +52,23 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       },
       author: {
         '@type': 'Person',
+        '@id': 'https://www.stayonsite.se/om-oss#kajsa-sihlen',
         name: post.author,
         jobTitle: 'Grundare & VD',
         url: 'https://www.stayonsite.se/om-oss',
         image: 'https://www.stayonsite.se/images/kajsa.webp',
         sameAs: ['https://www.linkedin.com/in/kajsa-sihl%C3%A9n-4b16b657/'],
+        knowsAbout: ['personalboende', 'företagsbostäder', 'projektboende', 'uthyrning till företag'],
         worksFor: {
           '@type': 'Organization',
+          '@id': 'https://www.stayonsite.se/#organization',
           name: 'StayOnSite',
           url: 'https://www.stayonsite.se',
         },
       },
       publisher: {
         '@type': 'Organization',
+        '@id': 'https://www.stayonsite.se/#organization',
         name: 'StayOnSite',
         url: 'https://www.stayonsite.se',
         logo: {
@@ -71,11 +79,17 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       datePublished: post.publishedDate,
       dateModified: modifiedDate,
       mainEntityOfPage: articleUrl,
-      wordCount: post.readingTime * 250,
+      timeRequired: `PT${post.readingTime}M`,
       articleSection: post.category,
       keywords: post.tags.join(', '),
       inLanguage: enVariant ? 'en' : 'sv',
       isAccessibleForFree: true,
+      isPartOf: {
+        '@type': 'Blog',
+        name: enVariant ? 'StayOnSite Blog' : 'StayOnSite Blogg',
+        url: `https://www.stayonsite.se${blogIndexPath}`,
+      },
+      ...(sources?.length ? { citation: sources.map((source) => source.url) } : {}),
       ...(keyTakeaways?.length ? { abstract: keyTakeaways.join(' ') } : {}),
     },
     {
@@ -153,7 +167,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         structuredData={structuredData}
         articlePublishedTime={`${post.publishedDate}T00:00:00Z`}
         articleModifiedTime={`${modifiedDate}T00:00:00Z`}
-        articleAuthor="https://www.stayonsite.se"
+        articleAuthor="https://www.stayonsite.se/om-oss#kajsa-sihlen"
         articleSection={post.category}
         articleTags={post.tags}
         hreflangs={[
@@ -179,12 +193,18 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
               {title}
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-white/60 text-sm">
-              <span className="flex items-center gap-2"><User size={14} />{post.author}</span>
-              <span className="flex items-center gap-2"><Calendar size={14} />{post.publishedDate}</span>
+              <Link href={authorUrl} className="flex items-center gap-2 hover:text-white transition-colors">
+                <User size={14} />
+                {post.author}, {language === 'sv' ? 'grundare & VD' : language === 'en' ? 'founder & CEO' : 'założycielka i CEO'}
+              </Link>
+              <time dateTime={post.publishedDate} className="flex items-center gap-2">
+                <Calendar size={14} />
+                {language === 'sv' ? 'Publicerad' : language === 'en' ? 'Published' : 'Opublikowano'} {post.publishedDate}
+              </time>
               {isUpdated && (
-                <span className="flex items-center gap-2">
+                <time dateTime={post.updatedDate} className="flex items-center gap-2">
                   {language === 'sv' ? 'Uppdaterad' : language === 'en' ? 'Updated' : 'Zaktualizowano'} {post.updatedDate}
-                </span>
+                </time>
               )}
               <span className="flex items-center gap-2"><Clock size={14} />{post.readingTime} min</span>
             </div>
@@ -211,6 +231,84 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
             )}
             <article className="prose prose-lg prose-nordic max-w-none prose-headings:font-display prose-headings:text-nordic-900 prose-a:text-accent prose-blockquote:border-accent prose-blockquote:bg-nordic-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-xl">
               {children}
+
+              {sources && sources.length > 0 && (
+                <section aria-labelledby="article-sources" className="not-prose mt-14 border-t border-nordic-200 pt-10">
+                  <div className="mb-5 flex items-center gap-3">
+                    <ShieldCheck className="h-6 w-6 text-accent" aria-hidden="true" />
+                    <h2 id="article-sources" className="font-display text-2xl font-semibold text-nordic-900">
+                      {language === 'sv' ? 'Primärkällor' : language === 'en' ? 'Primary sources' : 'Źródła pierwotne'}
+                    </h2>
+                  </div>
+                  <p className="mb-5 text-sm leading-relaxed text-nordic-600">
+                    {language === 'sv'
+                      ? 'Källorna nedan stöder artikelns centrala sakuppgifter. Länkarna går till ansvarig myndighet eller originaldokument.'
+                      : language === 'en'
+                        ? 'These sources support the article’s central factual claims and link to the responsible authority or original document.'
+                        : 'Poniższe źródła potwierdzają najważniejsze informacje i prowadzą do właściwego urzędu lub dokumentu.'}
+                  </p>
+                  <ol className="space-y-3">
+                    {sources.map((source) => (
+                      <li key={source.url} className="border-l-2 border-nordic-200 pl-4 text-sm leading-relaxed">
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-start gap-2 font-medium text-nordic-900 hover:text-accent"
+                        >
+                          <span>
+                            {source.publisher}: {source.title}
+                            {source.checkedDate && (
+                              <span className="ml-2 font-normal text-nordic-500">
+                                ({language === 'sv' ? 'kontrollerad' : language === 'en' ? 'checked' : 'sprawdzono'} {source.checkedDate})
+                              </span>
+                            )}
+                          </span>
+                          <ExternalLink className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )}
+
+              <aside className="not-prose mt-14 rounded-2xl border border-nordic-200 bg-nordic-50 p-6 md:p-8" aria-label={language === 'sv' ? 'Om författaren' : 'About the author'}>
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                  <Image
+                    src="/images/kajsa.webp"
+                    alt="Kajsa Sihlén"
+                    width={96}
+                    height={96}
+                    className="h-24 w-24 shrink-0 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
+                      {language === 'sv' ? 'Om författaren' : language === 'en' ? 'About the author' : 'O autorce'}
+                    </p>
+                    <h2 className="mt-2 font-display text-xl font-semibold text-nordic-900">
+                      <Link href={authorUrl} className="hover:text-accent">Kajsa Sihlén</Link>
+                    </h2>
+                    <p className="mt-1 text-sm font-medium text-nordic-600">
+                      {language === 'sv' ? 'Grundare och VD, StayOnSite' : language === 'en' ? 'Founder and CEO, StayOnSite' : 'Założycielka i CEO, StayOnSite'}
+                    </p>
+                    <p className="mt-4 text-sm leading-relaxed text-nordic-700">
+                      {language === 'sv'
+                        ? 'Kajsa grundade StayOnSite 2016 och arbetar med boende för bygg-, industri- och infrastrukturprojekt i svenska projektorter. Artiklarna kombinerar praktiska erfarenheter från verksamheten med externa källor när lagar, statistik eller projektuppgifter behandlas.'
+                        : language === 'en'
+                          ? 'Kajsa founded StayOnSite in 2016 and works with accommodation for construction, industrial and infrastructure projects across Sweden. Articles combine operational experience with external sources when covering regulations, statistics or project facts.'
+                          : 'Kajsa założyła StayOnSite w 2016 roku i pracuje nad zakwaterowaniem dla projektów budowlanych, przemysłowych i infrastrukturalnych w Szwecji.'}
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium">
+                      <Link href={authorUrl} className="text-accent hover:underline">
+                        {language === 'sv' ? 'Om Kajsa och StayOnSite' : language === 'en' ? 'About Kajsa and StayOnSite' : 'O Kajsa i StayOnSite'}
+                      </Link>
+                      <Link href={editorialUrl} className="text-accent hover:underline">
+                        {language === 'sv' ? 'Så arbetar vi med innehåll' : language === 'en' ? 'Editorial principles (Swedish)' : 'Zasady redakcyjne (po szwedzku)'}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </article>
           </div>
         </section>

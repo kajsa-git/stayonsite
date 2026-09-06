@@ -75,38 +75,37 @@ const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
   // Build city-specific subtitle from industries
   const topIndustries = city.industries.slice(0, 3).join(', ');
   const subtitle = {
-    sv: `I ${city.name} finns stor efterfrågan på boende för ${topIndustries}. Vi hyr din bostad till ett fast belopp varje månad - utan avdrag.`,
-    en: `In ${city.name} there is high demand for accommodation for ${topIndustries}. We rent your property at a fixed amount every month - no deductions.`,
-    pl: `W ${city.name} jest duże zapotrzebowanie na zakwaterowanie dla ${topIndustries}. Wynajmujemy Twoją nieruchomość za stałą kwotę - bez potrąceń.`,
+    sv: `Hyr ut din bostad i ${city.name} till företag som söker boende för medarbetare inom ${topIndustries}. Vi bedömer bostaden mot aktuella förfrågningar och presenterar villkoren före avtal.`,
+    en: `Rent out your property in ${city.name} to companies seeking housing for staff in ${topIndustries}. We assess it against current enquiries and present the terms before an agreement.`,
+    pl: `Wynajmij nieruchomość w ${city.name} firmom szukającym zakwaterowania dla pracowników w branżach ${topIndustries}. Oceniamy ją na podstawie aktualnych zapytań i przedstawiamy warunki przed zawarciem umowy.`,
   };
 
   // Build city-specific extra FAQ from city data
-  const projectNames = city.projects.slice(0, 2).map(p => p.name.sv).join(', ');
   const neighborhoodNames = city.neighborhoods.slice(0, 3).map(n => n.name.sv).join(', ');
 
   const extraFaqItems = [
     {
       q: tr(
-        `Finns det efterfrågan i ${city.name}?`,
-        `Is there demand in ${city.name}?`,
-        `Czy jest popyt w ${city.name}?`
+        `Hur hyr jag ut min bostad till företag i ${city.name}?`,
+        `How do I rent out my property to a company in ${city.name}?`,
+        `Jak wynająć nieruchomość firmie w ${city.name}?`
       ),
       a: tr(
-        `Ja. ${city.name} har aktiva projekt inom ${topIndustries}. Pågående projekt inkluderar ${projectNames}. Efterfrågan på företagsboende är hög.`,
-        `Yes. ${city.name} has active projects in ${topIndustries}. Ongoing projects include ${projectNames}. Demand for corporate housing is high.`,
-        `Tak. ${city.name} ma aktywne projekty w ${topIndustries}. Zapotrzebowanie na zakwaterowanie firmowe jest wysokie.`
+        `Registrera bostaden med adress, antal sovrum, bilder och tillgängliga datum. Vi jämför den med aktuella företagsförfrågningar i ${city.name}. En registrering är inte en garanti för uthyrning; pris och villkor bekräftas alltid före avtal.`,
+        `Register the property with its address, bedrooms, photos and available dates. We compare it with current company enquiries in ${city.name}. Registration does not guarantee a tenancy; price and terms are always confirmed before an agreement.`,
+        `Zarejestruj nieruchomość, podając adres, liczbę sypialni, zdjęcia i dostępne terminy. Porównamy ją z aktualnymi zapytaniami firm w ${city.name}. Rejestracja nie gwarantuje wynajmu; cena i warunki są zawsze potwierdzane przed umową.`
       ),
     },
     {
       q: tr(
-        `Vilka områden i ${city.name} är populära?`,
-        `Which areas in ${city.name} are popular?`,
-        `Które dzielnice w ${city.name} są popularne?`
+        `Vilka områden i ${city.name} kan passa företagsboende?`,
+        `Which areas in ${city.name} can suit corporate housing?`,
+        `Które dzielnice w ${city.name} mogą nadawać się na zakwaterowanie firmowe?`
       ),
       a: tr(
-        `De mest efterfrågade områdena är ${neighborhoodNames}. Vi har boenden i hela ${city.name} och anpassar efter ert behov.`,
-        `The most popular areas are ${neighborhoodNames}. We have accommodation across ${city.name} and adapt to your needs.`,
-        `Najpopularniejsze dzielnice to ${neighborhoodNames}. Mamy zakwaterowanie w całym ${city.name}.`
+        `Områden som ${neighborhoodNames} kan vara relevanta, men matchningen styrs främst av arbetsplats, restid, parkering, antal sovrum och aktuella datum.`,
+        `Areas such as ${neighborhoodNames} can be relevant, but matching mainly depends on the workplace, travel time, parking, bedrooms and current dates.`,
+        `Obszary takie jak ${neighborhoodNames} mogą być odpowiednie, ale dopasowanie zależy głównie od miejsca pracy, dojazdu, parkingu, liczby sypialni i terminów.`
       ),
     },
   ];

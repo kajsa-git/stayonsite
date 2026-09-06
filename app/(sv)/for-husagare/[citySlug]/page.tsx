@@ -21,7 +21,7 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `Hyr ut din bostad i ${city.name} till företag | StayOnSite`,
-    description: `Hyr ut din bostad i ${city.name} till företagshyresgäster. Stor efterfrågan inom ${topIndustries}. Fast månadshyra utan avdrag. Vi sköter allt.`,
+    description: `Hyr ut din bostad i ${city.name} till företag som söker boende för medarbetare inom ${topIndustries}. Se hur matchning, avtal och betalning fungerar.`,
     canonical: `https://www.stayonsite.se/for-husagare/${city.slug}`,
     hreflangs: [
       { lang: 'sv', href: `https://www.stayonsite.se/for-husagare/${city.slug}` },

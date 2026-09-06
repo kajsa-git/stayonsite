@@ -259,7 +259,7 @@ Aurora Village är Sveriges största personalboende och kommer att omfatta cirka
 
       <h2>Behöver ditt företag boende till nästa projekt?</h2>
       <p>
-        Oavsett om ni är ett storbolag som planerar för hundratals medarbetare eller ett mindre entreprenadföretag med ett fåtal montörer, hjälper StayOnSite er att hitta rätt boendelösning &ndash; snabbt och utan krångel. StayOnSite grundades 2016 och har idag betyget 5,0 på Google. Vi tar 0 % avgift av husägare, erbjuder garanterad hyra och arbetar enbart med professionella hyresgäster. Ni får en boendeplan inom 24 timmar &ndash; vi återkommer alltid inom en arbetsdag, ofta redan inom några timmar.
+        Oavsett om ni är ett storbolag som planerar för hundratals medarbetare eller ett mindre entreprenadföretag med ett fåtal montörer, hjälper StayOnSite er att hitta rätt boendelösning. StayOnSite grundades 2016 och arbetar med företagsboende för projekt på orter i hela Sverige. Vi tar 0 % avgift av husägare och återkommer på förfrågningar inom en arbetsdag.
       </p>
       <p>
         Ring oss på{' '}

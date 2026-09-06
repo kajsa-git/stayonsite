@@ -3,6 +3,14 @@ export interface BlogFaqItem {
   a: string;
 }
 
+export interface BlogSource {
+  title: string;
+  publisher: string;
+  url: string;
+  /** Datum då källan senast kontrollerades, ISO 8601. */
+  checkedDate?: string;
+}
+
 export interface BlogPost {
   slug: string;
   title: { sv: string; en: string; pl: string };
@@ -20,6 +28,8 @@ export interface BlogPost {
   keyTakeaways?: string[];
   /** Q&A som redan finns synligt i artikeln — genererar FAQPage-schema. */
   faq?: BlogFaqItem[];
+  /** Primärkällor som stöder artikelns centrala sakuppgifter. */
+  sources?: BlogSource[];
   /** Engelsk version — finns bara för översatta artiklar (route: /en/blog/<slug>). */
   en?: {
     slug: string;
@@ -28,7 +38,158 @@ export interface BlogPost {
   };
 }
 
+const RENTAL_REFORM_SOURCES: BlogSource[] = [
+  {
+    title: 'Privatuthyrningslag (2026:772)',
+    publisher: 'Svensk författningssamling',
+    url: 'https://svenskforfattningssamling.se/doc/2026772.html',
+    checkedDate: '2026-09-06',
+  },
+  {
+    title: 'Proposition 2025/26:187 – En mer flexibel hyresmarknad',
+    publisher: 'Sveriges riksdag',
+    url: 'https://www.riksdagen.se/sv/dokument-och-lagar/dokument/proposition/en-mer-flexibel-hyresmarknad_hd03187/',
+    checkedDate: '2026-09-06',
+  },
+  {
+    title: 'Hyra ut privatbostad – bostadsrätt, småhus och hyresrätt',
+    publisher: 'Skatteverket',
+    url: 'https://www.skatteverket.se/privat/skatter/arbeteochinkomst/inkomster/hyrautbostadbilochsaker/hyrautprivatbostad.106.1c68351d170ce554527ef5.html',
+    checkedDate: '2026-09-06',
+  },
+];
+
 export const blogPosts: BlogPost[] = [
+  {
+    slug: 'personalboende-okg-oskarshamn-guide',
+    title: {
+      sv: 'Personalboende vid OKG i Oskarshamn: guide för entreprenörer',
+      en: 'Worker accommodation near OKG in Oskarshamn: contractor guide',
+      pl: 'Zakwaterowanie przy OKG w Oskarshamn: poradnik dla wykonawców',
+    },
+    description: {
+      sv: 'Planera boende vid OKG och i Oskarshamn utifrån skift, restid, parkering och tillträdeskrav. Praktisk checklista för montörer och revisionsteam.',
+      en: 'Plan accommodation near OKG and in Oskarshamn around shifts, travel, parking and access requirements. A practical contractor checklist.',
+      pl: 'Zaplanuj noclegi przy OKG i w Oskarshamn pod kątem zmian, dojazdu, parkingu i wymogów dostępu. Praktyczna lista kontrolna.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-09-06',
+    category: 'Lokal guide',
+    tags: ['Oskarshamn', 'OKG', 'personalboende', 'montörboende', 'kärnkraft'],
+    readingTime: 7,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Utgå från arbetsplatsen i Simpevarp och lagets skifttider när ni jämför Oskarshamn, Figeholm och andra boendelägen.',
+      'OKG:s tillträdeshandlingar, kontroller och utbildningar är ett separat ansvar från själva boendet.',
+      'OKG uppgav att revisionen 2026 omfattade omkring 2 000 arbetsordrar; siffran beskriver 2026 och är inte en prognos för kommande revisioner.',
+      'Begär alltid exakt adress, parkeringsvillkor och en fullständig lista över vad som ingår innan boendet bokas.',
+    ],
+    faq: [
+      {
+        q: 'Är boende i Figeholm alltid bäst för den som arbetar på OKG?',
+        a: 'Inte alltid. Figeholm kan ge ett läge närmare Simpevarp, men standard, kapacitet, parkering och tillgänglighet måste vägas mot alternativ i Oskarshamn.',
+      },
+      {
+        q: 'Kan StayOnSite ordna inpassering till OKG?',
+        a: 'Nej. Tillträdeshandlingar, kontroller och utbildningar hanteras enligt OKG:s och arbetsgivarens rutiner. StayOnSite hjälper till med boendet.',
+      },
+      {
+        q: 'Hur tidigt bör ett revisionsteam boka boende?',
+        a: 'Börja så snart bemanning och ungefärliga datum är kända. Koncentrerad efterfrågan gör att större team ofta behöver kombineras över flera bostäder.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Revision 2026 – en viktig pusselbit för framtidens drift',
+        publisher: 'OKG AB',
+        url: 'https://www.mynewsdesk.com/se/okg/news/revision-2026-en-viktig-pusselbit-foer-framtidens-drift-507304',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'För dig som ska arbeta på OKG',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Vårt näringslivs historia och framtid',
+        publisher: 'Oskarshamns kommun',
+        url: 'https://www.oskarshamn.se/tillvaxt-och-naringsliv/vart-naringslivs-historia-och-framtid/',
+        checkedDate: '2026-09-06',
+      },
+    ],
+  },
+  {
+    slug: 'personalboende-dalarna-falun-borlange-ludvika',
+    title: {
+      sv: 'Personalboende i Dalarna: Falun, Borlänge och Ludvika',
+      en: 'Worker accommodation in Dalarna: Falun, Borlänge and Ludvika',
+      pl: 'Zakwaterowanie pracownicze w Dalarna: Falun, Borlänge i Ludvika',
+    },
+    description: {
+      sv: 'Guide till personalboende i Dalarna för projekt i Falun, Borlänge, Ludvika och övriga länet. Välj ort utifrån arbetsplats, skift och aktuell tidplan.',
+      en: 'A guide to worker accommodation in Dalarna for projects in Falun, Borlänge, Ludvika and across the county.',
+      pl: 'Poradnik dotyczący zakwaterowania pracowniczego w Dalarna dla projektów w Falun, Borlänge, Ludvika i całym regionie.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-09-06',
+    category: 'Lokal guide',
+    tags: ['Dalarna', 'Falun', 'Borlänge', 'Ludvika', 'personalboende'],
+    readingTime: 8,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Dalarna är en flerkärnig arbetsmarknad; välj boendebas efter arbetsplatsen i stället för att behandla hela länet som en pendlingszon.',
+      'Falun–Borlänge, Ludvika–Smedjebacken, Avesta–Hedemora och Mora behöver bedömas som separata sökområden.',
+      'Trafikverkets arbeten på bland annat E16, väg 70 och sträckor kring Ludvika gör skifttider och aktuell trafikplan viktiga i boendebeslutet.',
+      'Kontrollera alltid senaste projekttidplan; byggstarten för etapp 3 på E16/väg 70 flyttades exempelvis till våren 2027 efter överprövning.',
+    ],
+    faq: [
+      {
+        q: 'Är Falun eller Borlänge bäst som gemensam bas?',
+        a: 'Det beror på arbetsplatsen och skifttiderna. För projekt längs stråket kan båda fungera, men adress, trafikläge och parkering behöver jämföras före bokning.',
+      },
+      {
+        q: 'Kan ett team bo i Falun och arbeta i Ludvika?',
+        a: 'Det är möjligt, men daglig restid kan bli onödigt stor. För längre projekt bör Ludvika och Smedjebacken alltid ingå i jämförelsen.',
+      },
+      {
+        q: 'När bör personalboende i Dalarna bokas?',
+        a: 'Börja när den första bemanningsplanen finns, men bind exakta datum först när projektägare och entreprenör har bekräftat tidplanen och avtalet hanterar eventuella förskjutningar.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Fastställd länsplan 2022–2033',
+        publisher: 'Region Dalarna',
+        url: 'https://www.regiondalarna.se/globalassets/bilder/faststalld-lansplan-2022-2033-rf-221003-002.pdf',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Sårbarhetsanalys – Dalarnas näringsliv och arbetsmarknad',
+        publisher: 'Region Dalarna',
+        url: 'https://samhallsanalys.regiondalarna.se/sarbarhetsanalys',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Historisk satsning på Dalarnas väg',
+        publisher: 'Trafikverket',
+        url: 'https://www.trafikverket.se/om-oss/nyheter/lansnyheter/dalarna/2026/historisk-satsning-pa-dalarnas-vag/',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Falun–Borlänge, kapacitets- och säkerhetshöjande åtgärder på järnvägen',
+        publisher: 'Trafikverket',
+        url: 'https://www.trafikverket.se/vara-projekt/projekt-i-dalarnas-lan/falun-borlange-kapacitets--och-sakerhetshojande-atgarder-pa-jarnvagen/',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'E16/väg 70: tilldelning av entreprenör överprövad',
+        publisher: 'Trafikverket',
+        url: 'https://www.trafikverket.se/vara-projekt/projekt-i-dalarnas-lan/e16vag-70-borlangedjuras-motesfri-vag/nyheter-for-e16vag-70-borlangedjuras-motesfri-vag/2026/tilldelning-av-entreprenor-overprovad/',
+        checkedDate: '2026-09-06',
+      },
+    ],
+  },
   {
     slug: 'personalboende-guide-2026',
     title: {
@@ -51,59 +212,86 @@ export const blogPosts: BlogPost[] = [
       'Personalboende kostar ca 200–550 kr per person och natt (från 5 900 kr per person och månad) mot hotellets 900–1 800 kr — ett team på 10 sparar 60–75 procent.',
       'Boverket: Sverige behöver bygga ca 67 000 bostäder per år till 2030, men 2025 påbörjades bara ca 30 000 — ett gap på 35 000 bostäder per år.',
       'Arbetsmiljöverkets föreskrifter AFS 2020:1 kräver att arbetsgivarens tillfälliga boende har enskilda sovplatser, kök, hygienutrymmen och brandskydd.',
-      'Privatuthyrningslagen (2012:978) gäller när uthyraren är privatperson; hyr ett företag ut gäller hyreslagen, och blockhyra regleras i 1 § tredje stycket.',
+      'Privatuthyrningslag (2026:772) gäller för nya privatuthyrningsavtal från 1 juli 2026; äldre avtal följer övergångsregler och blockhyra regleras i hyreslagen.',
       'Snittpriset på svenska hotellrum steg 8,3 procent under 2025 (SCB), och byggbranschen behöver rekrytera 50 000 nya medarbetare till 2030 (Byggföretagen).',
     ],
   },
   {
     slug: 'privatuthyrningslagen-reform-2026',
     title: {
-      sv: 'Privatuthyrningslagen 2026: Nya regler från 1 juli – vad du tjänar på det',
-      en: 'Swedish Private Rental Act 2026: New Rules from 1 July – What You Gain',
-      pl: 'Ustawa o wynajmie 2026: Nowe zasady od 1 lipca – co zyskujesz'
+      sv: 'Privatuthyrningslagen 2026: Det här gäller från 1 juli',
+      en: 'Swedish Private Rental Act 2026: Rules from 1 July',
+      pl: 'Ustawa o wynajmie prywatnym 2026: zasady od 1 lipca'
     },
     description: {
-      sv: 'Riksdagen röstade igenom reformen: schablonavdraget höjs till 50 000 kr och blockhyra förenklas. Så maximerar du din hyresintäkt från 1 juli 2026.',
-      en: 'Parliament passed the biggest reform since 2012. The standard deduction rises to SEK 50,000 and block rentals get simpler. How to maximise your rental income from 1 July.',
-      pl: 'Sejm uchwalił największą reformę od 2012 r. Odliczenie rośnie do 50 000 SEK. Jak zmaksymalizować dochód z najmu od 1 lipca.'
+      sv: 'Ny privatuthyrningslag gäller från 1 juli 2026. Läs om tvåbostadsgränsen, friare hyressättning, gamla avtal och schablonavdraget på 40 000 kr.',
+      en: 'A new Swedish Private Rental Act applies from 1 July 2026. Learn about the two-home threshold, rent rules, old contracts and the SEK 40,000 deduction.',
+      pl: 'Nowa szwedzka ustawa obowiązuje od 1 lipca 2026 r. Wyjaśniamy limit dwóch lokali, czynsz, stare umowy i odliczenie 40 000 SEK.'
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-02-07',
+    updatedDate: '2026-09-06',
     category: 'Lagstiftning',
     tags: ['privatuthyrningslagen', 'blockhyra', 'husägare', 'skatt'],
-    readingTime: 10,
+    readingTime: 8,
     audience: 'husagare',
     keyTakeaways: [
-      'Schablonavdraget vid privatuthyrning höjs från 40 000 till 50 000 kr per bostad och år den 1 juli 2026; överskottet beskattas med 30 procent kapitalskatt.',
-      'Gränsen för näringsverksamhet höjs från en till två bostäder — schablonavdraget gäller per bostad, max 100 000 kr per år för den som hyr ut två.',
-      'Reformen bygger på SOU 2025:65 och Prop. 2025/26:143, röstades igenom av riksdagen i juni 2026 och träder i kraft den 1 juli 2026.',
-      'Höjningen ger 3 000 kr lägre skatt per bostad och år (10 000 kr × 30 %) — upp till 6 000 kr per år för den som hyr ut två bostäder.',
-      'Vid blockhyra tar det hyrande företaget ansvaret för andrahandsuthyrningen — husägaren behöver inte hantera besittningsskydd mot de enskilda boende.',
+      'Privatuthyrningslag (2026:772) gäller för nya avtal från 1 juli 2026; äldre avtal fortsätter att följa den upphävda lagen (2012:978).',
+      'Lagen gäller inte om hyresvärden regelmässigt hyr ut fler än två fristående lägenheter; bedömningen gäller verksamheten över tid.',
+      'Parterna får som utgångspunkt avtala om inflyttningshyran, men hyresgästen kan få en väsentligt för hög hyra prövad av hyresnämnden.',
+      'Skattereglerna ändrades inte av reformen: Skatteverket anger fortfarande ett schablonavdrag på högst 40 000 kr per bostad och år.',
+      'Riksdagen antog proposition 2025/26:187 den 20 maj 2026 och den nya lagen trädde i kraft den 1 juli 2026.',
     ],
     faq: [
       {
         q: 'När träder de nya reglerna i kraft?',
-        a: 'Den 1 juli 2026. För beskattningsåret 2026 gäller det gamla schablonavdraget (40 000 kr) för januari–juni och det nya (50 000 kr, proportionerat) för juli–december.',
+        a: 'Privatuthyrningslag (2026:772) trädde i kraft den 1 juli 2026. Den gäller för avtal som ingås från och med det datumet.',
       },
       {
-        q: 'Behöver jag skriva nytt hyresavtal?',
-        a: 'Nej, befintliga hyresavtal fortsätter att gälla. De nya reglerna påverkar främst skatteberäkningen och möjligheten att hyra ut fler bostäder.',
+        q: 'Gäller den nya lagen för ett äldre hyresavtal?',
+        a: 'Nej. Avtal som ingicks enligt den äldre lagen fortsätter att omfattas av den, även efter den 1 juli 2026.',
       },
       {
-        q: 'Kan jag hyra ut min bostadsrätt?',
-        a: 'Ja, privatuthyrningslagen gäller även bostadsrätter. Du behöver dock fortfarande godkännande från din bostadsrättsförening för andrahandsuthyrning.',
+        q: 'Kan jag hyra ut två bostäder?',
+        a: 'Ja, lagen kan omfatta uthyrning av högst två fristående lägenheter. Vid regelmässig uthyrning av fler än två gäller normalt hyreslagen för upplåtelserna.',
       },
       {
-        q: 'Vad händer om jag hyr ut mer än 2 bostäder?',
-        a: 'Från och med den tredje bostaden klassas uthyrningen som näringsverksamhet. Då behöver du betala egenavgifter (cirka 28 %) och eventuellt registrera ett företag.',
+        q: 'Är hyran helt fri?',
+        a: 'Parterna får som utgångspunkt avtala om inflyttningshyran. Hyresgästen kan dock ansöka hos hyresnämnden om sänkning om hyran är väsentligt högre än för liknande eller lika efterfrågade privatuthyrda bostäder.',
       },
       {
-        q: 'Hur påverkas jag om jag hyr ut i andra hand?',
-        a: 'Privatuthyrningslagen gäller bara om du äger bostaden (äganderätt eller bostadsrätt). Vid andrahandsuthyrning gäller hyreslagen och du behöver hyresvärdens godkännande.',
+        q: 'Höjdes schablonavdraget till 50 000 kr?',
+        a: 'Nej. Skatteverket anger för 2026 ett schablonavdrag på högst 40 000 kr per bostad och år. Reformen av privatuthyrningslagen ändrade hyresreglerna, inte schablonavdraget.',
       },
       {
-        q: 'Måste jag deklarera hyresintäkter under 50 000 kr?',
-        a: 'Ja, alla hyresintäkter ska deklareras. Med schablonavdraget och 20-procentsavdraget blir den faktiska skatten dock noll om intäkterna understiger tröskeln.',
+        q: 'Gäller privatuthyrningslagen för en hyresrätt?',
+        a: 'Nej. Den nya privatuthyrningslagen gäller inte när hyresvärden själv innehar bostaden med hyresrätt. Då gäller i stället reglerna i 12 kap. jordabalken.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Privatuthyrningslag (2026:772)',
+        publisher: 'Svensk författningssamling',
+        url: 'https://svenskforfattningssamling.se/doc/2026772.html',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Proposition 2025/26:187 – En mer flexibel hyresmarknad',
+        publisher: 'Sveriges riksdag',
+        url: 'https://www.riksdagen.se/sv/dokument-och-lagar/dokument/proposition/en-mer-flexibel-hyresmarknad_hd03187/',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Riksdagsskrivelse 2025/26:272',
+        publisher: 'Sveriges riksdag',
+        url: 'https://www.riksdagen.se/sv/dokument-och-lagar/dokument/riksdagsskrivelse/riksdagsskrivelse-202526272_hd0k272/',
+        checkedDate: '2026-09-06',
+      },
+      {
+        title: 'Hyra ut privatbostad – bostadsrätt, småhus och hyresrätt',
+        publisher: 'Skatteverket',
+        url: 'https://www.skatteverket.se/privat/skatter/arbeteochinkomst/inkomster/hyrautbostadbilochsaker/hyrautprivatbostad.106.1c68351d170ce554527ef5.html',
+        checkedDate: '2026-09-06',
       },
     ],
   },
@@ -673,6 +861,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-04-08',
+    updatedDate: '2026-09-06',
     category: 'Lagstiftning',
     tags: ['blockhyra', 'lagstiftning', 'företagsbostäder', '2026'],
     readingTime: 8,
@@ -682,8 +871,9 @@ export const blogPosts: BlogPost[] = [
       'Blockhyra innebär att minst tre bostadslägenheter hyrs ut som ett block till en hyresgäst; kravet på hyresnämndens godkännande förenklas.',
       'Mellanhandsföretag utan eget bostadsbehov, underkända av Svea hovrätt sedan 2022, tillåts som blockhyresgäster under vissa förutsättningar.',
       'Blockhyresgäst och andrahandshyresgäst kan avtala \'anpassad hyra\' som avviker från bruksvärdeshyran, och bulvanregeln undantas för blockhyra.',
-      'Schablonavdraget för privatuthyrning höjs 1 juli 2026 från 40 000 kr till 50 000 kr per bostad och år.',
+      'Blockhyresreformen ändrade inte skattereglerna; Skatteverket anger fortsatt ett schablonavdrag på högst 40 000 kr per bostad och år.',
     ],
+    sources: RENTAL_REFORM_SOURCES,
   },
   {
     slug: 'blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026',
@@ -765,17 +955,33 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-04-22',
+    updatedDate: '2026-09-06',
     category: 'Guide',
     tags: ['skatt', 'blockhyra', 'schablonavdrag', 'husägare', 'privatuthyrningslagen'],
     readingTime: 9,
     audience: 'husagare',
     keyTakeaways: [
-      'Den 1 juli 2026 höjs schablonavdraget från 40 000 kr till 50 000 kr per bostad och år; 2026 blir ett övergångsår med proportionerade belopp per halvår.',
-      'Gränsen för näringsverksamhet höjs från en till två bostäder — den som hyr ut två bostäder kan göra schablonavdrag på max 100 000 kr per år.',
-      'Höjningen ger en direkt skattebesparing på 3 000 kr per bostad och år (10 000 kr × 30 %) — upp till 6 000 kr för två bostäder.',
-      'Vid uthyrning av 3+ bostäder klassas verksamheten som näringsverksamhet med egenavgifter på cirka 28 % istället för 30 % kapitalskatt.',
-      'ROT- och RUT-avdrag ges inte för arbeten under uthyrningstiden, och Skatteverket kan begära underlag upp till 6 år efter deklarationsåret.',
+      'Schablonavdraget vid privatuthyrning är fortsatt högst 40 000 kr per bostad och år; reformen den 1 juli 2026 ändrade inte skattereglerna.',
+      'För småhus och ägarlägenhet får ägaren normalt dessutom dra av 20 procent av hyresintäkten innan överskottet beskattas.',
+      'Tvåbostadsgränsen avgör när privatuthyrningslagen kan gälla; den avgör inte ensam om inkomsten skattemässigt är kapital eller näringsverksamhet.',
+      'Vid regelmässig uthyrning av fler än två fristående lägenheter gäller normalt hyreslagen för upplåtelserna.',
+      'Skatteverkets beräkningshjälp bör användas eftersom avdragen skiljer sig mellan småhus, bostadsrätt och hyresrätt.',
     ],
+    faq: [
+      {
+        q: 'Höjdes schablonavdraget den 1 juli 2026?',
+        a: 'Nej. Skatteverket anger fortsatt högst 40 000 kronor per bostad och år. Reformen ändrade hyresreglerna, inte inkomstskattelagen.',
+      },
+      {
+        q: 'Får två delägare 40 000 kronor var?',
+        a: 'Nej. Schablonavdraget gäller per bostad och fördelas mellan delägarna efter ägarandel.',
+      },
+      {
+        q: 'Gäller 20-procentsavdraget för en bostadsrätt?',
+        a: 'Nej. Det avdraget gäller småhus och ägarlägenhet. För bostadsrätt beräknas det kompletterande avdraget bland annat utifrån avgiften och uthyrningstiden.',
+      },
+    ],
+    sources: RENTAL_REFORM_SOURCES,
   },
   {
     slug: 'var-aterhamtar-bostadsbyggandet-montorboende-prognos-2026',
@@ -817,33 +1023,34 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-05-06',
+    updatedDate: '2026-09-06',
     category: 'Lagstiftning',
     tags: ['privatuthyrningslagen', 'blockhyra', 'lagändring 2026', 'skattefrågor uthyrning', 'hyra ut till företag'],
     readingTime: 8,
     audience: 'husagare',
     keyTakeaways: [
-      'Från 1 juli 2026 höjs gränsen i privatuthyrningslagen från en till två bostäder — båda kan hyras ut utan att klassas som näringsverksamhet.',
-      'Hyressättningen blir friare från 1 juli 2026: hyran behöver inte följa bruksvärdet men får inte vara oskälig utifrån storlek, läge och standard.',
-      'Schablonavdraget gäller per bostad — med två uthyrda bostäder dubbleras totalavdraget. Överskottet beskattas med 30 %.',
+      'Från 1 juli 2026 kan privatuthyrningslagen omfatta högst två fristående bostäder; skatteklassificeringen bedöms separat.',
+      'Parterna får som utgångspunkt avtala inflyttningshyran, men hyresnämnden kan sänka en hyra som är väsentligt högre än för jämförbara bostäder.',
+      'Schablonavdraget är fortsatt högst 40 000 kr per privatbostad och år; reformen ändrade inte skattereglerna.',
       'För småhus medges utöver schablonavdraget även avdrag med 20 % av hyresintäkten — 144 000 kr i årshyra ger 68 800 kr i totala avdrag.',
       'Blockhyra innebär att minst tre lägenheter hyrs ut som ett block till ett företag som i sin tur hyr ut till anställda — ett avtal, mindre administration.',
     ],
     faq: [
       {
         q: 'När träder de nya reglerna i kraft?',
-        a: 'De nya reglerna träder i kraft den 1 juli 2026. Regeringens proposition har antagits och lagändringarna väntas börja gälla från detta datum.',
+        a: 'Reglerna trädde i kraft den 1 juli 2026 efter riksdagens beslut den 20 maj 2026.',
       },
       {
         q: 'Kan jag hyra ut fler än två bostäder?',
-        a: 'Ja, men då klassas uthyrningen troligen som näringsverksamhet. Det innebär NE-bilaga i deklarationen och eventuellt egenavgifter och moms.',
+        a: 'Ja, men vid regelmässig uthyrning av fler än två fristående lägenheter gäller normalt hyreslagen i stället för privatuthyrningslagen. Skatteklassificeringen är en separat bedömning.',
       },
       {
         q: 'Måste jag deklarera hyresintäkter under 40 000 kr?',
-        a: 'Ja, hyresintäkter ska alltid deklareras även om de understiger schablonavdraget. Är avdragen större än intäkterna blir det inget beskattningsbart överskott.',
+        a: 'Du redovisar ett eventuellt överskott efter tillåtna avdrag. Om avdragen täcker intäkten uppstår normalt inget överskott att beskatta.',
       },
       {
         q: 'Vad händer om jag tar ut för hög hyra?',
-        a: 'Vid andrahandsuthyrning av hyresrätt kan du bli återbetalningsskyldig för överhyran upp till två år retroaktivt. Hyr du ut hus eller bostadsrätt kan du bara tvingas sänka hyran, aldrig återbetala retroaktivt.',
+        a: 'För avtal enligt privatuthyrningslagen kan hyresgästen begära att hyresnämnden sänker en hyra som är väsentligt högre än för jämförbara privatuthyrda bostäder. Andra regler kan gälla för andra upplåtelseformer.',
       },
       {
         q: 'Vad är skillnaden mellan blockhyra och vanlig uthyrning?',
@@ -851,9 +1058,10 @@ export const blogPosts: BlogPost[] = [
       },
       {
         q: 'Kan jag hyra ut min sommarstuga som personalboende?',
-        a: 'Ja, med den nya tvåbostadsgränsen kan du hyra ut både din permanentbostad och din fritidsbostad enligt privatuthyrningslagen.',
+        a: 'Det kan vara möjligt om upplåtelsen faktiskt avser bostad och övriga villkor är uppfyllda. Privatuthyrningslagen gäller inte när upplåtelsens ändamål är fritid.',
       },
     ],
+    sources: RENTAL_REFORM_SOURCES,
   },
   {
     slug: 'infrastrukturplan-2026-2037-personalboende-guide',
@@ -921,6 +1129,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-06-03',
+    updatedDate: '2026-09-06',
     category: 'Lagstiftning',
     tags: ['privatuthyrningslagen', 'hyreslagstiftning', 'blockhyra', 'företagsuthyrning', 'nya-regler-2026'],
     readingTime: 9,
@@ -930,8 +1139,9 @@ export const blogPosts: BlogPost[] = [
       'Reformen har tre delar: ny privatuthyrningslag (ersätter lagen 2012:978), utökad andrahandsuthyrning av bostadsrätter och moderniserad blockhyra.',
       'Nya privatuthyrningslagen tillåter uthyrning av upp till två bostäder med avtalsfrihet om hyran; hyresgästen kan begära prövning av väsentligt hög hyra.',
       'Blockhyra (minst tre lägenheter) förenklas: hyresnämnden prövar inte längre varje avtalsvillkor, \'anpassad hyra\' tillåts och besittningsskyddet kan lättare avtalas bort.',
-      'Schablonavdraget för husägare som hyr ut höjs från 40 000 kr till 50 000 kr per år från juli 2026.',
+      'Hyresreformen ändrade inte schablonavdraget; Skatteverket anger fortsatt högst 40 000 kr per bostad och år.',
     ],
+    sources: RENTAL_REFORM_SOURCES,
   },
   {
     slug: 'forbered-fastighet-blockhyra-infrastruktursatsning-2026',
@@ -1087,6 +1297,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-07-08',
+    updatedDate: '2026-09-06',
     category: 'Guide',
     tags: ['företagsbostäder', 'blockhyra', 'nya-regler-2026', 'lagstiftning', 'personalboende'],
     readingTime: 9,
@@ -1095,7 +1306,7 @@ export const blogPosts: BlogPost[] = [
       'Riksdagen antog i maj 2026 propositionen \'En mer flexibel hyresmarknad\'; lagändringarna för företagsbostäder träder i kraft den 1 juli 2026.',
       'Blockhyra kräver minst tre lägenheter; hyresnämnden prövar numera ändamålet med blockhyran, inte de enskilda avtalsvillkoren.',
       'Andrahandshyresgäst kan inte kräva förstahandskontrakt om uthyrningen understiger ett år; efter ett år kan besittningsskydd börja gälla.',
-      'Privatuthyrningslagen omfattar nu uthyrning av upp till två bostäder samtidigt utan att det klassas som näringsverksamhet.',
+      'Privatuthyrningslagen kan nu omfatta uthyrning av upp till två fristående bostäder; skatteklassificeringen är en separat bedömning.',
       'Bostadsbyggandet väntas öka från cirka 30 900 påbörjade bostäder 2025 till 37 000 under 2026, enligt Byggfakta.',
     ],
     faq: [
@@ -1117,7 +1328,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         q: 'Hur beskattas företagsbostäder?',
-        a: 'Förmånsvärdet av fri bostad kan bli skattepliktigt för den anställde, medan hyreskostnaden är avdragsgill för arbetsgivaren. För fastighetsägaren beskattas hyresintäkten, men schablonavdrag på 50 000 kr per år kan gälla vid privatuthyrning.',
+        a: 'Förmånsvärdet av fri bostad kan bli skattepliktigt för den anställde, medan arbetsgivarens avdragsrätt beror på omständigheterna. För privatuthyrning anger Skatteverket ett schablonavdrag på högst 40 000 kr per bostad och år.',
       },
     ],
     en: {
@@ -1126,7 +1337,7 @@ export const blogPosts: BlogPost[] = [
         'In May 2026, the Riksdag (the Swedish Parliament) passed the government bill \'En mer flexibel hyresmarknad\' (A More Flexible Rental Market); the legislative changes for corporate housing take effect on July 1, 2026.',
         'Blockhyra (block rental) requires at least three apartments; hyresnämnden (the Rent Tribunal) now reviews the purpose of the block rental, not the individual contract terms.',
         'A subtenant cannot claim a first-hand lease if the rental period is shorter than one year; after one year, besittningsskydd (security of tenure) may start to apply.',
-        'Privatuthyrningslagen (the Private Rental Act) now covers renting out up to two homes at the same time without it being classified as business activity.',
+        'Privatuthyrningslagen (the Private Rental Act) can now cover up to two separately rented homes; tax classification is assessed separately.',
         'Housing construction is expected to increase from around 30,900 housing starts in 2025 to 37,000 in 2026, according to Byggfakta.',
       ],
       faq: [
@@ -1148,10 +1359,11 @@ export const blogPosts: BlogPost[] = [
         },
         {
           q: 'How is corporate housing taxed?',
-          a: 'The benefit value of free housing may be taxable for the employee, while the rental cost is deductible for the employer. For the property owner, rental income is taxed, but a standard deduction (schablonavdrag) of SEK 50,000 per year may apply for private rentals.',
+          a: 'The benefit value of free housing may be taxable for the employee, while the employer\'s right to deduct the cost depends on the circumstances. The Swedish Tax Agency states a maximum standard deduction of SEK 40,000 per home and year for private rentals.',
         },
       ],
     },
+    sources: RENTAL_REFORM_SOURCES,
   },
   {
     slug: 'elnatsutbyggnad-nordsyd-personalboende-guide-2026',

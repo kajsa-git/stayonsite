@@ -33,13 +33,13 @@ Regeringen lämnar nu en proposition med förslag som ska göra det enklare att 
       <p>
         Den nya privatuthyrningslagen ersätter delar av det tidigare regelverket.{' '}
         
-Enligt förslaget ska den nya privatuthyrningslagen omfatta uthyrning av upp till två bostadslägenheter samtidigt. Detta ger privatpersoner större frihet att förvalta fler objekt utan att det klassas som yrkesmässig verksamhet med krångligare regler.
+Privatuthyrningslagen kan omfatta uthyrning av upp till två fristående bostadslägenheter samtidigt. Vid regelmässig uthyrning av fler än två gäller normalt hyreslagen. Skatteverkets bedömning av inkomsten är en separat fråga.
 
       </p>
 
       <p>
         Tidigare kunde du som husägare bara hyra ut en bostad enligt privatuthyrningslagen. 
-Nu utökas gränsen till två bostäder. Det innebär att du kan hyra ut exempelvis din villa och en sommarstuga &mdash; eller din lägenhet och ett oinrett gårdshus &mdash; utan att det klassas som näringsverksamhet.
+Den nya lagen kan omfatta uthyrning av högst två fristående bostäder, om övriga villkor är uppfyllda. Det innebär inte i sig att Skatteverkets bedömning av inkomstslag ändras.
 
       </p>
 
@@ -62,10 +62,10 @@ Blockuthyrning innebär att hyresvärden hyr ut minst tre bostadslägenheter til
 
       <h2>Vad betyder det för dig som husägare?</h2>
 
-      <h3>Upp till två bostäder med förmånliga villkor</h3>
+      <h3>Upp till två bostäder inom lagens tillämpningsområde</h3>
 
       <p>
-        Den nya tvåbostadsgränsen är särskilt viktig för husägare i regioner där många äger både permanentbostad och fritidsbostad. Nu kan båda hyras ut enligt samma förmånliga regelverk, utan risk för att klassas som näringsidkare med momsplikt och egenavgifter som följd.
+        Den nya tvåbostadsgränsen är särskilt relevant för husägare som hyr ut mer än ett fristående objekt. Högst två kan omfattas av privatuthyrningslagen om övriga villkor är uppfyllda. Gränsen är inte ett besked om moms, egenavgifter eller skatterättslig klassificering.
       </p>
 
       <div className="overflow-x-auto my-8">
@@ -90,8 +90,8 @@ Blockuthyrning innebär att hyresvärden hyr ut minst tre bostadslägenheter til
             </tr>
             <tr>
               <td className="p-3 border-b border-gray-200">Maximalt schablonavdrag totalt</td>
-              <td className="p-3 border-b border-gray-200">40 000 kr/år</td>
-              <td className="p-3 border-b border-gray-200">80 000 kr/år (2 bostäder)</td>
+              <td className="p-3 border-b border-gray-200">Beror på antal bostäder som skattemässigt är privatbostäder</td>
+              <td className="p-3 border-b border-gray-200">Oförändrat</td>
             </tr>
             <tr>
               <td className="p-3 border-b border-gray-200">Hyressättning</td>
@@ -144,20 +144,11 @@ Skatten på överskottet är 30 procent.
       </p>
 
       <p>
-        
-Gränsen för när uthyrning av privatbostad övergår till näringsverksamhet höjs från en till två bostäder. Schablonavdraget om 50 000 kronor gäller per bostad, det vill säga maximalt 100 000 kronor per år för den som hyr ut två bostäder.
-
+        Tvåbostadsgränsen hör till privatuthyrningslagens tillämpningsområde och avgör inte ensam hur inkomsten ska klassificeras skattemässigt. Reformen ändrade inte schablonavdraget. Skatteverket anger för 2026 högst 40 000 kronor per bostad och år.
       </p>
 
-      <blockquote>
-        <p>
-          &ldquo;Kapitalinkomster från uthyrning av privatbostad beskattas med en skattesats om 30 procent. Avdrag medges med 50 000 kronor per bostad (schablonavdrag) samt 20 procent av hyresintäkten&rdquo;
-        </p>
-        <footer>&mdash; Skatteverket, SKV 370 utgåva 2026</footer>
-      </blockquote>
-
       <p className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-6">
-        <strong>OBS:</strong> Olika källor anger olika schablonavdrag (40 000 kr eller 50 000 kr). Kontrollera alltid med Skatteverket inför deklaration för att använda korrekt belopp för aktuellt beskattningsår.
+        <strong>Kontrollera bostadstypen:</strong> För småhus och ägarlägenhet får ägaren normalt även dra av 20 procent av hyresintäkten. För bostadsrätt och hyresrätt beräknas det kompletterande avdraget på annat sätt.
       </p>
 
       <h3>Avdrag beroende på bostadstyp</h3>
@@ -202,7 +193,7 @@ Småhus/ägarlägenhet: dessutom avdrag med 20% av hyresintäkten. Bostadsrätt/
       <h3>Steg 1: Bedöm dina bostäder</h3>
 
       <p>
-        Gör en inventering av vilka bostäder du äger och vilka som kan omfattas av privatuthyrningslagen. Kom ihåg att gränsen är två bostäder &mdash; en tredje bostad som hyrs ut kan göra att Skatteverket bedömer hela verksamheten som näringsverksamhet.
+        Gör en inventering av vilka bostäder du äger och vilka som kan omfattas av privatuthyrningslagen. Vid regelmässig uthyrning av fler än två fristående lägenheter gäller normalt hyreslagen. Skatteklassificeringen behöver bedömas separat.
       </p>
 
       <h3>Steg 2: Ta fram nödvändig dokumentation</h3>
@@ -343,13 +334,13 @@ Det finns regler kring hur mycket hyra du kan ta ut. Samma regler gäller vid ut
       <h3>Kan jag hyra ut fler än två bostäder?</h3>
 
       <p>
-        Ja, men då klassas uthyrningen troligen som näringsverksamhet. Det innebär att du måste lämna NE-bilaga (näringsverksamhetsbilaga) i deklarationen och kan bli skyldig att betala egenavgifter och eventuellt moms. Kontakta en skatterådgivare för rådgivning om din specifika situation.
+        Ja, men vid regelmässig uthyrning av fler än två fristående lägenheter gäller normalt hyreslagen i stället för privatuthyrningslagen. Om inkomsten ska beskattas i kapital eller näringsverksamhet är en separat skattefråga. Kontakta Skatteverket eller en skatterådgivare för din situation.
       </p>
 
       <h3>Måste jag deklarera hyresintäkter under 40 000 kr?</h3>
 
       <p>
-        Ja, hyresintäkter ska alltid deklareras, även om de understiger schablonavdraget. Överskottet efter avdrag beskattas, men om dina avdrag är större än intäkterna blir det inget beskattningsbart överskott.
+        Du redovisar ett eventuellt överskott efter tillåtna avdrag. Om avdragen täcker intäkten uppstår normalt inget överskott att beskatta. Använd Skatteverkets beräkningshjälp för rätt bostadstyp.
       </p>
 
       <h3>Vad händer om jag tar ut för hög hyra?</h3>

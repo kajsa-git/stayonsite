@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -62,26 +63,27 @@ jobs:
             app/(sv)/blogg/[slug]/page.tsx
           retention-days: 7
 
-      - name: Push to main
-        id: push
+      - name: Open draft pull request
+        id: draft
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="automation/blog-$(date +%Y-%m-%d)-${GITHUB_RUN_ID}"
+          git switch -c "$BRANCH"
           git add -A
-          git diff --staged --quiet && echo "No changes" && echo "pushed=false" >> "$GITHUB_OUTPUT" && exit 0
-          git commit -m "blogg: ny veckoartikel $(date +%Y-%m-%d)
+          git diff --staged --quiet && echo "No changes" && echo "created=false" >> "$GITHUB_OUTPUT" && exit 0
+          git commit -m "blogg: utkast till veckoartikel $(date +%Y-%m-%d)
 
-          Automatiskt genererad av article.yml
+          AI-assisterat utkast genererat av article.yml för redaktionell granskning"
+          git push origin "$BRANCH"
+          gh pr create \
+            --draft \
+            --base main \
+            --head "$BRANCH" \
+            --title "Bloggutkast: $(date +%Y-%m-%d)" \
+            --body "Automatiskt framtaget artikelutkast. Kontrollera särskilt författarskap, primärkällor, lokala sakuppgifter, siffror och säljbudskap innan merge."
+          echo "created=true" >> "$GITHUB_OUTPUT"
 
-          Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-          git push origin main
-          echo "pushed=true" >> "$GITHUB_OUTPUT"
-
-      # Vänta in Vercel-deployen och pinga IndexNow (Bing/Yandex) så nya
-      # artikeln + sitemap indexeras snabbt. Hämtar URL:er från live-sitemapen.
-      - name: Ping IndexNow
-        if: steps.push.outputs.pushed == 'true'
-        run: |
-          echo "Väntar 90s på Vercel-deploy innan IndexNow-submit..."
-          sleep 90
-          node scripts/indexnow-submit.mjs --all
+      # IndexNow körs av indexnow.yml först när det granskade utkastet mergas till main.

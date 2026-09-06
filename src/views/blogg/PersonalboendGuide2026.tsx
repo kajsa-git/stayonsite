@@ -166,12 +166,12 @@ const PersonalboendGuide2026 = () => {
         känna till:
       </p>
 
-      <h3>Privatuthyrningslagen (2012:978)</h3>
+      <h3>Privatuthyrningslag (2026:772)</h3>
 
       <p>
-        Om uthyraren är en privatperson som hyr ut sin egen bostad gäller privatuthyrningslagen.
-        Den ger stor frihet att sätta hyran, men det finns begränsningar kring uppsägningstid och
-        antal bostäder. Från juli 2026 reformeras lagen med bland annat höjt schablonavdrag.
+        För nya avtal från 1 juli 2026 kan privatuthyrningslagen gälla när en privatperson hyr ut
+        en ägd bostad. Lagen kan normalt omfatta högst två fristående bostäder och innehåller en
+        skyddsregel mot väsentligt för hög hyra. Reformen ändrade inte schablonavdraget.
         Läs vår{' '}
         <Link href="/blogg/privatuthyrningslagen-reform-2026">
           kompletta genomgång av nya privatuthyrningslagen
@@ -181,10 +181,10 @@ const PersonalboendGuide2026 = () => {
       <h3>Hyreslagen (Jordabalken 12 kap)</h3>
 
       <p>
-        Om uthyraren är ett företag eller en organisation gäller hyreslagen, med
-        besittningsskydd och bruksvärdesprincip. Blockhyresavtal &mdash; där ett företag hyr
-        flera lägenheter samtidigt &mdash; är ett vanligt upplägg för personalboende och
-        regleras i 1 &sect; tredje stycket hyreslagen.
+        Hyreslagen gäller bland annat vid professionell uthyrning och normalt när en privat
+        hyresvärd regelmässigt hyr ut fler än två fristående lägenheter. Blockhyra &mdash; minst
+        tre bostadslägenheter som hyrs ut tillsammans &mdash; regleras i 12 kap. 1 e &sect;
+        jordabalken. Vilket regelverk som gäller måste bedömas utifrån hela avtalskedjan.
       </p>
 
       <h3>Bygglov och ändrad användning</h3>

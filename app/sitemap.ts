@@ -61,6 +61,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${BASE}/blogg/redaktionella-riktlinjer`,
+      lastModified: '2026-09-06',
+      changeFrequency: 'yearly',
+      priority: 0.5,
+    },
+    {
       url: `${BASE}/boenden`,
       lastModified: today,
       changeFrequency: 'weekly',

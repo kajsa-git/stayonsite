@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     type: 'article',
     articlePublishedTime: `${post.publishedDate}T00:00:00Z`,
     articleModifiedTime: `${post.updatedDate || post.publishedDate}T00:00:00Z`,
-    articleAuthor: 'https://www.stayonsite.se',
+    articleAuthor: 'https://www.stayonsite.se/om-oss#kajsa-sihlen',
     articleSection: post.category,
     articleTags: post.tags,
     hreflangs: [

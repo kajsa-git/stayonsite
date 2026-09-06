@@ -258,7 +258,7 @@ const ForetagsbostaderNyaReglerJuli2026Guide = () => {
       <h3>Hur beskattas företagsbostäder?</h3>
 
       <p>
-        För den anställde kan förmånsvärdet av fri bostad bli skattepliktigt om bostaden anses vara en förmån. För arbetsgivaren är hyreskostnaden avdragsgill. För fastighetsägaren beskattas hyresintäkten, men schablonavdrag på 50 000 kronor per år kan gälla vid privatuthyrning. Läs mer i vår{' '}
+        För den anställde kan förmånsvärdet av fri bostad bli skattepliktigt om bostaden anses vara en förmån. Arbetsgivarens avdragsrätt beror på omständigheterna. För privatuthyrning anger Skatteverket ett schablonavdrag på högst 40 000 kronor per bostad och år. Läs mer i vår{' '}
         <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">guide om skatt och schablonavdrag vid blockhyra</Link>.
       </p>
 

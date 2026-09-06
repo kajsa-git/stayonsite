@@ -1066,17 +1066,17 @@ export const cities: City[] = [
     industries: ['Försvar', 'Bygg & Anläggning', 'Infrastruktur', 'Testanläggningar'],
     coordinates: [65.8252, 21.6886],
     heroHook: ls(
-      'Företagsbostäder & personalboende i Boden – nära försvaret och H2 Green Steel',
+      'Företagsbostäder & entreprenörsboende i Boden – för projektteam och montörer',
       'Corporate Housing & Apartments in Boden – Near Defence & H2 Green Steel',
       'Noclegi & Zakwaterowanie Pracownicze w Boden – Blisko Obronności i H2 Green Steel'
     ),
     intro: ls(
-      'Försvarsutbyggnaden och de militära projekten skapar stort behov av företagsbostäder och personalboende i Boden. Vi erbjuder möblerade företagslägenheter och villor i centrala Boden och Svartbyträsk där era team får komfort efter långa arbetspass i norr.',
+      'För företag som söker boende i Boden ordnar vi möblerade företagslägenheter, hus och personalboende för montörer och projektteam. Boendet väljs efter arbetsplats, skift, parkering och avtalslängd och kan vara ett alternativ till lägenhetshotell i Boden.',
       'Defense expansion and military projects require secure and flexible accommodation in Boden. We have corporate apartments and houses in central Boden and Svartbyträsk where your teams get comfort after long shifts in the north.',
       'Rozbudowa obronna i projekty wojskowe wymagają bezpiecznych i elastycznych noclegów w Boden. Mamy mieszkania firmowe i domy w centrum Boden i Svartbyträsk, gdzie Twoje ekipy odpoczną po długich zmianach na północy.'
     ),
     keywords: lk(
-      ['personalboende boden', 'företagslägenheter försvar', 'byggboende militär boden', 'boende byggarbetare boden', 'lägenheter boden', 'boende boden', 'hyreslägenheter boden', 'tillfälligt boende företag boden'],
+      ['personalboende boden', 'företagsboende boden', 'företagsbostäder boden', 'entreprenörsbostäder boden', 'lägenhetshotell boden', 'byggboende boden', 'boende byggarbetare boden', 'montörboende boden', 'boende boden', 'tillfälligt boende företag boden'],
       ['corporate housing boden', 'defense staff apartments', 'military construction housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'apartments boden sweden'],
       ['zakwaterowanie pracownicze boden', 'mieszkania obronne', 'noclegi wojskowe boden', 'noclegi dla budowlańców boden szwecja', 'kwatery pracownicze boden', 'tymczasowe zakwaterowanie boden szwecja']
     ),
@@ -1616,17 +1616,17 @@ export const cities: City[] = [
     industries: ['Gruvdrift', 'Datacenter', 'Hamn & Logistik', 'Teknologi'],
     coordinates: [65.5848, 22.1547],
     heroHook: ls(
-      'Företagsbostäder & personalboende i Luleå – nära datacenter och gruvnäring',
+      'Företagslägenheter & personalboende i Luleå – för montörer och projektteam',
       'Corporate Housing & Apartments in Luleå – Near Data Centers & Mining',
       'Noclegi & Zakwaterowanie Pracownicze w Luleå – Blisko Centrów Danych i Kopalni'
     ),
     intro: ls(
-      'Gruvindustrin, datacenter och hamnen gör Luleå till en het ort för företagsbostäder och personalboende. Vårt korttidsboende och våra företagslägenheter i Luleå och Porsön ger era team norrländsk komfort nära arbetsplatserna.',
+      'Vi ordnar företagsboende i Luleå för arbetslag inom industri, datacenter, hamn och bygg. Välj mellan möblerade företagslägenheter, hus och korttidsboende utifrån arbetsplats, skift och parkering. För den som söker arbetarbostad i Luleå jämför vi alltid faktisk restid före bokning.',
       'The mining industry, data centers and harbor make Luleå one of Sweden\'s most expansive cities. Our short-term housing and corporate apartments in Luleå and Porsön give your teams northern comfort near the workplaces.',
       'Przemysł wydobywczy, centra danych i port czynią Luleå jednym z najbardziej rozwijających się miast Szwecji. Nasze noclegi krótkoterminowe i mieszkania firmowe w Luleå i Porsön zapewniają ekipom północny komfort blisko pracy.'
     ),
     keywords: lk(
-      ['personalboende luleå', 'företagslägenheter datacenter', 'boende luleå', 'hyra lägenhet luleå', 'korttidsboende luleå', 'boende byggarbetare luleå', 'montörboende luleå', 'tillfälligt boende företag luleå'],
+      ['personalboende luleå', 'företagsboende luleå', 'företagsbostäder luleå', 'företagslägenheter luleå', 'arbetarbostad luleå', 'korttidsboende luleå', 'lägenhetshotell luleå', 'boende luleå', 'boende byggarbetare luleå', 'montörboende luleå', 'tillfälligt boende företag luleå'],
       ['corporate housing lulea', 'datacenter staff apartments', 'mining construction housing lulea', 'worker accommodation lulea sweden', 'temporary housing lulea', 'apartments lulea sweden'],
       ['zakwaterowanie pracownicze lulea', 'mieszkania datacenter', 'noclegi kopalnie lulea', 'noclegi dla budowlańców luleå szwecja', 'kwatery pracownicze luleå', 'tymczasowe zakwaterowanie luleå szwecja']
     ),
@@ -1731,12 +1731,12 @@ export const cities: City[] = [
       'Noclegi & Zakwaterowanie Pracownicze w Oskarshamn – Blisko OKG i Portu'
     ),
     intro: ls(
-      'OKG och hamnutbyggnaden skapar stort behov av företagsbostäder och personalboende i Oskarshamn. Våra möblerade företagslägenheter och villor i Oskarshamn och Figeholm ligger nära arbetsplatserna.',
+      'För företag som söker boende vid OKG eller andra arbetsplatser i Oskarshamn ordnar vi möblerade företagslägenheter, hus och personalboende. Vi jämför Oskarshamn, Figeholm och närliggande orter utifrån skift, parkering och faktisk restid till arbetsplatsen.',
       'OKG and the harbor expansion create a big need for accommodation in Oskarshamn. Our corporate apartments and houses in Oskarshamn and Figeholm sit near the work sites.',
       'OKG i rozbudowa portu tworzą duże zapotrzebowanie na noclegi w Oskarshamn. Nasze mieszkania firmowe i domy w Oskarshamn i Figeholm znajdują się blisko miejsc pracy.'
     ),
     keywords: lk(
-      ['personalboende oskarshamn', 'företagslägenheter kärnkraft', 'boende oskarshamn', 'boende i oskarshamn', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
+      ['personalboende oskarshamn', 'företagsboende oskarshamn', 'företagsbostäder oskarshamn', 'boende vid okg', 'boende okg', 'personalboende okg', 'boende oskarshamn', 'boende i oskarshamn', 'korttidsboende oskarshamn', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
       ['corporate housing oskarshamn', 'nuclear power staff apartments', 'accommodation oskarshamn', 'okg construction housing oskarshamn', 'worker accommodation oskarshamn sweden', 'temporary housing oskarshamn'],
       ['zakwaterowanie pracownicze oskarshamn', 'mieszkania energetyka jądrowa', 'noclegi okg oskarshamn', 'noclegi dla budowlańców oskarshamn szwecja', 'kwatery pracownicze oskarshamn', 'tymczasowe zakwaterowanie oskarshamn szwecja']
     ),
@@ -3389,4 +3389,3 @@ export const getNearbyCities = (slug: string, count = 2): City[] => {
   const fallback = cities.filter((item) => item.slug !== slug && !city.nearby.includes(item.slug));
   return [...preferred, ...fallback].slice(0, count);
 };
-

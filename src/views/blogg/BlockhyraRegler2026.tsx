@@ -86,7 +86,7 @@ const BlockhyraRegler2026 = () => {
       <h3>Ny privatuthyrningslag</h3>
 
       <p>
-        Parallellt med blockhyresreformen införs en ny privatuthyrningslag som gäller för privatpersoner som hyr ut upp till två bostäder. Schablonavdraget höjs från 40 000 kr till 50 000 kr per bostad och år. Detta gör det mer attraktivt för husägare att hyra ut till företag via blockhyresavtal.
+        Parallellt med blockhyresreformen införs en ny privatuthyrningslag som kan gälla när privatpersoner regelmässigt hyr ut högst två fristående bostäder. Skattereglerna ändras inte av reformen: Skatteverket anger fortsatt ett schablonavdrag på högst 40 000 kr per bostad och år.
       </p>
 
       <div className="overflow-x-auto my-8">
@@ -122,7 +122,7 @@ const BlockhyraRegler2026 = () => {
             <tr>
               <td className="border border-gray-300 px-4 py-2"><strong>Schablonavdrag (privatuthyrning)</strong></td>
               <td className="border border-gray-300 px-4 py-2">40 000 kr per bostad</td>
-              <td className="border border-gray-300 px-4 py-2">50 000 kr per bostad</td>
+              <td className="border border-gray-300 px-4 py-2">40 000 kr per bostad (oförändrat)</td>
             </tr>
           </tbody>
         </table>

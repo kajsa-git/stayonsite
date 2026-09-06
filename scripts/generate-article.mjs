@@ -31,6 +31,26 @@ if (!API_KEY) {
 const MODEL = 'claude-sonnet-5';
 const MAX_TOKENS = 12000;
 const MAX_RETRIES = 3;
+const PRIMARY_SOURCE_HOSTS = [
+  'riksdagen.se',
+  'regeringen.se',
+  'svenskforfattningssamling.se',
+  'skatteverket.se',
+  'boverket.se',
+  'scb.se',
+  'trafikverket.se',
+  'av.se',
+  'migrationsverket.se',
+  'arbetsformedlingen.se',
+  'domstol.se',
+  'kriminalvarden.se',
+  'energimyndigheten.se',
+  'naturvardsverket.se',
+  'tillvaxtverket.se',
+  'skolverket.se',
+  'byggforetagen.se',
+  'europa.eu',
+];
 
 // Parse --topic flag
 const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
@@ -39,6 +59,7 @@ const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
 const blogPostsPath = resolve(root, 'src/data/blog-posts.ts');
 const blogPagePath = resolve(root, 'app/(sv)/blogg/[slug]/page.tsx');
 const blogDir = resolve(root, 'src/views/blogg');
+const gbpQueuePath = resolve(root, 'content/gbp/posts.json');
 
 const blogPostsSource = readFileSync(blogPostsPath, 'utf-8');
 const blogPageSource = readFileSync(blogPagePath, 'utf-8');
@@ -194,7 +215,7 @@ DATUM: ${today}
 
 KRAV:
 1. Artikeln ska vara 1000-1500 ord, på SVENSKA
-2. Inkludera minst 2 <blockquote> med citat (från myndigheter, branschorganisationer, rapporter)
+2. Länka centrala sakuppgifter direkt till minst 3 externa originalkällor med <a href="https://..." target="_blank" rel="noreferrer">Källägare – dokumenttitel</a>. Minst 2 ska vara primärkällor (myndighet, lagtext, kommun, projektägare eller ansvarig branschorganisation)
 3. Inkludera minst 1 tabell med data
 4. Använd <Link href="/stad/SLUG"> för att länka till stadssidor. VIKTIGT: Länka BARA till dessa exakta slugs, inga andra: ${citySlugs.join(', ')}
 5. Länka till andra artiklar: ${existingSlugs.map(s => `/blogg/${s}`).join(', ')}
@@ -202,13 +223,15 @@ KRAV:
 7. Framhäv StayOnSites USP: 0% avgift för husägare, garanterad hyra, professionella hyresgäster, boendeplan inom 24 timmar (vi återkommer alltid inom en arbetsdag – ofta inom några timmar)
 8. HTML-entiteter: använd &mdash; &ndash; &quot; etc. (inte unicode)
 9. Avsluta med en <h2>Vanliga frågor</h2>-sektion (före CTA:n) med 3-4 <h3>-frågor och korta konkreta svar (2-4 meningar) — de blir FAQ-schema
-10. COPY-REGLER (får inte brytas): Lova aldrig "allt ingår"/all-inclusive — skriv "vanligtvis ingår X; exakt omfattning avtalas per projekt". StayOnSites eget pris anges ENDAST som "från 5 900 kr per person och månad" (hitta inte på andra StayOnSite-priser). Grundat 2016. Betyg 5,0 på Google.
+10. COPY-REGLER (får inte brytas): Lova aldrig "allt ingår"/all-inclusive — skriv "vanligtvis ingår X; exakt omfattning avtalas per projekt". StayOnSites eget pris anges ENDAST som "från 5 900 kr per person och månad" (hitta inte på andra StayOnSite-priser). Grundat 2016. Ange inte betyg eller antal omdömen i artikeln eftersom de ändras över tid.
 
 ⚠️ BRAND SAFETY:
 - SÖK och VERIFIERA att alla nämnda företag/projekt fortfarande är aktiva innan du skriver om dem
 - Nämn ALDRIG företag i konkurs, rekonstruktion eller med pågående skandaler positivt
 - Använd bara statistik som du hittar via web search och som är från senaste 12 månaderna
 - Citera bara verkliga rapporter/uttalanden som du kan verifiera finns
+- Skriv inte ett direktcitat om du inte har verifierat den exakta ordalydelsen i originalkällan; parafrasera annars och länka källan
+- Hitta aldrig på en URL. Varje extern källänk ska vara en sida du faktiskt öppnat i webbsökningen
 - Om du är osäker på ett faktum — utelämna det istället för att gissa
 - Fokusera på BRANSCHÖVERGRIPANDE trender snarare än enskilda företag
 - Skriv tidlöst: undvik "just nu", "nyligen" — använd specifika datum istället
@@ -238,6 +261,7 @@ VIKTIGT:
 - Använd className, inte class
 - Inga Framer Motion-importer (SSG-problem med opacity)
 - Tabeller: använd <div className="overflow-x-auto my-8"><table className="w-full">...</table></div>
+- Externa källor ska vara klickbara <a>-länkar i brödtexten, inte bara källnamn i <cite>
 
 Sök på webben för att hitta aktuella fakta, statistik och citat att inkludera.`
     }
@@ -385,6 +409,100 @@ function validateJsx(tsx) {
   return errors;
 }
 
+function sourcePublisher(url) {
+  const host = new URL(url).hostname.replace(/^www\./, '');
+  const names = {
+    'riksdagen.se': 'Sveriges riksdag',
+    'regeringen.se': 'Regeringen',
+    'svenskforfattningssamling.se': 'Svensk författningssamling',
+    'skatteverket.se': 'Skatteverket',
+    'boverket.se': 'Boverket',
+    'scb.se': 'SCB',
+    'trafikverket.se': 'Trafikverket',
+    'av.se': 'Arbetsmiljöverket',
+    'migrationsverket.se': 'Migrationsverket',
+    'arbetsformedlingen.se': 'Arbetsförmedlingen',
+    'domstol.se': 'Sveriges Domstolar',
+    'kriminalvarden.se': 'Kriminalvården',
+    'energimyndigheten.se': 'Energimyndigheten',
+    'naturvardsverket.se': 'Naturvårdsverket',
+    'tillvaxtverket.se': 'Tillväxtverket',
+    'skolverket.se': 'Skolverket',
+    'byggforetagen.se': 'Byggföretagen',
+  };
+  const matched = Object.keys(names).find((domain) => host === domain || host.endsWith(`.${domain}`));
+  return matched ? names[matched] : host;
+}
+
+function extractSourceLinks(tsx) {
+  const links = [];
+  const pattern = /<a\s+[^>]*href=["'](https:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/g;
+  let match;
+
+  while ((match = pattern.exec(tsx)) !== null) {
+    const url = match[1];
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    if (host === 'stayonsite.se' || host.endsWith('.stayonsite.se')) continue;
+
+    const title = match[2]
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&ndash;/g, '–')
+      .replace(/&mdash;/g, '—')
+      .trim();
+
+    if (!links.some((link) => link.url === url)) {
+      links.push({
+        title: title || url,
+        publisher: sourcePublisher(url),
+        url,
+        checkedDate: new Date().toISOString().split('T')[0],
+      });
+    }
+  }
+
+  return links;
+}
+
+async function validateSourceLinks(tsx) {
+  const sources = extractSourceLinks(tsx);
+  if (sources.length < 3) {
+    throw new Error(`Artikeln har ${sources.length} externa källänkar; minst 3 krävs`);
+  }
+
+  const primaryCount = sources.filter((source) => {
+    const host = new URL(source.url).hostname.replace(/^www\./, '');
+    return PRIMARY_SOURCE_HOSTS.some((domain) => host === domain || host.endsWith(`.${domain}`));
+  }).length;
+
+  if (primaryCount < 2) {
+    throw new Error(`Artikeln har ${primaryCount} godkända primärkällor; minst 2 krävs`);
+  }
+
+  const checks = await Promise.all(sources.map(async (source) => {
+    try {
+      const res = await fetch(source.url, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15000),
+        headers: { 'user-agent': 'StayOnSite editorial source checker/1.0' },
+      });
+      return { source, ok: res.status < 500, status: res.status };
+    } catch (error) {
+      return { source, ok: false, status: error.message };
+    }
+  }));
+
+  const broken = checks.filter((check) => !check.ok);
+  if (broken.length > 0) {
+    throw new Error(`Källkontroll misslyckades: ${broken.map((check) => `${check.source.url} (${check.status})`).join(', ')}`);
+  }
+
+  console.log(`[article] ✅ ${sources.length} källänkar verifierade, varav ${primaryCount} primärkällor`);
+  return sources;
+}
+
 async function fixJsxWithClaude(tsx, errors) {
   console.log(`[article] 🔧 Fixing ${errors.length} JSX error(s) with Claude...`);
 
@@ -431,7 +549,7 @@ ${tsx}`
 }
 
 // ---------- Step 3: Update files ----------
-function updateBlogPosts(topic, seo) {
+function updateBlogPosts(topic, seo, sources) {
   console.log('[article] Updating blog-posts.ts...');
   const today = new Date().toISOString().split('T')[0];
   const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -445,6 +563,9 @@ function updateBlogPosts(topic, seo) {
   }
   if (seo?.faq?.length) {
     seoFields += `    faq: [\n${seo.faq.map(f => `      {\n        q: '${esc(f.q)}',\n        a: '${esc(f.a)}',\n      },`).join('\n')}\n    ],\n`;
+  }
+  if (sources?.length) {
+    seoFields += `    sources: [\n${sources.map(source => `      {\n        title: '${esc(source.title)}',\n        publisher: '${esc(source.publisher)}',\n        url: '${esc(source.url)}',\n        checkedDate: '${source.checkedDate}',\n      },`).join('\n')}\n    ],\n`;
   }
 
   const newEntry = `  {
@@ -498,6 +619,52 @@ function updateBlogPage(topic) {
   );
 
   writeFileSync(blogPagePath, updated);
+}
+
+function updateGbpQueue(topic) {
+  console.log('[article] Queueing Google Business Profile post...');
+  const queue = JSON.parse(readFileSync(gbpQueuePath, 'utf-8'));
+  if (!Array.isArray(queue.posts)) throw new Error('Invalid GBP post queue');
+
+  const id = `blog-${topic.slug}`;
+  if (queue.posts.some((post) => post.id === id)) {
+    console.log(`[article] GBP post ${id} already queued — skipping`);
+    return;
+  }
+
+  const imagesByAudience = {
+    foretag: [
+      '/images/gbp/gavle-project-housing-living-room.jpg',
+      '/images/gbp/gavle-company-housing-kitchen.jpg',
+      '/images/gbp/gavle-project-housing-hallway.jpg',
+    ],
+    husagare: [
+      '/images/gbp/gavle-company-housing-exterior.jpg',
+      '/images/gbp/gavle-company-housing-kitchen.jpg',
+    ],
+    bada: [
+      '/images/gbp/gavle-corporate-housing-bedroom.jpg',
+      '/images/gbp/gavle-project-housing-living-room.jpg',
+    ],
+  };
+  const audience = imagesByAudience[topic.audience] ? topic.audience : 'bada';
+  const imagePool = imagesByAudience[audience];
+  const imageIndex = [...topic.slug].reduce((sum, char) => sum + char.charCodeAt(0), 0) % imagePool.length;
+  const today = new Date().toISOString().slice(0, 10);
+
+  queue.posts.push({
+    id,
+    lane: 'article',
+    publishAfter: today,
+    languageCode: 'sv-SE',
+    summary: `Ny guide: ${topic.titleSv}\n\n${topic.descSv}\n\nVi har samlat det viktigaste för företag och bostadsägare som planerar personalboende, projektboende eller företagsuthyrning. Bilden visar ett exempel på möblerat företagsboende i Gävle.`,
+    targetPath: `/blogg/${topic.slug}`,
+    image: imagePool[imageIndex],
+    imageDescription: 'Exempel på möblerat företagsboende i Gävle.',
+    callToAction: 'LEARN_MORE',
+  });
+  queue.updatedAt = today;
+  writeFileSync(gbpQueuePath, `${JSON.stringify(queue, null, 2)}\n`);
 }
 
 // ---------- Retry helper ----------
@@ -612,6 +779,10 @@ async function main() {
     console.log('[article] ✅ JSX validation passed');
   }
 
+  // Sakuppgifter måste kunna följas till fungerande, synliga originalkällor.
+  // Källor är ett hårt krav; en artikel utan verifierbara länkar publiceras inte.
+  const sources = await validateSourceLinks(tsx);
+
   // Step 3: Write article file
   const articlePath = resolve(blogDir, `${topic.componentName}.tsx`);
   if (existsSync(articlePath)) {
@@ -631,10 +802,14 @@ async function main() {
   }
 
   // Step 4b: Update blog-posts.ts
-  updateBlogPosts(topic, seo);
+  updateBlogPosts(topic, seo, sources);
 
   // Step 5: Update blog page import map (sitemap auto-generates from blog-posts.ts)
   updateBlogPage(topic);
+
+  // Step 6: Queue a matching GBP post. Friday's GBP workflow publishes the
+  // oldest due article post after the article has reached production.
+  updateGbpQueue(topic);
 
   console.log('[article] Done! New article ready.');
   console.log(`[article] File: src/views/blogg/${topic.componentName}.tsx`);

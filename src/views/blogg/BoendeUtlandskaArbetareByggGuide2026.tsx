@@ -297,7 +297,7 @@ All personal som vistas och arbetar inom projektområden måste bära ett giltig
       <h2>Vanliga misstag att undvika</h2>
 
       <p>
-        Baserat på erfarenheter från hundratals byggprojekt ser vi samma misstag upprepas. Här är de viktigaste att undvika:
+        I dialoger om projektboende återkommer samma typer av planeringsproblem. Här är de viktigaste att undvika:
       </p>
 
       <h3>1. Att vänta för länge med boendelösningen</h3>
@@ -440,7 +440,7 @@ Norrbotniabanan pågår med trafikstart på sträckan Umeå&ndash;Dåva 2026, me
       <h2>StayOnSite: Din partner för personalboende</h2>
 
       <p>
-        På StayOnSite förstår vi de unika utmaningarna som byggbranschen står inför 2026. Sedan 2019 har vi hjälpt hundratals byggföretag att hitta trygga, kostnadseffektiva boendelösningar för deras arbetare.
+        StayOnSite grundades 2016 och arbetar med de praktiska boendefrågor som uppstår när bygg- och montörsteam arbetar på annan ort i Sverige.
       </p>
 
       <h3>Därför väljer företag StayOnSite</h3>

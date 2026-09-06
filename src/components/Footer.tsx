@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackPhoneClick, trackWhatsAppClick, trackEmailClick } from '@/lib/gtag';
+import Link from 'next/link';
 // Sajtvid länksignal till de viktigaste stadssidorna med beskrivande ankartext —
 // utan den rankar startsidan i stället för stadssidan på "företagsboende <stad>".
 const popularCities: { slug: string; name: string }[] = [
@@ -140,6 +141,14 @@ const Footer = () => {
                   Blogg
                 </a>
               </li>
+              {language === 'sv' && (
+                <li>
+                  <Link href="/blogg/redaktionella-riktlinjer" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                    <div className="h-px w-6 bg-white/40 mr-3"></div>
+                    Redaktionella riktlinjer
+                  </Link>
+                </li>
+              )}
               <li>
                 <a href="/en/corporate-housing-sweden" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>

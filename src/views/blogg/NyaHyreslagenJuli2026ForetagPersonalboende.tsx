@@ -294,14 +294,14 @@ Andrahandsuthyrning av bostadsrätter ska få ske under längre perioder än i d
       <h3>Vad händer med skatten?</h3>
 
       <p>
-        För husägare som hyr ut har schablonavdraget höjts från 40 000 kr till 50 000 kr per år från och med juli 2026. Detta gör det mer attraktivt att hyra ut, vilket i sin tur ökar utbudet för företag. Läs mer: {' '}
+        Hyresreformen ändrade inte skattereglerna för privatuthyrning. Skatteverket anger fortsatt ett schablonavdrag på högst 40 000 kr per bostad och år. Läs mer: {' '}
         <Link href="/blogg/schablonavdrag-skatt-blockhyra-husagare-2026">Schablonavdrag och skatt vid blockhyra för husägare 2026</Link>.
       </p>
 
       <h2>StayOnSite hjälper er navigera de nya reglerna</h2>
 
       <p>
-        Sedan 2018 har StayOnSite hjälpt hundratals byggföretag att ordna boende för personal över hela Sverige. Med den nya lagstiftningen blir vår expertis än viktigare. Vi håller oss uppdaterade på alla förändringar och ser till att era avtal följer de nya reglerna.
+        StayOnSite grundades 2016 och arbetar med boende för projektteam över hela Sverige. Med den nya lagstiftningen blir det extra viktigt att kontrollera vilket regelverk som gäller för varje avtalskedja.
       </p>
 
       <p>

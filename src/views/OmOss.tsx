@@ -163,7 +163,7 @@ const OmOss = () => {
         </section>
 
         {/* Story */}
-        <section className="py-20 bg-white">
+        <section id="kajsa-sihlen" className="scroll-mt-24 py-20 bg-white">
           <div className="container mx-auto px-6 md:px-12">
             <div className="max-w-3xl mx-auto">
               <p className="text-sm uppercase tracking-[0.3em] text-accent mb-4">
