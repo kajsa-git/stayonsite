@@ -103,6 +103,12 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Begränsad refresh-token för endast `business.manage`: skapad i `~/.config/stayonsite/gbp-oauth-token.json` med filrättighet `600`.
 - Basic API Access ansökt via profillägaren `kajsa@stayonsite.se`. Google-ärende: `6-9607000041098`; angiven handläggningstid 7–10 arbetsdagar.
 - Ett riktigt `pnpm gbp:discover` når Google men svarar med `429 Quota exceeded`, vilket bekräftar nollkvot i väntan på godkännande. Google My Business API/Local Posts är ännu inte synligt för projektet och kan aktiveras först efter godkännande.
+- Den publika Solna-adressen är borttagen; profilen visar `Ingen adress, bara leveranser och tjänster i hemmet` och behåller serviceområdet `Sverige`.
+- Den spårbara webbplatslänken till `/for-foretag` är inskickad och väntar på Googles granskning.
+- Åtta anpassade tjänster med fullständiga beskrivningar är inskickade och väntar på publicering.
+- OAuth-klient-ID, klienthemlighet och refresh token är lagrade som GitHub Actions-secrets. Konto och plats hittas automatiskt efter API-godkännandet.
+- En riktig GitHub Actions dry-run för `campaign-gavle-personalboende` lyckades 2026-09-06 och verifierade kö, bild samt landningssida från GitHub-miljön.
+- Uppladdning av de sex Gävlebilderna och första manuella bildinlägget återstår tills Chrome-tillägget har fått `Allow access to file URLs`.
 
 1. Skapa eller välj ett separat Google Cloud-projekt för StayOnSite GBP.
 2. Ansök om **Basic API Access** för Business Profile APIs med ett Google-konto som är ägare/ansvarig för profilen.
