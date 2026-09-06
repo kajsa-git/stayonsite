@@ -21,7 +21,7 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Tjänster | Åtta anpassade tjänster är aktiva | Behåll och följ vilka sökningar och leads de stödjer |
 | Webbplats | Köparsidan med UTM är aktiv | Behåll och följ trafiken separat i analysverktyget |
 | Adress | Fogdevreten 14 visas offentligt trots att redigeringsvyn saknar adress | Skicka den förberedda överklagan; platsen saknar permanent StayOnSite-skyltning och tar inte emot kunder |
-| Serviceområde | Sverige | Hantera profilen som serviceområdesverksamhet; hela Sverige är inte en lokal rankinggenväg |
+| Serviceområde | `Sverige` har ersatts av tio precisa orter inom cirka två timmar från Solna; väntar på Googles granskning | Behåll den lokala serviceytan; nationell efterfrågan hanteras via stadssidor och innehåll |
 | Öppettider | Redigeringsvyn visar mån–fre 08:00–17:00 utan väntestatus; den publika panelen visar ännu den äldre 07–19-cachen | Använd kontakt-/verksamhetstid, inte tider som antyder drop-in på Fogdevreten; verifiera den publika panelen igen |
 | Attribut | Nästan tomt | Lägg bara till verifierbara attribut; ignorera irrelevanta kategoriförslag |
 | Inlägg | Första Gävle-inlägget är publicerat; sju förberedda inlägg återstår i kön | Aktivera de två kvalitetssäkrade köerna efter API-godkännandet |
@@ -56,7 +56,7 @@ Lägg inte in priser i tjänstefälten. Tillgänglighet, avtalsperiod och vad so
 
 Fogdevreten 14 saknar permanent StayOnSite-skyltning och kunder tas inte emot där. Adressen ska därför döljas och profilen hanteras som serviceområdesverksamhet. Gör ändringen samlat i GBP och kontrollera därefter om Google begär en ny verifiering. Lägg inte till en annan adress om den inte faktiskt uppfyller Googles krav för kundmottagning.
 
-För en serviceområdesverksamhet tillåter Google högst 20 precisa områden och anger att det samlade området normalt inte bör vara mer än cirka två timmars bilresa från basen. Ändra därför inte `Sverige` till 20 spridda projektorter i landet; det strider mot hur Google avser att fältet ska användas och förbättrar inte nationell lokal ranking.
+För en serviceområdesverksamhet tillåter Google högst 20 precisa områden och anger att det samlade området normalt inte bör vara mer än cirka två timmars bilresa från basen. Det tidigare landet `Sverige` har därför tagits bort och ersatts med Solna, Stockholm, Sundbyberg, Sollentuna, Järfälla kommun, Södertälje, Uppsala, Västerås, Eskilstuna och Gävle. Ändringen väntar på Googles granskning. Lägg inte till spridda projektorter i resten av landet; nationell efterfrågan ska fångas av stadssidor, innehåll och relevanta inlägg.
 
 Källor: [Googles riktlinjer för verksamheter](https://support.google.com/business/answer/3038177), [hantera företagsadress](https://support.google.com/business/answer/2853879), [serviceområden](https://support.google.com/business/answer/9157481), [överklaga en avvisad profiländring](https://support.google.com/business/answer/13597551).
 
@@ -113,6 +113,7 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Basic API Access ansökt via profillägaren `kajsa@stayonsite.se`. Google-ärende: `6-9607000041098`; angiven handläggningstid 7–10 arbetsdagar.
 - Ett riktigt `pnpm gbp:discover` når Google men svarar med `429 Quota exceeded`, vilket bekräftar nollkvot i väntan på godkännande. Google My Business API/Local Posts är ännu inte synligt för projektet och kan aktiveras först efter godkännande.
 - Google avvisade ändringen som skulle dölja Solna-adressen. Den publika profilen visar fortfarande Fogdevreten 14, medan redigeringsvyn samtidigt visar `Ingen adress, bara leveranser och tjänster i hemmet`. En EES-överklagan med saklig hänvisning till att platsen saknar skyltning och kundmottagning är förberedd men ännu inte inskickad.
+- Det rikstäckande serviceområdet `Sverige` har ersatts av tio precisa orter: Solna, Stockholm, Sundbyberg, Sollentuna, Järfälla kommun, Södertälje, Uppsala, Västerås, Eskilstuna och Gävle. Redigeringen väntar på Googles granskning.
 - Den spårbara webbplatslänken till `/for-foretag` är godkänd och aktiv i profilen.
 - Åtta anpassade tjänster med fullständiga beskrivningar är godkända och aktiva.
 - OAuth-klient-ID, klienthemlighet och refresh token är lagrade som GitHub Actions-secrets. Konto och plats hittas automatiskt efter API-godkännandet.
