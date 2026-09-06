@@ -12,7 +12,7 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 
 | Område | Nuläge 2026-09-06 | Åtgärd |
 |---|---|---|
-| Betyg | 4,8/5, 16 recensioner | Svara på allt och bygg en jämn, policyenlig recensionskadens |
+| Betyg | 4,8/5, 16 recensioner; samtliga har företagssvar | Svara individuellt på nya recensioner och bygg en jämn, policyenlig recensionskadens |
 | Visningar | 1 463 i Maps-vyn | Baslinje; följ månadsvis |
 | Kundinteraktioner | 287 i ägarvyn | Baslinje; följ webbplatsklick, samtal och meddelanden separat |
 | Primär kategori | Lägenhetsuthyrning | Behåll tills ett kategoritest har tydligt stöd |
