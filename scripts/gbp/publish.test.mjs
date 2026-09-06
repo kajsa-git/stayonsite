@@ -9,6 +9,7 @@ import {
   verifyPublicPostResources,
 } from "./publish.mjs";
 import { buildAuthorizationUrl } from "./authorize.mjs";
+import { appendArticleGbpPost, buildArticleGbpPost } from "./article-queue.mjs";
 
 const image = "/images/gbp/gavle-company-housing-kitchen.jpg";
 
@@ -162,5 +163,35 @@ describe("GBP post publisher", () => {
       })),
       /Post image has unexpected content type/,
     );
+  });
+
+  it("builds and validates the GBP entry generated for a new article", () => {
+    const articlePost = buildArticleGbpPost({
+      slug: "projektboende-ny-guide",
+      titleSv: "Projektboende: ny guide",
+      descSv: "Saklig vägledning för företag som planerar boende för ett arbetslag.",
+      audience: "foretag",
+    }, "2026-09-09");
+
+    assert.equal(articlePost.id, "blog-projektboende-ny-guide");
+    assert.equal(articlePost.lane, "article");
+    assert.equal(articlePost.publishAfter, "2026-09-09");
+    assert.equal(articlePost.targetPath, "/blogg/projektboende-ny-guide");
+    validateQueue({ version: 1, posts: [articlePost] });
+  });
+
+  it("does not add the same generated article post twice", () => {
+    const topic = {
+      slug: "projektboende-ny-guide",
+      titleSv: "Projektboende: ny guide",
+      descSv: "Saklig vägledning.",
+      audience: "foretag",
+    };
+    const first = appendArticleGbpPost({ version: 1, posts: [] }, topic, "2026-09-09");
+    const second = appendArticleGbpPost(first.queue, topic, "2026-09-09");
+
+    assert.equal(first.added, true);
+    assert.equal(second.added, false);
+    assert.equal(second.queue.posts.length, 1);
   });
 });

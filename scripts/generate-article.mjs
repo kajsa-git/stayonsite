@@ -17,6 +17,8 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { appendArticleGbpPost } from './gbp/article-queue.mjs';
+import { validatePost } from './gbp/publish.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -775,47 +777,18 @@ function updateGbpQueue(topic) {
   }
   console.log('[article] Queueing Google Business Profile post...');
   const queue = JSON.parse(readFileSync(gbpQueuePath, 'utf-8'));
-  if (!Array.isArray(queue.posts)) throw new Error('Invalid GBP post queue');
-
-  const id = `blog-${topic.slug}`;
-  if (queue.posts.some((post) => post.id === id)) {
-    console.log(`[article] GBP post ${id} already queued — skipping`);
+  const today = new Date().toISOString().slice(0, 10);
+  const result = appendArticleGbpPost(queue, topic, today);
+  if (!result.added) {
+    console.log(`[article] GBP post ${result.post.id} already queued — skipping`);
     return;
   }
 
-  const imagesByAudience = {
-    foretag: [
-      '/images/gbp/gavle-project-housing-living-room.jpg',
-      '/images/gbp/gavle-company-housing-kitchen.jpg',
-      '/images/gbp/gavle-project-housing-hallway.jpg',
-    ],
-    husagare: [
-      '/images/gbp/gavle-company-housing-exterior.jpg',
-      '/images/gbp/gavle-company-housing-kitchen.jpg',
-    ],
-    bada: [
-      '/images/gbp/gavle-corporate-housing-bedroom.jpg',
-      '/images/gbp/gavle-project-housing-living-room.jpg',
-    ],
-  };
-  const audience = imagesByAudience[topic.audience] ? topic.audience : 'bada';
-  const imagePool = imagesByAudience[audience];
-  const imageIndex = [...topic.slug].reduce((sum, char) => sum + char.charCodeAt(0), 0) % imagePool.length;
-  const today = new Date().toISOString().slice(0, 10);
-
-  queue.posts.push({
-    id,
-    lane: 'article',
-    publishAfter: today,
-    languageCode: 'sv-SE',
-    summary: `Ny guide: ${topic.titleSv}\n\n${topic.descSv}\n\nVi har samlat det viktigaste för företag och bostadsägare som planerar personalboende, projektboende eller företagsuthyrning. Bilden visar ett exempel på möblerat företagsboende i Gävle.`,
-    targetPath: `/blogg/${topic.slug}`,
-    image: imagePool[imageIndex],
-    imageDescription: 'Exempel på möblerat företagsboende i Gävle.',
-    callToAction: 'LEARN_MORE',
-  });
-  queue.updatedAt = today;
-  writeFileSync(gbpQueuePath, `${JSON.stringify(queue, null, 2)}\n`);
+  // An article must not reach main if its derived GBP entry would later stop
+  // the complete publishing queue (for example because of excess length,
+  // invalid CTA data or a missing curated image).
+  validatePost(result.post);
+  writeFileSync(gbpQueuePath, `${JSON.stringify(result.queue, null, 2)}\n`);
 }
 
 // ---------- Retry helper ----------
