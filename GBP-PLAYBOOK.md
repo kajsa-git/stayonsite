@@ -13,8 +13,8 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Område | Nuläge 2026-09-06 | Åtgärd |
 |---|---|---|
 | Betyg | 4,8/5, 16 recensioner; samtliga har företagssvar | Svara individuellt på nya recensioner och bygg en jämn, policyenlig recensionskadens |
-| Visningar | 1 463 i Maps-vyn | Baslinje; följ månadsvis |
-| Kundinteraktioner | 287 i ägarvyn | Baslinje; följ webbplatsklick, samtal och meddelanden separat |
+| Visningar | 1 463 profilvisningar april–september 2026 | Baslinje; följ månadsvis |
+| Kundinteraktioner | 34 april–september: 31 webbplatsklick, 2 samtal och 1 chattklick | Följ webbplatsklick, samtal och meddelanden separat |
 | Primär kategori | Lägenhetsuthyrning | Behåll tills ett kategoritest har tydligt stöd |
 | Sekundära kategorier | Företagstjänster, Möblerade hyreslägenheter | Behåll |
 | Beskrivning | Relevant, saklig och nära full längd | Behåll |
@@ -22,9 +22,16 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Webbplats | Köparsidan med UTM är aktiv | Behåll och följ trafiken separat i analysverktyget |
 | Adress | Fogdevreten 14 visas offentligt trots att redigeringsvyn saknar adress | Skicka den förberedda överklagan; platsen saknar permanent StayOnSite-skyltning och tar inte emot kunder |
 | Serviceområde | Sverige | Hantera profilen som serviceområdesverksamhet; hela Sverige är inte en lokal rankinggenväg |
-| Öppettider | Mån–fre 07:00–19:00 | Använd telefontillgänglighet/verksamhetstid, inte tider som antyder drop-in; stäm av mot webbplatsens schema 08:00–17:00 |
+| Öppettider | Mån–fre 08:00–17:00 är inskickat och väntar på granskning | Använd kontakt-/verksamhetstid, inte tider som antyder drop-in på Fogdevreten |
 | Attribut | Nästan tomt | Lägg bara till verifierbara attribut; ignorera irrelevanta kategoriförslag |
 | Inlägg | Första Gävle-inlägget är publicerat; sju förberedda inlägg återstår i kön | Aktivera de två kvalitetssäkrade köerna efter API-godkännandet |
+
+### Mätbaslinje 2026-04–2026-09-06
+
+- 1 463 personer visade profilen: 844 via Google Sök på mobil, 361 via Google Sök på dator, 152 via Google Maps på mobil och 106 via Google Maps på dator.
+- 34 registrerade interaktioner: 31 webbplatsklick, 2 samtal och 1 chattklick. Det motsvarar cirka 2,3 % interaktioner per profilvisning; webbplatsklicken motsvarar cirka 2,1 %.
+- Den tydligt rapporterade söktermen är `homerental` med 16 visningar. Övriga synliga termer ligger under Googles rapporteringsgräns på 15 och är främst breda eller adressrelaterade. Det saknas därför ännu starkt mätbart stöd för svenska kärntermer som `företagsbostäder`, `personalboende` och `projektboende`.
+- Jämför samma mått och sökordsmix efter 8–12 veckor. UTM-trafik från profillänken och varje enskilt inlägg ska bedömas separat från Googles totalsiffror.
 
 ### Profiländringar att lägga in
 
