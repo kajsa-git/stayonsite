@@ -7,8 +7,12 @@
       "Use only properties where StayOnSite has confirmed publication rights.",
       "Never describe an image as a currently available listing unless availability was checked the same day.",
       "Do not add text overlays, filters, people, licence plates or exact street addresses.",
-      "Keep exported files between 10 KB and 5 MB and at least 720 x 720 px."
+      "Keep property photos between 10 KB and 5 MB and at least 720 x 720 px; the square profile logo must be at least 250 x 250 px."
     ]
+  },
+  "profileMedia": {
+    "cover": "/images/gbp/gavle-project-housing-living-room.jpg",
+    "logo": "/icon-512.png"
   },
   "images": [
     {

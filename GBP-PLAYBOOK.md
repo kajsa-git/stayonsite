@@ -59,6 +59,8 @@ Sex autentiska bilder från företagets egna Gävleboenden finns i `public/image
 
 Bildkällor och användningsregler finns i `content/gbp/image-manifest.json`. Bilderna ska beskrivas som **exempel på möblerat företagsboende i Gävle**. De får inte beskrivas som lediga utan en dagsaktuell kontroll.
 
+Den autentiska vardagsrumsbilden är vald som profilens omslagsbild. Den kvadratiska S-symbolen i `public/icon-512.png` är vald som profilens logotyp. Båda är sparade i GBP utan väntestatus.
+
 Google rekommenderar JPG/PNG, 10 KB–5 MB, 720 × 720 px och verklighetstrogna, välbelysta bilder utan kraftig redigering eller överdriven AI. AI-genererat innehåll omfattas av samma Maps-policy, men profilbilder ska fortfarande spegla verkligheten. Därför används egna bostadsbilder i stället för syntetiska interiörer.
 
 Källor: [Googles bildkrav](https://support.google.com/business/answer/6123536), [Maps-policy för mänskligt och AI-genererat innehåll](https://support.google.com/contributionpolicy/answer/7400113).
@@ -108,7 +110,7 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Åtta anpassade tjänster med fullständiga beskrivningar är godkända och aktiva.
 - OAuth-klient-ID, klienthemlighet och refresh token är lagrade som GitHub Actions-secrets. Konto och plats hittas automatiskt efter API-godkännandet.
 - En riktig GitHub Actions dry-run för `campaign-gavle-personalboende` lyckades 2026-09-06 och verifierade kö, bild samt landningssida från GitHub-miljön.
-- Sex autentiska bilder från de egna Gävleboendena är uppladdade och visas i bildbiblioteket utan väntestatus.
+- Sex autentiska bilder från de egna Gävleboendena är uppladdade och visas i bildbiblioteket utan väntestatus. Vardagsrummet är dessutom valt som omslagsbild och StayOnSites kvadratiska S-symbol som logotyp.
 - Det första Gävle-inlägget, `campaign-gavle-personalboende`, är publicerat med bild, CTA och UTM-märkt länk till stadssidan.
 
 1. Skapa eller välj ett separat Google Cloud-projekt för StayOnSite GBP.
