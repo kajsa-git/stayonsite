@@ -18,13 +18,13 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Primär kategori | Lägenhetsuthyrning | Behåll tills ett kategoritest har tydligt stöd |
 | Sekundära kategorier | Företagstjänster, Möblerade hyreslägenheter | Behåll |
 | Beskrivning | Relevant, saklig och nära full längd | Behåll |
-| Tjänster | Inga tillagda | Lägg till tjänstelistan nedan |
-| Webbplats | Startsidan utan UTM | Ändra till köparsidan med UTM |
-| Adress | Fogdevreten 14, Solna visas offentligt | Dölj adressen; platsen saknar permanent StayOnSite-skyltning och tar inte emot kunder |
+| Tjänster | Åtta anpassade tjänster är aktiva | Behåll och följ vilka sökningar och leads de stödjer |
+| Webbplats | Köparsidan med UTM är aktiv | Behåll och följ trafiken separat i analysverktyget |
+| Adress | Fogdevreten 14 visas offentligt trots att redigeringsvyn saknar adress | Skicka den förberedda överklagan; platsen saknar permanent StayOnSite-skyltning och tar inte emot kunder |
 | Serviceområde | Sverige | Hantera profilen som serviceområdesverksamhet; hela Sverige är inte en lokal rankinggenväg |
 | Öppettider | Mån–fre 07:00–19:00 | Använd telefontillgänglighet/verksamhetstid, inte tider som antyder drop-in; stäm av mot webbplatsens schema 08:00–17:00 |
 | Attribut | Nästan tomt | Lägg bara till verifierbara attribut; ignorera irrelevanta kategoriförslag |
-| Inlägg | Inga tidigare inlägg | Starta två kvalitetssäkrade köer enligt automationen |
+| Inlägg | Första Gävle-inlägget är publicerat; sju förberedda inlägg återstår i kön | Aktivera de två kvalitetssäkrade köerna efter API-godkännandet |
 
 ### Profiländringar att lägga in
 
@@ -51,7 +51,7 @@ Fogdevreten 14 saknar permanent StayOnSite-skyltning och kunder tas inte emot d�
 
 För en serviceområdesverksamhet tillåter Google högst 20 precisa områden och anger att det samlade området normalt inte bör vara mer än cirka två timmars bilresa från basen. Ändra därför inte `Sverige` till 20 spridda projektorter i landet; det strider mot hur Google avser att fältet ska användas och förbättrar inte nationell lokal ranking.
 
-Källor: [Googles riktlinjer för verksamheter](https://support.google.com/business/answer/3038177), [serviceområden](https://support.google.com/business/answer/9157481).
+Källor: [Googles riktlinjer för verksamheter](https://support.google.com/business/answer/3038177), [hantera företagsadress](https://support.google.com/business/answer/2853879), [serviceområden](https://support.google.com/business/answer/9157481), [överklaga en avvisad profiländring](https://support.google.com/business/answer/13597551).
 
 ## Bildbibliotek
 
@@ -103,12 +103,13 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Begränsad refresh-token för endast `business.manage`: skapad i `~/.config/stayonsite/gbp-oauth-token.json` med filrättighet `600`.
 - Basic API Access ansökt via profillägaren `kajsa@stayonsite.se`. Google-ärende: `6-9607000041098`; angiven handläggningstid 7–10 arbetsdagar.
 - Ett riktigt `pnpm gbp:discover` når Google men svarar med `429 Quota exceeded`, vilket bekräftar nollkvot i väntan på godkännande. Google My Business API/Local Posts är ännu inte synligt för projektet och kan aktiveras först efter godkännande.
-- Den publika Solna-adressen är borttagen; profilen visar `Ingen adress, bara leveranser och tjänster i hemmet` och behåller serviceområdet `Sverige`.
-- Den spårbara webbplatslänken till `/for-foretag` är inskickad och väntar på Googles granskning.
-- Åtta anpassade tjänster med fullständiga beskrivningar är inskickade och väntar på publicering.
+- Google avvisade ändringen som skulle dölja Solna-adressen. Den publika profilen visar fortfarande Fogdevreten 14, medan redigeringsvyn samtidigt visar `Ingen adress, bara leveranser och tjänster i hemmet`. En EES-överklagan med saklig hänvisning till att platsen saknar skyltning och kundmottagning är förberedd men ännu inte inskickad.
+- Den spårbara webbplatslänken till `/for-foretag` är godkänd och aktiv i profilen.
+- Åtta anpassade tjänster med fullständiga beskrivningar är godkända och aktiva.
 - OAuth-klient-ID, klienthemlighet och refresh token är lagrade som GitHub Actions-secrets. Konto och plats hittas automatiskt efter API-godkännandet.
 - En riktig GitHub Actions dry-run för `campaign-gavle-personalboende` lyckades 2026-09-06 och verifierade kö, bild samt landningssida från GitHub-miljön.
-- Uppladdning av de sex Gävlebilderna och första manuella bildinlägget återstår tills Chrome-tillägget har fått `Allow access to file URLs`.
+- Sex autentiska bilder från de egna Gävleboendena är uppladdade och visas i bildbiblioteket utan väntestatus.
+- Det första Gävle-inlägget, `campaign-gavle-personalboende`, är publicerat med bild, CTA och UTM-märkt länk till stadssidan.
 
 1. Skapa eller välj ett separat Google Cloud-projekt för StayOnSite GBP.
 2. Ansök om **Basic API Access** för Business Profile APIs med ett Google-konto som är ägare/ansvarig för profilen.
