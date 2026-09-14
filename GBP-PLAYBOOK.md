@@ -1,6 +1,6 @@
 # Google Business Profile — StayOnSite
 
-Senast inventerad: 2026-09-10. Profil: [Stay On Site AB på Google Maps](https://www.google.com/maps?cid=18205863167897061312).
+Senast inventerad: 2026-09-14. Profil: [Stay On Site AB på Google Maps](https://www.google.com/maps?cid=18205863167897061312).
 
 ## Mål
 
@@ -20,7 +20,7 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 | Beskrivning | Relevant, saklig och nära full längd | Behåll |
 | Tjänster | Åtta anpassade tjänster är aktiva | Behåll och följ vilka sökningar och leads de stödjer |
 | Webbplats | Köparsidan med UTM är aktiv | Behåll och följ trafiken separat i analysverktyget |
-| Adress | Överklagan godkänd 2026-09-09 och statusverktyget visar `Approved`/`Review complete`; redigeringsvyn saknar adress men Fogdevreten 14 visas fortfarande offentligt 2026-09-10 | Invänta Googles utlovade eftersläpning på upp till 24 timmar och verifiera att den publika adressen verkligen döljs |
+| Adress | Överklagan godkänd 2026-09-09 och statusverktyget visar fortsatt `Approved`/`Review complete`; redigeringsvyn saknar adress men Fogdevreten 14 visas fortfarande offentligt i både Google Maps och Google Sök 2026-09-14 | Kontakta Google Business Profile-support manuellt med hänvisning till det godkända beslutet och den kvarstående publika adressen; skicka inte en ny överklagan och ändra inte profilfälten under tiden |
 | Serviceområde | Tio precisa orter inom cirka två timmar från Solna är aktiva | Behåll den lokala serviceytan; nationell efterfrågan hanteras via stadssidor och innehåll |
 | Öppettider | Mån–fre 08:00–17:00 är aktiva och verifierade i både redigeraren och den publika sökpanelen | Använd kontakt-/verksamhetstid, inte tider som antyder drop-in på Fogdevreten |
 | Attribut | Nästan tomt | Lägg bara till verifierbara attribut; ignorera irrelevanta kategoriförslag |
@@ -52,9 +52,9 @@ Google garanterar inte bättre lokal ranking för att man publicerar fler inläg
 
 Lägg inte in priser i tjänstefälten. Tillgänglighet, avtalsperiod och vad som ingår varierar per projekt.
 
-### Adress och serviceområde — beslut 2026-09-06, uppföljt 2026-09-10
+### Adress och serviceområde — beslut 2026-09-06, uppföljt 2026-09-14
 
-Fogdevreten 14 saknar permanent StayOnSite-skyltning och kunder tas inte emot där. Adressen ska därför döljas och profilen hanteras som serviceområdesverksamhet. Google avvisade den ursprungliga adressändringen och en överklagan skickades 2026-09-06. Google godkände överklagan via e-post 2026-09-09, och överklagandeverktyget verifierades 2026-09-10 med status `Approved` och `Review complete`. Google anger att ändringen kan ta upp till 24 timmar att slå igenom. Vid kontroll 2026-09-10 visade redigeringsvyn `Ingen adress, bara leveranser och tjänster i hemmet`, medan den publika profilen fortfarande visade Fogdevreten 14. Lägg inte till en annan adress om den inte faktiskt uppfyller Googles krav för kundmottagning.
+Fogdevreten 14 saknar permanent StayOnSite-skyltning och kunder tas inte emot där. Adressen ska därför döljas och profilen hanteras som serviceområdesverksamhet. Google avvisade den ursprungliga adressändringen och en överklagan skickades 2026-09-06. Google godkände överklagan via e-post 2026-09-09, och överklagandeverktyget visar fortsatt `Approved` och `Review complete` vid kontroll 2026-09-14. Redigeringsvyn visar `Ingen adress, bara leveranser och tjänster i hemmet` och alla tio serviceområden ligger kvar, men Fogdevreten 14 visas fortfarande offentligt i både Google Maps och Google Sök. Googles angivna eftersläpning på upp till 24 timmar har därmed passerats. Nästa manuella steg är att kontakta Google Business Profile-support med hänvisning till det redan godkända beslutet och bifoga bevis på att adressen fortfarande visas; skicka inte en ny överklagan och ändra inte profilfälten under tiden. Lägg inte till en annan adress om den inte faktiskt uppfyller Googles krav för kundmottagning.
 
 För en serviceområdesverksamhet tillåter Google högst 20 precisa områden och anger att det samlade området normalt inte bör vara mer än cirka två timmars bilresa från basen. Det tidigare landet `Sverige` har därför tagits bort och ersatts med Solna, Stockholm, Sundbyberg, Sollentuna, Järfälla kommun, Södertälje, Uppsala, Västerås, Eskilstuna och Gävle. De tio områdena är godkända och aktiva i profilen. Lägg inte till spridda projektorter i resten av landet; nationell efterfrågan ska fångas av stadssidor, innehåll och relevanta inlägg.
 
@@ -102,7 +102,7 @@ pnpm gbp:dry-run --post-id campaign-gavle-personalboende
 
 GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag, en aktiv verifierad profil som normalt varit aktiv minst 60 dagar, en webbplats och ett Google Cloud-projekt.
 
-**Aktuell status 2026-09-10**
+**Aktuell status 2026-09-14**
 
 - Cloud-projekt: `stayonsite-ads-cli` (`439444025288`).
 - My Business Business Information API: aktiverat.
@@ -113,7 +113,7 @@ GBP API är inte öppet utan godkännande. Google kräver ett legitimt företag,
 - Basic API Access ansökt via profillägaren `kajsa@stayonsite.se`. Google-ärende: `6-9607000041098`; angiven handläggningstid 7–10 arbetsdagar.
 - Ett riktigt `pnpm gbp:discover` når Google men svarar med `429 Quota exceeded`, vilket bekräftar nollkvot i väntan på godkännande. Google My Business API/Local Posts är ännu inte synligt för projektet och kan aktiveras först efter godkännande.
 - Codex-automationen `Följ GBP-beslut och aktivera publicering` testar åtkomsten varje vardag 09:15. Vid lyckad discovery validerar den kön, verifierar en GitHub Actions-torrkörning och aktiverar `GBP_PUBLISH_ENABLED`. Den följer även adressöverklagandet utan att kunna skicka ett nytt överklagande eller ändra andra profilfält, och pausar sig när båda externa besluten är färdigbehandlade.
-- EES-överklagan för att dölja Solna-adressen godkändes 2026-09-09. Googles statusverktyg verifierades 2026-09-10 med `Approved` och `Review complete`. Redigeringsvyn visar `Ingen adress, bara leveranser och tjänster i hemmet`, men den publika profilen visar fortfarande Fogdevreten 14 under Googles angivna eftersläpning på upp till 24 timmar. Ingen ny överklagan eller profiländring ska göras; verifiera i stället att adressen försvinner offentligt.
+- EES-överklagan för att dölja Solna-adressen godkändes 2026-09-09. Googles statusverktyg visar fortsatt `Approved` och `Review complete` 2026-09-14. Redigeringsvyn visar `Ingen adress, bara leveranser och tjänster i hemmet` och de tio serviceområdena ligger kvar, men den publika profilen visar fortfarande Fogdevreten 14 i både Google Maps och Google Sök efter att den angivna eftersläpningen på upp till 24 timmar passerat. Ingen ny överklagan eller profiländring ska göras; kontakta Google Business Profile-support manuellt med hänvisning till det godkända beslutet.
 - Det rikstäckande serviceområdet `Sverige` har ersatts av tio precisa orter: Solna, Stockholm, Sundbyberg, Sollentuna, Järfälla kommun, Södertälje, Uppsala, Västerås, Eskilstuna och Gävle. Redigeringen är godkänd och aktiv.
 - Den spårbara webbplatslänken till `/for-foretag` är godkänd och aktiv i profilen.
 - Åtta anpassade tjänster med fullständiga beskrivningar är godkända och aktiva.
