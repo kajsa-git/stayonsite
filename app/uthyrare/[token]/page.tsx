@@ -1,3 +1,5 @@
+import { LandlordPropertyForm } from "@/components/erbjudande/LandlordPropertyForm";
+import { loadLandlordProperties } from "@/lib/crm/landlord-properties";
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { agreementValidUntil, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
@@ -34,6 +36,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
     const standing = await loadLandlordStanding(link.ownerId);
     if (!standing) notFound();
     const consent = await loadPublishConsentState(link.ownerId);
+    const editableProperties = standing.agreementAccepted ? await loadLandlordProperties(link) : [];
     const pendingAddresses = consent.pending.map((p) => [p.address, p.city].filter(Boolean).join(", ")).filter(Boolean);
     const showConsent = consent.pending.length > 0 || consent.consented.length > 0;
     return (
@@ -82,6 +85,16 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               <p className="text-xs text-muted-foreground">Frågor? Hör av dig till Kajsa på StayOnSite.</p>
             </div>
           )}
+          {standing.agreementAccepted && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl text-nordic-900" style={editorial}>Min bostad</h2>
+                <p className="mt-2 text-sm text-nordic-700">Komplettera uppgifter och bilder här. Spara länken för att återkomma till din sida — ingen inloggning behövs.</p>
+              </div>
+              {editableProperties.length === 0 && <p className="rounded-xl border bg-white p-5 text-sm">Ingen bostad är kopplad till din sida ännu. Kontakta Kajsa på StayOnSite så hjälper vi dig.</p>}
+              {editableProperties.map((property) => <LandlordPropertyForm key={property.id} token={token} property={property} />)}
+            </div>
+          )}
           <p className="text-center text-xs text-muted-foreground">StayOnSite · Corporate housing i hela Sverige</p>
         </div>
       </div>
@@ -91,6 +104,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
   const deal = await loadLandlordDeal(link.matchId!);
   if (!deal) notFound();
 
+  const editableProperties = deal.agreementAccepted ? await loadLandlordProperties(link) : [];
   const status = STATUS_LABEL[deal.status];
   const period = deal.promisedStartDate || deal.promisedEndDate
     ? `${deal.promisedStartDate ?? "?"} → ${deal.promisedEndDate ?? "tills vidare"}`
@@ -178,6 +192,8 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
                 Hör av dig till Kajsa på StayOnSite.
               </p>
             </div>
+
+            {editableProperties.map((property) => <LandlordPropertyForm key={property.id} token={token} property={property} />)}
 
             <p className="text-center text-xs text-muted-foreground">StayOnSite · Corporate housing i hela Sverige</p>
           </>

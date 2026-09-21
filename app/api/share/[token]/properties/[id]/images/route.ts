@@ -1,5 +1,7 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { eq } from "drizzle-orm";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { asc, desc, eq } from "drizzle-orm";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { authorizeLandlordProperty } from "@/lib/crm/landlord-properties";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/crm/db";
@@ -7,8 +9,7 @@ import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { appendPropertyIntakeImageSummary } from "@/lib/crm/property-intake";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
-import { properties, propertyImages } from "@/lib/crm/schema";
-import { resolveShareLink } from "@/lib/crm/share-links";
+import { propertyImages } from "@/lib/crm/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,18 +17,22 @@ export const maxDuration = 30;
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
+// Intake uploads also occur before signing; retain that existing flow.
 async function authorize(token: string, propertyId: string) {
-  const link = await resolveShareLink(token, { trackView: false });
-  if (!link || link.audience !== "landlord" || !link.ownerId) return null;
+  return authorizeLandlordProperty(token, propertyId, false);
+}
 
-  const [property] = await db
-    .select({ id: properties.id, ownerId: properties.ownerId })
-    .from(properties)
-    .where(eq(properties.id, propertyId))
-    .limit(1);
-
-  if (!property || property.ownerId !== link.ownerId) return null;
-  return { link, property };
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ token: string; id: string }> }) {
+  const { token, id } = await params;
+  if (!await authorize(token, id)) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const rows = await db.select({ id: propertyImages.id, key: propertyImages.key, fileName: propertyImages.fileName })
+    .from(propertyImages).where(eq(propertyImages.propertyId, id))
+    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+  const images = await Promise.all(rows.map(async (row) => ({
+    id: row.id, fileName: row.fileName,
+    url: await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: row.key }), { expiresIn: 3600 }),
+  })));
+  return NextResponse.json(images, { headers: { "Cache-Control": "private, no-store" } });
 }
 
 function errorMessage(error: string) {
