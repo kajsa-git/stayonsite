@@ -31,6 +31,11 @@ const PROFANITY = /\b(?:fan|jävla\w*|jäkla\w*|helvete\w*|fuck\w*|shit\w*|bitch
 const CONTACT = /(?:[\w.+-]+@[\w.-]+\.\w{2,}|https?:\/\/|\bwww\.|\+46\s*\d|\b0[1-9][\d\s()-]{7,}\d\b)/iu;
 const INSTRUCTIONS = /(?:ignore\s+(?:all|previous)|ignorera\s+(?:alla|tidigare)|system\s*prompt|<\s*script\b|\b(?:TODO|TBD|lorem ipsum)\b)/iu;
 
+export function readableReviewReason(reason: string): string {
+  const labels: Record<string, string> = { squareMeters: "boyta", bedrooms: "sovrum", beds: "bäddar", bathrooms: "badrum", washingMachines: "tvättmaskiner", dryers: "torktumlare", parkingSpaces: "parkeringsplatser", allIncluded: "allt ingår", excludedNote: "uppgiften om vad som inte ingår", specialNote: "den särskilda uppgiften", furnished: "möblering", kitchen: "kök", publicDescription: "beskrivningen", heatWaterIncluded: "värme och vatten ingår", linensIncluded: "sängkläder ingår" };
+  return reason.replace(/\b(squareMeters|bedrooms|beds|bathrooms|washingMachines|dryers|parkingSpaces|allIncluded|excludedNote|specialNote|furnished|kitchen|publicDescription|heatWaterIncluded|linensIncluded)\b/g, (key) => labels[key]);
+}
+
 export function publicTextProblems(text: string, forbidden: string[] = []): string[] {
   const value = text.normalize("NFKC").replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u206f]/g, "");
   const problems: string[] = [];

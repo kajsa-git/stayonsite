@@ -9,7 +9,7 @@ import { validatePublicationSeo } from "./publication-seo";
 import { indexProperty } from "./search-index";
 import {
   CONTENT_FIELDS, CONTENT_POLICY_VERSION, PROPERTY_CONTENT_SYSTEM,
-  isCurrentContentApproved, propertyContentHash, publicTextProblems,
+  isCurrentContentApproved, propertyContentHash, publicTextProblems, readableReviewReason,
   type ContentReport, type ImageCheck,
 } from "./property-content-policy";
 
@@ -63,7 +63,7 @@ export async function inspectPropertyContent(id: string, opts: { onImageChecks?:
   if ((!property.beds || property.beds < 1) && !property.publicDescription?.trim()) reasons.push("Antal bäddar eller ett beskrivningsunderlag saknas.");
   if (!images.length) reasons.push("Bilder saknas. Lägg till bilder av boendet.");
   if (!images.length) {
-    return { input, sourceHash: propertyContentHash(property, images), values: {} as Partial<Property>, report: { reasons, images: [], version: CONTENT_POLICY_VERSION } as ContentReport };
+    return { input, sourceHash: propertyContentHash(property, images), values: {} as Partial<Property>, report: { reasons: reasons.map(readableReviewReason), images: [], version: CONTENT_POLICY_VERSION } as ContentReport };
   }
 
   const checks: ImageCheck[] = [];
@@ -130,7 +130,7 @@ export async function inspectPropertyContent(id: string, opts: { onImageChecks?:
   const forbidden = [property.address, owner?.name, owner?.email, owner?.phone].filter((v): v is string => !!v);
   const output = [values.publicName, values.publicDescription, values.publicDescriptionEn, values.publicDescriptionPl, values.skick, values.skickEn, values.skickPl, ...values.inclusions, ...values.inclusionsEn, ...values.inclusionsPl, ...(property.distances ?? []).map((d) => d.label)];
   reasons.push(...output.flatMap((value) => publicTextProblems(value, forbidden)));
-  const report: ContentReport = { reasons: [...new Set(reasons)], images: checks, version: CONTENT_POLICY_VERSION };
+  const report: ContentReport = { reasons: [...new Set(reasons.map(readableReviewReason))], images: checks, version: CONTENT_POLICY_VERSION };
   return { input, sourceHash: propertyContentHash(property, images), values, report };
 }
 
