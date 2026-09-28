@@ -255,9 +255,17 @@ export const properties = sqliteTable("crm_properties", {
   publishConsentName: text("publish_consent_name"),
   publishConsentSource: text("publish_consent_source"), // web | sms | crm
   publishConsentIp: text("publish_consent_ip"),
+  // Intern kontroll av exakt den kundtext och de bilder som godkänts.
+  contentReviewStatus: text("content_review_status").notNull().default("pending"),
+  contentReviewHash: text("content_review_hash"),
+  contentReviewReport: text("content_review_report", { mode: "json" }).$type<{ reasons: string[]; images: { id: string; key: string; suitable: boolean; reason: string }[]; version: number }>(),
+  contentReviewedAt: text("content_reviewed_at"),
+  contentReviewOriginal: text("content_review_original", { mode: "json" }).$type<Record<string, unknown>>(),
+  autoPublishEnabled: integer("auto_publish_enabled", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
 }, (t) => [
+  index("crm_properties_content_review_idx").on(t.contentReviewStatus),
   index("crm_properties_city_idx").on(t.city),
   index("crm_properties_status_idx").on(t.status),
   index("crm_properties_move_in_from_idx").on(t.moveInFrom),

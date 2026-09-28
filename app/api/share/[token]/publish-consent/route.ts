@@ -1,3 +1,4 @@
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 // PUBLIK, token-gatad registrering av publiceringsgodkännande. Bara fristående
 // uthyrarlänkar (audience landlord + ownerId) — samma kapabilitetsmodell som
 // avtalssigneringen i ../agreement. Godkännandet gäller ägarens opublicerade
@@ -29,5 +30,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     null;
 
   const stamped = await recordPublishConsent({ ownerId: link.ownerId, name, source: "web", ip });
+  for (const property of stamped) schedulePropertyReview(property.id);
   return NextResponse.json({ ok: true, count: stamped.length }, { status: stamped.length ? 201 : 200 });
 }
+
+export const maxDuration = 300;

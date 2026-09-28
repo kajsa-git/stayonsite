@@ -56,7 +56,7 @@ export function PublishConsentCard({
         <span className="font-medium text-nordic-900">Visa annonsen på stayonsite.se.</span>{" "}
         {consented ? (
           <span className="text-nordic-700">
-            Vi granskar uppgifter och bilder, lägger sedan ut annonsen och skickar dig länken. Vill du ta ner
+            Vi kontrollerar beskrivningen och bilderna före publicering. Din beskrivning kan språkgranskas och översättas för våra företagskunder. Vill du ta ner
             den räcker ett meddelande.
           </span>
         ) : (

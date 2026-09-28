@@ -1,3 +1,5 @@
+import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 // POST { urls: string[] } → laddar ner annonsens bilder server-side och lägger dem i R2 +
 // crm_property_images. Anropas efter att objektet skapats vid import (Qasa/Airbnb).
 // Bara bild-CDN:er på allowlist tillåts (SSRF-skydd) och varje fil magic-byte-valideras.
@@ -14,7 +16,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 const MAX_IMAGES = 20;
 const MAX_BYTES = 15 * 1024 * 1024;
@@ -140,5 +142,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
   }
 
+  if (created) {
+    await db.update(properties).set(pendingContentReview()).where(eq(properties.id, id));
+  schedulePropertyReview(id);
+  }
   return NextResponse.json({ created, failed: failed.length, skipped });
 }

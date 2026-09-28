@@ -1,6 +1,8 @@
+import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { propertyImages } from "@/lib/crm/schema";
+import { propertyImages, properties } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
@@ -118,5 +120,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     .values({ id: imageId, propertyId: id, key, fileName: file.name })
     .returning();
 
+  await db.update(properties).set(pendingContentReview()).where(eq(properties.id, id));
+  schedulePropertyReview(id);
   return NextResponse.json(row, { status: 201 });
 }
+
+export const maxDuration = 300;

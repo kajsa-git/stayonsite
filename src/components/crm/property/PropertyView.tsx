@@ -19,6 +19,7 @@ import { MatchToRequestModal } from "./MatchToRequestModal";
 import { PropertyHistory } from "./PropertyHistory";
 import { EmailThread } from "@/components/crm/email/EmailThread";
 import { PropertyEditForm } from "./PropertyEditForm";
+import { PropertyContentReview } from "./PropertyContentReview";
 import { PropertyPublicControls } from "./PropertyPublicControls";
 import { Equip, InfoRow } from "./property-ui";
 import { PhoneActions } from "@/components/crm/PhoneActions";
@@ -173,6 +174,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             </div>
           </div>
 
+          <PropertyContentReview property={property} />
           <PropertyPublicControls property={property} onUpdate={onUpdate} />
 
           {/* Utrustning — visas alltid så man kan svara direkt */}

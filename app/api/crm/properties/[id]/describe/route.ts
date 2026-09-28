@@ -83,9 +83,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const instructions = `Du skriver en extern bostadsbeskrivning för ett seriöst svenskt corporate housing-bolag (StayOnSite). Beskrivningen visas publikt för företag som söker boende åt personal.
 
 Du har ${imageBlocks.length === 0 ? "inga bilder" : imageBlocks.length === 1 ? "EN bild" : `${imageBlocks.length} bilder`} att utgå från.
-${thinEvidence ? "OBS — tunt underlag: beskriv ENDAST det som faktiskt syns och det som står i objektdatan. Nämn inga rum, våningar eller egenskaper du inte ser. Skriv hellre 2 korta meningar än att fylla ut." : "Skriv 2–4 meningar utifrån det som faktiskt syns på bilderna och framgår av datan (standard, ljus, möblering, läge-känsla)."}
+${thinEvidence ? "OBS — tunt underlag: beskriv ENDAST det som faktiskt syns och det som står i objektdatan. Nämn inga rum, våningar eller egenskaper du inte ser. Skriv hellre 2 korta meningar än att fylla ut." : "Skriv 2–4 meningar utifrån bekräftade uppgifter i objektdatan. Bilder får inte användas för att hitta på ytterligare fakta."}
 
-Saklig och förtroendeingivande B2B-ton på svenska. Förbjudet: hitta inte på fakta, beskriv inte rum som varken syns på bild eller finns i datan, ingen reklamfluff, inga superlativ-staplar, och nämn ALDRIG exakt gatuadress, hyresvärd/ägare eller pris. Svara ENBART med beskrivningstexten, inget annat.
+Varmt, vanligt språk på svenska, kortfattat och professionellt. Prioritera det arbetslag behöver veta: sovrum och bäddar, eget eller delat kök/badrum, tvätt, parkering och praktiska begränsningar. Undvik mäklartext och detaljer om golv eller inredning. Behåll begränsningar som känsliga ytor som kräver försiktighet. Förbjudet: hitta inte på fakta, beskriv inte rum som varken syns på bild eller finns i datan, ingen reklamfluff, inga superlativ-staplar, och nämn ALDRIG exakt gatuadress, hyresvärd/ägare eller pris. Svara ENBART med beskrivningstexten, inget annat.
 
 Objektdata:
 ${facts.length ? facts.map((f) => `- ${f}`).join("\n") : "(ingen strukturerad data angiven)"}`;

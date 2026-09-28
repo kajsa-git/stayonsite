@@ -1,6 +1,6 @@
 // Uthyrarens publiceringsgodkännande — att annonsen FÅR visas online. Bevisfält
 // på objektet (at/name/source/ip), skrivs aldrig om när satt. Publicering är
-// fortfarande Kajsas manuella steg efter granskning (ägare↔bilder-läxan 2026-07-31).
+// görs automatiskt efter godkänd beskrivnings- och bildkontroll.
 import { and, eq, isNull } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { db as defaultDb } from "./db";

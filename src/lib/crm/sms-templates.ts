@@ -40,9 +40,9 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
 // publiceringsgodkännande + uppdragssignering på ett ställe. Länk utan https://.
 export function intakeConfirmSms(ownerName: string | null | undefined, token: string | null): string {
   const link = token
-    ? `\nPå din sida kan du godkänna publicering och signera uppdraget: www.stayonsite.se/uthyrare/${token}`
+    ? `\nGe ditt medgivande till publicering och signera uthyrningsuppdraget på din sida: www.stayonsite.se/uthyrare/${token}`
     : "";
-  return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi granskar uppgifterna — inget visas online utan ditt godkännande.${link}\n/Kajsa, StayOnSite`;
+  return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi kontrollerar bilderna och gör beskrivningen klar för våra företagskunder.${link}\n/Kajsa, StayOnSite`;
 }
 
 // För korta husägarlead från hemsidan/LP där vi bara har telefon + ev. ort:

@@ -93,6 +93,8 @@ function hasOwnerPayload(body: Record<string, unknown>) {
 function stripForPropertyWrite(body: Record<string, unknown>): Partial<Property> {
   const copy = { ...body };
   delete copy.createOwner;
+  delete copy.autoPublishEnabled;
+  for (const key of Object.keys(copy)) if (key.startsWith("contentReview") || key === "contentReviewedAt") delete copy[key];
   for (const key of OWNER_IDENTITY_KEYS) delete copy[key];
   return copy as Partial<Property>;
 }

@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "./approved-property-content";
 import { asc, desc, eq } from "drizzle-orm";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -9,6 +10,7 @@ import { properties, propertyImages, type Property } from "./schema";
 // Tenant-säkra kolumner som får visas publikt. ALDRIG address, owner-* eller rent/price.
 const PUBLIC_COLUMNS = {
   id: properties.id,
+  updatedAt: properties.updatedAt,
   published: properties.published,
   prospektPublished: properties.prospektPublished,
   status: properties.status,
@@ -41,7 +43,7 @@ const PUBLIC_COLUMNS = {
   availableTo: properties.availableTo,
 } as const;
 
-export type PublicPropertyRow = Pick<Property, keyof typeof PUBLIC_COLUMNS>;
+export type PublicPropertyRow = Pick<Property, Exclude<keyof typeof PUBLIC_COLUMNS, "updatedAt">>;
 
 export type PublicProperty = {
   row: PublicPropertyRow;
@@ -123,6 +125,7 @@ export async function loadPublicProperty(
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, row.id))
     .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+  if (!(await approvedPropertyIds([row.id], new Map([[row.id, row.updatedAt]]))).has(row.id)) return null;
   const images = await Promise.all(
     imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }), { expiresIn: 60 * 60 * 24 * 7 })),
   );

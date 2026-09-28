@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
 import { db } from "@/lib/crm/db";
 import { propertyImages, properties } from "@/lib/crm/schema";
 import { r2, R2_BUCKET } from "@/lib/crm/r2";
@@ -10,9 +11,10 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const rows = await db
+  const candidates = await db
     .select({
       id: properties.id,
+      updatedAt: properties.updatedAt,
       publicName: properties.publicName,
       slug: properties.slug,
       city: properties.city,
@@ -33,6 +35,8 @@ export async function GET() {
     .where(and(eq(properties.published, true), eq(properties.status, "available")))
     .orderBy(asc(properties.city));
 
+  const approved = await approvedPropertyIds(candidates.map((p) => p.id), new Map(candidates.map((p) => [p.id, p.updatedAt])));
+  const rows = candidates.filter((p) => approved.has(p.id));
   if (rows.length === 0) return NextResponse.json([]);
 
   // Hämta primärbilder för alla publicerade objekt
@@ -51,8 +55,9 @@ export async function GET() {
   }
 
   // Generera presignade URLs (1 timme)
+  const latestApproved = await approvedPropertyIds(rows.map((p) => p.id), new Map(rows.map((p) => [p.id, p.updatedAt])));
   const result = await Promise.all(
-    rows.map(async (p) => {
+    rows.filter((p) => latestApproved.has(p.id)).map(async (p) => {
       const imgs = (imgsByProperty.get(p.id) ?? []).sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
       const imageUrls = await Promise.all(
         imgs.slice(0, 6).map((img) =>
@@ -71,6 +76,6 @@ export async function GET() {
   );
 
   return NextResponse.json(result, {
-    headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
+    headers: { "Cache-Control": "no-store" },
   });
 }

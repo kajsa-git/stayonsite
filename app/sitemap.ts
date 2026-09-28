@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
 import type { MetadataRoute } from 'next'
 import { and, eq, isNotNull } from 'drizzle-orm'
 import { cities } from '@/data/cities'
@@ -186,10 +187,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let boendePages: MetadataRoute.Sitemap = []
   try {
     const rows = await db
-      .select({ slug: properties.slug, updatedAt: properties.updatedAt })
+      .select({ id: properties.id, slug: properties.slug, updatedAt: properties.updatedAt })
       .from(properties)
       .where(and(eq(properties.published, true), eq(properties.status, 'available'), isNotNull(properties.slug)))
-    boendePages = rows.map((r) => ({
+    const approved = await approvedPropertyIds(rows.map((r) => r.id));
+    boendePages = rows.filter((r) => approved.has(r.id)).map((r) => ({
       url: `${BASE}/boenden/${r.slug}`,
       lastModified: (r.updatedAt ?? today).slice(0, 10),
       changeFrequency: 'weekly' as const,

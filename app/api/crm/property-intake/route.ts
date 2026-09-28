@@ -1,3 +1,4 @@
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -16,7 +17,7 @@ import { sendMetaLeadEvent } from "@/lib/meta-conversions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 300;
 
 const MAX_IMAGES = 10;
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
@@ -259,6 +260,7 @@ export async function POST(req: NextRequest) {
       { ip, userAgent: req.headers.get("user-agent") ?? undefined },
     ).catch((error) => console.error("Property intake Meta CAPI event failed", error));
 
+    schedulePropertyReview(property.id);
     return NextResponse.json({
       success: true,
       propertyId: property.id,

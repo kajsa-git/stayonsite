@@ -23,6 +23,7 @@ import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 import { PropertyIntakeSharePanel } from "./PropertyIntakeSharePanel";
 
 const fetcher = swrFetcher;
+const EMPTY_PROPERTIES: PropertyWithThumb[] = [];
 
 const PROP_STATUS: Record<string, { label: string; cls: string }> = {
   available: { label: "Tillgänglig", cls: "bg-green-100 text-green-800" },
@@ -122,11 +123,20 @@ export function PropertyList() {
   const [tableModal, setTableModal] = useState<PropertyWithOwner | null>(null);
   const isMobile = useIsMobile();
 
-  const { data: properties = [], mutate, isLoading } = useSWR<PropertyWithThumb[]>(
+  const { data: properties = EMPTY_PROPERTIES, mutate, isLoading } = useSWR<PropertyWithThumb[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
-    fetcher
+    fetcher,
+    { refreshInterval: (data) => data?.some((p) => ["pending", "checking"].includes(p.contentReviewStatus)) ? 5000 : 0 }
   );
   const loading = isLoading && properties.length === 0;
+
+  // Background checks update the shared inventory. Keep an open card in sync
+  // so its approval and publication state change without a page reload.
+  useEffect(() => {
+    const sync = (current: PropertyWithOwner | null) => current ? properties.find((p) => p.id === current.id) ?? current : null;
+    setSelected(sync);
+    setTableModal(sync);
+  }, [properties]);
 
   const cities = useMemo(
     () => [...new Set(properties.map((p) => p.city).filter(Boolean) as string[])].sort(),
@@ -322,6 +332,7 @@ export function PropertyList() {
           >
             <div className="flex-1 min-w-0">
               <div className="truncate">{p.address || "(Adress saknas)"}</div>
+              {["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="text-xs text-amber-800">Kajsa behöver granska</span>}
               <div className="text-xs text-muted-foreground truncate">
                 {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
               </div>
@@ -545,7 +556,7 @@ export function PropertyList() {
                             <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
                           )}
                         </TableCell>
-                        <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}</TableCell>
+                        <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}{["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="block text-xs text-amber-800">Kajsa behöver granska</span>}</TableCell>
                         <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.city || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
@@ -579,7 +590,7 @@ export function PropertyList() {
                           </div>
                         </TableCell>
                         <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
-                        <TableCell className="text-foreground">{p.published ? "✓" : "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.published && p.contentReviewStatus === "approved" && p.status === "available" ? "✓" : "–"}</TableCell>
                       </TableRow>
                     );
                   })
@@ -940,7 +951,7 @@ function PropertyForm({
         />
         {imported && (
           <p className="text-[11px] text-amber-700">
-            ⚠ Importerad text kan innehålla gatuadress, uthyrarens namn eller telefon — ta bort sådant innan du publicerar (endast postnummer får visas publikt).
+            Beskrivningen kontrolleras och bearbetas automatiskt innan den visas för kunder. Du får en granskningsflagga om något är oklart.
           </p>
         )}
       </div>

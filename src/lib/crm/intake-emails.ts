@@ -32,7 +32,7 @@ export function buildIntakeConfirmationEmail(args: {
 
   const steps = url
     ? [
-        "Två snabba steg när det passar dig — båda tar under en minut:",
+        "På din sida kan du:",
         `1. Godkänn att annonsen får visas online (exakt adress visas aldrig publikt).`,
         `2. Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.`,
         "",
@@ -43,7 +43,7 @@ export function buildIntakeConfirmationEmail(args: {
   const text = [
     greeting,
     "",
-    `Tack — vi har tagit emot ${what}${bilder}. Vi granskar uppgifter och bilder — inget visas online utan ditt godkännande, och du behöver inte göra något mer just nu.`,
+    `Tack — vi har tagit emot ${what}${bilder}. Vi gör beskrivningen klar för våra företagskunder och kontrollerar att bilderna visar boendet. Annonsen publiceras när kontrollen är klar och du har gett ditt medgivande.`,
     "",
     ...steps,
     steps.length ? "" : null,
@@ -58,10 +58,10 @@ export function buildIntakeConfirmationEmail(args: {
 
   const html = [
     `<p>${greeting}</p>`,
-    `<p>Tack — vi har tagit emot <strong>${what}</strong>${bilder}. Vi granskar uppgifter och bilder — inget visas online utan ditt godkännande, och du behöver inte göra något mer just nu.</p>`,
+    `<p>Tack — vi har tagit emot <strong>${what}</strong>${bilder}. Vi gör beskrivningen klar för våra företagskunder och kontrollerar att bilderna visar boendet. Annonsen publiceras när kontrollen är klar och du har gett ditt medgivande.</p>`,
     ...(url
       ? [
-          "<p>Två snabba steg när det passar dig — båda tar under en minut:</p>",
+          "<p>På din sida kan du:</p>",
           "<ol style=\"margin:0 0 12px;padding-left:20px\">" +
             "<li>Godkänn att annonsen får visas online — exakt adress visas aldrig publikt.</li>" +
             "<li>Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.</li>" +

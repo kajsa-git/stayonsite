@@ -1,3 +1,5 @@
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
+import { contentChanged } from "@/lib/crm/property-content-policy";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { deletePropertyDeep } from "@/lib/crm/cascade-delete";
@@ -21,9 +23,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
   const [existing] = await db.select().from(properties).where(eq(properties.id, id));
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if ((body.published === true || body.prospektPublished === true) && !existing.published && !existing.publishConsentAt) {
+    return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
+  }
   const values = await normalizePropertyWriteBody(body, existing);
+  if ((body.published === false && existing.published) || (body.prospektPublished === false && existing.prospektPublished)) values.autoPublishEnabled = false;
+  else if ((body.published === true && !existing.published) || (body.prospektPublished === true && !existing.prospektPublished)) values.autoPublishEnabled = true;
+  const changed = contentChanged(body);
+  if (changed) Object.assign(values, { contentReviewStatus: existing.contentReviewStatus === "checking" ? "checking" : "pending", contentReviewHash: null });
   const candidate = { ...existing, ...values };
-  if (shouldValidatePublication(existing, body, candidate)) {
+  if (!changed && candidate.contentReviewStatus === "approved" && shouldValidatePublication(existing, body, candidate)) {
     const problem = await validatePublicationSeo(candidate);
     if (problem) return NextResponse.json({ error: problem }, { status: 422 });
   }
@@ -39,6 +48,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const [owner] = row?.ownerId
     ? await db.select().from(owners).where(eq(owners.id, row.ownerId))
     : [null];
+  if (changed || body.status === "available" || body.published === true || body.prospektPublished === true) schedulePropertyReview(id);
   return NextResponse.json(mergeOwnerIntoProperty({ property: row, owner: owner ?? null }));
 }
 
@@ -68,3 +78,5 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
   return NextResponse.json({ ok: true });
 }
+
+export const maxDuration = 300;

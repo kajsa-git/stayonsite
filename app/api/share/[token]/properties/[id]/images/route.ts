@@ -1,3 +1,5 @@
+import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { asc, desc, eq } from "drizzle-orm";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -9,11 +11,11 @@ import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { appendPropertyIntakeImageSummary } from "@/lib/crm/property-intake";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
-import { propertyImages } from "@/lib/crm/schema";
+import { propertyImages, properties } from "@/lib/crm/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 300;
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
@@ -89,6 +91,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       })
       .returning();
 
+    await db.update(properties).set(pendingContentReview()).where(eq(properties.id, id));
+    schedulePropertyReview(id);
     return NextResponse.json({ id: row.id, fileName: row.fileName, sortOrder: row.sortOrder }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "image_upload_failed";

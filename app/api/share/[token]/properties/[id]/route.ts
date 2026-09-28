@@ -1,3 +1,5 @@
+import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/crm/db";
 import { properties } from "@/lib/crm/schema";
@@ -17,9 +19,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ to
   if (!landlordPropertyInput.safeParse({ ...existing, ...parsed.data }).success) {
     return NextResponse.json({ error: "Slutdatum måste vara samma dag som eller efter startdatum." }, { status: 400 });
   }
-  const [saved] = await db.update(properties).set({ ...parsed.data, updatedAt: new Date().toISOString() })
+  const [saved] = await db.update(properties).set({ ...parsed.data, ...pendingContentReview(), updatedAt: new Date().toISOString() })
     .where(condition).returning({ id: properties.id });
   if (!saved) return NextResponse.json({ error: "Bostaden finns inte kvar." }, { status: 404 });
   await indexProperty(id).catch((error) => console.error("search-index landlord property:", error));
+  schedulePropertyReview(id);
   return NextResponse.json({ ok: true });
 }
+
+export const maxDuration = 300;

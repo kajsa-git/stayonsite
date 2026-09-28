@@ -1,6 +1,8 @@
+import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { propertyImages } from "@/lib/crm/schema";
+import { propertyImages, properties } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { and, eq, ne } from "drizzle-orm";
@@ -43,6 +45,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     // ignore R2 errors; the DB row should still be removed
   }
   await db.delete(propertyImages).where(eq(propertyImages.id, imageId));
+  await db.update(properties).set(pendingContentReview()).where(eq(properties.id, row.propertyId));
+  schedulePropertyReview(row.propertyId);
 
   return NextResponse.json({ ok: true });
 }
+
+export const maxDuration = 300;

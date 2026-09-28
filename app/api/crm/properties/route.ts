@@ -1,3 +1,4 @@
+import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexOwner, indexProperty } from "@/lib/crm/search-index";
@@ -9,7 +10,6 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
-import { shouldValidatePublication, validatePublicationSeo } from "@/lib/crm/publication-seo";
 
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
@@ -99,29 +99,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  if ((body.published === true || body.prospektPublished === true) && !body.publishConsentAt) {
+    return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
+  }
   const id = nanoid();
   const values = await normalizePropertyWriteBody(body);
-  const candidate = {
-    id,
-    published: false,
-    status: "available",
-    publicName: null,
-    slug: null,
-    publicDescription: null,
-    city: null,
-    postalCode: null,
-    squareMeters: null,
-    bedrooms: null,
-    beds: null,
-    ...values,
-  };
-  if (shouldValidatePublication(undefined, body, candidate)) {
-    const problem = await validatePublicationSeo(candidate);
-    if (problem) return NextResponse.json({ error: problem }, { status: 422 });
-  }
   const [row] = await db.insert(properties).values({ id, ...values }).returning();
   await indexProperty(id).catch((e) => console.error("search-index property:", e));
   if (row?.ownerId) await indexOwner(row.ownerId).catch((e) => console.error("search-index owner:", e));
   const [owner] = row?.ownerId ? await db.select().from(owners).where(eq(owners.id, row.ownerId)) : [null];
+  schedulePropertyReview(id);
   return NextResponse.json(mergeOwnerIntoProperty({ property: row, owner: owner ?? null }), { status: 201 });
 }
+
+export const maxDuration = 300;

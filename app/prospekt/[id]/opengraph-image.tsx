@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -44,7 +45,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const logoW = Math.round((logoH * 1820) / 480);
 
   // Inte prospekt-publicerad / saknas → generiskt varumärkt kort (ingen privat data).
-  if (!p || !p.prospektPublished) {
+  if (!p || !p.prospektPublished || !(await approvedPropertyIds([id])).has(id)) {
     return new ImageResponse(
       (
         <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: NAVY }}>

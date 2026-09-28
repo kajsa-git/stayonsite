@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "@/lib/crm/approved-property-content"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound, permanentRedirect } from "next/navigation"
@@ -22,6 +23,8 @@ const BASE = "https://www.stayonsite.se"
 // Lätt uppslag för metadata (ingen bild-presignering/geokodning) — slug först, id som fallback.
 async function lookupForMeta(idOrSlug: string) {
   const cols = {
+    id: properties.id,
+    updatedAt: properties.updatedAt,
     published: properties.published,
     status: properties.status,
     slug: properties.slug,
@@ -45,7 +48,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params
   const p = await lookupForMeta(slug)
-  if (!p || !p.published || p.status !== "available") {
+  if (!p || !p.published || p.status !== "available" || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
     return buildMetadata({ title: "Lediga boenden | StayOnSite", noindex: true, locale: "sv" })
   }
   const name = publicDisplayName(

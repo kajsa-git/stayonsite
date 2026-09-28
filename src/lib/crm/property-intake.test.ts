@@ -95,7 +95,7 @@ describe("property intake mapping", () => {
       broadband: true,
       egetBoende: true,
       rentIn: 15000,
-      status: "off_market",
+      status: "available",
       published: false,
       prospektPublished: false,
     });

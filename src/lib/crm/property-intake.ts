@@ -215,6 +215,7 @@ export function propertyIntakeToPropertyBody(input: PropertyIntakeInput): Record
     garage: input.garage,
     broadband: input.broadband,
     egetBoende: input.egetBoende,
+    publicDescription: input.equipmentNote,
     skick: input.skick,
     rentIn: input.desiredRent,
     moveInFrom: input.moveInFrom,
@@ -226,7 +227,7 @@ export function propertyIntakeToPropertyBody(input: PropertyIntakeInput): Record
     specialNote: input.specialNote,
     inclusions: propertyIntakeInclusions(input),
     notes: buildPropertyIntakeNotes(input),
-    status: "off_market",
+    status: "available",
     published: false,
     prospektPublished: false,
   };

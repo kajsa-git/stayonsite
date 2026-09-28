@@ -1,3 +1,4 @@
+import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
 import { db } from "@/lib/crm/db";
 import { properties } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
@@ -18,6 +19,7 @@ export async function generateMetadata(
   const tr = T[lang];
   const [p] = await db
     .select({
+      updatedAt: properties.updatedAt,
       prospektPublished: properties.prospektPublished,
       city: properties.city,
       postalCode: properties.postalCode,
@@ -27,7 +29,7 @@ export async function generateMetadata(
     })
     .from(properties)
     .where(eq(properties.id, id));
-  if (!p || !p.prospektPublished) return { title: `${tr.tagline} – StayOnSite` };
+  if (!p || !p.prospektPublished || !(await approvedPropertyIds([id], new Map([[id, p.updatedAt]]))).has(id)) return { title: `${tr.tagline} – StayOnSite` };
   const title = `${tr.title(p.city)} – StayOnSite`;
   const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige";
   const localDesc = lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : p.publicDescription;

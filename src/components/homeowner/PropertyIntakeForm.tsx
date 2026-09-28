@@ -563,8 +563,8 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
           </div>
           <h1 className="mt-4 text-2xl font-semibold text-nordic-900 sm:text-3xl">Tack – vi har tagit emot din bostad!</h1>
           <p className="mt-3 text-base leading-7 text-nordic-800">
-            Vi går igenom uppgifter och bilder i lugn och ro — <strong>inget visas online utan ditt
-            godkännande</strong>, och du behöver inte göra något mer just nu.
+            Vi gör beskrivningen klar för våra företagskunder och kontrollerar bilderna.
+            Annonsen publiceras när kontrollen är klar och du har gett ditt medgivande.
           </p>
 
           {agreementOutcome === "signed" && (
@@ -574,7 +574,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
           )}
           {publishConsented && (
             <p className="mt-4 rounded-md border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-900">
-              Publiceringen är godkänd — vi lägger ut annonsen efter granskning och skickar länken.
+              Ditt publiceringsmedgivande är sparat. Annonsen läggs ut när beskrivningen och bilderna har klarat kontrollen.
             </p>
           )}
           {agreementOutcome === "skipped" && success.agreement && (

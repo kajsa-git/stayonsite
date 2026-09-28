@@ -10,6 +10,7 @@ import { NextRequest } from "next/server";
 
 const state = vi.hoisted(() => ({ db: null as unknown as LibSQLDatabase<typeof schema> }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
+vi.mock("./schedule-property-review", () => ({ schedulePropertyReview: vi.fn() }));
 vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}) }));
 import { authorizeLandlordProperty, loadLandlordProperties } from "./landlord-properties";
 import { PATCH } from "../../../app/api/share/[token]/properties/[id]/route";

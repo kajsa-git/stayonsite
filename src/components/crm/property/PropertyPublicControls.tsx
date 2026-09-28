@@ -52,7 +52,8 @@ export function PropertyPublicControls({
         ? "bg-green-100 text-green-800 border-green-300"
         : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
     }`;
-  const isPublic = !!property.published && property.status === "available";
+  const approved = property.contentReviewStatus === "approved";
+  const isPublic = approved && !!property.published && property.status === "available";
 
   return (
     <div>
@@ -72,9 +73,10 @@ export function PropertyPublicControls({
               }
               if (publishing) await maybeOfferConfirmSms();
             }}
+            disabled={!approved && !property.published}
             className={toggleCls(isPublic)}
           >
-            {isPublic ? "✓ På hemsidan" : "Publicera på hemsidan"}
+            {isPublic ? "✓ På hemsidan" : property.published ? "Pausa publicering" : "Publicera på hemsidan"}
           </button>
           {isPublic &&
             (property.slug ? (
@@ -103,11 +105,12 @@ export function PropertyPublicControls({
                 /* feltoast visas av onUpdate */
               }
             }}
-            className={toggleCls(!!property.prospektPublished)}
+            disabled={!approved && !property.prospektPublished}
+            className={toggleCls(approved && !!property.prospektPublished)}
           >
-            {property.prospektPublished ? "✓ Prospekt-länk" : "Aktivera prospekt-länk"}
+            {approved && property.prospektPublished ? "✓ Prospekt-länk" : property.prospektPublished ? "Pausa prospekt-länk" : "Aktivera prospekt-länk"}
           </button>
-          {property.prospektPublished && (
+          {approved && property.prospektPublished && (
             <ShareLinkButton
               path={`/prospekt/${property.id}`}
               title={displayName}
