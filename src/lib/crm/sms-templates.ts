@@ -40,7 +40,7 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
 // publiceringsgodkännande + uppdragssignering på ett ställe. Länk utan https://.
 export function intakeConfirmSms(ownerName: string | null | undefined, token: string | null): string {
   const link = token
-    ? `\nGe ditt medgivande till publicering och signera uthyrningsuppdraget på din sida: www.stayonsite.se/uthyrare/${token}`
+    ? `\nGodkänn publicering och att vi språkgranskar beskrivningen. Signera uthyrningsuppdraget på din sida: www.stayonsite.se/uthyrare/${token}`
     : "";
   return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi kontrollerar bilderna och gör beskrivningen klar för våra företagskunder.${link}\n/Kajsa, StayOnSite`;
 }

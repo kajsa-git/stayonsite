@@ -62,7 +62,7 @@ export function PublishConsentCard({
         ) : (
           <span className="text-nordic-700">
             Fler företag hittar {addresses.length === 1 ? "din bostad" : "dina bostäder"} när annonsen syns
-            online. Exakt adress visas aldrig publikt — bara område och ort — och dina kontaktuppgifter lämnas
+            online. Du godkänner publicering och att vi språkgranskar och översätter beskrivningen för våra företagskunder. Exakt adress visas aldrig publikt — bara område och ort — och dina kontaktuppgifter lämnas
             aldrig ut.
           </span>
         )}
