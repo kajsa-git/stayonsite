@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  if ((body.published === true || body.prospektPublished === true) && !body.publishConsentAt) {
+  if (body.published === true && !body.publishConsentAt) {
     return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
   }
   const id = nanoid();

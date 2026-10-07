@@ -27,7 +27,7 @@ export function PropertyContentReview({ property }: { property: PropertyWithOwne
     <section className={`rounded-md border p-3 space-y-2 ${approved ? "border-green-200 bg-green-50/40" : "border-amber-200 bg-amber-50/50"}`} aria-label="Kontroll inför publicering">
       <p className="text-sm font-semibold">{title}</p>
       {reasons.length > 0 && <ul className="list-disc pl-5 text-sm space-y-1">{reasons.map((reason, i) => <li key={i}>{reason}</li>)}</ul>}
-      {approved && !property.published && !property.publishConsentAt && <p className="text-sm">Inväntar uthyrarens publiceringsmedgivande.</p>}
+      {approved && !property.published && !property.publishConsentAt && <p className="text-sm">Publicering på hemsidan inväntar uthyrarens medgivande. Prospektlänken kan aktiveras redan nu.</p>}
       {approved && !property.autoPublishEnabled && <p className="text-sm">Automatisk publicering är pausad efter ett manuellt publiceringsbeslut.</p>}
       {approved && property.status !== "available" && <p className="text-sm">Publicering väntar på att objektet markeras som tillgängligt.</p>}
       {approved && property.availableTo && property.availableTo < new Date().toISOString().slice(0, 10) && <p className="text-sm">Tillgänglighetsperioden har gått ut. Kontrollera datumen före publicering.</p>}

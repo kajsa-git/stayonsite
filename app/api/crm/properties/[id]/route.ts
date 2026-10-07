@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
   const [existing] = await db.select().from(properties).where(eq(properties.id, id));
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if ((body.published === true || body.prospektPublished === true) && !existing.published && !existing.publishConsentAt) {
+  if (body.published === true && !existing.published && !existing.publishConsentAt) {
     return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
   }
   const values = await normalizePropertyWriteBody(body, existing);

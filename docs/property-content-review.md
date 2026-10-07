@@ -8,6 +8,8 @@ Godkänd kontroll gäller endast den granskade versionen av uppgifter och hela b
 
 Publicering sker automatiskt för tillgängliga objekt med uthyrarens medgivande och godkänd kontroll. Tidigare publicering räknas som historiskt medgivande enligt befintlig regel. Manuellt avpublicerade objekt förblir pausade. Bokade, uthyrda och avpublicerade objekt ändrar inte tillgänglighetsstatus. Utgångna datum behöver uppdateras. Uppdragssignering är en separat handling.
 
+Prospektlänkar kan aktiveras manuellt utan uthyrarens publiceringsmedgivande, även när objektet inte är tillgängligt. Godkänd kontroll av kundtext och bilder krävs fortfarande för att prospektet ska visas. Aktivering innebär inget medgivande till publicering på hemsidan.
+
 Kontrollen startar efter intag, bildändring, ändrade bostadsuppgifter eller nytt medgivande. En daglig återhämtning försöker igen efter avbrott och upptäcker ändringar från direktimporter. CRM-knappen **Kontrollera igen** kan användas efter rättning.
 
 ## Befintliga objekt
