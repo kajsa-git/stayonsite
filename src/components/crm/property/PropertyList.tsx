@@ -16,6 +16,8 @@ import { ChevronDown, ChevronLeft, ChevronsUpDown, ChevronUp, Download, Download
 
 type PropertyWithThumb = PropertyWithOwner & { thumbnailUrl?: string | null };
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTravelDistances } from "@/hooks/use-travel-distances";
+import { withinTravelTime } from "@/lib/crm/travel-time";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
@@ -107,6 +109,7 @@ function exportPropertiesCsv(rows: PropertyWithThumb[]) {
 
 export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?: string | null; ownerId?: string }) {
   const [search, setSearch] = useState("");
+  const [travelCity, setTravelCity] = useState("");
   const [selected, setSelected] = useState<PropertyWithOwner | null>(null);
   const [adding, setAdding] = useState(false);
   const [justCreatedId, setJustCreatedId] = useState<string | null>(null);
@@ -124,11 +127,17 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   const isMobile = useIsMobile();
 
   const { data: properties = EMPTY_PROPERTIES, mutate, isLoading } = useSWR<PropertyWithThumb[]>(
-    `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
+    `/api/crm/properties?q=${encodeURIComponent(travelCity ? "" : search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
     fetcher,
     { keepPreviousData: true, refreshInterval: (data) => data?.some((p) => ["pending", "checking"].includes(p.contentReviewStatus)) ? 5000 : 0 }
   );
   const loading = isLoading && properties.length === 0;
+  const destinations = useMemo(() => travelCity && !isLoading ? properties
+    .filter((p) => (p.status ?? "available") === "available" && !!(p.address || p.postalCode || p.city))
+    .map((p) => ({ id: p.id, address: [p.address, p.postalCode, p.city, p.country || "Sverige"].filter(Boolean).join(", ") })) : [], [properties, travelCity, isLoading]);
+  const travel = useTravelDistances(travelCity ? `${travelCity}, Sverige` : "", destinations);
+  const unknownRoutes = destinations.filter((p) => travel.results[p.id]?.durationSeconds == null).length;
+
 
   // Background checks update the shared inventory. Keep an open card in sync
   // so its approval and publication state change without a page reload.
@@ -146,6 +155,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   const filtered = useMemo(() => {
     const minBr = minBedrooms ? parseInt(minBedrooms) : 0;
     return properties.filter((p) => {
+      if (travelCity && ((p.status ?? "available") !== "available" || !withinTravelTime(travel.results[p.id]?.durationSeconds))) return false;
       if (statusFilter && (p.status ?? "available") !== statusFilter) return false;
       if (cityFilter && p.city !== cityFilter) return false;
       if (minBr && (p.bedrooms ?? 0) < minBr) return false;
@@ -154,7 +164,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
       if (intakeFilter === "yes" && !isPropertyIntake(p)) return false;
       return true;
     });
-  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter]);
+  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter, travelCity, travel.results]);
 
   // Sortering: tomma värden hamnar alltid sist (oavsett riktning), annars siffer- resp.
   // svensk textjämförelse. Utan aktiv sortering behålls serverns ordning.
@@ -332,7 +342,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
               <div className="truncate">{p.address || "(Adress saknas)"}</div>
               {["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="text-xs text-amber-800">Kajsa behöver granska</span>}
               <div className="text-xs text-muted-foreground truncate">
-                {[p.city, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
+                {[p.city, travelCity && travel.results[p.id]?.durationText, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
               </div>
               {isPropertyIntake(p) && (
                 <span className="mt-1 inline-flex rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-800">
@@ -370,9 +380,17 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
             className="pl-8 h-8 text-sm"
             placeholder="Sök bostäder…"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setTravelCity(""); }}
           />
         </div>
+        <Button size="sm" variant={travelCity ? "default" : "outline"} disabled={!search.trim()}
+          onClick={() => {
+            setTravelCity(travelCity ? "" : search.trim());
+            setStatusFilter(""); setCityFilter(""); setOwnerFilter("");
+            setPublishedFilter(""); setIntakeFilter(""); setMinBedrooms("");
+          }}>
+          {travelCity ? "Avsluta restidssökning" : "Tillgängliga inom 30 min med bil"}
+        </Button>
         {/* List/tabell-växlaren är desktop-only — på mobil tvingas single-pane-listan */}
         <div className="hidden md:flex items-center gap-1 rounded-md border p-0.5">
           {toggleBtn("list", "Lista", LayoutList)}
@@ -405,6 +423,12 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
         </Button>
       </div>
 
+      {travelCity && <div role="status" className="px-3 py-2 text-xs bg-blue-50 border-b">
+        Tillgängliga boenden inom 30 minuters bilresa från {travelCity}. Restid utan aktuell trafik.
+        {(isLoading || travel.status === "loading") && " Beräknar restider…"}
+        {(travel.status === "unavailable" || travel.status === "error") && " Restider kunde inte hämtas. Försök igen eller använd vanlig sökning."}
+        {travel.status === "ready" && unknownRoutes > 0 && ` ${unknownRoutes} boenden saknar restid och visas inte i resultatet.`}
+      </div>}
       <PropertyIntakeSharePanel />
 
       {/* Filterrad */}
@@ -556,7 +580,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                         </TableCell>
                         <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}{["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="block text-xs text-amber-800">Kajsa behöver granska</span>}</TableCell>
                         <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
-                        <TableCell className="text-foreground">{p.city || "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.city || "–"}{travelCity && <span className="block text-xs text-muted-foreground">{travel.results[p.id]?.durationText} med bil</span>}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.ownerContactPerson || "–"}</TableCell>
                         <TableCell className="text-foreground">
