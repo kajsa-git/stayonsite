@@ -105,7 +105,7 @@ function exportPropertiesCsv(rows: PropertyWithThumb[]) {
   URL.revokeObjectURL(url);
 }
 
-export function PropertyList() {
+export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?: string | null; ownerId?: string }) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<PropertyWithOwner | null>(null);
   const [adding, setAdding] = useState(false);
@@ -126,7 +126,7 @@ export function PropertyList() {
   const { data: properties = EMPTY_PROPERTIES, mutate, isLoading } = useSWR<PropertyWithThumb[]>(
     `/api/crm/properties?q=${encodeURIComponent(search)}&ownerId=${encodeURIComponent(ownerFilter)}`,
     fetcher,
-    { refreshInterval: (data) => data?.some((p) => ["pending", "checking"].includes(p.contentReviewStatus)) ? 5000 : 0 }
+    { keepPreviousData: true, refreshInterval: (data) => data?.some((p) => ["pending", "checking"].includes(p.contentReviewStatus)) ? 5000 : 0 }
   );
   const loading = isLoading && properties.length === 0;
 
@@ -180,25 +180,23 @@ export function PropertyList() {
 
   const intakeCount = useMemo(() => properties.filter(isPropertyIntake).length, [properties]);
 
-  // Deep-link från global sök: /crm/properties?id=… öppnar objektet direkt (en gång).
-  // Läs query först efter mount (useEffect kör aldrig på servern → ingen hydreringskrock).
-  const [deepId, setDeepId] = useState<string | null>(null);
-  const applied = useRef(false);
+  // Apply each new URL selection, including navigation within the property bank.
+  const appliedId = useRef<string | null>(null);
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setDeepId(params.get("id"));
-    setOwnerFilter(params.get("ownerId") ?? "");
-  }, []);
+    appliedId.current = null;
+    setSearch("");
+    setOwnerFilter(ownerId);
+  }, [propertyId, ownerId]);
   useEffect(() => {
-    if (deepId && !applied.current && properties.length) {
-      const p = properties.find((x) => x.id === deepId);
-      if (p) {
-        setSelected(p);
-        setViewMode("list");
-        applied.current = true;
-      }
+    if (!propertyId || appliedId.current === propertyId) return;
+    const property = properties.find((item) => item.id === propertyId);
+    if (property) {
+      setSelected(property);
+      setJustCreatedId(null);
+      setViewMode("list");
+      appliedId.current = propertyId;
     }
-  }, [deepId, properties]);
+  }, [propertyId, properties]);
 
   async function handleAdd(
     data: Omit<PropertyWithOwner, "id" | "createdAt">,

@@ -104,13 +104,14 @@ function GlobalSearchOverlay({ onClose }: { onClose: () => void }) {
     fetch(`/api/crm/search-all?q=${encodeURIComponent(debounced)}`, { signal: ctrl.signal })
       .then((r) => r.json())
       .then((data: SearchHit[]) => {
+        if (ctrl.signal.aborted) return;
         setHits(Array.isArray(data) ? data : []);
         setSelected(0);
       })
       .catch((e) => {
-        if (e.name !== "AbortError") setHits([]);
+        if (!ctrl.signal.aborted && e.name !== "AbortError") setHits([]);
       })
-      .finally(() => setLoading(false));
+      .finally(() => { if (!ctrl.signal.aborted) setLoading(false); });
     return () => ctrl.abort();
   }, [debounced]);
 
@@ -202,10 +203,8 @@ function GlobalSearchOverlay({ onClose }: { onClose: () => void }) {
                     <button
                       key={hit.id}
                       onMouseEnter={() => setSelected(idx)}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        go(hit);
-                      }}
+                      onClick={() => go(hit)}
+                      onMouseDown={(e) => e.preventDefault()}
                       className={`w-full text-left px-3 py-2 flex items-center gap-2.5 ${
                         active ? "bg-nordic-100" : "hover:bg-nordic-50"
                       }`}
