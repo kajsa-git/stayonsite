@@ -52,6 +52,7 @@ interface CityListingItem {
   postalCode: string | null;
   bedrooms: number | null;
   beds: number | null;
+  imageUrl: string | null;
 }
 
 interface CityPageProps {
@@ -593,7 +594,24 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 <div className="grid md:grid-cols-3 gap-6">
                   {listings.map((l) => (
                     <Link key={l.slug} href={`/boenden/${l.slug}`} className="group">
-                      <Card className="h-full transition-shadow group-hover:shadow-md">
+                      <Card className="h-full overflow-hidden transition-shadow group-hover:shadow-md">
+                        <div className="aspect-[16/10] overflow-hidden bg-nordic-100">
+                          {l.imageUrl ? (
+                            <img
+                              src={l.imageUrl}
+                              alt={l.name}
+                              width={640}
+                              height={400}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center" aria-hidden="true">
+                              <Building className="h-10 w-10 text-nordic-400" />
+                            </div>
+                          )}
+                        </div>
                         <CardHeader>
                           <CardTitle className="flex items-start gap-2 text-lg leading-snug">
                             <Building className="h-5 w-5 text-[#ff6300] shrink-0 mt-0.5" />

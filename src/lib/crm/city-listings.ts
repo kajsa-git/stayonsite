@@ -5,10 +5,14 @@
 //
 // try/catch är avsiktligt tyst: veckobloggens CI bygger med
 // TURSO_DATABASE_URL=file::memory: och stadssidorna får ALDRIG fälla bygget —
-// då blir sektionen bara tom tills nästa riktiga rendering (ISR var 60:e min).
-import { and, eq, isNotNull } from "drizzle-orm";
+// då blir sektionen bara tom tills nästa riktiga rendering.
+import { and, asc, desc, eq, inArray, isNotNull } from "drizzle-orm";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { approvedPropertyIds } from "./approved-property-content";
 import { db } from "./db";
-import { properties } from "./schema";
+import { r2, R2_BUCKET } from "./r2";
+import { properties, propertyImages } from "./schema";
 import { publicDisplayName } from "./slug";
 
 export interface CityListing {
@@ -17,6 +21,7 @@ export interface CityListing {
   postalCode: string | null;
   bedrooms: number | null;
   beds: number | null;
+  imageUrl: string | null;
 }
 
 // Samma diakritik-tåliga jämförelse som matchningen (Mönsterås/Monsteras).
@@ -34,6 +39,8 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
   try {
     const rows = await db
       .select({
+        id: properties.id,
+        updatedAt: properties.updatedAt,
         slug: properties.slug,
         publicName: properties.publicName,
         city: properties.city,
@@ -45,9 +52,25 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
       .where(and(eq(properties.published, true), eq(properties.status, "available"), isNotNull(properties.slug)));
 
     const want = normalizeCity(cityName);
-    return rows
-      .filter((r) => r.city && normalizeCity(r.city) === want)
-      .map((r) => ({
+    const cityRows = rows.filter((r) => r.city && normalizeCity(r.city) === want);
+    if (!cityRows.length) return [];
+
+    // Samma huvudbild och reservordning som på objektets detaljsida.
+    const ids = cityRows.map((r) => r.id);
+    const images = await db
+      .select({ propertyId: propertyImages.propertyId, key: propertyImages.key })
+      .from(propertyImages)
+      .where(inArray(propertyImages.propertyId, ids))
+      .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+    const primaryKeys = new Map<string, string>();
+    for (const image of images) {
+      if (!primaryKeys.has(image.propertyId)) primaryKeys.set(image.propertyId, image.key);
+    }
+
+    const approved = await approvedPropertyIds(ids, new Map(cityRows.map((r) => [r.id, r.updatedAt])));
+    return await Promise.all(cityRows.filter((r) => approved.has(r.id)).slice(0, 12).map(async (r) => {
+      const key = primaryKeys.get(r.id);
+      return {
         slug: r.slug as string,
         name: publicDisplayName(
           r.publicName,
@@ -57,8 +80,11 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
         postalCode: r.postalCode,
         bedrooms: r.bedrooms,
         beds: r.beds,
-      }))
-      .slice(0, 12);
+        imageUrl: key
+          ? await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: key }), { expiresIn: 60 * 60 * 24 * 7 })
+          : null,
+      };
+    }));
   } catch {
     return [];
   }
