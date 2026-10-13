@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import { useState } from "react";
 import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
+import Link from "next/link";
 
 const fetcher = swrFetcher;
 
@@ -36,6 +37,7 @@ export function OverviewView() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-nordic-900">Översikt</h1>
         <p className="text-sm text-muted-foreground mt-1">Pågående affärer och avslut den här veckan och månaden.</p>
+        <Link href="/crm/veckorapport" className="mt-2 inline-flex min-h-11 items-center text-sm font-medium text-nordic-800 underline underline-offset-4 hover:text-nordic-500">Se veckorapporten per ort →</Link>
       </div>
 
       {error && !data && (

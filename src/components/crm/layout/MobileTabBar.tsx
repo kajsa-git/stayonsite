@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
-import { Building2, Calculator, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
+import { BarChart3, Building2, Calculator, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -74,6 +74,7 @@ export function MobileTabBar() {
 
           <div className="mt-4 space-y-1">
             <MoreLink label="Översikt" onClick={() => go("/crm/oversikt")} />
+            <MoreLink label="Veckorapport" icon={BarChart3} onClick={() => go("/crm/veckorapport")} />
             <MoreLink label="Uthyrare" icon={KeyRound} onClick={() => go("/crm/uthyrare")} />
             <MoreLink label="Vinstkalkylator" icon={Calculator} onClick={() => { setMoreOpen(false); setShowCalc(true); }} />
             <MoreLink

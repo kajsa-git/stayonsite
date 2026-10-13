@@ -14,6 +14,7 @@ import { useState } from "react";
 const NAV_ITEMS: { href: string; label: string; exact?: boolean; title?: string }[] = [
   { href: "/crm", label: "Min dag", exact: true },
   { href: "/crm/oversikt", label: "Översikt" },
+  { href: "/crm/veckorapport", label: "Veckorapport" },
   { href: "/crm/foretag", label: "Företagsbank" },
   { href: "/crm/properties", label: "Objektsbank" },
   { href: "/crm/uthyrare", label: "Uthyrare" },
@@ -49,7 +50,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
         <span className="text-xs font-medium text-muted-foreground border-l pl-2">CRM</span>
       </button>
 
-      <nav className="hidden md:flex items-center gap-0.5 shrink-0">
+      <nav className="hidden md:flex min-w-0 items-center gap-0.5 overflow-x-auto">
         {NAV_ITEMS.map((item) => {
           const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
           return (
@@ -58,7 +59,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
               onClick={() => router.push(item.href)}
               title={item.title}
               aria-current={active ? "page" : undefined}
-              className={`text-xs px-2 py-1 rounded transition-colors ${
+              className={`shrink-0 text-xs px-2 py-1 rounded transition-colors ${
                 active ? "bg-nordic-100 text-nordic-900 font-semibold" : "text-nordic-700 hover:bg-nordic-100"
               }`}
             >
