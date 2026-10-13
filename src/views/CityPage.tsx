@@ -100,7 +100,7 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
 };
 
 const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPageProps) => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     setLanguage(locale);
@@ -496,6 +496,22 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                   ))}
                 </div>
               </div>
+            </div>
+          </section>
+        )}
+
+        {language === 'sv' && ['boden', 'lulea', 'oskarshamn', 'saffle', 'gavle'].includes(citySlug) && (
+          <section className="bg-background py-12">
+            <div className="container mx-auto flex max-w-5xl flex-col items-start gap-4 px-6 md:px-8">
+              <h2 className="font-heading text-2xl font-semibold text-foreground">
+                {t('projectChecklist.title')}
+              </h2>
+              <p className="text-muted-foreground">{t('projectChecklist.description')}</p>
+              <Button asChild variant="outline">
+                <Link href="/blogg/checklista-personalboende-boendebrief">
+                  {t('projectChecklist.read')}
+                </Link>
+              </Button>
             </div>
           </section>
         )}

@@ -18,6 +18,8 @@ import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import ProjectBriefForm from '@/components/ProjectBriefForm';
 import SEO from '@/components/SEO';
 import { COMPANY_FACTS } from '@/data/constants';
+import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/hooks/use-translation';
 
 const timeline = [
   {
@@ -113,6 +115,8 @@ const structuredData = [
 ];
 
 export default function Projektboende() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <SEO structuredData={structuredData} />
@@ -332,6 +336,14 @@ export default function Projektboende() {
                 Formuläret samlar de uppgifter som behövs för att bedöma ort, kapacitet,
                 restid, risk och faktureringsupplägg.
               </p>
+              <div className="mt-6 flex flex-col items-start gap-3">
+                <p className="text-sm text-muted-foreground">{t('projectChecklist.description')}</p>
+                <Button asChild variant="outline">
+                  <Link href="/blogg/checklista-personalboende-boendebrief">
+                    {t('projectChecklist.read')}
+                  </Link>
+                </Button>
+              </div>
               <div className="mt-7 rounded-lg border border-nordic-100 bg-white p-5">
                 <h3 className="font-semibold text-nordic-900">Internlänkad beslutsmodell</h3>
                 <p className="mt-2 text-sm leading-relaxed text-nordic-700">

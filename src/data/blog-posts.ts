@@ -61,6 +61,45 @@ const RENTAL_REFORM_SOURCES: BlogSource[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'checklista-personalboende-boendebrief',
+    title: {
+      sv: 'Checklista för personalboende: fri boendebrief och PDF-mall',
+      en: 'Worker accommodation checklist: free housing brief and PDF template',
+      pl: 'Lista kontrolna zakwaterowania pracowników: bezpłatny formularz PDF',
+    },
+    description: {
+      sv: 'Fri, ifyllbar PDF-mall för projektledare. Samla boendekrav, bemanning per fas, offertjämförelse och kontroller inför inflyttning utan registrering.',
+      en: 'Free fillable PDF for project managers. Record housing needs, staffing phases, quote comparisons and move-in checks. No registration required.',
+      pl: 'Bezpłatny formularz PDF dla kierowników projektów: wymagania, etapy zatrudnienia, porównanie ofert i kontrola przed przyjazdem. Bez rejestracji.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-10-13',
+    category: 'Praktisk guide',
+    tags: ['personalboende', 'projektboende', 'checklista', 'boendebrief', 'projektledare'],
+    readingTime: 5,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Ladda ned en fri, ifyllbar PDF med boendebrief, projektfaser och kontroller inför bokning och inflyttning.',
+      'Jämför offerter för samma antal personer, period och inkluderad service.',
+      'Ange arbetsplatsens adress, skifttider, rumsfördelning och parkeringsbehov redan i första förfrågan.',
+      'Mallen kräver ingen registrering och kan användas med valfri boendeleverantör.',
+    ],
+    faq: [
+      {
+        q: 'Är checklistan gratis och måste vi boka via StayOnSite?',
+        a: 'Den är gratis, kräver ingen registrering och kan användas med valfri leverantör.',
+      },
+      {
+        q: 'Kan PDF-mallen fyllas i digitalt?',
+        a: 'Ja. Ladda ned filen och öppna den i en PDF-läsare som stöder formulär. Spara en egen kopia när ni har fyllt i den. Den går också att skriva ut.',
+      },
+      {
+        q: 'Vad gör vi om slutdatum eller bemanning inte är bestämt?',
+        a: 'Ange det ni vet, markera det som är preliminärt och bestäm datum för nästa avstämning. Be leverantören beskriva villkoren för ändringar innan ni bokar.',
+      },
+    ],
+  },
+  {
     slug: 'personalboende-okg-oskarshamn-guide',
     title: {
       sv: 'Personalboende vid OKG i Oskarshamn: guide för entreprenörer',

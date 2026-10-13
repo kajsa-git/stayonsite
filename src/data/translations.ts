@@ -1,6 +1,11 @@
 export type AvailableLanguages = "sv" | "en" | "pl";
 
 export type TranslationKey =
+  | "projectChecklist.title"
+  | "projectChecklist.description"
+  | "projectChecklist.download"
+  | "projectChecklist.format"
+  | "projectChecklist.read"
   | "nav.home"
   | "nav.services"
   | "nav.references"
@@ -388,6 +393,11 @@ export const translations: Record<
   Record<TranslationKey, string>
 > = {
   sv: {
+    "projectChecklist.title": "Fri checklista för personalboende",
+    "projectChecklist.description": "Samla boendekrav, jämför offerter och stäm av inflyttningen med vår ifyllbara PDF-mall.",
+    "projectChecklist.download": "Ladda ned checklistan (PDF)",
+    "projectChecklist.format": "Två sidor på svenska. Fyll i digitalt eller skriv ut. Ingen registrering behövs.",
+    "projectChecklist.read": "Hämta boendemallen",
     "nav.home": "Hem",
     "nav.services": "Tjänster",
     "nav.references": "Referenser",
@@ -875,6 +885,11 @@ export const translations: Record<
     "cookie.deny": "Nej tack",
   },
   en: {
+    "projectChecklist.title": "Free worker accommodation checklist",
+    "projectChecklist.description": "Record housing needs, compare quotes and check move-in arrangements with our fillable PDF template.",
+    "projectChecklist.download": "Download the checklist (PDF)",
+    "projectChecklist.format": "Two pages in Swedish. Fill in digitally or print. No registration required.",
+    "projectChecklist.read": "Get the housing template",
     "nav.home": "Home",
     "nav.services": "Services",
     "nav.references": "References",
@@ -1366,6 +1381,11 @@ export const translations: Record<
     "cookie.deny": "No thanks",
   },
   pl: {
+    "projectChecklist.title": "Bezpłatna lista kontrolna zakwaterowania pracowników",
+    "projectChecklist.description": "Zbierz wymagania, porównaj oferty i sprawdź przygotowania do przyjazdu dzięki formularzowi PDF.",
+    "projectChecklist.download": "Pobierz listę kontrolną (PDF)",
+    "projectChecklist.format": "Dwie strony po szwedzku. Wypełnij cyfrowo lub wydrukuj. Bez rejestracji.",
+    "projectChecklist.read": "Pobierz formularz",
     "nav.home": "Strona główna",
     "nav.services": "Usługi",
     "nav.references": "Referencje",

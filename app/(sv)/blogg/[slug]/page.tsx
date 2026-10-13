@@ -45,8 +45,10 @@ import AuroraVillageLuleaStorstaPersonalboende from '@/views/blogg/AuroraVillage
 import LaddstationerPersonalboendeHusagareGuide from '@/views/blogg/LaddstationerPersonalboendeHusagareGuide'
 import PersonalboendeOkgOskarshamnGuide from '@/views/blogg/PersonalboendeOkgOskarshamnGuide'
 import PersonalboendeDalarnaGuide from '@/views/blogg/PersonalboendeDalarnaGuide'
+import ChecklistaPersonalboende from '@/views/blogg/ChecklistaPersonalboende'
 
 const componentMap: Record<string, React.ComponentType> = {
+  'checklista-personalboende-boendebrief': ChecklistaPersonalboende,
   'personalboende-okg-oskarshamn-guide': PersonalboendeOkgOskarshamnGuide,
   'personalboende-dalarna-falun-borlange-ludvika': PersonalboendeDalarnaGuide,
   'personalboende-guide-2026': PersonalboendGuide2026,
