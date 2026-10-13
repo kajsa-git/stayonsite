@@ -68,9 +68,9 @@ export const blogPosts: BlogPost[] = [
       pl: 'Lista kontrolna zakwaterowania pracowników: bezpłatny formularz PDF',
     },
     description: {
-      sv: 'Fri, ifyllbar PDF-mall för projektledare. Samla boendekrav, bemanning per fas, offertjämförelse och kontroller inför inflyttning utan registrering.',
-      en: 'Free fillable PDF for project managers. Record housing needs, staffing phases, quote comparisons and move-in checks. No registration required.',
-      pl: 'Bezpłatny formularz PDF dla kierowników projektów: wymagania, etapy zatrudnienia, porównanie ofert i kontrola przed przyjazdem. Bez rejestracji.',
+      sv: 'Fri, ifyllbar PDF-mall för projektledare. Samla arbetslagets boendekrav och skicka briefen till StayOnSite för hjälp med personalboende. Ingen registrering behövs.',
+      en: 'Free fillable PDF for project managers. Record your team’s housing needs and send the brief to StayOnSite for help with accommodation. No registration required.',
+      pl: 'Bezpłatny formularz PDF dla kierowników projektów. Zbierz wymagania zespołu i wyślij je do StayOnSite, aby uzyskać pomoc w zakwaterowaniu. Bez rejestracji.',
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-10-13',
@@ -82,12 +82,12 @@ export const blogPosts: BlogPost[] = [
       'Ladda ned en fri, ifyllbar PDF med boendebrief, projektfaser och kontroller inför bokning och inflyttning.',
       'Jämför offerter för samma antal personer, period och inkluderad service.',
       'Ange arbetsplatsens adress, skifttider, rumsfördelning och parkeringsbehov redan i första förfrågan.',
-      'Mallen kräver ingen registrering och kan användas med valfri boendeleverantör.',
+      'Fyll i briefen och skicka den till StayOnSite, så hjälper vi er att hitta boende. Ingen registrering behövs.',
     ],
     faq: [
       {
-        q: 'Är checklistan gratis och måste vi boka via StayOnSite?',
-        a: 'Den är gratis, kräver ingen registrering och kan användas med valfri leverantör.',
+        q: 'Hur skickar vi boendebriefen till StayOnSite?',
+        a: 'Fyll i PDF-mallen och mejla den till kajsa@stayonsite.se, så hjälper vi er att hitta boende för arbetslaget. Mallen är gratis och kräver ingen registrering.',
       },
       {
         q: 'Kan PDF-mallen fyllas i digitalt?',
@@ -95,7 +95,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         q: 'Vad gör vi om slutdatum eller bemanning inte är bestämt?',
-        a: 'Ange det ni vet, markera det som är preliminärt och bestäm datum för nästa avstämning. Be leverantören beskriva villkoren för ändringar innan ni bokar.',
+        a: 'Ange det ni vet, markera det som är preliminärt och bestäm datum för nästa avstämning. Vi går igenom villkoren för ändringar med er innan ni bokar.',
       },
     ],
   },

@@ -17,7 +17,7 @@ export default function ChecklistaPersonalboende() {
         Ska ni ordna <strong>personalboende för ett arbetslag</strong>? Börja med ett
         gemensamt underlag innan ni ber om priser. Den här fria mallen samlar
         boendebrief, bemanning per projektfas och kontroller inför bokning och inflyttning.
-        Ni kan använda den med valfri boendeleverantör.
+        Fyll i briefen och skicka den till StayOnSite, så hjälper vi er att hitta boende.
       </p>
       <div className="not-prose my-8 flex flex-col items-start gap-3">
         <Button asChild size="lg">
@@ -28,6 +28,11 @@ export default function ChecklistaPersonalboende() {
         </Button>
         <p className="text-sm text-muted-foreground">{t('projectChecklist.format')}</p>
       </div>
+      <p>
+        Skicka den ifyllda briefen till{' '}
+        <a href="mailto:kajsa@stayonsite.se">kajsa@stayonsite.se</a>.
+        Vi går igenom arbetslagets behov och hjälper er att hitta boende för projektet.
+      </p>
 
       <h2>1. Gör en boendebrief som går att söka efter</h2>
       <p>
@@ -57,19 +62,19 @@ export default function ChecklistaPersonalboende() {
         avslut. Lägg också till rotation och hemresor när de påverkar boendet.
       </p>
       <p>
-        Be leverantören beskriva vad som gäller om ni behöver fler bäddar, färre
-        bostäder eller en längre period. Utse en person som samlar ändringarna så
-        att leverantören får ett tydligt besked.
+        Berätta för oss om ni kan behöva fler bäddar, färre bostäder eller en längre
+        period. Vi går igenom vilka alternativ och villkor som gäller. Utse en
+        person som samlar ändringarna så att vi får ett tydligt besked.
       </p>
       <p>
         För en större boendeplan finns mer om kapacitet, sökradie och reservlösningar
         på sidan om <Link href="/projektboende">projektboende för bygg, industri och montage</Link>.
       </p>
 
-      <h2>3. Jämför offerterna på samma grund</h2>
+      <h2>3. Jämför boendealternativen på samma grund</h2>
       <p>
-        Be varje leverantör räkna på samma antal personer, samma period och samma
-        service. Ett pris per bädd och natt går inte att jämföra direkt med en
+        Be oss räkna på samma antal personer, samma period och samma service när
+        ni jämför våra boendeförslag. Ett pris per bädd och natt går inte att jämföra direkt med en
         månadshyra för ett helt hus.
       </p>
       <ul>
@@ -117,8 +122,12 @@ export default function ChecklistaPersonalboende() {
       </p>
 
       <h2>Vanliga frågor om mallen</h2>
-      <h3>Är checklistan gratis och måste vi boka via StayOnSite?</h3>
-      <p>Den är gratis, kräver ingen registrering och kan användas med valfri leverantör.</p>
+      <h3>Hur skickar vi boendebriefen till StayOnSite?</h3>
+      <p>
+        Fyll i PDF-mallen och mejla den till{' '}
+        <a href="mailto:kajsa@stayonsite.se">kajsa@stayonsite.se</a>, så hjälper vi er
+        att hitta boende för arbetslaget. Mallen är gratis och kräver ingen registrering.
+      </p>
       <h3>Kan PDF-mallen fyllas i digitalt?</h3>
       <p>
         Ja. Ladda ned filen och öppna den i en PDF-läsare som stöder formulär.
@@ -127,7 +136,7 @@ export default function ChecklistaPersonalboende() {
       <h3>Vad gör vi om slutdatum eller bemanning inte är bestämt?</h3>
       <p>
         Ange det ni vet, markera det som är preliminärt och bestäm datum för nästa
-        avstämning. Be leverantören beskriva villkoren för ändringar innan ni bokar.
+        avstämning. Vi går igenom villkoren för ändringar med er innan ni bokar.
       </p>
     </BlogLayout>
   );
