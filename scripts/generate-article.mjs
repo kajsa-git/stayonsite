@@ -19,6 +19,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { appendArticleGbpPost } from './gbp/article-queue.mjs';
 import { validatePost } from './gbp/publish.mjs';
+import { validateArticleSourcesWithRepair } from './article-source-recovery.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -346,6 +347,8 @@ LOKALT FOKUS: ${topic.localFocus}
 
 REDAKTIONSKRAV:
 - Behåll alla verifierade externa käll-URL:er och ändra inte vad källorna påstås visa
+- Följande befintliga käll-URL:er ska finnas kvar som klickbara <a href="https://...">-länkar i brödtexten:
+${extractSourceLinks(tsx).map(source => `  - ${source.url}`).join('\n')}
 - Lägg inte till nya sakuppgifter, siffror, citat, kundcase eller URL:er
 - Gör huvudsvaret tydligt inom de första cirka 100 orden
 - Ta bort upprepningar, allmänna utfyllnadsstycken, AI-schabloner och överdriven reklam
@@ -647,6 +650,47 @@ async function validateSourceLinks(tsx) {
 
   console.log(`[article] ✅ ${sources.length} källänkar verifierade, varav ${primaryCount} primärkällor`);
   return sources;
+}
+
+async function repairArticleSources(topic, tsx, reason) {
+  const res = await callClaude([
+    {
+      role: 'user',
+      content: `Komplettera källstödet i denna svenska TSX-artikel för StayOnSite.
+
+ÄMNE: ${topic.titleSv}
+SÖKINTENTION: ${topic.searchIntent}
+LOKALT FOKUS: ${topic.localFocus}
+KONTROLLENS FEL: ${reason}
+DATUM: ${new Date().toISOString().split('T')[0]}
+
+Sök och öppna relevanta originalkällor för artikelns befintliga sakuppgifter.
+Artikeln ska ha minst 3 olika externa käll-URL:er, varav minst 2 från:
+${PRIMARY_SOURCE_HOSTS.join(', ')}
+
+KRAV:
+- Länka relevanta sakuppgifter direkt med <a href="https://..." target="_blank" rel="noreferrer">Källägare &ndash; dokumenttitel</a> i brödtexten.
+- Använd bara URL:er du faktiskt öppnat och som stödjer det intilliggande påståendet. Hitta aldrig på en URL eller lägg till irrelevanta länkar för att nå antalet.
+- Behåll fungerande befintliga källänkar. Ersätt brutna länkar med relevanta verifierade originalkällor.
+- Utelämna eller korrigera obelagda sakuppgifter. Lägg inte till nya siffror, projektpåståenden eller kundcase.
+- Behåll komponentnamnet ${topic.componentName}, sluggen ${topic.slug}, BlogLayout, importerna, giltig JSX, interna länkar och StayOnSites CTA med 076-249 84 86.
+- Behåll 1000-1400 ord, minst 4 H2-rubriker och Vanliga frågor med 3-4 frågor.
+- Returnera hela komponenten som ren TSX utan något annat.
+
+TSX:
+${tsx}`,
+    },
+  ], [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }]);
+
+  const allText = res.content.filter(block => block.type === 'text').map(block => block.text).join('\n');
+  const tsxBlock = allText.match(/```tsx\s*\n([\s\S]*?)```/);
+  const repaired = tsxBlock ? tsxBlock[1].trim() : allText.trim();
+  if (!repaired.includes('BlogLayout') || !repaired.includes('export default')) {
+    throw new Error('Could not extract TSX from source repair response');
+  }
+  return validateCityLinks(repaired
+    .replace(/from\s+['"]next\/Link['"]/g, "from 'next/link'")
+    .replace(/from\s+['"]next\/Image['"]/g, "from 'next/image'"));
 }
 
 async function fixJsxWithClaude(tsx, errors) {
@@ -955,11 +999,22 @@ async function main() {
     }
   }
 
-  validateContentQuality(tsx, topic);
-
   // Sakuppgifter måste kunna följas till fungerande, synliga originalkällor.
   // Källor är ett hårt krav; en artikel utan verifierbara länkar publiceras inte.
-  const sources = await validateSourceLinks(tsx);
+  const checked = await validateArticleSourcesWithRepair(tsx, {
+    validateArticle: candidate => {
+      const errors = validateJsx(candidate);
+      if (errors.length) throw new Error(`JSX validation failed: ${errors.join('; ')}`);
+      validateContentQuality(candidate, topic);
+    },
+    validateSources: validateSourceLinks,
+    repairSources: (candidate, reason) => repairArticleSources(topic, candidate, reason),
+    onRepair: ({ attempt, maxRepairs, error }) => {
+      console.log(`[article] Source repair ${attempt}/${maxRepairs}: ${error.message}`);
+    },
+  });
+  tsx = checked.tsx;
+  const sources = checked.sources;
 
   // Snabba svar och FAQ är en del av publiceringskravet, inte en mjuk fallback.
   const seo = await withRetry(() => extractSeoData(tsx), 'SEO extraction');

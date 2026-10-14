@@ -60,6 +60,10 @@ jobs:
         with:
           version: 10.33.0
 
+      - name: Verify source repair guards
+        if: steps.cadence.outputs.publish == 'true'
+        run: node --test scripts/article-source-recovery.test.mjs
+
       - name: Generate article
         if: steps.cadence.outputs.publish == 'true'
         env:
