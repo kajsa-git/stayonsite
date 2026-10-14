@@ -1,4 +1,5 @@
 import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
+import { PropertyTranslationError } from "@/lib/crm/property-translations";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexOwner, indexProperty } from "@/lib/crm/search-index";
@@ -103,7 +104,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
   }
   const id = nanoid();
-  const values = await normalizePropertyWriteBody(body);
+  let values;
+  try { values = await normalizePropertyWriteBody(body); }
+  catch (error) {
+    if (error instanceof PropertyTranslationError) return NextResponse.json({ error: error.message }, { status: error.status });
+    throw error;
+  }
   const [row] = await db.insert(properties).values({ id, ...values }).returning();
   await indexProperty(id).catch((e) => console.error("search-index property:", e));
   if (row?.ownerId) await indexOwner(row.ownerId).catch((e) => console.error("search-index owner:", e));

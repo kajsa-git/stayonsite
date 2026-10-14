@@ -1,4 +1,5 @@
 import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
+import { PropertyTranslationError } from "@/lib/crm/property-translations";
 import { contentChanged } from "@/lib/crm/property-content-policy";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
@@ -26,7 +27,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (body.published === true && !existing.published && !existing.publishConsentAt) {
     return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
   }
-  const values = await normalizePropertyWriteBody(body, existing);
+  let values;
+  try { values = await normalizePropertyWriteBody(body, existing); }
+  catch (error) {
+    if (error instanceof PropertyTranslationError) return NextResponse.json({ error: error.message }, { status: error.status });
+    throw error;
+  }
   if ((body.published === false && existing.published) || (body.prospektPublished === false && existing.prospektPublished)) values.autoPublishEnabled = false;
   else if ((body.published === true && !existing.published) || (body.prospektPublished === true && !existing.prospektPublished)) values.autoPublishEnabled = true;
   const changed = contentChanged(body);

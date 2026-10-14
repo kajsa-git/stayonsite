@@ -14,7 +14,7 @@ import { loadPublicProperty } from "@/lib/crm/public-property"
 import { publicDisplayName } from "@/lib/crm/slug"
 import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/public-seo"
 import { cities } from "@/data/cities"
-import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase"
+import { WebsitePropertyShowcase } from "@/components/prospekt/WebsitePropertyShowcase"
 
 export const dynamic = "force-dynamic"
 
@@ -161,7 +161,7 @@ export default async function BoendeDetailPage(
             Alla lediga boenden
           </Link>
 
-          <PropertyShowcase data={data} lang="sv" title={name} descriptionOverride={description} />
+          <WebsitePropertyShowcase data={data} title={name} description={description} />
 
           {/* Intresse-CTA */}
           <div className="rounded-2xl border bg-white p-6 sm:p-8">

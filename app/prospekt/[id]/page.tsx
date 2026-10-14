@@ -8,6 +8,8 @@ import { ArrowRight } from "lucide-react";
 import { loadPublicProperty } from "@/lib/crm/public-property";
 import { PropertyShowcase } from "@/components/prospekt/PropertyShowcase";
 import { LANGS, T, pickLang } from "@/components/prospekt/prospekt-i18n";
+import { localizedPropertyDescription } from "@/lib/property-description";
+import { completePublicDescription } from "@/lib/crm/public-description-translations";
 
 export const dynamic = "force-dynamic";
 
@@ -32,8 +34,7 @@ export async function generateMetadata(
   if (!p || !p.prospektPublished || !(await approvedPropertyIds([id], new Map([[id, p.updatedAt]]))).has(id)) return { title: `${tr.tagline} – StayOnSite` };
   const title = `${tr.title(p.city)} – StayOnSite`;
   const place = [p.postalCode, p.city].filter(Boolean).join(" ") || "Sverige";
-  const localDesc = lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : p.publicDescription;
-  const desc = (localDesc || p.publicDescription)?.trim().slice(0, 160) || tr.metaDesc(place);
+  const desc = localizedPropertyDescription(await completePublicDescription(p), lang)?.slice(0, 160) || tr.metaDesc(place);
   return {
     title,
     description: desc,

@@ -410,7 +410,7 @@ export function PropertyEditForm({
             </Button>
           </div>
           <p className="text-[11px] text-muted-foreground">
-            AI översätter svenska beskrivningen/skicket på begäran. Granska och redigera — sparas när du klickar Spara.
+            Beskrivningen översätts automatiskt till engelska och polska när du sparar. Knappen översätter även skick och vad som ingår.
           </p>
           {showI18n && (
             <div className="space-y-2 pt-1">

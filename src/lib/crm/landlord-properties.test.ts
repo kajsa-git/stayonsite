@@ -19,6 +19,8 @@ import { landlordPropertyInput } from "./landlord-property-input";
 let client: Client;
 
 beforeEach(async () => {
+  vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
+  vi.stubGlobal("fetch", vi.fn(async () => Response.json({ stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify({ publicDescriptionEn: "New description", publicDescriptionPl: "Nowy opis", skickEn: "", skickPl: "", inclusionsEn: [], inclusionsPl: [] }) }] })));
   client = createClient({ url: ":memory:" });
   const dir = path.resolve(__dirname, "../../../drizzle");
   const journal = JSON.parse(fs.readFileSync(path.join(dir, "meta/_journal.json"), "utf8"));
@@ -45,7 +47,7 @@ beforeEach(async () => {
     { id: "l5", token: "tenant-token", audience: "tenant", ownerId: "o1" },
   ]);
 });
-afterEach(() => client.close());
+afterEach(() => { client.close(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 async function patch(body: unknown, token = "owner-token", id = "p1") {
   return PATCH(new NextRequest("http://localhost/api/share/test", {
@@ -64,7 +66,7 @@ describe("uthyrarens bostäder", () => {
     expect((await patch({ rentIn: 6000, beds: 4, publicDescription: "Ny text" })).status).toBe(200);
     const rows = await state.db.select().from(schema.properties);
     expect(rows).toHaveLength(3);
-    expect(rows.find((r) => r.id === "p1")).toMatchObject({ rentIn: 6000, rentOut: 9000, notes: "secret", publicDescription: "Ny text" });
+    expect(rows.find((r) => r.id === "p1")).toMatchObject({ rentIn: 6000, rentOut: 9000, notes: "secret", publicDescription: "Ny text", publicDescriptionEn: "New description", publicDescriptionPl: "Nowy opis" });
   });
   it.each(["unknown", "revoked-token", "expired-token", "tenant-token", "unsigned-token"])("avvisar %s", async (token) => {
     expect((await patch({ beds: 3 }, token)).status).toBe(404);

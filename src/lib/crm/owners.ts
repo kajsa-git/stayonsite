@@ -4,6 +4,7 @@ import { db } from "./db";
 import { owners, properties, type Owner, type Property } from "./schema";
 import { normalizePhoneForStorage } from "./phone-links";
 import { publicDisplayName, slugify } from "./slug";
+import { withDescriptionTranslations } from "./property-translations";
 
 // Säkerställ en unik URL-slug i crm_properties. Lägger -2, -3… vid krock.
 // excludeId = objektets eget id (så en re-save inte krockar med sig själv).
@@ -171,7 +172,7 @@ export async function normalizePropertyWriteBody(
   body: Record<string, unknown>,
   existing?: Property,
 ): Promise<Partial<Property>> {
-  const next = stripForPropertyWrite(body);
+  const next = await withDescriptionTranslations(stripForPropertyWrite(body), existing);
   // Postnummer-format är en Sverige-regel — bara om objektets land är (eller defaultar till) Sverige.
   if (Object.prototype.hasOwnProperty.call(next, "postalCode") && isSwedishCountry(next.country ?? existing?.country)) {
     next.postalCode = formatSwedishPostal(next.postalCode);

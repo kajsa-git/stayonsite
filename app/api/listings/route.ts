@@ -1,4 +1,5 @@
 import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
+import { completePublicDescription } from "@/lib/crm/public-description-translations";
 import { db } from "@/lib/crm/db";
 import { propertyImages, properties } from "@/lib/crm/schema";
 import { r2, R2_BUCKET } from "@/lib/crm/r2";
@@ -9,6 +10,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export async function GET() {
   const candidates = await db
@@ -29,6 +31,8 @@ export async function GET() {
       egetBoende: properties.egetBoende,
       parkingSpaces: properties.parkingSpaces,
       publicDescription: properties.publicDescription,
+      publicDescriptionEn: properties.publicDescriptionEn,
+      publicDescriptionPl: properties.publicDescriptionPl,
       status: properties.status,
     })
     .from(properties)
@@ -71,7 +75,7 @@ export async function GET() {
         { city: p.city, bedrooms: p.bedrooms, beds: p.beds },
         p.slug,
       );
-      return { ...p, name, slug: p.slug ?? p.id, imageUrls };
+      return { ...await completePublicDescription(p), name, slug: p.slug ?? p.id, imageUrls };
     }),
   );
 

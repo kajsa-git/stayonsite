@@ -4,6 +4,7 @@ import { ProspektGallery } from "@/components/prospekt/ProspektGallery";
 import { ProspektMap } from "@/components/prospekt/ProspektMap";
 import { T, type Lang } from "@/components/prospekt/prospekt-i18n";
 import { translateInclusion } from "@/components/prospekt/inclusion-i18n";
+import { localizedPropertyDescription } from "@/lib/property-description";
 
 const editorial = { fontFamily: "var(--font-playfair), Georgia, serif" } as const;
 
@@ -25,10 +26,7 @@ export function PropertyShowcase({
   const { row: p, images, mapCoords, mapArea } = data;
   const tr = T[lang];
 
-  const description =
-    descriptionOverride ||
-    (lang === "en" ? p.publicDescriptionEn : lang === "pl" ? p.publicDescriptionPl : null) ||
-    p.publicDescription;
+  const description = descriptionOverride || localizedPropertyDescription(p, lang);
   const skick = (lang === "en" ? p.skickEn : lang === "pl" ? p.skickPl : null) || p.skick;
   // Vad ingår: AI-översättningen (inclusionsEn/Pl) vinner per post när den finns, annars
   // deterministisk ordbok (täcker hela Qasa-/Airbnb-importens ordförråd), annars källtexten.

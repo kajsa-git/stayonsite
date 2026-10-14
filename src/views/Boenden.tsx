@@ -6,6 +6,8 @@ import useSWR from 'swr'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { trackPhoneClick, trackEmailClick } from '@/lib/gtag'
+import { useLanguage } from '@/contexts/LanguageContext'
+import { localizedPropertyDescription } from '@/lib/property-description'
 
 interface Listing {
   id: string
@@ -23,6 +25,8 @@ interface Listing {
   egetBoende: boolean | null
   parkingSpaces: number | null
   publicDescription: string | null
+  publicDescriptionEn: string | null
+  publicDescriptionPl: string | null
   imageUrls: string[]
 }
 
@@ -35,6 +39,8 @@ interface ListingLink {
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (listing: Listing) => void }) {
+  const { language } = useLanguage()
+  const description = localizedPropertyDescription(listing, language)
   const [imgIdx, setImgIdx] = useState(0)
   const imgs = listing.imageUrls
   const hasImages = imgs.length > 0
@@ -128,9 +134,9 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
         </div>
 
         {/* Beskrivning */}
-        {listing.publicDescription && (
+        {description && (
           <p className="text-sm text-nordic-600 leading-relaxed mb-4 flex-1 line-clamp-2 sm:line-clamp-3">
-            {listing.publicDescription}
+            {description}
           </p>
         )}
 
