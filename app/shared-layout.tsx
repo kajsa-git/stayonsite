@@ -1,4 +1,4 @@
-import { Inter, Montserrat, Playfair_Display } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import GoogleAdsScript from '@/components/GoogleAdsScript'
@@ -8,23 +8,24 @@ import CookieConsent from '@/components/CookieConsent'
 import Providers from './providers'
 import './globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+const inter = localFont({
+  src: './fonts/Inter-latin.woff2',
+  weight: '300 700',
   variable: '--font-inter',
   display: 'swap',
 })
 
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const montserrat = localFont({
+  src: './fonts/Montserrat-latin.woff2',
+  weight: '400 700',
   variable: '--font-montserrat',
   display: 'swap',
 })
 
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const playfairDisplay = localFont({
+  src: './fonts/PlayfairDisplay-latin.woff2',
+  weight: '400 700',
+  adjustFontFallback: 'Times New Roman',
   variable: '--font-playfair',
   display: 'swap',
 })
