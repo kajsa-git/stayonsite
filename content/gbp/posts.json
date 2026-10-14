@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06",
+  "updatedAt": "2026-10-14",
   "posts": [
     {
       "id": "campaign-gavle-personalboende",
@@ -88,6 +88,17 @@
       "targetPath": "/stad/oskarshamn",
       "image": "/images/gbp/gavle-corporate-housing-bedroom.jpg",
       "imageDescription": "Exempel på möblerat sovrum i ett företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "blog-forbered-hus-boden-foretagets-arbetslag-2026",
+      "lane": "article",
+      "publishAfter": "2026-10-14",
+      "languageCode": "sv-SE",
+      "summary": "Ny guide: Förbered ditt hus i Boden för företagets arbetslag: möblering, inventarielista och boendekrav 2026\n\nSå möblerar och utrustar du ditt hus i Boden för uthyrning till byggföretag – praktisk inventarielista och checklista 2026.\n\nVi har samlat det viktigaste för företag och bostadsägare som planerar personalboende, projektboende eller företagsuthyrning. Bilden visar ett exempel på möblerat företagsboende i Gävle.",
+      "targetPath": "/blogg/forbered-hus-boden-foretagets-arbetslag-2026",
+      "image": "/images/gbp/gavle-company-housing-kitchen.jpg",
+      "imageDescription": "Exempel på möblerat företagsboende i Gävle.",
       "callToAction": "LEARN_MORE"
     }
   ]

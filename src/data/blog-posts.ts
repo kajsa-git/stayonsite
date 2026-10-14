@@ -1843,6 +1843,70 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'forbered-hus-boden-foretagets-arbetslag-2026',
+    title: {
+      sv: 'Förbered ditt hus i Boden för företagets arbetslag: möblering, inventarielista och boendekrav 2026',
+      en: 'Preparing your house in Boden for a company work crew: furnishing, inventory list and practical requirements 2026',
+      pl: 'Przygotowanie domu w Boden dla ekipy pracowników firmy: umeblowanie, lista inwentarzowa i wymagania 2026',
+    },
+    description: {
+      sv: 'Så möblerar och utrustar du ditt hus i Boden för uthyrning till byggföretag – praktisk inventarielista och checklista 2026.',
+      en: 'How to furnish and equip your house in Boden for rental to construction companies – practical inventory checklist 2026.',
+      pl: 'Jak umeblować i wyposażyć dom w Boden na wynajem dla firm budowlanych – praktyczna lista inwentarzowa 2026.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-10-14',
+    category: 'Tips',
+    tags: ['Boden', 'möblering', 'inventarielista', 'husägare', 'personalboende'],
+    readingTime: 8,
+    audience: 'husagare',
+    keyTakeaways: [
+      'Det finns inget generellt minimiantal sängplatser som gäller för alla arbetslag — kravet styrs av den aktuella förfrågan',
+      'Bodens kommuns artikel från januari 2024 beskriver entreprenörsbostäder kopplade till H2 Green Steel, där service och transporter planerades tillsammans med boendet',
+      'Arbetsmiljöverkets AFS 2023:12 om utformning av arbetsplatser behandlar hur personalutrymmen ska anpassas till verksamhet och antal användare',
+      'StayOnSite är grundat 2016 och erbjuder 0 % avgift för husägare, garanterad hyra och en boendeplan inom 24 timmar',
+      'Varje person behöver en egen säng, inte bara en soffa, även om delade sovrum ofta accepteras',
+    ],
+    faq: [
+      {
+        q: 'Hur många sängplatser behöver huset ha för att vara intressant för ett byggföretag?',
+        a: 'Det beror på företagets aktuella förfrågan. Ange antal egna sängar, sovrum med egen dörr och gemensamma ytor, så företaget kan bedöma om huset passar. Det finns inget generellt minimiantal som gäller för alla projekt.',
+      },
+      {
+        q: 'Måste jag möblera huset helt själv, eller kan byggföretaget ta med egna möbler?',
+        a: 'De flesta byggföretag föredrar ett färdigmöblerat hus eftersom det minskar logistiken för dem. Vanligtvis ingår grundmöblering, köksutrustning och tvättmöjlighet, men exakt omfattning avtalas per projekt.',
+      },
+      {
+        q: 'Hur viktigt är snöröjning för uthyrning i Boden vintertid?',
+        a: 'Mycket viktigt. Ett hus med dålig vinterframkomlighet riskerar att försena hela arbetslaget, vilket gör att företag ofta frågar om snöröjning redan vid första kontakten.',
+      },
+      {
+        q: 'Hur förbereder jag huset för ett arbetslag som arbetar i skift?',
+        a: 'Stäm av skifttider och rumsfördelning med företaget, visa hur sovrum kan avskiljas från kök och vardagsrum, ordna mörkläggning där det behövs och beskriv hur boendet fungerar när några sover medan andra är vakna.',
+      },
+    ],
+    sources: [
+      {
+        title: 'artikel från januari 2024 om entreprenörsbostäder',
+        publisher: 'Bodens kommun',
+        url: 'https://boden.se/samhalle-och-utveckling/samhallsutveckling/bodenxt/bodenxt-nyheter/2024-01-10-byggstart-for-h2-green-steels-entreprenorsbostader',
+        checkedDate: '2026-10-14',
+      },
+      {
+        title: 'Bodens kommuns information om snöröjning',
+        publisher: 'Bodens kommun',
+        url: 'https://boden.se/gator-och-trafik/sopning-och-snorojning/snorojning',
+        checkedDate: '2026-10-14',
+      },
+      {
+        title: 'Arbetsmiljöverket – AFS 2023:12 Utformning av arbetsplatser',
+        publisher: 'Arbetsmiljöverket',
+        url: 'https://www.av.se/arbetsmiljoarbete-och-inspektioner/publikationer/foreskrifter/afs-202312/',
+        checkedDate: '2026-10-14',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
