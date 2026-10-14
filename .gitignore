@@ -58,4 +58,5 @@ scripts/queue-fix-*-log.json
 
 # Lokala arbetsfiler (kontaktark, PDF-renderingar och bildextrakt)
 tmp/
+.article-recovery/
 .claude/skills/shadcn

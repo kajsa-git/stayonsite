@@ -14,6 +14,10 @@ on:
         description: 'Article topic (leave empty for auto-pick)'
         required: false
         type: string
+      resume_run_id:
+        description: 'Recover a generated article from a failed main-branch run'
+        required: false
+        type: string
 
 jobs:
   generate:
@@ -23,6 +27,7 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
+      actions: read
 
     steps:
       - name: Check publishing week
@@ -60,17 +65,30 @@ jobs:
         with:
           version: 10.33.0
 
-      - name: Verify source repair guards
+      - name: Install dependencies
         if: steps.cadence.outputs.publish == 'true'
-        run: node --test scripts/article-source-recovery.test.mjs
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify article generation guards
+        if: steps.cadence.outputs.publish == 'true'
+        run: node --test scripts/article-source-recovery.test.mjs scripts/article-metadata.test.mjs
 
       - name: Generate article
         if: steps.cadence.outputs.publish == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ARTICLE_TOPIC: ${{ inputs.topic }}
+          ARTICLE_RESUME_RUN: ${{ inputs.resume_run_id }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -n "$ARTICLE_TOPIC" ]; then
+          if [ -n "$ARTICLE_RESUME_RUN" ]; then
+            [[ "$ARTICLE_RESUME_RUN" =~ ^[1-9][0-9]*$ ]] || exit 1
+            mkdir -p .article-recovery
+            gh run view "$ARTICLE_RESUME_RUN" --repo "$GITHUB_REPOSITORY" --json headBranch,event,workflowName --jq 'select(.headBranch == "main" and .workflowName == "Biweekly Blog Article" and (.event == "schedule" or .event == "workflow_dispatch"))' > .article-recovery/run.json
+            test -s .article-recovery/run.json
+            gh run download "$ARTICLE_RESUME_RUN" --repo "$GITHUB_REPOSITORY" --name generated-article-debug --dir .article-recovery
+            node scripts/generate-article.mjs --resume-from .article-recovery
+          elif [ -n "$ARTICLE_TOPIC" ]; then
             node scripts/generate-article.mjs --topic "$ARTICLE_TOPIC"
           else
             node scripts/generate-article.mjs
@@ -86,7 +104,6 @@ jobs:
           # så en platshållar-URL räcker för att verifiera att artikeln kompilerar.
           TURSO_DATABASE_URL: "file::memory:"
         run: |
-          pnpm install --frozen-lockfile
           pnpm build
 
       - name: Upload generated files on failure

@@ -14,12 +14,13 @@
  * Env vars: ANTHROPIC_API_KEY (required)
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { appendArticleGbpPost } from './gbp/article-queue.mjs';
 import { validatePost } from './gbp/publish.mjs';
 import { completePausedServerToolTurn, extractStaticExternalSources, fetchSourceWithRetry, validateArticleSourcesWithRepair } from './article-source-recovery.mjs';
+import { appendBlogPostMetadata, findRecoverablePost } from './article-metadata.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -68,6 +69,7 @@ const PRIMARY_SOURCE_HOSTS = [
 
 // Parse --topic flag
 const topicArg = process.argv.find((a, i) => process.argv[i - 1] === '--topic');
+const resumeArg = process.argv.find((a, i) => process.argv[i - 1] === '--resume-from');
 
 // ---------- Existing data ----------
 const blogPostsPath = resolve(root, 'src/data/blog-posts.ts');
@@ -754,12 +756,7 @@ function updateBlogPosts(topic, seo, sources) {
     readingTime: ${topic.readingTime},
 ${seoFields}  }`;
 
-  // Insert before the closing ];
-  // Existing last entry already ends with a trailing comma, so don't add one.
-  const updated = blogPostsSource.replace(
-    /\n\];/,
-    `\n${newEntry},\n];`
-  );
+  const updated = appendBlogPostMetadata(blogPostsSource, newEntry);
   writeFileSync(blogPostsPath, updated);
 }
 
@@ -912,6 +909,7 @@ function validateTopic(topic) {
 
 // ---------- Main ----------
 async function main() {
+  if (resumeArg) return resumeArticle(resumeArg);
   console.log('[article] Starting article generation...');
 
   // Step 1: Pick and validate topic. Invalid model output is retried before
@@ -1020,6 +1018,43 @@ async function main() {
   console.log(`[article] URL: /blogg/${topic.slug}`);
   console.log('[article] Run "pnpm build" to generate static HTML.');
 
+  return topic;
+}
+
+async function resumeArticle(directory) {
+  const { default: ts } = await import('typescript');
+  const artifact = resolve(directory);
+  const post = findRecoverablePost(ts, readFileSync(resolve(artifact, 'src/data/blog-posts.ts'), 'utf8'), existingSlugs);
+  const topic = {
+    slug: post.slug,
+    titleSv: post.title.sv, titleEn: post.title.en, titlePl: post.title.pl,
+    descSv: post.description.sv, descEn: post.description.en, descPl: post.description.pl,
+    category: post.category, tags: post.tags, readingTime: post.readingTime,
+    audience: post.audience, localFocus: 'nationellt',
+    primaryKeyword: post.title.sv, searchIntent: post.description.sv, outline: post.title.sv,
+  };
+  const directoryPath = resolve(artifact, 'src/views/blogg');
+  const matches = readdirSync(directoryPath).filter(name => /^[A-Z][A-Za-z0-9]*\.tsx$/.test(name))
+    .filter(name => readFileSync(resolve(directoryPath, name), 'utf8').includes(`getBlogPost('${post.slug}')`));
+  if (matches.length !== 1) throw new Error('Expected one matching article component in artifact');
+  topic.componentName = matches[0].slice(0, -4);
+  topic.localFocus = post.tags.find(tag => citySlugSet.has(tag.toLocaleLowerCase('sv'))) || 'nationellt';
+  validateTopic(topic);
+  const articlePath = resolve(blogDir, matches[0]);
+  const reviewedArticle = existsSync(articlePath);
+  const tsx = readFileSync(reviewedArticle ? articlePath : resolve(directoryPath, matches[0]), 'utf8');
+  const errors = validateJsx(tsx);
+  if (errors.length) throw new Error(`Recovered article JSX validation failed: ${errors.join('; ')}`);
+  validateContentQuality(tsx, topic);
+  const sources = await validateSourceLinks(tsx);
+  if (!post.faq || post.faq.length < 3) throw new Error('Recovered article must contain its FAQ metadata');
+  const seo = reviewedArticle ? await withRetry(() => extractSeoData(tsx), 'Reviewed article SEO extraction') : { keyTakeaways: post.keyTakeaways, faq: post.faq };
+  if (!seo.faq || seo.faq.length < 3) throw new Error('Reviewed article must contain FAQ metadata');
+  writeFileSync(articlePath, `${tsx.trim()}\n`);
+  updateBlogPosts(topic, seo, sources);
+  updateBlogPage(topic);
+  updateGbpQueue(topic);
+  console.log(`[article] Recovered verified article: /blogg/${topic.slug}`);
   return topic;
 }
 
