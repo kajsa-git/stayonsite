@@ -19,7 +19,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { appendArticleGbpPost } from './gbp/article-queue.mjs';
 import { validatePost } from './gbp/publish.mjs';
-import { validateArticleSourcesWithRepair } from './article-source-recovery.mjs';
+import { completePausedServerToolTurn, extractStaticExternalSources, fetchSourceWithRetry, validateArticleSourcesWithRepair } from './article-source-recovery.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -95,22 +95,24 @@ async function callClaude(messages, tools = null) {
   };
   if (tools) body.tools = tools;
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-      ...(tools ? { 'anthropic-beta': 'web-search-2025-03-05' } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+  return completePausedServerToolTurn(messages, async conversation => {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        ...(tools ? { 'anthropic-beta': 'web-search-2025-03-05' } : {}),
+      },
+      body: JSON.stringify({ ...body, messages: conversation }),
+    });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Claude API ${res.status}: ${err}`);
-  }
-  return res.json();
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Claude API ${res.status}: ${err}`);
+    }
+    return res.json();
+  }, { onContinuation: attempt => console.log(`[article] Continuing paused web search (${attempt}/3)...`) });
 }
 
 // ---------- Step 1: Pick topic ----------
@@ -581,34 +583,11 @@ function sourcePublisher(url) {
 }
 
 function extractSourceLinks(tsx) {
-  const links = [];
-  const pattern = /<a\s+[^>]*href=["'](https:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/g;
-  let match;
-
-  while ((match = pattern.exec(tsx)) !== null) {
-    const url = match[1];
-    const host = new URL(url).hostname.replace(/^www\./, '');
-    if (host === 'stayonsite.se' || host.endsWith('.stayonsite.se')) continue;
-
-    const title = match[2]
-      .replace(/<[^>]+>/g, '')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&ndash;/g, '–')
-      .replace(/&mdash;/g, '—')
-      .trim();
-
-    if (!links.some((link) => link.url === url)) {
-      links.push({
-        title: title || url,
-        publisher: sourcePublisher(url),
-        url,
-        checkedDate: new Date().toISOString().split('T')[0],
-      });
-    }
-  }
-
-  return links;
+  return extractStaticExternalSources(tsx).map(source => ({
+    ...source,
+    publisher: sourcePublisher(source.url),
+    checkedDate: new Date().toISOString().split('T')[0],
+  }));
 }
 
 async function validateSourceLinks(tsx) {
@@ -628,18 +607,13 @@ async function validateSourceLinks(tsx) {
 
   const checks = await Promise.all(sources.map(async (source) => {
     try {
-      const res = await fetch(source.url, {
-        method: 'GET',
-        redirect: 'follow',
-        signal: AbortSignal.timeout(15000),
-        headers: { 'user-agent': 'StayOnSite editorial source checker/1.0' },
-      });
+      const res = await fetchSourceWithRetry(source.url);
       // 401/403/405/429 betyder ofta att källan blockerar automatiska klienter,
       // inte att sidan saknas. 404/410 och serverfel stoppar publiceringen.
       const botBlocked = [401, 403, 405, 429].includes(res.status);
       return { source, ok: (res.status >= 200 && res.status < 400) || botBlocked, status: res.status };
     } catch (error) {
-      return { source, ok: false, status: error.message };
+      return { source, ok: false, status: `${error.message}${error.cause?.code ? ` (${error.cause.code})` : ''}` };
     }
   }));
 
@@ -686,7 +660,7 @@ ${tsx}`,
   const tsxBlock = allText.match(/```tsx\s*\n([\s\S]*?)```/);
   const repaired = tsxBlock ? tsxBlock[1].trim() : allText.trim();
   if (!repaired.includes('BlogLayout') || !repaired.includes('export default')) {
-    throw new Error('Could not extract TSX from source repair response');
+    throw new Error(`Could not extract TSX from source repair response (${res.stop_reason}): ${allText.slice(0, 300)}`);
   }
   return validateCityLinks(repaired
     .replace(/from\s+['"]next\/Link['"]/g, "from 'next/link'")
