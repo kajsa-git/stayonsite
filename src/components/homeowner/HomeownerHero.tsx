@@ -334,11 +334,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
                         </svg>
                         <p className="text-sm leading-relaxed text-white/90">
-                          {tr(
-                            'Tack! Din bostad är registrerad. Ett steg kvar: godkänn uthyrningsuppdraget nedan — kostnadsfritt, inte exklusivt och du förbinder dig inte att hyra ut något.',
-                            'Thanks! Your property is registered. One step left: approve the letting assignment below — free of charge, non-exclusive and no obligation to let anything.',
-                            'Dziękujemy! Twoja nieruchomość jest zarejestrowana. Został jeden krok: zatwierdź poniżej zlecenie wynajmu — bezpłatne i niewyłączne.'
-                          )}
+                          {t('homeowner.publicationConsent.intro')}
                         </p>
                       </div>
                       <AgreementGate
@@ -347,7 +343,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                         intro={agreementText.intro}
                         points={agreementText.points}
                         version={agreementText.version}
-                        submitLabel={agreementLang === 'sv' ? 'Godkänn uthyrningsuppdraget' : 'Approve the letting assignment'}
+                        submitLabel={agreementLang === 'sv' ? 'Godkänn publiceringsmedgivandet' : 'Approve publication consent'}
                         lang={agreementLang}
                         onAccepted={() => setAgreementOutcome('signed')}
                       />
@@ -382,20 +378,12 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                   </p>
                   {agreementOutcome === 'signed' && (
                     <p className="mt-4 rounded-xl border border-green-400/30 bg-green-500/15 px-4 py-3 text-sm text-green-200">
-                      {tr(
-                        'Uthyrningsuppdraget är godkänt — allt är klart från din sida.',
-                        'The letting assignment is approved — all done on your side.',
-                        'Zlecenie wynajmu zatwierdzone — wszystko gotowe.'
-                      )}
+                      {t('homeowner.publicationConsent.accepted')}
                     </p>
                   )}
                   {agreementOutcome === 'skipped' && agreement && (
                     <p className="mt-4 text-sm text-white/75">
-                      {tr(
-                        'Du kan godkänna uthyrningsuppdraget när som helst via ',
-                        'You can approve the letting assignment any time via ',
-                        'Możesz zatwierdzić zlecenie wynajmu w dowolnym momencie przez '
-                      )}
+                      {t('homeowner.publicationConsent.laterPrefix')}{' '}
                       <a href={`/uthyrare/${agreement.token}`} className="font-semibold underline underline-offset-2">
                         {tr('din personliga länk', 'your personal link', 'swój osobisty link')}
                       </a>

@@ -19,7 +19,7 @@ const STATUS_LABEL: Record<string, { text: string; cls: string }> = {
 };
 
 // PUBLIK uthyrarsida via kapabilitets-token (crm_share_links, audience landlord,
-// scope = en affär). Gate: uthyrningsuppdraget signeras innan överenskommelsen
+// scope = en affär). Gate: publiceringsmedgivandet signeras innan överenskommelsen
 // visas. Uthyrarens projektion (deal-projection.ts): eget objekt + löftesvillkor —
 // ALDRIG utpris, marginal eller kundföretagets identitet.
 export default async function UthyrarePage({ params }: { params: Promise<{ token: string }> }) {
@@ -64,19 +64,19 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               intro={UTHYRNINGSUPPDRAG.intro}
               points={UTHYRNINGSUPPDRAG.points}
               version={UTHYRNINGSUPPDRAG.version}
-              submitLabel="Godkänn uthyrningsuppdraget"
+              submitLabel="Godkänn publiceringsmedgivandet"
               lang="sv"
               publishConsent={consent.pending.length > 0}
             />
           ) : (
             <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">
               <h1 className="text-[1.8rem] leading-tight tracking-tight text-nordic-900" style={editorial}>
-                Tack — uppdraget är signerat
+                Tack — medgivandet är godkänt
               </h1>
               <p className="text-sm text-nordic-700">
-                Signerat av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Uppdraget gäller till{" "}
+                Godkänt av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Medgivandet gäller till{" "}
                 {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"} och omfattar alla objekt ni
-                hyr ut genom StayOnSite.
+                presenterar genom StayOnSite.
               </p>
               <p className="text-sm text-nordic-700">
                 Nästa steg: när vi har en hyresgäst till ert boende hör vi av oss med hyra, period och övriga
@@ -116,7 +116,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
           <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
           <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Uthyrningsuppdrag
+            Publiceringsmedgivande
           </span>
         </div>
       </header>
@@ -134,7 +134,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               intro={UTHYRNINGSUPPDRAG.intro}
               points={UTHYRNINGSUPPDRAG.points}
               version={UTHYRNINGSUPPDRAG.version}
-              submitLabel="Godkänn uthyrningsuppdraget"
+              submitLabel="Godkänn publiceringsmedgivandet"
               lang="sv"
             />
           </>
@@ -188,7 +188,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               )}
 
               <p className="text-xs text-muted-foreground">
-                Uthyrningsuppdraget signerades av {deal.acceptedName} den {deal.acceptedAt?.slice(0, 10)}. Frågor?
+                Publiceringsmedgivandet godkändes av {deal.acceptedName} den {deal.acceptedAt?.slice(0, 10)}. Frågor?
                 Hör av dig till Kajsa på StayOnSite.
               </p>
             </div>

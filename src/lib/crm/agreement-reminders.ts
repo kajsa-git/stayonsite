@@ -1,4 +1,4 @@
-// Påminnelser för osignerade uthyrningsuppdrag från bostadsregistreringen.
+// Påminnelser för publiceringsmedgivanden som inte godkänts från bostadsregistreringen.
 //
 // Del 2 av /registrera-bostad (signeringen) kan hoppas över — kvar finns då en
 // fristående uthyrarlänk (audience landlord, owner_id satt, created_by NULL =
@@ -62,15 +62,15 @@ export function buildReminderEmail(owner: Owner, token: string, reminderNo: numb
   const greeting = namn ? `Hej ${namn},` : "Hej,";
   const opening =
     reminderNo === 1
-      ? "Tack för att du registrerade din bostad hos StayOnSite. Ett steg återstår: att godkänna uthyrningsuppdraget."
-      : "En sista påminnelse: uthyrningsuppdraget för din registrerade bostad väntar fortfarande på ditt godkännande.";
+      ? "Tack för att du registrerade din bostad hos StayOnSite. Ett steg återstår: att godkänna publiceringsmedgivandet."
+      : "En sista påminnelse: publiceringsmedgivandet för din registrerade bostad väntar fortfarande på ditt godkännande.";
 
   const text = [
     greeting,
     "",
     opening,
     "",
-    "Uppdraget är kostnadsfritt och inte exklusivt — du förbinder dig inte att hyra ut något, och utan förmedlad hyresgäst har du inga åtaganden.",
+    "Det kostar inget att presentera eller publicera bostaden. Du bestämmer själv om du vill gå vidare med en uthyrning och är fri att hyra ut till andra än de hyresgäster vi presenterar.",
     "",
     `Godkänn här: ${url}`,
     "",
@@ -83,8 +83,8 @@ export function buildReminderEmail(owner: Owner, token: string, reminderNo: numb
   const html = [
     `<p>${greeting}</p>`,
     `<p>${opening}</p>`,
-    "<p>Uppdraget är kostnadsfritt och inte exklusivt — du förbinder dig inte att hyra ut något, och utan förmedlad hyresgäst har du inga åtaganden.</p>",
-    `<p><a href="${url}" style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:600">Godkänn uthyrningsuppdraget</a></p>`,
+    "<p>Det kostar inget att presentera eller publicera bostaden. Du bestämmer själv om du vill gå vidare med en uthyrning och är fri att hyra ut till andra än de hyresgäster vi presenterar.</p>",
+    `<p><a href="${url}" style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:600">Godkänn publiceringsmedgivandet</a></p>`,
     `<p>Fungerar inte knappen? Öppna länken direkt: <a href="${url}">${url}</a></p>`,
     "<p>Har du frågor? Svara på det här mejlet eller ring Kajsa på 076-249 84 86.</p>",
     "<p>Vänliga hälsningar<br>StayOnSite</p>",
@@ -92,7 +92,7 @@ export function buildReminderEmail(owner: Owner, token: string, reminderNo: numb
 
   return {
     to: owner.email!,
-    subject: reminderNo === 1 ? "Ett steg kvar — godkänn uthyrningsuppdraget" : "Påminnelse: godkänn uthyrningsuppdraget",
+    subject: reminderNo === 1 ? "Ett steg kvar — godkänn publiceringsmedgivandet" : "Påminnelse: godkänn publiceringsmedgivandet",
     text,
     html,
   };
@@ -133,7 +133,7 @@ async function bumpOwnerFollowUp(db: DB, owner: Owner): Promise<void> {
     .update(owners)
     .set({
       followUpDate: today,
-      followUpReason: "Uthyrningsuppdrag ej signerat — skicka signeringslänken (ingen e-post)",
+      followUpReason: "Publiceringsmedgivande ej godkänt — skicka signeringslänken (ingen e-post)",
       updatedAt: new Date().toISOString(),
     })
     .where(eq(owners.id, owner.id));

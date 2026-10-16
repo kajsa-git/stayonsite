@@ -75,7 +75,7 @@ const STEPS = [
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiv förfrågan men ingen bokad återkomst — utan datum glöms de bort. Boka en återkomst så flyttas de till Återkomster." },
   { emoji: "📝", title: "Avtal", text: "Affärer där kunden tackat ja men det skarpa avtalet återstår. Markera skickat och sedan signerat — då flyttas affären vidare." },
   { emoji: "🧾", title: "Ska faktureras", text: "Affärer med signerat avtal. Skicka fakturan och markera som fakturerad — då är affären i hamn." },
-  { emoji: "☎️", title: "Följ upp uthyrare", text: "Uthyrare (husägare med bostäder) som vi väntar på något ifrån — bilder, pris, ok att publicera eller signerat uppdragsavtal. Kortet visar vad som väntas; ring eller SMS:a och bocka av." },
+  { emoji: "☎️", title: "Följ upp uthyrare", text: "Uthyrare (husägare med bostäder) som vi väntar på något ifrån — bilder, pris, ok att publicera eller godkänt publiceringsmedgivande. Kortet visar vad som väntas; ring eller SMS:a och bocka av." },
   { emoji: "✉️", title: "Utkast", text: "Sparade meddelanden som aldrig skickades — skicka eller släng dem." },
 ];
 

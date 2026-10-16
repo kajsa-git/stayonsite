@@ -512,7 +512,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           ))}
                         {m.landlordSignedAt && (
                           <div className="text-emerald-800">
-                            Uthyrningsuppdrag: <span className="font-medium">signerat av {m.landlordSignedName}</span>
+                            Publiceringsmedgivande: <span className="font-medium">godkänt av {m.landlordSignedName}</span>
                             {` · ${m.landlordSignedAt.slice(0, 10)}`}
                           </div>
                         )}
@@ -539,8 +539,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           const ds = displayStatus(m);
                           const steps = [
                             {
-                              label: "Uthyrningsuppdrag",
-                              title: "Uppdragsavtalet med uthyraren signeras alltid först — skapar signeringslänk och kopierar SMS-text",
+                              label: "Publiceringsmedgivande",
+                              title: "Uthyraren godkänner publiceringsmedgivandet först — öppnar delning av den personliga länken",
                               done: !!m.landlordSignedAt,
                               onClick: () => shareLandlordLink(m),
                             },

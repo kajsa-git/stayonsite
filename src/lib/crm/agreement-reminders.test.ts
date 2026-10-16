@@ -194,7 +194,7 @@ describe("agreement reminder sweep", () => {
 
     const [updated] = await db.select().from(owners).where(eq(owners.id, owner.id));
     expect(updated.followUpDate).toBe(todayStockholm());
-    expect(updated.followUpReason).toContain("Uthyrningsuppdrag ej signerat");
+    expect(updated.followUpReason).toContain("Publiceringsmedgivande ej godkänt");
 
     const logged = await db.select().from(agreementReminders).where(eq(agreementReminders.ownerId, owner.id));
     expect(logged).toHaveLength(1);
@@ -227,8 +227,8 @@ describe("buildReminderEmail", () => {
     const second = buildReminderEmail(owner, "tok123", 2);
 
     expect(first.text).toContain("Hej Anna,");
-    expect(first.subject).toBe("Ett steg kvar — godkänn uthyrningsuppdraget");
-    expect(second.subject).toBe("Påminnelse: godkänn uthyrningsuppdraget");
+    expect(first.subject).toBe("Ett steg kvar — godkänn publiceringsmedgivandet");
+    expect(second.subject).toBe("Påminnelse: godkänn publiceringsmedgivandet");
     expect(second.text).toContain("sista påminnelse");
     expect(first.html).toContain("https://www.stayonsite.se/uthyrare/tok123");
   });

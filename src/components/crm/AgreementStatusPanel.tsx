@@ -47,7 +47,7 @@ export function AgreementStatusPanel({
   );
   const [working, setWorking] = useState(false);
 
-  const label = kind === "owner" ? "Uppdragsavtal (uthyrningsuppdrag)" : "Uppdragsbekräftelse";
+  const label = kind === "owner" ? "Publiceringsmedgivande" : "Uppdragsbekräftelse";
   const shareLabel = kind === "owner" ? "Dela uthyrarlänk" : "Dela kundlänk";
   const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
   const activeLink =
@@ -146,7 +146,7 @@ export function AgreementStatusPanel({
         {a?.valid ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800">
             <ShieldCheck className="h-3 w-3" />
-            Signerat av {a.acceptedName} · giltigt till {a.validUntil}
+            {kind === "owner" ? "Godkänt" : "Signerat"} av {a.acceptedName} · giltigt till {a.validUntil}
           </span>
         ) : a ? (
           <span
@@ -163,7 +163,7 @@ export function AgreementStatusPanel({
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800">
             <ShieldQuestion className="h-3 w-3" />
-            Ej signerat
+            {kind === "owner" ? "Ej godkänt" : "Ej signerat"}
           </span>
         )}
         {a && (

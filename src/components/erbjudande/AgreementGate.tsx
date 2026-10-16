@@ -97,6 +97,7 @@ export function AgreementGate({
           name: name.trim(),
           website,
           language: lang,
+          version,
           ...(publishConsented ? { publishConsent: true } : {}),
         }),
       });

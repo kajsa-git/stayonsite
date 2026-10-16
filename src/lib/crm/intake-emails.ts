@@ -15,7 +15,7 @@ const ORANGE_BTN =
   'style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:600"';
 
 // Kvittot till husägaren: bostaden är mottagen + de två snabba stegen på den
-// egna sidan (publiceringsgodkännande + uppdragssignering). Samma länk som
+// egna sidan (medgivande + val av publicering). Samma länk som
 // påminnelse-cronen använder — hela flödet pekar på ETT ställe.
 export function buildIntakeConfirmationEmail(args: {
   ownerName: string | null;
@@ -33,8 +33,8 @@ export function buildIntakeConfirmationEmail(args: {
   const steps = url
     ? [
         "På din sida kan du:",
-        `1. Godkänn att annonsen får visas online (exakt adress visas aldrig publikt).`,
-        `2. Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.`,
+        `1. Läsa och godkänna publiceringsmedgivandet — kostnadsfritt och utan skyldighet att hyra ut.`,
+        `2. Välja om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt.`,
         "",
         `Din sida: ${url}`,
       ]
@@ -63,8 +63,8 @@ export function buildIntakeConfirmationEmail(args: {
       ? [
           "<p>På din sida kan du:</p>",
           "<ol style=\"margin:0 0 12px;padding-left:20px\">" +
-            "<li>Godkänn att annonsen får visas online — exakt adress visas aldrig publikt.</li>" +
-            "<li>Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.</li>" +
+            "<li>Läsa och godkänna publiceringsmedgivandet — kostnadsfritt och utan skyldighet att hyra ut.</li>" +
+            "<li>Välja om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt.</li>" +
             "</ol>",
           `<p><a href="${url}" ${ORANGE_BTN}>Öppna din sida</a></p>`,
           `<p>Fungerar inte knappen? Öppna länken direkt: <a href="${url}">${url}</a></p>`,

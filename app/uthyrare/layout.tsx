@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "Uthyrningsuppdrag — StayOnSite",
+  title: "Publiceringsmedgivande — StayOnSite",
   robots: { index: false, follow: false },
   // Kapabilitets-URL:er (token i sökvägen) får aldrig läcka via Referer vid utklick.
   referrer: "no-referrer",

@@ -32,7 +32,7 @@ export function offerLinkSms(contactName: string | null | undefined, token: stri
 // (gäller alla deras objekt i 12 månader). Länk utan https:// av smishing-skäl.
 // Ordalydelsen är Kajsas egen (2026-07-13) — ändra inte utan hennes ok.
 export function landlordAvtalStandaloneSms(ownerName: string | null | undefined, token: string): string {
-  return `${greet(ownerName)}\nHär kommer uppdragsavtalet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
+  return `${greet(ownerName)}\nHär kommer publiceringsmedgivandet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
 }
 
 // Kvitto vid bostadsintag när e-post saknas — skickas AUTOMATISKT (transaktions-
@@ -40,7 +40,7 @@ export function landlordAvtalStandaloneSms(ownerName: string | null | undefined,
 // publiceringsgodkännande + uppdragssignering på ett ställe. Länk utan https://.
 export function intakeConfirmSms(ownerName: string | null | undefined, token: string | null): string {
   const link = token
-    ? `\nGodkänn publicering och att vi språkgranskar beskrivningen. Signera uthyrningsuppdraget på din sida: www.stayonsite.se/uthyrare/${token}`
+    ? `\nGodkänn publicering och att vi språkgranskar beskrivningen. Godkänn publiceringsmedgivandet på din sida: www.stayonsite.se/uthyrare/${token}`
     : "";
   return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi kontrollerar bilderna och gör beskrivningen klar för våra företagskunder.${link}\n/Kajsa, StayOnSite`;
 }
@@ -64,8 +64,8 @@ export function landlordAvtalEmailHtml(ownerName: string | null | undefined, tok
   const url = `https://www.stayonsite.se/uthyrare/${token}`;
   return (
     `<p>${hej}</p>` +
-    `<p>Här kommer uppdragsavtalet:<br><a href="${url}">${url}</a></p>` +
-    `<p>Det är kostnadsfritt och inte exklusivt och tar en minut att signera.</p>` +
+    `<p>Här kommer publiceringsmedgivandet:<br><a href="${url}">${url}</a></p>` +
+    `<p>Läs igenom medgivandet och godkänn med ditt namn. Det är kostnadsfritt och innebär ingen skyldighet att hyra ut. På sidan väljer du också om annonsen får visas på stayonsite.se.</p>` +
     `<p>Mvh Kajsa<br>StayOnSite</p>`
   );
 }

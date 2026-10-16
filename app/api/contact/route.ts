@@ -289,7 +289,7 @@ function buildConfirmationEmail(s: Submission, landlordToken?: string | null): {
       : []),
     ...(landlordUrl
       ? [
-          "Din sida hos oss — godkänn publicering av annonsen och signera uthyrningsuppdraget när det passar (tar under en minut, exakt adress visas aldrig publikt):",
+          "Din sida hos oss — läs och godkänn publiceringsmedgivandet och välj om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt:",
           landlordUrl,
           "",
         ]
@@ -354,10 +354,10 @@ function buildConfirmationEmail(s: Submission, landlordToken?: string | null): {
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 28px;width:100%;">
             <tr>
               <td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px 20px;">
-                <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f1c2e;">Din sida hos oss — två snabba steg</p>
+                <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f1c2e;">Din sida hos oss</p>
                 <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#374151;">
-                  1. Godkänn att annonsen får visas online — exakt adress visas aldrig publikt.<br>
-                  2. Signera uthyrningsuppdraget — kostnadsfritt och inte exklusivt.
+                  1. Läs och godkänn publiceringsmedgivandet — kostnadsfritt och utan skyldighet att hyra ut.<br>
+                  2. Välj om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt.
                 </p>
                 <a href="${landlordUrl}" style="display:inline-block;background:#ff6300;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:50px;text-decoration:none;">Öppna din sida</a>
               </td>

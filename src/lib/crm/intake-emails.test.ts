@@ -15,19 +15,19 @@ describe("buildIntakeConfirmationEmail", () => {
     expect(mail.text).toContain("Hej Anna,");
     expect(mail.text).toContain("Gatan 1, Boden");
     expect(mail.text).toContain("5 bilder");
-    expect(mail.text).toContain("Godkänn att annonsen får visas online");
-    expect(mail.text).toContain("Signera uthyrningsuppdraget");
+    expect(mail.text).toContain("Välja om annonsen får visas på stayonsite.se");
+    expect(mail.text).toContain("Läsa och godkänna publiceringsmedgivandet");
     expect(mail.text).toContain("https://www.stayonsite.se/uthyrare/tok123");
     expect(mail.html).toContain("uthyrare/tok123");
     // Textriktlinjerna: exakt adress-integriteten uttalad
-    expect(mail.text).toContain("exakt adress visas aldrig publikt");
+    expect(mail.text).toContain("Exakt adress visas aldrig publikt");
   });
 
   it("utan token: kvitto utan steg-sektion", () => {
     const mail = buildIntakeConfirmationEmail({ ownerName: null, address: null, city: "Luleå", imageCount: 0, token: null });
     expect(mail.text).toContain("Hej,");
     expect(mail.text).not.toContain("uthyrare/");
-    expect(mail.text).not.toContain("Två snabba steg");
+    expect(mail.text).not.toContain("På din sida kan du:");
   });
 });
 

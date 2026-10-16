@@ -51,6 +51,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     return NextResponse.json({ ok: true });
   }
 
+  // Ett gammalt öppet formulär får aldrig godkänna en text som inte visats.
+  const agreement = link.audience === "landlord" ? UTHYRNINGSUPPDRAG : UPPDRAGSBEKRAFTELSE;
+  if (body.version !== agreement.version) {
+    return NextResponse.json(
+      { error: body.language === "en"
+        ? "The terms have been updated. Reload the page and read the current version before approving."
+        : "Villkoren har uppdaterats. Ladda om sidan och läs den aktuella versionen innan du godkänner." },
+      { status: 409 },
+    );
+  }
+
   const name = typeof body.name === "string" ? body.name.trim() : "";
   if (name.length < 2 || name.length > 120) {
     return NextResponse.json({ error: "Skriv ditt för- och efternamn för att godkänna." }, { status: 400 });

@@ -69,47 +69,46 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
   ],
 };
 
-// Uthyrarens avtal — signeras via uthyrarlänken (/uthyrare/<token>).
+// Uthyrarens publiceringsmedgivande — godkänns via uthyrarlänken.
+// Databasnyckeln behålls så att tidigare godkännanden finns kvar som historik.
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-07-16.8", // .8 = icke-exklusivitet uttalad: ingen skyldighet att hyra ut via oss, fritt hyra ut till ej förmedlade; omsignering krävs
-  title: "Uthyrningsuppdrag",
+  version: "2026-10-16.1", // Ny text om presentation och publicering kräver ett nytt godkännande.
+  title: "Publiceringsmedgivande",
   intro:
-    "Ni ger StayOnSite i uppdrag att hyra ut era objekt. Uppdraget är kostnadsfritt och inte exklusivt — " +
-    "ni kan när som helst dra tillbaka ett objekt. Uppdraget gäller i 12 månader från signering och kan därefter förnyas.",
+    "Tjänsten är kostnadsfri för er; StayOnSite tar betalt av hyresgästen. " +
+    "Ni kan tacka nej till förslag utan att ange skäl och hyra ut till andra än de hyresgäster vi presenterat. " +
+    "Hyra, period och övriga villkor bekräftas separat. Ingen uthyrning sker utan ert godkännande.",
   points: [
     {
-      heading: "Kostnadsfritt för er",
-      body: "StayOnSite tar betalt av hyresgästen, aldrig av er som uthyrare.",
+      heading: "Presentation och publicering",
+      body:
+        "StayOnSite får använda bostadsuppgifter och bilder ni lämnar för att presentera bostäderna för företag. " +
+        "Publicering på stayonsite.se kräver ert separata godkännande. " +
+        "Exakt adress och kontaktuppgifter visas inte publikt.",
     },
     {
-      heading: "Ni bestämmer",
-      body: "Inget hyresavtal ingås utan er bekräftelse, och ni kan tacka nej till förslag utan motivering.",
-    },
-    {
-      heading: "Inte exklusivt — inga åtaganden utan förmedlad hyresgäst",
+      heading: "Förmedlade affärer hanteras av StayOnSite",
       bullets: [
-        "Uppdraget innebär ingen skyldighet att hyra ut era objekt via StayOnSite.",
-        "Ni får självklart hyra ut till hyresgäster som inte förmedlats av StayOnSite — egna kontakter, egna kanaler eller andra förmedlare.",
-        "Förmedlar StayOnSite ingen hyresgäst har ni inga åtaganden enligt detta uppdrag.",
-      ],
-    },
-    {
-      heading: "Affären går alltid via StayOnSite",
-      bullets: [
-        "Hyra och villkor för förmedlade affärer hanteras alltid av StayOnSite.",
-        "Praktisk direktkontakt med hyresgästen går bra — till exempel kring visning, tillträde och nycklar.",
+        "Samtliga villkor för förmedlade affärer hanteras alltid av StayOnSite.",
+        "Praktisk direktkontakt med hyresgästen går bra — till exempel kring visningar och överlämning av nycklar.",
         "Ni förbinder er att inte förhandla om eller ingå hyresavtal eller annan överenskommelse utan StayOnSites medverkan " +
           "med hyresgäster som StayOnSite presenterat — varken direkt eller indirekt (till exempel genom närstående, annat bolag eller annan mellanhand). " +
           "Detta gäller både det aktuella objektet och annat boende ni erbjuder.",
       ],
-      note: "Åtagandet gäller under uppdraget och i 12 månader efter presentation.",
     },
     {
       heading: "Vite vid överträdelse",
       body:
-        "Vid överträdelse av föregående punkt utgår vite motsvarande tre (3) månadshyror för det aktuella objektet, dock lägst 25 000 kr. " +
-        "Vitet påverkar inte StayOnSites rätt till ersättning för faktisk skada som överstiger vitet.",
+        "Vid överträdelse av föregående punkt är vitet tre gånger den månadshyra StayOnSite betalar till er för det aktuella objektet, minst 25 000 kr. " +
+        "StayOnSite kan även kräva ersättning för faktisk skada som överstiger vitet.",
+    },
+    {
+      heading: "Giltighet och ändringar",
+      body:
+        "Medgivandet gäller i 12 månader från godkännandet och kan förnyas. " +
+        "Ni kan när som helst kontakta StayOnSite för att ändra en annons eller dra tillbaka en bostad. " +
+        "Förmedlingsskyddet gäller under medgivandets giltighetstid och i 12 månader efter presentationen av hyresgästen.",
     },
   ],
 };
@@ -168,44 +167,41 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
 export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
   type: "uthyrningsuppdrag",
   version: UTHYRNINGSUPPDRAG.version,
-  title: "Letting Assignment",
+  title: "Publication Consent",
   intro:
-    "You engage StayOnSite to let your properties. The assignment is free of charge and non-exclusive — " +
-    "you may withdraw a property at any time. The assignment is valid for 12 months from signing and can then be renewed.",
+    "The service is free of charge for you; StayOnSite charges the tenant. " +
+    "You may decline proposals without giving a reason and let to tenants we have not introduced. " +
+    "Rent, dates and other terms are confirmed separately. No letting takes place without your approval.",
   points: [
     {
-      heading: "Free of charge for you",
-      body: "StayOnSite charges the tenant, never you as the landlord.",
+      heading: "Presentation and publication",
+      body:
+        "StayOnSite may use the property information and images you provide to present the properties to companies. " +
+        "Publication on stayonsite.se requires your separate approval. " +
+        "Your exact address and contact details are not shown publicly.",
     },
     {
-      heading: "You decide",
-      body: "No lease is entered into without your confirmation, and you may decline any proposal without giving a reason.",
-    },
-    {
-      heading: "Non-exclusive — no obligations unless we introduce a tenant",
+      heading: "Introduced transactions are handled by StayOnSite",
       bullets: [
-        "The assignment does not oblige you to let your properties through StayOnSite.",
-        "You are of course free to let to tenants not introduced by StayOnSite — your own contacts, your own channels or other agents.",
-        "If StayOnSite does not introduce a tenant, this assignment imposes no obligations on you.",
-      ],
-    },
-    {
-      heading: "The deal always goes through StayOnSite",
-      bullets: [
-        "Rent and terms for brokered deals are always handled by StayOnSite.",
-        "Practical direct contact with the tenant is fine — for example regarding viewings, move-in and keys.",
+        "All terms for brokered deals are always handled by StayOnSite.",
+        "Practical direct contact with the tenant is fine — for example regarding viewings and handing over keys.",
         "You undertake not to negotiate or enter into a lease or any other arrangement without StayOnSite's involvement " +
           "with tenants presented by StayOnSite — neither directly nor indirectly (for example through a related party, another company or other intermediary). " +
           "This covers both the property in question and any other housing you offer.",
       ],
-      note: "This commitment applies for the duration of the assignment and for 12 months after presentation.",
     },
     {
       heading: "Penalty upon breach",
       body:
-        "In the event of a breach of the preceding clause, a contractual penalty equal to three (3) months' rent " +
-        "for the property in question applies, subject to a minimum of SEK 25,000. " +
-        "The penalty does not limit StayOnSite's right to compensation for actual damage exceeding the penalty.",
+        "A breach of the preceding clause incurs a penalty of three times the monthly rent StayOnSite pays to you for the property in question, at least SEK 25,000. " +
+        "StayOnSite may also claim compensation for actual damage exceeding the penalty.",
+    },
+    {
+      heading: "Validity and changes",
+      body:
+        "This consent is valid for 12 months from approval and can be renewed. " +
+        "You may contact StayOnSite at any time to change a listing or withdraw a property. " +
+        "The non-circumvention terms apply for the duration of this consent and for 12 months after the tenant is introduced.",
     },
   ],
 };

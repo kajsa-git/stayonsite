@@ -356,6 +356,9 @@ export type TranslationKey =
   | "homeowner.conversion.trustResponseLabel"
   | "homeowner.conversion.successTitle"
   | "homeowner.conversion.successText"
+  | "homeowner.publicationConsent.intro"
+  | "homeowner.publicationConsent.accepted"
+  | "homeowner.publicationConsent.laterPrefix"
   | "references.stats.happyClients"
   | "references.stats.accommodations"
   | "references.stats.responseTime"
@@ -847,6 +850,9 @@ export const translations: Record<
     "homeowner.conversion.trustResponseLabel": "Svarstid",
     "homeowner.conversion.successTitle": "Tack!",
     "homeowner.conversion.successText": "Vi kontaktar dig inom kort med ett konkret hyreserbjudande. Välkommen till StayOnSite.",
+    "homeowner.publicationConsent.intro": "Tack! Din bostad är registrerad. Läs igenom publiceringsmedgivandet nedan och godkänn med ditt namn. Det är kostnadsfritt och innebär ingen skyldighet att hyra ut.",
+    "homeowner.publicationConsent.accepted": "Publiceringsmedgivandet är godkänt. Vi kontaktar dig när vi har en förfrågan som passar din bostad.",
+    "homeowner.publicationConsent.laterPrefix": "Du kan godkänna publiceringsmedgivandet när som helst via",
 
     "brand.nollavgift.name": "Nollavgiftsmodellen",
     "brand.nollavgift.tagline": "0 % avgift. 100 % av hyran till dig.",
@@ -1343,6 +1349,9 @@ export const translations: Record<
     "homeowner.conversion.trustResponseLabel": "Response time",
     "homeowner.conversion.successTitle": "Thank you!",
     "homeowner.conversion.successText": "We'll be in touch shortly with a concrete rental offer. Welcome to StayOnSite.",
+    "homeowner.publicationConsent.intro": "Thank you! Your property is registered. Read the publication consent below and approve with your name. This is free of charge and does not oblige you to let your property.",
+    "homeowner.publicationConsent.accepted": "Your publication consent is approved. We will contact you when we have an enquiry that matches your property.",
+    "homeowner.publicationConsent.laterPrefix": "You can approve the publication consent at any time via",
 
     "brand.nollavgift.name": "The Zero-Fee Model",
     "brand.nollavgift.tagline": "0% fees. 100% of the rent goes to you.",
@@ -1843,6 +1852,9 @@ export const translations: Record<
     "homeowner.conversion.trustResponseLabel": "Czas odpowiedzi",
     "homeowner.conversion.successTitle": "Dziękujemy!",
     "homeowner.conversion.successText": "Skontaktujemy się w ciągu 24 godzin z ofertą najmu.",
+    "homeowner.publicationConsent.intro": "Dziękujemy! Twoja nieruchomość została zarejestrowana. Przeczytaj poniższą zgodę na publikację i zatwierdź ją swoim imieniem i nazwiskiem. Jest to bezpłatne i nie zobowiązuje do wynajmu.",
+    "homeowner.publicationConsent.accepted": "Zgoda na publikację została zatwierdzona. Skontaktujemy się, gdy otrzymamy zapytanie pasujące do Twojej nieruchomości.",
+    "homeowner.publicationConsent.laterPrefix": "Zgodę na publikację możesz zatwierdzić w dowolnym momencie przez",
 
     "brand.nollavgift.name": "Model Zero-Opłat",
     "brand.nollavgift.tagline": "0% opłat. 100% czynszu dla Ciebie.",

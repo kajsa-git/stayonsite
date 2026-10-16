@@ -254,7 +254,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     imageErrors: string[];
     agreement: { token: string; alreadySigned: boolean } | null;
   } | null>(null);
-  // Del 2 (uthyrningsuppdraget): null = visas just nu, annars utfallet.
+  // Del 2 (publiceringsmedgivandet): null = visas just nu, annars utfallet.
   const [agreementOutcome, setAgreementOutcome] = useState<"signed" | "skipped" | null>(null);
   // Publiceringsgodkännandet — lever över båda vyerna så kortet inte nollställs
   // när man går vidare från del 2 till tack-sidan.
@@ -508,7 +508,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     }
   }
 
-  // Del 2 av registreringen: uthyrningsuppdraget visas direkt efter inskicket
+  // Del 2 av registreringen: publiceringsmedgivandet visas direkt efter inskicket
   // (privatpersoner som inte redan signerat). Hoppar man över mejlar vi en
   // påminnelse med samma länk — se cron:en i app/api/cron/agreement-reminders.
   if (success && success.agreement && !success.agreement.alreadySigned && agreementOutcome === null) {
@@ -520,8 +520,8 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
             <div>
               <p className="text-base font-semibold text-nordic-900">Bostaden är mottagen — tack!</p>
               <p className="mt-1 text-sm leading-6 text-nordic-700">
-                Ett snabbt steg kvar, tar under en minut: signera uthyrningsuppdraget — kostnadsfritt
-                och inte exklusivt.
+                Läs igenom publiceringsmedgivandet och godkänn med ditt namn. Det är kostnadsfritt
+                och innebär ingen skyldighet att hyra ut.
               </p>
             </div>
           </div>
@@ -532,7 +532,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
             intro={UTHYRNINGSUPPDRAG.intro}
             points={UTHYRNINGSUPPDRAG.points}
             version={UTHYRNINGSUPPDRAG.version}
-            submitLabel="Godkänn uthyrningsuppdraget"
+            submitLabel="Godkänn publiceringsmedgivandet"
             lang="sv"
             publishConsent
             onAccepted={({ publishConsented: consented }) => {
@@ -569,7 +569,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
 
           {agreementOutcome === "signed" && (
             <p className="mt-4 rounded-md border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-900">
-              Uthyrningsuppdraget är godkänt — allt är klart från din sida.
+              Publiceringsmedgivandet är godkänt. Vi kontaktar dig när vi har en förfrågan som passar din bostad.
             </p>
           )}
           {publishConsented && (
@@ -579,7 +579,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
           )}
           {agreementOutcome === "skipped" && success.agreement && (
             <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              <p className="font-medium">Uthyrningsuppdraget är inte godkänt ännu.</p>
+              <p className="font-medium">Publiceringsmedgivandet är inte godkänt ännu.</p>
               <p className="mt-1">
                 Du kan göra det när som helst via{" "}
                 <a href={`/uthyrare/${success.agreement.token}`} className="font-semibold underline">
@@ -645,7 +645,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               <div>
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#0f766e]">
                   <Home className="h-4 w-4" />
-                  {/* Privatpersoner får uthyrningsuppdraget som del 2 direkt efter inskicket. */}
+                  {/* Privatpersoner får publiceringsmedgivandet som del 2 direkt efter inskicket. */}
                   {form.ownerType === "privatperson" ? "Registrera bostad · Del 1 av 2" : "Registrera bostad"}
                 </div>
                 <Heading className="mt-2 text-2xl font-semibold text-nordic-900 sm:text-3xl">Fyll i bostadsuppgifter</Heading>

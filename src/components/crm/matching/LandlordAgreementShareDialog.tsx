@@ -1,6 +1,6 @@
 "use client";
 
-// Delningsdialog för uthyrarens uppdragsavtal (steg 1 på förslagskortet).
+// Delningsdialog för uthyrarens publiceringsmedgivande (steg 1 på förslagskortet).
 // Skapar/återanvänder den fristående ägarlänken och låter Kajsa skicka den direkt:
 // SMS (sms: till uthyrarens nummer), WhatsApp (wa.me), kopiera text, eller mejl via
 // interna klienten. Uthyraren ser BARA avtalet — inga affärsvillkor.
@@ -59,7 +59,7 @@ export function LandlordAgreementShareDialog({
     <Dialog open={open} onOpenChange={(o) => !o && close()}>
       <DialogContent className="max-w-md w-[calc(100vw-2rem)]">
         <DialogHeader>
-          <DialogTitle>Skicka uppdragsavtal — {target?.ownerName ?? "uthyrare"}</DialogTitle>
+          <DialogTitle>Skicka publiceringsmedgivande — {target?.ownerName ?? "uthyrare"}</DialogTitle>
         </DialogHeader>
 
         {!token ? (
@@ -67,7 +67,7 @@ export function LandlordAgreementShareDialog({
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Uthyraren signerar uppdragsavtalet i länken — det gäller alla deras objekt i 12 månader.
+              Uthyraren läser och godkänner publiceringsmedgivandet via länken. Det gäller alla deras bostäder i 12 månader.
               {target?.ownerPhone ? ` ${formatPhoneSv(target.ownerPhone)}` : ""}
             </p>
 
@@ -131,7 +131,7 @@ export function LandlordAgreementShareDialog({
             open={emailOpen}
             ownerId={target?.ownerId}
             defaultTo={target?.ownerEmail ?? ""}
-            defaultSubject="Uppdragsavtal – StayOnSite"
+            defaultSubject="Publiceringsmedgivande – StayOnSite"
             defaultBody={landlordAvtalEmailHtml(target?.ownerName, token)}
             onClose={() => setEmailOpen(false)}
             onSent={() => setEmailOpen(false)}
