@@ -47,7 +47,11 @@ export function AgreementStatusPanel({
   );
   const [working, setWorking] = useState(false);
 
-  const label = kind === "owner" ? "Publiceringsmedgivande" : "Uppdragsbekräftelse";
+  const a = data?.agreement ?? null;
+  const previousOwnerAgreement = kind === "owner" && a?.valid && a.version !== a.currentVersion;
+  const label = kind === "owner"
+    ? previousOwnerAgreement ? "Uthyrningsuppdrag" : "Publiceringsmedgivande"
+    : "Uppdragsbekräftelse";
   const shareLabel = kind === "owner" ? "Dela uthyrarlänk" : "Dela kundlänk";
   const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
   const activeLink =
@@ -136,8 +140,6 @@ export function AgreementStatusPanel({
       toast({ title: "Kunde inte kopiera", variant: "destructive" });
     }
   }
-
-  const a = data?.agreement ?? null;
 
   return (
     <div className="bg-white rounded-xl border p-4 space-y-2">

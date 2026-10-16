@@ -56,6 +56,13 @@ async function patch(body: unknown, token = "owner-token", id = "p1") {
 }
 
 describe("uthyrarens bostäder", () => {
+  it.each(["2026-07-13.7", "2026-07-16.8"])("låter en uthyrare med giltig tidigare version %s fortsätta uppdatera sin bostad", async (version) => {
+    await state.db.update(schema.agreementAcceptances).set({ version }).where(eq(schema.agreementAcceptances.id, "a1"));
+    expect((await patch({ beds: 5 })).status).toBe(200);
+    const [acceptance] = await state.db.select().from(schema.agreementAcceptances).where(eq(schema.agreementAcceptances.id, "a1"));
+    expect(acceptance.version).toBe(version);
+  });
+
   it("läser enbart egna bostäder utan interna fält", async () => {
     const [link] = await state.db.select().from(schema.shareLinks).where(eq(schema.shareLinks.id, "l1"));
     const rows = await loadLandlordProperties(link);

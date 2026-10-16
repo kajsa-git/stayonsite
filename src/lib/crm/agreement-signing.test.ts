@@ -65,19 +65,35 @@ describe("godkännande av aktuell avtalstext", () => {
     expect(property.publishConsentAt).toBeNull();
   });
 
-  it("bevarar tidigare signering som historik och skapar bara ett nytt godkännande", async () => {
+  it("behåller ett giltigt tidigare godkännande utan att byta version eller starta om giltighetstiden", async () => {
+    const acceptedAt = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     await state.db.insert(schema.agreementAcceptances).values({
       id: "previous", ownerId: "o1", agreementType: "uthyrningsuppdrag", version: "2026-07-16.8",
-      acceptedName: "Tidigare namn", acceptedAt: "2026-07-16T12:00:00Z",
+      acceptedName: "Tidigare namn", acceptedAt,
+    });
+    const input = { version: UTHYRNINGSUPPDRAG.version };
+    expect((await approve(input)).status).toBe(200);
+    const acceptances = await state.db.select().from(schema.agreementAcceptances);
+    expect(acceptances).toHaveLength(1);
+    expect(acceptances.find((a) => a.id === "previous")).toMatchObject({
+      version: "2026-07-16.8", acceptedName: "Tidigare namn", acceptedAt,
+    });
+  });
+
+  it("förnyar först efter utgång och använder då den nya texten utan att skriva om historiken", async () => {
+    const expiredAt = new Date();
+    expiredAt.setMonth(expiredAt.getMonth() - 13);
+    await state.db.insert(schema.agreementAcceptances).values({
+      id: "expired", ownerId: "o1", agreementType: "uthyrningsuppdrag", version: "2026-07-16.8",
+      acceptedName: "Tidigare namn", acceptedAt: expiredAt.toISOString(),
     });
     const input = { version: UTHYRNINGSUPPDRAG.version };
     expect((await approve(input)).status).toBe(201);
     expect((await approve(input)).status).toBe(200);
     const acceptances = await state.db.select().from(schema.agreementAcceptances);
     expect(acceptances).toHaveLength(2);
-    expect(acceptances.find((a) => a.id === "previous")).toMatchObject({
-      version: "2026-07-16.8", acceptedName: "Tidigare namn", acceptedAt: "2026-07-16T12:00:00Z",
-    });
+    expect(acceptances.find((a) => a.id === "expired")?.acceptedAt).toBe(expiredAt.toISOString());
+    expect(acceptances.find((a) => a.id !== "expired")?.version).toBe(UTHYRNINGSUPPDRAG.version);
   });
 
   it("låter kundens uppdragsbekräftelse godkännas med dess egen version och företagsscope", async () => {

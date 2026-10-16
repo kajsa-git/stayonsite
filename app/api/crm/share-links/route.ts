@@ -4,7 +4,7 @@
 //      ?companyId=... → företagets avtalsstatus + tenant-länkar över dess förfrågningar
 // POST { requestId?, matchId?, ownerId?, audience? } → återanvänd aktiv länk eller skapa ny.
 // Avtalsstatus: signerat av/när/version, giltigt till (12 mån), valid-flagga —
-// gammal version eller utgånget ⇒ valid: false och gaten visas igen för parten.
+// Utgånget eller en version som inte längre godtas ⇒ valid: false och gaten visas igen.
 import {
   agreementValidUntil,
   isAcceptanceValid,

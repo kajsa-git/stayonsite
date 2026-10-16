@@ -561,12 +561,12 @@ export type ShareLinkInsert = typeof shareLinks.$inferInsert;
 
 // Signerade avtal: kundens uppdragsbekräftelse (request-scope, gate i erbjudandelänken)
 // och uthyrarens uthyrningsuppdrag (owner+property-scope, fas 3). Avtalstexterna
-// versioneras i kod (src/lib/crm/avtal.ts) — ny version ⇒ befintlig accept matchar
-// inte längre och gaten visas igen. Raden är ett bevis: skrivs aldrig om, bara till.
+// versioneras i kod (src/lib/crm/avtal.ts). Där anges också vilka tidigare
+// versioner som fortsätter gälla. Raden är ett bevis: skrivs aldrig om, bara till.
 export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
   id: text("id").primaryKey(),
   agreementType: text("agreement_type").notNull(), // uppdragsbekraftelse | uthyrningsuppdrag
-  version: text("version").notNull(), // måste matcha aktuell version i avtal.ts
+  version: text("version").notNull(), // godkänd textversion; giltighet enligt avtal.ts
   requestId: text("request_id"), // via vilken förfrågan signeringen skedde (kund)
   companyId: text("company_id"), // AVTALSSCOPE kund: uppdragsbekräftelsen gäller företaget i 12 mån
   ownerId: text("owner_id"), // AVTALSSCOPE uthyrare: uthyrningsuppdraget gäller uthyraren (alla objekt) i 12 mån

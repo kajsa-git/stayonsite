@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agreementValidUntil, isAcceptanceValid, UPPDRAGSBEKRAFTELSE } from "./avtal";
+import { agreementValidUntil, isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG, UTHYRNINGSUPPDRAG_EN } from "./avtal";
 
 // Giltighetsreglerna är gate-logik: fel här betyder antingen att parter släpps
 // förbi utan giltigt avtal, eller att giltiga avtal avvisas och gaten spammar.
@@ -31,5 +31,23 @@ describe("isAcceptanceValid", () => {
 
   it("ogiltig: saknas", () => {
     expect(isAcceptanceValid(null, UPPDRAGSBEKRAFTELSE)).toBe(false);
+  });
+
+  it.each(["2026-07-13.7", "2026-07-16.8"])("behåller uthyrarens tidigare version %s till ursprungligt slutdatum", (version) => {
+    const acceptance = { version, acceptedAt: recent };
+    expect(isAcceptanceValid(acceptance, UTHYRNINGSUPPDRAG)).toBe(true);
+    expect(isAcceptanceValid(acceptance, UTHYRNINGSUPPDRAG_EN)).toBe(true);
+  });
+
+  it.each(["2026-07-13.7", "2026-07-16.8"])("kräver förnyelse när tidigare version %s har gått ut", (version) => {
+    expect(isAcceptanceValid({ version, acceptedAt: thirteenMonthsAgo }, UTHYRNINGSUPPDRAG)).toBe(false);
+  });
+
+  it("godtar inte en okänd uthyrarversion", () => {
+    expect(isAcceptanceValid({ version: "unknown", acceptedAt: recent }, UTHYRNINGSUPPDRAG)).toBe(false);
+  });
+
+  it("uthyrarens versionsundantag gäller inte kundavtal", () => {
+    expect(isAcceptanceValid({ version: "2026-07-16.8", acceptedAt: recent }, UPPDRAGSBEKRAFTELSE)).toBe(false);
   });
 });

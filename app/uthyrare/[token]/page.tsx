@@ -71,10 +71,10 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
           ) : (
             <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">
               <h1 className="text-[1.8rem] leading-tight tracking-tight text-nordic-900" style={editorial}>
-                Tack — medgivandet är godkänt
+                Tack — ditt godkännande gäller
               </h1>
               <p className="text-sm text-nordic-700">
-                Godkänt av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Medgivandet gäller till{" "}
+                Godkänt av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Godkännandet gäller till{" "}
                 {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"} och omfattar alla objekt ni
                 presenterar genom StayOnSite.
               </p>
@@ -188,7 +188,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               )}
 
               <p className="text-xs text-muted-foreground">
-                Publiceringsmedgivandet godkändes av {deal.acceptedName} den {deal.acceptedAt?.slice(0, 10)}. Frågor?
+                Godkänt av {deal.acceptedName} den {deal.acceptedAt?.slice(0, 10)}. Frågor?
                 Hör av dig till Kajsa på StayOnSite.
               </p>
             </div>

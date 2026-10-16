@@ -512,7 +512,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           ))}
                         {m.landlordSignedAt && (
                           <div className="text-emerald-800">
-                            Publiceringsmedgivande: <span className="font-medium">godkänt av {m.landlordSignedName}</span>
+                            Uthyrarens godkännande: <span className="font-medium">godkänt av {m.landlordSignedName}</span>
                             {` · ${m.landlordSignedAt.slice(0, 10)}`}
                           </div>
                         )}

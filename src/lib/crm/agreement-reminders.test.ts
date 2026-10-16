@@ -182,6 +182,25 @@ describe("agreement reminder sweep", () => {
     expect(mails).toHaveLength(0);
   });
 
+  it.each([
+    ["2026-07-13.7", "anna@example.com"], ["2026-07-16.8", "anna@example.com"],
+    ["2026-07-13.7", null], ["2026-07-16.8", null],
+  ] as const)("påminner inte och skapar ingen uppföljning för tidigare giltig version %s (e-post: %s)", async (version, email) => {
+    const owner = await seedOwner({ email });
+    await seedLink(owner.id);
+    await db.insert(agreementAcceptances).values({
+      id: "previous-acceptance", agreementType: UTHYRNINGSUPPDRAG.type, version,
+      ownerId: owner.id, acceptedName: "Anna Andersson", acceptedAt: new Date().toISOString(),
+    });
+    const { mails, sendEmail } = collector();
+    const summary = await runAgreementReminderSweep({ now: NOW, sendEmail, db });
+    expect(summary).toMatchObject({ checked: 0, emailed: 0, followUps: 0 });
+    expect(mails).toHaveLength(0);
+    expect(await db.select().from(agreementReminders)).toHaveLength(0);
+    const [unchanged] = await db.select().from(owners).where(eq(owners.id, owner.id));
+    expect(unchanged.followUpDate).toBeNull();
+  });
+
   it("uthyrare utan e-post bumpas in i uppföljningskön exakt en gång", async () => {
     const owner = await seedOwner({ email: null });
     await seedLink(owner.id);

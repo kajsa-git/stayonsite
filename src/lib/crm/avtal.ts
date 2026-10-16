@@ -1,6 +1,6 @@
 // Avtalstexterna för treparts-flödet, versionerade i kod. Godkännanden lagras i
-// crm_agreement_acceptances med (agreement_type, version) — bumpas versionen här
-// matchar befintliga accepter inte längre och gaten visas igen.
+// crm_agreement_acceptances med (agreement_type, version). Tidigare versioner
+// kan fortsätta gälla till sitt slutdatum via validPreviousVersions.
 //
 // Tonen är medveten: få åtaganden och ingen risk för motparten i detta läge.
 // Det enda strikta är förmedlingsskyddet — ingen får runda StayOnSite.
@@ -17,6 +17,7 @@ export interface AgreementPoint {
 export interface AgreementText {
   type: AgreementType;
   version: string; // ISO-datum då texten senast ändrades
+  validPreviousVersions?: readonly string[]; // behåll tidigare villkor och ursprungligt slutdatum
   title: string;
   intro: string;
   points: AgreementPoint[];
@@ -73,7 +74,8 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 // Databasnyckeln behålls så att tidigare godkännanden finns kvar som historik.
 export const UTHYRNINGSUPPDRAG: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: "2026-10-16.1", // Ny text om presentation och publicering kräver ett nytt godkännande.
+  version: "2026-10-16.1", // Används vid nya godkännanden och förnyelse efter att tidigare avtal gått ut.
+  validPreviousVersions: ["2026-07-13.7", "2026-07-16.8"],
   title: "Publiceringsmedgivande",
   intro:
     "Tjänsten är kostnadsfri för er; StayOnSite tar betalt av hyresgästen. " +
@@ -167,6 +169,7 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
 export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
   type: "uthyrningsuppdrag",
   version: UTHYRNINGSUPPDRAG.version,
+  validPreviousVersions: UTHYRNINGSUPPDRAG.validPreviousVersions,
   title: "Publication Consent",
   intro:
     "The service is free of charge for you; StayOnSite charges the tenant. " +
@@ -213,9 +216,9 @@ export const AGREEMENTS: Record<AgreementType, AgreementText> = {
 
 export type AgreementLanguage = "sv" | "en";
 
-// Ett signerat uppdragsavtal gäller i 12 månader från signering (Kajsas beslut
-// 2026-07-13) — därefter, eller när avtalstexten versionbumpats, krävs
-// omsignering och gaten visas igen.
+// Ett godkännande gäller i 12 månader från den ursprungliga signeringen.
+// Uthyrarens tidigare versioner behåller sina villkor och sitt slutdatum;
+// den nya texten används först vid ett nytt godkännande eller en förnyelse.
 export const AVTAL_GILTIGHET_MANADER = 12;
 
 export function agreementValidUntil(acceptedAt: string): string {
@@ -224,13 +227,13 @@ export function agreementValidUntil(acceptedAt: string): string {
   return d.toISOString().slice(0, 10);
 }
 
-// Giltig = rätt version OCH inom 12 månader från signering.
+// Giltig = en godtagen version OCH inom 12 månader från ursprunglig signering.
 export function isAcceptanceValid(
   a: { version: string; acceptedAt: string } | null | undefined,
   text: AgreementText
 ): boolean {
   if (!a) return false;
-  if (a.version !== text.version) return false;
+  if (a.version !== text.version && !text.validPreviousVersions?.includes(a.version)) return false;
   return new Date(agreementValidUntil(a.acceptedAt)).getTime() >= Date.now();
 }
 
