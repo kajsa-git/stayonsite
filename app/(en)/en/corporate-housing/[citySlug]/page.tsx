@@ -21,7 +21,9 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
 
   return buildMetadata({
     title: `Corporate Housing & Apartments in ${city.name} | StayOnSite`,
-    description: truncateDescription(getLocalizedText(city.intro, 'en')),
+    description: city.pageContent
+      ? getLocalizedText(city.pageContent.metadataDescription, 'en')
+      : truncateDescription(getLocalizedText(city.intro, 'en')),
     keywords: getLocalizedKeywords(city.keywords, 'en').join(', ') + ', StayOnSite',
     canonical: en,
     hreflangs: [

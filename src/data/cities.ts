@@ -1,4 +1,5 @@
 import { LocalizedKeywords, LocalizedString } from '@/types/localized';
+import { bodenPageContent } from './boden-content';
 
 const ls = (sv: string, en: string, pl: string): LocalizedString => ({ sv, en, pl });
 const lk = (sv: string[], en: string[], pl: string[]): LocalizedKeywords => ({ sv, en, pl });
@@ -32,6 +33,21 @@ export interface CityFAQ {
   answer: LocalizedString;
 }
 
+export interface CityPageContent {
+  metadataDescription: LocalizedString;
+  projectsLabel: LocalizedString;
+  projectsHeading: LocalizedString;
+  checklistDescription: LocalizedString;
+  neighborhoodsIntro: LocalizedString;
+  listingNote: LocalizedString;
+  processIntro: LocalizedString;
+  inquiryChecklist: LocalizedString[];
+  processSteps: Array<{ title: LocalizedString; description: LocalizedString }>;
+  faq: CityFAQ[];
+  showRating: boolean;
+  updatedAt: string;
+}
+
 export interface City {
   slug: string;
   name: string;
@@ -47,7 +63,8 @@ export interface City {
   metrics: CityMetric[];
   neighborhoods: CityNeighborhood[];
   projects: CityProject[];
-  testimonial: CityTestimonial;
+  testimonial: CityTestimonial | null;
+  pageContent?: CityPageContent;
   faq: CityFAQ[];
   nearby: string[];
 }
@@ -1061,109 +1078,60 @@ export const cities: City[] = [
     name: 'Boden',
     region: 'Norrbottens län',
     population: '28 000',
-    description: 'Militär garnisonstad med omfattande försvarsinvesteringar och infrastrukturprojekt.',
-    highlights: ['Försvarsutbyggnad', 'Militära anläggningar', 'Infrastrukturprojekt', 'Testcentrum'],
-    industries: ['Försvar', 'Bygg & Anläggning', 'Infrastruktur', 'Testanläggningar'],
+    description: 'Projektort i Norrbotten med verksamhet inom bygg, industri och infrastruktur.',
+    highlights: ['Bygg och installation', 'Industri och montage', 'Infrastrukturprojekt'],
+    industries: ['Bygg & Anläggning', 'Industri', 'Infrastruktur', 'Montage'],
     coordinates: [65.8252, 21.6886],
     heroHook: ls(
-      'Företagsbostäder & entreprenörsboende i Boden – för projektteam och montörer',
-      'Corporate Housing & Apartments in Boden – Near Defence & H2 Green Steel',
-      'Noclegi & Zakwaterowanie Pracownicze w Boden – Blisko Obronności i H2 Green Steel'
+      'Företagsboende i Boden – möblerade hus och lägenheter för arbetslag',
+      'Corporate housing in Boden – furnished houses and apartments for project teams',
+      'Zakwaterowanie firmowe w Boden – umeblowane domy i mieszkania dla ekip'
     ),
     intro: ls(
-      'För företag som söker boende i Boden ordnar vi möblerade företagslägenheter, hus och personalboende för montörer och projektteam. Boendet väljs efter arbetsplats, skift, parkering och avtalslängd och kan vara ett alternativ till lägenhetshotell i Boden.',
-      'Defense expansion and military projects require secure and flexible accommodation in Boden. We have corporate apartments and houses in central Boden and Svartbyträsk where your teams get comfort after long shifts in the north.',
-      'Rozbudowa obronna i projekty wojskowe wymagają bezpiecznych i elastycznych noclegów w Boden. Mamy mieszkania firmowe i domy w centrum Boden i Svartbyträsk, gdzie Twoje ekipy odpoczną po długich zmianach na północy.'
+      'StayOnSite hjälper företag att ordna personalboende i Boden för bygg-, industri- och montageprojekt. Vi tar fram boendeförslag utifrån antal personer, behov av sovrum, projektperiod och arbetsplats. Pris, tillgänglighet och vad som ingår bekräftas för varje boende.',
+      'StayOnSite arranges worker accommodation in Boden for construction, industrial and installation projects. We prepare proposals based on team size, bedrooms, project dates and worksite location. Prices, availability and included services are confirmed for each property.',
+      'StayOnSite organizuje zakwaterowanie pracownicze w Boden dla projektów budowlanych, przemysłowych i montażowych. Propozycje przygotowujemy według liczby osób, potrzebnych sypialni, terminu i miejsca pracy. Cenę, dostępność i zakres usług potwierdzamy dla każdego obiektu.'
     ),
     keywords: lk(
       ['personalboende boden', 'företagsboende boden', 'företagsbostäder boden', 'entreprenörsbostäder boden', 'lägenhetshotell boden', 'byggboende boden', 'boende byggarbetare boden', 'montörboende boden', 'boende boden', 'tillfälligt boende företag boden'],
-      ['corporate housing boden', 'defense staff apartments', 'military construction housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'apartments boden sweden'],
-      ['zakwaterowanie pracownicze boden', 'mieszkania obronne', 'noclegi wojskowe boden', 'noclegi dla budowlańców boden szwecja', 'kwatery pracownicze boden', 'tymczasowe zakwaterowanie boden szwecja']
+      ['corporate housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'furnished houses boden', 'apartments boden sweden'],
+      ['zakwaterowanie pracownicze boden', 'noclegi dla budowlańców boden szwecja', 'kwatery pracownicze boden', 'tymczasowe zakwaterowanie boden szwecja']
     ),
-    metrics: [
-      {
-        value: '32',
-        label: ls('platser nära försvaret', 'beds near defense areas', 'miejsc blisko wojska'),
-        subtext: ls('Centralt i Boden', 'Central in Boden', 'Centrum Boden')
-      },
-      {
-        value: '8',
-        label: ls('försvarsbyggen', 'defense projects', 'projekty obronne'),
-        subtext: ls('Nya kaserner och anläggningar', 'New barracks and facilities', 'Nowe koszary i obiekty')
-      },
-      {
-        value: '15',
-        label: ls('min till Bodenfortet', 'min to Boden Fortress', 'min do Fortecy Boden'),
-        subtext: ls('Från våra boenden', 'From our housing', 'Z naszych noclegów')
-      }
-    ],
+    metrics: [],
     neighborhoods: [
       {
         name: ls('Centrala Boden', 'Central Boden', 'Centrum Boden'),
-        description: ls('Nära alla militära anläggningar och service.', 'Close to all military facilities and services.', 'Blisko wszystkich obiektów wojskowych i usług.'),
-        distance: ls('5 min till garnisonen', '5 min to garrison', '5 min do garnizonu')
+        description: ls('För arbetslag som vill ha nära till service. Vi kontrollerar boendealternativ för er period.', 'For teams who want access to local services. We check accommodation options for your dates.', 'Dla ekip, którym zależy na dostępie do usług. Sprawdzamy zakwaterowanie w wybranym terminie.'),
+        distance: ls('Ange arbetsplatsens adress', 'Provide the worksite address', 'Podaj adres miejsca pracy')
       },
       {
         name: ls('Svartbyträsk', 'Svartbyträsk', 'Svartbyträsk'),
-        description: ls('Lugnt område för längre uppdrag.', 'Quiet area for longer deployments.', 'Spokojna okolica na dłuższe kontrakty.'),
-        distance: ls('12 min till testcentrum', '12 min to test center', '12 min do centrum testowego')
+        description: ls('Ett område att ta med när boendealternativen jämförs utifrån arbetsplats och projektperiod.', 'An area to consider when comparing accommodation against the worksite location and project dates.', 'Okolica do uwzględnienia przy porównywaniu zakwaterowania według miejsca pracy i terminu projektu.'),
+        distance: ls('Restiden stäms av för varje boende', 'Travel time is checked for each property', 'Dojazd sprawdzamy dla każdego obiektu')
       },
       {
         name: ls('Sävast', 'Sävast', 'Sävast'),
-        description: ls('Villor med parkering för arbetsbussar och utrustning.', 'Houses with parking for crew vans and equipment.', 'Domy z parkingiem dla busów i sprzętu.'),
-        distance: ls('10 min till city', '10 min to downtown', '10 min do centrum')
+        description: ls('Förfrågningar om hus och lägenheter bedöms utifrån antal personer, sovrum och parkeringsbehov.', 'House and apartment enquiries are assessed against headcount, bedrooms and parking requirements.', 'Zapytania o domy i mieszkania oceniamy według liczby osób, sypialni i wymagań parkingowych.'),
+        distance: ls('Parkering bekräftas i boendeförslaget', 'Parking is confirmed in the proposal', 'Parking potwierdzamy w propozycji')
       }
     ],
     projects: [
       {
-        name: ls('Försvarsutbyggnad', 'Defense Expansion', 'Rozbudowa obronna'),
-        description: ls('Boende för bygg- och installationsteam vid nya kaserner.', 'Housing for construction and installation crews at new barracks.', 'Zakwaterowanie dla ekip budowlanych przy nowych koszarach.')
+        name: ls('Bygg och installation', 'Construction and installation', 'Budowa i instalacje'),
+        description: ls('Ange arbetsplats och skifttider så att boendeförslaget kan ta hänsyn till lagets resor.', 'Provide the worksite and shift times so the proposal can account for team travel.', 'Podaj miejsce pracy i godziny zmian, aby uwzględnić dojazdy zespołu.')
       },
       {
-        name: ls('Infrastrukturprojekt', 'Infrastructure Projects', 'Projekty infrastrukturalne'),
-        description: ls('Team nära väg- och järnvägsbyggen.', 'Crews near road and rail construction.', 'Ekipy przy budowie dróg i kolei.')
+        name: ls('Industri och montage', 'Industry and assembly', 'Przemysł i montaż'),
+        description: ls('Beskriv behovet av egna sovrum, kök, tvätt och plats för servicebilar.', 'Describe the need for separate bedrooms, kitchen, laundry and work-van parking.', 'Opisz wymagania dotyczące oddzielnych sypialni, kuchni, prania i parkingu dla pojazdów służbowych.')
       },
       {
-        name: ls('Testcentrum', 'Test Center', 'Centrum testowe'),
-        description: ls('Långtidsboende för tekniker och testoperatörer.', 'Long-term housing for technicians and test operators.', 'Długoterminowe noclegi dla techników i operatorów testowych.')
+        name: ls('Längre projekt', 'Longer projects', 'Dłuższe projekty'),
+        description: ls('Skicka hela projektperioden och ange om bemanningen kan förändras. Villkor för ändringar stäms av före bokning.', 'Send the full project period and indicate possible staffing changes. Terms for changes are agreed before booking.', 'Podaj cały okres projektu i możliwe zmiany liczby pracowników. Warunki zmian ustalamy przed rezerwacją.')
       }
     ],
-    testimonial: {
-      quote: ls(
-        'Vi behövde plats för 15 montörer under sex månader och StayOnSite löste villor i Sävast där teamet fick ro mellan passen.',
-        'We needed housing for 15 fitters for six months and StayOnSite arranged houses in Sävast where the crew got peace between shifts.',
-        'Potrzebowaliśmy noclegów dla 15 monterów przez pół roku i StayOnSite zorganizowało domy w Sävast, gdzie zespół miał spokój między zmianami.'
-      ),
-      author: 'Magnus N.',
-      role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'Bygg & Anläggning'
-    },
-    faq: [
-      {
-        question: ls('Hur funkar säkerheten vid försvarsbyggen?', 'How does security work at defense builds?', 'Jak działa bezpieczeństwo przy obiektach obronnych?'),
-        answer: ls(
-          'Vi är vana vid projekt med höga säkerhetskrav och anpassar boenden efter era behov.',
-          'We are experienced with high-security projects and adapt housing to your requirements.',
-          'Przestrzegamy wszystkich wymagań bezpieczeństwa i współpracujemy z siłami zbrojnymi przy zgodach i dokumentacji.'
-        )
-      },
-      {
-        question: ls('Kan ni hantera korta varsel?', 'Can you handle short notice?', 'Czy możecie obsłużyć krótkie terminy?'),
-        answer: ls(
-          'Ja, vi har beredskap för snabba bemanningsförändringar och kan ordna boende inom 48 timmar.',
-          'Yes, we are prepared for rapid staffing changes and can arrange housing within 48 hours.',
-          'Tak, jesteśmy przygotowani na szybkie zmiany obsady i możemy zorganizować noclegi w 48 godzin.'
-        )
-      },
-      {
-        question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
-        answer: ls(
-          'Fullt möblerade boenden med köksredskap, sängkläder, städ varje vecka och el/värme/wifi.',
-          'Fully furnished housing with kitchen equipment, bed linens, weekly cleaning and electricity/heating/wifi.',
-          'W pełni umeblowane noclegi ze sprzętem kuchennym, pościelą, cotygodniowym sprzątaniem i prądem/ogrzewaniem/wifi.'
-        )
-      }
-    ],
+    testimonial: null,
+    faq: [],
+    pageContent: bodenPageContent,
     nearby: ['lulea', 'umea']
   },
   {

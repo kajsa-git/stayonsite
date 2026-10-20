@@ -197,11 +197,13 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       latitude: city.coordinates[0],
       longitude: city.coordinates[1]
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: RATING_VALUE,
-      reviewCount: REVIEW_COUNT
-    }
+    ...(city.pageContent?.showRating !== false ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: RATING_VALUE,
+        reviewCount: REVIEW_COUNT
+      }
+    } : {})
   };
 
   // Pris-intent: fångar "företagsbostäder {stad} pris" / "vad kostar..." (hög köpintention).
@@ -246,7 +248,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       pl: `Tak. Organizujemy zakwaterowanie krótkoterminowe od miesiąca oraz umowy długoterminowe na rok lub dłużej w ${city.name}. Nasze mieszkania to alternatywa dla aparthoteli: umeblowane, ze sprzątaniem końcowym, zwykle przy niższym miesięcznym koszcie, bo wynajmujecie całe mieszkanie.`,
     },
   };
-  const faqItems = [pricingFaq, staffHousingFaq, stayTypeFaq, ...city.faq];
+  const faqItems = city.pageContent?.faq ?? [pricingFaq, staffHousingFaq, stayTypeFaq, ...city.faq];
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -293,7 +295,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
     name: heroHeading,
     url: canonicalUrl,
     inLanguage: language,
-    dateModified: CONTENT_UPDATED,
+    dateModified: city.pageContent?.updatedAt ?? CONTENT_UPDATED,
     isPartOf: {
       '@type': 'WebSite',
       name: 'StayOnSite',
@@ -363,6 +365,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 {heroDescription}
               </p>
 
+              {city.pageContent?.showRating !== false && (
               <div className="flex items-center gap-3 mb-10 text-white/70 text-sm">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -374,6 +377,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 <span className="hidden sm:inline text-white/30">·</span>
                 <span className="hidden sm:inline">{translate('Sedan 2016', 'Since 2016', 'Od 2016')}</span>
               </div>
+              )}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -402,6 +406,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
 
               <HeroIntentForm defaultCity={city.name} />
 
+              {city.metrics.length > 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -417,6 +422,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                   </div>
                 ))}
               </motion.div>
+              )}
             </div>
           </div>
         </section>
@@ -427,10 +433,10 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <span className="inline-block text-[#ff6300] text-sm uppercase tracking-[0.35em] font-heading">
-                  {translate('Pågående projekt', 'Active projects', 'Aktywne projekty')}
+                  {city.pageContent ? getLocalizedText(city.pageContent.projectsLabel, language) : translate('Pågående projekt', 'Active projects', 'Aktywne projekty')}
                 </span>
                 <h2 className="text-3xl md:text-4xl font-semibold text-nordic-900 mt-3">
-                  {translate(
+                  {city.pageContent ? getLocalizedText(city.pageContent.projectsHeading, language) : translate(
                     `Boende för byggarbetare nära projekten i ${city.name}`,
                     `Worker housing near active projects in ${city.name}`,
                     `Noclegi dla pracowników blisko budów w ${city.name}`
@@ -507,7 +513,11 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
               <h2 className="font-heading text-2xl font-semibold text-foreground">
                 {t('projectChecklist.title')}
               </h2>
-              <p className="text-muted-foreground">{t('projectChecklist.description')}</p>
+              <p className="text-muted-foreground">
+                {city.pageContent
+                  ? getLocalizedText(city.pageContent.checklistDescription, language)
+                  : t('projectChecklist.description')}
+              </p>
               <Button asChild variant="outline">
                 <Link href="/blogg/checklista-personalboende-boendebrief">
                   {t('projectChecklist.read')}
@@ -531,7 +541,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                     )}
                   </h2>
                   <p className="text-gray-600 mt-2">
-                    {translate(
+                    {city.pageContent ? getLocalizedText(city.pageContent.neighborhoodsIntro, language) : translate(
                       'Företagslägenheter och hus med kort restid, plats för servicebilar och gemensamma ytor för långa uppdrag.',
                       'Short travel times, parking for vans and shared spaces for long deployments.',
                       'Krótki dojazd, miejsce na auta serwisowe i wspólne przestrzenie przy długich kontraktach.'
@@ -574,19 +584,23 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                   <div>
                     <h2 className="text-3xl font-bold text-nordic-900">
-                      Lediga företagsboenden i {city.name} just nu
+                      {city.pageContent
+                        ? translate(`Publicerade företagsboenden i ${city.name}`, `Published corporate housing in ${city.name}`, `Opublikowane oferty zakwaterowania w ${city.name}`)
+                        : `Lediga företagsboenden i ${city.name} just nu`}
                     </h2>
                     <p className="text-gray-600 mt-2">
-                      {listings.length === 1
-                        ? 'Ett publicerat boende redo för inflytt — hör av dig för visning.'
-                        : `${listings.length} publicerade boenden redo för inflytt — hör av dig för visning.`}
+                      {city.pageContent
+                        ? getLocalizedText(city.pageContent.listingNote, language)
+                        : listings.length === 1
+                          ? 'Ett publicerat boende redo för inflytt — hör av dig för visning.'
+                          : `${listings.length} publicerade boenden redo för inflytt — hör av dig för visning.`}
                     </p>
                   </div>
                   <Link
                     href="/boenden"
                     className="inline-flex items-center gap-1.5 text-[#ff6300] font-medium mt-4 md:mt-0 hover:underline shrink-0"
                   >
-                    Se alla lediga boenden
+                    {city.pageContent ? translate('Se alla boenden', 'View all properties', 'Zobacz wszystkie obiekty') : 'Se alla lediga boenden'}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -659,7 +673,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                   )}
                 </h2>
                 <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
-                  {translate(
+                  {city.pageContent ? getLocalizedText(city.pageContent.processIntro, language) : translate(
                     `Ring, mejla eller skicka WhatsApp. Vi återkommer alltid inom en arbetsdag – ofta inom några timmar – med en boendeplan för ${city.name}.`,
                     `Call, email or WhatsApp us. We always get back to you within one business day – often within hours – with a housing plan for ${city.name}.`,
                     `Zadzwoń, napisz e-mail albo WhatsApp. Zawsze odpowiadamy w ciągu jednego dnia roboczego – często w kilka godzin – z planem zakwaterowania w ${city.name}.`
@@ -667,13 +681,21 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 </p>
               </div>
 
+              {city.pageContent && (
+                <ul className="mx-auto mb-10 flex max-w-3xl list-disc flex-col gap-3 pl-5 text-muted-foreground">
+                  {city.pageContent.inquiryChecklist.map((item) => (
+                    <li key={item.sv}>{getLocalizedText(item, language)}</li>
+                  ))}
+                </ul>
+              )}
+
               <div className="grid md:grid-cols-2 gap-6">
-                {[
+                {(city.pageContent ? city.pageContent.processSteps.map((step) => getLocalizedText(step.title, language)) : [
                   translate('Brief och första samtal', 'Brief and first call', 'Brief i pierwszy kontakt'),
                   translate('24h-boendeplan', '24h housing plan', 'Plan zakwaterowania w 24h'),
                   translate('Kontrakt & inflytt', 'Contracts & move-in', 'Kontrakty i wprowadzenie'),
                   translate('Support under projektet', 'Support during the project', 'Wsparcie w trakcie projektu')
-                ].map((title, index) => (
+                ]).map((title, index) => (
                   <Card key={title} className="h-full">
                     <CardHeader>
                       <div className="flex items-center gap-3">
@@ -685,6 +707,8 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                     </CardHeader>
                     <CardContent>
                       <p className="text-gray-700">
+                        {city.pageContent ? getLocalizedText(city.pageContent.processSteps[index].description, language) : (
+                          <>
                         {index === 0 &&
                           translate(
                             'Vi behöver antal platser, datum och krav på parkering eller utrustning.',
@@ -709,6 +733,8 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                             'The same contact handles extra beds, swaps and questions throughout the assignment.',
                             'Ta sama osoba opiekuje się dodatkowymi łóżkami, zmianami i pytaniami przez cały projekt.'
                           )}
+                          </>
+                        )}
                       </p>
                     </CardContent>
                   </Card>
@@ -719,6 +745,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
         </section>
 
         {/* Testimonial */}
+        {city.testimonial && (
         <section className="section-spacing bg-gradient-to-br from-nordic-900 to-nordic-700 text-white">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-4xl mx-auto text-center">
@@ -732,6 +759,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
             </div>
           </div>
         </section>
+        )}
 
         {/* FAQ */}
         <section className="section-spacing bg-white border-t border-nordic-100">

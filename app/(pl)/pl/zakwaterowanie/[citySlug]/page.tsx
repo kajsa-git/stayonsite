@@ -21,7 +21,9 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
 
   return buildMetadata({
     title: `Zakwaterowanie pracownicze i mieszkania firmowe ${city.name} | StayOnSite`,
-    description: truncateDescription(getLocalizedText(city.intro, 'pl')),
+    description: city.pageContent
+      ? getLocalizedText(city.pageContent.metadataDescription, 'pl')
+      : truncateDescription(getLocalizedText(city.intro, 'pl')),
     keywords: getLocalizedKeywords(city.keywords, 'pl').join(', ') + ', StayOnSite',
     canonical: pl,
     hreflangs: [
