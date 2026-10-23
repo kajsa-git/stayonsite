@@ -1,7 +1,11 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { useTranslation } from "@/hooks/use-translation";
+import type { Request } from "@/lib/crm/schema";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -26,6 +30,7 @@ interface Row {
   followUpDate: string | null;
   requestCount: number;
   openRequestCount: number;
+  activeRequests: Pick<Request, "id" | "requestNumber" | "city" | "persons" | "bedsFrom" | "bedsTo" | "bedroomsFrom" | "bedroomsTo">[];
   primaryContactName: string | null;
   primaryContactPhone: string | null;
 }
@@ -42,7 +47,12 @@ const LEAD_SOURCE: Record<string, string> = {
 const fetcher = swrFetcher;
 
 export function CompanyTable() {
+  return <LanguageProvider><CompanyTableContent /></LanguageProvider>;
+}
+
+function CompanyTableContent() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filter, setFilter] = useState<CompanyFilter>("all");
@@ -104,12 +114,16 @@ export function CompanyTable() {
       </div>
 
       <div className="flex-1 overflow-auto p-4">
-        <div className="rounded-xl border bg-white shadow-sm overflow-hidden [&>div]:overflow-visible">
+        <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-nordic-100 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-nordic-900">
               <TableRow className="border-b border-nordic-200 hover:bg-transparent">
                 <TableHead className="w-12" />
                 <TableHead>Företag</TableHead>
+                <TableHead>{t("crm.companyTable.city")}</TableHead>
+                <TableHead className="text-right">{t("crm.companyTable.persons")}</TableHead>
+                <TableHead className="text-right">{t("crm.companyTable.beds")}</TableHead>
+                <TableHead className="text-right">{t("crm.companyTable.bedrooms")}</TableHead>
                 <TableHead>Org.nr</TableHead>
                 <TableHead>Lead-källa</TableHead>
                 <TableHead>Huvudkontakt</TableHead>
@@ -121,15 +135,15 @@ export function CompanyTable() {
               {loading ? (
                 Array.from({ length: 10 }).map((_, i) => (
                   <TableRow key={i} className="border-t border-nordic-100">
-                    <TableCell colSpan={7}><div className="h-5 w-full rounded bg-nordic-100 animate-pulse" /></TableCell>
+                    <TableCell colSpan={11}><Skeleton className="h-5 w-full" /></TableCell>
                   </TableRow>
                 ))
               ) : filtered.length === 0 ? (
-                <TableRow className="hover:bg-transparent"><TableCell colSpan={7} className="py-10 text-center text-muted-foreground italic">Inga företag.</TableCell></TableRow>
+                <TableRow className="hover:bg-transparent"><TableCell colSpan={11} className="py-10 text-center text-muted-foreground italic">Inga företag.</TableCell></TableRow>
               ) : (
-                filtered.map((c) => (
+                filtered.flatMap((c) => (c.activeRequests?.length ? c.activeRequests : [null]).map((request) => (
                   <TableRow
-                    key={c.id}
+                    key={`${c.id}:${request?.id ?? "none"}`}
                     tabIndex={0}
                     onClick={() => router.push(`/crm/company/${c.id}`)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); router.push(`/crm/company/${c.id}`); } }}
@@ -138,7 +152,22 @@ export function CompanyTable() {
                     <TableCell>
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-nordic-700 text-white text-[11px] font-bold">{initials(c.name)}</span>
                     </TableCell>
-                    <TableCell className="font-semibold text-foreground">{c.name}</TableCell>
+                    <TableCell className="font-semibold text-foreground">
+                      {c.name}
+                      {request?.requestNumber != null && <div className="font-mono text-xs font-normal text-muted-foreground">#{request.requestNumber}</div>}
+                    </TableCell>
+                    <TableCell title={!request?.city ? t("crm.companyTable.notSpecified") : undefined}>
+                      <div className="max-w-64 whitespace-normal">{request?.city || "–"}</div>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums" title={request?.persons == null ? t("crm.companyTable.notSpecified") : undefined}>
+                      {request?.persons ?? "–"}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums" title={request?.bedsFrom == null && request?.bedsTo == null ? t("crm.companyTable.notSpecified") : undefined}>
+                      {formatNeedRange(request?.bedsFrom, request?.bedsTo)}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums" title={request?.bedroomsFrom == null && request?.bedroomsTo == null ? t("crm.companyTable.notSpecified") : undefined}>
+                      {formatNeedRange(request?.bedroomsFrom, request?.bedroomsTo)}
+                    </TableCell>
                     <TableCell className="font-mono text-xs text-foreground">{c.orgNr || "–"}</TableCell>
                     <TableCell className="text-foreground">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
                     <TableCell className="text-foreground">
@@ -159,7 +188,7 @@ export function CompanyTable() {
                       ) : <span className="text-muted-foreground">–</span>}
                     </TableCell>
                   </TableRow>
-                ))
+                )))
               )}
             </TableBody>
           </Table>
@@ -171,4 +200,10 @@ export function CompanyTable() {
 
 function initials(name: string) {
   return name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+}
+
+function formatNeedRange(from: number | null | undefined, to: number | null | undefined): string {
+  if (from == null) return to == null ? "–" : `≤${to}`;
+  if (to == null) return `≥${from}`;
+  return from === to ? String(from) : `${from}–${to}`;
 }

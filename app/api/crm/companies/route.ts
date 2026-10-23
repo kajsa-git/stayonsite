@@ -2,7 +2,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexCompany } from "@/lib/crm/search-index";
 import { companies, contacts, requests } from "@/lib/crm/schema";
-import { asc, inArray, like, or } from "drizzle-orm";
+import { asc, desc, inArray, like, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -27,21 +27,36 @@ export async function GET(req: NextRequest) {
 
   if (!summary || rows.length === 0) return NextResponse.json(rows);
 
-  // Enrich with request counts + primary contact for the table view
+  // Keep each active request's needs together, including when a company has several.
   const ids = rows.map((r) => r.id);
   const [reqRows, contactRows] = await Promise.all([
-    db.select({ companyId: requests.companyId, status: requests.status }).from(requests).where(inArray(requests.companyId, ids)),
+    db
+      .select({
+        id: requests.id,
+        requestNumber: requests.requestNumber,
+        companyId: requests.companyId,
+        status: requests.status,
+        city: requests.city,
+        persons: requests.persons,
+        bedsFrom: requests.bedsFrom,
+        bedsTo: requests.bedsTo,
+        bedroomsFrom: requests.bedroomsFrom,
+        bedroomsTo: requests.bedroomsTo,
+      })
+      .from(requests)
+      .where(inArray(requests.companyId, ids))
+      .orderBy(desc(requests.requestNumber), asc(requests.id)),
     db
       .select({ companyId: contacts.companyId, name: contacts.name, phone: contacts.phone, isPrimary: contacts.isPrimary })
       .from(contacts)
       .where(inArray(contacts.companyId, ids)),
   ]);
 
-  const reqAgg: Record<string, { total: number; open: number }> = {};
+  const reqAgg: Record<string, { total: number; activeRequests: typeof reqRows }> = {};
   for (const r of reqRows) {
-    const a = (reqAgg[r.companyId] ??= { total: 0, open: 0 });
+    const a = (reqAgg[r.companyId] ??= { total: 0, activeRequests: [] });
     a.total++;
-    if (OPEN_STATUSES.includes(r.status)) a.open++;
+    if (OPEN_STATUSES.includes(r.status)) a.activeRequests.push(r);
   }
   const primary: Record<string, { name: string | null; phone: string | null }> = {};
   for (const c of contactRows) {
@@ -51,7 +66,8 @@ export async function GET(req: NextRequest) {
   const enriched = rows.map((r) => ({
     ...r,
     requestCount: reqAgg[r.id]?.total ?? 0,
-    openRequestCount: reqAgg[r.id]?.open ?? 0,
+    openRequestCount: reqAgg[r.id]?.activeRequests.length ?? 0,
+    activeRequests: reqAgg[r.id]?.activeRequests ?? [],
     primaryContactName: primary[r.id]?.name ?? null,
     primaryContactPhone: primary[r.id]?.phone ?? null,
   }));

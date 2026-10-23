@@ -1,6 +1,11 @@
 export type AvailableLanguages = "sv" | "en" | "pl";
 
 export type TranslationKey =
+  | "crm.companyTable.city"
+  | "crm.companyTable.persons"
+  | "crm.companyTable.beds"
+  | "crm.companyTable.bedrooms"
+  | "crm.companyTable.notSpecified"
   | "projectChecklist.title"
   | "projectChecklist.description"
   | "projectChecklist.download"
@@ -396,6 +401,11 @@ export const translations: Record<
   Record<TranslationKey, string>
 > = {
   sv: {
+    "crm.companyTable.city": "Stad",
+    "crm.companyTable.persons": "Personer",
+    "crm.companyTable.beds": "Bäddar",
+    "crm.companyTable.bedrooms": "Sovrum",
+    "crm.companyTable.notSpecified": "Ej angivet",
     "projectChecklist.title": "Fri checklista för personalboende",
     "projectChecklist.description": "Samla boendekrav, jämför offerter och stäm av inflyttningen med vår ifyllbara PDF-mall.",
     "projectChecklist.download": "Ladda ned checklistan (PDF)",
@@ -891,6 +901,11 @@ export const translations: Record<
     "cookie.deny": "Nej tack",
   },
   en: {
+    "crm.companyTable.city": "City",
+    "crm.companyTable.persons": "People",
+    "crm.companyTable.beds": "Beds",
+    "crm.companyTable.bedrooms": "Bedrooms",
+    "crm.companyTable.notSpecified": "Not specified",
     "projectChecklist.title": "Free worker accommodation checklist",
     "projectChecklist.description": "Record housing needs, compare quotes and check move-in arrangements with our fillable PDF template.",
     "projectChecklist.download": "Download the checklist (PDF)",
@@ -1390,6 +1405,11 @@ export const translations: Record<
     "cookie.deny": "No thanks",
   },
   pl: {
+    "crm.companyTable.city": "Miasto",
+    "crm.companyTable.persons": "Osoby",
+    "crm.companyTable.beds": "Łóżka",
+    "crm.companyTable.bedrooms": "Sypialnie",
+    "crm.companyTable.notSpecified": "Nie podano",
     "projectChecklist.title": "Bezpłatna lista kontrolna zakwaterowania pracowników",
     "projectChecklist.description": "Zbierz wymagania, porównaj oferty i sprawdź przygotowania do przyjazdu dzięki formularzowi PDF.",
     "projectChecklist.download": "Pobierz listę kontrolną (PDF)",
