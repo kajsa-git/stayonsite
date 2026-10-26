@@ -183,13 +183,13 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm">
               <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
               <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
-              <Equip label="Diskmaskin" yes={!!property.dishwasher} />
+              <Equip label="Diskmaskin" yes={property.dishwasher} />
               <Equip label="Parkering" value={property.parkingSpaces != null ? String(property.parkingSpaces) : "–"} />
-              <Equip label="Kök" yes={!!property.kitchen} />
-              <Equip label="Garage" yes={!!property.garage} />
-              <Equip label="Bredband" yes={!!property.broadband} />
-              <Equip label="Möblerat" yes={!!property.furnished} />
-              <Equip label="Eget boende" yes={!!property.egetBoende} />
+              <Equip label="Kök" yes={property.kitchen} />
+              <Equip label="Garage" yes={property.garage} />
+              <Equip label="Bredband" yes={property.broadband} />
+              <Equip label="Möblerat" yes={property.furnished} />
+              <Equip label="Eget boende" yes={property.egetBoende} />
             </div>
           </div>
 
@@ -197,9 +197,9 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Vad ingår i hyran</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm">
-                <Equip label="Allt ingår" yes={!!property.allIncluded} />
-                <Equip label="Sängkläder + handduk" yes={!!property.linensIncluded} />
-                <Equip label="Värme + varmvatten" yes={!!property.heatWaterIncluded} />
+                <Equip label="Allt ingår" yes={property.allIncluded} />
+                <Equip label="Sängkläder + handduk" yes={property.linensIncluded} />
+                <Equip label="Värme + varmvatten" yes={property.heatWaterIncluded} />
               </div>
               {property.excludedNote && (
                 <p className="text-sm mt-2"><span className="text-muted-foreground">Ingår inte:</span> {property.excludedNote}</p>

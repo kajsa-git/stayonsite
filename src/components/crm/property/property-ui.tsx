@@ -5,8 +5,8 @@ import type React from "react";
 export const FIELD_CLS =
   "w-full text-sm border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500";
 
-export function Equip({ label, value, yes }: { label: string; value?: string; yes?: boolean }) {
-  const display = value ?? (yes ? "Ja" : "Nej");
+export function Equip({ label, value, yes }: { label: string; value?: string; yes?: boolean | null }) {
+  const display = value ?? (yes == null ? "Ej bekräftat" : yes ? "Ja" : "Nej");
   const color = value
     ? "text-nordic-900"
     : yes
