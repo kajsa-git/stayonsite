@@ -71,7 +71,6 @@ const Index = () => {
       { '@type': 'City', 'name': 'Umeå' },
       { '@type': 'Country', 'name': 'Sweden' }
     ],
-    'serviceType': 'Construction Worker Accommodation',
     'description': language === 'sv'
       ? 'Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare med över 10 års erfarenhet'
       : language === 'en'

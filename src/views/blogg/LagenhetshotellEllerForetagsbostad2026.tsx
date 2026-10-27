@@ -8,25 +8,24 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
     <BlogLayout post={post}>
       <p>
         Lägenhetshotell och företagsbostad blandas ofta ihop, men det är två olika produkter
-        med olika prislogik. Den som väljer fel betalar antingen för hotellservice teamet inte
-        behöver, eller upptäcker att det inte finns något lägenhetshotell alls på orten där
-        projektet ligger. Här är skillnaderna, priserna och en enkel regel för valet.
+        med olika villkor. Vilket alternativ som passar beror bland annat på projektperiod,
+        läge, service och hur många som ska bo. Här jämför vi alternativen och visar ett
+        räkneexempel.
       </p>
 
       <h2>Vad är vad?</h2>
 
       <p>
         Ett <strong>lägenhetshotell</strong> (även aparthotel eller serviced apartments) är ett
-        hotellkoncept: möblerade lägenheter med reception, städservice och pris per natt eller
-        vecka. Kedjor som Forenom och Sky Hotel Apartments finns främst i storstäderna och de
-        större regionstäderna.
+        hotellkoncept med möblerade lägenheter. Reception, städservice, pris och hyresperiod
+        varierar mellan orter och leverantörer.
       </p>
 
       <p>
         En <strong>företagsbostad</strong> är en vanlig bostad — lägenhet eller hus — som hyrs
-        möblerad på månadsavtal, med företaget som avtalspart. Ingen reception, men fullt kök,
-        fler kvadratmeter och en väsentligt lägre månadskostnad. Det är den modell vi på
-        StayOnSite arbetar med.
+        möblerad till ett företag. Den kan ge arbetslaget tillgång till kök och gemensamma ytor,
+        utan hotellservice. Det är den modell vi på StayOnSite arbetar med; pris och villkor
+        bekräftas för varje boende.
       </p>
 
       <h2>Skillnaderna sida vid sida</h2>
@@ -42,51 +41,50 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
         <tbody>
           <tr>
             <td>Pris per person och månad</td>
-            <td>typiskt 12 000–25 000 kr</td>
-            <td>från 5 900 kr</td>
+            <td>varierar med läge, period och service</td>
+            <td>varierar med boende, period och villkor</td>
           </tr>
           <tr>
             <td>Avtalsform</td>
-            <td>per natt eller vecka</td>
-            <td>månadsavtal, från 3 månader</td>
+            <td>per natt, vecka eller längre period</td>
+            <td>varierar mellan leverantörer; hos StayOnSite minst tre månader</td>
           </tr>
           <tr>
             <td>Kök</td>
             <td>ofta pentry eller kokvrå</td>
-            <td>fullt kök</td>
+            <td>varierar mellan bostäder</td>
           </tr>
           <tr>
             <td>Utrymme för team</td>
-            <td>en lägenhet per 1–2 personer</td>
-            <td>hela hus med 4–10 bäddar</td>
+            <td>varierar mellan lägenheter</td>
+            <td>lägenheter och hus i olika storlekar</td>
           </tr>
           <tr>
             <td>Reception och daglig service</td>
-            <td>ja</td>
+            <td>varierar mellan anläggningar</td>
             <td>nej — fast kontaktperson i stället</td>
           </tr>
           <tr>
             <td>Städning</td>
-            <td>ingår löpande</td>
-            <td>slutstädning ingår, löpande städ avtalas separat</td>
+            <td>varierar mellan anläggningar</td>
+            <td>kontrollera vad som ingår i offerten</td>
           </tr>
           <tr>
             <td>Parkering för servicebilar</td>
-            <td>sällan, betald cityparkering</td>
-            <td>ofta egen uppfart eller reserverade platser</td>
+            <td>varierar mellan anläggningar</td>
+            <td>kontrollera tillgången för det aktuella boendet</td>
           </tr>
           <tr>
             <td>Finns på mindre orter</td>
-            <td>sällan</td>
-            <td>ja</td>
+            <td>varierar mellan orter och perioder</td>
+            <td>varierar mellan orter och perioder</td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        Prisbilden för lägenhetshotell bygger på typiska longstay-priser i svenska städer
-        2025–2026; i storstädernas citylägen kan det vara högre. Företagsbostädernas priser är
-        ur vår egen portfölj — verkliga siffror stad för stad finns i{' '}
+        Jämför offerter för samma antal personer och period, och kontrollera vad som ingår.
+        Mer om kostnader och vad som påverkar dem finns i{' '}
         <Link href="/blogg/vad-kostar-personalboende-sverige-2026-verkliga-priser">
           Vad kostar personalboende i Sverige 2026?
         </Link>
@@ -98,24 +96,32 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
         <li>Vistelser under tre månader, som StayOnSite inte erbjuder.</li>
         <li>Enstaka medarbetare på tjänsteresa, inte hela team.</li>
         <li>Citynära uppdrag där reception och daglig städning har ett värde.</li>
-        <li>Osäkra datum där ni behöver kunna avboka natt för natt.</li>
+        <li>Osäkra datum där ni behöver jämföra avbokningsvillkor.</li>
       </ul>
 
       <h2>När företagsbostad är rätt val</h2>
 
       <ul>
         <li>Team om 4 personer eller fler som bor tillsammans under projektet.</li>
-        <li>Uppdrag på tre månader eller längre — då är prisskillnaden avgörande.</li>
+        <li>Uppdrag på tre månader eller längre där pris och villkor för hela perioden är viktiga.</li>
         <li>
-          Projektorter utan lägenhetshotell: i städer som <Link href="/stad/boden">Boden</Link>,{' '}
+          För projektorter som <Link href="/stad/boden">Boden</Link>,{' '}
           <Link href="/stad/oskarshamn">Oskarshamn</Link> och{' '}
-          <Link href="/stad/monsteras">Mönsterås</Link> är alternativet annars hotell eller lång
-          pendling.
+          <Link href="/stad/monsteras">Mönsterås</Link> kan tillgänglighet, restid och villkor
+          skilja sig. Jämför lägenhetshotell och företagsbostäder för de datum ni behöver.
         </li>
         <li>Behov av riktigt kök, tvättmaskin och plats för servicebilar och verktyg.</li>
       </ul>
 
-      <h2>Räkneexempel: 6 montörer i Luleå i 4 månader</h2>
+      <p>
+        För <Link href="/stad/boden">företagsboende i Boden</Link> kan ni skicka antal personer,
+        önskade sovrum, arbetsplats och projektperiod i förfrågan. Pris och villkor bekräftas
+        för det aktuella boendet innan ni bokar.
+      </p>
+
+      <h2>Räkneexempel: 6 montörer i 4 månader</h2>
+
+      <p>Exemplet bygger på antagna priser och är inte en offert.</p>
 
       <table>
         <thead>
@@ -140,53 +146,50 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
       </table>
 
       <p>
-        Halva kostnaden — och teamet bor i samma hus i stället för utspritt på sex rum. Ju
-        längre uppdraget är och ju större teamet, desto större blir gapet.
+        Med de antagna priserna blir huset hälften så dyrt. Den faktiska skillnaden beror på
+        tillgänglighet, hyresperiod, rumsfördelning och vad som ingår i respektive offert.
       </p>
 
       <h2>Vanliga frågor</h2>
 
       <h3>Är lägenhetshotell och företagslägenhet samma sak?</h3>
       <p>
-        Nej. Ett lägenhetshotell är ett hotellkoncept med reception och nattpriser. En
-        företagslägenhet är en vanlig bostad som hyrs möblerad på månadsavtal med företaget
-        som avtalspart — utan hotellservice, till betydligt lägre månadskostnad.
+        Nej. Ett lägenhetshotell är ett hotellkoncept med möblerade lägenheter. En
+        företagslägenhet är en möblerad bostad som hyrs till ett företag. Pris, service och
+        hyresperiod kan skilja sig mellan alternativen.
       </p>
 
       <h3>Finns lägenhetshotell i mindre städer?</h3>
       <p>
-        Sällan. Kedjorna finns i storstäderna och de större regionstäderna. På industriorter
-        som Boden, Mönsterås eller Oskarshamn står valet i praktiken mellan vanligt hotell,
-        pendling eller en företagsbostad.
+        Ja, det kan finnas även på mindre orter. Utbud och lediga datum varierar, så jämför
+        lägenhetshotell med företagsbostäder utifrån arbetsplats, antal personer, hyresperiod
+        och vad som ingår.
       </p>
 
       <h3>Vad är billigast för ett team på sex personer eller fler?</h3>
       <p>
-        Ett helt hus som företagsbostad. Per bäddplats landar det på cirka 6 000–8 000 kr per
-        månad, mot typiskt 12 000–25 000 kr per person på lägenhetshotell och 21 000–30 000 kr
-        på vanligt hotell.
+        I vårt räkneexempel blir ett hyrt hus billigare för sex personer. Den faktiska kostnaden
+        beror på tillgänglighet, hyresperiod, rum och service, så jämför offerter för ert projekt.
       </p>
 
       <h3>Ingår städning i en företagsbostad?</h3>
       <p>
-        Slutstädning ingår. Löpande städning under vistelsen avtalas separat utifrån projektets
-        förutsättningar — många team föredrar att sköta det själva och hålla nere kostnaden.
+        Det varierar mellan bostäder och leverantörer. Kontrollera i offerten om slutstädning
+        eller löpande städning ingår och om det finns tillägg.
       </p>
 
       <h2>Slutsats</h2>
 
       <p>
-        Regeln är enkel: under tre månader eller enstaka resenärer — lägenhetshotell, om det finns
-        på orten. Tre månader eller mer, team, eller projektort utanför storstäderna —
-        företagsbostad. För ett typiskt montörsteam på sex personer skiljer det över 150 000 kr
-        på ett fyramånadersuppdrag.
+        Jämför alternativen utifrån projektets längd, teamets storlek, restid och vilken service
+        ni behöver. StayOnSite hyr ut från tre månader. Be om offerter för samma period och
+        kontrollera vad som ingår innan ni väljer.
       </p>
 
       <p>
         Behöver ni boende för ett team?{' '}
         <Link href="/for-foretag">Skicka en förfrågan</Link> med ort, antal personer och datum
-        så får ni en boendeplan med adresser och priser inom 24 timmar — även på orter där
-        lägenhetshotellen aldrig etablerade sig.
+        så återkommer vi med ett boendeförslag anpassat efter era behov.
       </p>
     </BlogLayout>
   );

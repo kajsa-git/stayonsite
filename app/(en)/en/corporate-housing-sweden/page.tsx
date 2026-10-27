@@ -3,7 +3,7 @@ import Index from '@/views/Index'
 
 export const metadata = buildMetadata({
   title: 'Staff Housing & Corporate Apartments in Sweden | StayOnSite',
-  description: 'We quickly and efficiently arrange housing for companies and their staff throughout Sweden. Long-term and flexible rental solutions for construction, energy, and data center projects.',
+  description: 'Furnished worker accommodation for construction, energy and data centre teams across Sweden. Enquire about locations, dates and your team’s needs.',
   canonical: 'https://www.stayonsite.se/en/corporate-housing-sweden',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/' },

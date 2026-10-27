@@ -66,12 +66,6 @@ const OmOss = () => {
         '@type': 'City',
         name: c.name,
       })),
-      serviceType: [
-        'Personalboende',
-        'Företagsbostäder',
-        'Worker Accommodation',
-        'Corporate Housing',
-      ],
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: RATING_VALUE,

@@ -139,11 +139,12 @@ const PersonalboendeDalarnaGuide = () => {
 
       <h2>Lokala alternativ inom Dalarna</h2>
       <p>
-        StayOnSite har separata sidor för bland annat{' '}
+        StayOnSite har separata sidor för{' '}
         <Link href="/stad/falun">företagsboende i Falun</Link> och{' '}
-        <Link href="/stad/ludvika">företagsbostäder i Ludvika</Link>. Använd ortssidan när ni
-        redan vet var teamet ska arbeta. Använd den här regionala guiden när projektet spänner
-        över flera kommuner eller tidplanen fortfarande är rörlig.
+        <Link href="/stad/ludvika">företagsbostäder i Ludvika</Link>. För uppdrag i Borlänge
+        kan ni ange arbetsplatsen i er förfrågan, så undersöker vi boendealternativ i området.
+        Använd ortssidan när ni redan vet var teamet ska arbeta och den här regionala guiden
+        när projektet spänner över flera kommuner eller tidplanen fortfarande är rörlig.
       </p>
 
       <h2>Boende för datacenterprojekt i Horndal och Borlänge</h2>

@@ -70,6 +70,13 @@ interface LocalGuide {
 }
 
 const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
+  boden: [
+    {
+      href: '/blogg/lagenhetshotell-eller-foretagsbostad-2026',
+      title: 'Lägenhetshotell eller företagsbostad?',
+      description: 'Jämför alternativen utifrån hyresperiod, rumsfördelning och service.',
+    },
+  ],
   oskarshamn: [
     {
       href: '/blogg/personalboende-okg-oskarshamn-guide',
@@ -474,6 +481,29 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
             </div>
           </div>
         </section>
+
+        {citySlug === 'boden' && (
+          <section className="border-t border-nordic-100 bg-nordic-50 py-12">
+            <div className="container mx-auto max-w-5xl px-6 md:px-8">
+              <h2 className="text-2xl font-semibold text-nordic-900">
+                {translate('Ett projekt i Bodenområdet', 'A project in the Boden area', 'Projekt w okolicach Boden')}
+              </h2>
+              <p className="mt-4 leading-relaxed text-nordic-700">
+                {translate(
+                  'Trafikverket rustar upp kontaktledningen längs Malmbanan mellan Boden och Gällivare. Projektet pågår och beräknas preliminärt vara klart 2030. För arbetslag med uppdrag längs sträckan kan arbetsplats och skifttider påverka valet av boende.',
+                  'Trafikverket, the Swedish Transport Administration, is upgrading the overhead line between Boden and Gällivare on Malmbanan. Work is underway and completion is currently planned for 2030. For teams working along the route, the worksite and shift times can help determine suitable accommodation.',
+                  'Szwedzka Administracja Transportu, Trafikverket, modernizuje sieć trakcyjną na Malmbanan między Boden a Gällivare. Prace trwają, a ich zakończenie jest wstępnie planowane na 2030 r. Dla ekip pracujących wzdłuż trasy lokalizacja i godziny zmian mają znaczenie przy wyborze zakwaterowania.'
+                )}
+              </p>
+              <a
+                href="https://www.trafikverket.se/vara-projekt/projekt-i-norrbottens-lan/malmbanan-boden--gallivare-kontaktlednings--och-hjalpkraftsupprustning/"
+                className="mt-4 inline-block font-semibold text-nordic-900 underline decoration-accent underline-offset-4 hover:text-nordic-700"
+              >
+                {translate('Läs om projektet hos Trafikverket', 'Read about the project at Trafikverket', 'Przeczytaj o projekcie na stronie Trafikverket')}
+              </a>
+            </div>
+          </section>
+        )}
 
         {language === 'sv' && localGuides.length > 0 && (
           <section className="border-t border-nordic-100 bg-white py-12">

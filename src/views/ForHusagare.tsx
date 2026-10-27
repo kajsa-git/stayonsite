@@ -32,14 +32,7 @@ const ForHusagare = () => {
         '@type': 'Country',
         'name': 'Sweden'
       },
-      'serviceType': 'Property Rental Service',
-      'offers': {
-        '@type': 'AggregateOffer',
-        'lowPrice': 10000,
-        'highPrice': 30000,
-        'priceCurrency': 'SEK',
-        'unitText': 'per month'
-      }
+      'serviceType': 'Property Rental Service'
     },
     {
       '@context': 'https://schema.org',

@@ -125,5 +125,5 @@ export const bodenPageContent: CityPageContent = {
     },
   ],
   showRating: false,
-  updatedAt: '2026-10-20',
+  updatedAt: '2026-10-27',
 };
