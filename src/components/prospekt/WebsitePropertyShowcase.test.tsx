@@ -35,3 +35,24 @@ describe("customer language for property descriptions", () => {
     expect(screen.queryByText(row.publicDescription!)).not.toBeInTheDocument();
   });
 });
+
+describe("rented property notice", () => {
+  it.each([
+    ["sv", "Bostaden är för närvarande uthyrd."],
+    ["en", "This property is currently rented."],
+    ["pl", "Ta nieruchomość jest obecnie wynajęta."],
+  ] as const)("shows the current status in %s", (lang, notice) => {
+    render(<PropertyShowcase data={{ ...data, row: { ...row, status: "rented" } }} title="Boende" lang={lang} showAvailabilityStatus />);
+    expect(screen.getByRole("status")).toHaveTextContent(notice);
+  });
+
+  it("does not show the notice for an available property", () => {
+    render(<PropertyShowcase data={{ ...data, row: { ...row, status: "available" } }} title="Boende" lang="sv" showAvailabilityStatus />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
+  it("does not show the notice in an offer using the shared showcase", () => {
+    render(<PropertyShowcase data={{ ...data, row: { ...row, status: "rented" } }} title="Boende" lang="sv" />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+});

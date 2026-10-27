@@ -17,11 +17,13 @@ export function PropertyShowcase({
   lang,
   title,
   descriptionOverride,
+  showAvailabilityStatus = false,
 }: {
   data: PublicProperty;
   lang: Lang;
   title: string;
   descriptionOverride?: string;
+  showAvailabilityStatus?: boolean;
 }) {
   const { row: p, images, mapCoords, mapArea } = data;
   const tr = T[lang];
@@ -71,6 +73,12 @@ export function PropertyShowcase({
           {title}
         </h1>
       </div>
+
+      {showAvailabilityStatus && p.status === "rented" && (
+        <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
+          {tr.rentedNotice}
+        </div>
+      )}
 
       {/* Highlights */}
       {highlights.length > 0 && (

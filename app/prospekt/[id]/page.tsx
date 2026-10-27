@@ -82,7 +82,7 @@ export default async function ProspektPage(
       </header>
 
       <div className="mx-auto max-w-3xl space-y-8 px-5 py-8">
-        <PropertyShowcase data={data} lang={lang} title={tr.title(data.row.city)} />
+        <PropertyShowcase data={data} lang={lang} title={tr.title(data.row.city)} showAvailabilityStatus />
 
         {/* CTA */}
         <div className="rounded-2xl border bg-white p-6 text-center">

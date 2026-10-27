@@ -10,6 +10,7 @@ export function pickLang(v: string | string[] | undefined): Lang {
 
 export const T: Record<Lang, {
   tagline: string;
+  rentedNotice: string;
   title: (c: string | null) => string;
   photos: (n: number) => string;
   details: string;
@@ -29,6 +30,7 @@ export const T: Record<Lang, {
 }> = {
   sv: {
     tagline: "Bostadsförslag",
+    rentedNotice: "Bostaden är för närvarande uthyrd.",
     title: (c) => (c ? `Boende i ${c}` : "Bostadsförslag"),
     photos: (n) => `${n} bilder`,
     details: "Detaljer",
@@ -48,6 +50,7 @@ export const T: Record<Lang, {
   },
   en: {
     tagline: "Housing proposal",
+    rentedNotice: "This property is currently rented.",
     title: (c) => (c ? `Accommodation in ${c}` : "Housing proposal"),
     photos: (n) => `${n} photos`,
     details: "Details",
@@ -67,6 +70,7 @@ export const T: Record<Lang, {
   },
   pl: {
     tagline: "Propozycja zakwaterowania",
+    rentedNotice: "Ta nieruchomość jest obecnie wynajęta.",
     title: (c) => (c ? `Zakwaterowanie w ${c}` : "Propozycja zakwaterowania"),
     photos: (n) => `${n} zdjęć`,
     details: "Szczegóły",
