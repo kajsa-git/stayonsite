@@ -340,7 +340,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
           >
             <div className="flex-1 min-w-0">
               <div className="truncate">{p.address || "(Adress saknas)"}</div>
-              {["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="text-xs text-amber-800">Kajsa behöver granska</span>}
+              {["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="text-xs text-amber-800">{p.contentReviewStatus === "retry" ? "Kontrollen kunde inte slutföras" : "Kajsa behöver granska"}</span>}
               <div className="text-xs text-muted-foreground truncate">
                 {[p.city, travelCity && travel.results[p.id]?.durationText, p.bedrooms && `${p.bedrooms} sovrum`].filter(Boolean).join(" · ")}
               </div>
@@ -372,6 +372,8 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
 
   return (
     <div className="flex flex-col h-full">
+      {(!isMobile || !selected) && (
+      <>
       {/* Top bar: search + view toggle + add */}
       <div className="flex flex-wrap items-center gap-3 p-3 border-b bg-white shrink-0">
         <div className="relative w-64 max-w-full">
@@ -496,6 +498,8 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
           )}
         </div>
       )}
+      </>
+      )}
 
       {/* Body */}
       {adding ? (
@@ -578,7 +582,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                             <div className="h-9 w-9 rounded border bg-nordic-100 flex items-center justify-center text-nordic-300"><ImageIcon className="h-3.5 w-3.5" /></div>
                           )}
                         </TableCell>
-                        <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}{["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="block text-xs text-amber-800">Kajsa behöver granska</span>}</TableCell>
+                        <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}{["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="block text-xs text-amber-800">{p.contentReviewStatus === "retry" ? "Kontrollen kunde inte slutföras" : "Kajsa behöver granska"}</span>}</TableCell>
                         <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.city || "–"}{travelCity && <span className="block text-xs text-muted-foreground">{travel.results[p.id]?.durationText} med bil</span>}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>

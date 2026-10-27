@@ -25,6 +25,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -139,7 +140,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide">Bilder ({images.length})</p>
+        <h3 className="text-base font-semibold">Bilder <span className="text-sm font-normal text-muted-foreground">({images.length})</span></h3>
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
@@ -164,7 +165,7 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
         <p className="text-sm text-muted-foreground italic">Inga bilder ännu.</p>
       ) : (
         <div className="grid grid-cols-3 gap-2">
-          {images.map((img, i) => (
+          {images.slice(0, showAll ? undefined : 6).map((img, i) => (
             <div
               key={img.id}
               className={`relative group aspect-square rounded-md overflow-hidden border bg-muted ${
@@ -222,6 +223,12 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
             </div>
           ))}
         </div>
+      )}
+
+      {images.length > 6 && (
+        <button type="button" onClick={() => setShowAll((value) => !value)} aria-expanded={showAll} className="mt-3 text-sm font-medium text-primary-600 hover:underline">
+          {showAll ? "Visa färre bilder" : `Visa alla ${images.length} bilder`}
+        </button>
       )}
 
       {lightbox !== null && images[lightbox] && (

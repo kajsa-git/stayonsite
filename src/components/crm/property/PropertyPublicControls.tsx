@@ -57,7 +57,6 @@ export function PropertyPublicControls({
 
   return (
     <div>
-      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">Publicering</p>
       <div className="space-y-2">
         {/* På hemsidan (publika listan /boenden — kräver även status = Tillgänglig) */}
         <div className="flex flex-wrap items-center gap-2">

@@ -71,13 +71,13 @@ const isOpen = (s: string) => !TERMINAL.includes(s);
 // "Anteckning" först och FÖRVALD (samma princip som företagskortets anteckningar):
 // en snabbnotis ska inte råka loggas som samtal — kontaktkanal väljs aktivt.
 const CHANNELS = [
-  { value: "anteckning", label: "🗒 Anteckning" },
-  { value: "samtal", label: "📞 Samtal" },
-  { value: "mejl", label: "📧 Mejl" },
-  { value: "whatsapp", label: "💬 WhatsApp" },
-  { value: "messenger", label: "💬 Messenger" },
-  { value: "sms", label: "✉️ SMS" },
-  { value: "annat", label: "📝 Annat" },
+  { value: "anteckning", label: "Anteckning" },
+  { value: "samtal", label: "Samtal" },
+  { value: "mejl", label: "Mejl" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "messenger", label: "Messenger" },
+  { value: "sms", label: "SMS" },
+  { value: "annat", label: "Annat" },
 ];
 
 const FOLLOWUP_REASONS = ["Kolla pris", "Tillgänglighet", "Nyckelvisning", "Få bilder", "Bekräfta antal bäddar"];
@@ -95,6 +95,7 @@ export function PropertyHistory({ property }: { property: Property }) {
   const [channel, setChannel] = useState("anteckning");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
+  const [showAllNotes, setShowAllNotes] = useState(false);
 
   const openRound = rounds.find((r) => isOpen(r.status)) ?? null;
   const concluded = rounds.filter((r) => TERMINAL.includes(r.status));
@@ -167,22 +168,22 @@ export function PropertyHistory({ property }: { property: Property }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="flex flex-col gap-6">
       {/* Uthyrarkontakt */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-amber-800 uppercase tracking-wide font-medium">Uthyrarkontakt</p>
+          <h3 className="text-base font-semibold">Uthyrarkontakt</h3>
           {!openRound && (
             <Button size="sm" className="h-7 text-xs gap-1" onClick={startRound}>
               <Plus className="h-3 w-3" /> Ny uthyrarkontakt
             </Button>
           )}
         </div>
-        <p className="text-[11px] text-amber-800/80 -mt-1">Bekräfta med uthyraren: pris, tillgänglighet, vill hyra ut?</p>
+        <p className="text-sm text-muted-foreground">Håll koll på nästa kontakt med uthyraren.</p>
 
         {openRound ? (
-          <div className="space-y-1.5">
-            <p className="text-[11px] text-muted-foreground uppercase tracking-wide">Pågående</p>
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Pågående</p>
             <OpenRoundCard round={openRound} onPatch={patchRound} onDelete={deleteRound} />
           </div>
         ) : (
@@ -191,8 +192,9 @@ export function PropertyHistory({ property }: { property: Property }) {
 
         {/* Avslutade */}
         {concluded.length > 0 && (
-          <div className="space-y-1.5 pt-1">
-            <p className="text-[11px] text-muted-foreground uppercase tracking-wide">Avslutade</p>
+          <details className="pt-1">
+            <summary className="cursor-pointer text-sm font-medium text-muted-foreground">Avslutade kontakter ({concluded.length})</summary>
+            <div className="mt-3 flex flex-col gap-2">
             {concluded.map((r) => (
               <div key={r.id} className="flex items-start gap-2 text-sm group">
                 <span className={`shrink-0 text-[11px] px-1.5 py-0.5 rounded-full border ${STATUS_BADGE[r.status]}`}>
@@ -213,84 +215,74 @@ export function PropertyHistory({ property }: { property: Property }) {
                 </button>
               </div>
             ))}
-          </div>
+            </div>
+          </details>
         )}
       </div>
 
       {/* Kontaktlogg */}
-      <div className="border-t border-amber-200 pt-4">
-        <p className="text-xs text-amber-800 uppercase tracking-wide font-medium mb-1.5">Kontaktlogg</p>
-        <div className="flex flex-wrap gap-1 mb-2">
-          {CHANNELS.map((c) => (
-            <button
-              key={c.value}
-              type="button"
-              onClick={() => setChannel(c.value)}
-              className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                channel === c.value
-                  ? "border-amber-300 bg-amber-100 text-amber-900"
-                  : "border-input bg-white text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
+      <section className="flex flex-col gap-3 border-t pt-5" aria-label="Kontaktlogg">
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-base font-semibold">Kontaktlogg</h3>
+          <span className="text-xs text-muted-foreground">{notes.length} {notes.length === 1 ? "post" : "poster"}</span>
         </div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-wrap gap-2">
+          <select value={channel} onChange={(e) => setChannel(e.target.value)} aria-label="Kontaktkanal" className="h-10 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            {CHANNELS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
           <input
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addNote(); } }}
-            placeholder="T.ex. 'Frågat om tillgänglighet 25 maj'"
-            className="flex-1 text-sm border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary-500"
+            placeholder="Skriv en anteckning…"
+            aria-label="Ny kontaktanteckning"
+            className="h-10 min-w-[12rem] flex-1 rounded-md border border-input px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
           />
-          <button onClick={addNote} disabled={!content.trim() || saving} className="text-xs px-2.5 rounded-md border border-input hover:bg-muted disabled:opacity-40">
-            {saving ? "Sparar…" : "Logga"}
-          </button>
+          <Button variant="outline" onClick={addNote} disabled={!content.trim() || saving}>{saving ? "Sparar…" : "Logga"}</Button>
         </div>
         {notes.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">Ingen kontakt loggad ännu.</p>
+          <p className="text-sm text-muted-foreground">Ingen kontakt loggad ännu.</p>
         ) : (
-          <div className="space-y-1.5">
-            {notes.map((n) => (
-              <div key={n.id} className="flex items-start gap-2 text-sm group">
-                <span className="text-xs text-muted-foreground shrink-0 min-w-[88px] pt-0.5">
-                  {n.createdAt ? format(new Date(n.createdAt), "d MMM HH:mm", { locale: sv }) : ""}
-                </span>
-                <span className="flex-1 whitespace-pre-wrap">{n.content}</span>
-                <button onClick={() => removeNote(n.id)} className="opacity-0 group-hover:opacity-100 h-5 w-5 flex items-center justify-center rounded hover:bg-red-50 text-muted-foreground hover:text-red-700 shrink-0">
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
+          <div className="flex flex-col gap-3">
+            {notes.slice(0, showAllNotes ? undefined : 2).map((note) => <NoteEntry key={note.id} note={note} onRemove={removeNote} />)}
+            {notes.length > 2 && <button type="button" onClick={() => setShowAllNotes((value) => !value)} className="self-start text-sm font-medium text-primary-600 hover:underline" aria-expanded={showAllNotes}>
+              {showAllNotes ? "Visa färre loggposter" : `Visa alla ${notes.length} loggposter`}
+            </button>}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Förfrågningshistorik */}
-      <div className="border-t border-amber-200 pt-4">
-        <p className="text-xs text-amber-800 uppercase tracking-wide font-medium mb-1.5">
-          Förfrågningshistorik ({history.length})
-        </p>
+      <details className="border-t pt-5">
+        <summary className="cursor-pointer text-sm font-semibold">Förfrågningshistorik ({history.length})</summary>
         {history.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">Objektet har inte föreslagits ännu.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Objektet har inte föreslagits ännu.</p>
         ) : (
-          <div className="space-y-1.5">
+          <div className="mt-3 flex flex-col gap-2">
             {history.map((h) => (
-              <div key={h.id} className="flex items-center justify-between gap-2 text-sm border rounded-lg px-2.5 py-1.5 bg-white">
-                <span className="truncate">
-                  #{h.requestNumber} {h.companyName}
-                  {h.city && <span className="text-muted-foreground"> · {h.city}</span>}
-                </span>
-                <span className="text-xs text-muted-foreground shrink-0">
-                  {MATCH_STATUS[matchDisplayStatus(h)] ?? h.matchStatus} · {REQ_STATUS[h.requestStatus] ?? h.requestStatus}
-                </span>
+              <div key={h.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm">
+                <span>#{h.requestNumber} {h.companyName}{h.city && <span className="text-muted-foreground"> · {h.city}</span>}</span>
+                <span className="text-xs text-muted-foreground">{MATCH_STATUS[matchDisplayStatus(h)] ?? h.matchStatus} · {REQ_STATUS[h.requestStatus] ?? h.requestStatus}</span>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </details>
     </div>
+  );
+}
+
+function NoteEntry({ note, onRemove }: { note: Note; onRemove: (id: string) => Promise<void> }) {
+  const [expanded, setExpanded] = useState(false);
+  const long = note.content.length > 200 || note.content.split("\n").length > 4;
+  return (
+    <article className="rounded-lg bg-muted/40 p-3">
+      <div className="mb-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+        <span>{CHANNELS.find((c) => c.value === note.channel)?.label ?? note.channel}{note.createdAt ? ` · ${format(new Date(note.createdAt), "d MMM yyyy HH:mm", { locale: sv })}` : ""}</span>
+        <button type="button" onClick={() => onRemove(note.id)} className="flex size-7 shrink-0 items-center justify-center rounded hover:bg-red-50 hover:text-red-700" aria-label="Ta bort loggpost" title="Ta bort loggpost"><Trash2 className="size-3.5" /></button>
+      </div>
+      <p className={`whitespace-pre-wrap break-words text-sm leading-relaxed ${long && !expanded ? "line-clamp-3" : ""}`}>{note.content}</p>
+      {long && <button type="button" onClick={() => setExpanded((value) => !value)} className="mt-2 text-sm font-medium text-primary-600 hover:underline" aria-expanded={expanded}>{expanded ? "Visa mindre" : "Visa hela anteckningen"}</button>}
+    </article>
   );
 }
 
@@ -308,7 +300,7 @@ function OpenRoundCard({
   const [note, setNote] = useState(round.note ?? "");
 
   return (
-    <div className="rounded-lg border bg-white p-3 space-y-3">
+    <div className="flex flex-col gap-4 rounded-lg border bg-muted/20 p-4">
       {/* Pipeline: öppna steg */}
       <div className="flex flex-wrap gap-1">
         {OPEN_STEPS.map((step) => (
@@ -343,10 +335,11 @@ function OpenRoundCard({
       </div>
 
       {/* Nästa uppföljning */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-muted-foreground uppercase tracking-wide">Nästa uppföljning</label>
+          <label htmlFor={`follow-up-date-${round.id}`} className="text-xs font-medium text-muted-foreground">Nästa uppföljning</label>
           <input
+            id={`follow-up-date-${round.id}`}
             type="date"
             className={FIELD_CLS}
             value={date}
@@ -354,8 +347,9 @@ function OpenRoundCard({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-muted-foreground uppercase tracking-wide">Anledning</label>
+          <label htmlFor={`follow-up-reason-${round.id}`} className="text-xs font-medium text-muted-foreground">Anledning</label>
           <input
+            id={`follow-up-reason-${round.id}`}
             className={FIELD_CLS}
             placeholder="T.ex. Kolla pris"
             value={reason}
@@ -364,7 +358,9 @@ function OpenRoundCard({
           />
         </div>
       </div>
-      <div className="flex flex-wrap gap-1">
+      <details>
+        <summary className="cursor-pointer text-xs font-medium text-muted-foreground">Snabbval för anledning</summary>
+        <div className="mt-2 flex flex-wrap gap-1">
         {FOLLOWUP_REASONS.map((r) => (
           <button
             key={r}
@@ -377,11 +373,13 @@ function OpenRoundCard({
             {r}
           </button>
         ))}
-      </div>
+        </div>
+      </details>
 
       <textarea
         className={`${FIELD_CLS} min-h-[44px] resize-y`}
         placeholder="Anteckning (sparas på kontakten)"
+        aria-label="Anteckning på uthyrarkontakten"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         onBlur={() => onPatch(round.id, { note: note.trim() || null })}

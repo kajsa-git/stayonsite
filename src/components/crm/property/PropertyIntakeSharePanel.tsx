@@ -36,7 +36,9 @@ export function PropertyIntakeSharePanel() {
   }
 
   return (
-    <div className="border-b bg-teal-50/70 px-3 py-3 shrink-0">
+    <details className="shrink-0 border-b bg-teal-50/50">
+      <summary className="cursor-pointer px-3 py-2 text-sm font-medium text-teal-900">Intagslänk för uthyrare</summary>
+    <div className="px-3 pb-3">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-2.5">
           <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-teal-800 shadow-sm">
@@ -44,7 +46,7 @@ export function PropertyIntakeSharePanel() {
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <p className="text-sm font-semibold text-nordic-900">Intagslänk för uthyrare</p>
+              <p className="text-sm font-semibold text-nordic-900">Dela länken</p>
               <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-teal-800">
                 Skicka innan bostaden finns i CRM
               </span>
@@ -110,5 +112,6 @@ export function PropertyIntakeSharePanel() {
         </div>
       </div>
     </div>
+    </details>
   );
 }
