@@ -140,11 +140,19 @@ const PersonalboendeDalarnaGuide = () => {
       <h2>Lokala alternativ inom Dalarna</h2>
       <p>
         StayOnSite har separata sidor för bland annat{' '}
-        <Link href="/stad/falun">företagsboende i Falun</Link>,{' '}
-        <Link href="/stad/borlange">personalboende i Borlänge</Link> och{' '}
+        <Link href="/stad/falun">företagsboende i Falun</Link> och{' '}
         <Link href="/stad/ludvika">företagsbostäder i Ludvika</Link>. Använd ortssidan när ni
         redan vet var teamet ska arbeta. Använd den här regionala guiden när projektet spänner
         över flera kommuner eller tidplanen fortfarande är rörlig.
+      </p>
+
+      <h2>Boende för datacenterprojekt i Horndal och Borlänge</h2>
+      <p>
+        Datacenterprojekt kan behöva olika boendeupplägg under byggnation, installation och
+        driftsättning. Ange personer per fas, krav på egna sovrum och projektets infart när ni
+        begär förslag. På sidan om <Link href="/datacenter-boende">boende för datacenterprojekt</Link>{' '}
+        finns projektkällor för Horndal och Borlänge samt en checklista för er förfrågan.
+        Tillgänglighet och restid behöver alltid bekräftas för den aktuella perioden.
       </p>
 
       <h2>Vanliga frågor om personalboende i Dalarna</h2>

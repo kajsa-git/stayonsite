@@ -4,6 +4,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import SEO from '@/components/SEO';
+import { useTranslation } from '@/hooks/use-translation';
+import { DATACENTER_PATHS } from '@/data/datacenter';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { BlogPost } from '@/data/blog-posts';
 import { getRelatedPosts } from '@/data/blog-posts';
@@ -18,6 +20,7 @@ interface BlogLayoutProps {
 
 const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const title = post.title[language] || post.title.sv;
   const description = post.description[language] || post.description.sv;
@@ -33,7 +36,7 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
   const sources = post.sources;
   const modifiedDate = post.updatedDate || post.publishedDate;
   const isUpdated = Boolean(post.updatedDate && post.updatedDate !== post.publishedDate);
-  const relatedPosts = getRelatedPosts(post.slug);
+  const relatedPosts = getRelatedPosts(post.slug, 3, language);
   const audience = post.audience ?? 'bada';
   const authorUrl = language === 'en' ? '/en/about' : '/om-oss';
   const editorialUrl = '/blogg/redaktionella-riktlinjer';
@@ -115,44 +118,40 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
     });
   }
 
-  const cta = {
+  const companyPath = language === 'en'
+    ? '/en/corporate-housing-sweden'
+    : language === 'pl' ? '/pl/zakwaterowanie-firmowe' : '/for-foretag';
+  const isDatacenter = post.tags.some((tag) => /datacenter|data centre|data center/i.test(tag));
+  const cta = isDatacenter ? {
+    heading: t('blog.datacenter.title'),
+    text: t('blog.datacenter.text'),
+    primaryLabel: t('blog.datacenter.link'),
+    primaryHref: DATACENTER_PATHS[language],
+    secondaryLabel: t('blog.cta.call'),
+    secondaryHref: 'tel:+46762498486',
+  } : {
     foretag: {
-      heading: language === 'sv' ? 'Behöver ni personalboende?' : language === 'en' ? 'Need worker accommodation?' : 'Potrzebujesz zakwaterowania dla pracowników?',
-      text:
-        language === 'sv'
-          ? 'Möblerade boenden för arbetslag och familjer i hela Sverige. Fast månadspris, en kontaktperson och färdig boendeplan inom 24 timmar.'
-          : language === 'en'
-            ? 'Furnished housing for crews and families across Sweden. Fixed monthly price, one contact person and a complete housing plan within 24 hours.'
-            : 'Umeblowane lokale dla ekip i rodzin w całej Szwecji. Stała cena miesięczna, jedna osoba kontaktowa i gotowy plan w 24 godziny.',
-      primaryLabel: language === 'sv' ? 'Få boendeförslag inom 24 h' : language === 'en' ? 'Get a housing proposal in 24h' : 'Otrzymaj propozycję w 24 h',
-      primaryHref: '/kontakt',
-      secondaryLabel: language === 'sv' ? 'Ring 076-249 84 86' : language === 'en' ? 'Call +46 76-249 84 86' : 'Zadzwoń +46 76-249 84 86',
+      heading: t('blog.cta.company.title'),
+      text: t('blog.cta.company.text'),
+      primaryLabel: t('blog.cta.company.link'),
+      primaryHref: companyPath,
+      secondaryLabel: t('blog.cta.call'),
       secondaryHref: 'tel:+46762498486',
     },
     husagare: {
-      heading: language === 'sv' ? 'Vill du hyra ut din bostad till företag?' : language === 'en' ? 'Want to rent out your home to companies?' : 'Chcesz wynająć swój dom firmom?',
-      text:
-        language === 'sv'
-          ? 'Trygga företagskontrakt med långa hyrestider, hyra utbetald varje månad och 0 % i avgift. Registrera din bostad så återkommer vi alltid inom en arbetsdag – ofta inom några timmar.'
-          : language === 'en'
-            ? 'Secure corporate contracts with long tenancies, rent paid every month and 0% in fees. Register your property and we always get back to you within one business day – often within hours.'
-            : 'Bezpieczne umowy firmowe na długi okres, czynsz wypłacany co miesiąc i 0% prowizji. Zarejestruj swoją nieruchomość, a odezwiemy się w ciągu dnia roboczego – często w kilka godzin.',
-      primaryLabel: language === 'sv' ? 'Registrera din bostad' : language === 'en' ? 'Register your property' : 'Zarejestruj nieruchomość',
+      heading: t('blog.cta.owner.title'),
+      text: t('blog.cta.owner.text'),
+      primaryLabel: t('blog.cta.owner.link'),
       primaryHref: '/registrera-bostad',
-      secondaryLabel: language === 'sv' ? 'Så fungerar det' : language === 'en' ? 'How it works' : 'Jak to działa',
+      secondaryLabel: t('blog.cta.owner.more'),
       secondaryHref: '/for-husagare',
     },
     bada: {
-      heading: language === 'sv' ? 'Behöver ni boende – eller vill du hyra ut?' : language === 'en' ? 'Need housing – or want to rent out?' : 'Szukasz zakwaterowania – czy chcesz wynająć?',
-      text:
-        language === 'sv'
-          ? 'Vi ordnar personalboende åt arbetslag och familjer i hela Sverige, och tar löpande emot nya bostäder från husägare. Vi återkommer alltid inom en arbetsdag – ofta inom några timmar.'
-          : language === 'en'
-            ? 'We arrange worker housing for crews and families across Sweden, and continuously take on new properties from homeowners. We always reply within one business day – often within hours.'
-            : 'Organizujemy zakwaterowanie dla ekip i rodzin w całej Szwecji i stale przyjmujemy nowe nieruchomości. Zawsze odpowiadamy w ciągu dnia roboczego – często w kilka godzin.',
-      primaryLabel: language === 'sv' ? 'Få boendeförslag' : language === 'en' ? 'Get a housing proposal' : 'Otrzymaj propozycję',
-      primaryHref: '/kontakt',
-      secondaryLabel: language === 'sv' ? 'Hyr ut din bostad' : language === 'en' ? 'Rent out your property' : 'Wynajmij swoją nieruchomość',
+      heading: t('blog.cta.both.title'),
+      text: t('blog.cta.both.text'),
+      primaryLabel: t('blog.cta.both.link'),
+      primaryHref: companyPath,
+      secondaryLabel: t('blog.cta.owner.more'),
       secondaryHref: '/for-husagare',
     },
   }[audience];

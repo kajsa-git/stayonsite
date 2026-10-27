@@ -1,3 +1,6 @@
+import type { Locale } from '@/types/localized';
+import { DATACENTER_SOURCES } from './datacenter';
+
 export interface BlogFaqItem {
   q: string;
   a: string;
@@ -172,6 +175,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-09-06',
+    updatedDate: '2026-10-27',
     category: 'Lokal guide',
     tags: ['Dalarna', 'Falun', 'Borlänge', 'Ludvika', 'personalboende'],
     readingTime: 8,
@@ -503,28 +507,28 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'datacenter-montorboende-guide-2026',
     title: {
-      sv: 'Datacenterbyggen 2026: Montörboende som flaskhals',
-      en: 'Data Center Construction 2026: Why Worker Housing Is the Bottleneck in Swedish Billion-Dollar Investments',
-      pl: 'Budowa centrów danych 2026: Dlaczego zakwaterowanie pracowników staje się wąskim gardłem szwedzkich inwestycji',
+      sv: 'Boende vid datacenterbyggen: planera för team och skift',
+      en: 'Data centre construction housing: planning for crews and shifts',
+      pl: 'Noclegi przy budowie centrów danych: planowanie ekip i zmian',
     },
     description: {
-      sv: 'Skellefteå, Borlänge, Gävle – datacenter för 100+ miljarder byggs 2026. Men var ska alla montörer bo? Guide för byggföretag och husägare.',
-      en: 'Skellefteå, Borlänge, Gävle – data centers worth 100+ billion SEK under construction in 2026. But where will workers live? Guide for companies & homeowners.',
-      pl: 'Skellefteå, Borlänge, Gävle – centra danych o wartości 100+ miliardów SEK budowane w 2026 roku. Ale gdzie będą mieszkać pracownicy?',
+      sv: 'Planera personalboende vid datacenter i Horndal, Borlänge och Gävle–Sandviken. Guide om bemanning, skift, restid och villkor med verifierade projektkällor.',
+      en: 'Plan crew housing at data centre projects in Horndal, Borlänge and Gävle–Sandviken. Staffing, shifts, travel and booking terms with verified project sources.',
+      pl: 'Zaplanuj noclegi dla ekip centrów danych w Horndal, Borlänge i Gävle–Sandviken. Liczba osób, zmiany, dojazdy i warunki pobytu ze źródłami projektowymi.',
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-03-04',
+    updatedDate: '2026-10-27',
     category: 'Marknad',
-    tags: ['datacenter', 'montörboende', 'byggprojekt', 'infrastruktur', 'norrland'],
-    readingTime: 8,
-    audience: 'bada',
+    tags: ['datacenter', 'personalboende', 'montörboende', 'Horndal', 'Borlänge', 'Gävle'],
+    readingTime: 5,
+    audience: 'foretag',
     keyTakeaways: [
-      'EdgeConneX planerar ett AI-datacenter på upp till 1 gigawatt och cirka 100 miljarder kronor i Skellefteå, på det tidigare Northvolt-området.',
-      'Microsoft satsar 33,7 miljarder kronor på datacenter i Gävle, Sandviken och Staffanstorp — bygget i Sandviken pausades våren 2025 på grund av elbrist.',
-      'Datacenterprojektet i Kvarnsveden, Borlänge kan behöva upp till 1 000 byggarbetare; första serverhallen ska stå färdig 2027.',
-      'Byggfaktas databas listar 29 datacenterprojekt med byggstart från januari 2024, med en uppskattad byggkostnad på 21 miljarder kronor.',
-      'Ett storskaligt datacenter (250 MW–1 GW) kräver 600–1 000+ byggarbetare under en byggperiod på 24–36 månader.',
+      'Planera boendet efter entreprenörens bemanning per period. Datacentrets megawatt räcker inte för att beräkna antalet bäddar.',
+      'Jämför restid till rätt infart, skift, sovrum och parkering innan boendet bokas.',
+      'Kapacitet, förlängning, gästbyten och ändring av antal bostäder behöver bekräftas i offerten.',
     ],
+    sources: Object.values(DATACENTER_SOURCES),
   },
   {
     slug: 'regional-bostadsanalys-2026-var-finns-boende-montorer',
@@ -1921,21 +1925,24 @@ export function getBlogPostByEnSlug(enSlug: string): BlogPost | undefined {
   return blogPosts.find(p => p.en?.slug === enSlug);
 }
 
-/** Relaterade artiklar via delade taggar (2 p) och kategori (1 p), nyast först vid lika poäng. */
-export function getRelatedPosts(slug: string, count = 3): BlogPost[] {
+/** Show relevant articles in the requested language, prioritising shared topics and audience. */
+export function getRelatedPosts(slug: string, count = 3, locale: Locale = 'sv'): BlogPost[] {
   const current = getBlogPost(slug);
   if (!current) return [];
   return blogPosts
-    .filter(p => p.slug !== slug)
+    .filter(p => p.slug !== slug && (locale !== 'en' || p.en))
     .map(post => ({
       post,
       score:
-        post.tags.filter(tag => current.tags.includes(tag)).length * 2 +
+        post.tags.filter(tag => current.tags.some(currentTag => currentTag.toLocaleLowerCase() === tag.toLocaleLowerCase())).length * 2 +
         (post.category === current.category ? 1 : 0),
     }))
+    .filter(({ score }) => score > 0)
     .sort(
       (a, b) =>
-        b.score - a.score || b.post.publishedDate.localeCompare(a.post.publishedDate)
+        b.score - a.score ||
+        Number(b.post.audience === current.audience) - Number(a.post.audience === current.audience) ||
+        (b.post.updatedDate || b.post.publishedDate).localeCompare(a.post.updatedDate || a.post.publishedDate)
     )
     .slice(0, count)
     .map(r => r.post);

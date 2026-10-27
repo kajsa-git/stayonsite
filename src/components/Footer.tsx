@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trackPhoneClick, trackWhatsAppClick, trackEmailClick } from '@/lib/gtag';
 import Link from 'next/link';
+import { DATACENTER_PATHS } from '@/data/datacenter';
 // Sajtvid länksignal till de viktigaste stadssidorna med beskrivande ankartext —
 // utan den rankar startsidan i stället för stadssidan på "företagsboende <stad>".
 const popularCities: { slug: string; name: string }[] = [
@@ -116,6 +117,12 @@ const Footer = () => {
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   Projektboende
                 </a>
+              </li>
+              <li>
+                <Link href={DATACENTER_PATHS[language]} className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  {t('datacenter.nav')}
+                </Link>
               </li>
               <li>
                 <a href="/om-oss" className="font-light flex items-center hover:text-white transition-colors duration-300">

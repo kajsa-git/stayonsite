@@ -3,6 +3,8 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
+import { DATACENTER_PATHS } from '@/data/datacenter';
+import { getLocalizedBlogPath } from '@/data/blog-routes';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -10,6 +12,9 @@ interface LanguageSwitcherProps {
 
 // Explicit URL mappings for non-city pages
 const PAGE_MAP: Record<string, Record<string, string>> = {
+  [DATACENTER_PATHS.sv]: DATACENTER_PATHS,
+  [DATACENTER_PATHS.en]: DATACENTER_PATHS,
+  [DATACENTER_PATHS.pl]: DATACENTER_PATHS,
   '/': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
   '/en/corporate-housing-sweden': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
   '/pl/zakwaterowanie-firmowe': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
@@ -25,6 +30,13 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
 
   const handleLanguageChange = (lang: 'sv' | 'en' | 'pl') => {
     if (lang === language) return;
+
+    const blogPath = getLocalizedBlogPath(pathname, lang);
+    if (blogPath) {
+      setLanguage(lang);
+      router.push(blogPath);
+      return;
+    }
 
     // City pages: /stad/:slug, /en/corporate-housing/:slug, /pl/zakwaterowanie/:slug
     const cityMatch = pathname.match(/\/(stad|en\/corporate-housing|pl\/zakwaterowanie)\/([^/]+)/);

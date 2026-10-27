@@ -6,12 +6,22 @@ import { blogPosts } from '@/data/blog-posts'
 import { db } from '@/lib/crm/db'
 import { properties } from '@/lib/crm/schema'
 import { CONTENT_UPDATED } from '@/lib/seo-utils'
+import { DATACENTER_PATHS, DATACENTER_UPDATED } from '@/data/datacenter'
 
 // Vid förfrågan, inte vid bygge: bygget når inte Turso → boenden saknades alltid.
 // Sitemap-anrop är sällsynta (crawlers), så SSR-kostnaden är noll i praktiken.
 export const dynamic = 'force-dynamic'
 
 const BASE = 'https://www.stayonsite.se'
+// The curated blog indexes were materially updated on this date.
+const BLOG_INDEX_UPDATED = '2026-10-27'
+const latestPostDate = (posts: typeof blogPosts) => posts.reduce(
+  (latest, post) => {
+    const updated = post.updatedDate || post.publishedDate
+    return updated > latest ? updated : latest
+  },
+  BLOG_INDEX_UPDATED,
+)
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Stabilt innehållsdatum istället för byggdatum (today vid varje deploy ger
@@ -19,6 +29,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const today = CONTENT_UPDATED
 
   const staticPages: MetadataRoute.Sitemap = [
+    ...Object.values(DATACENTER_PATHS).map((path) => ({
+      url: `${BASE}${path}`,
+      lastModified: DATACENTER_UPDATED,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+      alternates: {
+        languages: Object.fromEntries(
+          Object.entries(DATACENTER_PATHS).map(([lang, localizedPath]) => [lang, `${BASE}${localizedPath}`]),
+        ),
+      },
+    })),
     {
       url: `${BASE}/`,
       lastModified: today,
@@ -96,13 +117,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPages: MetadataRoute.Sitemap = [
     {
       url: `${BASE}/blogg`,
-      lastModified: today,
+      lastModified: latestPostDate(blogPosts),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${BASE}/en/blog`,
-      lastModified: today,
+      lastModified: latestPostDate(blogPosts.filter((post) => post.en)),
       changeFrequency: 'monthly',
       priority: 0.7,
     },

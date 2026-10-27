@@ -160,7 +160,7 @@ In-depth guides on worker accommodation, block rental (blockhyra), the 2026 rent
 - Försäkring och ansvar vid personalboende – vad gäller?: https://www.stayonsite.se/blogg/forsakring-ansvar-personalboende-guide-2026
 - Avtalskrav på personalboende 2026: Guide för företag: https://www.stayonsite.se/blogg/avtalskrav-personalboende-guide-2026
 - Arbetskraftsinvandring juni 2026: Nya regler för bygg: https://www.stayonsite.se/blogg/arbetskraftsinvandring-juni-2026-guide-byggforetag
-- Datacenterbyggen 2026: Montörboende som flaskhals: https://www.stayonsite.se/blogg/datacenter-montorboende-guide-2026
+- Boende vid datacenterbyggen: planera för team och skift: https://www.stayonsite.se/blogg/datacenter-montorboende-guide-2026
 - Regional bostadsanalys 2026: Var finns boende till dina montörer?: https://www.stayonsite.se/blogg/regional-bostadsanalys-2026-var-finns-boende-montorer
 - Checklista: Så säkrar du personalboende inför stora infrastrukturkontrakt 2026-2028: https://www.stayonsite.se/blogg/infrastrukturkontrakt-personalboende-checklista-2026
 - Kompetensbrist möter arbetslöshet: Så matchar du rätt byggkompetens 2026: https://www.stayonsite.se/blogg/kompetens-rekrytering-byggsektorn-guide-2026
@@ -197,6 +197,9 @@ Swedish (primary), English, Polish
 
 ## Key pages
 
+- Data centre accommodation (SV): https://www.stayonsite.se/datacenter-boende
+- Data centre accommodation (EN): https://www.stayonsite.se/en/data-centre-accommodation-sweden
+- Data centre accommodation (PL): https://www.stayonsite.se/pl/zakwaterowanie-centra-danych-szwecja
 - Homepage (SV): https://www.stayonsite.se
 - For Companies (SV canonical category page): https://www.stayonsite.se/for-foretag
 - Project accommodation (SV planning page): https://www.stayonsite.se/projektboende
