@@ -31,6 +31,9 @@ export default function RegisterPropertyPage() {
     <div className="min-h-screen bg-[#f7f5f0] text-nordic-900">
       <Header />
       <main className="pt-24 md:pt-28">
+        <p className="mx-auto max-w-4xl px-4 text-center text-sm text-nordic-600 sm:px-6">
+          Vi hyr ut bostäder från tre månader och uppåt.
+        </p>
         <PropertyIntakeForm />
       </main>
     </div>
