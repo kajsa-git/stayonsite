@@ -48,7 +48,7 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
           <tr>
             <td>Avtalsform</td>
             <td>per natt eller vecka</td>
-            <td>månadsavtal, från 1 månad</td>
+            <td>månadsavtal, från 3 månader</td>
           </tr>
           <tr>
             <td>Kök</td>
@@ -95,7 +95,7 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
       <h2>När lägenhetshotell är rätt val</h2>
 
       <ul>
-        <li>Vistelser under en månad, där månadsavtal inte hinner löna sig.</li>
+        <li>Vistelser under tre månader, som StayOnSite inte erbjuder.</li>
         <li>Enstaka medarbetare på tjänsteresa, inte hela team.</li>
         <li>Citynära uppdrag där reception och daglig städning har ett värde.</li>
         <li>Osäkra datum där ni behöver kunna avboka natt för natt.</li>
@@ -105,7 +105,7 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
 
       <ul>
         <li>Team om 4 personer eller fler som bor tillsammans under projektet.</li>
-        <li>Uppdrag på en månad eller längre — då är prisskillnaden avgörande.</li>
+        <li>Uppdrag på tre månader eller längre — då är prisskillnaden avgörande.</li>
         <li>
           Projektorter utan lägenhetshotell: i städer som <Link href="/stad/boden">Boden</Link>,{' '}
           <Link href="/stad/oskarshamn">Oskarshamn</Link> och{' '}
@@ -176,8 +176,8 @@ const LagenhetshotellEllerForetagsbostad2026 = () => {
       <h2>Slutsats</h2>
 
       <p>
-        Regeln är enkel: under en månad eller enstaka resenärer — lägenhetshotell, om det finns
-        på orten. En månad eller mer, team, eller projektort utanför storstäderna —
+        Regeln är enkel: under tre månader eller enstaka resenärer — lägenhetshotell, om det finns
+        på orten. Tre månader eller mer, team, eller projektort utanför storstäderna —
         företagsbostad. För ett typiskt montörsteam på sex personer skiljer det över 150 000 kr
         på ett fyramånadersuppdrag.
       </p>

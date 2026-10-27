@@ -36,6 +36,7 @@ const base = {
   startedAt: z.number().int().positive(),
   website: z.string().max(200).optional(),
   utmParams: z.record(z.string(), z.string()).optional(),
+  adsConsent: z.enum(["granted", "denied"]).optional(),
   tracking: z.object({
     consent: z.literal(true),
     eventId: z.string().min(8).max(100),
@@ -434,7 +435,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "invalid_submission" }, { status: 400 });
     }
 
-    const submission = result.data;
+    const submission = result.data.adsConsent === "granted"
+      ? result.data
+      : { ...result.data, utmParams: undefined };
 
     if (submission.website && submission.website.trim()) {
       return NextResponse.json({ success: false, error: "spam_detected" }, { status: 400 });

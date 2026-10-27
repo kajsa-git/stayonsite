@@ -102,9 +102,9 @@ export const bodenPageContent: CityPageContent = {
     {
       question: ls('Vilka hyresperioder är möjliga?', 'Which rental periods are available?', 'Jakie okresy najmu są możliwe?'),
       answer: ls(
-        'Skicka önskat start- och slutdatum, även om projektets slut är preliminärt. Möjliga hyresperioder och villkor för förlängning eller ändringar bekräftas för det aktuella boendet.',
-        'Send your preferred start and end dates, even if the project end is provisional. Available rental periods and terms for extensions or changes are confirmed for the property concerned.',
-        'Prześlij planowane daty rozpoczęcia i zakończenia, nawet jeśli koniec projektu jest wstępny. Możliwe okresy najmu oraz warunki przedłużenia i zmian potwierdzamy dla konkretnego obiektu.'
+        'Vi hyr ut från tre månader och uppåt. Skicka önskat start- och slutdatum, även om projektets slut är preliminärt. Villkor för förlängning eller ändringar bekräftas för det aktuella boendet.',
+        'Our minimum rental period is three months. Send your preferred start and end dates, even if the project end is provisional. Extension and change terms are confirmed for the property concerned.',
+        'Minimalny okres najmu to trzy miesiące. Prześlij planowane daty rozpoczęcia i zakończenia, nawet jeśli koniec projektu jest wstępny. Warunki przedłużenia i zmian potwierdzamy dla konkretnego obiektu.'
       ),
     },
     {

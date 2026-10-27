@@ -173,6 +173,7 @@ export type TranslationKey =
   | "footer.rights"
   | "footer.contact"
   | "footer.description"
+  | "footer.minimumStay"
   | "footer.quickLinks"
   | "footer.location"
   | "footer.care"
@@ -446,7 +447,7 @@ export const translations: Record<
 
     "services.title": "Vi ordnar företagsboenden i Stockholm",
     "services.subtitle":
-      "Vi säkrar personalboenden nära era sajter – från två veckor till flera år – över hela Sverige.",
+      "Vi säkrar personalboenden nära era sajter – från tre månader till flera år – över hela Sverige.",
     "services.tagline": "Enkelt och smidigt",
     "services.process.title": "Så här fungerar det",
     "services.process.step1.title": "Skicka förfrågan",
@@ -613,6 +614,7 @@ export const translations: Record<
     "footer.contact": "Kontakta oss",
     "footer.description":
       "Vi hjälper byggbolag att snabbt hitta boenden på annan ort för deras arbetare.",
+    "footer.minimumStay": "Hyresperiod från tre månader och uppåt.",
     "footer.quickLinks": "Snabblänkar",
     "footer.location": "Solna, Sverige",
     "footer.care": "Med omsorg, Kajsa med Team",
@@ -709,7 +711,7 @@ export const translations: Record<
       "Kontrakt, nycklar, kommunikation, städning och betalningar – du behöver inte lyfta ett finger. Samma personliga kontaktperson från dag ett.",
     "homeowner.benefits.flexibility.title": "Du bestämmer – helt och hållet",
     "homeowner.benefits.flexibility.description":
-      "Från 1 månads avtal, 1 månads uppsägningstid. Inga långa bindningstider. Du kan säga upp med en månads varsel och får tillbaka din bostad i ursprungligt skick.",
+      "Från 3 månaders avtal, 1 månads uppsägningstid. Inga långa bindningstider. Du kan säga upp med en månads varsel och får tillbaka din bostad i ursprungligt skick.",
     "homeowner.benefits.guarantee.title": "Inga avdrag från din hyra",
     "homeowner.benefits.guarantee.description":
       "Konkurrenter som Samtrygg tar 15 % och Qasa 4,95 % av din hyra. Vi hyr direkt av dig till ett fast pris – du behåller hela den avtalade hyran, varje månad.",
@@ -717,7 +719,7 @@ export const translations: Record<
     "homeowner.guarantee.title": "Vårt löfte till dig",
     "homeowner.guarantee.subtitle": "Vi tar risken – du får tryggheten. 100+ husägare har redan valt oss.",
     "homeowner.guarantee.payment.title": "Betalningsgaranti",
-    "homeowner.guarantee.payment.description": "Fast månadshyra i förskott till ditt konto, från 1 månad och uppåt. Uppsägningstid bara 1 månad. Till skillnad från andra aktörer tar vi inga avdrag – du får 100 % av den avtalade hyran.",
+    "homeowner.guarantee.payment.description": "Fast månadshyra i förskott till ditt konto, från 3 månader och uppåt. Uppsägningstid bara 1 månad. Till skillnad från andra aktörer tar vi inga avdrag – du får 100 % av den avtalade hyran.",
     "homeowner.guarantee.protection.title": "I trygga händer",
     "homeowner.guarantee.protection.description": "Noggrann besiktning med fotodokumentation vid in- och utflytt. Vi har hanterat 100+ uthyrningar utan en enda tvist med våra husägare.",
     "homeowner.guarantee.support.title": "Personlig support dygnet runt",
@@ -736,7 +738,7 @@ export const translations: Record<
       "Inom 24 timmar får du ett personligt samtal för att diskutera din bostad och få en kostnadsfri intäktsbedömning.",
     "homeowner.process.step3.title": "Besiktning & avtal",
     "homeowner.process.step3.description":
-      "Vi kommer till dig för en kostnadsfri besiktning med fotodokumentation. Avtal från 1 månad, 1 månads uppsägningstid.",
+      "Vi kommer till dig för en kostnadsfri besiktning med fotodokumentation. Avtal från 3 månader, 1 månads uppsägningstid.",
     "homeowner.process.step4.title": "Matchning med företag",
     "homeowner.process.step4.description":
       "Vi matchar din bostad med verifierade företagshyresgäster, vanligtvis 30–50 år, från etablerade bolag.",
@@ -1117,6 +1119,7 @@ export const translations: Record<
     "footer.contact": "Contact us",
     "footer.description":
       "We help construction companies quickly find accommodations in other locations for their workers.",
+    "footer.minimumStay": "Rental periods start at three months.",
     "footer.quickLinks": "Quick Links",
     "footer.location": "Solna, Sweden",
     "footer.care": "With care, Kajsa & Team",
@@ -1625,6 +1628,7 @@ export const translations: Record<
     "footer.contact": "Skontaktuj się z nami",
     "footer.description":
       "Pomagamy firmom budowlanym szybko znaleźć zakwaterowanie w innych miejscowościach dla ich pracowników.",
+    "footer.minimumStay": "Okres najmu wynosi co najmniej trzy miesiące.",
     "footer.quickLinks": "Szybkie linki",
     "footer.location": "Solna, Szwecja",
     "footer.care": "Z troską, Kajsa i Zespół",

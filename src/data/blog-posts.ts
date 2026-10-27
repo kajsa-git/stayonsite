@@ -801,7 +801,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         q: 'Vad är minsta avtalstid?',
-        a: 'Tre månader — den kortaste period som fungerar ekonomiskt för fastighetsägarna. Kortare projekt kan ibland lösas ändå, och någon övre gräns för avtalstid finns inte.',
+        a: 'Minsta avtalstid är tre månader. Det finns ingen övre gräns för avtalstiden.',
       },
     ],
     en: {
@@ -836,7 +836,7 @@ export const blogPosts: BlogPost[] = [
         },
         {
           q: 'What is the minimum contract length?',
-          a: 'Three months — the shortest period that works economically for the property owners. Shorter projects can sometimes be solved anyway, and there is no upper limit on contract length.',
+          a: 'The minimum rental period is three months. There is no upper limit on the contract length.',
         },
       ],
     },
@@ -1600,7 +1600,7 @@ export const blogPosts: BlogPost[] = [
       'Lägenhetshotell kostar typiskt 12 000–25 000 kr per person och månad på longstay-avtal; en företagsbostad kostar från 5 900 kr per person och månad.',
       'Lägenhetshotell finns nästan bara i storstäder och större regionstäder — på industriorter som Boden, Oskarshamn och Mönsterås är alternativet hotell, pendling eller företagsbostad.',
       'Räkneexempel: 6 montörer i Luleå i 4 månader kostar ca 168 000 kr i ett helt hus mot ca 336 000 kr på lägenhetshotell — halva kostnaden.',
-      'Tumregel: under en månad eller enstaka resenärer — lägenhetshotell; en månad eller mer, team eller mindre ort — företagsbostad.',
+      'Tumregel: under tre månader eller enstaka resenärer — lägenhetshotell; tre månader eller mer, team eller mindre ort — företagsbostad.',
       'En företagsbostad ger fullt kök, tvättmaskin och plats för servicebilar; lägenhetshotellet ger reception och löpande städning.',
     ],
     faq: [

@@ -240,9 +240,7 @@ const PersonalboendeVanligaFragor2026En = () => {
       </p>
 
       <p>
-        Shorter projects - under three months - are harder to solve through our
-        platform. In those cases we recommend that you get in touch anyway, so
-        we can assess the situation and possibly find a solution.
+        We do not offer accommodation for periods shorter than three months.
       </p>
 
       <p>

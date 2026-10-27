@@ -229,9 +229,9 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       pl: `Czy oferujecie kwatery pracownicze w ${city.name} na dłuższe projekty?`,
     },
     answer: {
-      sv: `Ja, våra personalbostäder i ${city.name} hyrs ut möblerade och är anpassade för längre uppdrag — från enskilda företagslägenheter till hela hus för team. Avtal från en månad och uppåt, med en kontaktperson under hela projektet.`,
-      en: `Yes, our staff housing in ${city.name} is rented furnished and suited to longer assignments — from individual corporate apartments to entire houses for teams. Contracts from one month and up, with one contact person throughout the project.`,
-      pl: `Tak, nasze kwatery pracownicze w ${city.name} wynajmujemy umeblowane, dostosowane do dłuższych zleceń — od pojedynczych mieszkań firmowych po całe domy dla ekip. Umowy od miesiąca wzwyż, z jednym opiekunem przez cały projekt.`,
+      sv: `Ja, våra personalbostäder i ${city.name} hyrs ut möblerade och är anpassade för längre uppdrag — från enskilda företagslägenheter till hela hus för team. Avtal från tre månader och uppåt, med en kontaktperson under hela projektet.`,
+      en: `Yes, our staff housing in ${city.name} is rented furnished and suited to longer assignments — from individual corporate apartments to entire houses for teams. Contracts from three months and up, with one contact person throughout the project.`,
+      pl: `Tak, nasze kwatery pracownicze w ${city.name} wynajmujemy umeblowane, dostosowane do dłuższych zleceń — od pojedynczych mieszkań firmowych po całe domy dla ekip. Umowy od trzech miesięcy wzwyż, z jednym opiekunem przez cały projekt.`,
     },
   };
   // Boendetyps-varianter: korttidsboende/långtidsboende/longstay/lägenhetshotell
@@ -243,9 +243,9 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       pl: `Czy oferujecie zakwaterowanie krótko- i długoterminowe w ${city.name}?`,
     },
     answer: {
-      sv: `Ja. Vi ordnar korttidsboende från en månad och långtidsboende — longstay-avtal som löper över ett år eller mer — i ${city.name}. Boendena är ett alternativ till lägenhetshotell: möblerat och med slutstädning, men oftast till lägre månadskostnad eftersom ni hyr hela bostaden.`,
-      en: `Yes. We arrange short-term housing from one month and long-stay contracts running a year or more in ${city.name}. Our housing is an alternative to aparthotels: furnished with final cleaning, but usually at a lower monthly cost since you rent the whole home.`,
-      pl: `Tak. Organizujemy zakwaterowanie krótkoterminowe od miesiąca oraz umowy długoterminowe na rok lub dłużej w ${city.name}. Nasze mieszkania to alternatywa dla aparthoteli: umeblowane, ze sprzątaniem końcowym, zwykle przy niższym miesięcznym koszcie, bo wynajmujecie całe mieszkanie.`,
+      sv: `Ja. Vi ordnar korttidsboende från tre månader och långtidsboende — longstay-avtal som löper över ett år eller mer — i ${city.name}. Boendena är ett alternativ till lägenhetshotell: möblerat och med slutstädning, men oftast till lägre månadskostnad eftersom ni hyr hela bostaden.`,
+      en: `Yes. We arrange short-term housing from three months and long-stay contracts running a year or more in ${city.name}. Our housing is an alternative to aparthotels: furnished with final cleaning, but usually at a lower monthly cost since you rent the whole home.`,
+      pl: `Tak. Organizujemy zakwaterowanie krótkoterminowe od trzech miesięcy oraz umowy długoterminowe na rok lub dłużej w ${city.name}. Nasze mieszkania to alternatywa dla aparthoteli: umeblowane, ze sprzątaniem końcowym, zwykle przy niższym miesięcznym koszcie, bo wynajmujecie całe mieszkanie.`,
     },
   };
   const faqItems = city.pageContent?.faq ?? [pricingFaq, staffHousingFaq, stayTypeFaq, ...city.faq];

@@ -87,7 +87,7 @@ const VadKostarPersonalboende2026 = () => {
           tvåa för 15 000 kr delad av två ger 7 500 kr.
         </li>
         <li>
-          <strong>Avtalslängd.</strong> Månadsvisa avtal från en månad är standard, men vid
+          <strong>Avtalslängd.</strong> Hos StayOnSite gäller avtal från tre månader, men vid
           uppdrag på ett halvår eller mer finns ofta utrymme att förhandla.
         </li>
         <li>

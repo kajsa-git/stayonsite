@@ -1,16 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { CONSENT_CHANGE_EVENT, getStoredConsent } from '@/lib/gtag';
 
-// Klick-ID:n (gclid/wbraid/gbraid) + UTM:er fångas vid landning och bärs med
-// hela vägen till leadet, så Offline Conversion Import kan attribuera affären
-// till annonsklicket UTAN cookies. wbraid/gbraid täcker iOS/app där gclid saknas.
+// Klick-ID:n och UTM-parametrar sparas bara efter uttryckligt samtycke.
 const UTM_KEYS = [
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'gclid', 'wbraid', 'gbraid', 'gad_source', 'fbclid',
 ] as const;
 
-const STORAGE_KEY = 'stayonsite_utm';
+// Äldre poster saknar bevis om samtycke och får aldrig återanvändas.
+const STORAGE_KEY = 'stayonsite_utm_consented_v2';
+const LEGACY_STORAGE_KEY = 'stayonsite_utm';
 // 90 dagar = Google Ads standard-attributionsfönster för klick → konvertering.
 const TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
@@ -33,29 +34,41 @@ export const useUtmCapture = () => {
   const [utmParams, setUtmParams] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const search = new URLSearchParams(window.location.search);
-    const fromUrl: Record<string, string> = {};
-    UTM_KEYS.forEach((key) => {
-      const val = search.get(key);
-      if (val) fromUrl[key] = val;
-    });
-
-    const stored = readStored();
-    // Senaste klicket vinner (last-touch) — nya URL-värden skriver över lagrade.
-    const merged = { ...(stored?.params ?? {}), ...fromUrl };
-
-    // Förnya 90-dagarsfönstret bara när ett nytt klick kommer in; annars behåll
-    // ursprunglig tidsstämpel så fönstret räknas från det faktiska klicket.
-    const ts = Object.keys(fromUrl).length > 0 ? Date.now() : (stored?.ts ?? Date.now());
-
-    if (Object.keys(merged).length > 0) {
+    const capture = () => {
+      try { localStorage.removeItem(LEGACY_STORAGE_KEY); } catch { /* Storage is unavailable. */ }
+      let consentGranted = false;
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ params: merged, ts } satisfies Stored));
+        consentGranted = getStoredConsent() === 'granted';
       } catch {
-        // localStorage kan vara blockerad (privat läge) — fortsätt ändå in-memory.
+        // Om samtycket inte kan läsas ska inga klickidentifierare sparas.
       }
-    }
-    setUtmParams(merged);
+      if (!consentGranted) {
+        try { localStorage.removeItem(STORAGE_KEY); } catch { /* Storage is unavailable. */ }
+        setUtmParams({});
+        return;
+      }
+
+      const search = new URLSearchParams(window.location.search);
+      const fromUrl: Record<string, string> = {};
+      UTM_KEYS.forEach((key) => {
+        const val = search.get(key);
+        if (val) fromUrl[key] = val;
+      });
+      const stored = readStored();
+      const merged = { ...(stored?.params ?? {}), ...fromUrl };
+      const ts = Object.keys(fromUrl).length > 0 ? Date.now() : (stored?.ts ?? Date.now());
+      if (Object.keys(merged).length > 0) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ params: merged, ts } satisfies Stored));
+        } catch {
+          // Consent exists but storage may be blocked; keep the current page in memory.
+        }
+      }
+      setUtmParams(merged);
+    };
+    capture();
+    window.addEventListener(CONSENT_CHANGE_EVENT, capture);
+    return () => window.removeEventListener(CONSENT_CHANGE_EVENT, capture);
   }, []);
 
   return utmParams;

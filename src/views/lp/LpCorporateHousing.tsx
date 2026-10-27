@@ -9,7 +9,7 @@ import { Sofa, FileText, CalendarClock, MapPin, ArrowUp, Phone } from 'lucide-re
 const BADGES = [
   { icon: Sofa, title: 'Furnished & equipped', text: 'Beds, kitchen, WiFi, laundry — move-in ready from day one.' },
   { icon: FileText, title: 'One contact, one invoice', text: 'We handle everything. No middlemen, no hidden fees.' },
-  { icon: CalendarClock, title: 'Flexible terms', text: 'From two weeks to several years — scaled to your project.' },
+  { icon: CalendarClock, title: 'Flexible terms', text: 'From three months to several years — scaled to your project.' },
   { icon: MapPin, title: 'Nationwide', text: 'Housing for your workforce anywhere in Sweden.' },
 ];
 

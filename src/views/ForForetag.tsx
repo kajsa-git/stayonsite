@@ -82,7 +82,7 @@ const processSteps = [
 const faqItems = [
   {
     q: 'Vem passar StayOnSite bäst för?',
-    a: 'Bygg-, energi-, industri-, infrastruktur- och montagebolag som behöver ordna boende för arbetslag på projektorter. Det tydligaste användningsfallet är 10-100 personer, flera veckor eller månader, och en projektorganisation som vill slippa samordna varje bostad själv.',
+    a: 'Bygg-, energi-, industri-, infrastruktur- och montagebolag som behöver ordna boende för arbetslag på projektorter. Det tydligaste användningsfallet är 10-100 personer, tre månader eller längre, och en projektorganisation som vill slippa samordna varje bostad själv.',
   },
   {
     q: 'Vilka orter kan lösas?',

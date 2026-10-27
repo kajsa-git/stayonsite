@@ -84,7 +84,7 @@ januari månads ovanligt låga temperaturer ledde till högre elanvändning i he
         månadslånga installationsuppdrag inom exempelvis elnät, fjärrvärme eller{' '}
         <Link href="/blogg/datacenter-montorboende-guide-2026">datacenteretableringar</Link>. Det
         gör att avtalslängden bör anpassas efter projektets karaktär snarare än efter en fast
-        mall. Kortare uppdrag klarar sig ofta med rullande månadsavtal, medan större
+        mall. StayOnSite hyr ut från tre månader och uppåt, medan större
         infrastrukturprojekt &mdash; till exempel de som beskrivs i vår artikel om{' '}
         <Link href="/blogg/blockhyra-infrastrukturprojekt-ostlanken-norrbotnibanan-2026">Ostlänken och Norrbotniabanan</Link>{' '}
         &mdash; ofta löper över flera säsonger.

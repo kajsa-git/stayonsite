@@ -46,7 +46,7 @@ const CorporateHousingSweden = () => {
   const faqData = [
     {
       question: "What is corporate housing?",
-      answer: "Fully furnished apartments or houses rented by companies for employees on temporary assignments. Unlike hotels, corporate housing provides a home-like environment with full kitchens, living spaces, and flexible lease terms from 30 days to several years. According to Boverket (the Swedish National Board of Housing), Sweden has a housing deficit of 52,300 units per year – making dedicated corporate housing essential for companies with mobile workforces."
+      answer: "Fully furnished apartments or houses rented by companies for employees on temporary assignments. Unlike hotels, corporate housing provides a home-like environment with full kitchens, living spaces, and flexible lease terms from three months to several years. According to Boverket (the Swedish National Board of Housing), Sweden has a housing deficit of 52,300 units per year – making dedicated corporate housing essential for companies with mobile workforces."
     },
     {
       question: "How is this different from Airbnb?",

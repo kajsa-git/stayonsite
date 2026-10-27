@@ -169,6 +169,9 @@ export const requests = sqliteTable("crm_requests", {
   // leadet/affären till annonsklicket utan cookies.
   gclid: text("gclid"),
   gclidCapturedAt: text("gclid_captured_at"),
+  // Samtyckesvalet som registrerades när förfrågan skickades. Äldre poster är okända.
+  gadsConsent: text("gads_consent", { enum: ["granted", "denied"] }),
+  gadsConsentCapturedAt: text("gads_consent_captured_at"),
   // Idempotens för uppladdade offline-konverteringar — sätts när raden laddats
   // upp till Google Ads så vi aldrig laddar upp samma konvertering två gånger.
   gadsLeadUploadedAt: text("gads_lead_uploaded_at"),

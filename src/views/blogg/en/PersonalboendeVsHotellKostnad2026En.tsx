@@ -8,7 +8,7 @@ const PersonalboendeVsHotellKostnad2026En = () => {
     <BlogLayout post={post}>
       <p>
         When a construction or industrial company needs housing for 10-30 people during a
-        project lasting 2-6 months, there are in practice four options: managed worker
+        project lasting 3-6 months, there are in practice four options: managed worker
         accommodation, hotels, Airbnb, or handling everything in-house. The differences in
         cost, administration and flexibility are significant. This article walks through what
         each option actually costs and when it makes sense.
@@ -306,7 +306,7 @@ const PersonalboendeVsHotellKostnad2026En = () => {
             <td>Hotel</td>
           </tr>
           <tr>
-            <td>Project of 1-6 months, 5+ people</td>
+            <td>Project of 3-6 months, 5+ people</td>
             <td>StayOnSite</td>
           </tr>
           <tr>
@@ -380,7 +380,7 @@ const PersonalboendeVsHotellKostnad2026En = () => {
       <h2>Conclusion</h2>
 
       <p>
-        For most construction and industrial companies with projects of a month or longer,
+        For most construction and industrial companies with projects of three months or longer,
         managed worker accommodation is the most economically sensible option. The cost
         difference compared with hotels is often SEK 200,000-350,000 per project for a
         10-person team. Compared with Airbnb, you save administration and avoid accounting

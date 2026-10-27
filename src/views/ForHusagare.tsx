@@ -102,7 +102,7 @@ const ForHusagare = () => {
                   {
                     n: '02',
                     title: 'Längre kontrakt – färre vakanser',
-                    body: 'Företagshyresgäster stannar veckor eller månader, inte helger. Förutsägbar inkomst, färre byten och minimal administration mellan kontrakten.',
+                    body: 'Företagshyresgäster stannar minst tre månader. Förutsägbar inkomst, färre byten och minimal administration mellan kontrakten.',
                   },
                   {
                     n: '03',

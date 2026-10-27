@@ -8,7 +8,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
     <BlogLayout post={post}>
       <p>
         När ett byggbolag eller industriföretag behöver boende för 10-30 personer under ett
-        projekt på 2-6 månader finns det i praktiken fyra alternativ: ett hanterat personalboende,
+        projekt på 3-6 månader finns det i praktiken fyra alternativ: ett hanterat personalboende,
         hotell, Airbnb eller att sköta allt på egen hand. Skillnaderna i kostnad, administration
         och flexibilitet är betydande. Den här artikeln går igenom vad varje alternativ faktiskt
         kostar och när det passar.
@@ -303,7 +303,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
             <td>Hotell</td>
           </tr>
           <tr>
-            <td>Projekt 1-6 månader, 5+ personer</td>
+            <td>Projekt 3-6 månader, 5+ personer</td>
             <td>StayOnSite</td>
           </tr>
           <tr>
@@ -376,7 +376,7 @@ const PersonalboendeVsHotellKostnad2026 = () => {
       <h2>Slutsats</h2>
 
       <p>
-        För de flesta bygg- och industriföretag med projekt på en månad eller längre är
+        För de flesta bygg- och industriföretag med projekt på tre månader eller längre är
         ett hanterat personalboende det ekonomiskt rimligaste alternativet. Kostnadsskillnaden
         mot hotell är ofta 200 000-350 000 kr per projekt och 10-personersteam. Jämfört
         med Airbnb sparar ni administration och undviker redovisningsproblem.

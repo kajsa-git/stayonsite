@@ -230,9 +230,7 @@ const PersonalboendeVanligaFragor2026 = () => {
       </p>
 
       <p>
-        Kortare projekt - under tre månader - är svårare att lösa via vår
-        plattform. I de fallen rekommenderar vi att ni hör av er ändå, så kan vi
-        bedöma situationen och eventuellt hitta en lösning.
+        Vi erbjuder inte boende för kortare perioder än tre månader.
       </p>
 
       <p>

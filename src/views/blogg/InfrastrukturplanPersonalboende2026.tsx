@@ -377,7 +377,7 @@ Behovet av investeringar och underhåll är omfattande, bland annat som del av d
         <li><strong>Garanterad hyra</strong> &mdash; vi betalar hyresvärden även om uthyrningen avbryts</li>
         <li><strong>Professionella hyresgäster</strong> &mdash; alla arbetare är anställda hos seriösa företag</li>
         <li><strong>Svar inom 24h</strong> &mdash; vi förstår att infrastrukturprojekt har snabba tidsramar</li>
-        <li><strong>Flexibla avtal</strong> &mdash; från 1 månad upp till flera år</li>
+        <li><strong>Flexibla avtal</strong> &mdash; från 3 månader upp till flera år</li>
         <li><strong>Rikstäckande</strong> &mdash; boende i alla regioner där infrastrukturplanens projekt pågår</li>
       </ul>
 

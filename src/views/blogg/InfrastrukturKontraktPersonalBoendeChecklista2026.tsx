@@ -178,7 +178,7 @@ vi ska bygga väldigt mycket infrastruktur samtidigt som digitaliseringen kräve
       <h3>3. StayOnSite-lösningar (privatuthyrning via företag)</h3>
       <p><strong>Fördelar:</strong> Tillgång till privata bostäder i vanliga bostadsområden, lägre kostnad än hotell, flexibla avtal, professionell hantering.</p>
       <p><strong>Nackdelar:</strong> Kräver förbokningar, tillgången varierar beroende på region.</p>
-      <p><strong>Bäst för:</strong> Medellånga till långa projekt (1&ndash;12 månader), projekt i tätorter och mindre städer, där arbetarna vill bo bekvämt.</p>
+      <p><strong>Bäst för:</strong> Medellånga till långa projekt (3&ndash;12 månader), projekt i tätorter och mindre städer, där arbetarna vill bo bekvämt.</p>
 
       <p>
         Med StayOnSite får du tillgång till ett nätverk av verifierade privatbostäder och företagslägenheter. <strong>0% avgift för företag, garanterad hyra för husägare och professionella hyresgäster.</strong> Läs mer i vår {' '}<Link href="/blogg/personalboende-guide-2026">kompletta guide till personalboende 2026</Link>.

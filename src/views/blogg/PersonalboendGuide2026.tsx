@@ -80,7 +80,7 @@ const PersonalboendGuide2026 = () => {
         </li>
         <li>
           <strong>Montage och installation:</strong> Hissmontörer, ventilationstekniker,
-          elinstallatörer. Ofta kortare uppdrag (2&ndash;8 veckor) men återkommande.
+          elinstallatörer. Uppdragen kan avlösa varandra; StayOnSite erbjuder boende från tre månader.
         </li>
         <li>
           <strong>IT och datacenter:</strong> Microsoft och Meta bygger ut i Norrbotten.
@@ -135,7 +135,7 @@ const PersonalboendGuide2026 = () => {
           <tr>
             <td>Personalboende (StayOnSite)</td>
             <td>200&ndash;550 kr</td>
-            <td>1 månad</td>
+            <td>3 månader</td>
             <td>Billigast, kontrakt, hemkänsla</td>
             <td>Kräver framförhållning</td>
           </tr>
@@ -291,7 +291,7 @@ const PersonalboendGuide2026 = () => {
 
       <p>
         Byggprojekt har sällan exakta sluttider. Välj en leverantör som erbjuder
-        kontraktsperioder från 1 månad med möjlighet till förlängning. Undvik aktörer som
+        kontraktsperioder från 3 månader med möjlighet till förlängning. Undvik aktörer som
         kräver 12 månaders bindningstid.
       </p>
 

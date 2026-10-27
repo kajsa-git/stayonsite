@@ -29,6 +29,13 @@ export async function submitContactForm(
   submission: ContactFormSubmission
 ): Promise<ContactFormResponse> {
   const { getMetaTrackingContext } = await import('@/lib/meta-pixel');
+  const { getStoredConsent } = await import('@/lib/gtag');
+  let adsConsent: 'granted' | 'denied' | null = null;
+  try {
+    adsConsent = getStoredConsent();
+  } catch {
+    // Utan åtkomst till lagrat samtycke behandlas valet som okänt.
+  }
   const tracking = getMetaTrackingContext('Lead');
   const response = await fetch('/api/contact', {
     method: 'POST',
@@ -38,6 +45,8 @@ export async function submitContactForm(
     },
     body: JSON.stringify({
       ...submission,
+      utmParams: adsConsent === 'granted' ? submission.utmParams : undefined,
+      adsConsent: adsConsent ?? undefined,
       startedAt: Date.now(),
       ...(tracking ? { tracking } : {}),
     }),

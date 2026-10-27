@@ -37,6 +37,7 @@ const Footer = () => {
             <p className="text-white/80">
               {t('footer.description')}
             </p>
+            <p className="text-white/80">{t('footer.minimumStay')}</p>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white h-11 px-5">
                 <a href="tel:+46762498486" onClick={trackPhoneClick}>

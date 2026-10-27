@@ -45,7 +45,7 @@ const ZakwaterowanieFirmowe = () => {
   const faqData = [
     {
       question: "Czym jest zakwaterowanie firmowe?",
-      answer: "Zakwaterowanie firmowe to w pełni umeblowane mieszkania wynajmowane przez firmy dla pracowników na czasowych kontraktach. W przeciwieństwie do hoteli, zapewniają domową atmosferę z pełną kuchnią i elastycznymi warunkami najmu - zazwyczaj od 30 dni do kilku miesięcy."
+      answer: "Zakwaterowanie firmowe to w pełni umeblowane mieszkania wynajmowane przez firmy dla pracowników na czasowych kontraktach. W przeciwieństwie do hoteli, zapewniają domową atmosferę z pełną kuchnią i elastycznymi warunkami najmu - od trzech miesięcy do kilku lat."
     },
     {
       question: "Czym się różnicie od Airbnb?",
@@ -82,7 +82,7 @@ const ZakwaterowanieFirmowe = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Zakwaterowanie Firmowe Szwecja | Alternatywa Airbnb dla Firm"
-        description="Szukasz Airbnb dla zespołu w Szwecji? Oferujemy w pełni umeblowane mieszkania z profesjonalnym fakturowaniem, elastyczne warunki od 30 dni. Lepsza alternatywa dla Airbnb dla firm."
+        description="Szukasz Airbnb dla zespołu w Szwecji? Oferujemy w pełni umeblowane mieszkania z profesjonalnym fakturowaniem, elastyczne warunki od trzech miesięcy. Lepsza alternatywa dla Airbnb dla firm."
         keywords="airbnb szwecja dla firm, airbnb alternatywa szwecja, zakwaterowanie firmowe szwecja, mieszkania dla firm szwecja, nocleg dla ekipy szwecja, zakwaterowanie umeå, mieszkania luleå, nocleg örebro, zakwaterowanie gävle, mieszkania västerås, noclegi norrland polska ekipa"
         canonical="https://www.stayonsite.se/pl/zakwaterowanie-firmowe"
         structuredData={[structuredData, faqSchema]}
@@ -143,7 +143,7 @@ const ZakwaterowanieFirmowe = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-wrap gap-6 text-white/70"
               >
-                {['Od 30 dni', 'Stała cena miesięczna', 'Odpowiedź tego samego dnia'].map((item, i) => (
+                {['Od 3 miesięcy', 'Stała cena miesięczna', 'Odpowiedź tego samego dnia'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-accent" />
                     <span className="text-sm font-medium">{item}</span>

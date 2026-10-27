@@ -26,6 +26,7 @@ export type WebSubmission = {
   source?: string;
   fields: Record<string, string>;
   utmParams?: Record<string, string>;
+  adsConsent?: "granted" | "denied";
 };
 
 function clean(value: unknown): string | null {
@@ -244,8 +245,11 @@ async function createCompanyRequest(
       contactId: contact?.id ?? null,
       city,
       persons,
-      gclid: clean(submission.utmParams?.gclid),
-      gclidCapturedAt: submission.utmParams?.gclid ? new Date().toISOString() : null,
+      gclid: submission.adsConsent === "granted" ? clean(submission.utmParams?.gclid) : null,
+      gclidCapturedAt: submission.adsConsent === "granted" && submission.utmParams?.gclid
+        ? new Date().toISOString() : null,
+      gadsConsent: submission.adsConsent ?? null,
+      gadsConsentCapturedAt: submission.adsConsent ? new Date().toISOString() : null,
       status: "incoming",
       billingProjectId: String(requestNumber),
       notes: sourceNotes(submission, [

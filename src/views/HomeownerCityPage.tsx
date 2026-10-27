@@ -61,7 +61,7 @@ interface HomeownerCityPageProps {
 }
 
 const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const city = getCityBySlug(citySlug);
 
   if (!city) return notFound();
@@ -213,6 +213,7 @@ const HomeownerCityPage = ({ citySlug, locale }: HomeownerCityPageProps) => {
             <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
               Ring oss för ett kostnadsfritt samtal. Vi berättar vad din bostad är värd och hur snabbt vi kan matcha dig mot aktiva förfrågningar i {city.name}.
             </p>
+            <p className="text-white/80 mb-6">{t('footer.minimumStay')}</p>
             <a
               href="tel:+46762498486"
               onClick={trackPhoneClick}

@@ -329,7 +329,7 @@ const LpHusagare = () => {
           <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div>
               <h2 className="font-display text-2xl font-bold sm:text-3xl">Har du en bostad som kan passa?</h2>
-              <p className="mt-2 text-sm text-white/80 sm:text-base">Registrera den nu, så återkommer vi när den matchar ett företags behov.</p>
+              <p className="mt-2 text-sm text-white/80 sm:text-base">Registrera den nu, så återkommer vi när den matchar ett företags behov. Hyresperioden är minst tre månader.</p>
             </div>
             <a
               href="#registrera-bostad"

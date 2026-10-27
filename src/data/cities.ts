@@ -140,7 +140,7 @@ export const cities: City[] = [
       },
       {
         name: ls('Tunnelbaneutbyggnaden', 'Metro extension', 'Rozbudowa metra'),
-        description: ls('Boendekluster nära Hagastaden, Barkarby och Nacka för spränglag och tunnelarbetare. Vi hanterar löpande teamrotationer och kan korta ned till 1 månads avtal när projektfaser skiftar.', 'Housing clusters near Hagastaden, Barkarby and Nacka for tunnel and blasting teams. We manage ongoing crew rotations and can go down to 1-month contracts when project phases shift.', 'Klastry mieszkaniowe przy Hagastaden, Barkarby i Nacka dla ekip tunelowych i strzałowych. Obsługujemy bieżące rotacje ekip i możemy skrócić umowę do 1 miesiąca przy zmianie faz projektu.')
+        description: ls('Boendekluster nära Hagastaden, Barkarby och Nacka för spränglag och tunnelarbetare. Vi hanterar löpande teamrotationer och anpassar avtalen efter projektfaser, med en hyrestid på minst tre månader.', 'Housing clusters near Hagastaden, Barkarby and Nacka for tunnel and blasting teams. We manage ongoing crew rotations and adapt contracts to project phases, with a minimum stay of three months.', 'Klastry mieszkaniowe przy Hagastaden, Barkarby i Nacka dla ekip tunelowych i strzałowych. Obsługujemy bieżące rotacje ekip i dostosowujemy umowy do faz projektu, na co najmniej trzy miesiące.')
       },
       {
         name: ls('Norra Djurgårdsstaden', 'Norra Djurgårdsstaden', 'Norra Djurgårdsstaden'),
@@ -184,7 +184,7 @@ export const cities: City[] = [
       },
       {
         question: ls('Vilka typer av projekt har ni erfarenhet av i Stockholm?', 'What types of projects do you have experience with in Stockholm?', 'Jakie rodzaje projektów obsługujecie w Sztokholmie?'),
-        answer: ls('Vi har ordnat personalboende i Stockholm åt bland annat tunnelbyggare (tunnelbaneutbyggnaden), VVS- och elinstallatörer (Slussen, Norra Djurgårdsstaden), datacentertekniker (Norrtälje, Upplands Väsby), fasadbolag och betongentreprenörer. Kortaste uppdraget vi hanterat var 3 veckor, längsta pågår fortfarande efter 26 månader.', 'We have arranged staff accommodation in Stockholm for tunnel construction (metro extension), plumbing and electrical installers (Slussen, Norra Djurgårdsstaden), data centre technicians, façade contractors and concrete firms. Our shortest assignment was 3 weeks, our longest is still ongoing after 26 months.', 'Organizowaliśmy noclegi pracownicze w Sztokholmie m.in. dla budowniczych tuneli (rozbudowa metra), instalatorów hydrauliki i elektryki (Slussen, Norra Djurgårdsstaden), techników centrów danych, firm fasadowych i betoniarzy. Najkrótsze zlecenie trwało 3 tygodnie, najdłuższe trwa nadal po 26 miesiącach.')
+        answer: ls('Vi har ordnat personalboende i Stockholm åt bland annat tunnelbyggare (tunnelbaneutbyggnaden), VVS- och elinstallatörer (Slussen, Norra Djurgårdsstaden), datacentertekniker (Norrtälje, Upplands Väsby), fasadbolag och betongentreprenörer. Vi erbjuder i dag boende från tre månader och uppåt.', 'We have arranged staff accommodation in Stockholm for tunnel construction (metro extension), plumbing and electrical installers (Slussen, Norra Djurgårdsstaden), data centre technicians, façade contractors and concrete firms. We currently offer accommodation for stays of three months or longer.', 'Organizowaliśmy noclegi pracownicze w Sztokholmie m.in. dla budowniczych tuneli (rozbudowa metra), instalatorów hydrauliki i elektryki (Slussen, Norra Djurgårdsstaden), techników centrów danych, firm fasadowych i betoniarzy. Obecnie oferujemy zakwaterowanie na co najmniej trzy miesiące.')
       }
     ],
     nearby: ['uppsala', 'vasteras']
@@ -605,8 +605,8 @@ export const cities: City[] = [
     },
     faq: [
       {
-        question: ls('Måste vi boka på hela månader?', 'Do we need to book full months?', 'Czy musimy rezerwować całe miesiące?'),
-        answer: ls('Nej, i Örebro erbjuder vi 14-dagarsperioder för att matcha korta installationsfönster.', 'No, in Örebro we offer 14-day periods to match short installation windows.', 'Nie, w Örebro oferujemy okresy 14-dniowe dopasowane do krótkich okien instalacyjnych.')
+        question: ls('Vilken är den kortaste hyresperioden?', 'What is the minimum rental period?', 'Jaki jest minimalny okres najmu?'),
+        answer: ls('Vi erbjuder boende i Örebro från tre månader och uppåt.', 'We offer accommodation in Örebro for at least three months.', 'Oferujemy zakwaterowanie w Örebro na co najmniej trzy miesiące.')
       },
       {
         question: ls('Hur funkar kvällsincheckning?', 'How does late check-in work?', 'Jak działa zameldowanie wieczorne?'),
@@ -2306,16 +2306,7 @@ export const cities: City[] = [
         description: ls('Team som arbetar med vägförbättringar i regionen.', 'Crews working on road improvements in the region.', 'Ekipy pracujące przy modernizacji dróg w regionie.')
       }
     ],
-    testimonial: {
-      quote: ls(
-        'Vi hade 6 specialister som behövde bo nära sjukhuset under en månad. StayOnSite ordnade lägenheter i centrum samma vecka.',
-        'We had 6 specialists who needed to stay near the hospital for a month. StayOnSite arranged downtown apartments the same week.',
-        'Mieliśmy 6 specjalistów, którzy musieli mieszkać blisko szpitala przez miesiąc. StayOnSite zorganizowało mieszkania w centrum w tym samym tygodniu.'
-      ),
-      author: 'Mikael H.',
-      role: ls('Driftchef', 'Operations Manager', 'Kierownik operacyjny'),
-      company: 'MedTech Service'
-    },
+    testimonial: null,
     faq: [
       {
         question: ls('Hur nära garnisonen kan vi bo?', 'How close to the garrison can we stay?', 'Jak blisko garnizonu możemy mieszkać?'),
@@ -2328,9 +2319,9 @@ export const cities: City[] = [
       {
         question: ls('Fungerar det för korta uppdrag?', 'Does it work for short assignments?', 'Czy działa dla krótkich zleceń?'),
         answer: ls(
-          'Ja, vi erbjuder flexibla avtal från en vecka och uppåt.',
-          'Yes, we offer flexible contracts from one week and up.',
-          'Tak, oferujemy elastyczne umowy od jednego tygodnia wzwyż.'
+          'Vi erbjuder flexibla avtal från tre månader och uppåt.',
+          'We offer flexible contracts from three months and up.',
+          'Oferujemy elastyczne umowy od trzech miesięcy wzwyż.'
         )
       },
       {
@@ -2746,16 +2737,7 @@ export const cities: City[] = [
         description: ls('Byggteam vid omflyttning och nybyggnation i gruvsamhället.', 'Construction crews at relocation and new builds in the mining community.', 'Ekipy budowlane przy relokacji i nowych budowach w osiedlu górniczym.')
       }
     ],
-    testimonial: {
-      quote: ls(
-        'Vi hade underhållsstopp på Aitik och behövde plats för 10 tekniker under sex veckor. StayOnSite ordnade lägenheter i Gällivare snabbt och smidigt.',
-        'We had a maintenance shutdown at Aitik and needed housing for 10 technicians for six weeks. StayOnSite arranged apartments in Gällivare quickly and smoothly.',
-        'Mieliśmy postój konserwacyjny w Aitik i potrzebowaliśmy noclegów dla 10 techników na sześć tygodni. StayOnSite zorganizowało mieszkania w Gällivare szybko i sprawnie.'
-      ),
-      author: 'Björn T.',
-      role: ls('Underhållschef', 'Maintenance Manager', 'Kierownik konserwacji'),
-      company: 'Boliden'
-    },
+    testimonial: null,
     faq: [
       {
         question: ls('Hur nära Aitik kan vi bo?', 'How close to Aitik can we stay?', 'Jak blisko Aitik możemy mieszkać?'),
@@ -2876,11 +2858,11 @@ export const cities: City[] = [
         )
       },
       {
-        question: ls('Går det att boka för en enstaka vecka?', 'Can we book for a single week?', 'Czy można zarezerwować na jeden tydzień?'),
+        question: ls('Vilken är den kortaste hyresperioden?', 'What is the minimum rental period?', 'Jaki jest minimalny okres najmu?'),
         answer: ls(
-          'Ja, vi erbjuder flexibla avtal från en vecka och uppåt beroende på tillgänglighet.',
-          'Yes, we offer flexible contracts from one week and up depending on availability.',
-          'Tak, oferujemy elastyczne umowy od jednego tygodnia wzwyż, w zależności od dostępności.'
+          'Vi erbjuder flexibla avtal från tre månader och uppåt beroende på tillgänglighet.',
+          'We offer flexible contracts from three months and up depending on availability.',
+          'Oferujemy elastyczne umowy od trzech miesięcy wzwyż, w zależności od dostępności.'
         )
       },
       {
@@ -2909,9 +2891,9 @@ export const cities: City[] = [
       'Zakwaterowanie Pracownicze w Falun – Blisko SSAB, Uczelni i Budów w Dalarna'
     ),
     intro: ls(
-      'SSAB:s stålverk, Högskolan Dalarna och regionens bygg- och energiprojekt skapar ett stadigt behov av företagslägenheter och personalbostäder i Falun. Vi erbjuder möblerade lägenheter och hus i centrala Falun och Lugnet-området — flexibla avtal från en vecka.',
-      'SSAB\'s steelworks, Dalarna University and the region\'s construction and energy projects create a steady demand for worker housing in Falun. We offer furnished apartments and houses in central Falun and the Lugnet area — flexible contracts from one week.',
-      'Stalownia SSAB, Uniwersytet Dalarna oraz regionalne projekty budowlane i energetyczne tworzą stałe zapotrzebowanie na zakwaterowanie pracownicze w Falun. Oferujemy umeblowane mieszkania i domy w centrum Falun i okolicy Lugnet — elastyczne umowy od jednego tygodnia.'
+      'SSAB:s stålverk, Högskolan Dalarna och regionens bygg- och energiprojekt skapar ett stadigt behov av företagslägenheter och personalbostäder i Falun. Vi erbjuder möblerade lägenheter och hus i centrala Falun och Lugnet-området — flexibla avtal från tre månader.',
+      'SSAB\'s steelworks, Dalarna University and the region\'s construction and energy projects create a steady demand for worker housing in Falun. We offer furnished apartments and houses in central Falun and the Lugnet area — flexible contracts from three months.',
+      'Stalownia SSAB, Uniwersytet Dalarna oraz regionalne projekty budowlane i energetyczne tworzą stałe zapotrzebowanie na zakwaterowanie pracownicze w Falun. Oferujemy umeblowane mieszkania i domy w centrum Falun i okolicy Lugnet — elastyczne umowy od trzech miesięcy.'
     ),
     keywords: lk(
       ['personalboende falun', 'företagsboende falun', 'boende falun', 'lägenheter falun', 'montörboende dalarna', 'tillfälligt boende falun', 'korttidsboende falun', 'byggboende falun'],
@@ -3208,9 +3190,9 @@ export const cities: City[] = [
       {
         question: ls('Hur lång tid kan vi boka?', 'How long can we book?', 'Na jak długo możemy zarezerwować?'),
         answer: ls(
-          'Från en vecka till flera år — perfekt för långvariga infrastrukturprojekt.',
-          'From one week to several years — perfect for long-term infrastructure projects.',
-          'Od jednego tygodnia do kilku lat — idealne dla długoterminowych projektów infrastrukturalnych.'
+          'Från tre månader till flera år — perfekt för långvariga infrastrukturprojekt.',
+          'From three months to several years — perfect for long-term infrastructure projects.',
+          'Od trzech miesięcy do kilku lat — idealne dla długoterminowych projektów infrastrukturalnych.'
         )
       },
       {
@@ -3318,9 +3300,9 @@ export const cities: City[] = [
       {
         question: ls('Hur fungerar det med längre kontrakt?', 'How do longer contracts work?', 'Jak działają dłuższe umowy?'),
         answer: ls(
-          'Vi erbjuder avtal från en vecka till flera år med fast månadskostnad.',
-          'We offer contracts from one week to several years with a fixed monthly cost.',
-          'Oferujemy umowy od jednego tygodnia do kilku lat ze stałym kosztem miesięcznym.'
+          'Vi erbjuder avtal från tre månader till flera år med fast månadskostnad.',
+          'We offer contracts from three months to several years with a fixed monthly cost.',
+          'Oferujemy umowy od trzech miesięcy do kilku lat ze stałym kosztem miesięcznym.'
         )
       },
       {

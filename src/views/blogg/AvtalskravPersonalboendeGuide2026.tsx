@@ -268,7 +268,7 @@ Om arbetsgivaren tillhandahåller eller betalar logi vid tjänsteresa med övern
 
       <ul>
         <li><strong>Korttidsboende (1&ndash;4 veckor):</strong> Hotell, vandrarhem, korttidslägenheter</li>
-        <li><strong>Medellångprojekt (1&ndash;6 månader):</strong> Företagslägenheter, modulboenden, privatuthyrning</li>
+        <li><strong>Medellångprojekt (3&ndash;6 månader):</strong> Företagslägenheter, modulboenden, privatuthyrning</li>
         <li><strong>Långprojekt (6+ månader):</strong> Hyresrätt, personalboende på arbetsplats, andrahandskontrakt</li>
       </ul>
 

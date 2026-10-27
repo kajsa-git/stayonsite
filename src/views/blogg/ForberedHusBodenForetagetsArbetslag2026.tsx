@@ -7,7 +7,7 @@ const ForberedHusBodenForetagetsArbetslag2026 = () => {
   return (
     <BlogLayout post={post}>
       <p>
-        Ska du hyra ut ditt hus i Boden till ett byggföretags arbetslag? Börja med att stämma av företagets faktiska behov: antal egna sängar och sovrum, kökets kapacitet, tvättmöjlighet, uppvärmning och parkering som går att hålla snöfri vintertid. Antalet sängplatser ska passa den aktuella förfrågan; det finns inget generellt minimiantal för alla arbetslag. Byggföretag vill dessutom se en komplett inventarielista &ndash; sängar, förvaring, köksutrustning och tvättmöjlighet &ndash; innan de skriver kontrakt. Möbleringen ska vara robust och funktionell snarare än stilfull, eftersom huset ska fungera som boende för flera personer under veckor eller månader i sträck.
+        Ska du hyra ut ditt hus i Boden till ett byggföretags arbetslag? Börja med att stämma av företagets faktiska behov: antal egna sängar och sovrum, kökets kapacitet, tvättmöjlighet, uppvärmning och parkering som går att hålla snöfri vintertid. Antalet sängplatser ska passa den aktuella förfrågan; det finns inget generellt minimiantal för alla arbetslag. Byggföretag vill dessutom se en komplett inventarielista &ndash; sängar, förvaring, köksutrustning och tvättmöjlighet &ndash; innan de skriver kontrakt. Möbleringen ska vara robust och funktionell snarare än stilfull, eftersom huset ska fungera som boende för flera personer under minst tre månader i sträck.
       </p>
 
       <h2>Börja med arbetsplatsen och företagets boendebehov</h2>
