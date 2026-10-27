@@ -9,6 +9,7 @@ import { blogPosts, getBlogPost } from '@/data/blog-posts';
 import { DATACENTER_PATHS } from '@/data/datacenter';
 import { useTranslation } from '@/hooks/use-translation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Calendar, Clock, ShieldCheck, User } from 'lucide-react';
 
 const BlogIndex = () => {
@@ -166,6 +167,12 @@ const BlogIndex = () => {
                     href={postHref(post)}
                     className="group bg-white rounded-2xl border border-nordic-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-accent/30 flex flex-col"
                   >
+                    {post.coverImage && (
+                      <div>
+                        <Image src={post.coverImage.src} alt={post.coverImage.alt[language]} width={post.coverImage.width} height={post.coverImage.height} sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 384px" className="aspect-[3/2] h-auto w-full" />
+                        <p className="px-8 pt-3 text-xs leading-relaxed text-nordic-700">{post.coverImage.caption[language]}</p>
+                      </div>
+                    )}
                     <div className="p-8 flex-grow">
                       <span className="inline-block bg-accent/10 text-accent px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
                         {post.category}

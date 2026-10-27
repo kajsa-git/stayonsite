@@ -1,4 +1,4 @@
-import { DATACENTER_PATHS } from '@/data/datacenter';
+import { DATACENTER_IMAGES, DATACENTER_PATHS } from '@/data/datacenter';
 import { datacenterTranslations } from '@/data/datacenter-translations';
 import { COMPANY_FACTS } from '@/data/constants';
 import { buildMetadata } from '@/lib/metadata';
@@ -10,6 +10,7 @@ export function datacenterMetadata(locale: keyof typeof DATACENTER_PATHS) {
     description: copy['datacenter.meta.description'],
     canonical: `${COMPANY_FACTS.url}${DATACENTER_PATHS[locale]}`,
     locale,
+    ogImage: `${COMPANY_FACTS.url}${DATACENTER_IMAGES.site}`,
     hreflangs: Object.entries(DATACENTER_PATHS).map(([lang, path]) => ({
       lang,
       href: `${COMPANY_FACTS.url}${path}`,

@@ -26,3 +26,10 @@ export const DATACENTER_SOURCES = {
     checkedDate: DATACENTER_UPDATED,
   },
 } as const;
+
+export const DATACENTER_IMAGES = {
+  site: '/images/datacenter-team-illustration.webp',
+  home: '/images/project-housing-illustration.webp',
+  width: 1536,
+  height: 1024,
+} as const;

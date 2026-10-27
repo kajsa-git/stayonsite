@@ -143,10 +143,10 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/blogg" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                <Link href={language === 'en' ? '/en/blog' : '/blogg'} className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
-                  Blogg
-                </a>
+                  {t('blog.nav')}
+                </Link>
               </li>
               {language === 'sv' && (
                 <li>

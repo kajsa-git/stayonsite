@@ -1,5 +1,6 @@
 import type { Locale } from '@/types/localized';
-import { DATACENTER_SOURCES } from './datacenter';
+import { DATACENTER_IMAGES, DATACENTER_SOURCES } from './datacenter';
+import { datacenterTranslations } from './datacenter-translations';
 
 export interface BlogFaqItem {
   q: string;
@@ -25,6 +26,13 @@ export interface BlogPost {
   category: string;
   tags: string[];
   readingTime: number;
+  coverImage?: {
+    src: string;
+    width: number;
+    height: number;
+    alt: { sv: string; en: string; pl: string };
+    caption: { sv: string; en: string; pl: string };
+  };
   /** Målgrupp — styr vilken CTA som visas i BlogLayout. */
   audience?: 'husagare' | 'foretag' | 'bada';
   /** Citerbara fakta ur artikeln. Visas som "Snabba svar" överst och som abstract i Article-schemat. */
@@ -522,6 +530,21 @@ export const blogPosts: BlogPost[] = [
     category: 'Marknad',
     tags: ['datacenter', 'personalboende', 'montörboende', 'Horndal', 'Borlänge', 'Gävle'],
     readingTime: 5,
+    coverImage: {
+      src: DATACENTER_IMAGES.site,
+      width: DATACENTER_IMAGES.width,
+      height: DATACENTER_IMAGES.height,
+      alt: {
+        sv: datacenterTranslations.sv['datacenter.image.site.alt'],
+        en: datacenterTranslations.en['datacenter.image.site.alt'],
+        pl: datacenterTranslations.pl['datacenter.image.site.alt'],
+      },
+      caption: {
+        sv: datacenterTranslations.sv['datacenter.image.site.caption'],
+        en: datacenterTranslations.en['datacenter.image.site.caption'],
+        pl: datacenterTranslations.pl['datacenter.image.site.caption'],
+      },
+    },
     audience: 'foretag',
     keyTakeaways: [
       'Planera boendet efter entreprenörens bemanning per period. Datacentrets megawatt räcker inte för att beräkna antalet bäddar.',
@@ -835,6 +858,21 @@ export const blogPosts: BlogPost[] = [
     category: 'Guide',
     tags: ['personalboende', 'hotell', 'kostnadsjämförelse', 'byggföretag', 'budget'],
     readingTime: 7,
+    coverImage: {
+      src: DATACENTER_IMAGES.home,
+      width: DATACENTER_IMAGES.width,
+      height: DATACENTER_IMAGES.height,
+      alt: {
+        sv: datacenterTranslations.sv['datacenter.image.home.alt'],
+        en: datacenterTranslations.en['datacenter.image.home.alt'],
+        pl: datacenterTranslations.pl['datacenter.image.home.alt'],
+      },
+      caption: {
+        sv: datacenterTranslations.sv['datacenter.image.home.caption'],
+        en: datacenterTranslations.en['datacenter.image.home.caption'],
+        pl: datacenterTranslations.pl['datacenter.image.home.caption'],
+      },
+    },
     audience: 'foretag',
     keyTakeaways: [
       'Personalboende via StayOnSite kostar från 5 900 kr per person och månad; hotell 15 000–30 000 kr och Airbnb 8 000–15 000 kr per person och månad.',

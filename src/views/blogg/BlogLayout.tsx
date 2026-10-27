@@ -49,9 +49,9 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
       description: description,
       image: {
         '@type': 'ImageObject',
-        url: 'https://www.stayonsite.se/images/og-image.jpg',
-        width: 1200,
-        height: 630,
+        url: `https://www.stayonsite.se${post.coverImage?.src || '/images/og-image.jpg'}`,
+        width: post.coverImage?.width || 1200,
+        height: post.coverImage?.height || 630,
       },
       author: {
         '@type': 'Person',
@@ -213,6 +213,12 @@ const BlogLayout = ({ post, children }: BlogLayoutProps) => {
         {/* Article Content */}
         <section className="py-16">
           <div className="container mx-auto px-6 md:px-12 max-w-3xl">
+            {post.coverImage && (
+              <figure className="mb-10">
+                <Image src={post.coverImage.src} alt={post.coverImage.alt[language]} width={post.coverImage.width} height={post.coverImage.height} sizes="(max-width: 767px) 100vw, 672px" className="h-auto w-full rounded-2xl" />
+                <figcaption className="mt-3 text-xs leading-relaxed text-nordic-700">{post.coverImage.caption[language]}</figcaption>
+              </figure>
+            )}
             {keyTakeaways && keyTakeaways.length > 0 && (
               <div className="mb-12 bg-nordic-50 border border-nordic-100 rounded-2xl p-6 md:p-8">
                 <h2 className="font-display text-xl font-semibold text-nordic-900 mb-4">

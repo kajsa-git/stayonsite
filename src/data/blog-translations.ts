@@ -1,4 +1,5 @@
 const sv = {
+  'blog.nav': 'Blogg',
   'blog.heading': 'Guider om personalboende och uthyrning till företag',
   'blog.intro': 'Planera boende för arbetslaget, jämför kostnader eller förbered din bostad för uthyrning. Här samlar vi praktiska guider och källor till aktuella regler.',
   'blog.start': 'Börja med det du behöver hjälp med',
@@ -29,6 +30,7 @@ const sv = {
 export const blogTranslations = {
   sv,
   en: {
+    'blog.nav': 'Blog',
     'blog.heading': 'Guides to worker accommodation in Sweden',
     'blog.intro': 'Plan housing for your crew, compare costs and understand the booking process. Practical guides for companies bringing teams to Sweden.',
     'blog.start': 'Find the right guide for your project',
@@ -56,6 +58,7 @@ export const blogTranslations = {
     'blog.cta.call': 'Call +46 76-249 84 86',
   },
   pl: {
+    'blog.nav': 'Blog (po szwedzku)',
     'blog.heading': 'Poradniki o zakwaterowaniu pracowników i wynajmie firmom',
     'blog.intro': 'Zaplanuj zakwaterowanie zespołu, porównaj koszty lub przygotuj nieruchomość do wynajmu. Praktyczne poradniki i źródła aktualnych przepisów.',
     'blog.start': 'Znajdź poradnik dla swojego projektu',
