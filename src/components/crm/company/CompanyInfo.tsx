@@ -3,6 +3,7 @@
 import type { Company } from "@/lib/crm/schema";
 import { useGooglePlaces, type PlaceParts } from "@/hooks/use-google-places";
 import { toast } from "@/components/ui/use-toast";
+import { LEAD_SOURCE_LABELS } from "@/lib/crm/lead-sources";
 import { Check, AlertCircle, ChevronRight, Loader2, Plus, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -56,6 +57,7 @@ export function CompanyInfo({ company, onSave }: Props) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [open, setOpen] = useState(false);
+  const leadSource = company.leadSource ?? "";
 
   // Reset local field state only when switching to a different company.
   useEffect(() => {
@@ -93,6 +95,12 @@ export function CompanyInfo({ company, onSave }: Props) {
     const next = current.includes(code) ? current.filter((x) => x !== code) : [...current, code];
     setStatus("saving");
     const ok = await onSave("languages", next);
+    setStatus(ok ? "saved" : "error");
+  }
+
+  async function changeLeadSource(value: string) {
+    setStatus("saving");
+    const ok = await onSave("leadSource", value);
     setStatus(ok ? "saved" : "error");
   }
 
@@ -215,6 +223,24 @@ export function CompanyInfo({ company, onSave }: Props) {
             />
           </div>
         ))}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="company-lead-source" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            Lead-källa
+          </label>
+          <select
+            id="company-lead-source"
+            value={leadSource}
+            disabled={status === "saving"}
+            onChange={(e) => void changeLeadSource(e.target.value)}
+            className="text-sm bg-white border border-input rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+          >
+            <option value="" disabled>Ej angiven</option>
+            {leadSource && !LEAD_SOURCE_LABELS[leadSource] && <option value={leadSource}>{leadSource}</option>}
+            {Object.entries(LEAD_SOURCE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+        </div>
         <div className="col-span-full flex flex-col gap-1">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Språk för utskick

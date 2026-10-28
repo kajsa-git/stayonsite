@@ -64,7 +64,7 @@ export const companies = sqliteTable("crm_companies", {
   orgNr: text("org_nr"),
   category: text("category"),
   website: text("website"),
-  leadSource: text("lead_source"), // kallt | webb | befintlig | referens | qasa | airbnb
+  leadSource: text("lead_source"), // kallt | webb | befintlig | referens | qasa | airbnb | prospektering
   rating: integer("rating"), // 0–10 intern skattning av kund
   invoiceEmail: text("invoice_email"), // separat fakturamail (skiljer sig ofta från kontakt-mail)
   languages: text("languages", { mode: "json" }).$type<string[]>(), // språk för utskick/segmentering

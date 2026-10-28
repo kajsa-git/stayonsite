@@ -12,6 +12,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { todayStockholm } from "@/lib/crm/date";
+import { LEAD_SOURCE_LABELS } from "@/lib/crm/lead-sources";
 
 type CompanyFilter = "all" | "active" | "followup" | "no_followup";
 
@@ -34,15 +35,6 @@ interface Row {
   primaryContactName: string | null;
   primaryContactPhone: string | null;
 }
-
-const LEAD_SOURCE: Record<string, string> = {
-  kallt: "Kallt samtal",
-  webb: "Webb",
-  befintlig: "Befintlig kund",
-  referens: "Referens",
-  qasa: "Qasa",
-  airbnb: "AirBnB",
-};
 
 const fetcher = swrFetcher;
 
@@ -169,7 +161,7 @@ function CompanyTableContent() {
                       {formatNeedRange(request?.bedroomsFrom, request?.bedroomsTo)}
                     </TableCell>
                     <TableCell className="font-mono text-xs text-foreground">{c.orgNr || "–"}</TableCell>
-                    <TableCell className="text-foreground">{c.leadSource ? (LEAD_SOURCE[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
+                    <TableCell className="text-foreground">{c.leadSource ? (LEAD_SOURCE_LABELS[c.leadSource] ?? c.leadSource) : "–"}</TableCell>
                     <TableCell className="text-foreground">
                       {c.primaryContactName ? (
                         <span>{c.primaryContactName}{c.primaryContactPhone && <span className="text-muted-foreground"> · {c.primaryContactPhone}</span>}</span>

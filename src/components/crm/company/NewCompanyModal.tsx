@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2, Search } from "lucide-react";
 import { todayStockholm } from "@/lib/crm/date";
+import { LEAD_SOURCE_LABELS } from "@/lib/crm/lead-sources";
 
 interface NewCompanyModalProps {
   open: boolean;
@@ -166,12 +167,9 @@ export function NewCompanyModal({ open, onClose }: NewCompanyModalProps) {
                 onChange={(e) => set("leadSource", e.target.value)}
                 className="w-full mt-1 px-2.5 py-1.5 text-sm border border-[#d4d4d2] rounded-[4px] bg-white focus:outline-none focus:border-[#1c5fb5]"
               >
-                <option value="kallt">Kallt samtal</option>
-                <option value="webb">Webb</option>
-                <option value="befintlig">Befintlig kund</option>
-                <option value="referens">Referens</option>
-                <option value="qasa">Qasa</option>
-                <option value="airbnb">AirBnB</option>
+                {Object.entries(LEAD_SOURCE_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
               </select>
             </div>
             <div>

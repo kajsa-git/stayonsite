@@ -5,6 +5,7 @@ import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { ExternalLink, Mail, Phone, User } from "lucide-react";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { ReviewRequestSnippet } from "@/components/crm/ReviewRequestSnippet";
+import { LEAD_SOURCE_LABELS } from "@/lib/crm/lead-sources";
 
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded";
 
@@ -21,15 +22,6 @@ function initials(name: string) {
     .map((w) => w[0].toUpperCase())
     .join("");
 }
-
-const LEAD_SOURCE_LABELS: Record<string, string> = {
-  kallt: "Kallt samtal",
-  webb: "Webb",
-  befintlig: "Befintlig kund",
-  referens: "Referens",
-  qasa: "Qasa",
-  airbnb: "AirBnB",
-};
 
 export function CompanyHeader({ company, primaryContact }: Props) {
   const websiteHref = company.website
