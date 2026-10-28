@@ -1035,7 +1035,7 @@ function ChaseCard({
         )}
         <div className="text-xs mt-1">
           <span className="italic text-nordic-500">{item.source === "owner" ? "Återkomst på uthyrarkortet" : "Uthyrarkontakt att följa upp"}</span>
-          {item.reason && <span className="text-muted-foreground"> · {item.reason}</span>}
+          {item.reason && <p className="mt-0.5 line-clamp-2 break-words text-muted-foreground" title={item.reason}>{item.reason}</p>}
         </div>
         {item.earliestDate && (
           <div className={`text-[11px] mt-0.5 ${overdue ? "text-rose-600" : "text-muted-foreground"}`}>
