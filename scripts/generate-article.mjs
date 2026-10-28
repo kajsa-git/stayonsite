@@ -32,7 +32,7 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-const MODEL = 'claude-sonnet-5';
+const MODEL = 'claude-opus-5-5';
 const MAX_TOKENS = 12000;
 const MAX_RETRIES = 3;
 const PRIMARY_SOURCE_HOSTS = [
