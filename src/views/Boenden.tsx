@@ -1,14 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
+import { Search, X } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import HeroIntentForm from '@/components/HeroIntentForm'
 import { trackPhoneClick, trackEmailClick } from '@/lib/gtag'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { localizedPropertyDescription } from '@/lib/property-description'
+import { filterListings } from '@/lib/listing-search'
 
 interface Listing {
   id: string
@@ -37,7 +40,13 @@ interface ListingLink {
   city: string
 }
 
-const fetcher = (url: string) => fetch(url).then(r => r.json())
+const fetcher = async (url: string): Promise<Listing[]> => {
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`Failed to fetch listings: ${response.status}`)
+  const data = await response.json()
+  if (!Array.isArray(data)) throw new Error('Invalid listings response')
+  return data
+}
 
 function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (listing: Listing) => void }) {
   const { language } = useLanguage()
@@ -152,19 +161,6 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
   )
 }
 
-function FilterBtn({ children, active, onClick }: { children: React.ReactNode; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`shrink-0 whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-        active ? 'bg-[#0f1c2e] text-white border-[#0f1c2e]' : 'bg-white text-nordic-700 border-nordic-200 hover:border-nordic-400'
-      }`}
-    >
-      {children}
-    </button>
-  )
-}
-
 function Chip({ children }: { children: React.ReactNode }) {
   return (
     <span className="text-[11px] px-2 py-0.5 bg-nordic-100 text-nordic-700 rounded-full font-medium">
@@ -238,7 +234,7 @@ const PAGE_SIZE = 12
 
 export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] }) {
   const { t } = useLanguage()
-  const { data: listings = [], isLoading } = useSWR<Listing[]>('/api/listings', fetcher)
+  const { data: listings = [], isLoading, isValidating, error, mutate } = useSWR<Listing[]>('/api/listings', fetcher)
   const [selected, setSelected] = useState<Listing | null>(null)
 
   const listingLinksByCity = listingLinks.reduce<Record<string, ListingLink[]>>((groups, listing) => {
@@ -248,19 +244,29 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
     return groups
   }, {})
 
-  const cities = [...new Set(listings.map(l => l.city).filter(Boolean) as string[])].sort()
-  const [cityFilter, setCityFilter] = useState<string>('alla')
-  // Paginering i klienten: allt är redan hämtat, men 30+ kort i rad gör mobilsidan
-  // milslång — visa 12 åt gången. Filterbyte nollställer.
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const [search, setSearch] = useState('')
+  const [minimumBeds, setMinimumBeds] = useState(0)
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const hasFilters = search.trim().length > 0 || minimumBeds > 0
 
-  const selectCity = (city: string) => {
-    setCityFilter(city)
+  const clearSearch = () => {
+    setSearch('')
     setVisibleCount(PAGE_SIZE)
+    searchInputRef.current?.focus()
   }
 
-  const filtered = cityFilter === 'alla' ? listings : listings.filter(l => l.city === cityFilter)
+  const resetFilters = () => {
+    setMinimumBeds(0)
+    clearSearch()
+  }
+
+  const filtered = filterListings(listings, search, minimumBeds)
   const visible = filtered.slice(0, visibleCount)
+  const resultStatus = error
+    ? t('listingSearch.errorTitle')
+    : isLoading ? t('listingSearch.loading')
+      : t('listingSearch.results').replace('{shown}', String(visible.length)).replace('{total}', String(filtered.length))
 
   return (
     <>
@@ -281,22 +287,79 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
         </div>
 
         <div id="available-homes" className="scroll-mt-24 max-w-6xl mx-auto px-4 py-10">
-          {/* Stadsfilter — en skrollbar rad på mobil (chipsen åt alla håll tog två
-              skärmhöjder innan första objektet), radbruten först från sm. */}
-          {cities.length > 1 && (
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-2 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-              <FilterBtn active={cityFilter === 'alla'} onClick={() => selectCity('alla')}>
-                Alla orter
-              </FilterBtn>
-              {cities.map(city => (
-                <FilterBtn key={city} active={cityFilter === city} onClick={() => selectCity(city)}>
-                  {city}
-                </FilterBtn>
-              ))}
+          <section aria-labelledby="listing-search-heading" className="mb-6 rounded-2xl border border-nordic-200 bg-white p-5 shadow-sm sm:p-6">
+            <h2 id="listing-search-heading" className="mb-5 text-xl font-semibold text-nordic-900">
+              {t('listingSearch.title')}
+            </h2>
+            <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_14rem]">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="listing-search" className="text-sm font-medium text-nordic-900">
+                  {t('listingSearch.label')}
+                </label>
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                  <Input
+                    ref={searchInputRef}
+                    id="listing-search"
+                    type="search"
+                    value={search}
+                    placeholder={t('listingSearch.placeholder')}
+                    onChange={(event) => { setSearch(event.target.value); setVisibleCount(PAGE_SIZE) }}
+                    className="h-12 pl-11 pr-14 [&::-webkit-search-cancel-button]:appearance-none"
+                  />
+                  {search.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearSearch}
+                      aria-label={t('listingSearch.clearSearch')}
+                      className="absolute right-0.5 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-md text-nordic-700 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <X className="size-5" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="listing-minimum-beds" className="text-sm font-medium text-nordic-900">
+                  {t('listingSearch.minimumBeds')}
+                </label>
+                <select
+                  id="listing-minimum-beds"
+                  value={minimumBeds}
+                  onChange={(event) => { setMinimumBeds(Number(event.target.value)); setVisibleCount(PAGE_SIZE) }}
+                  aria-describedby="listing-minimum-beds-description"
+                  className="h-12 w-full rounded-md border border-input bg-background px-3 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm"
+                >
+                  <option value={0}>{t('listingSearch.allSizes')}</option>
+                  {[2, 4, 6, 8, 10].map((beds) => <option key={beds} value={beds}>{beds}+</option>)}
+                </select>
+                <p id="listing-minimum-beds-description" className="text-xs text-muted-foreground">{t('listingSearch.perProperty')}</p>
+              </div>
             </div>
-          )}
+            <div className="mt-3 flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <p role="status" aria-live="polite" aria-atomic="true" className="text-sm text-muted-foreground">{resultStatus}</p>
+              {hasFilters && (
+                <button type="button" onClick={resetFilters} className="min-h-11 rounded-md px-3 text-sm font-medium text-nordic-700 underline underline-offset-4 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  {t('listingSearch.reset')}
+                </button>
+              )}
+            </div>
+          </section>
 
-          {isLoading ? (
+          {error ? (
+            <div role="alert" className="rounded-2xl border border-nordic-200 bg-white px-6 py-12 text-center">
+              <h3 className="mb-2 text-lg font-semibold text-nordic-900">{t('listingSearch.errorTitle')}</h3>
+              <p className="text-sm text-muted-foreground">{t('listingSearch.errorDescription')}</p>
+              <button
+                type="button"
+                onClick={() => { void mutate().catch(() => undefined) }}
+                disabled={isValidating}
+                className="mt-5 min-h-11 rounded-xl bg-accent px-6 font-semibold text-accent-foreground hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60"
+              >
+                {isValidating ? t('listingSearch.retrying') : t('listingSearch.retry')}
+              </button>
+            </div>
+          ) : isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="bg-white rounded-2xl overflow-hidden border border-nordic-100">
@@ -309,11 +372,15 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
-              <p className="text-lg font-medium mb-2">Inga lediga boenden just nu</p>
-              <p className="text-sm">Kontakta oss — vi hittar något som passar er.</p>
-              <a href="tel:+46762498486" onClick={trackPhoneClick} className="inline-block mt-4 bg-[#ff6300] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#e55a00] transition-colors">
-                Ring 076-249 84 86
+            <div className="rounded-2xl border border-nordic-200 bg-white px-6 py-12 text-center">
+              <h3 className="mb-2 text-lg font-semibold text-nordic-900">
+                {hasFilters ? t('listingSearch.noResultsTitle') : t('listingSearch.emptyTitle')}
+              </h3>
+              <p className="mx-auto max-w-lg text-sm text-muted-foreground">
+                {hasFilters ? t('listingSearch.noResultsDescription') : t('listingSearch.emptyDescription')}
+              </p>
+              <a href="#hero-inquiry" className="mt-5 inline-flex min-h-11 items-center rounded-xl bg-accent px-6 font-semibold text-accent-foreground hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                {t('listingSearch.help')}
               </a>
             </div>
           ) : (
@@ -329,7 +396,7 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
                     onClick={() => setVisibleCount(count => count + PAGE_SIZE)}
                     className="min-h-11 rounded-xl border border-nordic-300 bg-white px-6 text-sm font-semibold text-nordic-800 transition-colors hover:border-nordic-500"
                   >
-                    Visa fler boenden ({filtered.length - visibleCount} till)
+                    {t('listingSearch.showMore').replace('{count}', String(filtered.length - visibleCount))}
                   </button>
                 </div>
               )}
@@ -378,7 +445,7 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
           )}
 
           {/* Inte hittat rätt? */}
-          {filtered.length > 0 && (
+          {!error && filtered.length > 0 && (
             <div className="mt-16 text-center bg-white rounded-2xl border border-nordic-100 p-8">
               <h2 className="font-bold text-nordic-900 text-xl mb-2">Hittade du inte rätt?</h2>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto text-sm">

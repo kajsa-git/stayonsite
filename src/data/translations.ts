@@ -21,6 +21,26 @@ export type TranslationKey =
   | "projectBrief.response"
   | "navigation.companyHousing"
   | "navigation.availableHomes"
+  | "listingSearch.title"
+  | "listingSearch.label"
+  | "listingSearch.placeholder"
+  | "listingSearch.clearSearch"
+  | "listingSearch.minimumBeds"
+  | "listingSearch.perProperty"
+  | "listingSearch.allSizes"
+  | "listingSearch.results"
+  | "listingSearch.reset"
+  | "listingSearch.loading"
+  | "listingSearch.noResultsTitle"
+  | "listingSearch.noResultsDescription"
+  | "listingSearch.help"
+  | "listingSearch.emptyTitle"
+  | "listingSearch.emptyDescription"
+  | "listingSearch.errorTitle"
+  | "listingSearch.errorDescription"
+  | "listingSearch.retry"
+  | "listingSearch.retrying"
+  | "listingSearch.showMore"
   | "nav.home"
   | "nav.services"
   | "nav.references"
@@ -439,6 +459,26 @@ export const translations: Record<
     "projectBrief.response": "Vi går igenom era behov och återkommer med möjliga boenden och villkor.",
     "navigation.companyHousing": "Läs om företagsboende",
     "navigation.availableHomes": "Se lediga boenden",
+    "listingSearch.title": "Hitta boende för ert team",
+    "listingSearch.label": "Sök ort, postnummer eller boende",
+    "listingSearch.placeholder": "T.ex. Boden, 961 40…",
+    "listingSearch.clearSearch": "Rensa sökning",
+    "listingSearch.minimumBeds": "Minst antal bäddar",
+    "listingSearch.perProperty": "Per boende",
+    "listingSearch.allSizes": "Alla storlekar",
+    "listingSearch.results": "Visar {shown} av {total} boenden",
+    "listingSearch.reset": "Rensa filter",
+    "listingSearch.loading": "Hämtar boenden…",
+    "listingSearch.noResultsTitle": "Inga boenden matchar din sökning",
+    "listingSearch.noResultsDescription": "Prova en annan ort, ett annat postnummer eller färre bäddar. Du kan också rensa filtren.",
+    "listingSearch.help": "Få hjälp att hitta boende",
+    "listingSearch.emptyTitle": "Inga publicerade boenden att visa just nu",
+    "listingSearch.emptyDescription": "Berätta vad ni behöver så hjälper vi er att söka boende.",
+    "listingSearch.errorTitle": "Boendena kunde inte hämtas",
+    "listingSearch.errorDescription": "Försök igen. Din sökning och dina filter finns kvar.",
+    "listingSearch.retry": "Försök igen",
+    "listingSearch.retrying": "Försöker igen…",
+    "listingSearch.showMore": "Visa fler boenden ({count} till)",
     "nav.home": "Hem",
     "nav.services": "Tjänster",
     "nav.references": "Referenser",
@@ -957,6 +997,26 @@ export const translations: Record<
     "projectBrief.response": "We review your requirements and get back to you with possible accommodation and terms.",
     "navigation.companyHousing": "Learn about corporate housing",
     "navigation.availableHomes": "View available accommodation",
+    "listingSearch.title": "Find accommodation for your team",
+    "listingSearch.label": "Search location, postcode or property",
+    "listingSearch.placeholder": "E.g. Boden, 961 40…",
+    "listingSearch.clearSearch": "Clear search",
+    "listingSearch.minimumBeds": "Minimum number of beds",
+    "listingSearch.perProperty": "Per property",
+    "listingSearch.allSizes": "All sizes",
+    "listingSearch.results": "Showing {shown} of {total} properties",
+    "listingSearch.reset": "Clear filters",
+    "listingSearch.loading": "Loading properties…",
+    "listingSearch.noResultsTitle": "No properties match your search",
+    "listingSearch.noResultsDescription": "Try another location, postcode or fewer beds. You can also clear the filters.",
+    "listingSearch.help": "Get help finding accommodation",
+    "listingSearch.emptyTitle": "No published properties to show at the moment",
+    "listingSearch.emptyDescription": "Tell us what you need and we will help you search for accommodation.",
+    "listingSearch.errorTitle": "Properties could not be loaded",
+    "listingSearch.errorDescription": "Please try again. Your search and filters have been kept.",
+    "listingSearch.retry": "Try again",
+    "listingSearch.retrying": "Trying again…",
+    "listingSearch.showMore": "Show more properties ({count} more)",
     "nav.home": "Home",
     "nav.services": "Services",
     "nav.references": "References",
@@ -1479,6 +1539,26 @@ export const translations: Record<
     "projectBrief.response": "Przeanalizujemy Wasze potrzeby i przedstawimy dostępne możliwości zakwaterowania oraz warunki.",
     "navigation.companyHousing": "Dowiedz się więcej o zakwaterowaniu firmowym",
     "navigation.availableHomes": "Zobacz dostępne zakwaterowanie",
+    "listingSearch.title": "Znajdź zakwaterowanie dla swojego zespołu",
+    "listingSearch.label": "Szukaj miejscowości, kodu pocztowego lub obiektu",
+    "listingSearch.placeholder": "Np. Boden, 961 40…",
+    "listingSearch.clearSearch": "Wyczyść wyszukiwanie",
+    "listingSearch.minimumBeds": "Minimalna liczba łóżek",
+    "listingSearch.perProperty": "W jednym obiekcie",
+    "listingSearch.allSizes": "Wszystkie wielkości",
+    "listingSearch.results": "Wyświetlono {shown} z {total} obiektów",
+    "listingSearch.reset": "Wyczyść filtry",
+    "listingSearch.loading": "Wczytywanie obiektów…",
+    "listingSearch.noResultsTitle": "Brak obiektów pasujących do wyszukiwania",
+    "listingSearch.noResultsDescription": "Spróbuj innej miejscowości, innego kodu pocztowego lub mniejszej liczby łóżek. Możesz też wyczyścić filtry.",
+    "listingSearch.help": "Uzyskaj pomoc w znalezieniu zakwaterowania",
+    "listingSearch.emptyTitle": "Obecnie brak opublikowanych obiektów do wyświetlenia",
+    "listingSearch.emptyDescription": "Opisz swoje potrzeby, a pomożemy Ci znaleźć zakwaterowanie.",
+    "listingSearch.errorTitle": "Nie udało się wczytać obiektów",
+    "listingSearch.errorDescription": "Spróbuj ponownie. Twoje wyszukiwanie i filtry zostały zachowane.",
+    "listingSearch.retry": "Spróbuj ponownie",
+    "listingSearch.retrying": "Ponowna próba…",
+    "listingSearch.showMore": "Pokaż więcej obiektów (jeszcze {count})",
     "nav.home": "Strona główna",
     "nav.services": "Usługi",
     "nav.references": "Referencje",
