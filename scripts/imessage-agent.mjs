@@ -18,6 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { classifyDelivery } from "./imessage-delivery.mjs";
 
 // Läs .env.local bredvid repot om env saknas (gör att agenten funkar både via
 // launchd med plist-env och manuellt via `node scripts/imessage-agent.mjs`).
@@ -299,7 +300,8 @@ function openChatDbReadonly(dbMod) {
 
 // Leveranskoll: allt agenten skickat verifieras i efterhand mot chat.db.
 // error > 0 → rapportera failed till CRM:et (status flippas sent → failed).
-// Poster äldre än 30 min utan fel anses levererade och släpps.
+// Bara en entydig rad med is_delivered=1 räknas som levererad. Efter 30 min
+// utan kvitto lämnas leveransen okänd; inget lyckat kvitto hittas på.
 async function verifyDeliveries(chatDb) {
   if (!chatDb) return;
   const state = readState();
@@ -315,37 +317,38 @@ async function verifyDeliveries(chatDb) {
     }
     let verdict = "unknown";
     try {
-      const sinceNs = (p.sentAtMs - 120_000 - APPLE_EPOCH_MS) * 1e6;
+      const sinceNs = (p.sentAtMs - 10_000 - APPLE_EPOCH_MS) * 1e6;
       const rows = chatDb
         .prepare(
-          `SELECT m.text AS text, m.attributedBody AS ab, m.service AS service, m.error AS error
+          `SELECT m.text AS text, m.attributedBody AS ab, m.error AS error, m.is_delivered AS is_delivered,
+                  CASE WHEN m.date > 100000000000 THEN m.date / 1000000 ELSE m.date * 1000 END AS date_ms
            FROM message m JOIN handle h ON h.ROWID = m.handle_id
            WHERE m.is_from_me = 1 AND h.id = ? AND m.date > ?`,
         )
         .all(p.toPhone, sinceNs);
-      const needle = Buffer.from(p.bodyPrefix);
-      const match = rows.filter((r) => {
-        const t = (r.text ?? "").toString();
-        return t.includes(p.bodyPrefix) || (r.ab ? Buffer.from(r.ab).includes(needle) : false);
-      });
-      if (match.some((m) => Number(m.error ?? 0) > 0) && !match.some((m) => Number(m.error ?? 0) === 0)) verdict = "failed";
-      else if (match.length > 0) verdict = "ok";
+      verdict = classifyDelivery(rows.map((r) => ({
+        body: (r.text ?? "").toString().trim() || (r.ab ? decodeAttributedBody(Buffer.from(r.ab)) : ""),
+        atMs: APPLE_EPOCH_MS + Number(r.date_ms), error: r.error, isDelivered: r.is_delivered,
+      })), p);
     } catch {
       /* chat.db-läsfel — försök igen nästa tick */
     }
 
-    if (verdict === "failed") {
-      const failedMatch = "levererades aldrig (iMessage-fel i chat.db) — nästa utskick till numret tvingas som SMS";
-      await fetch(`${BASE}/api/crm/messages/agent`, {
+    if (verdict === "failed" || verdict === "delivered") {
+      const report = verdict === "failed"
+        ? { id: p.id, ok: false, error: "Meddelanden rapporterar ett leveransfel" }
+        : { id: p.id, delivered: true };
+      const response = await fetch(`${BASE}/api/crm/messages/agent`, {
         method: "POST",
         headers: { ...AUTH, "content-type": "application/json" },
-        body: JSON.stringify({ id: p.id, ok: false, error: failedMatch }),
-      }).catch(() => undefined);
-      console.log(`${ts()} leveranskoll: ${p.id} -> ${p.toPhone} EJ levererat — flaggat som failed`);
+        body: JSON.stringify(report),
+      }).catch(() => null);
+      if (!response?.ok && ageMs < 30 * 60_000) keep.push(p);
+      else if (response?.ok) console.log(`${ts()} leveranskoll: ${p.id} -> ${verdict}`);
     } else if (verdict === "unknown" && ageMs < 30 * 60_000) {
       keep.push(p); // inte hittat än — ge det mer tid
     }
-    // ok eller >30 min utan spår → släpp posten
+    // Kvitterat eller >30 min utan bekräftelse → släpp posten.
   }
   writeState({ ...readState(), pendingChecks: keep.slice(-200) });
 }
@@ -365,6 +368,7 @@ async function sendQueued(chatDb) {
     let ok = false;
     let error = null;
     let via = "";
+    const sentAtMs = Date.now();
     try {
       via = sendViaMessages(msg.toPhone, msg.body, preferSms(chatDb, msg.toPhone));
       ok = true;
@@ -380,7 +384,7 @@ async function sendQueued(chatDb) {
       // Lägg i leveranskollens kö — verifieras mot chat.db kommande ticks.
       const state = readState();
       const pending = Array.isArray(state.pendingChecks) ? state.pendingChecks : [];
-      pending.push({ id: msg.id, toPhone: msg.toPhone, bodyPrefix: msg.body.slice(0, 40), sentAtMs: Date.now() });
+      pending.push({ id: msg.id, toPhone: msg.toPhone, body: msg.body, sentAtMs });
       writeState({ ...state, pendingChecks: pending.slice(-200) });
     }
     console.log(`${ts()} ${msg.id} -> ${msg.toPhone}: ${ok ? `skickat via ${via}` : `FEL: ${error}`}`);

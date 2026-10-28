@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import {
   autoPublicNameForForm,
+  changedPropertyFormPayload,
   ownerPatchToForm,
   previewPublicSlug,
   propertyFormToPayload,
@@ -162,16 +163,45 @@ describe("tomma/null-fält och defaults", () => {
     expect(payload.rentIn).toBeNull();
   });
 
-  it("land defaultar till Sverige, uthyrartyp/upplägg till defaults", () => {
+  it("land visas som Sverige medan okänd uthyrartyp och upplägg bevaras", () => {
     expect(payload.country).toBe("Sverige");
-    expect(payload.ownerType).toBe("privatperson");
-    expect(payload.ownerArrangement).toBe("direkt");
+    expect(payload.ownerType).toBeNull();
+    expect(payload.ownerArrangement).toBeNull();
     expect(payload.ownerId).toBeNull();
+  });
+
+  it("bevarar okända uppgifter separat från nej", () => {
+    expect(payload.dishwasher).toBeNull();
+    expect(payload.heatWaterIncluded).toBeNull();
+    const withNo = toPropertyForm({ dishwasher: false } as PropertyWithOwner);
+    expect(propertyFormToPayload(withNo).dishwasher).toBe(false);
   });
 
   it("inclusions trimmas och tomma rader filtreras bort", () => {
     const form: EditForm = { ...toPropertyForm(empty), inclusions: [" Möbler ", "", "  ", "Wifi"] };
     expect(propertyFormToPayload(form).inclusions).toEqual(["Möbler", "Wifi"]);
+  });
+});
+
+describe("endast ändrade bostadsuppgifter skickas", () => {
+  it("skickar varken okända värden eller standardvärden när en adress ändras", () => {
+    const initial = toPropertyForm({ address: "Gammal", dishwasher: null } as PropertyWithOwner);
+    expect(changedPropertyFormPayload({ ...initial, address: "Ny" }, initial)).toEqual({ address: "Ny" });
+  });
+
+  it("kan uttryckligen sätta ja, nej och okänt", () => {
+    const initial = toPropertyForm({ dishwasher: null } as PropertyWithOwner);
+    expect(changedPropertyFormPayload({ ...initial, dishwasher: true }, initial)).toEqual({ dishwasher: true });
+    expect(changedPropertyFormPayload({ ...initial, dishwasher: false }, initial)).toEqual({ dishwasher: false });
+    const known = { ...initial, dishwasher: true };
+    expect(changedPropertyFormPayload({ ...known, dishwasher: null }, known)).toEqual({ dishwasher: null });
+  });
+
+  it("bevarar den kompletta identiteten när en olänkad uthyrare ska skapas", () => {
+    const initial = toPropertyForm({ ownerName: "Anna" } as PropertyWithOwner);
+    expect(changedPropertyFormPayload({ ...initial, ownerEmail: "anna@example.se" }, initial)).toMatchObject({
+      ownerName: "Anna", ownerEmail: "anna@example.se", ownerType: null,
+    });
   });
 });
 
@@ -195,10 +225,10 @@ describe("ownerPatchToForm", () => {
     expect(ownerPatchToForm({ ownerId: "x", ownerPhone: "070" })).toEqual({ ownerId: "x", ownerPhone: "070" });
   });
 
-  it("null → tom sträng, type/arrangement → defaults", () => {
+  it("null → tom sträng även för okänd typ och upplägg", () => {
     expect(ownerPatchToForm({ ownerId: undefined })).toEqual({ ownerId: "" });
-    expect(ownerPatchToForm({ ownerType: undefined })).toEqual({ ownerType: "privatperson" });
-    expect(ownerPatchToForm({ ownerArrangement: undefined })).toEqual({ ownerArrangement: "direkt" });
+    expect(ownerPatchToForm({ ownerType: undefined })).toEqual({ ownerType: "" });
+    expect(ownerPatchToForm({ ownerArrangement: undefined })).toEqual({ ownerArrangement: "" });
   });
 
   it("tom patch ger tom uppdatering", () => {

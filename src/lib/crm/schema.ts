@@ -113,6 +113,7 @@ export const owners = sqliteTable("crm_owners", {
   email: text("email"),
   rating: integer("rating"), // 0–10 intern skattning av uthyrare
   followUpDate: text("follow_up_date"),
+  followUpTime: text("follow_up_time"), // HH:MM, valfritt
   followUpReason: text("follow_up_reason"),
   followUpNote: text("follow_up_note"),
   notes: text("notes"),
@@ -290,6 +291,7 @@ export const ownerOutreach = sqliteTable("crm_owner_outreach", {
   status: text("status").notNull().default("ej_kontaktad"), // ej_kontaktad | kontaktad | i_dialog | bekraftad | nej
   startedAt: text("started_at").default(sql`(datetime('now'))`),
   nextFollowUpDate: text("next_follow_up_date"),
+  nextFollowUpTime: text("next_follow_up_time"), // HH:MM, valfritt
   nextFollowUpReason: text("next_follow_up_reason"),
   concludedAt: text("concluded_at"), // sätts när status → bekraftad/nej
   note: text("note"),
@@ -438,6 +440,8 @@ export const outboxMessages = sqliteTable("crm_outbox_messages", {
   contactId: text("contact_id"),
   status: text("status").notNull().default("queued"), // queued | sending | sent | failed
   error: text("error"),
+  replyToInboxIds: text("reply_to_inbox_ids", { mode: "json" }).$type<string[]>(),
+  deliveredAt: text("delivered_at"), // enbart bekräftad leverans, annars null
   source: text("source").notNull().default("crm"), // crm | mcp — vem skapade raden
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   sentAt: text("sent_at"),

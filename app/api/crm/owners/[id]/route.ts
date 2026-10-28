@@ -30,10 +30,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Whitelist redigerbara fält — klienten får aldrig skriva över id/createdAt.
   const ALLOWED = [
     "ownerType", "ownerArrangement", "name", "orgNr", "contactPerson", "phone", "email",
-    "rating", "followUpDate", "followUpReason", "followUpNote", "notes",
+    "rating", "followUpDate", "followUpTime", "followUpReason", "followUpNote", "notes",
   ] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) if (key in body) data[key] = body[key];
+  if (data.followUpTime != null && (typeof data.followUpTime !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(data.followUpTime))) {
+    return NextResponse.json({ error: "Ogiltigt klockslag" }, { status: 400 });
+  }
+  if ("followUpDate" in data && !data.followUpDate) data.followUpTime = null;
   // name är NOT NULL — tillåt aldrig att tömma den (annars constraint-fel → 500).
   if ("name" in data) {
     const nm = String(data.name ?? "").trim();

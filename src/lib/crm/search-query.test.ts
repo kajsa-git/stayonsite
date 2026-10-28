@@ -39,6 +39,11 @@ beforeEach(async () => {
       keywords: "villa boden 50 rabatt",
       route: "/crm/properties?id=p1",
     },
+    {
+      id: "owner:o1", entityType: "owner", entityId: "o1", companyId: null,
+      title: "Uthyrare", subtitle: null, keywords: "uthyrare +46 70-123 45 67",
+      route: "/crm/uthyrare/o1",
+    },
   ]);
 });
 
@@ -72,4 +77,11 @@ describe("searchCrm", () => {
     const hits = await searchCrm("acme", { db, limit: 1 });
     expect(hits).toHaveLength(1);
   });
+
+  it.each(["0701234567", "070-123 45 67", "+46701234567", "0046 70 123 45 67"])(
+    "hittar samma kontakt med telefonformatet %s", async (number) => {
+      const hits = await searchCrm(number, { db });
+      expect(hits.map((hit) => hit.entityId)).toEqual(["o1"]);
+    },
+  );
 });

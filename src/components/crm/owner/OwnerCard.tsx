@@ -27,6 +27,7 @@ interface OwnerFull {
   email: string | null;
   rating: number | null;
   followUpDate: string | null;
+  followUpTime: string | null;
   followUpReason: string | null;
   notes: string | null;
   properties: {
@@ -59,12 +60,14 @@ function InlineField({
   value,
   placeholder,
   type = "text",
+  disabled = false,
   onSave,
 }: {
   label: string;
   value: string;
   placeholder?: string;
   type?: string;
+  disabled?: boolean;
   onSave: (v: string) => Promise<void>;
 }) {
   const [draft, setDraft] = useState(value);
@@ -80,6 +83,7 @@ function InlineField({
       <span className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</span>
       <input
         type={type}
+        disabled={disabled}
         value={draft}
         placeholder={placeholder}
         onChange={(e) => setDraft(e.target.value)}
@@ -165,9 +169,10 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
           <InlineField label="Telefon" value={owner.phone ?? ""} placeholder="070-…" onSave={(v) => saveField({ phone: v || null })} />
           <InlineField label="E-post" value={owner.email ?? ""} placeholder="namn@…" onSave={(v) => saveField({ email: v || null })} />
           <InlineField label="Kontaktperson" value={owner.contactPerson ?? ""} onSave={(v) => saveField({ contactPerson: v || null })} />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_minmax(5.5rem,0.6fr)] gap-2">
             <InlineField label="Återkomst" value={owner.followUpDate ?? ""} type="date" onSave={(v) => saveField({ followUpDate: v || null })} />
-            <InlineField label="Anledning" value={owner.followUpReason ?? ""} onSave={(v) => saveField({ followUpReason: v || null })} />
+            <InlineField label="Tid" value={owner.followUpTime ?? ""} type="time" disabled={!owner.followUpDate} onSave={(v) => saveField({ followUpTime: v || null })} />
+            <div className="col-span-2"><InlineField label="Anledning" value={owner.followUpReason ?? ""} onSave={(v) => saveField({ followUpReason: v || null })} /></div>
           </div>
         </div>
 

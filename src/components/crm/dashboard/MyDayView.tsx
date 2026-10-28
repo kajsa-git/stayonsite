@@ -169,12 +169,14 @@ interface CompanyCard {
 }
 
 interface ChaseRow {
-  propertyId: string;
+  source: "property" | "owner";
+  propertyId: string | null;
   address: string | null;
   ownerId: string | null;
   ownerName: string | null;
   ownerPhone: string | null;
   earliestDate: string | null;
+  earliestTime: string | null;
   reason: string | null;
   hasReply: boolean;
 }
@@ -246,12 +248,14 @@ export function MyDayView() {
     { refreshInterval: 30000 },
   ).data;
 
-  async function chaseAction(propertyId: string, action: string) {
+  async function chaseAction(item: ChaseRow, action: string) {
     try {
-      const res = await fetch(`/api/crm/properties/${propertyId}/chase`, {
-        method: "POST",
+      const isOwner = item.source === "owner";
+      if (isOwner && (!item.ownerId || !["snooze3", "snooze7"].includes(action))) return;
+      const res = await fetch(isOwner ? `/api/crm/owners/${item.ownerId}` : `/api/crm/properties/${item.propertyId}/chase`, {
+        method: isOwner ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify(isOwner ? { followUpDate: plusDays(action === "snooze7" ? 7 : 3) } : { action }),
       });
       if (!res.ok) throw new Error(String(res.status));
       mutate();
@@ -664,14 +668,15 @@ export function MyDayView() {
             title="Följ upp uthyrare"
             emoji="☎️"
             items={queues.chaseLandlords}
+            initialLimit={5}
             emptyText="Inget att följa upp"
             renderItem={(item) => (
               <ChaseCard
-                key={item.propertyId}
+                key={`${item.source}:${item.propertyId ?? item.ownerId}`}
                 item={item}
                 today={today}
-                onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
-                onAction={(action) => chaseAction(item.propertyId, action)}
+                onOpen={() => router.push(item.source === "owner" ? `/crm/uthyrare/${item.ownerId}` : `/crm/properties?id=${item.propertyId}`)}
+                onAction={(action) => chaseAction(item, action)}
                 onSendSms={(body) => chaseSendSms(item, body)}
               />
             )}
@@ -785,7 +790,7 @@ function QBtn({
 
 type CardVariant = "followup" | "open" | "agreement" | "invoice";
 
-function CompanyDayCard({
+export function CompanyDayCard({
   item,
   today,
   variant,
@@ -832,6 +837,7 @@ function CompanyDayCard({
   const unsignedWonRequests = wonRequests.filter((r) => !hasSignedMoveInContract(r.moveInChecklist));
   const hasUnsignedContract = unsignedWonRequests.length > 0;
   const hasUnsentContract = unsignedWonRequests.some((r) => !hasMoveInContractSent(r.moveInChecklist));
+  const hasSeveralRequests = item.openRequests.length > 1;
 
   return (
     <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300" : "border-border"}`}>
@@ -862,7 +868,7 @@ function CompanyDayCard({
           <div className="flex flex-wrap gap-1 mt-1.5">
             {item.openRequests.map((r) => (
               <span key={r.id} className={`inline-block text-[11px] px-1.5 py-0.5 rounded ${STATUS_STYLE[r.status] ?? "bg-gray-100 text-gray-700"}`}>
-                {r.city ? `${r.city} · ` : ""}{STATUS_LABEL[r.status] ?? r.status}
+                {r.requestNumber ? `#${r.requestNumber} · ` : ""}{r.city ? `${r.city} · ` : ""}{STATUS_LABEL[r.status] ?? r.status}
                 {r.status === "won" && (
                   <>
                     {" · "}
@@ -889,12 +895,13 @@ function CompanyDayCard({
             Ta bort återkomst
           </QBtn>
         )}
-        {variant !== "invoice" && hasActive && (
+        {hasSeveralRequests && <QBtn onClick={onOpen}>Välj förfrågan</QBtn>}
+        {!hasSeveralRequests && variant !== "invoice" && hasActive && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkWon?.(); })}>
             ✓ Till avtal
           </QBtn>
         )}
-        {variant === "agreement" && hasUnsignedContract && (
+        {!hasSeveralRequests && variant === "agreement" && hasUnsignedContract && (
           <>
             {hasUnsentContract && (
               <QBtn disabled={busy} onClick={() => run(async () => { await onMarkContractSent?.(); })}>
@@ -912,14 +919,16 @@ function CompanyDayCard({
             </QBtn>
           </>
         )}
-        {variant === "invoice" && (
+        {!hasSeveralRequests && variant === "invoice" && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkInvoiced?.(); })}>
             ✓ Fakturerad
           </QBtn>
         )}
-        <QBtn variant="danger" onClick={() => setAction(action === "nej" ? null : "nej")}>
-          ✕ Nej
-        </QBtn>
+        {!hasSeveralRequests && item.openRequests.length === 1 && (
+          <QBtn variant="danger" onClick={() => setAction(action === "nej" ? null : "nej")}>
+            ✕ Nej
+          </QBtn>
+        )}
       </div>
 
       {/* Återkomst — inline datumval */}
@@ -1015,9 +1024,9 @@ function ChaseCard({
   return (
     <div className={`p-3 rounded-lg bg-white border ${item.hasReply ? "border-blue-300" : ""}`}>
       <button className="w-full text-left" onClick={onOpen}>
-        <div className="font-medium text-sm truncate">{item.address ?? "(adress saknas)"}</div>
+        <div className="font-medium text-sm truncate">{item.source === "owner" ? item.ownerName ?? "Uthyrare" : item.address ?? "(adress saknas)"}</div>
         <div className="text-xs text-muted-foreground truncate">
-          {[item.ownerName, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
+          {[item.source === "property" ? item.ownerName : null, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
         </div>
         {item.hasReply && (
           <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1">
@@ -1025,12 +1034,12 @@ function ChaseCard({
           </span>
         )}
         <div className="text-xs mt-1">
-          <span className="italic text-nordic-500">Uthyrarkontakt att följa upp</span>
+          <span className="italic text-nordic-500">{item.source === "owner" ? "Återkomst på uthyrarkortet" : "Uthyrarkontakt att följa upp"}</span>
           {item.reason && <span className="text-muted-foreground"> · {item.reason}</span>}
         </div>
         {item.earliestDate && (
           <div className={`text-[11px] mt-0.5 ${overdue ? "text-rose-600" : "text-muted-foreground"}`}>
-            {overdue ? "idag/försenad" : item.earliestDate}
+            {overdue ? `${item.earliestDate < today ? "Försenad" : "Idag"} · ${item.earliestDate}` : item.earliestDate}{item.earliestTime ? ` · kl. ${item.earliestTime}` : ""}
           </div>
         )}
       </button>
@@ -1038,24 +1047,24 @@ function ChaseCard({
         {item.ownerPhone && (
           <button
             onClick={() => {
-              if (!smsOpen) setSmsText(ownerFollowUpSms(item.ownerName, item.address));
+              if (!smsOpen) setSmsText(item.source === "owner" ? "" : ownerFollowUpSms(item.ownerName, item.address));
               setSmsOpen(!smsOpen);
             }}
             disabled={busy}
             className="text-[11px] px-1.5 py-0.5 rounded border border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-medium disabled:opacity-40"
-            title="Förifyllt uppföljnings-SMS — justera och skicka"
+            title={item.source === "owner" ? "Skriv ett SMS efter att ha kontrollerat senaste kontakten" : "Förifyllt uppföljnings-SMS — justera och skicka"}
           >
-            ✉️ Uppföljnings-SMS
+            {item.source === "owner" ? "✉️ Skriv SMS" : "✉️ Uppföljnings-SMS"}
           </button>
         )}
-        {(["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
+        {(item.source === "owner" ? ["snooze3", "snooze7"] as const : ["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
           <button
             key={a}
             onClick={() => act(a)}
             disabled={busy}
             className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
           >
-            {a === "snooze3" ? "Ringd · +3 d" : a === "snooze7" ? "Ringd · +7 d" : a === "answered" ? "Fick svar" : "Av marknaden"}
+            {a === "snooze3" ? (item.source === "owner" ? "Flytta · +3 d" : "Ringd · +3 d") : a === "snooze7" ? (item.source === "owner" ? "Flytta · +7 d" : "Ringd · +7 d") : a === "answered" ? "Fick svar" : "Av marknaden"}
           </button>
         ))}
         <button
@@ -1072,6 +1081,8 @@ function ChaseCard({
             value={smsText}
             onChange={(e) => setSmsText(e.target.value)}
             rows={3}
+            aria-label="SMS till uthyraren"
+            placeholder="Skriv meddelandet efter att du har kontrollerat kontakten…"
             className="w-full border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-400"
           />
           <div className="flex gap-1.5">
@@ -1102,19 +1113,24 @@ function ChaseCard({
 
 // ─── Generisk kösektion ───────────────────────────────────────────────────────
 
-function QueueSection<T>({
+export function QueueSection<T>({
   title,
   emoji,
   items,
   emptyText,
   renderItem,
+  initialLimit,
 }: {
   title: string;
   emoji: string;
   items: T[];
   emptyText: string;
   renderItem: (item: T) => React.ReactNode;
+  initialLimit?: number;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const hiddenCount = !expanded && initialLimit ? Math.max(0, items.length - initialLimit) : 0;
+  const shown = hiddenCount ? items.slice(0, initialLimit) : items;
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
@@ -1128,7 +1144,12 @@ function QueueSection<T>({
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground italic">{emptyText}</p>
         ) : (
-          items.map(renderItem)
+          shown.map(renderItem)
+        )}
+        {initialLimit && items.length > initialLimit && (
+          <button type="button" className="text-xs font-medium text-muted-foreground underline" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>
+            {expanded ? "Visa färre" : `Visa ${hiddenCount} till`}
+          </button>
         )}
       </div>
     </div>

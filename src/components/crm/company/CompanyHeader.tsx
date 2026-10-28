@@ -12,6 +12,7 @@ const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:rin
 interface Props {
   company: Company;
   primaryContact?: Contact | null;
+  compact?: boolean;
 }
 
 function initials(name: string) {
@@ -23,7 +24,7 @@ function initials(name: string) {
     .join("");
 }
 
-export function CompanyHeader({ company, primaryContact }: Props) {
+export function CompanyHeader({ company, primaryContact, compact }: Props) {
   const websiteHref = company.website
     ? company.website.startsWith("http") ? company.website : `https://${company.website}`
     : null;
@@ -82,9 +83,9 @@ export function CompanyHeader({ company, primaryContact }: Props) {
           </div>
         )}
 
-        <div className="mt-3">
+        {!compact && <div className="mt-3">
           <ReviewRequestSnippet name={primaryContact?.name} variant="company" />
-        </div>
+        </div>}
       </div>
     </div>
   );

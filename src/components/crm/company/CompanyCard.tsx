@@ -1,6 +1,7 @@
 "use client";
 import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
 import { CompanyHeader } from "./CompanyHeader";
+import { CaseDrafts } from "./CaseDrafts";
 import { CompanyInfo } from "./CompanyInfo";
 import { ContactsList } from "./ContactsList";
 import { FollowUpModal } from "./FollowUpModal";
@@ -10,10 +11,11 @@ import { RequestForm, type RequestFormData } from "./RequestForm";
 import { EmailThread } from "@/components/crm/email/EmailThread";
 import { useCompany } from "@/hooks/crm/useCompany";
 import { RatingControl } from "../RatingControl";
+import { ReviewRequestSnippet } from "../ReviewRequestSnippet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { crmFetch, crmErrorMessage } from "@/lib/crm/fetcher";
+import { crmFetch, crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Company, Request } from "@/lib/crm/schema";
+import type { Company, Email, Request } from "@/lib/crm/schema";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -30,6 +32,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { formatRequestSearchAreas } from "@/lib/crm/request-search-areas";
 import { REQUEST_STATUS_LABEL } from "@/lib/crm/request-status";
+import useSWR from "swr";
 
 
 const CLOSED_STATUSES = ["invoiced", "lost", "archived"];
@@ -38,12 +41,16 @@ const SEARCH_AREA_STATUSES = ["incoming", "matching"];
 interface CompanyCardProps {
   companyId: string;
   activeRequestId?: string | null;
+  workMode?: boolean;
 }
 
-export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
+export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCardProps) {
   const router = useRouter();
   const { company, mutate } = useCompany(companyId);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showRequestChoices, setShowRequestChoices] = useState(false);
+  const { data: caseEmails = [] } = useSWR<Email[]>(workMode ? `/api/crm/emails?companyId=${encodeURIComponent(companyId)}` : null, swrFetcher);
+  const { data: caseSms = [] } = useSWR<{ body: string; sentAt: string; direction: string }[]>(workMode ? `/api/crm/inbox?companyId=${encodeURIComponent(companyId)}&limit=1` : null, swrFetcher, { refreshInterval: 15000 });
   const [followUpOpen, setFollowUpOpen] = useState(false);
   const [requestForm, setRequestForm] = useState<{ open: boolean; request: Request | null }>({
     open: false,
@@ -55,6 +62,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const [quickAction, setQuickAction] = useState<"nej" | null>(null);
   // Mobil-beslutsradens "Nej" skrollar hit — anledningsvalet öppnas i panelen.
   const followUpPanelRef = useRef<HTMLDivElement>(null);
+  const requestsRef = useRef<HTMLDivElement>(null);
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
   const [quickBusy, setQuickBusy] = useState(false);
   // Efter Fakturera/Nej: fråga vad som ska hända med återkomsten — varje beslut
@@ -62,7 +70,8 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const [followUpPrompt, setFollowUpPrompt] = useState<"won" | "nej" | null>(null);
 
   // Purely visual: which request is highlighted ("Vald"). Status actions work per-card regardless.
-  const selectedRequestId = selectedId ?? activeRequestId ?? null;
+  const openRequestOptions = (company?.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status));
+  const selectedRequestId = selectedId ?? activeRequestId ?? (workMode && openRequestOptions.length === 1 ? openRequestOptions[0].id : null);
 
   function notifyError(e: unknown) {
     toast({ title: crmErrorMessage(e), variant: "destructive" });
@@ -288,7 +297,8 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
 
   async function handleBulkWon() {
     const active = (company?.requests ?? []).filter((r) => r.status === "incoming" || r.status === "matching");
-    if (!active.length) return;
+    const open = (company?.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status));
+    if (active.length !== 1 || open.length !== 1) return;
     setQuickBusy(true);
     try {
       const results = await Promise.all(active.map((r) => patchStatusOk(r.id, { status: "won" })));
@@ -311,7 +321,7 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
 
   async function handleBulkLost(reason: string) {
     const open = (company?.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status));
-    if (!open.length) return;
+    if (open.length !== 1) return;
     setQuickBusy(true);
     try {
       const results = await Promise.all(open.map((r) => patchStatusOk(r.id, { status: "lost", lostReason: reason })));
@@ -367,6 +377,16 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
   const hasOpenRequests = (company.requests ?? []).some((r) =>
     ["incoming", "matching", "won"].includes(r.status)
   );
+  const hasSeveralOpenRequests = (company.requests ?? []).filter((r) => ["incoming", "matching", "won"].includes(r.status)).length > 1;
+  function chooseRequest() {
+    setShowRequestChoices(true);
+    requestsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  const recent = [
+    ...caseEmails.map((message) => ({ at: message.sentAt, label: message.direction === "in" ? "Mejl från kunden" : "Mejl till kunden", body: message.body })),
+    ...caseSms.map((message) => ({ at: message.sentAt, label: message.direction === "in" ? "SMS från kunden" : "SMS till kunden", body: message.body })),
+    ...(company.notes ?? []).filter((note) => note.createdAt).map((note) => ({ at: note.createdAt!, label: `Logg · ${note.channel}`, body: note.content })),
+  ].filter((entry) => !Number.isNaN(new Date(entry.at).getTime())).sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())[0];
   const searchAreaRequests = (company.requests ?? [])
     .filter((r) => SEARCH_AREA_STATUSES.includes(r.status) || r.id === selectedRequestId)
     .filter((r) => formatRequestSearchAreas(r))
@@ -380,17 +400,19 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
     // pb på mobil: den fasta beslutsraden längst ner får inte täcka sista innehållet.
     <div className="pb-24 md:pb-0">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <CompanyHeader company={company} primaryContact={primaryContact} />
-        <div className="shrink-0 pt-1">
+        <CompanyHeader company={company} primaryContact={primaryContact} compact={workMode} />
+        {!workMode && <div className="shrink-0 pt-1">
           <RatingControl value={company.rating} onChange={handleRating} label="Kund-skattning" />
-        </div>
+        </div>}
       </div>
-      <CompanyInfo company={company} onSave={handleSaveField} />
-
-      {/* Uppdragsbekräftelsen — gäller företaget i 12 mån, signeras via kundlänken */}
-      <div className="mb-6">
-        <AgreementStatusPanel kind="company" id={company.id} contactName={primaryContact?.name} />
-      </div>
+      {workMode ? (
+        <details className="mb-4 text-sm">
+          <summary className="cursor-pointer text-muted-foreground">Företagsuppgifter och uppdragsavtal</summary>
+          <div className="mt-3 flex flex-col gap-3"><CompanyInfo company={company} onSave={handleSaveField} /><RatingControl value={company.rating} onChange={handleRating} label="Kund-skattning" /><ReviewRequestSnippet name={primaryContact?.name} variant="company" /><AgreementStatusPanel kind="company" id={company.id} contactName={primaryContact?.name} /></div>
+        </details>
+      ) : (
+        <><CompanyInfo company={company} onSave={handleSaveField} /><div className="mb-6"><AgreementStatusPanel kind="company" id={company.id} contactName={primaryContact?.name} /></div></>
+      )}
 
       {/* Company-level dates + snabbval. Avslutsdatumet är bara en upplysning —
           det får en liten ruta; beslutsytan (återkomsten) tar platsen. */}
@@ -411,25 +433,37 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           ) : (
             <p className="text-sm text-muted-foreground italic">Ingen bokad återkomst</p>
           )}
+          {workMode && recent && (
+            <details className="mt-2 text-xs text-muted-foreground">
+              <summary className="cursor-pointer">Senaste registrerade: {recent.label} · {format(new Date(recent.at), "d MMM HH:mm", { locale: sv })}</summary>
+              <p className="mt-1 whitespace-pre-wrap break-words text-nordic-800">{recent.body}</p>
+            </details>
+          )}
+          {workMode && <CaseDrafts contacts={company.contacts ?? []} />}
 
           {/* Beslutsknapparna — riktiga knappstorlekar även på desktop, det här
               är kortets viktigaste yta. */}
           <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-            {hasActiveRequests && (
+            {hasSeveralOpenRequests && (
+              <button onClick={chooseRequest} className="inline-flex h-9 items-center rounded-md border border-input bg-white px-3 text-sm font-semibold hover:bg-muted">
+                Välj förfrågan
+              </button>
+            )}
+            {hasActiveRequests && !hasSeveralOpenRequests && (
               <button
                 onClick={handleBulkWon}
                 disabled={quickBusy}
                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-green-300 bg-green-600 px-3 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-40"
-                title="Markera alla aktiva förfrågningar som vunna och flytta dem till Avtal"
+                title="Flytta förfrågan till avtal"
               >
                 ✓ Till avtal
               </button>
             )}
-            {hasOpenRequests && (
+            {hasOpenRequests && !hasSeveralOpenRequests && (
               <button
                 onClick={() => setQuickAction(quickAction === "nej" ? null : "nej")}
                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-red-300 bg-red-50 px-3 text-sm font-semibold text-red-700 transition-colors hover:bg-red-100"
-                title="Stäng alla öppna förfrågningar"
+                title="Stäng förfrågan"
               >
                 ✕ Nej
               </button>
@@ -489,14 +523,14 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           )}
         </div>
 
-        <div className="self-start rounded-md border bg-muted/40 px-3 py-2">
+        {!workMode && <div className="self-start rounded-md border bg-muted/40 px-3 py-2">
           <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1 whitespace-nowrap">
             <CheckCircle2 className="h-3 w-3" /> Senaste avslut
           </span>
           <p className="text-sm font-medium text-nordic-800">
             {lastClosed ? format(new Date(lastClosed), "d MMM yyyy", { locale: sv }) : "—"}
           </p>
-        </div>
+        </div>}
       </div>
 
       {/* Efter Fakturera/Nej: återkomsten ska inte bli hängande av bara farten —
@@ -562,16 +596,21 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
           <CalendarClock className="h-4 w-4" />
           Återkomst
         </button>
-        {hasActiveRequests && (
+        {hasSeveralOpenRequests && (
+          <button onClick={chooseRequest} className="flex min-h-11 flex-1 items-center justify-center rounded-md border border-input bg-white text-sm font-semibold">
+            Välj förfrågan
+          </button>
+        )}
+        {hasActiveRequests && !hasSeveralOpenRequests && (
           <button
             onClick={handleBulkWon}
             disabled={quickBusy}
             className="flex min-h-11 flex-1 items-center justify-center rounded-md bg-green-600 text-sm font-semibold text-white disabled:opacity-40"
           >
-            ✓ Fakturera
+            ✓ Till avtal
           </button>
         )}
-        {hasOpenRequests && (
+        {hasOpenRequests && !hasSeveralOpenRequests && (
           <button
             onClick={() => {
               setQuickAction("nej");
@@ -586,40 +625,41 @@ export function CompanyCard({ companyId, activeRequestId }: CompanyCardProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <ContactsList
-            contacts={company.contacts ?? []}
-            companyId={companyId}
-            onAdd={handleAddContact}
-            onUpdate={handleUpdateContact}
-            onDelete={handleDeleteContact}
-          />
-          <RequestsList
+          {!workMode && <ContactsList contacts={company.contacts ?? []} companyId={companyId} onAdd={handleAddContact} onUpdate={handleUpdateContact} onDelete={handleDeleteContact} />}
+          <div ref={requestsRef}><RequestsList
             requests={company.requests ?? []}
             contacts={company.contacts ?? []}
             companyId={companyId}
             activeRequestId={selectedRequestId}
+            focusOnly={workMode}
+            chooseOnly={showRequestChoices}
             onNewRequest={() => setRequestForm({ open: true, request: null })}
             onEditRequest={(r) => setRequestForm({ open: true, request: r })}
-            onSelectRequest={setSelectedId}
+            onSelectRequest={(id) => { setSelectedId(id); setShowRequestChoices(false); }}
             onMatch={handleMatch}
             onStatusChange={handleStatusChange}
-          />
+          /></div>
+          {workMode && (
+            <details className="mb-6 text-sm"><summary className="cursor-pointer text-muted-foreground">Kontakter ({(company.contacts ?? []).length})</summary><div className="mt-3"><ContactsList contacts={company.contacts ?? []} companyId={companyId} onAdd={handleAddContact} onUpdate={handleUpdateContact} onDelete={handleDeleteContact} /></div></details>
+          )}
         </div>
         <div className="space-y-8">
-          <SearchAreasPanel
+          {!workMode && <SearchAreasPanel
             requests={searchAreaRequests}
             activeRequestId={selectedRequestId}
             onSelect={setSelectedId}
-          />
+          />}
           <NotesPanel
             notes={company.notes ?? []}
             companyId={companyId}
+            compact={workMode}
             onAdd={handleAddNote}
             onUpdate={handleUpdateNote}
             onDelete={handleDeleteNote}
           />
           <EmailThread
             companyId={companyId}
+            compact={workMode}
             contactId={primaryContact?.id}
             defaultTo={primaryContact?.email ?? undefined}
             contacts={(company.contacts ?? []).filter((c) => c.email)}

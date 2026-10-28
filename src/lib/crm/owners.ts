@@ -159,7 +159,23 @@ async function findMatchingOwner(v: OwnerValues): Promise<Owner | null> {
   return rows[0];
 }
 
-async function writeThroughOwner(ownerId: string, values: OwnerValues) {
+// Objektformuläret kan skicka enstaka ändrade uthyrarfält. Fyll inte i
+// oangivna fält med null när en redan länkad uthyrare uppdateras.
+function ownerPatchFromPropertyBody(body: Record<string, unknown>): Partial<OwnerValues> {
+  const values = ownerValuesFromPropertyBody(body);
+  const keys = {
+    ownerType: "ownerType", ownerArrangement: "ownerArrangement", ownerName: "name",
+    ownerOrgNr: "orgNr", ownerContactPerson: "contactPerson", ownerPhone: "phone",
+    ownerEmail: "email", rating: "rating",
+  } as const;
+  const patch: Partial<OwnerValues> = {};
+  for (const [source, target] of Object.entries(keys)) {
+    if (Object.prototype.hasOwnProperty.call(body, source)) Object.assign(patch, { [target]: values[target as keyof OwnerValues] });
+  }
+  return patch;
+}
+
+async function writeThroughOwner(ownerId: string, values: Partial<OwnerValues>) {
   await db
     .update(owners)
     .set({ ...values, updatedAt: new Date().toISOString() })
@@ -207,7 +223,7 @@ export async function normalizePropertyWriteBody(
     const targetId = String(body.ownerId);
     // Redigerar man fälten på den redan länkade uthyraren → skriv igenom till owners.
     if (payload && existing?.ownerId === targetId) {
-      await writeThroughOwner(targetId, ownerValuesFromPropertyBody(body));
+      await writeThroughOwner(targetId, ownerPatchFromPropertyBody(body));
     }
     return { ...next, ownerId: targetId };
   }
@@ -221,7 +237,7 @@ export async function normalizePropertyWriteBody(
 
   // Fortfarande länkad (ownerId utelämnat men objektet har en länk) → skriv igenom.
   if (!ownerIdProvided && existing?.ownerId) {
-    await writeThroughOwner(existing.ownerId, values);
+    await writeThroughOwner(existing.ownerId, ownerPatchFromPropertyBody(body));
     return { ...next, ownerId: existing.ownerId };
   }
 

@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { outboxMessages, searchIndex } from "../schema";
 import { createTestDb, type TestDB } from "../test-db";
 import { registerCrmTools } from "./index";
-import { addNote, draftMessage } from "./tools-write";
-import { companies, notes } from "../schema";
+import { addNote, draftMessage, setFollowUp } from "./tools-write";
+import { companies, notes, owners } from "../schema";
 
 let db: TestDB;
 let cleanup: () => void;
@@ -93,6 +93,17 @@ describe("registerCrmTools", () => {
 });
 
 describe("skrivhandlers (direkta, med stubbar)", () => {
+  it("sparar datum, tid och anledning på en uthyrare", async () => {
+    await db.insert(owners).values({ id: "o1", name: "Uthyrare" });
+    const result = await setFollowUp(
+      { entity: "owner", id: "o1", date: "2026-11-03", time: "16:30", reason: "Väntar på bilder" },
+      { db, indexOwner: async () => undefined },
+    );
+    expect(result.ok).toBe(true);
+    const [owner] = await db.select().from(owners).where(eq(owners.id, "o1"));
+    expect(owner).toMatchObject({ followUpDate: "2026-11-03", followUpTime: "16:30", followUpReason: "Väntar på bilder" });
+  });
+
   it("addNote märker raden source=mcp och indexerar", async () => {
     await db.insert(companies).values([{ id: "c1", name: "Acme Bygg" }]);
     let indexed: string | null = null;

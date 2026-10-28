@@ -36,6 +36,8 @@ const KIND_FILTERS: { value: KindFilter; label: string }[] = [
 const OUTBOX_STATUS: Record<string, { label: string; cls: string }> = {
   queued: { label: "Köad", cls: "bg-amber-100 text-amber-800" },
   sending: { label: "Skickas…", cls: "bg-blue-100 text-blue-800" },
+  sent: { label: "Skickat · leverans okänd", cls: "bg-blue-100 text-blue-800" },
+  delivered: { label: "Levererat", cls: "bg-green-100 text-green-800" },
   failed: { label: "Misslyckades", cls: "bg-red-100 text-red-800" },
   draft: { label: "Utkast", cls: "bg-violet-100 text-violet-800" },
 };

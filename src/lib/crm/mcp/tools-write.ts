@@ -90,6 +90,7 @@ export async function setFollowUp(
     .update(owners)
     .set({
       followUpDate: args.date,
+      ...(args.time !== undefined ? { followUpTime: args.time } : {}),
       ...(args.reason !== undefined ? { followUpReason: args.reason } : {}),
       updatedAt: now,
     })
@@ -128,7 +129,7 @@ export async function draftMessage(
 }
 
 const YMD = /^\d{4}-\d{2}-\d{2}$/;
-const HM = /^\d{2}:\d{2}$/;
+const HM = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
 export function registerWriteTools(server: McpServer, opts?: { db?: DB }) {
   server.registerTool(
@@ -182,7 +183,7 @@ export function registerWriteTools(server: McpServer, opts?: { db?: DB }) {
         entity: z.enum(["company", "owner"]),
         id: z.string(),
         date: z.string().regex(YMD).describe("YYYY-MM-DD (Swedish calendar day)"),
-        time: z.string().regex(HM).optional().describe("HH:MM — companies only, sorts within the day"),
+        time: z.string().regex(HM).optional().describe("HH:MM, optional time for the follow-up"),
         reason: z.string().max(500).optional().describe("Why we should follow up"),
       },
     },

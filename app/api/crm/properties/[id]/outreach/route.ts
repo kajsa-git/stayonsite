@@ -27,6 +27,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   const body = await req.json().catch(() => ({}));
+  if (body.nextFollowUpTime != null && (typeof body.nextFollowUpTime !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(body.nextFollowUpTime))) {
+    return NextResponse.json({ error: "Ogiltigt klockslag" }, { status: 400 });
+  }
 
   const [open] = await db
     .select()
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       status: "ej_kontaktad",
       startedAt: new Date().toISOString(),
       nextFollowUpDate: body.nextFollowUpDate ?? null,
+      nextFollowUpTime: body.nextFollowUpDate ? body.nextFollowUpTime ?? null : null,
       nextFollowUpReason: body.nextFollowUpReason ?? null,
       note: body.note ?? null,
     })

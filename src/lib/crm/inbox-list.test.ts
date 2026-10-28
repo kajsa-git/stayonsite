@@ -73,4 +73,15 @@ describe("listInbox", () => {
     const rows = await listInbox({ limit: 1, db });
     expect(rows.map((r) => r.id)).toEqual(["in3"]);
   });
+
+  it("visar bara företagets meddelanden i ärendevyn", async () => {
+    const rows = await listInbox({ companyId: "c1", limit: 1, db });
+    expect(rows.map((r) => r.id)).toEqual(["in2"]);
+  });
+
+  it("visar status för svaret som är kopplat till det inkommande meddelandet", async () => {
+    await db.insert(outboxMessages).values({ id: "reply", toPhone: "+46701111111", body: "Svar", status: "failed", error: "fel", replyToInboxIds: ["in1"] });
+    const rows = await listInbox({ unreadOnly: true, db });
+    expect(rows[0].replyStatus).toEqual({ status: "failed", body: "Svar", error: "fel" });
+  });
 });

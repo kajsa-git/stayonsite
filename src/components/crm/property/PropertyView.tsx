@@ -55,6 +55,14 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const { data: propertyImages } = useSWR<{ id: string }[]>(`/api/crm/properties/${property.id}/images`, fetcher);
+  const unspecified = [
+    ...(propertyImages && propertyImages.length === 0 ? ["Bilder"] : []),
+    ...(property.beds == null ? ["Antal bäddar"] : []),
+    ...(property.rentIn == null ? ["Hyra till uthyraren"] : []),
+    ...(!property.moveInFrom ? ["Tillgänglig från"] : []),
+    ...(!property.publishConsentAt ? ["Publiceringsmedgivande i CRM"] : []),
+  ];
 
   // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
   const delTarget = (property.address ?? "").trim() || "RADERA";
@@ -180,6 +188,15 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <SummaryStat label="Vi hyr för" value={property.rentIn != null ? `${property.rentIn.toLocaleString("sv-SE")} kr/mån` : null} />
             <SummaryStat label="Vi hyr ut för" value={property.rentOut != null ? `${property.rentOut.toLocaleString("sv-SE")} kr/mån` : null} />
           </dl>
+          {unspecified.length > 0 && (
+            <details className="mt-4 border-t pt-3 text-sm">
+              <summary className="cursor-pointer font-medium text-muted-foreground">Uppgifter att kontrollera ({unspecified.length})</summary>
+              <p className="mt-2 text-xs text-muted-foreground">Komplettera när uppgifterna behövs. Publicering kräver medgivande.</p>
+              <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                {unspecified.map((label) => <li key={label}>{label}</li>)}
+              </ul>
+            </details>
+          )}
         </CardContent>
       </Card>
 

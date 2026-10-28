@@ -12,5 +12,8 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const unreadOnly = req.nextUrl.searchParams.get("unread") === "1";
-  return NextResponse.json(await listInbox({ unreadOnly }));
+  const companyId = req.nextUrl.searchParams.get("companyId") || undefined;
+  const rawLimit = Number(req.nextUrl.searchParams.get("limit"));
+  const limit = Number.isInteger(rawLimit) && rawLimit > 0 ? Math.min(rawLimit, 200) : undefined;
+  return NextResponse.json(await listInbox({ unreadOnly, companyId, limit }));
 }

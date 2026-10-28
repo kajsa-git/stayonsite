@@ -37,7 +37,7 @@ export function QueueBanner({ requestId }: QueueBannerProps) {
   const position = isItemStillInQueue ? queue.currentIndex + 1 : null;
 
   return (
-    <div className="flex items-center gap-3 mb-4 px-3 py-2 bg-white border border-[#d4d4d2] rounded-[4px] text-sm">
+    <div className="mb-4 flex min-w-0 items-center gap-2 rounded border bg-background px-3 py-2 text-sm sm:gap-3">
       <button
         onClick={() => router.push("/crm")}
         className="flex items-center gap-1.5 text-[#5a5a5a] hover:text-[#1a1a1a] transition-colors shrink-0"
@@ -46,24 +46,24 @@ export function QueueBanner({ requestId }: QueueBannerProps) {
         <span className="text-xs">Min dag</span>
       </button>
 
-      <span className="text-[#d4d4d2]">/</span>
+      <span className="hidden text-muted-foreground sm:inline">/</span>
 
-      <span className="font-medium text-[#1a1a1a]">{queue.label}</span>
+      <span className="min-w-0 truncate font-medium">{queue.label}</span>
 
       {position !== null ? (
         <>
-          <span className="text-[#8a8a8a] tabular-nums">
+          <span className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
             {position} / {queue.total}
           </span>
 
           {queue.currentItem?.statusLabel && (
             <>
-              <span className="text-[#d4d4d2]">·</span>
-              <span className="text-[#5a5a5a] text-xs">{queue.currentItem.statusLabel}</span>
+              <span className="hidden text-muted-foreground sm:inline">·</span>
+              <span className="hidden min-w-0 truncate text-xs text-muted-foreground sm:inline">{queue.currentItem.statusLabel}</span>
             </>
           )}
 
-          <div className="flex items-center gap-1 ml-auto">
+          <div className="ml-auto flex shrink-0 items-center gap-1">
             <button
               onClick={queue.goPrev}
               disabled={queue.isFirst}

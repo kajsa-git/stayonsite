@@ -21,6 +21,7 @@ interface OwnerCard {
   rating: number | null;
   notes: string | null;
   followUpDate: string | null;
+  followUpTime: string | null;
   followUpReason: string | null;
   properties: {
     id: string;
@@ -88,7 +89,7 @@ export function OwnerQuickDialog({
               {data.rating != null && <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Betyg {data.rating}/10</span>}
               {data.followUpDate && (
                 <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
-                  Återkomst {data.followUpDate}{data.followUpReason ? ` · ${data.followUpReason}` : ""}
+                  Återkomst {data.followUpDate}{data.followUpTime ? ` kl. ${data.followUpTime}` : ""}{data.followUpReason ? ` · ${data.followUpReason}` : ""}
                 </span>
               )}
             </div>

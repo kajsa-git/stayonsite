@@ -29,6 +29,23 @@ export function Check({ label, checked, onChange }: { label: string; checked: bo
   );
 }
 
+export function PropertyFact({ label, value, onChange }: { label: string; value: boolean | null; onChange: (v: boolean | null) => void }) {
+  return (
+    <label className="flex min-w-0 items-center justify-between gap-2 text-sm">
+      <span>{label}</span>
+      <select
+        className="rounded border border-input bg-background px-2 py-1 text-sm"
+        value={value === null ? "unknown" : value ? "yes" : "no"}
+        onChange={(event) => onChange(event.target.value === "unknown" ? null : event.target.value === "yes")}
+      >
+        <option value="unknown">Okänt</option>
+        <option value="yes">Ja</option>
+        <option value="no">Nej</option>
+      </select>
+    </label>
+  );
+}
+
 export function Labeled({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">

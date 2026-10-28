@@ -6,9 +6,9 @@ import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { slugify } from "@/lib/crm/slug";
 import {
   autoPublicNameForForm,
+  changedPropertyFormPayload,
   ownerPatchToForm,
   previewPublicSlug,
-  propertyFormToPayload,
   toPropertyForm,
   type EditForm,
 } from "./property-form-state";
@@ -16,7 +16,7 @@ import { ChevronRight, Languages, Loader2, Navigation, Plus, Sparkles, X } from 
 import { loadGoogleMapsLibrary } from "@/hooks/use-google-places";
 import { useEffect, useRef, useState } from "react";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
-import { Check, FIELD_CLS, Labeled } from "./property-ui";
+import { FIELD_CLS, Labeled, PropertyFact } from "./property-ui";
 
 // Redigeringsläget för ett objekt. Utbrutet ur PropertyView — oförändrat beteende.
 // Äger formulär-state + AI/kart-actions; resynkar form om objektet ändras (updatedAt
@@ -31,6 +31,7 @@ export function PropertyEditForm({
   onClose: () => void;
 }) {
   const [form, setForm] = useState<EditForm>(toPropertyForm(property));
+  const initialForm = useRef<EditForm>(toPropertyForm(property));
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [showI18n, setShowI18n] = useState(false);
@@ -45,7 +46,8 @@ export function PropertyEditForm({
       firstRun.current = false;
       return;
     }
-    setForm(toPropertyForm(property));
+    initialForm.current = toPropertyForm(property);
+    setForm(initialForm.current);
   }, [property.id, property.updatedAt]);
 
   function set<K extends keyof EditForm>(field: K, value: EditForm[K]) {
@@ -59,7 +61,8 @@ export function PropertyEditForm({
   async function handleSave() {
     setSaving(true);
     try {
-      await onUpdate(propertyFormToPayload(form));
+      const changes = changedPropertyFormPayload(form, initialForm.current);
+      if (Object.keys(changes).length > 0) await onUpdate(changes);
       onClose();
       toast({ title: "Objekt sparat" });
     } catch {
@@ -249,13 +252,13 @@ export function PropertyEditForm({
             <input type="number" className={FIELD_CLS} value={form.parkingSpaces} onChange={(e) => set("parkingSpaces", e.target.value)} />
           </Labeled>
         </div>
-        <div className="flex flex-wrap gap-4 py-1">
-          <Check label="Möblerat" checked={form.furnished} onChange={(v) => set("furnished", v)} />
-          <Check label="Kök" checked={form.kitchen} onChange={(v) => set("kitchen", v)} />
-          <Check label="Diskmaskin" checked={form.dishwasher} onChange={(v) => set("dishwasher", v)} />
-          <Check label="Garage" checked={form.garage} onChange={(v) => set("garage", v)} />
-          <Check label="Bredband" checked={form.broadband} onChange={(v) => set("broadband", v)} />
-          <Check label="Eget boende" checked={form.egetBoende} onChange={(v) => set("egetBoende", v)} />
+        <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-2">
+          <PropertyFact label="Möblerat" value={form.furnished} onChange={(v) => set("furnished", v)} />
+          <PropertyFact label="Kök" value={form.kitchen} onChange={(v) => set("kitchen", v)} />
+          <PropertyFact label="Diskmaskin" value={form.dishwasher} onChange={(v) => set("dishwasher", v)} />
+          <PropertyFact label="Garage" value={form.garage} onChange={(v) => set("garage", v)} />
+          <PropertyFact label="Bredband" value={form.broadband} onChange={(v) => set("broadband", v)} />
+          <PropertyFact label="Eget boende" value={form.egetBoende} onChange={(v) => set("egetBoende", v)} />
         </div>
         <Labeled label="Skick (fritext)">
           <textarea className={`${FIELD_CLS} min-h-[48px] resize-y`} value={form.skick} placeholder="T.ex. fint och fräscht, äldre standard, lantligt…" onChange={(e) => set("skick", e.target.value)} />
@@ -280,10 +283,10 @@ export function PropertyEditForm({
         {/* Vad ingår i hyran */}
         <div className="rounded-md border border-[#ebebe9] p-3 space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Vad ingår i hyran</p>
-          <div className="flex flex-wrap gap-4">
-            <Check label="Exakt allt ingår" checked={form.allIncluded} onChange={(v) => set("allIncluded", v)} />
-            <Check label="Sängkläder + handduk" checked={form.linensIncluded} onChange={(v) => set("linensIncluded", v)} />
-            <Check label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(v) => set("heatWaterIncluded", v)} />
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <PropertyFact label="Exakt allt ingår" value={form.allIncluded} onChange={(v) => set("allIncluded", v)} />
+            <PropertyFact label="Sängkläder + handduk" value={form.linensIncluded} onChange={(v) => set("linensIncluded", v)} />
+            <PropertyFact label="Värme + varmvatten" value={form.heatWaterIncluded} onChange={(v) => set("heatWaterIncluded", v)} />
           </div>
           <Labeled label="Om något INTE ingår, vad?">
             <textarea
@@ -319,12 +322,14 @@ export function PropertyEditForm({
           <div className="grid grid-cols-2 gap-2">
             <Labeled label="Typ">
               <select className={FIELD_CLS} value={form.ownerType} onChange={(e) => set("ownerType", e.target.value)}>
+                <option value="">Okänt</option>
                 <option value="privatperson">Privatperson</option>
                 <option value="foretag">Företag</option>
               </select>
             </Labeled>
             <Labeled label="Upplägg">
               <select className={FIELD_CLS} value={form.ownerArrangement} onChange={(e) => set("ownerArrangement", e.target.value)}>
+                <option value="">Okänt</option>
                 <option value="direkt">Direkt (fastighetsägaren själv)</option>
                 <option value="formedlare">Förmedlare (ofta dyrare)</option>
               </select>

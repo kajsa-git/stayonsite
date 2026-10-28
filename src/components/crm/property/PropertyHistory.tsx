@@ -296,6 +296,7 @@ function OpenRoundCard({
   onDelete: (id: string) => Promise<void>;
 }) {
   const [date, setDate] = useState(round.nextFollowUpDate ?? "");
+  const [time, setTime] = useState(round.nextFollowUpTime ?? "");
   const [reason, setReason] = useState(round.nextFollowUpReason ?? "");
   const [note, setNote] = useState(round.note ?? "");
 
@@ -343,7 +344,18 @@ function OpenRoundCard({
             type="date"
             className={FIELD_CLS}
             value={date}
-            onChange={(e) => { setDate(e.target.value); onPatch(round.id, { nextFollowUpDate: e.target.value || null }); }}
+            onChange={(e) => { setDate(e.target.value); if (!e.target.value) setTime(""); onPatch(round.id, { nextFollowUpDate: e.target.value || null }); }}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor={`follow-up-time-${round.id}`} className="text-xs font-medium text-muted-foreground">Tid</label>
+          <input
+            id={`follow-up-time-${round.id}`}
+            type="time"
+            className={FIELD_CLS}
+            value={time}
+            disabled={!date}
+            onChange={(e) => { setTime(e.target.value); onPatch(round.id, { nextFollowUpTime: e.target.value || null }); }}
           />
         </div>
         <div className="flex flex-col gap-1">

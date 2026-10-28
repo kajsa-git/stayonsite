@@ -80,7 +80,7 @@ describe('public accommodation search', () => {
     setSearch('Gavle');
     fireEvent.change(screen.getByRole('combobox', { name: 'Minst antal bäddar' }), { target: { value: '6' } });
     expect(cards().map(card => card.textContent)).toEqual(['Boende gavle']);
-    fireEvent.click(screen.getByRole('button', { name: 'Rensa filter', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Rensa filter' }));
     expect(search()).toHaveValue('');
     expect(screen.getByRole('combobox', { name: 'Minst antal bäddar' })).toHaveValue('0');
     expect(cards()).toHaveLength(12);
@@ -97,7 +97,7 @@ describe('public accommodation search', () => {
     expect(cards()).toHaveLength(14);
     fireEvent.change(screen.getByRole('combobox', { name: 'Minst antal bäddar' }), { target: { value: '8' } });
     expect(cards()).toHaveLength(12);
-    fireEvent.click(screen.getByRole('button', { name: 'Rensa sökning', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Rensa sökning' }));
     expect(search()).toHaveValue('');
     expect(search()).toHaveFocus();
     expect(cards()).toHaveLength(12);

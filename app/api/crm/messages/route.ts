@@ -1,8 +1,8 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { normalizePhoneE164 } from "@/lib/crm/phone-links";
-import { outboxMessages } from "@/lib/crm/schema";
-import { desc, eq } from "drizzle-orm";
+import { inboxMessages, outboxMessages } from "@/lib/crm/schema";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -27,6 +27,16 @@ export async function POST(req: NextRequest) {
   if (body.length > MAX_BODY_CHARS) {
     return NextResponse.json({ error: `Max ${MAX_BODY_CHARS} tecken` }, { status: 400 });
   }
+  let replyToInboxIds: string[] | null = null;
+  if (raw.replyToInboxIds !== undefined) {
+    if (!Array.isArray(raw.replyToInboxIds) || raw.replyToInboxIds.length === 0 || raw.replyToInboxIds.length > 200 || raw.replyToInboxIds.some((id) => typeof id !== "string")) {
+      return NextResponse.json({ error: "Ogiltiga meddelanden att svara på" }, { status: 400 });
+    }
+    replyToInboxIds = [...new Set(raw.replyToInboxIds as string[])];
+    const matched = await db.select({ id: inboxMessages.id }).from(inboxMessages)
+      .where(and(inArray(inboxMessages.id, replyToInboxIds), eq(inboxMessages.fromPhone, toPhone), eq(inboxMessages.direction, "in")));
+    if (matched.length !== replyToInboxIds.length) return NextResponse.json({ error: "Svaret hör inte till den valda kontakten" }, { status: 400 });
+  }
 
   const [row] = await db
     .insert(outboxMessages)
@@ -37,6 +47,7 @@ export async function POST(req: NextRequest) {
       status: raw.draft === true ? "draft" : "queued",
       ownerId: typeof raw.ownerId === "string" ? raw.ownerId : null,
       contactId: typeof raw.contactId === "string" ? raw.contactId : null,
+      replyToInboxIds,
     })
     .returning();
   return NextResponse.json(row, { status: 201 });

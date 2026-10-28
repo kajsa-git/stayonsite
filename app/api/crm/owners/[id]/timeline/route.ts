@@ -1,21 +1,17 @@
 // Uthyrarens samlade tidslinje: SMS (in/ut), e-post, kontaktlogg per objekt och
 // outreach-rundor — normaliserat och sorterat fallande. Läsvy för uthyrarsidan.
 //
-// SMS-dedupe: inkorgen är sanningskälla (chat.db-ingesten fångar BÅDA riktningarna
-// sedan 2026-07-05, inkl. agentens egna utskick). Utkorgsrader tas därför bara med
-// när de INTE är skickade (queued/sending/failed/draft) eller är äldre än
-// ingest-horisonten — annars vore varje skickat SMS dubblerat.
+// SMS-dedupe: entydiga utgående rader kopplas till utkorgen så att leveransstatus
+// syns på en rad. Osäkra kopplingar lämnas separata, utan påhittad status.
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { emails, inboxMessages, outboxMessages, ownerOutreach, owners, properties, propertyNotes } from "@/lib/crm/schema";
-import { and, desc, eq, lt, ne, or, sql } from "drizzle-orm";
+import { matchOutgoingSms } from "@/lib/crm/sms-timeline";
+import { desc, eq, or } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// Före detta datum fanns ingen chat.db-ingest — äldre skickade utkorgsrader är
-// enda spåret av de utskicken och ska visas.
-const INBOX_INGEST_START = "2026-07-05";
 const MAX_ITEMS = 500;
 
 export interface OwnerTimelineItem {
@@ -79,19 +75,11 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       .orderBy(desc(inboxMessages.sentAt))
       .limit(MAX_ITEMS),
 
-    // Utkorg enligt dedupe-regeln ovan.
+    // Matchas mot utgående SMS nedan så status kan visas utan dubbla rader.
     db
       .select()
       .from(outboxMessages)
-      .where(
-        and(
-          phone ? or(eq(outboxMessages.ownerId, id), eq(outboxMessages.toPhone, phone)) : eq(outboxMessages.ownerId, id),
-          or(
-            ne(outboxMessages.status, "sent"),
-            lt(sql`coalesce(${outboxMessages.sentAt}, ${outboxMessages.createdAt})`, INBOX_INGEST_START),
-          ),
-        ),
-      )
+      .where(phone ? or(eq(outboxMessages.ownerId, id), eq(outboxMessages.toPhone, phone)) : eq(outboxMessages.ownerId, id))
       .orderBy(desc(outboxMessages.createdAt))
       .limit(MAX_ITEMS),
 
@@ -129,6 +117,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       .limit(MAX_ITEMS),
   ]);
 
+  const matchedOutbox = matchOutgoingSms(smsRows, outboxRows);
+  const matchedIds = new Set([...matchedOutbox.values()].map((message) => message.id));
   const items: OwnerTimelineItem[] = [
     ...smsRows.map((m): OwnerTimelineItem => ({
       id: `sms:${m.id}`,
@@ -137,20 +127,20 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       at: toIso(m.sentAt),
       title: null,
       body: m.body,
-      status: null,
+      status: matchedOutbox.has(m.id) ? (matchedOutbox.get(m.id)?.deliveredAt ? "delivered" : "sent") : null,
       service: m.service,
       propertyId: null,
       propertyAddress: null,
       error: null,
     })),
-    ...outboxRows.map((m): OwnerTimelineItem => ({
+    ...outboxRows.filter((m) => !matchedIds.has(m.id)).map((m): OwnerTimelineItem => ({
       id: `sms-out:${m.id}`,
       kind: "sms",
       direction: "out",
       at: toIso(m.sentAt ?? m.createdAt),
       title: null,
       body: m.body,
-      status: m.status,
+      status: m.status === "sent" && m.deliveredAt ? "delivered" : m.status,
       service: null,
       propertyId: null,
       propertyAddress: null,

@@ -43,16 +43,16 @@ export type EditForm = {
   inclusionsEn: string[];
   inclusionsPl: string[];
   distances: { label: string; address?: string; km: number; minutes: number }[];
-  furnished: boolean;
-  kitchen: boolean;
-  garage: boolean;
-  broadband: boolean;
-  egetBoende: boolean;
-  dishwasher: boolean;
-  allIncluded: boolean;
+  furnished: boolean | null;
+  kitchen: boolean | null;
+  garage: boolean | null;
+  broadband: boolean | null;
+  egetBoende: boolean | null;
+  dishwasher: boolean | null;
+  allIncluded: boolean | null;
   excludedNote: string;
-  linensIncluded: boolean;
-  heatWaterIncluded: boolean;
+  linensIncluded: boolean | null;
+  heatWaterIncluded: boolean | null;
   specialNote: string;
 };
 
@@ -79,8 +79,8 @@ export function toPropertyForm(p: PropertyWithOwner): EditForm {
     rentOut: ns(p.rentOut),
     moveInFrom: s(p.moveInFrom),
     availableTo: s(p.availableTo),
-    ownerType: s(p.ownerType) || "privatperson",
-    ownerArrangement: s(p.ownerArrangement) || "direkt",
+    ownerType: s(p.ownerType),
+    ownerArrangement: s(p.ownerArrangement),
     ownerName: s(p.ownerName),
     ownerOrgNr: s(p.ownerOrgNr),
     ownerContactPerson: s(p.ownerContactPerson),
@@ -98,16 +98,16 @@ export function toPropertyForm(p: PropertyWithOwner): EditForm {
     inclusionsEn: p.inclusionsEn ?? [],
     inclusionsPl: p.inclusionsPl ?? [],
     distances: p.distances ?? [],
-    furnished: !!p.furnished,
-    kitchen: !!p.kitchen,
-    garage: !!p.garage,
-    broadband: !!p.broadband,
-    egetBoende: !!p.egetBoende,
-    dishwasher: !!p.dishwasher,
-    allIncluded: !!p.allIncluded,
+    furnished: p.furnished ?? null,
+    kitchen: p.kitchen ?? null,
+    garage: p.garage ?? null,
+    broadband: p.broadband ?? null,
+    egetBoende: p.egetBoende ?? null,
+    dishwasher: p.dishwasher ?? null,
+    allIncluded: p.allIncluded ?? null,
     excludedNote: s(p.excludedNote),
-    linensIncluded: !!p.linensIncluded,
-    heatWaterIncluded: !!p.heatWaterIncluded,
+    linensIncluded: p.linensIncluded ?? null,
+    heatWaterIncluded: p.heatWaterIncluded ?? null,
     specialNote: s(p.specialNote),
   };
 }
@@ -135,9 +135,9 @@ export function propertyFormToPayload(form: EditForm): Partial<PropertyWithOwner
     rentOut: num(form.rentOut),
     moveInFrom: t(form.moveInFrom),
     availableTo: t(form.availableTo),
-    ownerType: form.ownerType,
+    ownerType: t(form.ownerType),
     ownerId: form.ownerId || null,
-    ownerArrangement: form.ownerArrangement,
+    ownerArrangement: t(form.ownerArrangement),
     ownerName: t(form.ownerName),
     ownerOrgNr: t(form.ownerOrgNr),
     ownerContactPerson: t(form.ownerContactPerson),
@@ -169,6 +169,25 @@ export function propertyFormToPayload(form: EditForm): Partial<PropertyWithOwner
   };
 }
 
+// Skicka bara fält som faktiskt ändrats. Ett ofullständigt formulär får inte
+// skriva över uppgifter eller trigga en ny innehållsgranskning i onödan.
+export function changedPropertyFormPayload(form: EditForm, initial: EditForm): Partial<PropertyWithOwner> {
+  const current = propertyFormToPayload(form);
+  const previous = propertyFormToPayload(initial);
+  const changes = Object.fromEntries(
+    Object.entries(current).filter(([key, value]) =>
+      JSON.stringify(value) !== JSON.stringify(previous[key as keyof PropertyWithOwner]),
+    ),
+  ) as Partial<PropertyWithOwner>;
+  // För ett olänkat objekt behövs hela identiteten för att kunna matcha eller
+  // skapa uthyraren. För en befintlig länk räcker de ändrade fälten.
+  const ownerFields = ["ownerType", "ownerArrangement", "ownerName", "ownerOrgNr", "ownerContactPerson", "ownerPhone", "ownerEmail"] as const;
+  if (!initial.ownerId && !form.ownerId && ownerFields.some((key) => key in changes)) {
+    for (const key of ownerFields) Object.assign(changes, { [key]: current[key] });
+  }
+  return changes;
+}
+
 // Deterministiskt auto-namn från formulärets ort/storlek (speglar serverns default).
 export function autoPublicNameForForm(form: EditForm): string {
   return buildPublicName({
@@ -191,8 +210,8 @@ export function ownerPatchToForm(patch: Partial<OwnerPickerValue>): Partial<Edit
   const has = (k: keyof OwnerPickerValue) => Object.prototype.hasOwnProperty.call(patch, k);
   return {
     ...(has("ownerId") ? { ownerId: patch.ownerId ?? "" } : {}),
-    ...(has("ownerType") ? { ownerType: patch.ownerType ?? "privatperson" } : {}),
-    ...(has("ownerArrangement") ? { ownerArrangement: patch.ownerArrangement ?? "direkt" } : {}),
+    ...(has("ownerType") ? { ownerType: patch.ownerType ?? "" } : {}),
+    ...(has("ownerArrangement") ? { ownerArrangement: patch.ownerArrangement ?? "" } : {}),
     ...(has("ownerName") ? { ownerName: patch.ownerName ?? "" } : {}),
     ...(has("ownerOrgNr") ? { ownerOrgNr: patch.ownerOrgNr ?? "" } : {}),
     ...(has("ownerContactPerson") ? { ownerContactPerson: patch.ownerContactPerson ?? "" } : {}),

@@ -31,6 +31,7 @@ interface Row {
   email: string | null;
   rating: number | null;
   followUpDate: string | null;
+  followUpTime: string | null;
   propertyCount: number;
   publishedCount: number | null;
   lastSmsAt: string | null;
@@ -161,7 +162,7 @@ export function OwnerTable() {
                     </TableCell>
                     <TableCell>
                       {o.followUpDate ? (
-                        <span className={o.followUpDate <= today ? "text-amber-700 font-medium" : "text-foreground"}>{o.followUpDate}</span>
+                        <span className={o.followUpDate <= today ? "text-amber-700 font-medium" : "text-foreground"}>{o.followUpDate}{o.followUpTime ? ` kl. ${o.followUpTime}` : ""}</span>
                       ) : <span className="text-muted-foreground">–</span>}
                     </TableCell>
                     <TableCell className="text-foreground">{o.lastSmsAt ? o.lastSmsAt.slice(0, 10) : <span className="text-muted-foreground">–</span>}</TableCell>

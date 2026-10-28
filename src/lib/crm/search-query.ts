@@ -1,10 +1,11 @@
 // Global sökning mot det denormaliserade sökindexet (crm_search_index).
 // Delas av /api/crm/search-all och MCP-verktyget crm_search — en implementation.
-import { and, like, sql } from "drizzle-orm";
+import { and, like, or, sql } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { db as defaultDb } from "./db";
 import * as schema from "./schema";
 import { searchIndex } from "./schema";
+import { normalizePhoneE164 } from "./phone-links";
 
 type DB = LibSQLDatabase<typeof schema>;
 
@@ -36,6 +37,14 @@ export async function searchCrm(
 
   // Flera ord → alla måste matcha (AND av LIKE). Cappa antal termer.
   const terms = q.split(" ").slice(0, 5);
+  const phone = /^[+\d\s().-]+$/.test(rawQuery.trim()) ? normalizePhoneE164(rawQuery) : null;
+  // Även äldre poster kan ha sparats med mellanslag, bindestreck eller 07-prefix.
+  // Jämför enbart siffror när hela sökningen är ett rimligt telefonnummer.
+  const phoneKeywords = sql<string>`replace(replace(replace(replace(replace(replace(${searchIndex.keywords}, ' ', ''), '-', ''), '+', ''), '(', ''), ')', ''), '.', '')`;
+  const digits = phone?.slice(1);
+  const phoneVariants = digits
+    ? [...new Set([digits, ...(digits.startsWith("46") ? [`0${digits.slice(2)}`] : [])])]
+    : [];
 
   return db
     .select({
@@ -48,7 +57,9 @@ export async function searchCrm(
       route: searchIndex.route,
     })
     .from(searchIndex)
-    .where(and(...terms.map((t) => like(searchIndex.keywords, `%${t}%`))))
+    .where(phoneVariants.length
+      ? or(...phoneVariants.map((variant) => like(phoneKeywords, `%${variant}%`)))
+      : and(...terms.map((t) => like(searchIndex.keywords, `%${t}%`))))
     // Prioritera primära entiteter så de inte trängs ut av många anteckningar
     .orderBy(
       sql`CASE ${searchIndex.entityType} WHEN 'company' THEN 0 WHEN 'request' THEN 1 WHEN 'property' THEN 2 WHEN 'owner' THEN 3 WHEN 'contact' THEN 4 ELSE 5 END`,

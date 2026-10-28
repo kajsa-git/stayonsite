@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       email: owners.email,
       rating: owners.rating,
       followUpDate: owners.followUpDate,
+      followUpTime: owners.followUpTime,
       followUpReason: owners.followUpReason,
       followUpNote: owners.followUpNote,
       notes: owners.notes,
@@ -69,6 +70,9 @@ export async function POST(req: NextRequest) {
   const id = body.id ?? nanoid();
   const name = String(body.name ?? "").trim();
   if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
+  if (body.followUpTime != null && (typeof body.followUpTime !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(body.followUpTime))) {
+    return NextResponse.json({ error: "Ogiltigt klockslag" }, { status: 400 });
+  }
 
   const [row] = await db
     .insert(owners)
@@ -83,6 +87,7 @@ export async function POST(req: NextRequest) {
       email: body.email ?? null,
       rating: body.rating ?? null,
       followUpDate: body.followUpDate ?? null,
+      followUpTime: body.followUpDate ? body.followUpTime ?? null : null,
       followUpReason: body.followUpReason ?? null,
       followUpNote: body.followUpNote ?? null,
       notes: body.notes ?? null,

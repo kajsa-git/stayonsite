@@ -61,4 +61,11 @@ describe("computeQueueCounts", () => {
     const c = await computeQueueCounts({ db, today: TODAY });
     expect(c.renewals).toBe(0);
   });
+
+  it("räknar även återkomster på uthyrarkortet utan att blanda ihop dem med bostadens kontaktrunda", async () => {
+    await db.update(owners).set({ followUpDate: TODAY, followUpTime: "16:30" }).where(eq(owners.id, "o1"));
+    expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(2);
+    await db.update(owners).set({ followUpDate: "2026-07-16" }).where(eq(owners.id, "o1"));
+    expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(1);
+  });
 });

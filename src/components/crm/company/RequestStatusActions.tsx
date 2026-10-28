@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -34,7 +35,7 @@ interface Props {
 }
 
 export function RequestStatusActions({ request, onStatusChange, onMatch }: Props) {
-  const [modal, setModal] = useState<"lost" | "archive" | "invoice" | null>(null);
+  const [modal, setModal] = useState<"lost" | "archive" | "invoice" | "won" | null>(null);
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]);
   const [busy, setBusy] = useState(false);
 
@@ -81,6 +82,11 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
           >
             <Home className="h-3.5 w-3.5" />
             {request.matchCount ? `Se ${request.matchCount} förslag` : "Leta boenden"}
+          </button>
+        )}
+        {(isIncoming || isMatching) && (
+          <button className={`${btn} border-green-300 bg-green-50 text-green-800 hover:bg-green-100`} onClick={() => setModal("won")} disabled={busy}>
+            Till avtal
           </button>
         )}
 
@@ -153,6 +159,17 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
           Saknar inflytt-/utflyttsdatum — fyll i innan fakturering (krävs då).
         </p>
       )}
+
+      <Dialog open={modal === "won"} onOpenChange={(open) => !open && setModal(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Flytta förfrågan #{request.requestNumber} till avtal?</DialogTitle></DialogHeader>
+          <DialogDescription>{request.city ? `${request.city}. ` : ""}Den här förfrågan markeras som vunnen.{request.wonPropertyId ? " Den kopplade bostaden reserveras och andra öppna förslag för samma bostad dras tillbaka." : ""}</DialogDescription>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setModal(null)}>Avbryt</Button>
+            <Button onClick={() => run("won")} disabled={busy}>Till avtal</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Markera fakturerad → kräver datum */}
       <Dialog open={modal === "invoice"} onOpenChange={(o) => !o && setModal(null)}>

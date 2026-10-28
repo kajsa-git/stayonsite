@@ -64,7 +64,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const round = await ensureOpenRound(id);
     await db
       .update(ownerOutreach)
-      .set({ status: "i_dialog", nextFollowUpDate: null, nextFollowUpReason: null })
+      .set({ status: "i_dialog", nextFollowUpDate: null, nextFollowUpTime: null, nextFollowUpReason: null })
       .where(eq(ownerOutreach.id, round.id));
     await rescheduleMatches(null);
   } else if (action === "off_market") {
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const round = await ensureOpenRound(id);
     await db
       .update(ownerOutreach)
-      .set({ nextFollowUpDate: null, nextFollowUpReason: null })
+      .set({ nextFollowUpDate: null, nextFollowUpTime: null, nextFollowUpReason: null })
       .where(eq(ownerOutreach.id, round.id));
     await rescheduleMatches(null);
   } else {

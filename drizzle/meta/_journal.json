@@ -309,6 +309,13 @@
       "when": 1793088000000,
       "tag": "0043_ads_consent",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "6",
+      "when": 1793228400000,
+      "tag": "0044_crm_vardagsflode",
+      "breakpoints": true
     }
   ]
 }

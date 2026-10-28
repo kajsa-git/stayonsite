@@ -48,6 +48,7 @@ function linkify(text: string) {
 interface Props {
   notes: Note[];
   companyId: string;
+  compact?: boolean;
   onAdd: (channel: string, content: string) => Promise<void>;
   onUpdate: (id: string, content: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
@@ -181,8 +182,9 @@ function NoteItem({
   );
 }
 
-export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Props) {
+export function NotesPanel({ notes, companyId, compact, onAdd, onUpdate, onDelete }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [channel, setChannel] = useState("anteckning");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
@@ -190,7 +192,7 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
   const sorted = [...notes].sort(
     (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
   );
-  const VISIBLE_COUNT = 5;
+  const VISIBLE_COUNT = compact ? 1 : 5;
   const visible = sorted.slice(0, VISIBLE_COUNT);
   const rest = sorted.slice(VISIBLE_COUNT);
 
@@ -200,6 +202,7 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
     await onAdd(channel, content.trim());
     setContent("");
     setSaving(false);
+    if (compact) setFormOpen(false);
   }
 
   return (
@@ -209,7 +212,12 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
       </span>
 
       {/* New note form */}
-      <div className="mb-4 space-y-2">
+      {compact && (
+        <button type="button" className="mb-2 text-sm font-medium text-primary-700 hover:underline" onClick={() => setFormOpen((open) => !open)} aria-expanded={formOpen}>
+          {formOpen ? "Dölj formulär" : "Lägg till anteckning"}
+        </button>
+      )}
+      {(!compact || formOpen) && <div className="mb-4 space-y-2">
         <div className="flex flex-wrap gap-1">
           {CHANNELS.map((c) => (
             <button
@@ -241,7 +249,7 @@ export function NotesPanel({ notes, companyId, onAdd, onUpdate, onDelete }: Prop
             {saving ? "Sparar…" : "Spara (⌘↵)"}
           </Button>
         </div>
-      </div>
+      </div>}
 
       {/* Recent notes (latest 5, always visible) */}
       {visible.length > 0 && (

@@ -24,12 +24,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (TERMINAL.includes(body.status)) {
       patch.concludedAt = new Date().toISOString();
       patch.nextFollowUpDate = null;
+      patch.nextFollowUpTime = null;
       patch.nextFollowUpReason = null;
     } else {
       patch.concludedAt = null;
     }
   }
-  if ("nextFollowUpDate" in body) patch.nextFollowUpDate = body.nextFollowUpDate || null;
+  if ("nextFollowUpTime" in body && body.nextFollowUpTime != null && body.nextFollowUpTime !== "" && (typeof body.nextFollowUpTime !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(body.nextFollowUpTime))) {
+    return NextResponse.json({ error: "Ogiltigt klockslag" }, { status: 400 });
+  }
+  if ("nextFollowUpDate" in body) {
+    patch.nextFollowUpDate = body.nextFollowUpDate || null;
+    if (!body.nextFollowUpDate) patch.nextFollowUpTime = null;
+  }
+  if ("nextFollowUpTime" in body && !("nextFollowUpDate" in body && !body.nextFollowUpDate)) patch.nextFollowUpTime = body.nextFollowUpTime || null;
   if ("nextFollowUpReason" in body) patch.nextFollowUpReason = body.nextFollowUpReason || null;
   if ("note" in body) patch.note = body.note || null;
   if ("requestId" in body) patch.requestId = body.requestId || null;

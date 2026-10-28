@@ -25,7 +25,7 @@ export async function GET() {
   const today = todayStockholm();
 
   // Wave 1: alla köer + chase-data parallellt
-  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, renewalRows, unreadInboxOwners] = await Promise.all([
+  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, ownerFollowUps, renewalRows, unreadInboxOwners] = await Promise.all([
     // Återkomster: företag med återkomst idag eller försenad
     db
       .select()
@@ -57,6 +57,7 @@ export async function GET() {
         ownerName: owners.name,
         ownerPhone: owners.phone,
         ownerFollowUpDate: ownerOutreach.nextFollowUpDate,
+        ownerFollowUpTime: ownerOutreach.nextFollowUpTime,
         ownerReason: ownerOutreach.nextFollowUpReason,
       })
       .from(ownerOutreach)
@@ -68,6 +69,12 @@ export async function GET() {
           lte(ownerOutreach.nextFollowUpDate, today),
         ),
       ),
+
+    // Återkomster på själva uthyraren är separata från en bostads kontaktrunda.
+    db.select({
+      ownerId: owners.id, ownerName: owners.name, ownerPhone: owners.phone,
+      date: owners.followUpDate, time: owners.followUpTime, reason: owners.followUpReason,
+    }).from(owners).where(lte(owners.followUpDate, today)),
 
     // Förlängningar: vunna/fakturerade affärer vars slutdatum är inom −7…+30 dagar.
     // Löpande avtal (endDateOngoing) har inget slut att bevaka.
@@ -185,14 +192,13 @@ export async function GET() {
     ownerId: string | null;
     ownerName: string | null;
     ownerPhone: string | null;
-    dates: string[];
-    ownerReason: string | null;
+    followUps: { date: string; time: string | null; reason: string | null }[];
   };
   const byProperty = new Map<string, Acc>();
   const ensure = (id: string): Acc => {
     let e = byProperty.get(id);
     if (!e) {
-      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, dates: [], ownerReason: null };
+      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, followUps: [] };
       byProperty.set(id, e);
     }
     return e;
@@ -203,23 +209,31 @@ export async function GET() {
     e.ownerId ??= o.ownerId ?? null;
     e.ownerName ??= o.ownerName ?? null;
     e.ownerPhone ??= o.ownerPhone ?? null;
-    e.ownerReason = o.ownerReason ?? null;
-    if (o.ownerFollowUpDate) e.dates.push(o.ownerFollowUpDate);
+    if (o.ownerFollowUpDate) e.followUps.push({ date: o.ownerFollowUpDate, time: o.ownerFollowUpTime, reason: o.ownerReason });
   }
   // "Har svarat"-flaggan: oläst inkommande SMS från uthyraren → jaga inte i blindo.
   const unreadOwnerSet = new Set(unreadInboxOwners.map((r) => r.ownerId).filter((v): v is string => !!v));
-  const chaseLandlords = [...byProperty.values()]
-    .map((e) => ({
-      propertyId: e.propertyId,
-      address: e.address,
-      ownerId: e.ownerId,
-      ownerName: e.ownerName,
-      ownerPhone: e.ownerPhone,
-      earliestDate: e.dates.length ? [...e.dates].sort()[0] : null,
-      reason: e.ownerReason ?? null,
-      hasReply: e.ownerId ? unreadOwnerSet.has(e.ownerId) : false,
-    }))
-    .sort((a, b) => (a.earliestDate ?? "").localeCompare(b.earliestDate ?? ""));
+  const chaseLandlords = [
+    ...[...byProperty.values()].map((e) => {
+      const next = [...e.followUps].sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "99:99").localeCompare(b.time ?? "99:99"))[0];
+      return {
+        source: "property" as const, propertyId: e.propertyId, address: e.address,
+        ownerId: e.ownerId, ownerName: e.ownerName, ownerPhone: e.ownerPhone,
+        earliestDate: next?.date ?? null, earliestTime: next?.time ?? null,
+        reason: next?.reason ?? null, hasReply: e.ownerId ? unreadOwnerSet.has(e.ownerId) : false,
+      };
+    }),
+    ...ownerFollowUps.map((o) => ({
+      source: "owner" as const, propertyId: null, address: null,
+      ownerId: o.ownerId, ownerName: o.ownerName, ownerPhone: o.ownerPhone,
+      earliestDate: o.date, earliestTime: o.time, reason: o.reason,
+      hasReply: unreadOwnerSet.has(o.ownerId),
+    })),
+  ].sort((a, b) =>
+    (a.source === b.source ? 0 : a.source === "property" ? -1 : 1)
+    || (a.earliestDate ?? "").localeCompare(b.earliestDate ?? "")
+    || (a.earliestTime ?? "99:99").localeCompare(b.earliestTime ?? "99:99"),
+  );
 
   // Förlängningar: hoppa över företag som redan har en INPLANERAD framtida återkomst
   // (då är kontakten redan schemalagd — dubbelnag hjälper ingen).

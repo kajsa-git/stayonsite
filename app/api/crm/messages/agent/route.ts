@@ -2,8 +2,9 @@
 // statisk bearer-token (CRM_AGENT_TOKEN) i stället för session — agenten är headless.
 import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
+import { reportMessageStatus } from "@/lib/crm/message-status";
 import { outboxMessages } from "@/lib/crm/schema";
-import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, lt, or } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -43,15 +44,10 @@ export async function POST(req: NextRequest) {
   const id = typeof body.id === "string" ? body.id : "";
   if (!id) return NextResponse.json({ error: "id krävs" }, { status: 400 });
 
-  const [row] = await db
-    .update(outboxMessages)
-    .set(
-      body.ok === true
-        ? { status: "sent", sentAt: sql`(datetime('now'))`, error: null }
-        : { status: "failed", error: String(body.error ?? "okänt fel").slice(0, 500) },
-    )
-    .where(eq(outboxMessages.id, id))
-    .returning();
+  if (body.delivered !== true && typeof body.ok !== "boolean") return NextResponse.json({ error: "ok eller delivered krävs" }, { status: 400 });
+  const row = await reportMessageStatus(id, body.delivered === true
+    ? { delivered: true }
+    : { ok: body.ok === true, error: String(body.error ?? "okänt fel") });
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(row);
 }

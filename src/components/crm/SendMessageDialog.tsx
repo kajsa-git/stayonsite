@@ -12,8 +12,9 @@ import useSWR from "swr";
 type OutboxMessage = {
   id: string;
   body: string;
-  status: "queued" | "sending" | "sent" | "failed";
+  status: "draft" | "queued" | "sending" | "sent" | "failed";
   error: string | null;
+  deliveredAt: string | null;
   createdAt: string | null;
 };
 
@@ -22,6 +23,7 @@ const STATUS_LABEL: Record<OutboxMessage["status"], { label: string; cls: string
   sending: { label: "Skickas…", cls: "bg-blue-100 text-blue-800" },
   sent: { label: "Skickad", cls: "bg-green-100 text-green-800" },
   failed: { label: "Misslyckades", cls: "bg-red-100 text-red-800" },
+  draft: { label: "Utkast", cls: "bg-violet-100 text-violet-800" },
 };
 
 // Köar ett iMessage/SMS i CRM:ts utkorg — Mac-agenten skickar via Messages.app
@@ -90,7 +92,9 @@ export function SendMessageDialog({
           <div className="space-y-1.5 border-t pt-2">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Tidigare till numret</p>
             {history.map((m) => {
-              const st = STATUS_LABEL[m.status] ?? STATUS_LABEL.queued;
+              const st = m.status === "sent"
+                ? { label: m.deliveredAt ? "Levererat" : "Skickat · leverans okänd", cls: "bg-green-100 text-green-800" }
+                : STATUS_LABEL[m.status] ?? STATUS_LABEL.queued;
               return (
                 <div key={m.id} className="flex items-start gap-2 text-xs">
                   <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${st.cls}`} title={m.error ?? undefined}>

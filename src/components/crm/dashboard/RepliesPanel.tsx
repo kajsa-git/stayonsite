@@ -28,6 +28,7 @@ export interface InboxRow {
   contactName: string | null;
   companyName: string | null;
   repliedTo: { body: string; sentAt: string | null } | null;
+  replyStatus: { status: string; body: string; error: string | null } | null;
 }
 
 function timeLabel(iso: string): string {
@@ -61,11 +62,11 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
   // Ett kort per avsändare: senaste olästa visas, resten prickas av i klump.
   // Hela tråden finns på uthyrarsidan/i Messages — Min dag ska bara visa "senaste läget".
   const groups = useMemo(() => {
-    const byPhone = new Map<string, { latest: InboxRow; ids: string[] }>();
+    const byPhone = new Map<string, { latest: InboxRow; ids: string[]; replyStatus: InboxRow["replyStatus"] }>();
     for (const r of rows) {
       const g = byPhone.get(r.fromPhone);
-      if (g) g.ids.push(r.id);
-      else byPhone.set(r.fromPhone, { latest: r, ids: [r.id] }); // rows är sorterade nyast först
+      if (g) { g.ids.push(r.id); if (!g.replyStatus && r.replyStatus) g.replyStatus = r.replyStatus; }
+      else byPhone.set(r.fromPhone, { latest: r, ids: [r.id], replyStatus: r.replyStatus }); // rows är sorterade nyast först
     }
     return [...byPhone.values()];
   }, [rows]);
@@ -89,8 +90,8 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
     }
   }
 
-  // Skickar direkt (köas → Mac-agenten skickar inom ~30 s, aldrig 21–08) och
-  // markerar HELA avsändarens olästa som hanterade — ett klick, klart.
+  // Svaret köas. Inkorgen markeras först när agenten rapporterar att det har
+  // skickats, och visas igen om agenten senare rapporterar ett leveransfel.
   async function sendReply(row: InboxRow, ids: string[]) {
     if (!replyText.trim() || busy) return;
     setBusy(true);
@@ -103,12 +104,13 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
           body: replyText.trim(),
           ownerId: row.ownerId ?? undefined,
           contactId: row.contactId ?? undefined,
+          replyToInboxIds: ids,
         }),
       });
       setReplyFor(null);
       setReplyText("");
-      await markRead(ids).catch(() => undefined); // svaret är viktigast — läst-markeringen får inte stoppa flödet
-      toast({ title: "Svar skickas inom ~30 sek via Messages" });
+      await mutate();
+      toast({ title: "Svaret är köat — status visas på kortet" });
     } catch (e) {
       toast({ title: "Kunde inte skicka", description: crmErrorMessage(e), variant: "destructive" });
     } finally {
@@ -137,7 +139,8 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
         </span>
       </button>
       <div className={`space-y-2 ${collapsed ? "hidden" : "mt-3"}`}>
-        {groups.map(({ latest: r, ids }) => {
+        {groups.map(({ latest: r, ids, replyStatus }) => {
+          const pending = replyStatus?.status === "queued" || replyStatus?.status === "sending";
           const who = r.ownerName
             ? `${r.ownerName} · uthyrare`
             : r.companyName
@@ -158,6 +161,8 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                 </p>
               )}
               <p className="text-sm text-nordic-800 mt-1 whitespace-pre-wrap break-words line-clamp-4">{r.body}</p>
+              {pending && <p className="mt-1 text-xs text-muted-foreground" role="status">Ditt svar {replyStatus?.status === "queued" ? "är köat" : "skickas"}.</p>}
+              {replyStatus?.status === "failed" && <p className="mt-1 text-xs text-destructive" role="alert">Ditt svar kunde inte skickas. Kontrollera meddelandet och försök igen.</p>}
               {ids.length > 1 && (
                 <button
                   className="text-[11px] text-muted-foreground italic mt-0.5 underline decoration-dotted"
@@ -191,9 +196,10 @@ export function RepliesPanel({ onDraftCreated }: { onDraftCreated?: () => void }
                 )}
                 <button
                   className={btn}
+                  disabled={pending}
                   onClick={() => {
                     setReplyFor(replyFor === r.id ? null : r.id);
-                    setReplyText("");
+                    setReplyText(replyStatus?.status === "failed" ? replyStatus.body : "");
                   }}
                 >
                   ↩ Svara

@@ -51,11 +51,12 @@ interface Props {
   defaultTo?: string;
   contactId?: string;
   contacts?: ContactOption[];
+  compact?: boolean;
 }
 
 // ─── Enskilt mejl ────────────────────────────────────────────────────────────
 
-function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email) => void }) {
+function EmailMessage({ email, onReply, compact }: { email: Email; onReply: (email: Email) => void; compact?: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const isOut = email.direction === "out";
   const safeHtml = useMemo(() => (email.html ? sanitizeEmailHtml(email.html) : ""), [email.html]);
@@ -72,6 +73,7 @@ function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email
           {expanded ? <ChevronUp className="h-3 w-3 shrink-0" /> : <ChevronDown className="h-3 w-3 shrink-0" />}
         </div>
       </button>
+      {compact && !expanded && email.body && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{email.body}</p>}
       {expanded && (
         <div className="mt-1.5 text-sm text-nordic-800">
           {safeHtml ? (
@@ -96,11 +98,12 @@ function EmailMessage({ email, onReply }: { email: Email; onReply: (email: Email
 
 // ─── Tråd (grupp av mejl med samma gmailThreadId) ─────────────────────────────
 
-function EmailThreadGroup({ messages, onReply }: { messages: Email[]; onReply: (email: Email) => void }) {
+function EmailThreadGroup({ messages, onReply, compact }: { messages: Email[]; onReply: (email: Email) => void; compact?: boolean }) {
   const sorted = [...messages].sort((a, b) => a.sentAt.localeCompare(b.sentAt));
   const latest = sorted[sorted.length - 1];
   const hasUnread = sorted.some((m) => m.direction === "in" && !m.isRead);
-  const [open, setOpen] = useState(hasUnread);
+  const [open, setOpen] = useState(hasUnread || !!compact);
+  const [showOlder, setShowOlder] = useState(false);
 
   const inCount = sorted.filter((m) => m.direction === "in").length;
   const outCount = sorted.filter((m) => m.direction === "out").length;
@@ -136,9 +139,10 @@ function EmailThreadGroup({ messages, onReply }: { messages: Email[]; onReply: (
 
       {open && (
         <div className="px-3 pb-3 space-y-2 border-t bg-nordic-50/30">
-          {sorted.map((m) => (
-            <EmailMessage key={m.id} email={m} onReply={onReply} />
+          {(compact && !showOlder ? sorted.slice(-1) : sorted).map((m) => (
+            <EmailMessage key={m.id} email={m} onReply={onReply} compact={compact} />
           ))}
+          {compact && sorted.length > 1 && <button type="button" className="text-xs text-muted-foreground underline" onClick={() => setShowOlder((value) => !value)}>{showOlder ? "Dölj äldre mejl" : `Visa ${sorted.length - 1} äldre mejl`}</button>}
         </div>
       )}
     </div>
@@ -147,12 +151,13 @@ function EmailThreadGroup({ messages, onReply }: { messages: Email[]; onReply: (
 
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
-export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [] }: Props) {
+export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [], compact }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
   const [replyTo, setReplyTo] = useState<{ to: string; subject: string; threadId: string | null } | null>(null);
   const [logOpen, setLogOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [gmailError, setGmailError] = useState<string | null>(null);
+  const [showOtherThreads, setShowOtherThreads] = useState(false);
 
   function handleReply(email: Email) {
     const subject = email.subject.startsWith("Re:") ? email.subject : `Re: ${email.subject}`;
@@ -238,9 +243,10 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
         <p className="text-sm text-muted-foreground italic">Inga mejl loggade ännu.</p>
       ) : (
         <div className="space-y-2">
-          {threads.map((group) => (
-            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} onReply={handleReply} />
+          {(compact && !showOtherThreads ? threads.slice(0, 1) : threads).map((group) => (
+            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} onReply={handleReply} compact={compact} />
           ))}
+          {compact && threads.length > 1 && <button type="button" className="text-xs text-muted-foreground underline" onClick={() => setShowOtherThreads((value) => !value)}>{showOtherThreads ? "Dölj äldre trådar" : `Visa ${threads.length - 1} andra trådar`}</button>}
         </div>
       )}
 
