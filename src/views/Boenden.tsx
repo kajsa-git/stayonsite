@@ -5,6 +5,7 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import HeroIntentForm from '@/components/HeroIntentForm'
 import { trackPhoneClick, trackEmailClick } from '@/lib/gtag'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { localizedPropertyDescription } from '@/lib/property-description'
@@ -236,6 +237,7 @@ function InterestModal({ listing, onClose }: { listing: Listing; onClose: () => 
 const PAGE_SIZE = 12
 
 export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] }) {
+  const { t } = useLanguage()
   const { data: listings = [], isLoading } = useSWR<Listing[]>('/api/listings', fetcher)
   const [selected, setSelected] = useState<Listing | null>(null)
 
@@ -266,15 +268,19 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
       <main className="min-h-screen bg-gray-50">
         {/* Hero */}
         <div className="bg-[#0f1c2e] text-white pt-28 pb-16 px-4">
-          <div className="max-w-5xl mx-auto text-center">
+          <div className="max-w-6xl mx-auto grid items-center gap-8 lg:grid-cols-2">
+            <div>
             <h1 className="font-display text-3xl md:text-4xl font-bold mb-3">Lediga boenden</h1>
-            <p className="text-white/70 text-lg max-w-xl mx-auto">
+            <p className="text-white/70 text-lg max-w-xl">
               Möblerade hus och lägenheter för projektarbetare och företag i hela Sverige.
             </p>
+            <a href="#available-homes" className="mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">{t('navigation.availableHomes')}</a>
+            </div>
+            <HeroIntentForm />
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 py-10">
+        <div id="available-homes" className="scroll-mt-24 max-w-6xl mx-auto px-4 py-10">
           {/* Stadsfilter — en skrollbar rad på mobil (chipsen åt alla håll tog två
               skärmhöjder innan första objektet), radbruten först från sm. */}
           {cities.length > 1 && (

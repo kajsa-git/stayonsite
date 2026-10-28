@@ -49,7 +49,7 @@ const CityLinks = () => {
   };
 
   return (
-    <section id="cities" className="py-16 bg-nordic-50 border-t border-nordic-100">
+    <section id="cities" className="scroll-mt-28 py-16 bg-nordic-50 border-t border-nordic-100">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">

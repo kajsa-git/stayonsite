@@ -18,7 +18,10 @@ const PAGE_MAP: Record<string, Record<string, string>> = {
   '/': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
   '/en/corporate-housing-sweden': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
   '/pl/zakwaterowanie-firmowe': { sv: '/', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
-  '/om-oss': { sv: '/om-oss', en: '/om-oss', pl: '/om-oss' },
+  '/for-foretag': { sv: '/for-foretag', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
+  '/projektboende': { sv: '/projektboende', en: '/en/corporate-housing-sweden', pl: '/pl/zakwaterowanie-firmowe' },
+  '/om-oss': { sv: '/om-oss', en: '/en/about', pl: '/pl/zakwaterowanie-firmowe' },
+  '/en/about': { sv: '/om-oss', en: '/en/about', pl: '/pl/zakwaterowanie-firmowe' },
   '/for-husagare': { sv: '/for-husagare', en: '/', pl: '/' },
   '/lp/husagare': { sv: '/lp/husagare', en: '/', pl: '/' },
 };
@@ -66,30 +69,39 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   return (
     <div className={cn("flex items-center gap-2 text-sm font-medium", className)}>
       <button
+        type="button"
+        aria-label="Svenska"
+        aria-pressed={language === 'sv'}
         onClick={() => handleLanguageChange('sv')}
         className={cn(
-          "transition-colors hover:text-[#ff6300]",
-          language === 'sv' ? "text-[#ff6300]" : "text-nordic-600"
+          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'sv' ? "text-accent" : "text-current"
         )}
       >
         SV
       </button>
-      <span className="text-nordic-300">|</span>
+      <span className="opacity-40" aria-hidden="true">|</span>
       <button
+        type="button"
+        aria-label="English"
+        aria-pressed={language === 'en'}
         onClick={() => handleLanguageChange('en')}
         className={cn(
-          "transition-colors hover:text-[#ff6300]",
-          language === 'en' ? "text-[#ff6300]" : "text-nordic-600"
+          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'en' ? "text-accent" : "text-current"
         )}
       >
         EN
       </button>
-      <span className="text-nordic-300">|</span>
+      <span className="opacity-40" aria-hidden="true">|</span>
       <button
+        type="button"
+        aria-label="Polski"
+        aria-pressed={language === 'pl'}
         onClick={() => handleLanguageChange('pl')}
         className={cn(
-          "transition-colors hover:text-[#ff6300]",
-          language === 'pl' ? "text-[#ff6300]" : "text-nordic-600"
+          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'pl' ? "text-accent" : "text-current"
         )}
       >
         PL

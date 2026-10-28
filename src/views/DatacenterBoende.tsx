@@ -6,6 +6,7 @@ import { ArrowRight, BedDouble, CalendarDays, MapPin, Phone } from 'lucide-react
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import InquiryForm from '@/components/InquiryForm';
+import HeroIntentForm from '@/components/HeroIntentForm';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { COMPANY_FACTS } from '@/data/constants';
@@ -72,21 +73,22 @@ export default function DatacenterBoende() {
               <span aria-hidden="true">/</span>
               <span aria-current="page">{t('datacenter.nav')}</span>
             </nav>
-            <div className="grid items-center gap-10 lg:grid-cols-2">
-            <div className="min-w-0">
-            <p className="mb-4 max-w-2xl text-sm font-semibold text-orange-300">{t('datacenter.eyebrow')}</p>
-            <h1 className="max-w-4xl font-heading text-4xl font-bold leading-tight md:text-5xl xl:text-6xl">{t('datacenter.title')}</h1>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/85">{t('datacenter.intro')}</p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a href="#inquiry" className={primaryButton}>{t('datacenter.cta')}<ArrowRight size={18} aria-hidden="true" /></a>
-              <a href="#project-areas" className="inline-flex min-h-12 items-center rounded-full border border-white/40 px-6 py-3 font-semibold hover:bg-white/10">{t('datacenter.regionCta')}</a>
-            </div>
-            <p className="mt-6 max-w-2xl text-sm leading-relaxed text-white/65">{t('datacenter.fit')}</p>
-            </div>
-            <figure className="min-w-0">
-              <Image src={DATACENTER_IMAGES.site} alt={t('datacenter.image.site.alt')} width={DATACENTER_IMAGES.width} height={DATACENTER_IMAGES.height} sizes="(max-width: 1023px) 100vw, 50vw" priority className="h-auto w-full rounded-2xl" />
-              <figcaption className="mt-3 text-xs leading-relaxed text-white/70">{t('datacenter.image.site.caption')}</figcaption>
-            </figure>
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12">
+              <div className="min-w-0">
+                <p className="mb-4 max-w-2xl text-sm font-semibold text-orange-300">{t('datacenter.eyebrow')}</p>
+                <h1 className="max-w-4xl font-heading text-4xl font-bold leading-tight md:text-5xl xl:text-6xl">{t('datacenter.title')}</h1>
+                <p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/85">{t('datacenter.intro')}</p>
+              </div>
+              <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <HeroIntentForm />
+              </div>
+              <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+                <div className="flex flex-wrap gap-4">
+                  <a href="#hero-inquiry" className={primaryButton}>{t('datacenter.cta')}<ArrowRight size={18} aria-hidden="true" /></a>
+                  <a href="#project-areas" className="inline-flex min-h-12 items-center rounded-full border border-white/40 px-6 py-3 font-semibold hover:bg-white/10">{t('datacenter.regionCta')}</a>
+                </div>
+                <p className="mt-6 max-w-2xl text-sm leading-relaxed text-white/65">{t('datacenter.fit')}</p>
+              </div>
             </div>
           </div>
         </section>
@@ -106,8 +108,16 @@ export default function DatacenterBoende() {
 
         <section id="project-areas" className="scroll-mt-24 border-y border-nordic-100 bg-nordic-50 py-16">
           <div className="container mx-auto px-6 md:px-12">
-            <h2 className="max-w-3xl font-heading text-3xl font-semibold">{t('datacenter.regions.title')}</h2>
-            <p className="mt-4 max-w-3xl leading-relaxed text-nordic-700">{t('datacenter.regions.intro')}</p>
+            <div className="grid items-center gap-8 lg:grid-cols-2">
+              <div>
+                <h2 className="max-w-3xl font-heading text-3xl font-semibold">{t('datacenter.regions.title')}</h2>
+                <p className="mt-4 max-w-3xl leading-relaxed text-nordic-700">{t('datacenter.regions.intro')}</p>
+              </div>
+              <figure className="min-w-0">
+                <Image src={DATACENTER_IMAGES.site} alt={t('datacenter.image.site.alt')} width={DATACENTER_IMAGES.width} height={DATACENTER_IMAGES.height} sizes="(max-width: 1023px) 100vw, 50vw" className="h-auto w-full rounded-2xl" />
+                <figcaption className="mt-3 text-xs leading-relaxed text-nordic-700">{t('datacenter.image.site.caption')}</figcaption>
+              </figure>
+            </div>
             <div className="mt-8 grid gap-6 lg:grid-cols-3">
               {regions.map(({ key, city }) => (
                 <article key={key} className="flex flex-col rounded-2xl border border-nordic-100 bg-white p-6">

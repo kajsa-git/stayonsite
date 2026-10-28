@@ -15,7 +15,7 @@ const InquiryLayout = ({ children }: InquiryLayoutProps) => {
   const { t, language } = useLanguage();
   
   return (
-    <section id="inquiry" className="section-spacing bg-nordic-50 border-t border-nordic-100">
+    <section id="inquiry" className="scroll-mt-28 section-spacing bg-nordic-50 border-t border-nordic-100">
       <div className="container mx-auto px-4 md:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <span className="inline-flex items-center justify-center text-[#ff6300] mb-3 text-[11px] uppercase tracking-[0.4em] font-heading">

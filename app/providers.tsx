@@ -13,7 +13,8 @@ const queryClient = new QueryClient()
 function ScrollToTop() {
   const pathname = usePathname()
   useEffect(() => {
-    window.scrollTo(0, 0)
+    // Let Next.js keep the destination anchor in view on cross-page links.
+    if (!window.location.hash) window.scrollTo(0, 0)
   }, [pathname])
   return null
 }

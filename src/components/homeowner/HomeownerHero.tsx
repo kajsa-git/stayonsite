@@ -316,10 +316,11 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
 
           {/* Right: form */}
           <motion.div
+            id="homeowner-inquiry"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="w-full lg:w-[440px] lg:flex-shrink-0 order-1 lg:order-2"
+            className="scroll-mt-28 w-full lg:w-[440px] lg:flex-shrink-0 order-1 lg:order-2"
           >
             <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
               {formSuccess && agreement && !agreement.alreadySigned && agreementOutcome === null ? (

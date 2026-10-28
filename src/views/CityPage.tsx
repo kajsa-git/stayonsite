@@ -348,85 +348,91 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
            {/* Glow Effect */}
            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent opacity-10 blur-[150px] rounded-full pointer-events-none" />
 
-          <div className="container mx-auto px-6 md:px-12 relative z-10 pt-20">
-            <div className="max-w-4xl">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-wrap items-center gap-4 mb-8"
-              >
-                <Badge variant="outline" className="border-white/20 text-white bg-white/10 backdrop-blur-xl px-5 py-1.5 text-xs tracking-[0.2em] font-bold uppercase transition-all hover:bg-white/20">
-                   {city.region}
-                </Badge>
-                <span className="hidden md:block w-px h-4 bg-white/20"></span>
-                <span className="text-xs uppercase tracking-[0.25em] text-white/70 font-bold">
-                  {translate(
-                    `Företagsbostäder & personalbostäder`,
-                    `Worker & crew accommodation`,
-                    `Noclegi pracownicze i montażowe`
-                  )}
-                </span>
-              </motion.div>
-
-              <h1
-                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
-              >
-                {heroHeading}
-              </h1>
-              
-              <p
-                className="text-xl md:text-2xl text-white/80 mb-6 font-light leading-relaxed max-w-3xl"
-              >
-                {heroDescription}
-              </p>
-
-              {city.pageContent?.showRating !== false && (
-              <div className="flex items-center gap-3 mb-10 text-white/70 text-sm">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-[#ff6300] text-[#ff6300]" />
-                  ))}
-                </div>
-                <span className="font-semibold text-white">{RATING_VALUE}</span>
-                <span>({REVIEW_COUNT} {translate('recensioner', 'reviews', 'recenzji')})</span>
-                <span className="hidden sm:inline text-white/30">·</span>
-                <span className="hidden sm:inline">{translate('Sedan 2016', 'Since 2016', 'Od 2016')}</span>
-              </div>
-              )}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="flex flex-col sm:flex-row gap-6 mb-16"
-              >
-                <Button asChild size="lg" className="group rounded-full h-16 px-10 text-lg bg-accent hover:bg-accent text-white shadow-2xl shadow-accent/30 transition-all duration-500 hover:scale-105 active:scale-95">
-                  <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                    {translate('Ring oss nu', 'Call us now', 'Zadzwoń teraz')}
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="group rounded-full h-16 px-10 text-lg border-white/25 bg-white/5 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95"
+          <div className="container mx-auto px-6 md:px-12 relative z-10 py-10 md:py-16">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12">
+              <div className="min-w-0">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-wrap items-center gap-4 mb-5"
                 >
-                  <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} className="flex items-center gap-3">
-                    <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                    {translate('WhatsApp', 'WhatsApp', 'WhatsApp')}
-                  </a>
-                </Button>
-              </motion.div>
+                  <Badge variant="outline" className="border-white/20 text-white bg-white/10 backdrop-blur-xl px-5 py-1.5 text-xs tracking-[0.2em] font-bold uppercase transition-all hover:bg-white/20">
+                     {city.region}
+                  </Badge>
+                  <span className="hidden md:block w-px h-4 bg-white/20"></span>
+                  <span className="text-xs uppercase tracking-[0.25em] text-white/70 font-bold">
+                    {translate(
+                      `Företagsbostäder & personalbostäder`,
+                      `Worker & crew accommodation`,
+                      `Noclegi pracownicze i montażowe`
+                    )}
+                  </span>
+                </motion.div>
 
-              <HeroIntentForm defaultCity={city.name} />
+                <h1
+                  className="font-display text-4xl md:text-5xl xl:text-6xl font-bold leading-[1.1] mb-5 tracking-tight drop-shadow-2xl"
+                >
+                  {heroHeading}
+                </h1>
+
+                <p
+                  className="text-xl text-white/80 font-light leading-relaxed max-w-3xl"
+                >
+                  {heroDescription}
+                </p>
+              </div>
+
+              <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <HeroIntentForm defaultCity={city.name} />
+              </div>
+
+              <div className="min-w-0 lg:col-start-1">
+                {city.pageContent?.showRating !== false && (
+                <div className="flex flex-wrap items-center gap-3 mb-6 text-white/70 text-sm">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-[#ff6300] text-[#ff6300]" />
+                    ))}
+                  </div>
+                  <span className="font-semibold text-white">{RATING_VALUE}</span>
+                  <span>({REVIEW_COUNT} {translate('recensioner', 'reviews', 'recenzji')})</span>
+                  <span className="hidden sm:inline text-white/30">·</span>
+                  <span className="hidden sm:inline">{translate('Sedan 2016', 'Since 2016', 'Od 2016')}</span>
+                </div>
+                )}
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="flex flex-col sm:flex-row sm:flex-wrap gap-3"
+                >
+                  <Button asChild size="lg" className="group rounded-full h-16 px-10 text-lg bg-accent hover:bg-accent text-white shadow-2xl shadow-accent/30 transition-all duration-500 hover:scale-105 active:scale-95">
+                    <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                      {translate('Ring oss nu', 'Call us now', 'Zadzwoń teraz')}
+                    </a>
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="group rounded-full h-16 px-10 text-lg border-white/25 bg-white/5 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-500 hover:scale-105 active:scale-95"
+                  >
+                    <a href="https://wa.me/46762498486" onClick={trackWhatsAppClick} className="flex items-center gap-3">
+                      <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                      {translate('WhatsApp', 'WhatsApp', 'WhatsApp')}
+                    </a>
+                  </Button>
+                </motion.div>
+              </div>
 
               {city.metrics.length > 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 1 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-10 pt-10 border-t border-white/10"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-10 pt-10 border-t border-white/10 lg:col-span-2"
               >
                 {city.metrics.map((metric) => (
                   <div key={`${metric.value}-${metric.label.sv}`} className="group cursor-default">
@@ -895,7 +901,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
       <Footer />
       <StickyContact />
       <MobileStickyFormCTA
-        targetId="inquiry"
+        targetId="hero-inquiry"
         primaryLabel={translate('Skicka förfrågan', 'Send inquiry', 'Wyślij zapytanie')}
         phoneLabel={translate('Ring oss', 'Call us', 'Zadzwoń')}
       />

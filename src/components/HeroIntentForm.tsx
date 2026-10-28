@@ -115,7 +115,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
 
   if (formSuccess) {
     return (
-      <div className="mt-6 lg:mt-0 w-full max-w-xl lg:max-w-none bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center">
+      <div id="hero-inquiry" role="status" className="scroll-mt-28 w-full max-w-xl lg:max-w-none bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center">
         <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
           <CheckCircle2 size={24} className="text-green-400" />
         </div>
@@ -125,8 +125,9 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
   }
 
   return (
-    <div className="mt-6 lg:mt-0 w-full max-w-xl lg:max-w-none bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
-      <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="flex flex-col gap-4">
+    <div id="hero-inquiry" className="scroll-mt-28 w-full max-w-xl lg:max-w-none bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-5">
+      <h2 id="hero-inquiry-title" className="mb-4 text-xl font-semibold text-white">{t('inquiry.title')}</h2>
+      <form aria-labelledby="hero-inquiry-title" onSubmit={handleSubmit} onFocus={handleFormFocus} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 md:gap-4">
           {/* Ort */}
           <div className="sm:col-span-8">

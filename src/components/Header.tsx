@@ -1,330 +1,183 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, Menu, Phone } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { DATACENTER_PATHS } from '@/data/datacenter';
+import LanguageSwitcher from './LanguageSwitcher';
+import { cn } from '@/lib/utils';
 import { trackPhoneClick } from '@/lib/gtag';
 
+const HOME_PATHS = {
+  sv: '/',
+  en: '/en/corporate-housing-sweden',
+  pl: '/pl/zakwaterowanie-firmowe',
+} as const;
+
 const Header = () => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  // Check if we're on the homepage
-  const isHomePage = pathname === "/";
-
-  // On subpages, always use the "scrolled" look (solid white bg + dark text)
-  // because subpages have a light background behind the header
+  const homeHref = HOME_PATHS[language];
+  const isHomePage = pathname === '/';
+  const isHomeownerPage = pathname === '/for-husagare' || pathname.startsWith('/for-husagare/');
+  const hasHeroInquiry = pathname === '/' || pathname === '/for-foretag' ||
+    pathname === '/projektboende' || pathname === '/boenden' ||
+    Object.values(HOME_PATHS).some((path) => pathname === path) ||
+    Object.values(DATACENTER_PATHS).some((path) => pathname === path) ||
+    /^\/(stad|en\/corporate-housing|pl\/zakwaterowanie)\/[^/]+\/?$/.test(pathname);
+  const inquiryHref = isHomeownerPage
+    ? '#homeowner-inquiry'
+    : hasHeroInquiry ? '#hero-inquiry' : pathname === '/kontakt' ? '#inquiry' : `${homeHref}#hero-inquiry`;
+  const inquiryLabel = isHomeownerPage ? t('nav.rentOutProperty') : t('nav.inquiryForm');
   const useScrolledStyle = scrolled || !isHomePage;
+  const aboutHref = language === 'en' ? '/en/about' : '/om-oss';
+  const companyHref = language === 'sv' ? '/for-foretag' : homeHref;
+  const contactHref = language === 'sv' ? '/kontakt' : `${homeHref}#inquiry`;
 
   const navLinks = [
-    { label: t("nav.services"), href: isHomePage ? "#why" : "/#why" },
-    {
-      label: t("nav.references"),
-      href: isHomePage ? "#references" : "/#references",
-    },
-    { label: t("nav.contact"), href: isHomePage ? "#inquiry" : "/#inquiry" },
+    { label: t('nav.forCompanies'), href: companyHref },
+    { label: t('nav.locations'), href: `${homeHref}#cities` },
+    { label: t('nav.availableHousing'), href: '/boenden' },
+    { label: t('nav.homeowner'), href: '/for-husagare' },
+    { label: t('nav.about'), href: aboutHref },
+  ];
+  const additionalLinks = [
+    ...(language === 'sv' ? [{ label: t('nav.projectHousing'), href: '/projektboende' }] : []),
+    { label: t('nav.dataCentreHousing'), href: DATACENTER_PATHS[language] },
+    { label: t('nav.contact'), href: contactHref },
   ];
 
-  // Handle smooth scroll to section
-  const handleSectionClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  // Add scroll effect for the header with RAF for smooth performance
   useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const isScrolled = window.scrollY > 20;
-          if (isScrolled !== scrolled) {
-            setScrolled(isScrolled);
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrolled]);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <header
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 ease-out will-change-[background-color,padding,backdrop-filter]",
+        'fixed top-0 z-50 w-full transition-colors duration-300',
         useScrolledStyle
-          ? "py-3 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg shadow-black/5"
-          : "py-6 bg-transparent"
+          ? 'border-b border-border bg-background/95 text-foreground shadow-sm backdrop-blur-lg'
+          : 'bg-transparent text-white'
       )}
     >
-      <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <div className="flex items-center">
-          <Link
-            href="/"
-            className="flex items-center group relative"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            <span className="relative inline-block h-8 md:h-9">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/stayonsite-logo.png"
-                alt="StayOnSite"
-                className={cn(
-                  "h-full w-auto transition-opacity duration-300 ease-out",
-                  useScrolledStyle ? "opacity-100" : "opacity-0"
-                )}
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/stayonsite-logo-white.png"
-                alt="StayOnSite"
-                aria-hidden
-                className={cn(
-                  "absolute inset-0 h-full w-auto transition-opacity duration-300 ease-out drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
-                  useScrolledStyle ? "opacity-0" : "opacity-100"
-                )}
-              />
-            </span>
-            <div className={cn(
-              "absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full",
-              useScrolledStyle ? "bg-[#ff6300]" : "bg-white"
-            )} />
-          </Link>
-        </div>
+      <div className="container mx-auto flex min-h-20 items-center justify-between gap-6 px-4 sm:px-6 xl:px-8">
+        <Link href={homeHref} className="shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="relative block h-8 md:h-9">
+            <img
+              src="/stayonsite-logo.png"
+              alt="StayOnSite"
+              className={cn('h-full w-auto', !useScrolledStyle && 'invisible')}
+            />
+            <img
+              src="/stayonsite-logo-white.png"
+              alt=""
+              aria-hidden="true"
+              className={cn('absolute inset-0 h-full w-auto', useScrolledStyle && 'invisible')}
+            />
+          </span>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-10">
-          <ul className="flex items-center gap-10">
+        <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-4 xl:flex">
+          <ul className="flex items-center gap-4">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
-                  onClick={(e) =>
-                    isHomePage
-                      ? handleSectionClick(e, link.href.replace("#", ""))
-                      : null
-                  }
-                  className={cn(
-                    "text-[15px] font-medium transition-all duration-300 relative group",
-                    useScrolledStyle
-                      ? "text-primary/70 hover:text-primary"
-                      : "text-white/80 hover:text-white"
-                  )}
+                  aria-current={pathname === link.href ? 'page' : undefined}
+                  className="whitespace-nowrap rounded-sm text-sm font-medium underline-offset-8 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:underline"
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-
-          <div
-            className={cn("h-6 w-px mx-2", useScrolledStyle ? "bg-primary/10" : "bg-white/20")}
-          />
-
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-8">
-              <Link
-                href="/for-foretag"
-                className={cn(
-                  "text-[15px] font-medium transition-all duration-300 relative group",
-                  useScrolledStyle
-                    ? "text-primary/70 hover:text-primary"
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                {t("nav.forCompanies")}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </Link>
-              <Link
-                href="/projektboende"
-                className={cn(
-                  "text-[15px] font-medium transition-all duration-300 relative group",
-                  useScrolledStyle
-                    ? "text-primary/70 hover:text-primary"
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                Projektboende
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </Link>
-              <Link
-                href="/for-husagare"
-                className={cn(
-                  "text-[15px] font-medium transition-all duration-300 relative group",
-                  useScrolledStyle
-                    ? "text-primary/70 hover:text-primary"
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                {t("nav.homeowner")}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </Link>
-              <Link
-                href="/boenden"
-                className={cn(
-                  "text-[15px] font-medium transition-all duration-300 relative group",
-                  useScrolledStyle
-                    ? "text-primary/70 hover:text-primary"
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                Lediga boenden
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </Link>
-              <Link
-                href="/om-oss"
-                className={cn(
-                  "text-[15px] font-medium transition-all duration-300 relative group",
-                  useScrolledStyle
-                    ? "text-primary/70 hover:text-primary"
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                {t("nav.about")}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6300] transition-all duration-300 group-hover:w-full" />
-              </Link>
-            </div>
-            <div className="flex items-center gap-6">
-              <LanguageSwitcher
-                className={cn(
-                  "transition-colors duration-300",
-                  useScrolledStyle ? "text-primary" : "text-white"
-                )}
-              />
-              <Button
-                asChild
-                className={cn(
-                  "rounded-full px-8 h-12 font-semibold text-white transition-all duration-300 ease-out hover:scale-105 active:scale-95 shadow-xl",
-                  "bg-gradient-to-r from-[#ff6300] to-[#ff8533] hover:shadow-[#ff6300]/40"
-                )}
-              >
-                <a href="tel:+46762498486" onClick={trackPhoneClick} className="flex items-center gap-2">
-                  <span className="relative z-10">{t("nav.inquiryForm")}</span>
-                </a>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="shrink-0 px-2">
+                {t('nav.more')}
+                <ChevronDown data-icon="inline-end" aria-hidden="true" />
               </Button>
-            </div>
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                {additionalLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href}>{link.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <LanguageSwitcher className="shrink-0" />
+          <Button asChild className="shrink-0 rounded-full">
+            <Link href={inquiryHref}>{inquiryLabel}</Link>
+          </Button>
         </nav>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center space-x-4">
-          <LanguageSwitcher
-            className={useScrolledStyle ? "text-primary" : "text-white"}
-          />
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={cn(
-              "p-2 rounded-xl transition-all duration-300",
-              useScrolledStyle ? "text-primary hover:bg-primary/5" : "text-white hover:bg-white/10"
-            )}
-          >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+        <div className="flex items-center gap-3 xl:hidden">
+          <LanguageSwitcher />
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label={t('nav.openMenu')}>
+                <Menu aria-hidden="true" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="flex w-[min(90vw,24rem)] flex-col gap-6 overflow-y-auto" aria-describedby={undefined}>
+              <SheetHeader>
+                <SheetTitle>{t('nav.menu')}</SheetTitle>
+              </SheetHeader>
+              <nav aria-label={t('nav.primaryNavigation')} className="flex flex-col gap-6">
+                <ul className="flex flex-col gap-1">
+                  {navLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        aria-current={pathname === link.href ? 'page' : undefined}
+                        className="block rounded-lg px-3 py-3 font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:bg-muted"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Separator />
+                <ul className="flex flex-col gap-1">
+                  {additionalLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} onClick={() => setIsMenuOpen(false)} className="block rounded-lg px-3 py-2 text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-col gap-3">
+                  <Button asChild className="w-full rounded-full">
+                    <Link href={inquiryHref} onClick={() => setIsMenuOpen(false)}>{inquiryLabel}</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full rounded-full">
+                    <a href="tel:+46762498486" onClick={() => { trackPhoneClick(); setIsMenuOpen(false); }}>
+                      <Phone data-icon="inline-start" aria-hidden="true" />
+                      {t('nav.call')}
+                    </a>
+                  </Button>
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-border absolute top-full left-0 right-0 animate-in slide-in-from-top duration-300 shadow-lg">
-          <div className="container mx-auto px-6 py-8">
-            <ul className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      if (isHomePage) {
-                        handleSectionClick(e, link.href.replace("#", ""));
-                      }
-                      setIsMenuOpen(false);
-                    }}
-                    className="block rounded-lg px-4 py-3 text-base text-foreground hover:bg-muted font-medium transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-              <div className="h-px bg-border my-2" />
-              <li>
-                <Link
-                  href="/for-foretag"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block px-4 py-2 text-primary font-medium"
-                >
-                  {t("nav.forCompanies")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/projektboende"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block px-4 py-2 text-primary font-medium"
-                >
-                  Projektboende
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/for-husagare"
-                  className="block px-4 py-2 text-primary font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t("nav.homeowner")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/boenden"
-                  className="block px-4 py-2 text-primary font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Lediga boenden
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/om-oss"
-                  className="block px-4 py-2 text-primary font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t("nav.about")}
-                </Link>
-              </li>
-              <li className="pt-4">
-                <Button
-                  asChild
-                  className="w-full rounded-full bg-[#ff6300] hover:bg-[#ff6300]/90 text-white font-medium h-12 shadow-sm"
-                >
-                  <a
-                    href="tel:+46762498486"
-                    onClick={() => { trackPhoneClick(); setIsMenuOpen(false); }}
-                  >
-                    {t("nav.inquiryForm")}
-                  </a>
-                </Button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      )}
     </header>
   );
 };

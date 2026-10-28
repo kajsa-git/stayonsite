@@ -17,6 +17,10 @@ export type TranslationKey =
   | "projectChecklist.download"
   | "projectChecklist.format"
   | "projectChecklist.read"
+  | "projectBrief.eyebrow"
+  | "projectBrief.response"
+  | "navigation.companyHousing"
+  | "navigation.availableHomes"
   | "nav.home"
   | "nav.services"
   | "nav.references"
@@ -26,6 +30,16 @@ export type TranslationKey =
   | "nav.homeowner"
   | "nav.about"
   | "nav.forCompanies"
+  | "nav.locations"
+  | "nav.availableHousing"
+  | "nav.projectHousing"
+  | "nav.dataCentreHousing"
+  | "nav.rentOutProperty"
+  | "nav.menu"
+  | "nav.more"
+  | "nav.openMenu"
+  | "nav.primaryNavigation"
+  | "nav.call"
   | "hero.title"
   | "hero.subtitle"
   | "hero.cta"
@@ -421,13 +435,27 @@ export const translations: Record<
     "projectChecklist.download": "Ladda ned checklistan (PDF)",
     "projectChecklist.format": "Två sidor på svenska. Fyll i digitalt eller skriv ut. Ingen registrering behövs.",
     "projectChecklist.read": "Hämta boendemallen",
+    "projectBrief.eyebrow": "Berätta om ert projekt",
+    "projectBrief.response": "Vi går igenom era behov och återkommer med möjliga boenden och villkor.",
+    "navigation.companyHousing": "Läs om företagsboende",
+    "navigation.availableHomes": "Se lediga boenden",
     "nav.home": "Hem",
     "nav.services": "Tjänster",
     "nav.references": "Referenser",
     "nav.contact": "Kontakt",
     "nav.case": "Case Säffle",
-    "nav.inquiryForm": "Ring oss",
-    "nav.forCompanies": "För byggbolag",
+    "nav.inquiryForm": "Skicka förfrågan",
+    "nav.forCompanies": "För företag",
+    "nav.locations": "Våra orter",
+    "nav.availableHousing": "Lediga boenden",
+    "nav.projectHousing": "Projektboende",
+    "nav.dataCentreHousing": "Boende vid datacenter",
+    "nav.rentOutProperty": "Hyr ut din bostad",
+    "nav.menu": "Meny",
+    "nav.more": "Mer",
+    "nav.openMenu": "Öppna menyn",
+    "nav.primaryNavigation": "Huvudmeny",
+    "nav.call": "Ring oss",
 
     "hero.title": "Personalboende i hela Sverige - vi ordnar boendet för ert projekt",
     "hero.subtitle": "Från första ingenjör till sista montör",
@@ -925,13 +953,27 @@ export const translations: Record<
     "projectChecklist.download": "Download the checklist (PDF)",
     "projectChecklist.format": "Two pages in Swedish. Fill in digitally or print. No registration required.",
     "projectChecklist.read": "Get the housing template",
+    "projectBrief.eyebrow": "Tell us about your project",
+    "projectBrief.response": "We review your requirements and get back to you with possible accommodation and terms.",
+    "navigation.companyHousing": "Learn about corporate housing",
+    "navigation.availableHomes": "View available accommodation",
     "nav.home": "Home",
     "nav.services": "Services",
     "nav.references": "References",
     "nav.contact": "Contact",
     "nav.case": "Case",
-    "nav.inquiryForm": "Call Us",
-    "nav.forCompanies": "For Companies",
+    "nav.inquiryForm": "Send inquiry",
+    "nav.forCompanies": "For companies",
+    "nav.locations": "Locations",
+    "nav.availableHousing": "Available housing",
+    "nav.projectHousing": "Project housing",
+    "nav.dataCentreHousing": "Data centre accommodation",
+    "nav.rentOutProperty": "Rent out your property",
+    "nav.menu": "Menu",
+    "nav.more": "More",
+    "nav.openMenu": "Open menu",
+    "nav.primaryNavigation": "Main navigation",
+    "nav.call": "Call us",
 
     "hero.title":
       "Worker Accommodation Across Sweden — We Handle the Housing",
@@ -1433,13 +1475,27 @@ export const translations: Record<
     "projectChecklist.download": "Pobierz listę kontrolną (PDF)",
     "projectChecklist.format": "Dwie strony po szwedzku. Wypełnij cyfrowo lub wydrukuj. Bez rejestracji.",
     "projectChecklist.read": "Pobierz formularz",
+    "projectBrief.eyebrow": "Opowiedz nam o swoim projekcie",
+    "projectBrief.response": "Przeanalizujemy Wasze potrzeby i przedstawimy dostępne możliwości zakwaterowania oraz warunki.",
+    "navigation.companyHousing": "Dowiedz się więcej o zakwaterowaniu firmowym",
+    "navigation.availableHomes": "Zobacz dostępne zakwaterowanie",
     "nav.home": "Strona główna",
     "nav.services": "Usługi",
     "nav.references": "Referencje",
     "nav.contact": "Kontakt",
     "nav.case": "Studium przypadku",
-    "nav.inquiryForm": "Zapytanie",
+    "nav.inquiryForm": "Wyślij zapytanie",
     "nav.forCompanies": "Dla firm",
+    "nav.locations": "Lokalizacje",
+    "nav.availableHousing": "Dostępne noclegi",
+    "nav.projectHousing": "Zakwaterowanie projektowe",
+    "nav.dataCentreHousing": "Zakwaterowanie przy centrach danych",
+    "nav.rentOutProperty": "Wynajmij nieruchomość",
+    "nav.menu": "Menu",
+    "nav.more": "Więcej",
+    "nav.openMenu": "Otwórz menu",
+    "nav.primaryNavigation": "Menu główne",
+    "nav.call": "Zadzwoń do nas",
 
     "hero.title":
       "Zakwaterowanie pracownicze w Szwecji — organizujemy mieszkania",

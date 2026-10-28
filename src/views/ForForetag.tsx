@@ -18,8 +18,10 @@ import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import ProjectBriefForm from '@/components/ProjectBriefForm';
+import HeroIntentForm from '@/components/HeroIntentForm';
 import SEO from '@/components/SEO';
 import { COMPANY_FACTS } from '@/data/constants';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const fitRows = [
   {
@@ -178,6 +180,7 @@ const structuredData = [
 ];
 
 export default function ForForetag() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <SEO structuredData={structuredData} />
@@ -203,7 +206,7 @@ export default function ForForetag() {
               <span className="text-white">För företag</span>
             </nav>
 
-            <div className="grid gap-10 lg:grid-cols-[1fr_440px] lg:items-start">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-x-10">
               <div className="max-w-3xl">
                 <p className="mb-4 text-xs font-bold uppercase tracking-[0.35em] text-white/60">
                   Företagsbostäder · personalboende · projektboende
@@ -215,7 +218,12 @@ export default function ForForetag() {
                   StayOnSite samordnar möblerade boenden för arbetslag i svenska projekt där tid,
                   restid, parkering, fakturering och förändrad bemanning behöver fungera tillsammans.
                 </p>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              </div>
+              <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <HeroIntentForm />
+              </div>
+              <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <a
                     href="#projektbrief"
                     className="inline-flex h-12 items-center justify-center rounded-full bg-[#ff6300] px-6 font-semibold text-white transition hover:bg-[#e25200]"
@@ -231,28 +239,28 @@ export default function ForForetag() {
                   </Link>
                 </div>
               </div>
+            </div>
 
-              <div className="rounded-lg border border-white/20 bg-white/12 p-5 backdrop-blur-md">
-                <h2 className="text-xl font-semibold">Passar särskilt när</h2>
-                <ul className="mt-4 space-y-3 text-sm text-white/78">
-                  <li className="flex gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
-                    Ni behöver boende för 10-100 personer, ofta i flera projektfaser.
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
-                    Projektorten har begränsat hotell- eller lägenhetshotellsutbud.
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
-                    Ni vill samla bostäder, kontaktvägar och fakturering i ett flöde.
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
-                    Bemanning, rotation och parkeringsbehov kan ändras under projektet.
-                  </li>
-                </ul>
-              </div>
+            <div className="mt-10 rounded-lg border border-white/20 bg-white/10 p-5 backdrop-blur-md">
+              <h2 className="text-xl font-semibold">Passar särskilt när</h2>
+              <ul className="mt-4 grid gap-3 text-sm text-white/80 md:grid-cols-2">
+                <li className="flex gap-3">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
+                  Ni behöver boende för 10-100 personer, ofta i flera projektfaser.
+                </li>
+                <li className="flex gap-3">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
+                  Projektorten har begränsat hotell- eller lägenhetshotellsutbud.
+                </li>
+                <li className="flex gap-3">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
+                  Ni vill samla bostäder, kontaktvägar och fakturering i ett flöde.
+                </li>
+                <li className="flex gap-3">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
+                  Bemanning, rotation och parkeringsbehov kan ändras under projektet.
+                </li>
+              </ul>
             </div>
           </div>
         </section>
@@ -402,11 +410,11 @@ export default function ForForetag() {
           </div>
         </section>
 
-        <section id="projektbrief" className="border-y border-nordic-100 bg-nordic-50 py-16 md:py-20">
+        <section id="projektbrief" className="scroll-mt-28 border-y border-nordic-100 bg-nordic-50 py-16 md:py-20">
           <div className="container mx-auto grid gap-10 px-6 md:px-12 lg:grid-cols-[0.85fr_1.15fr]">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#ff6300]">
-                Primär CTA
+                {t('projectBrief.eyebrow')}
               </p>
               <h2 className="mt-3 text-3xl font-bold text-nordic-900 md:text-4xl">
                 Skicka projektbrief
@@ -426,7 +434,7 @@ export default function ForForetag() {
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#ff6300]" />
-                  Skickas som strukturerad förfrågan till StayOnSites befintliga leadflöde.
+                  {t('projectBrief.response')}
                 </li>
               </ul>
             </div>
@@ -495,7 +503,7 @@ export default function ForForetag() {
         </section>
       </main>
       <Footer />
-      <MobileStickyFormCTA targetId="projektbrief" primaryLabel="Skicka projektbrief" phoneLabel="Ring oss" />
+      <MobileStickyFormCTA targetId="hero-inquiry" primaryLabel={t('inquiry.title')} phoneLabel="Ring oss" />
       <FloatingPhoneButton className="bottom-24 md:bottom-6" />
     </div>
   );

@@ -16,6 +16,7 @@ import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import ProjectBriefForm from '@/components/ProjectBriefForm';
+import HeroIntentForm from '@/components/HeroIntentForm';
 import SEO from '@/components/SEO';
 import { COMPANY_FACTS } from '@/data/constants';
 import { Button } from '@/components/ui/button';
@@ -146,32 +147,39 @@ export default function Projektboende() {
               <span className="text-white">Projektboende</span>
             </nav>
 
-            <div className="max-w-4xl">
-              <p className="mb-4 text-xs font-bold uppercase tracking-[0.35em] text-white/60">
-                Boendeplan · kapacitet · riskplan
-              </p>
-              <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-                Projektboende för arbetslag i hela Sverige
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78 md:text-xl">
-                När ett bygg-, industri- eller montageprojekt bemannas i faser behövs mer
-                än en ledig lägenhet. Projektboendet ska bära tidsplan, restid, rotation,
-                fordon och risk om utbudet ändras.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#projektbrief"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-[#ff6300] px-6 font-semibold text-white transition hover:bg-[#e25200]"
-                >
-                  Skicka projektbrief
-                </a>
-                <Link
-                  href="/for-foretag"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 font-semibold text-white transition hover:bg-white/15"
-                >
-                  Se kategorisidan
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-x-10">
+              <div className="min-w-0">
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.35em] text-white/60">
+                  Boendeplan · kapacitet · riskplan
+                </p>
+                <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight md:text-6xl">
+                  Projektboende för arbetslag i hela Sverige
+                </h1>
+                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78 md:text-xl">
+                  När ett bygg-, industri- eller montageprojekt bemannas i faser behövs mer
+                  än en ledig lägenhet. Projektboendet ska bära tidsplan, restid, rotation,
+                  fordon och risk om utbudet ändras.
+                </p>
+              </div>
+              <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <HeroIntentForm />
+              </div>
+              <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="#projektbrief"
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-[#ff6300] px-6 font-semibold text-white transition hover:bg-[#e25200]"
+                  >
+                    Skicka projektbrief
+                  </a>
+                  <Link
+                    href="/for-foretag"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 font-semibold text-white transition hover:bg-white/15"
+                  >
+                    {t('navigation.companyHousing')}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -323,7 +331,7 @@ export default function Projektboende() {
           </div>
         </section>
 
-        <section id="projektbrief" className="bg-nordic-50 py-16 md:py-20">
+        <section id="projektbrief" className="scroll-mt-28 bg-nordic-50 py-16 md:py-20">
           <div className="container mx-auto grid gap-10 px-6 md:px-12 lg:grid-cols-[0.85fr_1.15fr]">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#ff6300]">
@@ -363,7 +371,7 @@ export default function Projektboende() {
         </section>
       </main>
       <Footer />
-      <MobileStickyFormCTA targetId="projektbrief" primaryLabel="Skicka projektbrief" phoneLabel="Ring oss" />
+      <MobileStickyFormCTA targetId="hero-inquiry" primaryLabel={t('inquiry.title')} phoneLabel="Ring oss" />
       <FloatingPhoneButton className="bottom-24 md:bottom-6" />
     </div>
   );

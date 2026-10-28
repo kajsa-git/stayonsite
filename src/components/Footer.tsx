@@ -42,7 +42,7 @@ const Footer = () => {
               <Button asChild className="rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white h-11 px-5">
                 <a href="tel:+46762498486" onClick={trackPhoneClick}>
                   <Phone size={16} className="mr-2" />
-                  {t('nav.inquiryForm')}
+                  {t('nav.call')}
                 </a>
               </Button>
               <Button
