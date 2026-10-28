@@ -1950,6 +1950,94 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'foretagsbostader-gavle-rattscentrum-nyhamn-guide-2026',
+    title: {
+      sv: 'Företagsbostäder i Gävle: Så ordnar byggföretag boende till rättscentrum och Nyhamn',
+      en: 'Corporate Housing in Gävle: Securing Worker Accommodation for Major Construction Projects',
+      pl: 'Mieszkania firmowe w Gävle: jak zapewnić zakwaterowanie dla dużych projektów budowlanych',
+    },
+    description: {
+      sv: 'Gävle bygger rättscentrum, Nyhamn och dubbelspår samtidigt. Så planerar byggföretag företagsbostäder i tid under 2026–2030.',
+      en: 'Gävle is building a new justice center, Nyhamn district and rail expansion at once. A guide to securing corporate housing in time.',
+      pl: 'Gävle buduje jednocześnie centrum sądowe, dzielnicę Nyhamn i nową linię kolejową. Jak zapewnić zakwaterowanie na czas.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-10-28',
+    category: 'Guide',
+    tags: ['Gävle', 'företagsbostäder', 'projektboende', 'infrastruktur', 'byggprojekt'],
+    readingTime: 8,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Rättscentrumet i Kungsbäck blir totalt 55 000 kvadratmeter och ligger vid E4/E16.',
+      'Häktet får drygt 180 platser, NCC är huvudentreprenör, och Kriminalvården har tecknat ett 25-årigt hyresavtal med Intea.',
+      'En eventuell ny anstalt i Ersbo syd (förstudie) skulle ge cirka 250 arbetstillfällen och minst 500 platser i säkerhetsklass 2.',
+      'Nyhamn är första etappen av projektet Näringen, som ska omfatta 6 000 bostäder; vision beslutad i kommunfullmäktige våren 2025.',
+      'Dubbelspåret Gävle–Kringlan byggs i två etapper, 2027–2032 och 2031–2036, med ny station Gävle Västra vid sjukhusområdet.',
+    ],
+    faq: [
+      {
+        q: 'När bör byggföretag börja boka personalboende i Gävle?',
+        a: 'Så snart byggstart och ungefärlig bemanningskurva är kända, helst 6–12 månader i förväg, eftersom flera stora projekt delvis överlappar i tid.',
+      },
+      {
+        q: 'Finns det risk för bostadsbrist i Gävle på grund av de stora projekten?',
+        a: 'Boverkets analys visar ingen länsövergripande bostadsbrist, men risken är att rätt typ av objekt nära rätt arbetsplats under rätt period kan vara upptaget, inte att bostäder helt saknas.',
+      },
+      {
+        q: 'Kan man blockhyra bostäder nära både Kungsbäck och Nyhamn samtidigt?',
+        a: 'Ja, men det kräver ofta två separata lösningar - boende nära Kungsbäck för häktes- och polishuspersonal samt mer centralt i Gävle för personal kopplad till Nyhamn och järnvägsarbetena.',
+      },
+      {
+        q: 'Vad ingår normalt i en företagsbostad i Gävle?',
+        a: 'Vanligtvis ingår möblering, städning och internetuppkoppling, men exakt omfattning avtalas per projekt och bör specificeras i avtalet innan inflyttning.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Gävle kommun – Trafikpusslet i Gävle',
+        publisher: 'Gävle kommun',
+        url: 'https://www.gavle.se/bygga-trafik-och-miljo/detaljplaner-byggprojekt-och-driftinformation/vara-pagaende-och-planerade-projekt/trafikpusslet-i-gavle-stora-infrastruktursatsningar-till-ar-2040/',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Gefle Dagblad',
+        publisher: 'gd.se',
+        url: 'https://www.gd.se/gavle/klart-nytt-rattscentrum-med-polishus-och-hakte-i-kungsback/',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Byggvärlden',
+        publisher: 'byggvarlden.se',
+        url: 'https://www.byggvarlden.se/klartecken-for-nytt-hakte/',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Gävle kommun',
+        publisher: 'Gävle kommun',
+        url: 'https://www.gavle.se/nyhetergavlekommun/kriminalvarden-utreder-ny-tomt-i-gavle/',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Gävle kommun',
+        publisher: 'Gävle kommun',
+        url: 'https://www.gavle.se/bygga-trafik-och-miljo/detaljplaner-byggprojekt-och-driftinformation/vara-pagaende-och-planerade-projekt/nyhamn-stadsdelen-som-vagar/',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Trafikverket – Järnvägsplan Ostkustbanan Gävle–Kringlan',
+        publisher: 'Trafikverket',
+        url: 'https://bransch.trafikverket.se/contentassets/019279a1b15d495eb81bf72d7f103996/informationsfolder-gavle-c-tolvforsskogen_tillganglighetsanpassad.pdf',
+        checkedDate: '2026-10-28',
+      },
+      {
+        title: 'Boverket – Analys av bostadsmarknaden i Gävleborg 2025',
+        publisher: 'Boverket',
+        url: 'https://www.boverket.se/contentassets/1a53e212b3214d54ab50aec70135d4ea/bostadsmarknadsanalys-2025-gavleborgs-lan.pdf',
+        checkedDate: '2026-10-28',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

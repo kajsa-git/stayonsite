@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-14",
+  "updatedAt": "2026-10-28",
   "posts": [
     {
       "id": "campaign-gavle-personalboende",
@@ -98,6 +98,17 @@
       "summary": "Ny guide: Förbered ditt hus i Boden för företagets arbetslag: möblering, inventarielista och boendekrav 2026\n\nSå möblerar och utrustar du ditt hus i Boden för uthyrning till byggföretag – praktisk inventarielista och checklista 2026.\n\nVi har samlat det viktigaste för företag och bostadsägare som planerar personalboende, projektboende eller företagsuthyrning. Bilden visar ett exempel på möblerat företagsboende i Gävle.",
       "targetPath": "/blogg/forbered-hus-boden-foretagets-arbetslag-2026",
       "image": "/images/gbp/gavle-company-housing-kitchen.jpg",
+      "imageDescription": "Exempel på möblerat företagsboende i Gävle.",
+      "callToAction": "LEARN_MORE"
+    },
+    {
+      "id": "blog-foretagsbostader-gavle-rattscentrum-nyhamn-guide-2026",
+      "lane": "article",
+      "publishAfter": "2026-10-28",
+      "languageCode": "sv-SE",
+      "summary": "Ny guide: Företagsbostäder i Gävle: Så ordnar byggföretag boende till rättscentrum och Nyhamn\n\nGävle bygger rättscentrum, Nyhamn och dubbelspår samtidigt. Så planerar byggföretag företagsbostäder i tid under 2026–2030.\n\nVi har samlat det viktigaste för företag och bostadsägare som planerar personalboende, projektboende eller företagsuthyrning. Bilden visar ett exempel på möblerat företagsboende i Gävle.",
+      "targetPath": "/blogg/foretagsbostader-gavle-rattscentrum-nyhamn-guide-2026",
+      "image": "/images/gbp/gavle-project-housing-living-room.jpg",
       "imageDescription": "Exempel på möblerat företagsboende i Gävle.",
       "callToAction": "LEARN_MORE"
     }
