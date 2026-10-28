@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
-import { cities, getNearbyCities } from '@/data/cities'
+import { cities, getNearbyCitySummaries } from '@/data/cities'
 import { getCityListings } from '@/lib/crm/city-listings'
 import { getLocalizedKeywords, getLocalizedText } from '@/lib/utils'
 import CityPage from '@/views/CityPage'
@@ -47,5 +47,5 @@ export default async function Page({ params }: { params: Promise<{ citySlug: str
   const city = cities.find((c) => c.slug === citySlug)
   if (!city) notFound()
   const listings = await getCityListings(city.name)
-  return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCities(citySlug)} listings={listings} />
+  return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCitySummaries(citySlug)} listings={listings} />
 }

@@ -160,6 +160,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const cityPages: MetadataRoute.Sitemap = cities.flatMap((city) => {
+    const cityUpdated = city.pageContent?.updatedAt ?? today
     const sv = `${BASE}/stad/${city.slug}`
     const en = `${BASE}/en/corporate-housing/${city.slug}`
     const pl = `${BASE}/pl/zakwaterowanie/${city.slug}`
@@ -167,7 +168,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       {
         url: sv,
-        lastModified: today,
+        lastModified: cityUpdated,
         changeFrequency: 'monthly' as const,
         priority: 0.9,
         alternates: {
@@ -176,7 +177,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       {
         url: en,
-        lastModified: today,
+        lastModified: cityUpdated,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
         alternates: {
@@ -185,7 +186,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       {
         url: pl,
-        lastModified: today,
+        lastModified: cityUpdated,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
         alternates: {

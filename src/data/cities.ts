@@ -1,5 +1,6 @@
 import { LocalizedKeywords, LocalizedString } from '@/types/localized';
-import { bodenPageContent } from './boden-content';
+import { cityGuideContent } from './city-guides';
+import type { CityGuide } from './city-guides/common';
 
 const ls = (sv: string, en: string, pl: string): LocalizedString => ({ sv, en, pl });
 const lk = (sv: string[], en: string[], pl: string[]): LocalizedKeywords => ({ sv, en, pl });
@@ -65,6 +66,7 @@ export interface City {
   projects: CityProject[];
   testimonial: CityTestimonial | null;
   pageContent?: CityPageContent;
+  guide?: CityGuide;
   faq: CityFAQ[];
   nearby: string[];
 }
@@ -968,171 +970,26 @@ export const cities: City[] = [
     name: 'Gävle',
     region: 'Gävleborgs län',
     population: '103 000',
-    description: 'Hamnstad med omfattande industribyggnation och hamnutbyggnad.',
-    highlights: ['Hamnutbyggnad', 'Skogsindustriprojekt', 'Datacenterbyggen', 'Bostadsutveckling'],
-    industries: ['Hamn & Logistik', 'Skogsindustri', 'Datacenter', 'Bostäder'],
     coordinates: [60.6749, 17.1413],
-    heroHook: ls(
-      'Företagslägenheter & företagsboende i Gävle – nära hamnen och datacenter',
-      'Corporate Housing & Apartments in Gävle – Near Harbour & Data Centers',
-      'Aparthotel & Noclegi Pracownicze w Gävle – Blisko Portu i Centrów Danych'
-    ),
-    intro: ls(
-      'Hamnutbyggnaden, nya datacenter och skogsindustriprojekt kräver företagslägenheter och personalboende där hela team kan bo nära arbetsplatserna. Våra lägenhetshotell och radhus i Andersberg, Brynäs och Sätra ger era montörer egna sovrum och delade kök.',
-      'Harbor expansion, new data centers and forestry projects require whole crews living near the sites. Our aparthotels and townhouses in Andersberg, Brynäs and Sätra give your fitters private bedrooms and shared kitchens.',
-      'Rozbudowa portu, nowe centra danych i projekty leśne wymagają, by całe ekipy mieszkały blisko inwestycji. Nasze aparthotele i szeregowce w Andersberg, Brynäs i Sätra zapewniają prywatne sypialnie i wspólne kuchnie.'
-    ),
     keywords: lk(
       ['personalboende gävle', 'företagslägenheter hamn', 'byggboende datacenter gävle', 'boende byggarbetare gävle', 'montörboende gävle', 'tillfälligt boende företag gävle', 'lägenhetshotell gävle'],
       ['corporate housing gavle', 'harbor staff apartments', 'datacenter construction housing gavle', 'worker accommodation gavle sweden', 'temporary housing gavle', 'construction crew accommodation gavle'],
       ['zakwaterowanie pracownicze gavle', 'mieszkania portowe', 'noclegi datacenter gavle', 'noclegi dla budowlańców gävle szwecja', 'kwatery pracownicze gävle', 'tymczasowe zakwaterowanie gävle szwecja']
     ),
-    metrics: [
-      {
-        value: '45',
-        label: ls('platser nära hamnen', 'beds near the harbor', 'miejsc blisko portu'),
-        subtext: ls('Brynäs och Sätra', 'Brynäs and Sätra', 'Brynäs i Sätra')
-      },
-      {
-        value: '6',
-        label: ls('datacenterbyggen', 'data center projects', 'projekty data center'),
-        subtext: ls('Team nära Forsbacka', 'Crews near Forsbacka', 'Ekipy blisko Forsbacka')
-      },
-      {
-        value: '22',
-        label: ls('min till hamnen', 'min to the harbor', 'min do portu'),
-        subtext: ls('Från våra boenden', 'From our housing', 'Z naszych noclegów')
-      }
-    ],
-    neighborhoods: [
-      {
-        name: ls('Andersberg', 'Andersberg', 'Andersberg'),
-        description: ls('Moderna lägenheter nära skogsindustriprojekt.', 'Modern apartments near forestry projects.', 'Nowoczesne mieszkania blisko projektów leśnych.'),
-        distance: ls('15 min till Korsnäs', '15 min to Korsnäs', '15 min do Korsnäs')
-      },
-      {
-        name: ls('Brynäs', 'Brynäs', 'Brynäs'),
-        description: ls('Nära hamnen och datacenterområdena.', 'Close to harbor and data center zones.', 'Blisko portu i stref datacenter.'),
-        distance: ls('8 min till hamnen', '8 min to harbor', '8 min do portu')
-      },
-      {
-        name: ls('Sätra', 'Sätra', 'Sätra'),
-        description: ls('Lugnt med parkering för arbetsbussar.', 'Quiet with parking for crew vans.', 'Spokojnie z parkingiem dla busów.'),
-        distance: ls('12 min till city', '12 min to downtown', '12 min do centrum')
-      }
-    ],
-    projects: [
-      {
-        name: ls('Hamnutbyggnad Gävle', 'Gävle Harbor Expansion', 'Rozbudowa portu Gävle'),
-        description: ls('Långtidsboende för hamn- och kranmontörer.', 'Long-term housing for harbor and crane fitters.', 'Długoterminowe noclegi dla monterów portowych i dźwigów.')
-      },
-      {
-        name: ls('Datacenter Forsbacka', 'Forsbacka Data Center', 'Datacenter Forsbacka'),
-        description: ls('Team nära kylsystem och elinstallationer.', 'Crews near cooling systems and electrical installations.', 'Ekipy przy systemach chłodzenia i instalacjach elektrycznych.')
-      },
-      {
-        name: ls('Skogsindustriprojekt', 'Forestry Industry Projects', 'Projekty przemysłu leśnego'),
-        description: ls('Boende för processoperatörer och underhållsteam.', 'Housing for process operators and maintenance crews.', 'Zakwaterowanie dla operatorów procesów i ekip serwisowych.')
-      }
-    ],
-    testimonial: {
-      quote: ls(
-        'Vi behövde plats för 12 montörer vid hamnen och StayOnSite ordnade radhus i Brynäs med 5 minuters bilresa till kajen.',
-        'We needed housing for 12 fitters at the harbor and StayOnSite arranged townhouses in Brynäs with a 5-minute drive to the quay.',
-        'Potrzebowaliśmy noclegów dla 12 monterów w porcie i StayOnSite zorganizowało szeregowce w Brynäs – 5 minut jazdy do nabrzeża.'
-      ),
-      author: 'Anders L.',
-      role: ls('Projektledare', 'Project Manager', 'Kierownik projektu'),
-      company: 'Hamn & Logistik'
-    },
-    faq: [
-      {
-        question: ls('Kan vi kombinera Gävle och Sandviken?', 'Can we combine Gävle and Sandviken?', 'Czy możemy połączyć Gävle i Sandviken?'),
-        answer: ls(
-          'Ja, vi planerar boenden i båda städerna med samma kontaktperson för smidiga rotationer.',
-          'Yes, we plan housing in both cities with the same contact for smooth rotations.',
-          'Tak, planujemy noclegi w obu miastach z tym samym opiekunem dla płynnych rotacji.'
-        )
-      },
-      {
-        question: ls('Hur nära hamnen kan vi bo?', 'How close to the harbor can we stay?', 'Jak blisko portu możemy mieszkać?'),
-        answer: ls(
-          'Vi har radhus i Brynäs och lägenheter i Sätra med 8-15 minuters körning till hamnen.',
-          'We have townhouses in Brynäs and apartments in Sätra with 8-15 minutes drive to the harbor.',
-          'Mamy szeregowce w Brynäs i mieszkania w Sätra – 8-15 minut jazdy do portu.'
-        )
-      },
-      {
-        question: ls('Ingår städning mellan skift?', 'Is cleaning included between shifts?', 'Czy sprzątanie jest w cenie między zmianami?'),
-        answer: ls(
-          'Ja, vi gör genomgång mellan varje crew så nästa team kan flytta in direkt.',
-          'Yes, we clean between each crew so the next team can move in right away.',
-          'Tak, sprzątamy między ekipami, by kolejny zespół mógł się od razu wprowadzić.'
-        )
-      }
-    ],
-    nearby: ['uppsala', 'stockholm', 'falun']
+    ...cityGuideContent.gavle
   },
   {
     slug: 'boden',
     name: 'Boden',
     region: 'Norrbottens län',
     population: '28 000',
-    description: 'Projektort i Norrbotten med verksamhet inom bygg, industri och infrastruktur.',
-    highlights: ['Bygg och installation', 'Industri och montage', 'Infrastrukturprojekt'],
-    industries: ['Bygg & Anläggning', 'Industri', 'Infrastruktur', 'Montage'],
     coordinates: [65.8252, 21.6886],
-    heroHook: ls(
-      'Företagsboende i Boden – möblerade hus och lägenheter för arbetslag',
-      'Corporate housing in Boden – furnished houses and apartments for project teams',
-      'Zakwaterowanie firmowe w Boden – umeblowane domy i mieszkania dla ekip'
-    ),
-    intro: ls(
-      'StayOnSite hjälper företag att ordna personalboende i Boden för bygg-, industri- och montageprojekt. Vi tar fram boendeförslag utifrån antal personer, behov av sovrum, projektperiod och arbetsplats. Pris, tillgänglighet och vad som ingår bekräftas för varje boende.',
-      'StayOnSite arranges worker accommodation in Boden for construction, industrial and installation projects. We prepare proposals based on team size, bedrooms, project dates and worksite location. Prices, availability and included services are confirmed for each property.',
-      'StayOnSite organizuje zakwaterowanie pracownicze w Boden dla projektów budowlanych, przemysłowych i montażowych. Propozycje przygotowujemy według liczby osób, potrzebnych sypialni, terminu i miejsca pracy. Cenę, dostępność i zakres usług potwierdzamy dla każdego obiektu.'
-    ),
     keywords: lk(
       ['personalboende boden', 'företagsboende boden', 'företagsbostäder boden', 'entreprenörsbostäder boden', 'lägenhetshotell boden', 'byggboende boden', 'boende byggarbetare boden', 'montörboende boden', 'boende boden', 'tillfälligt boende företag boden'],
       ['corporate housing boden', 'worker accommodation boden sweden', 'temporary housing boden', 'furnished houses boden', 'apartments boden sweden'],
       ['zakwaterowanie pracownicze boden', 'noclegi dla budowlańców boden szwecja', 'kwatery pracownicze boden', 'tymczasowe zakwaterowanie boden szwecja']
     ),
-    metrics: [],
-    neighborhoods: [
-      {
-        name: ls('Centrala Boden', 'Central Boden', 'Centrum Boden'),
-        description: ls('För arbetslag som vill ha nära till service. Vi kontrollerar boendealternativ för er period.', 'For teams who want access to local services. We check accommodation options for your dates.', 'Dla ekip, którym zależy na dostępie do usług. Sprawdzamy zakwaterowanie w wybranym terminie.'),
-        distance: ls('Ange arbetsplatsens adress', 'Provide the worksite address', 'Podaj adres miejsca pracy')
-      },
-      {
-        name: ls('Svartbyträsk', 'Svartbyträsk', 'Svartbyträsk'),
-        description: ls('Ett område att ta med när boendealternativen jämförs utifrån arbetsplats och projektperiod.', 'An area to consider when comparing accommodation against the worksite location and project dates.', 'Okolica do uwzględnienia przy porównywaniu zakwaterowania według miejsca pracy i terminu projektu.'),
-        distance: ls('Restiden stäms av för varje boende', 'Travel time is checked for each property', 'Dojazd sprawdzamy dla każdego obiektu')
-      },
-      {
-        name: ls('Sävast', 'Sävast', 'Sävast'),
-        description: ls('Förfrågningar om hus och lägenheter bedöms utifrån antal personer, sovrum och parkeringsbehov.', 'House and apartment enquiries are assessed against headcount, bedrooms and parking requirements.', 'Zapytania o domy i mieszkania oceniamy według liczby osób, sypialni i wymagań parkingowych.'),
-        distance: ls('Parkering bekräftas i boendeförslaget', 'Parking is confirmed in the proposal', 'Parking potwierdzamy w propozycji')
-      }
-    ],
-    projects: [
-      {
-        name: ls('Bygg och installation', 'Construction and installation', 'Budowa i instalacje'),
-        description: ls('Ange arbetsplats och skifttider så att boendeförslaget kan ta hänsyn till lagets resor.', 'Provide the worksite and shift times so the proposal can account for team travel.', 'Podaj miejsce pracy i godziny zmian, aby uwzględnić dojazdy zespołu.')
-      },
-      {
-        name: ls('Industri och montage', 'Industry and assembly', 'Przemysł i montaż'),
-        description: ls('Beskriv behovet av egna sovrum, kök, tvätt och plats för servicebilar.', 'Describe the need for separate bedrooms, kitchen, laundry and work-van parking.', 'Opisz wymagania dotyczące oddzielnych sypialni, kuchni, prania i parkingu dla pojazdów służbowych.')
-      },
-      {
-        name: ls('Längre projekt', 'Longer projects', 'Dłuższe projekty'),
-        description: ls('Skicka hela projektperioden och ange om bemanningen kan förändras. Villkor för ändringar stäms av före bokning.', 'Send the full project period and indicate possible staffing changes. Terms for changes are agreed before booking.', 'Podaj cały okres projektu i możliwe zmiany liczby pracowników. Warunki zmian ustalamy przed rezerwacją.')
-      }
-    ],
-    testimonial: null,
-    faq: [],
-    pageContent: bodenPageContent,
-    nearby: ['lulea', 'umea']
+    ...cityGuideContent.boden
   },
   {
     slug: 'saffle',
@@ -1579,330 +1436,39 @@ export const cities: City[] = [
     name: 'Luleå',
     region: 'Norrbottens län',
     population: '78 000',
-    description: 'Norrlands största stad med gruvindustri, datacenter och hamnexpansion.',
-    highlights: ['Gruvindustri', 'Datacenterbyggen', 'Hamnutbyggnad', 'Tech-industri'],
-    industries: ['Gruvdrift', 'Datacenter', 'Hamn & Logistik', 'Teknologi'],
     coordinates: [65.5848, 22.1547],
-    heroHook: ls(
-      'Företagslägenheter & personalboende i Luleå – för montörer och projektteam',
-      'Corporate Housing & Apartments in Luleå – Near Data Centers & Mining',
-      'Noclegi & Zakwaterowanie Pracownicze w Luleå – Blisko Centrów Danych i Kopalni'
-    ),
-    intro: ls(
-      'Vi ordnar företagsboende i Luleå för arbetslag inom industri, datacenter, hamn och bygg. Välj mellan möblerade företagslägenheter, hus och korttidsboende utifrån arbetsplats, skift och parkering. För den som söker arbetarbostad i Luleå jämför vi alltid faktisk restid före bokning.',
-      'The mining industry, data centers and harbor make Luleå one of Sweden\'s most expansive cities. Our short-term housing and corporate apartments in Luleå and Porsön give your teams northern comfort near the workplaces.',
-      'Przemysł wydobywczy, centra danych i port czynią Luleå jednym z najbardziej rozwijających się miast Szwecji. Nasze noclegi krótkoterminowe i mieszkania firmowe w Luleå i Porsön zapewniają ekipom północny komfort blisko pracy.'
-    ),
     keywords: lk(
       ['personalboende luleå', 'företagsboende luleå', 'företagsbostäder luleå', 'företagslägenheter luleå', 'arbetarbostad luleå', 'korttidsboende luleå', 'lägenhetshotell luleå', 'boende luleå', 'boende byggarbetare luleå', 'montörboende luleå', 'tillfälligt boende företag luleå'],
       ['corporate housing lulea', 'datacenter staff apartments', 'mining construction housing lulea', 'worker accommodation lulea sweden', 'temporary housing lulea', 'apartments lulea sweden'],
       ['zakwaterowanie pracownicze lulea', 'mieszkania datacenter', 'noclegi kopalnie lulea', 'noclegi dla budowlańców luleå szwecja', 'kwatery pracownicze luleå', 'tymczasowe zakwaterowanie luleå szwecja']
     ),
-    metrics: [
-      {
-        value: '85',
-        label: ls('platser i Luleå', 'beds in Luleå', 'miejsc w Luleå'),
-        subtext: ls('Centrum, Porsön, Hertsön', 'Downtown, Porsön, Hertsön', 'Centrum, Porsön, Hertsön')
-      },
-      {
-        value: '12',
-        label: ls('datacenterbyggen', 'data center projects', 'projekty datacenter'),
-        subtext: ls('Facebook och nya anläggningar', 'Facebook and new facilities', 'Facebook i nowe obiekty')
-      },
-      {
-        value: '18',
-        label: ls('min till hamnen', 'min to harbor', 'min do portu'),
-        subtext: ls('Från våra boenden', 'From our housing', 'Z naszych noclegów')
-      }
-    ],
-    neighborhoods: [
-      {
-        name: ls('Centrala Luleå', 'Central Luleå', 'Centrum Luleå'),
-        description: ls('Nära universitet och tech-företagen.', 'Close to university and tech companies.', 'Blisko uniwersytetu i firm technologicznych.'),
-        distance: ls('10 min till datacenter', '10 min to data centers', '10 min do datacenter')
-      },
-      {
-        name: ls('Porsön', 'Porsön', 'Porsön'),
-        description: ls('Modernt område nära hamnen och industrin.', 'Modern area near harbor and industry.', 'Nowoczesny obszar blisko portu i przemysłu.'),
-        distance: ls('8 min till hamnen', '8 min to harbor', '8 min do portu')
-      },
-      {
-        name: ls('Hertsön', 'Hertsön', 'Hertsön'),
-        description: ls('Lugnt med parkering för arbetsfordon.', 'Quiet with parking for work vehicles.', 'Spokojnie z parkingiem dla pojazdów służbowych.'),
-        distance: ls('15 min till centrum', '15 min to downtown', '15 min do centrum')
-      }
-    ],
-    projects: [
-      {
-        name: ls('Datacenter Luleå', 'Luleå Data Centers', 'Centra danych Luleå'),
-        description: ls('Boende för el- och kyltekniker vid Facebook och nya anläggningar.', 'Housing for electrical and cooling technicians at Facebook and new facilities.', 'Zakwaterowanie dla elektryków i techników chłodzenia przy Facebook i nowych obiektach.')
-      },
-      {
-        name: ls('Gruvindustriprojekt', 'Mining Industry Projects', 'Projekty górnicze'),
-        description: ls('Team nära Kiruna och Malmfälten med boende i Luleå.', 'Crews near Kiruna and the Mining District with housing in Luleå.', 'Ekipy blisko Kiruny i Okręgu Górniczego z noclegami w Luleå.')
-      },
-      {
-        name: ls('Hamnutbyggnad', 'Harbor Expansion', 'Rozbudowa portu'),
-        description: ls('Långtidsboende för hamn- och kranmontörer.', 'Long-term housing for harbor and crane fitters.', 'Długoterminowe noclegi dla monterów portowych i dźwigów.')
-      }
-    ],
-    testimonial: {
-      quote: ls(
-        'Vi behövde plats för 20 tekniker vid datacenterbygget och StayOnSite löste lägenheter i Porsön med 10 minuters resa till anläggningen.',
-        'We needed housing for 20 technicians at the data center build and StayOnSite arranged apartments in Porsön with a 10-minute drive to the facility.',
-        'Potrzebowaliśmy noclegów dla 20 techników przy budowie datacenter i StayOnSite zorganizowało mieszkania w Porsön – 10 minut jazdy do obiektu.'
-      ),
-      author: 'Emma L.',
-      role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'Tech & Datacenter'
-    },
-    faq: [
-      {
-        question: ls('Kan ni hantera stora team för datacenter?', 'Can you handle large teams for data centers?', 'Czy możecie obsłużyć duże ekipy dla datacenter?'),
-        answer: ls(
-          'Ja, vi har 85+ platser och kan skala upp för stora tech-projekt i Luleå.',
-          'Yes, we have 85+ beds and can scale up for large tech projects in Luleå.',
-          'Tak, mamy 85+ miejsc i możemy skalować dla dużych projektów technologicznych w Luleå.'
-        )
-      },
-      {
-        question: ls('Hur funkar boende vid gruvor utanför stan?', 'How does housing work for mines outside town?', 'Jak działa zakwaterowanie przy kopalniach poza miastem?'),
-        answer: ls(
-          'Vi ordnar boende i Luleå med pendling eller kombinerar med lokala boenden vid gruvorna.',
-          'We arrange housing in Luleå with commuting or combine with local housing at the mines.',
-          'Organizujemy noclegi w Luleå z dojazdami lub łączymy z lokalnymi noclegami przy kopalniach.'
-        )
-      },
-      {
-        question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
-        answer: ls(
-          'Fullt möblerat med kök, sängkläder, städning och el/värme/wifi – allt ingår i priset.',
-          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi – everything included in the price.',
-          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi – wszystko w cenie.'
-        )
-      }
-    ],
-    nearby: ['boden', 'pitea']
+    ...cityGuideContent.lulea
   },
   {
     slug: 'oskarshamn',
     name: 'Oskarshamn',
     region: 'Kalmar län',
     population: '27 000',
-    description: 'Kärnkrafts- och industristad med hamn vid Östersjön.',
-    highlights: ['Kärnkraftverk', 'Hamnutbyggnad', 'Industrianläggningar', 'Energiprojekt'],
-    industries: ['Kärnkraft', 'Energi', 'Hamn & Logistik', 'Industri'],
     coordinates: [57.2644, 16.4486],
-    heroHook: ls(
-      'Företagsbostäder & personalboende i Oskarshamn – nära OKG och hamnen',
-      'Corporate Housing & Apartments in Oskarshamn – Near OKG & the Harbour',
-      'Noclegi & Zakwaterowanie Pracownicze w Oskarshamn – Blisko OKG i Portu'
-    ),
-    intro: ls(
-      'För företag som söker boende vid OKG eller andra arbetsplatser i Oskarshamn ordnar vi möblerade företagslägenheter, hus och personalboende. Vi jämför Oskarshamn, Figeholm och närliggande orter utifrån skift, parkering och faktisk restid till arbetsplatsen.',
-      'OKG and the harbor expansion create a big need for accommodation in Oskarshamn. Our corporate apartments and houses in Oskarshamn and Figeholm sit near the work sites.',
-      'OKG i rozbudowa portu tworzą duże zapotrzebowanie na noclegi w Oskarshamn. Nasze mieszkania firmowe i domy w Oskarshamn i Figeholm znajdują się blisko miejsc pracy.'
-    ),
     keywords: lk(
       ['personalboende oskarshamn', 'företagsboende oskarshamn', 'företagsbostäder oskarshamn', 'boende vid okg', 'boende okg', 'personalboende okg', 'boende oskarshamn', 'boende i oskarshamn', 'korttidsboende oskarshamn', 'byggboende okg oskarshamn', 'boende byggarbetare oskarshamn', 'montörboende oskarshamn', 'tillfälligt boende företag oskarshamn'],
       ['corporate housing oskarshamn', 'nuclear power staff apartments', 'accommodation oskarshamn', 'okg construction housing oskarshamn', 'worker accommodation oskarshamn sweden', 'temporary housing oskarshamn'],
       ['zakwaterowanie pracownicze oskarshamn', 'mieszkania energetyka jądrowa', 'noclegi okg oskarshamn', 'noclegi dla budowlańców oskarshamn szwecja', 'kwatery pracownicze oskarshamn', 'tymczasowe zakwaterowanie oskarshamn szwecja']
     ),
-    metrics: [
-      {
-        value: '35',
-        label: ls('platser nära OKG', 'beds near OKG', 'miejsc blisko OKG'),
-        subtext: ls('Nära kärnkraftverket', 'Close to the power plant', 'Blisko elektrowni')
-      },
-      {
-        value: '8',
-        label: ls('energiprojekt', 'energy projects', 'projekty energetyczne'),
-        subtext: ls('Kärnkraft och infrastruktur', 'Nuclear and infrastructure', 'Jądrowa i infrastruktura')
-      },
-      {
-        value: '15',
-        label: ls('min till kärnkraftverket', 'min to nuclear plant', 'min do elektrowni'),
-        subtext: ls('Från våra boenden', 'From our housing', 'Z naszych noclegów')
-      }
-    ],
-    neighborhoods: [
-      {
-        name: ls('Centrala Oskarshamn', 'Central Oskarshamn', 'Centrum Oskarshamn'),
-        description: ls('Nära hamnen och service med bra kommunikationer.', 'Close to harbor and services with good transit.', 'Blisko portu i usług z dobrą komunikacją.'),
-        distance: ls('12 min till OKG', '12 min to OKG', '12 min do OKG')
-      },
-      {
-        name: ls('Figeholm', 'Figeholm', 'Figeholm'),
-        description: ls('Kustsamhälle nära kärnkraftverket.', 'Coastal community near the nuclear plant.', 'Nadmorska miejscowość blisko elektrowni.'),
-        distance: ls('5 min till OKG', '5 min to OKG', '5 min do OKG')
-      },
-      {
-        name: ls('Kristineberg', 'Kristineberg', 'Kristineberg'),
-        description: ls('Lugnt område för längre uppdrag vid industrin.', 'Quiet area for longer deployments at industry.', 'Spokojna okolica na dłuższe kontrakty w przemyśle.'),
-        distance: ls('10 min till centrum', '10 min to downtown', '10 min do centrum')
-      }
-    ],
-    projects: [
-      {
-        name: ls('OKG Kärnkraftverk', 'OKG Nuclear Power Plant', 'Elektrownia jądrowa OKG'),
-        description: ls('Boende för tekniker och ingenjörer vid kärnkraftverket.', 'Housing for technicians and engineers at the nuclear power plant.', 'Zakwaterowanie dla techników i inżynierów przy elektrowni jądrowej.')
-      },
-      {
-        name: ls('Hamnutbyggnad', 'Harbor Expansion', 'Rozbudowa portu'),
-        description: ls('Team nära kajer och terminal för stora transporter.', 'Crews near quays and terminal for heavy transport.', 'Ekipy blisko nabrzeży i terminala dla ciężkiego transportu.')
-      },
-      {
-        name: ls('Industrianläggningar', 'Industrial Facilities', 'Obiekty przemysłowe'),
-        description: ls('Långtidsboende för underhålls- och produktionsteam.', 'Long-term housing for maintenance and production crews.', 'Długoterminowe noclegi dla ekip serwisowych i produkcyjnych.')
-      }
-    ],
-    testimonial: {
-      quote: ls(
-        'Vi behövde boende för 15 tekniker nära OKG och StayOnSite ordnade lägenheter i Figeholm med bara 5 minuters resa till anläggningen.',
-        'We needed housing for 15 technicians near OKG and StayOnSite arranged apartments in Figeholm with just a 5-minute drive to the facility.',
-        'Potrzebowaliśmy noclegów dla 15 techników blisko OKG i StayOnSite zorganizowało mieszkania w Figeholm – zaledwie 5 minut jazdy do obiektu.'
-      ),
-      author: 'Stefan K.',
-      role: ls('Projektchef', 'Project Manager', 'Kierownik projektu'),
-      company: 'Kärnkraft & Energi'
-    },
-    faq: [
-      {
-        question: ls('Hur funkar säkerheten vid kärnkraftverket?', 'How does security work at the nuclear plant?', 'Jak działa bezpieczeństwo przy elektrowni?'),
-        answer: ls(
-          'Vi är vana vid att ordna boende åt team som jobbar vid OKG och anpassar oss efter era krav.',
-          'We are experienced arranging housing for teams working at OKG and adapt to your requirements.',
-          'Mamy doświadczenie w organizacji noclegów dla zespołów pracujących przy OKG i dostosowujemy się do Waszych wymagań.'
-        )
-      },
-      {
-        question: ls('Kan ni hantera specialkompetens?', 'Can you handle specialist skills?', 'Czy możecie obsłużyć specjalistów?'),
-        answer: ls(
-          'Ja, vi är vana vid att arbeta med tekniker och ingenjörer som kräver särskilda boenden och säkerhet.',
-          'Yes, we are used to working with technicians and engineers requiring special housing and security.',
-          'Tak, jesteśmy przyzwyczajeni do pracy z technikami i inżynierami wymagającymi specjalnych noclegów i bezpieczeństwa.'
-        )
-      },
-      {
-        question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
-        answer: ls(
-          'Fullt möblerat med kök, sängkläder, städ och el/värme/wifi. Alla säkerhetskrav uppfyllda.',
-          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi. All security requirements met.',
-          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi. Wszystkie wymogi bezpieczeństwa spełnione.'
-        )
-      }
-    ],
-    nearby: ['monsteras', 'vastervik', 'kalmar']
+    ...cityGuideContent.oskarshamn
   },
   {
     slug: 'monsteras',
     name: 'Mönsterås',
     region: 'Kalmar län',
     population: '13 000',
-    description: 'Industrisamhälle vid Östersjön med Södra Cell och hamn.',
-    highlights: ['Södra Cell massafabrik', 'Mönsterås hamn', 'Industriområden', 'Infrastrukturprojekt'],
-    industries: ['Skogsindustri', 'Massa & Papper', 'Hamn & Logistik', 'Industri'],
     coordinates: [57.0444, 16.4450],
-    heroHook: ls(
-      'Företagsbostäder & personalboende i Mönsterås – nära Södra Cell och hamnen',
-      'Corporate Housing & Apartments in Mönsterås – Near Södra Cell & the Harbour',
-      'Zakwaterowanie Pracownicze w Mönsterås – Blisko Södra Cell i Portu'
-    ),
-    intro: ls(
-      'Södra Cell och hamnen driver behovet av företagsbostäder och personalboende i Mönsterås. Vi ordnar möblerade företagslägenheter och hus för montörer, tekniker och projektteam.',
-      'Södra Cell and the harbour drive the need for worker housing in Mönsterås. We arrange furnished apartments and houses for fitters, technicians and project teams.',
-      'Södra Cell i port napędzają zapotrzebowanie na noclegi pracownicze w Mönsterås. Organizujemy umeblowane mieszkania i domy dla monterów, techników i zespołów projektowych.'
-    ),
     keywords: lk(
       ['personalboende mönsterås', 'boende mönsterås', 'montörboende mönsterås', 'företagsboende kalmar län', 'boende södra cell mönsterås', 'tillfälligt boende mönsterås', 'byggboende mönsterås'],
       ['worker housing monsteras', 'accommodation monsteras sweden', 'corporate housing monsteras', 'sodra cell worker accommodation'],
       ['zakwaterowanie pracownicze monsteras', 'noclegi monsteras szwecja', 'kwatery pracownicze monsteras']
     ),
-    metrics: [
-      {
-        value: '20',
-        label: ls('platser i Mönsterås', 'beds in Mönsterås', 'miejsc w Mönsterås'),
-        subtext: ls('Nära industrin', 'Close to industry', 'Blisko przemysłu')
-      },
-      {
-        value: '5',
-        label: ls('min till Södra Cell', 'min to Södra Cell', 'min do Södra Cell'),
-        subtext: ls('Från centrala boenden', 'From central housing', 'Z centralnych noclegów')
-      },
-      {
-        value: '25',
-        label: ls('min till Oskarshamn', 'min to Oskarshamn', 'min do Oskarshamn'),
-        subtext: ls('Regionalt samarbete', 'Regional collaboration', 'Współpraca regionalna')
-      }
-    ],
-    neighborhoods: [
-      {
-        name: ls('Centrala Mönsterås', 'Central Mönsterås', 'Centrum Mönsterås'),
-        description: ls('Nära service och kommunikationer. Kort avstånd till Södra Cell.', 'Near services and transit. Short distance to Södra Cell.', 'Blisko usług i komunikacji. Krótka odległość do Södra Cell.'),
-        distance: ls('5 min till Södra Cell', '5 min to Södra Cell', '5 min do Södra Cell')
-      },
-      {
-        name: ls('Ålem', 'Ålem', 'Ålem'),
-        description: ls('Lugnt samhälle söder om Mönsterås, nära E22.', 'Quiet community south of Mönsterås, near E22.', 'Spokojna miejscowość na południe od Mönsterås, blisko E22.'),
-        distance: ls('10 min till Mönsterås', '10 min to Mönsterås', '10 min do Mönsterås')
-      },
-      {
-        name: ls('Blomstermåla', 'Blomstermåla', 'Blomstermåla'),
-        description: ls('Bra läge mellan Mönsterås och Oskarshamn.', 'Good location between Mönsterås and Oskarshamn.', 'Dobra lokalizacja między Mönsterås a Oskarshamn.'),
-        distance: ls('15 min till Mönsterås', '15 min to Mönsterås', '15 min do Mönsterås')
-      }
-    ],
-    projects: [
-      {
-        name: ls('Södra Cell Massafabrik', 'Södra Cell Pulp Mill', 'Fabryka celulozy Södra Cell'),
-        description: ls('Boende för underhålls- och driftteam vid massafabriken.', 'Housing for maintenance and operations teams at the pulp mill.', 'Zakwaterowanie dla zespołów serwisowych i operacyjnych przy fabryce celulozy.')
-      },
-      {
-        name: ls('Mönsterås Hamn', 'Mönsterås Harbour', 'Port Mönsterås'),
-        description: ls('Logi nära hamnen för transport- och logistikpersonal.', 'Lodging near the harbour for transport and logistics staff.', 'Noclegi blisko portu dla personelu transportowego i logistycznego.')
-      },
-      {
-        name: ls('Industriområden', 'Industrial Zones', 'Strefy przemysłowe'),
-        description: ls('Långtidsboende för team vid lokala industriprojekt.', 'Long-term housing for teams at local industrial projects.', 'Długoterminowe noclegi dla zespołów przy lokalnych projektach przemysłowych.')
-      }
-    ],
-    testimonial: {
-      quote: ls(
-        'StayOnSite fixade boende för vårt team på två dagar. Perfekt läge nära fabriken och allt var klart vid inflytt.',
-        'StayOnSite arranged housing for our team in two days. Perfect location near the mill and everything was ready at move-in.',
-        'StayOnSite zorganizowało noclegi dla naszego zespołu w dwa dni. Idealna lokalizacja blisko fabryki i wszystko było gotowe przy wprowadzeniu.'
-      ),
-      author: 'Magnus L.',
-      role: ls('Platschef', 'Site Manager', 'Kierownik budowy'),
-      company: 'Industriservice AB'
-    },
-    faq: [
-      {
-        question: ls('Hur nära Södra Cell kan ni ordna boende?', 'How close to Södra Cell can you arrange housing?', 'Jak blisko Södra Cell możecie zorganizować noclegi?'),
-        answer: ls(
-          'Vi har boenden inom 5 minuters bilresa från massafabriken i centrala Mönsterås.',
-          'We have housing within a 5-minute drive from the pulp mill in central Mönsterås.',
-          'Mamy noclegi w odległości 5 minut jazdy od fabryki celulozy w centrum Mönsterås.'
-        )
-      },
-      {
-        question: ls('Kan ni ordna boende för stora team?', 'Can you arrange housing for large teams?', 'Czy możecie zorganizować noclegi dla dużych zespołów?'),
-        answer: ls(
-          'Ja, vi har erfarenhet av att ordna boende för upp till 30 personer i Mönsterås och omnejd.',
-          'Yes, we have experience arranging housing for up to 30 people in Mönsterås and surroundings.',
-          'Tak, mamy doświadczenie w organizacji noclegów dla nawet 30 osób w Mönsterås i okolicach.'
-        )
-      },
-      {
-        question: ls('Vad ingår i boendet?', 'What is included in the housing?', 'Co jest wliczone w nocleg?'),
-        answer: ls(
-          'Fullt möblerat med kök, sängkläder, städ och el/värme/wifi. Parkering ingår.',
-          'Fully furnished with kitchen, bed linens, cleaning and electricity/heating/wifi. Parking included.',
-          'W pełni umeblowane z kuchnią, pościelą, sprzątaniem i prądem/ogrzewaniem/wifi. Parking w cenie.'
-        )
-      }
-    ],
-    nearby: ['oskarshamn', 'kalmar', 'vastervik']
+    ...cityGuideContent.monsteras
   },
   {
     slug: 'umea',
@@ -3332,6 +2898,8 @@ export const getNearbyCities = (slug: string, count = 2): City[] => {
     .map((nearSlug) => getCityBySlug(nearSlug))
     .filter((nearCity): nearCity is City => Boolean(nearCity));
 
+  if (city.guide) return preferred.slice(0, count);
+
   if (preferred.length >= count) {
     return preferred.slice(0, count);
   }
@@ -3339,3 +2907,6 @@ export const getNearbyCities = (slug: string, count = 2): City[] => {
   const fallback = cities.filter((item) => item.slug !== slug && !city.nearby.includes(item.slug));
   return [...preferred, ...fallback].slice(0, count);
 };
+
+export const getNearbyCitySummaries = (slug: string) =>
+  getNearbyCities(slug).map(({ slug, name, region }) => ({ slug, name, region }));

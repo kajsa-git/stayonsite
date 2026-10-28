@@ -1,10 +1,12 @@
 import { blogTranslations } from './blog-translations';
 import { datacenterTranslations } from './datacenter-translations';
+import { cityGuideTranslations } from './city-guide-translations';
 export type AvailableLanguages = "sv" | "en" | "pl";
 
 export type TranslationKey =
   | keyof typeof blogTranslations.sv
   | keyof typeof datacenterTranslations.sv
+  | keyof typeof cityGuideTranslations.sv
   | "crm.companyTable.city"
   | "crm.companyTable.persons"
   | "crm.companyTable.beds"
@@ -408,6 +410,7 @@ export const translations: Record<
   sv: {
     ...blogTranslations.sv,
     ...datacenterTranslations.sv,
+    ...cityGuideTranslations.sv,
     "crm.companyTable.city": "Stad",
     "crm.companyTable.persons": "Personer",
     "crm.companyTable.beds": "Bäddar",
@@ -911,6 +914,7 @@ export const translations: Record<
   en: {
     ...blogTranslations.en,
     ...datacenterTranslations.en,
+    ...cityGuideTranslations.en,
     "crm.companyTable.city": "City",
     "crm.companyTable.persons": "People",
     "crm.companyTable.beds": "Beds",
@@ -1418,6 +1422,7 @@ export const translations: Record<
   pl: {
     ...blogTranslations.pl,
     ...datacenterTranslations.pl,
+    ...cityGuideTranslations.pl,
     "crm.companyTable.city": "Miasto",
     "crm.companyTable.persons": "Osoby",
     "crm.companyTable.beds": "Łóżka",

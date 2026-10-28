@@ -28,7 +28,7 @@ const MobileStickyFormCTA = ({
           <Button
             type="button"
             onClick={scrollToForm}
-            className="flex-1 h-12 rounded-xl bg-gradient-to-r from-[#ff6300] to-[#ff8533] text-white font-semibold"
+            className="min-w-0 flex-1 h-12 rounded-xl bg-gradient-to-r from-[#ff6300] to-[#ff8533] text-white font-semibold"
           >
             <span className="truncate">{primaryLabel}</span>
             <ArrowRight size={16} className="ml-2 shrink-0" />

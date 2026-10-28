@@ -42,6 +42,7 @@ import InquiryForm from '@/components/InquiryForm';
 import StickyContact from '@/components/StickyContact';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
+import CityGuideSections, { CityGuideNavigation } from '@/components/CityGuideSections';
 
 // Publicerade boenden i staden (skickas bara med från svenska stadssidan).
 // Typen dupliceras medvetet — importeras den från crm/city-listings dras
@@ -59,7 +60,7 @@ interface CityPageProps {
   citySlug: string;
   locale: 'sv' | 'en' | 'pl';
   city: City;
-  nearbyCities: City[];
+  nearbyCities: Pick<City, 'slug' | 'name' | 'region'>[];
   listings?: CityListingItem[];
 }
 
@@ -82,6 +83,13 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
       href: '/blogg/personalboende-okg-oskarshamn-guide',
       title: 'Planera personalboende vid OKG',
       description: 'Checklista för skift, restid, parkering och ansvar vid arbete i Simpevarp.',
+    },
+  ],
+  gavle: [
+    {
+      href: '/datacenter-boende',
+      title: 'Planera boende för datacenterprojekt',
+      description: 'Underlag för mobilisering, etapper och bemanning vid längre installationsuppdrag.',
     },
   ],
   falun: [
@@ -434,8 +442,10 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
           </div>
         </section>
 
+        {city.guide && <CityGuideNavigation />}
+
         {/* Projects Section */}
-        <section id="why" className="section-spacing bg-white border-t border-nordic-100">
+        <section id="why" className="section-spacing scroll-mt-28 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
@@ -455,7 +465,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                 {city.projects.map((project, index) => (
                   <motion.div
                     key={`${project.name.sv}-${index}`}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={city.guide ? false : { opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
@@ -537,7 +547,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
           </section>
         )}
 
-        {language === 'sv' && ['boden', 'lulea', 'oskarshamn', 'saffle', 'gavle'].includes(citySlug) && (
+        {language === 'sv' && ['boden', 'lulea', 'oskarshamn', 'saffle', 'gavle', 'monsteras'].includes(citySlug) && (
           <section className="bg-background py-12">
             <div className="container mx-auto flex max-w-5xl flex-col items-start gap-4 px-6 md:px-8">
               <h2 className="font-heading text-2xl font-semibold text-foreground">
@@ -558,6 +568,9 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
         )}
 
         {/* Neighborhoods */}
+        {city.guide ? (
+          <CityGuideSections cityName={city.name} guide={city.guide} />
+        ) : (
         <section className="section-spacing bg-nordic-50 border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-6xl mx-auto">
@@ -604,11 +617,12 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
             </div>
           </div>
         </section>
+        )}
 
         {/* Lediga boenden just nu — intern länkning stadssida → objektsidor (SEO)
             + levande bevis på utbud. Renderas bara på svenska sidan med träffar. */}
         {listings && listings.length > 0 && (
-          <section className="section-spacing bg-white border-t border-nordic-100">
+          <section id="homes" className="section-spacing scroll-mt-28 bg-white border-t border-nordic-100">
             <div className="container mx-auto px-6 md:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
@@ -687,6 +701,20 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
           </section>
         )}
 
+        {city.guide && (!listings || listings.length === 0) && (
+          <section id="homes" className="scroll-mt-28 bg-muted/40 py-12">
+            <div className="container mx-auto flex max-w-6xl flex-col items-start gap-4 px-6 md:px-8">
+              <h2 className="font-heading text-2xl font-semibold text-foreground">
+                {t('cityGuide.propertiesHeading')} {city.name}
+              </h2>
+              <p className="max-w-3xl leading-relaxed text-muted-foreground">{t('cityGuide.emptyProperties')}</p>
+              <Button asChild>
+                <a href="#inquiry">{t('cityGuide.enquire')}</a>
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Process */}
         <section className="section-spacing bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
@@ -726,13 +754,13 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                   translate('Kontrakt & inflytt', 'Contracts & move-in', 'Kontrakty i wprowadzenie'),
                   translate('Support under projektet', 'Support during the project', 'Wsparcie w trakcie projektu')
                 ]).map((title, index) => (
-                  <Card key={title} className="h-full">
+                  <Card key={title} className="h-full min-w-0">
                     <CardHeader>
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-[#ff6300]/10 text-[#ff6300] flex items-center justify-center font-semibold">
+                        <div className="size-10 shrink-0 rounded-full bg-[#ff6300]/10 text-[#ff6300] flex items-center justify-center font-semibold">
                           {index + 1}
                         </div>
-                        <CardTitle>{title}</CardTitle>
+                        <CardTitle className="min-w-0 break-words">{title}</CardTitle>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -792,7 +820,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
         )}
 
         {/* FAQ */}
-        <section className="section-spacing bg-white border-t border-nordic-100">
+        <section id="faq" className="section-spacing scroll-mt-28 bg-white border-t border-nordic-100">
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-nordic-900 mb-6">
@@ -808,7 +836,10 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                     <AccordionTrigger className="text-left text-lg">
                       {getLocalizedText(item.question, language)}
                     </AccordionTrigger>
-                    <AccordionContent className="text-gray-700 leading-relaxed">
+                    <AccordionContent
+                      forceMount={city.guide ? true : undefined}
+                      className="text-gray-700 leading-relaxed"
+                    >
                       {getLocalizedText(item.answer, language)}
                     </AccordionContent>
                   </AccordionItem>
