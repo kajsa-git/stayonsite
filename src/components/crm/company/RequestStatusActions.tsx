@@ -27,6 +27,8 @@ import {
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { Archive, FileSignature, Home, Receipt, Send, X } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
+import { billingTranslations } from "@/data/billing-translations";
 
 interface Props {
   request: Request & { matchCount?: number };
@@ -75,6 +77,11 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
         Åtgärder
       </p>
       <div className="flex flex-wrap gap-2">
+        {isWon && contractSigned && (
+          <Button asChild size="sm" variant="outline">
+            <Link href={`/crm/uthyrningar?request=${request.id}`}>{billingTranslations.sv["billing.title"]}</Link>
+          </Button>
+        )}
         {(isIncoming || isMatching) && (
           <button
             className={`${btn} border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100`}
@@ -178,7 +185,7 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
             <DialogTitle>Fakturera förfrågan #{request.requestNumber}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Ange uppdragets period. CRM:t skapar ett fakturautkast i Fortnox och markerar sedan förfrågan som fakturerad.
+            {billingTranslations.sv["billing.markInvoicedHelp"]}
           </p>
           <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="space-y-1">
@@ -223,7 +230,7 @@ export function RequestStatusActions({ request, onStatusChange, onMatch }: Props
               disabled={busy || !invoiceDatesValid}
             >
               <Receipt className="h-3.5 w-3.5 mr-1.5" />
-              Skapa utkast & markera fakturerad
+              Markera fakturerad
             </Button>
           </DialogFooter>
         </DialogContent>

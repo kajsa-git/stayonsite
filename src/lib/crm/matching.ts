@@ -10,6 +10,13 @@ export interface MatchResult {
   chips: MatchChip[];
 }
 
+export interface MatchLocationContext {
+  /** Köravstånd från förfrågans sökplats till objektet. */
+  distanceKm?: number | null;
+  /** Radien som räknas som rätt sökområde. */
+  radiusKm?: number;
+}
+
 // Ortjämförelse tål stavningsvarianter ("Mönsterås"/"Monsteras", "västerås"/"Västerås"):
 // gemener + å/ä→a, ö→o + övriga diakritiska tecken bort. Samma förenkling som slugify.
 function normalizeCityName(s: string): string {
@@ -37,17 +44,35 @@ function rangeText(from: number | null | undefined, to: number | null | undefine
 }
 
 /** Full breakdown: numeric score (0–100) + colored criteria chips for the UI. */
-export function matchDetails(request: Request, property: Property): MatchResult {
+export function matchDetails(
+  request: Request,
+  property: Property,
+  location: MatchLocationContext = {},
+): MatchResult {
   let score = 0;
   const chips: MatchChip[] = [];
 
   // Location (highest weight)
-  if (request.city && property.city) {
-    if (normalizeCityName(request.city) === normalizeCityName(property.city)) {
+  const sameCity = !!request.city && !!property.city
+    && normalizeCityName(request.city) === normalizeCityName(property.city);
+  const radiusKm = location.radiusKm ?? 30;
+  const withinRadius = location.distanceKm != null && location.distanceKm <= radiusKm;
+  const hasRequestLocation = !!(request.street || request.postalCode || request.addressQuery || request.city);
+
+  if (hasRequestLocation && (property.address || property.postalCode || property.city)) {
+    if (sameCity) {
       score += 35;
       chips.push({ label: "Rätt ort", tone: "good" });
-    } else {
+    } else if (withinRadius) {
+      score += 35;
+      chips.push({
+        label: `Inom ${radiusKm} km${property.city ? ` (${property.city})` : ""}`,
+        tone: "good",
+      });
+    } else if (request.city && property.city) {
       chips.push({ label: `Annan ort (${property.city})`, tone: "bad" });
+    } else {
+      chips.push({ label: "Avstånd okänt", tone: "warn" });
     }
   }
   if (request.postalCode && property.postalCode) {

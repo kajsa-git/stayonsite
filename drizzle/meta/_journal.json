@@ -316,6 +316,13 @@
       "when": 1793228400000,
       "tag": "0044_crm_vardagsflode",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "6",
+      "when": 1793314800000,
+      "tag": "0045_billing_plans",
+      "breakpoints": true
     }
   ]
 }

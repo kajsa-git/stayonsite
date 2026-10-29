@@ -59,6 +59,10 @@ export function PropertyEditForm({
   const previewSlug = previewPublicSlug(form);
 
   async function handleSave() {
+    if (!form.postalCode.trim()) {
+      toast({ title: "Fyll i postnummer innan du sparar objektet", variant: "destructive" });
+      return;
+    }
     setSaving(true);
     try {
       const changes = changedPropertyFormPayload(form, initialForm.current);
@@ -217,8 +221,8 @@ export function PropertyEditForm({
           <input className={FIELD_CLS} value={form.address} onChange={(e) => set("address", e.target.value)} />
         </Labeled>
         <div className="grid grid-cols-2 gap-2">
-          <Labeled label="Postnummer">
-            <input className={FIELD_CLS} value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} />
+          <Labeled label="Postnummer *">
+            <input required className={FIELD_CLS} value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} />
           </Labeled>
           <Labeled label="Ort">
             <input className={FIELD_CLS} value={form.city} onChange={(e) => set("city", e.target.value)} />

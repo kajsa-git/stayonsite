@@ -13,6 +13,11 @@ export interface BuiltCorporateQualificationEmail {
   crmNote: string;
 }
 
+export interface BuiltPrivateCustomerReply {
+  text: string;
+  html: string;
+}
+
 function esc(v: string) {
   return v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -20,6 +25,26 @@ function esc(v: string) {
 function clean(value: string | null | undefined) {
   const text = value?.trim();
   return text || null;
+}
+
+const UNCLEAR_COMPANY_VALUES = /^(?:-|\?|n\/?a|nej|no|none|privat|privatperson|private|okänt|okand|unknown|vet ej)$/i;
+
+export function clearCorporateCompanyName(value: string | null | undefined): string | null {
+  const company = clean(value);
+  if (!company || company.startsWith("Webbförfrågan") || UNCLEAR_COMPANY_VALUES.test(company)) return null;
+  return company;
+}
+
+function clearCompanyName(fields: Record<string, string>): string | null {
+  const value = clearCorporateCompanyName(fields.legalCompany)
+    ?? clearCorporateCompanyName(fields.company);
+  if (!value) return null;
+  return value;
+}
+
+function customerEmail(fields: Record<string, string>): string | null {
+  return clean(fields.email)
+    ?? (clean(fields.kontakt)?.includes("@") ? clean(fields.kontakt) : null);
 }
 
 function personLabel(people: string | number | null, locale: CorporateQualificationLocale) {
@@ -38,8 +63,8 @@ function personLabel(people: string | number | null, locale: CorporateQualificat
 
 export function isCorporateQualificationSubmission(submission: CorporateQualificationSubmissionLike): boolean {
   const f = submission.fields;
-  const hasCustomerEmail = !!clean(f.email);
-  const isCompanyHero = submission.formType === "hero-intent" && !!clean(f.company);
+  const hasCustomerEmail = !!customerEmail(f);
+  const isCompanyHero = submission.formType === "hero-intent";
   const isCorporateLandingPage = submission.formType === "lp-corporate";
   const isProjectBrief = submission.formType === "project-brief";
   return hasCustomerEmail && (isCompanyHero || isCorporateLandingPage || isProjectBrief);
@@ -47,7 +72,84 @@ export function isCorporateQualificationSubmission(submission: CorporateQualific
 
 export function corporateQualificationRecipient(submission: CorporateQualificationSubmissionLike): string | null {
   if (!isCorporateQualificationSubmission(submission)) return null;
-  return clean(submission.fields.email);
+  return customerEmail(submission.fields);
+}
+
+export function buildPrivateCustomerReply(
+  locale: CorporateQualificationLocale = "sv",
+): BuiltPrivateCustomerReply {
+  if (locale === "en") {
+    return {
+      text: [
+        "Hi,",
+        "",
+        "Thank you for clarifying. StayOnSite only rents furnished accommodation to companies arranging housing for their employees, so unfortunately we cannot help with a private rental.",
+        "",
+        "I wish you the best of luck with your housing search.",
+        "",
+        "Best regards",
+        "Kajsa Sihlén",
+        "StayOnSite",
+        "076-249 84 86",
+        "kajsa@stayonsite.se",
+        "www.stayonsite.se",
+      ].join("\n"),
+      html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.55;">
+  <p>Hi,</p>
+  <p>Thank you for clarifying. StayOnSite only rents furnished accommodation to companies arranging housing for their employees, so unfortunately we cannot help with a private rental.</p>
+  <p>I wish you the best of luck with your housing search.</p>
+  <p>Best regards<br>Kajsa Sihlén<br>StayOnSite<br>076-249 84 86<br><a href="mailto:kajsa@stayonsite.se">kajsa@stayonsite.se</a><br><a href="https://www.stayonsite.se">www.stayonsite.se</a></p>
+</div>`,
+    };
+  }
+
+  if (locale === "pl") {
+    return {
+      text: [
+        "Dzień dobry,",
+        "",
+        "Dziękuję za wyjaśnienie. StayOnSite wynajmuje umeblowane zakwaterowanie wyłącznie firmom organizującym pobyt dla swoich pracowników, dlatego niestety nie możemy pomóc w wynajmie prywatnym.",
+        "",
+        "Życzę powodzenia w dalszym poszukiwaniu zakwaterowania.",
+        "",
+        "Z poważaniem",
+        "Kajsa Sihlén",
+        "StayOnSite",
+        "076-249 84 86",
+        "kajsa@stayonsite.se",
+        "www.stayonsite.se",
+      ].join("\n"),
+      html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.55;">
+  <p>Dzień dobry,</p>
+  <p>Dziękuję za wyjaśnienie. StayOnSite wynajmuje umeblowane zakwaterowanie wyłącznie firmom organizującym pobyt dla swoich pracowników, dlatego niestety nie możemy pomóc w wynajmie prywatnym.</p>
+  <p>Życzę powodzenia w dalszym poszukiwaniu zakwaterowania.</p>
+  <p>Z poważaniem<br>Kajsa Sihlén<br>StayOnSite<br>076-249 84 86<br><a href="mailto:kajsa@stayonsite.se">kajsa@stayonsite.se</a><br><a href="https://www.stayonsite.se">www.stayonsite.se</a></p>
+</div>`,
+    };
+  }
+
+  return {
+    text: [
+      "Hej,",
+      "",
+      "Tack för förtydligandet. StayOnSite hyr endast ut möblerade boenden till företag som ordnar boende åt sin personal, så vi kan tyvärr inte hjälpa till med en privat bokning.",
+      "",
+      "Jag önskar dig lycka till med ditt fortsatta bostadssökande.",
+      "",
+      "Med vänliga hälsningar",
+      "Kajsa Sihlén",
+      "StayOnSite",
+      "076-249 84 86",
+      "kajsa@stayonsite.se",
+      "www.stayonsite.se",
+    ].join("\n"),
+    html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.55;">
+  <p>Hej,</p>
+  <p>Tack för förtydligandet. StayOnSite hyr endast ut möblerade boenden till företag som ordnar boende åt sin personal, så vi kan tyvärr inte hjälpa till med en privat bokning.</p>
+  <p>Jag önskar dig lycka till med ditt fortsatta bostadssökande.</p>
+  <p>Med vänliga hälsningar<br>Kajsa Sihlén<br>StayOnSite<br>076-249 84 86<br><a href="mailto:kajsa@stayonsite.se">kajsa@stayonsite.se</a><br><a href="https://www.stayonsite.se">www.stayonsite.se</a></p>
+</div>`,
+  };
 }
 
 export function buildCorporateQualificationEmail(
@@ -58,7 +160,9 @@ export function buildCorporateQualificationEmail(
   const projectLocations = clean(f.projectLocations);
   const place = projectLocations ?? city;
   const people = clean(f.people) ?? clean(f.antal_personer);
-  const company = clean(f.company) ?? "företaget";
+  const knownCompany = clearCompanyName(f);
+  const company = knownCompany ?? "företaget";
+  const askAboutCompany = !knownCompany;
   const locale = submission.locale ?? "sv";
   const label = personLabel(people, locale);
   const english = submission.locale === "en";
@@ -102,6 +206,9 @@ export function buildCorporateQualificationEmail(
 
   if (english) {
     const questions = [
+      ...(askAboutCompany
+        ? ["Is this request for a company that will rent the accommodation? If so, please provide the company's full legal name and registration number."]
+        : []),
       "From what date is the accommodation needed?",
       "How long is the need expected to last?",
       `Is there a specific area, workplace or address in ${city} we should use as a starting point?`,
@@ -146,7 +253,7 @@ export function buildCorporateQualificationEmail(
         "Automatiskt kvalificeringsmejl skickat på engelska.",
         "",
         `Förfrågan: ${company}, ${city}, ${label}.`,
-        "Frågor skickade: startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.",
+        `Frågor skickade: ${askAboutCompany ? "företag/juridiskt namn/organisationsnummer, " : ""}startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.`,
         "Nästa steg: invänta svar och kvalificera innan matchning.",
       ].join("\n"),
     };
@@ -154,6 +261,9 @@ export function buildCorporateQualificationEmail(
 
   if (polish) {
     const questions = [
+      ...(askAboutCompany
+        ? ["Czy zapytanie dotyczy firmy, która będzie najemcą zakwaterowania? Jeśli tak, proszę podać pełną nazwę prawną firmy i numer rejestracyjny."]
+        : []),
       "Od jakiej daty potrzebne jest zakwaterowanie?",
       "Jak długo mniej więcej potrwa zapotrzebowanie?",
       `Czy jest konkretna okolica, miejsce pracy lub adres w ${city}, od którego powinniśmy zacząć poszukiwania?`,
@@ -198,13 +308,16 @@ export function buildCorporateQualificationEmail(
         "Automatiskt kvalificeringsmejl skickat på polska.",
         "",
         `Förfrågan: ${company}, ${city}, ${label}.`,
-        "Frågor skickade: startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.",
+        `Frågor skickade: ${askAboutCompany ? "företag/juridiskt namn/organisationsnummer, " : ""}startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.`,
         "Nästa steg: invänta svar och kvalificera innan matchning.",
       ].join("\n"),
     };
   }
 
   const questions = [
+    ...(askAboutCompany
+      ? ["Gäller förfrågan ett företag som ska stå som hyresgäst? Ange i så fall företagets fullständiga namn och organisationsnummer."]
+      : []),
     "Från vilket datum behövs boendet?",
     "Hur länge gäller behovet ungefär?",
     `Finns det ett särskilt område, arbetsplats eller adress i ${city} vi ska utgå från?`,
@@ -249,7 +362,7 @@ export function buildCorporateQualificationEmail(
       "Automatiskt kvalificeringsmejl skickat på svenska.",
       "",
       `Förfrågan: ${company}, ${city}, ${label}.`,
-      "Frågor skickade: startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.",
+      `Frågor skickade: ${askAboutCompany ? "företag/juridiskt namn/organisationsnummer, " : ""}startdatum, längd, område/arbetsplats/adress, typ av eget boende, sovrum/bäddar, krav och budget.`,
       "Nästa steg: invänta svar och kvalificera innan matchning.",
     ].join("\n"),
   };

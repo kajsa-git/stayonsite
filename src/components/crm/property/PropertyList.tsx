@@ -119,6 +119,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   const [minBedrooms, setMinBedrooms] = useState("");
   const [publishedFilter, setPublishedFilter] = useState("");
   const [intakeFilter, setIntakeFilter] = useState("");
+  const [postalFilter, setPostalFilter] = useState<"" | "missing">("");
   const [ownerFilter, setOwnerFilter] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" } | null>(null);
   // Tabelläget öppnar objektet i en dialog ovanpå tabellen (i stället för att hoppa
@@ -162,9 +163,10 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
       if (publishedFilter === "yes" && !p.published) return false;
       if (publishedFilter === "no" && p.published) return false;
       if (intakeFilter === "yes" && !isPropertyIntake(p)) return false;
+      if (postalFilter === "missing" && p.postalCode?.trim()) return false;
       return true;
     });
-  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter, travelCity, travel.results]);
+  }, [properties, statusFilter, cityFilter, minBedrooms, publishedFilter, intakeFilter, postalFilter, travelCity, travel.results]);
 
   // Sortering: tomma värden hamnar alltid sist (oavsett riktning), annars siffer- resp.
   // svensk textjämförelse. Utan aktiv sortering behålls serverns ordning.
@@ -189,6 +191,10 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   }, [filtered, sort]);
 
   const intakeCount = useMemo(() => properties.filter(isPropertyIntake).length, [properties]);
+  const missingPostalCount = useMemo(
+    () => properties.filter((property) => !property.postalCode?.trim()).length,
+    [properties],
+  );
 
   // Apply each new URL selection, including navigation within the property bank.
   const appliedId = useRef<string | null>(null);
@@ -349,6 +355,11 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                   Nytt bostadsintag
                 </span>
               )}
+              {!p.postalCode?.trim() && (
+                <span className="mt-1 ml-1 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800">
+                  Saknar postnummer
+                </span>
+              )}
               {/* Uthyraren har godkänt att annonsen visas online — objektet är
                   redo att publiceras så fort granskningen är gjord. */}
               {!p.published && p.publishConsentAt && (
@@ -408,6 +419,17 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
             }`}
           >
             {intakeCount} nya intag
+          </button>
+        )}
+        {missingPostalCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setPostalFilter((value) => (value === "missing" ? "" : "missing"))}
+            className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+              postalFilter === "missing" ? "bg-amber-700 text-white" : "bg-amber-50 text-amber-800 hover:bg-amber-100"
+            }`}
+          >
+            {missingPostalCount} saknar postnummer
           </button>
         )}
         <Button
@@ -488,9 +510,9 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
               Uthyrare-filter
             </span>
           )}
-          {(statusFilter || cityFilter || minBedrooms || publishedFilter || intakeFilter || ownerFilter) && (
+          {(statusFilter || cityFilter || minBedrooms || publishedFilter || intakeFilter || postalFilter || ownerFilter) && (
             <button
-              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setIntakeFilter(""); setOwnerFilter(""); }}
+              onClick={() => { setStatusFilter(""); setCityFilter(""); setMinBedrooms(""); setPublishedFilter(""); setIntakeFilter(""); setPostalFilter(""); setOwnerFilter(""); }}
               className="text-muted-foreground hover:text-foreground underline"
             >
               Rensa
@@ -583,7 +605,9 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                           )}
                         </TableCell>
                         <TableCell className="font-semibold text-foreground">{p.address || "(saknas)"}{["needs_review", "retry"].includes(p.contentReviewStatus) && <span className="block text-xs text-amber-800">{p.contentReviewStatus === "retry" ? "Kontrollen kunde inte slutföras" : "Kajsa behöver granska"}</span>}</TableCell>
-                        <TableCell className="text-foreground">{p.postalCode || "–"}</TableCell>
+                        <TableCell className={p.postalCode?.trim() ? "text-foreground" : "font-medium text-amber-700"}>
+                          {p.postalCode || "Saknas"}
+                        </TableCell>
                         <TableCell className="text-foreground">{p.city || "–"}{travelCity && <span className="block text-xs text-muted-foreground">{travel.results[p.id]?.durationText} med bil</span>}</TableCell>
                         <TableCell className="text-foreground">{p.ownerName || "–"}</TableCell>
                         <TableCell className="text-foreground">{p.ownerContactPerson || "–"}</TableCell>
@@ -878,7 +902,7 @@ function PropertyForm({
 
       <Field label="Adress" value={form.address} onChange={(v) => set("address", v)} required />
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Postnummer" value={form.postalCode} onChange={(v) => set("postalCode", v)} />
+        <Field label="Postnummer" value={form.postalCode} onChange={(v) => set("postalCode", v)} required />
         <Field label="Ort" value={form.city} onChange={(v) => set("city", v)} />
         <Field label="Land" value={form.country} onChange={(v) => set("country", v)} placeholder="Sverige" />
         <Field label="Yta (m²)" value={form.squareMeters?.toString()} onChange={(v) => set("squareMeters", num(v))} type="number" />
@@ -1000,9 +1024,7 @@ function PropertyForm({
               setSaving(false);
             }
           }}
-          // Adress är intern (visas aldrig publikt) → räcker med ort eller postnummer för att
-          // spara. Airbnb anger aldrig gatuadress, så annars går en ren Airbnb-import inte att spara.
-          disabled={saving || (!form.address && !form.city && !form.postalCode)}
+          disabled={saving || !form.postalCode?.trim()}
         >
           {saving && <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />}
           {saving ? "Sparar…" : "Spara bostad"}
@@ -1079,6 +1101,7 @@ function Field({
       <label className="text-xs font-medium text-muted-foreground">{label}{required ? " *" : ""}</label>
       <Input
         type={type}
+        required={required}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

@@ -8,6 +8,9 @@ import {
 
 function parsed(overrides: Record<string, unknown> = {}) {
   return qualificationExtractionSchema.parse({
+    companyName: null,
+    companyRegistrationNumber: null,
+    companyConfirmed: null,
     startDate: "2026-09-15",
     startDateText: null,
     endDate: "2027-03-15",
@@ -23,6 +26,7 @@ function parsed(overrides: Record<string, unknown> = {}) {
     laundryRequired: false,
     budgetMonthly: 30000,
     budgetText: null,
+    companyAnswered: false,
     startAnswered: true,
     durationAnswered: true,
     locationAnswered: true,
@@ -52,6 +56,24 @@ describe("corporate qualification workflow", () => {
 
   it("räknar befintligt personantal när kunden inte upprepar det", () => {
     expect(qualificationIsComplete(parsed({ persons: null }), 3)).toBe(true);
+  });
+
+  it("kräver företagsbekräftelse när företaget inte redan är känt", () => {
+    expect(qualificationIsComplete(parsed(), 3, false)).toBe(false);
+    expect(qualificationIsComplete(parsed({
+      companyName: "Exempel Bygg AB",
+      companyRegistrationNumber: "559000-0000",
+      companyConfirmed: true,
+      companyAnswered: true,
+    }), 3, false)).toBe(true);
+    expect(qualificationIsComplete(parsed({
+      companyConfirmed: false,
+      companyAnswered: true,
+    }), 3, false)).toBe(false);
+    expect(qualificationIsComplete(parsed({
+      companyConfirmed: false,
+      companyAnswered: true,
+    }), 3, true)).toBe(false);
   });
 
   it("tar bort citerad tidigare tråd före AI-tolkning", () => {

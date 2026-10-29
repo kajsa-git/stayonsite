@@ -26,7 +26,7 @@ const patch = (body: unknown) => PATCH(request(body), { params: Promise.resolve(
 
 describe("property translation writes", () => {
   it("persists all languages on creation without publishing or requiring photos", async () => {
-    const response = await POST(request({ address: "Gatan 2", publicDescription: "Möblerad etta" }, "POST"));
+    const response = await POST(request({ address: "Gatan 2", postalCode: "123 45", publicDescription: "Möblerad etta" }, "POST"));
     expect(response.status).toBe(201);
     const created = await response.json();
     expect(created).toMatchObject({ publicDescription: "Möblerad etta", publicDescriptionEn: "New English", publicDescriptionPl: "Nowy polski", published: false, prospektPublished: false });
@@ -48,7 +48,7 @@ describe("property translation writes", () => {
   });
   it("does not create a partial property on translation failure", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response("down", { status: 503 })));
-    expect((await POST(request({ address: "Gatan 2", publicDescription: "Ny text" }, "POST"))).status).toBe(502);
+    expect((await POST(request({ address: "Gatan 2", postalCode: "123 45", publicDescription: "Ny text" }, "POST"))).status).toBe(502);
     expect(await state.db.select().from(properties)).toHaveLength(1);
   });
   it("clears all languages together", async () => {

@@ -8,6 +8,7 @@ import { BarChart3, Building2, Calculator, CalendarDays, Home, KeyRound, LogOut,
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { billingTranslations } from "@/data/billing-translations";
 
 type Tab = { label: string; icon: LucideIcon; href?: string; exact?: boolean; action?: "more" };
 
@@ -76,6 +77,7 @@ export function MobileTabBar() {
             <MoreLink label="Översikt" onClick={() => go("/crm/oversikt")} />
             <MoreLink label="Veckorapport" icon={BarChart3} onClick={() => go("/crm/veckorapport")} />
             <MoreLink label="Uthyrare" icon={KeyRound} onClick={() => go("/crm/uthyrare")} />
+            <MoreLink label={billingTranslations.sv["billing.title"]} onClick={() => go("/crm/uthyrningar")} />
             <MoreLink label="Vinstkalkylator" icon={Calculator} onClick={() => { setMoreOpen(false); setShowCalc(true); }} />
             <MoreLink
               label="In- & avflyttningar"

@@ -11,6 +11,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
+import { hasPropertyPostalCode, PROPERTY_POSTAL_REQUIRED_ERROR } from "@/lib/crm/property-postal";
 
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
@@ -79,6 +80,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   if (body.status != null && !isValidPropertyStatus(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+  if (!hasPropertyPostalCode(body.postalCode)) {
+    return NextResponse.json({ error: PROPERTY_POSTAL_REQUIRED_ERROR }, { status: 400 });
   }
 
   // Dubblettspärr: samma adress + ort (case-/whitespace-okänsligt) som ett befintligt

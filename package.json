@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest",
+    "project-radar": "node scripts/project-radar.mjs",
     "indexnow": "node scripts/indexnow-submit.mjs",
     "gbp:validate": "node scripts/gbp/publish.mjs --validate",
     "gbp:test": "node --test scripts/gbp/publish.test.mjs",

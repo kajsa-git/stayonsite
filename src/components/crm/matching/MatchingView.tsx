@@ -94,6 +94,7 @@ const PROP_UNAVAILABLE: Record<string, string> = {
   off_market: "Av marknaden",
 };
 
+const DEFAULT_MATCH_RADIUS_KM = "30";
 
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
@@ -111,12 +112,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [acceptError, setAcceptError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     q: "",
-    city: request.city ?? "",
+    // Ort lämnas tom: geografisk avgränsning görs med köravstånd så närliggande
+    // orter (t.ex. Oskarshamn för Mönsterås) inte sorteras bort i förväg.
+    city: "",
     minBeds: request.persons?.toString() ?? "",
     maxRent: request.budgetMax?.toString() ?? "",
     minRating: "",
-    maxKm: "",
-    nearestFirst: false,
+    maxKm: DEFAULT_MATCH_RADIUS_KM,
+    nearestFirst: true,
     availableOnly: true,
     hideSuggested: false,
     furnished: !!request.furnishedRequired,
@@ -187,21 +190,38 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     }
     return [...byId].map(([id, address]) => ({ id, address }));
   })();
-  const distances = useDistances(workplaceAddress, distDests);
+  const { results: distances, status: distanceStatus } = useDistances(workplaceAddress, distDests);
 
   // Avståndsfilter + närmast-sortering appliceras EFTER scored (distanserna
   // hämtas för scored-listan — att filtrera scored på avstånd vore cirkulärt).
-  // Okänt avstånd exkluderas när ett maxvärde satts och sorteras alltid sist.
-  const maxMeters = filters.maxKm ? parseFloat(filters.maxKm) * 1000 : null;
+  // När beräkningen är klar exkluderas okända avstånd om maxvärde är satt.
+  const parsedMaxKm = filters.maxKm ? parseFloat(filters.maxKm) : null;
+  const maxMeters = parsedMaxKm != null && Number.isFinite(parsedMaxKm) ? parsedMaxKm * 1000 : null;
+  const radiusKm = parsedMaxKm != null && Number.isFinite(parsedMaxKm) ? parsedMaxKm : 30;
   const visible = scored
-    .filter(({ property }) => maxMeters == null || (distances[property.id]?.meters ?? Infinity) <= maxMeters)
+    // Vid API-fel visar vi de övriga matchkriterierna i stället för en falskt tom
+    // lista. Varningen under filtret gör tydligt att radien då inte är applicerad.
+    .filter(({ property }) =>
+      maxMeters == null
+      || distanceStatus !== "ready"
+      || (distances[property.id]?.meters ?? Infinity) <= maxMeters
+    )
+    .map(({ property }) => ({
+      property,
+      ...matchDetails(request, property, {
+        distanceKm: distances[property.id] ? distances[property.id].meters / 1000 : null,
+        radiusKm,
+      }),
+    }))
     .sort((a, b) =>
       filters.nearestFirst
         ? (distances[a.property.id]?.meters ?? Infinity) - (distances[b.property.id]?.meters ?? Infinity)
-        : 0
+        : b.score - a.score
     );
-  const distancesLoading =
-    !!workplaceAddress && distDests.length > 0 && Object.keys(distances).length === 0;
+  const distancesPending = !!workplaceAddress
+    && distDests.length > 0
+    && (distanceStatus === "idle" || distanceStatus === "loading");
+  const distancesUnavailable = distanceStatus === "unavailable" || distanceStatus === "error";
 
   function resetFilters() {
     setFilters({
@@ -720,8 +740,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             {filters.maxKm && !workplaceAddress && (
               <p className="text-xs text-amber-700">Förfrågan saknar arbetsadress — avstånd kan inte beräknas.</p>
             )}
-            {filters.maxKm && distancesLoading && (
+            {filters.maxKm && distancesPending && (
               <p className="text-xs text-muted-foreground">Hämtar kör-avstånd…</p>
+            )}
+            {filters.maxKm && distancesUnavailable && (
+              <p className="text-xs text-amber-700">
+                Avstånd kunde inte hämtas — alla övriga träffar visas utan {filters.maxKm} km-avgränsning.
+              </p>
             )}
             <div className="flex flex-wrap gap-1.5">
               <FilterPill active={filters.nearestFirst} onClick={() => setFilters((f) => ({ ...f, nearestFirst: !f.nearestFirst }))}>
@@ -755,7 +780,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               )}
             </div>
           </div>
-          {isLoading ? (
+          {isLoading || (maxMeters != null && distancesPending) ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" /> Letar boenden…

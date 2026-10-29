@@ -10,6 +10,7 @@ import { Calculator, ChevronLeft, ChevronRight, LogOut, Plus, Search } from "luc
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { billingTranslations } from "@/data/billing-translations";
 
 const NAV_ITEMS: { href: string; label: string; exact?: boolean; title?: string }[] = [
   { href: "/crm", label: "Min dag", exact: true },
@@ -18,6 +19,7 @@ const NAV_ITEMS: { href: string; label: string; exact?: boolean; title?: string 
   { href: "/crm/foretag", label: "Företagsbank" },
   { href: "/crm/properties", label: "Objektsbank" },
   { href: "/crm/uthyrare", label: "Uthyrare" },
+  { href: "/crm/uthyrningar", label: billingTranslations.sv["billing.title"] },
   { href: "/crm/flyttar", label: "In- & avflyttningar", title: "In- & avflyttningar att hantera" },
   { href: "/crm/sok", label: "Sök" },
 ];
@@ -50,7 +52,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
         <span className="text-xs font-medium text-muted-foreground border-l pl-2">CRM</span>
       </button>
 
-      <nav className="hidden md:flex min-w-0 items-center gap-0.5 overflow-x-auto">
+      <nav className="hidden min-w-0 md:flex items-center gap-0.5 overflow-x-auto">
         {NAV_ITEMS.map((item) => {
           const active = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/");
           return (
@@ -59,7 +61,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
               onClick={() => router.push(item.href)}
               title={item.title}
               aria-current={active ? "page" : undefined}
-              className={`shrink-0 text-xs px-2 py-1 rounded transition-colors ${
+              className={`shrink-0 whitespace-nowrap text-xs px-2 py-1 rounded transition-colors ${
                 active ? "bg-nordic-100 text-nordic-900 font-semibold" : "text-nordic-700 hover:bg-nordic-100"
               }`}
             >
@@ -91,7 +93,7 @@ export function TopBar({ currentIndex, total, onPrev, onNext }: TopBarProps) {
       <button
         onClick={openSearch}
         title="Sök allt (⌘K)"
-        className="relative flex-1 max-w-sm hidden md:flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
+        className="relative min-w-0 flex-1 max-w-sm hidden xl:flex items-center gap-2 h-9 px-3 text-sm text-muted-foreground bg-nordic-50 border rounded-md hover:bg-nordic-100 transition-colors"
       >
         <Search className="h-4 w-4 shrink-0" />
         <span className="truncate">Sök företag, förfrågan, objekt…</span>

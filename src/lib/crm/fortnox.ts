@@ -24,7 +24,7 @@ export class FortnoxSetupError extends Error {
   }
 }
 
-class FortnoxApiError extends Error {
+export class FortnoxApiError extends Error {
   status: number;
   body: string;
   constructor(message: string, status: number, body: string) {
@@ -189,7 +189,7 @@ async function getFortnoxAccessToken(db: DB, opts: { forceRefresh?: boolean } = 
   throw new FortnoxSetupError("Fortnox-token förnyas redan. Försök igen om några sekunder.", 423);
 }
 
-async function fortnoxRequest<T>(path: string, init: RequestInit = {}, db: DB = defaultDb): Promise<T> {
+export async function fortnoxRequest<T>(path: string, init: RequestInit = {}, db: DB = defaultDb): Promise<T> {
   const accessToken = await getFortnoxAccessToken(db);
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,

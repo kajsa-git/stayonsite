@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import type { KalkylScenario } from "./kalkyl";
+import type { BillingPeriodState, BillingSnapshot } from "./billing-types";
 
 // Auth.js required tables — column types must match @auth/drizzle-adapter expectations exactly
 export const users = sqliteTable("crm_users", {
@@ -635,3 +636,55 @@ export const matchEvents = sqliteTable("crm_match_events", {
 
 export type MatchEvent = typeof matchEvents.$inferSelect;
 export type MatchEventInsert = typeof matchEvents.$inferInsert;
+
+// Fakturaplanen gäller en bokning. Objektets status räcker inte som underlag.
+// Ändringar påverkar nya perioder, aldrig redan granskade/skickade underlag.
+export const billingPlans = sqliteTable("crm_billing_plans", {
+  id: text("id").primaryKey(),
+  companyId: text("company_id").notNull().references(() => companies.id, { onDelete: "restrict" }),
+  requestId: text("request_id").references(() => requests.id, { onDelete: "restrict" }),
+  propertyId: text("property_id").references(() => properties.id, { onDelete: "restrict" }),
+  sourceKey: text("source_key"),
+  accommodation: text("accommodation").notNull(),
+  customerNumber: text("customer_number").notNull(),
+  monthlyAmountMinor: integer("monthly_amount_minor").notNull(),
+  vatRate: integer("vat_rate").notNull(),
+  vatIncluded: integer("vat_included", { mode: "boolean" }).notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date"),
+  firstBillingMonth: text("first_billing_month").notNull(),
+  paymentTermsDays: integer("payment_terms_days").notNull(),
+  reference: text("reference").notNull().default(""),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  version: integer("version").notNull().default(1),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+}, (t) => [
+  index("crm_billing_plans_company_id_idx").on(t.companyId),
+  uniqueIndex("crm_billing_plans_source_key_idx").on(t.sourceKey),
+]);
+
+export const billingPeriods = sqliteTable("crm_billing_periods", {
+  id: text("id").primaryKey(),
+  planId: text("plan_id").notNull().references(() => billingPlans.id, { onDelete: "restrict" }),
+  month: text("month").notNull(),
+  status: text("status").$type<BillingPeriodState>().notNull(),
+  externalReference: text("external_reference").notNull(),
+  snapshot: text("snapshot", { mode: "json" }).$type<BillingSnapshot>().notNull(),
+  reviewId: text("review_id").notNull(),
+  reviewedBy: text("reviewed_by").notNull(),
+  reviewExpiresAt: text("review_expires_at").notNull(),
+  invoiceNumber: text("invoice_number"),
+  invoiceUrl: text("invoice_url"),
+  invoiceTotalMinor: integer("invoice_total_minor"),
+  lastError: text("last_error"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
+}, (t) => [
+  uniqueIndex("crm_billing_periods_plan_month_idx").on(t.planId, t.month),
+  uniqueIndex("crm_billing_periods_reference_idx").on(t.externalReference),
+  index("crm_billing_periods_plan_id_idx").on(t.planId),
+]);
+
+export type BillingPlan = typeof billingPlans.$inferSelect;
+export type BillingPeriod = typeof billingPeriods.$inferSelect;

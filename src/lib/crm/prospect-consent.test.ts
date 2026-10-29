@@ -33,8 +33,8 @@ it("still rejects website publication including combined requests without consen
   }
 });
 it("allows a new prospect without consent but rejects a new website listing", async () => {
-  const result = await POST(request({ city: "Linköping", prospektPublished: true }));
+  const result = await POST(request({ city: "Linköping", postalCode: "582 22", prospektPublished: true }));
   expect(result.status).toBe(201);
   expect(await result.json()).toMatchObject({ prospektPublished: true, published: false, publishConsentAt: null });
-  expect((await POST(request({ city: "Linköping", published: true, prospektPublished: true }))).status).toBe(422);
+  expect((await POST(request({ city: "Linköping", postalCode: "582 22", published: true, prospektPublished: true }))).status).toBe(422);
 });

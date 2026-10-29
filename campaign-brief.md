@@ -1,353 +1,249 @@
 # Campaign Brief: StayOnSite
-**Generated:** 2026-08-31
+**Generated:** 2026-09-06
 **Website:** https://www.stayonsite.se
 **Platforms:** Meta
-**Objective:** Leads — registrering av bostäder från privata bostadsägare
-**Concepts:** 3
+**Objective:** Leads via webbplats — registrering av bostäder från privata bostadsägare i Oskarshamn
+**Concepts:** 5
 
 ## Brand DNA Summary
-StayOnSite ska låta professionellt, trovärdigt, rakt och personligt, med en tydligt seriös ton och sakliga budskap som är lätta att förstå. Det visuella uttrycket bygger på mörkblått `#053C5E`, orange `#FF6300` och naturligt, professionellt bostadsfoto med svensk vardagskänsla, nordisk komposition och generöst negativt utrymme. Målgruppen är privata ägare av villor, radhus och lägenheter som vill nå seriösa företagskunder, undvika avgifter och få en tydligare process kring uthyrningen.
+StayOnSite ska låta professionellt, trovärdigt, rakt och personligt, med en tydligt seriös och saklig ton som gör företagsuthyrning lätt att förstå. Det visuella uttrycket bygger på mörkblått `#053C5E`, orange `#FF6300`, varm nordisk bostadsfotografi och generöst negativt utrymme, med den befintliga villa-bilden som primär kreativ utgångspunkt. Målgruppen är privata ägare i Oskarshamn med villa, radhus, ägarlägenhet, separat uthyrningsdel eller bostadsrätt där andrahandsuthyrning är tillåten eller godkänd, som vill ha hjälp att hitta företag med boendebehov för sin personal.
 
 ## Audit Context
-No audit data; run `/ads audit` for weakness-targeted concepts. Som konkurrenskontext används den givna Meta Ads Library-insikten: Residensportalen konkretiserar efterfrågan med bostadsstorlek, företagskund och tidsperiod, medan Hillesjö betonar företagskunder och helhetsprocess. StayOnSite differentierar sig med stadsspecifik relevans, det verifierbara erbjudandet utan avgifter och ett tydligt klargörande att boendet endast erbjuds till företag och används av deras personal — utan obestyrkta löften om beläggning, hyrestid eller betalningsnivå.
+No audit data; run `/ads audit` for weakness-targeted concepts. Kampanjens styrkbara lokala utgångspunkt är att flera företag just nu söker boende i Oskarshamn. All annonsering ska köras som **Meta Special Ad Category: Housing** med bred, tillåten målgrupp; copy och målgruppsinställningar får inte antyda kännedom om känsliga personliga egenskaper eller utlova att en registrering leder till uthyrning.
 
-Meta-kampanjen ska markeras som **Special Ad Category: Housing**. Använd bred, tillåten geografisk distribution kring Jönköping, Kiruna, Gävle, Linköping, Göteborg och Stockholm; undvik målgruppsavgränsningar eller copy som antyder kännedom om känsliga personliga egenskaper.
+Den befintliga villa-bilden i `ad-assets/meta/property-types/villa/` används som visuell bas för den aktuella kampanjen. Endast bostadsfotot, den nordiska känslan och kompositionsprincipen ska återbrukas; befintlig overlay-copy ska ersättas. Radhus, ägarlägenhet och separat uthyrningsdel planeras som framtida bildvariationer inom samma fem budskapskoncept, och bostadsrätt ska alltid kvalificeras med att andrahandsuthyrning behöver vara tillåten eller godkänd.
 
 ## Campaign Concepts
 
-### Concept 1: Lokal efterfrågan, stad för stad
-**Hypothesis:** Stadsspecifika varianter gör StayOnSites lokala efterfrågan konkret för bostadsägare som annars kan vara osäkra på företagsmarknaden utanför storstäderna, utan att utlova en viss bokning.
-**Primary Message:** StayOnSite söker privatpersoner som äger bostad i sex utvalda städer; boendet används av företagspersonal och kan registreras utan avgift.
-**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, subtil 6/10, tillgänglig 7/10; rak, lokal och saklig.
-**Copy Framework:** AIDA — rekommenderat för kall, bred Meta-målgrupp; FAB som A/B-alternativ för att testa stad + avgiftsfrihet som konkret funktion och nytta.
-**Visual Direction:** En stad per annonsvariant, med en autentisk svensk villa, lägenhet eller radhusmiljö och en privat bostadsägare i naturlig situation. Platsen kommuniceras i efterlagd copy, inte genom ett påhittat landmärke.
-**Visual Direction A (Photography):** Seriöst nordiskt redaktionellt bostadsfoto i mjukt dagsljus, med en vuxen bostadsägare vid entrén eller i ett välskött hem. Mörkblå `#053C5E` används som sober färgyta och orange `#FF6300` som en diskret lokaliserande linje eller markör.
-**Visual Direction B (Illustration):** En återhållen grafisk collagevariant med fotografisk svensk bostad, förenklad stadsplan utan namn och en tunn orange ruttlinje mot en mörkblå yta. Inga kartnålar med text, inga låtsasdata och inga generiska skyline-motiv.
-**Target Platforms:** Meta Feed samt Meta Stories/Reels; samma idé kan lokaliseras i sex separata annonsvarianter och distribueras brett inom reglerna för Housing-kategorin.
+### Concept 1: Företag söker i Oskarshamn nu
+**Hypothesis:** Den konkreta och styrkbara lokala efterfrågan gör budskapet direkt relevant för en kall, bred Meta-målgrupp i Oskarshamn utan att lova en framtida uthyrning.
+**Primary Message:** Flera företag söker just nu boende i Oskarshamn, och StayOnSite hjälper privata bostadsägare att hitta företag som behöver boende för sin personal.
+**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, tydlig–subtil 6/10 och tillgänglig 7/10; lokal, saklig och handlingsinriktad.
+**Copy Framework:** AIDA — primärt för kall, bred räckvidd; FAB som sekundärt test när efterfrågan kopplas till bostadens konkreta egenskaper.
+**Visual Direction:** Utgå från den befintliga villa-bildens autentiska svenska exteriör, mjuka dagsljus och tydliga copy-yta. Skapa en Oskarshamn-specifik känsla genom efterlagd copy och en diskret grafisk rörelse mot bostaden, inte genom påhittade landmärken.
+**Visual Direction A (Photography):** Banana Portrait mode. Använd villa-bilden som fotografisk huvudbas med bostaden tydlig i övre delen och en lugn privat bostadsägare nära entrén. Framtida variationer byter endast bostadstyp till radhus, ägarlägenhet eller separat uthyrningsdel och behåller samma nordiska ljus, trovärdighet och komposition.
+**Visual Direction B (Illustration):** Banana Abstract mode. Skapa en återhållen foto-grafisk variant där flera tunna orange linjer samlas mot bostaden över en mörkblå yta som metafor för aktuell efterfrågan. Undvik kartetiketter, påhittade siffror, företagslogotyper och genererad text.
+**Target Platforms:** Meta Feed som primär placering för tydlig lokal lead-kommunikation; materialet kan senare beskäras för Stories/Reels. Kampanjen körs som Housing med bred tillåten distribution.
 **CTA:** Registrera din bostad
-**Addresses:** Konkurrenternas konkreta efterfrågebudskap och målgruppens osäkerhet kring lokal efterfrågan, samtidigt som StayOnSite undviker obestyrkta detaljer om storlek, hyrestid eller betalningar.
+**Addresses:** Lokal osäkerhet om efterfrågan genom den styrkbara uppgiften att flera företag just nu söker boende i Oskarshamn.
 
-### Concept 2: Hela erbjudandet, ingen avgift
-**Hypothesis:** Ett direkt och verifierbart avgiftsbudskap svarar på målgruppens uttalade oro för avdrag på hyran och ger en tydlig anledning att registrera bostaden.
-**Primary Message:** Privat bostadsägare? Hyr ut ditt boende för företagspersonal – utan avgifter.
-**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, subtil 6/10, tillgänglig 7/10; tydlig, återhållsam och trygg.
-**Copy Framework:** FAB — avgiftsfriheten är funktionen, ett enklare ekonomiskt beslutsunderlag är fördelen och frånvaron av StayOnSite-avgift är den konkreta nyttan; AIDA används som sekundärt test för kall räckvidd.
-**Visual Direction:** Avgiftsfriheten gestaltas utan sedlar, kalkylblad eller överdrivna vinstsymboler. En enkel obruten orange linje mellan bostad och ägare fungerar som metafor för ett erbjudande utan StayOnSite-avgift.
-**Visual Direction A (Photography):** Naturlig detaljbild av bostadsnycklar på ett nordiskt träbord i ett välskött svenskt hem, med bostadsägaren mjukt ur fokus i bakgrunden. Mörkblå `#053C5E` skapar förtroende och `#FF6300` används sparsamt för den obrutna linjen.
-**Visual Direction B (Illustration):** Minimal arkitektonisk grafik där en enkel bostadssilhuett och ägarsymbol binds ihop av en obruten orange båge mot mörkblå bakgrund. Generöst negativt utrymme, inga procentsatser, mynt, banknoter eller påhittade ekonomiska värden.
-**Target Platforms:** Meta Feed för tydlig nyttokommunikation och Meta Stories/Reels för ett snabbt, visuellt stopp kring erbjudandet utan avgifter.
-**CTA:** Registrera din bostad
-**Addresses:** Residensportalens kostnadsfria vinkel med en renare och mer ägarorienterad förklaring, grundad i StayOnSites varumärkesvärde ”inga avgifter för bostadsägaren”.
+### Concept 2: Vi hjälper dig hitta företagen
+**Hypothesis:** Ett tydligt tjänstelöfte om hjälp att hitta relevanta företag förklarar StayOnSites roll och ger bostadsägaren ett konkret skäl att registrera sig.
+**Primary Message:** Registrera bostaden så hjälper StayOnSite dig att hitta företag som söker boende för sin personal i Oskarshamn.
+**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, tydlig–subtil 6/10 och tillgänglig 7/10; personlig, rak och trygg.
+**Copy Framework:** AIDA — primärt för att gå från igenkänning till registrering; FAB som sekundärt test för att översätta StayOnSites hjälp till en konkret ägarnytta.
+**Visual Direction:** Behåll villa-bilden som igenkännbar bostadsbas och gör kopplingen mellan ägaren, StayOnSite och företagens boendebehov till huvudidé. Hjälpen gestaltas som en riktad förbindelse, inte som ett löfte om en färdig matchning.
+**Visual Direction A (Photography):** Banana Portrait mode. Visa den befintliga svenska villan och bostadsägaren i en lugn, naturlig situation vid entrén, med mörkblå overlay-yta och orange accent. Framtida variationer använder samma bildspråk för radhus, ägarlägenhet och separat uthyrningsdel så att tjänstelöftet förblir konstant.
+**Visual Direction B (Illustration):** Banana Abstract mode. Använd ett sobert foto-grafiskt montage där en orange båge kopplar bostaden till en anonym, abstrakt företagssilhuett. Formen ska signalera vägledning och kontakt utan handslag, logotyper, dokumenttext eller påhittade gränssnitt.
+**Target Platforms:** Meta Feed för att förklara StayOnSites roll innan klick till webbplatsen; kan anpassas till Stories/Reels med kortare efterlagd copy. Housing-kategorin och bred tillåten målgrupp gäller.
+**CTA:** Registrera dig
+**Addresses:** Behovet av att förstå vad StayOnSite faktiskt hjälper till med: att hitta företag med boendebehov, inte att garantera en uthyrning.
 
-### Concept 3: Privatägare → företagspersonal
-**Hypothesis:** Genom att konkret visa vem som faktiskt bor i bostaden kan StayOnSite minska oro kring okända privata hyresgäster och förklara företagsmodellen utan att lova mer än tjänsten kan styrka.
-**Primary Message:** Vi söker privatpersoner som vill hyra ut; boendet används som hem av företagspersonal under ett uppdrag.
-**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, subtil 6/10, tillgänglig 7/10; varm, professionell och konkret.
-**Copy Framework:** AIDA — den mänskliga arbetssituationen fångar uppmärksamhet, företagsmodellen skapar intresse, ett välskött hem för personal bygger relevans och CTA:n driver registrering; FAB är alternativet för att testa ”endast företag” som huvudfunktion.
-**Visual Direction:** Ett vanligt välskött svenskt hem visas som lugn bas för en yrkesperson som veckopendlar eller arbetar på projekt. Situationen ska kännas vardaglig och professionell, inte som hotell, semesterboende eller privat korttidsuthyrning.
-**Visual Direction A (Photography):** Seriöst nordiskt livsstilsfoto av en vuxen yrkesperson som ställer en arbetsväska vid entrén eller öppnar en bärbar dator vid matbordet. Hemmet är tydligt bostadsmässigt och naturligt; `#053C5E` och `#FF6300` förekommer som diskreta redaktionella accenter.
-**Visual Direction B (Illustration):** Ett sobert foto-grafiskt montage där en svensk bostad och en anonym arbetsväska kopplas ihop av en tunn orange pulsvåg över en mörkblå yta. Metaforen är ”hem under uppdrag”, utan företagslogotyper, uniformsstereotyper eller text i bildbasen.
-**Target Platforms:** Meta Feed för att förklara modellen i lugn takt och Meta Stories/Reels för en enkel sekvens från arbete till ett riktigt hem; bred distribution enligt Housing-reglerna.
+### Concept 3: Fler bostadstyper kan passa
+**Hypothesis:** En konkret uppräkning av relevanta bostadstyper hjälper fler privata ägare att känna igen om deras boende kan vara aktuellt och minskar osäkerheten före registrering.
+**Primary Message:** Villa, radhus, ägarlägenhet, separat uthyrningsdel eller godkänd bostadsrätt i Oskarshamn kan vara relevant när StayOnSite hjälper dig hitta företag med boendebehov.
+**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, tydlig–subtil 6/10 och tillgänglig 7/10; konkret, inkluderande och korrekt.
+**Copy Framework:** AIDA — primärt för kall räckvidd och registrering; FAB är sekundärt ramverk för att koppla bostadstyp och godkännande till möjlig relevans.
+**Visual Direction:** Låt den befintliga villa-bilden vara kampanjens första bostadstyp och bygg därefter en konsekvent serie för radhus, ägarlägenhet och separat uthyrningsdel. Varje bild ska visa en tydligt identifierbar bostadstyp utan att förändra grundbudskapet om att StayOnSite hjälper ägaren hitta företag.
+**Visual Direction A (Photography):** Banana Product mode. Börja med villa-originalets naturliga svenska bostadsfoto och skapa framtida motsvarigheter med ett tydligt radhus, en separat lägenhetsentré och en avskild uthyrningsdel. Bostadsrättsvarianten ska kännas som ett privat hem och kvalificeras i copy med att andrahandsuthyrning är tillåten eller godkänd.
+**Visual Direction B (Illustration):** Banana Abstract mode. Skapa en ren, modulär bostadsserie med enkla arkitektoniska silhuetter i `#053C5E` och en orange linje som förenar typerna. Undvik symboler som antyder att alla bostäder automatiskt accepteras eller hyrs ut.
+**Target Platforms:** Meta Feed, särskilt som sekventiella bildvariationer i samma Housing-kampanj för bred målgrupp. Stories/Reels kan använda en bostadstyp per vertikal variant.
 **CTA:** Registrera din bostad
-**Addresses:** Hillesjös företagskundsvinkel men med ett tydligare och mer trovärdigt klargörande av användningen: företag är kunderna, deras personal bor i bostaden.
+**Addresses:** Osäkerhet om vilka privatägda bostäder som kan vara relevanta, inklusive kravet på tillåten eller godkänd andrahandsuthyrning för bostadsrätt.
+
+### Concept 4: Boendet erbjuds endast till företag
+**Hypothesis:** Ett tidigt och tydligt klargörande att boendet endast erbjuds till företag skiljer tjänsten från privat uthyrning och kvalificerar intresserade bostadsägare.
+**Primary Message:** StayOnSite hjälper dig hitta företag som behöver boende för sin personal; bostaden erbjuds endast till företag.
+**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, tydlig–subtil 6/10 och tillgänglig 7/10; professionell, lugn och otvetydig.
+**Copy Framework:** AIDA — primärt för resan från uppmärksamhet till registrering; FAB är sekundärt ramverk där företagsinriktningen är den konkreta egenskapen och tydligheten är nyttan.
+**Visual Direction:** Utgå från villa-bilden men lägg till diskreta tecken på att bostaden används av personal på uppdrag, utan att göra miljön till hotell eller arbetsplats. Företagsmodellen ska kommuniceras med bildmetafor och efterlagd copy, inte med logotyper eller uniformsstereotyper.
+**Visual Direction A (Photography):** Banana Portrait mode. Behåll den nordiska villan som lugn hemmiljö och visa en neutral arbetsväska nära entrén eller en yrkesperson i vardaglig klädsel. Framtida varianter överför samma detalj till radhus, ägarlägenhet och separat uthyrningsdel.
+**Visual Direction B (Illustration):** Banana Abstract mode. Koppla en enkel bostadssilhuett till en anonym portföljform med en tunn orange pulsvåg mot mörkblå bakgrund. Metaforen ska vara ”hem för personal på uppdrag”, utan företagsnamn, arbetsplatsdata eller text i bildbasen.
+**Target Platforms:** Meta Feed för ett tydligt kvalificerande budskap före webbplatsbesöket; vertikal version kan användas i Stories/Reels. Housing-regler och bred tillåten distribution ska tillämpas.
+**CTA:** Registrera dig
+**Addresses:** Oro och oklarhet kring vem bostaden erbjuds till genom att förklara att kunden är ett företag och att företagets personal bor i bostaden.
+
+### Concept 5: Börja med att registrera bostaden
+**Hypothesis:** Ett enkelt första steg sänker tröskeln för kalla bostadsägare som är intresserade men ännu inte vet om deras boende matchar företagens aktuella behov.
+**Primary Message:** Registrera din bostad på webbplatsen så får StayOnSite underlaget som behövs för att hjälpa dig hitta relevanta företag i Oskarshamn.
+**Tone:** formell–personlig 4/10, rationell 3/10, seriös 8/10, tydlig–subtil 6/10 och tillgänglig 7/10; enkel, saklig och vägledande.
+**Copy Framework:** AIDA — primärt för att göra registreringen till ett tydligt nästa steg; FAB som sekundärt test för att förklara hur bostadsuppgifterna gör sökandet efter relevanta företag mer konkret.
+**Visual Direction:** Behåll villa-originalets bostad och ägare, men lägg fokus på övergången från intresse till webbregistrering. Processen ska visas enkelt och anonymt utan synlig formulärtext, statusbesked eller symboler som antyder en säker uthyrning.
+**Visual Direction A (Photography):** Banana Portrait mode. Visa en privat bostadsägare vid den befintliga villan med en mobil i handen och bostaden tydligt närvarande i bild. Samma komposition kan senare fotograferas vid radhus, ägarlägenhet och separat uthyrningsdel för att bredda igenkänningen.
+**Visual Direction B (Illustration):** Banana UI/Web mode. Lägg ett anonymt, textfritt kortmotiv bredvid bostaden och låt en orange stigande linje röra sig från kortet mot en abstrakt företagsform. Uttrycket ska vara sobert och vägledande, inte tekniskt eller löftesdrivet.
+**Target Platforms:** Meta Feed som konverteringsnära annons till webbplatsens registrering; en förenklad vertikal variant kan stödja Stories/Reels. Kampanjen ska vara Housing och använda bred tillåten målgrupp.
+**CTA:** Registrera din bostad
+**Addresses:** Friktion kring nästa steg genom att göra registreringen tydlig och förklara hur StayOnSite använder bostadsunderlaget för att hjälpa till att hitta relevanta företag.
 
 ## Copy Deck
 
-**Plattform:** Meta
-**Objektiv:** Leads
-**Fast kampanj-CTA:** `Registrera din bostad` (21 tecken)
-**Erbjudande:** `Privat bostadsägare? Hyr ut för företagspersonal – utan avgifter.` (65 tecken)
+Samtliga texter är validerade mot Metas gränser: Primary Text högst 2 200 tecken (125 tecken rekommenderas före möjlig mobil trunkering) och kort headline högst 40 tecken. CTA-knappen är Metas fördefinierade **Registrera dig**. Teckenräkningen inkluderar mellanslag och skiljetecken; för den godkända texten i Concept 1 ingår även de två radbrytningarna.
 
-All copy riktar sig till privata bostadsägare. Boendet erbjuds endast till företagskunder och används av deras personal. Formuleringen ”utan avgift” avser avgift till StayOnSite och innebär inget löfte om beläggning, hyresnivå, avtalslängd eller vem som blir juridisk avtalspart. Använd Meta-knappen `Sign Up` (7 tecken; lokaliserad etikett `Registrera dig`, 14 tecken) tillsammans med den fasta kampanj-CTA:n i copy eller overlay.
-
-### Concept 1: Lokal efterfrågan, stad för stad - Meta
+### Concept 1: Företag söker i Oskarshamn nu - Meta
 
 #### Primär variant [AIDA]
 
-**Primary Text** (3 varianter, ≤125 tecken):
+**Primary Text** (314 tecken):
 
-1. Äger du en bostad som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (98 tecken) — SHORT
-2. Du äger bostaden. Företagets personal bor där. Registrera bostaden utan avgift till StayOnSite. (95 tecken) — MEDIUM
-3. Privat bostadsägare? Registrera för företagspersonal utan avgift. (65 tecken) — REELS-SAFE
+> Företag söker möblerade boenden i Oskarshamn. Har du en villa, ett radhus, en ägarlägenhet eller en separat uthyrningsdel?
+>
+> StayOnSite hjälper dig att hitta företag som behöver boende för sin personal. Just nu har vi flera företag som söker boende i Oskarshamn. Registrera ditt intresse och din bostad redan i dag.
 
-**Lokala Primary Text-varianter** (≤125 tecken):
+**Headline:** Aktuell efterfrågan i Oskarshamn (32 tecken)
 
-1. Äger du en bostad i Jönköping som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (110 tecken)
-2. Äger du en bostad i Kiruna som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (107 tecken)
-3. Äger du en bostad i Gävle som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (106 tecken)
-4. Äger du en bostad i Linköping som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (110 tecken)
-5. Äger du en bostad i Göteborg som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (109 tecken)
-6. Äger du en bostad i Stockholm som privatperson? Vi söker boenden för företagspersonal. Registrera utan avgift. (110 tecken)
-
-**Headlines** (27–40 tecken):
-
-1. Privat bostadsägare i din stad? (31 tecken) — LOKAL EFTERFRÅGAN
-2. Hyr ut lokalt – utan avgifter (29 tecken) — ERBJUDANDE
-3. Nå företagskunder i din stad (28 tecken) — MÅLGRUPP
-4. 0 kr i avgift till StayOnSite (29 tecken) — KONKRET NYTTA
-5. Registrera ditt boende lokalt (29 tecken) — HANDLING
-
-**Descriptions** (carousel-säkra, ≤20 tecken):
-
-1. Företagsboende (14 tecken)
-2. Utan ägaravgift (15 tecken)
-3. Registrera idag (15 tecken)
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
 
 #### Sekundär variant [FAB]
 
-**Primary Text** (3 varianter, ≤125 tecken):
+**Primary Text** (156 tecken):
 
-1. Boendet erbjuds till företag för deras personal. Du betalar ingen avgift till StayOnSite. Registrera din bostad. (112 tecken) — SHORT
-2. Företagsboende via StayOnSite. Nå företag utan avgift till StayOnSite. Registrera din bostad. (93 tecken) — MEDIUM
-3. Nå företagskunder utan avgift. Registrera din bostad. (53 tecken) — REELS-SAFE
+> Flera företag söker boende för sin personal i Oskarshamn. Registrera din bostad hos StayOnSite så hjälper vi dig att hitta företag med aktuella boendebehov.
 
-**Lokala Primary Text-varianter** (≤125 tecken):
+**Headline:** Matcha bostaden med företagsbehov (33 tecken)
 
-1. Registrera din bostad i Jönköping för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (99 tecken)
-2. Registrera din bostad i Kiruna för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (96 tecken)
-3. Registrera din bostad i Gävle för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (95 tecken)
-4. Registrera din bostad i Linköping för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (99 tecken)
-5. Registrera din bostad i Göteborg för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (98 tecken)
-6. Registrera din bostad i Stockholm för företagsboende. StayOnSite tar ingen avgift av bostadsägaren. (99 tecken)
-
-**Headlines** (27–40 tecken):
-
-1. Erbjud bostaden för företagsboende (34 tecken) — FUNKTION
-2. Ingen avgift till StayOnSite (28 tecken) — FÖRDEL
-3. Nå företagskunder med ditt boende (33 tecken) — NYTTA
-4. Upptäck företagsboende lokalt (29 tecken) — NYFIKENHET
-5. Registrera för företagsboende (29 tecken) — HANDLING
-
-**Descriptions** (carousel-säkra, ≤20 tecken):
-
-1. Endast företag (14 tecken)
-2. Ingen avgift (12 tecken)
-3. Nå företagskunder (17 tecken)
-
-**CTA-alternativ:**
-
-1. Registrera din bostad (21 tecken) — REKOMMENDERAD
-2. Registrera bostaden utan avgift (31 tecken) — COPY/OVERLAY-TEST
-3. Nå företagskunder (17 tecken) — COPY/OVERLAY-TEST
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
 
 ---
 
-### Concept 2: Hela erbjudandet, ingen avgift - Meta
-
-#### Primär variant [FAB]
-
-**Primary Text** (3 varianter + 1 kvalificerande variant, ≤125 tecken):
-
-1. Ingen avgift till StayOnSite. Erbjud ditt boende till företag och deras personal. Registrera din bostad. (104 tecken) — SHORT
-2. Hyr ut ditt boende till företag – utan avgifter. StayOnSite tar ingen avgift av dig som ägare. Registrera din bostad. (117 tecken) — MEDIUM
-3. Hyr ut till företag utan avgift. Registrera din bostad. (55 tecken) — REELS-SAFE
-4. Villa, radhus, ägarlägenhet, separat uthyrningsdel eller bostadsrätt med godkänd andrahandsuthyrning? Registrera din bostad. (124 tecken) — KVALIFICERING
-
-Intern efterlevnadsnotering: För bostadsrätt avser ”godkänd andrahandsuthyrning” dokumenterat samtycke eller uttryckligt stöd i föreningens regler, alternativt tillstånd från Hyresnämnden. Annonsen får inte antyda att en bostadsrätt kan hyras ut utan nödvändigt godkännande.
-
-**Headlines** (27–40 tecken):
-
-1. Hyr ut till företag – utan avgift (33 tecken) — ERBJUDANDE
-2. Slipp avgift till StayOnSite (28 tecken) — PROBLEM
-3. 0 kr i avgift till StayOnSite (29 tecken) — KONKRET NYTTA
-4. Endast företag och deras personal (33 tecken) — MÅLGRUPP
-5. Registrera bostaden utan avgift (31 tecken) — HANDLING
-
-**Descriptions** (carousel-säkra, ≤20 tecken):
-
-1. Utan ägaravgift (15 tecken)
-2. Endast företag (14 tecken)
-3. Registrera bostaden (19 tecken)
-
-#### Sekundär variant [AIDA]
-
-**Primary Text** (3 varianter, ≤125 tecken):
-
-1. Hyr ut ditt boende till företag – utan avgifter. StayOnSite tar ingen avgift. Registrera din bostad. (100 tecken) — SHORT
-2. Söker du företagskunder till ditt boende? StayOnSite tar ingen avgift av bostadsägaren. Registrera din bostad. (110 tecken) — MEDIUM
-3. Nå företagskunder utan avgift till StayOnSite. Registrera din bostad. (69 tecken) — REELS-SAFE
-
-**Headlines** (27–40 tecken):
-
-1. Upptäck uthyrning utan avgifter (31 tecken) — NYFIKENHET
-2. Välj företagsboende utan avgift (31 tecken) — ERBJUDANDE
-3. Nå företagskunder utan avgift (29 tecken) — NYTTA
-4. 0 kr i avgift för bostadsägaren (31 tecken) — KONKRET NYTTA
-5. Registrera din bostad för företag (33 tecken) — HANDLING
-
-**Descriptions** (carousel-säkra, ≤20 tecken):
-
-1. Hyr ut utan avgift (18 tecken)
-2. För företagskunder (18 tecken)
-3. Registrera bostaden (19 tecken)
-
-**CTA-alternativ:**
-
-1. Registrera din bostad (21 tecken) — REKOMMENDERAD
-2. Registrera bostaden utan avgift (31 tecken) — COPY/OVERLAY-TEST
-3. Nå företagskunder (17 tecken) — COPY/OVERLAY-TEST
-
----
-
-### Concept 3: Privatägare → företagspersonal - Meta
+### Concept 2: Vi hjälper dig hitta företagen - Meta
 
 #### Primär variant [AIDA]
 
-**Primary Text** (3 varianter, ≤125 tecken):
+**Primary Text** (177 tecken):
 
-1. Vi söker privatpersoner som vill hyra ut. Boendet används av företagspersonal. Registrera utan avgift. (102 tecken) — SHORT
-2. Du äger bostaden. Företagets personal bor där. Registrera bostaden utan avgift till StayOnSite. (95 tecken) — MEDIUM
-3. Privat bostadsägare? Hyr ut för företagspersonal utan avgift. (61 tecken) — REELS-SAFE
+> Hitta företag som behöver boende för sin personal i Oskarshamn. StayOnSite hjälper dig från registrerad bostad till kontakt med företag som söker. Registrera dig på webbplatsen.
 
-**Headlines** (27–40 tecken):
+**Headline:** Hitta företag till din bostad (29 tecken)
 
-1. Företag söker hem åt sin personal (33 tecken) — EFTERFRÅGAN
-2. Privatägt för företagspersonal (30 tecken) — MODELL
-3. Din bostad för personal på uppdrag (34 tecken) — ANVÄNDNING
-4. Nå företag som söker personalboende (35 tecken) — MÅLGRUPP
-5. Registrera ett hem för företagsboende (37 tecken) — HANDLING
-
-**Descriptions** (carousel-säkra, ≤20 tecken):
-
-1. Endast företag (14 tecken)
-2. Hem under uppdrag (17 tecken)
-3. Registrera bostaden (19 tecken)
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
 
 #### Sekundär variant [FAB]
 
-**Primary Text** (3 varianter, ≤125 tecken):
+**Primary Text** (167 tecken):
 
-1. Boendet erbjuds endast till företag för deras personal. Registrera din bostad hos StayOnSite utan avgift. (105 tecken) — SHORT
-2. Presentera din bostad för företag som söker boende åt sin personal. Ingen avgift till StayOnSite. Registrera din bostad. (120 tecken) — MEDIUM
-3. Endast företag, för deras personal. Registrera din bostad utan avgift. (70 tecken) — REELS-SAFE
+> Personlig hjälp från StayOnSite gör företagssökandet enklare. Företaget hyr för sin personal, och vi hjälper dig att hitta en relevant företagskontakt. Registrera dig.
 
-**Headlines** (27–40 tecken):
+**Headline:** Få hjälp att hitta företagen (28 tecken)
 
-1. Erbjud bostaden till företagskunder (35 tecken) — FUNKTION
-2. Upptäck företagsboende för personal (35 tecken) — ANVÄNDNING
-3. Hyr ut ett hem för personal (27 tecken) — NYTTA
-4. Nå företagskunder med bostaden (30 tecken) — MÅLGRUPP
-5. Registrera för personalboende (29 tecken) — HANDLING
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
 
-**Descriptions** (carousel-säkra, ≤20 tecken):
+---
 
-1. För företag (11 tecken)
-2. För deras personal (18 tecken)
-3. Registrera bostaden (19 tecken)
+### Concept 3: Fler bostadstyper kan passa - Meta
 
-**CTA-alternativ:**
+#### Primär variant [AIDA]
 
-1. Registrera din bostad (21 tecken) — REKOMMENDERAD
-2. Registrera bostaden utan avgift (31 tecken) — COPY/OVERLAY-TEST
-3. Nå företagskunder (17 tecken) — COPY/OVERLAY-TEST
+**Primary Text** (226 tecken):
+
+> Fler bostadstyper kan passa företagens personal i Oskarshamn. Villa, radhus, ägarlägenhet eller separat uthyrningsdel kan vara relevant. En bostadsrätt kan också passa när andrahandsuthyrning är godkänd. Registrera din bostad.
+
+**Headline:** Fler bostadstyper kan passa (27 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
+
+#### Sekundär variant [FAB]
+
+**Primary Text** (207 tecken):
+
+> Villa, radhus, ägarlägenhet och separat uthyrningsdel kan registreras hos StayOnSite. Bostadsrätt kan vara aktuell när andrahandsuthyrning är godkänd. Då kan vi hjälpa dig att hitta företag som söker boende.
+
+**Headline:** Se vilka bostäder som kan passa (31 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
+
+---
+
+### Concept 4: Boendet erbjuds endast till företag - Meta
+
+#### Primär variant [AIDA]
+
+**Primary Text** (211 tecken):
+
+> Ett hem för personal på uppdrag börjar med rätt bostad. StayOnSite hjälper dig att hitta företag som söker boende i Oskarshamn. Bostaden erbjuds endast till företag, som hyr den för sin personal. Registrera dig.
+
+**Headline:** Erbjud bostaden enbart till företag (35 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
+
+#### Sekundär variant [FAB]
+
+**Primary Text** (170 tecken):
+
+> Din bostad erbjuds endast till företag via StayOnSite. Företaget hyr boendet för sin personal på uppdrag. Det ger en tydlig företagsinriktning från start. Registrera dig.
+
+**Headline:** Skapa hem för personal på uppdrag (33 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
+
+---
+
+### Concept 5: Börja med att registrera bostaden - Meta
+
+#### Primär variant [AIDA]
+
+**Primary Text** (203 tecken):
+
+> Börja med ett enkelt steg: registrera bostaden på vår webbplats. StayOnSite använder uppgifterna för att hjälpa dig att hitta företag som söker boende i Oskarshamn. Registrera dig och skicka in bostaden.
+
+**Headline:** Börja med en enkel registrering (31 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
+
+#### Sekundär variant [FAB]
+
+**Primary Text** (182 tecken):
+
+> Registreringen samlar uppgifter om din bostad på ett ställe. Det ger StayOnSite ett tydligt underlag för att hitta relevanta företag med boendebehov för sin personal. Registrera dig.
+
+**Headline:** Registrera bostaden för nästa steg (34 tecken)
+
+**CTA (Meta-knapp):** Registrera dig (14 tecken)
 
 ## Image Generation Briefs
 
-Genereringsmetod: **built-in ImageGen**. Bildbaserna ska genereras utan text; den exakta svenska overlay-copyn läggs på efteråt för korrekt stavning och konsekvent layout. Fältet `Banana domain mode` behålls endast som parserkompatibel metadata och innebär inget Banana-beroende.
+Den befintliga villa-bilden i `ad-assets/meta/property-types/villa/feed-1080x1350.png` är visuell referens för samtliga fem första Meta Feed-assets. Bildbaserna ska genereras utan text; svensk rubrik och CTA läggs på efteråt. Radhus, ägarlägenhet och separat uthyrningsdel produceras som framtida bildvariationer med samma koncept, komposition och färgsystem.
 
-### Brief 1: Lokal efterfrågan, stad för stad - Meta Feed
-**Prompt:** Full-bleed editorial photograph of an authentic Swedish townhouse or apartment entrance, calm adult homeowner naturally present, subtle #053C5E architectural shadow and #FF6300 route arc, local connection as a visual metaphor, Nordic serious professional warmth, natural daylight, stark but sober contrast, lower 30% minimal and uncluttered for copy overlay, no hotel, handshake, landmark, luxury staging, watermark or generated text.
+### Brief 1: Företag söker i Oskarshamn nu - Meta
+**Prompt:** Full-bleed editorial photograph of an authentic Swedish villa and calm private homeowner, multiple restrained #FF6300 rising curves converging toward the home over subtle #053C5E shadows, current local demand as visual metaphor, natural professional Swedish housing photography, warm Nordic authority, stark sober contrast, lower 30% minimal and uncluttered for copy overlay, no landmark, hotel, handshake, logo, watermark, numbers or generated text.
 **Dimensions:** 1080x1350
 **Aspect Ratio:** 4:5
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
+**Banana domain mode:** Portrait
 **Copy Framework:** AIDA
-**Safe zone notes:** Håll bostad och person inom övre 70 %. Reservera nedersta 405 px som lugn copy-yta och håll minst 72 px sidmarginal. Lägg ingen text i bildgenereringen.
+**Safe zone notes:** Behåll villa och person i övre 70 %. Håll nedersta 30 % lugn för efterlagd rubrik och CTA, med minst 72 px sidmarginal.
 
-Post-production overlay, one city per asset: `Är du privat bostadsägare i Jönköping?` / `Är du privat bostadsägare i Kiruna?` / `Är du privat bostadsägare i Gävle?` / `Är du privat bostadsägare i Linköping?` / `Är du privat bostadsägare i Göteborg?` / `Är du privat bostadsägare i Stockholm?`. Qualification line: `Ägarlägenhet, villa, radhus eller separat uthyrningsdel?` Support line: `För företagspersonal · 0 % avgift`. CTA: `Registrera din bostad`. Bostadsrätt med godkänd andrahandsuthyrning kvalificeras i Primary Text och i formuläret, inte i bildens kortare overlay.
-
-### Brief 2: Lokal efterfrågan, stad för stad - Meta Stories/Reels
-**Prompt:** Vertical stacked editorial photograph of an authentic Swedish home entrance and calm adult homeowner, centered active visual, subtle #053C5E shadow blocks and a restrained #FF6300 ascending route curve, local demand as a visual metaphor, natural Nordic housing photography, serious professional warmth, top 15% and bottom 20% minimal, no landmark, hotel styling, handshake, exaggerated smile, watermark or generated text.
-**Dimensions:** 1080x1920
-**Aspect Ratio:** 9:16
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** AIDA
-**Safe zone notes:** Håll aktivt motiv mellan y=288–1536 och minst 72 px från sidorna. Placera efterlagd rubrik omkring y=340–620 och CTA ovanför y=1480; top 288 px och bottom 384 px hålls fria från viktig information.
-
-Post-production overlay, one city per asset: `Är du privat bostadsägare i Jönköping?` / `Är du privat bostadsägare i Kiruna?` / `Är du privat bostadsägare i Gävle?` / `Är du privat bostadsägare i Linköping?` / `Är du privat bostadsägare i Göteborg?` / `Är du privat bostadsägare i Stockholm?`. Qualification line: `Ägarlägenhet, villa, radhus eller separat uthyrningsdel?` Support line: `För företagspersonal · 0 % avgift`. CTA: `Registrera din bostad`. Bostadsrätt med godkänd andrahandsuthyrning kvalificeras i Primary Text och i formuläret, inte i bildens kortare overlay.
-
-### Brief 3: Hela erbjudandet, ingen avgift - Meta Feed
-**Prompt:** Centered close editorial photograph of house keys on a Nordic wood table inside a well-kept Swedish home, homeowner softly present in background, one unbroken #FF6300 glowing line arc against restrained #053C5E shadow, no interruption as the visual metaphor, natural serious housing photography, minimal authority, lower 30% minimal and uncluttered for copy overlay, no money, charts, handshake, hotel, watermark or generated text.
+### Brief 2: Vi hjälper dig hitta företagen - Meta
+**Prompt:** Diagonal editorial photograph based on an authentic Swedish villa exterior, calm homeowner by the entrance, one precise #FF6300 glowing line arc connecting the home to an abstract #053C5E company silhouette, guidance and connection as visual metaphor, natural professional housing photography, Nordic warmth, minimal authority, lower 30% minimal and uncluttered for copy overlay, no handshake, logo, hotel, status badge, watermark or generated text.
 **Dimensions:** 1080x1350
 **Aspect Ratio:** 4:5
-**Banana domain mode:** Product — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Nycklar och händer placeras i mittre/övre 70 %. Reservera nedersta 405 px för efterlagd copy, med minst 72 px sidmarginal. Undvik detaljer nära beskärningskanterna.
+**Banana domain mode:** Portrait
+**Copy Framework:** AIDA primary; FAB secondary
+**Safe zone notes:** Placera förbindelselinjen och huvudmotivet i övre 70 %. Reservera nedersta 30 % för efterlagd copy och CTA utan att täcka entrén.
 
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut till företag`. Badge: `0 % avgift`. Support line: `Boendet används av företagspersonal.` CTA: `Registrera din bostad`.
-
-### Brief 4: Hela erbjudandet, ingen avgift - Meta Stories/Reels
-**Prompt:** Vertical centered editorial photograph of house keys and a calm private homeowner in a real Swedish apartment, an unbroken #FF6300 pulse line rising through a restrained #053C5E shadow field, continuity as a visual metaphor, natural Nordic professional photography, sober contrast, top 15% and bottom 20% minimal, active visual centered, no money, percentage signs, hotel styling, watermark or generated text.
-**Dimensions:** 1080x1920
-**Aspect Ratio:** 9:16
-**Banana domain mode:** Product — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Håll nyckelmotiv och person mellan y=288–1536 och minst 72 px från sidorna. Efterlagd rubrik placeras omkring y=340–680 och CTA ovanför y=1480; top 288 px och bottom 384 px lämnas utan viktig information.
-
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut till företag`. Badge: `0 % avgift`. Support line: `Boendet används av företagspersonal.` CTA: `Registrera din bostad`.
-
-### Brief 5: Ett hem för personal på uppdrag - Meta Feed
-**Prompt:** Full-bleed natural editorial photograph inside a well-kept Swedish home, adult professional placing a work bag by the entrance and settling in, subtle #FF6300 pulse wave moving from bag toward a calm #053C5E home-shaped shadow, work-to-home as a visual metaphor, Nordic serious warmth, lower 30% minimal and uncluttered for copy overlay, no uniform stereotype, hotel, handshake, luxury staging, watermark or generated text.
+### Brief 3: Fler bostadstyper kan passa - Meta
+**Prompt:** Stacked editorial housing collage anchored by an authentic Swedish villa, with subtle future glimpses of a rowhouse, apartment entrance and separate rental unit, unified by a restrained #FF6300 ascending line on #053C5E panels, housing variety as visual metaphor, natural professional Swedish housing photography, warm Nordic precision, lower 30% minimal and uncluttered for copy overlay, no labels, hotel, luxury staging, watermark or generated text.
 **Dimensions:** 1080x1350
 **Aspect Ratio:** 4:5
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** AIDA
-**Safe zone notes:** Placera personen och arbetsväskan i övre 70 % och håll minst 72 px sidmarginal. Reservera nedersta 405 px som lugn yta för efterlagd copy; inga viktiga detaljer längst ned.
+**Banana domain mode:** Landscape
+**Copy Framework:** AIDA primary; FAB secondary
+**Safe zone notes:** Villan ska vara tydlig huvudbild; övriga bostadstyper är sekundära variationer. Håll nedersta 30 % fri för efterlagd copy och CTA.
 
-Post-production overlay: Headline: `Vi söker privatpersoner som vill hyra ut`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
-
-### Brief 6: Ett hem för personal på uppdrag - Meta Stories/Reels
-**Prompt:** Vertical stacked natural editorial photograph of an adult professional arriving at an authentic Swedish home with a work bag, centered active visual, subtle #FF6300 ascending pulse wave entering a calm #053C5E architectural shadow, assignment-to-home as a visual metaphor, serious Nordic warmth, top 15% and bottom 20% minimal, no hotel, hard-hat cliché, handshake, exaggerated smile, watermark or generated text.
-**Dimensions:** 1080x1920
-**Aspect Ratio:** 9:16
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** AIDA
-**Safe zone notes:** Håll personen, väskan och bostadsmiljön mellan y=288–1536 och minst 72 px från sidorna. Lägg rubrik omkring y=340–650 och CTA ovanför y=1480; top 288 px och bottom 384 px hålls fria från viktig information.
-
-Post-production overlay: Headline: `Vi söker privatpersoner som vill hyra ut`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
-
-### Brief 7: Villa - Meta Feed
-**Prompt:** Photorealistic editorial image of a normal detached Swedish villa, clearly identifiable as a privately owned home, with a calm adult private homeowner naturally near the entrance; ordinary Swedish residential neighborhood, modest garden and Nordic materials; credible everyday housing photography, not glossy stock; 4:5 composition with the villa unmistakable in the upper 70% and lower 30% quiet for copy; soft Nordic daylight; no luxury mansion, apartment building, hotel, rental signs, logos, watermark, generated text or AI artifacts.
+### Brief 4: Boendet erbjuds endast till företag - Meta
+**Prompt:** Centered natural editorial photograph of an authentic Swedish villa as a real home, calm professional arriving with a simple work bag, subtle #FF6300 pulse wave entering a #053C5E home-shaped shadow, home for staff on assignment as visual metaphor, professional Nordic warmth, minimal serious atmosphere, lower 30% minimal and uncluttered for copy overlay, no uniform stereotype, company logo, hotel, handshake, watermark or generated text.
 **Dimensions:** 1080x1350
 **Aspect Ratio:** 4:5
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Villan och ägaren hålls i övre 70 %. Nedersta 405 px reserveras för copy.
+**Banana domain mode:** Portrait
+**Copy Framework:** AIDA primary; FAB secondary
+**Safe zone notes:** Håll person, arbetsväska och bostad i övre 70 %. Reservera nedersta 30 % för kvalificerande copy och CTA.
 
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut din villa`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
-
-### Brief 8: Villa - Meta Stories/Reels
-**Prompt:** Photorealistic vertical editorial image of a normal detached Swedish villa, clearly identifiable as a privately owned home, with a calm adult private homeowner near the entrance; ordinary Swedish residential setting with modest garden and Nordic materials; true 9:16 composition showing the detached-house character, central subject zone readable, top 15% and bottom 20% low in detail; natural professional housing photography and soft Nordic daylight; no luxury mansion, apartment building, hotel, rental signs, logos, watermark, generated text or AI artifacts.
-**Dimensions:** 1080x1920
-**Aspect Ratio:** 9:16
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Håll villans identitet synlig bakom copyytan och viktiga detaljer mellan y=288–1536.
-
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut din villa`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
-
-### Brief 9: Radhus - Meta Feed
-**Prompt:** Photorealistic editorial image of a recognizably Swedish rowhouse/radhus, clearly privately owned family homes, with one calm adult private homeowner near their own front door; modest Nordic rowhouse terrace with connected homes, distinct entrances and small gardens; credible everyday housing photography, not glossy stock; 4:5 composition with the connected rowhouse form obvious in the upper 70% and lower 30% quiet for copy; soft daylight; no detached-villa ambiguity, apartment block, luxury development, company branding, rental signs, hotel, logos, watermark, generated text or AI artifacts.
+### Brief 5: Börja med att registrera bostaden - Meta
+**Prompt:** Split-screen editorial photograph of a private homeowner holding a phone beside an authentic Swedish villa, anonymous text-free interface card on one side, restrained #FF6300 rising curve linking the card to an abstract #053C5E company shape, registration-to-connection as visual metaphor, natural Nordic housing photography, warm minimal authority, lower 30% minimal and uncluttered for copy overlay, no readable screen, status claim, logo, watermark or generated text.
 **Dimensions:** 1080x1350
 **Aspect Ratio:** 4:5
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Radhuslängan och separata entréer hålls synliga i övre 70 %. Nedersta 405 px reserveras för copy.
-
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut ditt radhus`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
-
-### Brief 10: Radhus - Meta Stories/Reels
-**Prompt:** Photorealistic vertical editorial image of a recognizably Swedish rowhouse/radhus, clearly privately owned family homes, with one calm adult private homeowner by their own entrance; modest Nordic rowhouse terrace with connected homes, distinct front doors and small gardens; true 9:16 composition with connected architecture unmistakable, central subject zone readable, top 15% and bottom 20% relatively quiet; natural professional housing photography and soft daylight; no detached-villa ambiguity, apartment block, luxury development, company branding, rental signs, hotel, logos, watermark, generated text or AI artifacts.
-**Dimensions:** 1080x1920
-**Aspect Ratio:** 9:16
-**Banana domain mode:** Portrait — compatibility metadata only; generate with built-in ImageGen
-**Copy Framework:** FAB
-**Safe zone notes:** Håll radhuslänga och privat entré läsbara bakom panelen; viktiga detaljer mellan y=288–1536.
-
-Post-production overlay: Preheadline: `Privat bostadsägare?` Headline: `Hyr ut ditt radhus`. Support lines: `Boendet används av företagspersonal.` and `0 % avgift till StayOnSite.` CTA: `Registrera din bostad`.
+**Banana domain mode:** UI/Web
+**Copy Framework:** AIDA primary; FAB secondary
+**Safe zone notes:** Mobilskärm och abstrakt kort ska vara textfria. Håll aktiva motiv i övre 70 % och nedersta 30 % helt lugn för efterlagd copy och CTA.
 
 ## Next Steps
-1. Confirm the final monthly media budget; the launch plan currently assumes 10,000 SEK/month.
-2. Align `/lp/husagare` with the offer and add property-type/BRF-permission qualification.
-3. Complete consent-safe Pixel + Conversions API setup and verify `Lead` before launch.
-4. Upload the completed assets in `ad-assets/meta/`; use villa and radhus as creative variants inside the property/demand concept rather than creating more ad sets.
-5. Launch the hypotheses and avoid major edits during the first seven days when tracking is healthy.
+1. The `copy-writer` agent will append `## Copy Deck` automatically (spawned next by `/ads create`).
+2. Run `/ads generate` to produce images from the briefs above.
+3. Review and adjust messaging for your specific offer before launching.

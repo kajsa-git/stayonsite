@@ -4,6 +4,8 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import {
   buildCorporateQualificationEmail,
+  buildPrivateCustomerReply,
+  clearCorporateCompanyName,
   corporateQualificationRecipient,
   type CorporateQualificationSubmissionLike,
 } from "./corporate-qualification-email";
@@ -14,6 +16,7 @@ import {
   gmailGetThread,
   gmailSearchThreadIds,
   gmailSend,
+  gmailThreadReplyHeaders,
   type GmailMessage,
 } from "./gmail";
 import { companies, contacts, emails, notes, requestQualifications, requests } from "./schema";
@@ -28,6 +31,9 @@ type CorporateCrmResult = {
 };
 
 export const qualificationExtractionSchema = z.object({
+  companyName: z.string().nullable(),
+  companyRegistrationNumber: z.string().nullable(),
+  companyConfirmed: z.boolean().nullable(),
   startDate: z.string().nullable(),
   startDateText: z.string().nullable(),
   endDate: z.string().nullable(),
@@ -43,6 +49,7 @@ export const qualificationExtractionSchema = z.object({
   laundryRequired: z.boolean().nullable(),
   budgetMonthly: z.number().nonnegative().nullable(),
   budgetText: z.string().nullable(),
+  companyAnswered: z.boolean(),
   startAnswered: z.boolean(),
   durationAnswered: z.boolean(),
   locationAnswered: z.boolean(),
@@ -83,6 +90,10 @@ function emailAddress(value: string): string {
   return value.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase() ?? value.trim().toLowerCase();
 }
 
+function replySubject(value: string): string {
+  return /^\s*(?:re|sv|aw|odp):/i.test(value) ? value : `Re: ${value}`;
+}
+
 function normalizeSubject(value: string): string {
   return value.replace(/^\s*((re|sv|fw|fwd):\s*)+/gi, "").trim().toLowerCase();
 }
@@ -110,9 +121,16 @@ export function stripQuotedReply(text: string): string {
     .trim();
 }
 
-export function qualificationIsComplete(parsed: QualificationExtraction, existingPersons?: number | null): boolean {
+export function qualificationIsComplete(
+  parsed: QualificationExtraction,
+  existingPersons?: number | null,
+  existingCompanyConfirmed = true,
+): boolean {
   return !parsed.declined
     && parsed.confidence >= 0.8
+    && parsed.companyConfirmed !== false
+    && (existingCompanyConfirmed
+      || (parsed.companyAnswered && parsed.companyConfirmed === true && Boolean(parsed.companyName)))
     && parsed.startAnswered
     && parsed.durationAnswered
     && parsed.locationAnswered
@@ -175,6 +193,7 @@ Kända uppgifter från ursprungsförfrågan:
 Regler:
 - Tolka bara kundens nya svar, aldrig citerad tidigare mejltext.
 - Hitta inte på. Saknas ett värde ska det vara null och motsvarande *Answered vara false.
+- companyAnswered är true när kunden bekräftar att ett företag ska vara hyresgäst eller uttryckligen säger att det inte finns något företag. companyConfirmed är true bara när ett företag ska hyra, false när kunden är privatperson/saknar företag och annars null. Om kunden anger företagsnamn är companyConfirmed true.
 - Om kunden uttryckligen säger att budget saknas/är öppen är budgetAnswered true, budgetMonthly null och budgetText återger innebörden.
 - Om kunden säger att valfri ort/hela staden fungerar är locationAnswered true.
 - Om kunden är öppen för vilken boendetyp som helst (t.ex. "vilket som", "open to any" eller "dowolny") är accommodationTypeAnswered true och accommodationType beskriver att boendetypen är flexibel.
@@ -185,7 +204,7 @@ Regler:
 - declined är true bara när kunden tackar nej, avbryter eller säger att behovet inte längre finns.
 
 Returnera ENDAST giltig JSON med exakt dessa fält:
-{"startDate":null,"startDateText":null,"endDate":null,"durationMonths":null,"durationText":null,"location":null,"accommodationType":null,"persons":null,"bedrooms":null,"beds":null,"parkingRequired":null,"kitchenRequired":null,"laundryRequired":null,"budgetMonthly":null,"budgetText":null,"startAnswered":false,"durationAnswered":false,"locationAnswered":false,"accommodationTypeAnswered":false,"capacityAnswered":false,"requirementsAnswered":false,"budgetAnswered":false,"declined":false,"summary":"","relevantQuote":null,"confidence":0}
+{"companyName":null,"companyRegistrationNumber":null,"companyConfirmed":null,"startDate":null,"startDateText":null,"endDate":null,"durationMonths":null,"durationText":null,"location":null,"accommodationType":null,"persons":null,"bedrooms":null,"beds":null,"parkingRequired":null,"kitchenRequired":null,"laundryRequired":null,"budgetMonthly":null,"budgetText":null,"companyAnswered":false,"startAnswered":false,"durationAnswered":false,"locationAnswered":false,"accommodationTypeAnswered":false,"capacityAnswered":false,"requirementsAnswered":false,"budgetAnswered":false,"declined":false,"summary":"","relevantQuote":null,"confidence":0}
 
 Kundens nya svar:
 """${args.reply.slice(0, 12000)}"""`;
@@ -211,8 +230,13 @@ Kundens nya svar:
   return applyQualificationSemanticFallbacks(parsed, args.reply);
 }
 
-function compactSummary(parsed: QualificationExtraction): string {
+function compactSummary(parsed: QualificationExtraction, existingCompanyName?: string | null): string {
   const rows = [
+    parsed.companyAnswered
+      ? `Företag: ${parsed.companyConfirmed ? [parsed.companyName, parsed.companyRegistrationNumber].filter(Boolean).join(" · ") || "ja, namn saknas" : "nej – privatperson eller företag saknas"}`
+      : existingCompanyName
+        ? `Företag: ${existingCompanyName}`
+        : "Företag: inte bekräftat",
     parsed.startDate || parsed.startDateText ? `Start: ${parsed.startDate ?? parsed.startDateText}` : "Start: saknas",
     parsed.endDate || parsed.durationText || parsed.durationMonths ? `Längd/slut: ${parsed.endDate ?? parsed.durationText ?? `${parsed.durationMonths} månader`}` : "Längd/slut: saknas",
     parsed.location ? `Område/arbetsplats: ${parsed.location}` : "Område/arbetsplats: saknas",
@@ -379,9 +403,12 @@ async function processQualificationReply(
   state: typeof requestQualifications.$inferSelect,
   message: GmailMessage,
   replyContext?: string,
+  automationUserId?: string,
 ): Promise<"complete" | "partial" | "declined"> {
   const [request] = await db.select().from(requests).where(eq(requests.id, state.requestId)).limit(1);
   if (!request) throw new Error(`Förfrågan ${state.requestId} saknas.`);
+  const [company] = await db.select({ name: companies.name }).from(companies).where(eq(companies.id, state.companyId)).limit(1);
+  const existingCompanyName = clearCorporateCompanyName(company?.name);
   const reply = replyContext?.trim() || stripQuotedReply(message.text || "");
   if (!reply) throw new Error("Kundsvaret saknar läsbart textinnehåll.");
   const parsed = await extractQualificationReply({
@@ -392,11 +419,59 @@ async function processQualificationReply(
   });
   if (parsed.confidence < 0.6) throw new Error(`Svaret kunde inte kopplas säkert till behovet (confidence ${parsed.confidence}).`);
 
-  const complete = qualificationIsComplete(parsed, request.persons);
+  const privateCustomer = parsed.companyAnswered && parsed.companyConfirmed === false;
+  const complete = qualificationIsComplete(parsed, request.persons, Boolean(existingCompanyName));
   const status = parsed.declined ? "declined" : complete ? "complete" : "partial";
   const now = new Date().toISOString();
   const slot = followUpSlot();
   const gmailUrl = `https://mail.google.com/mail/u/0/#all/${message.threadId}`;
+  let privateReplyDelivery: {
+    subject: string;
+    text: string;
+    html: string;
+    to: string;
+    messageId: string;
+    threadId: string;
+  } | null = null;
+  let privateReplyError: string | null = null;
+
+  if (privateCustomer) {
+    try {
+      const userId = automationUserId ?? await gmailAutomationUserId(CRM_MAILBOX);
+      const locale = state.locale === "en" || state.locale === "pl" ? state.locale : "sv";
+      const built = buildPrivateCustomerReply(locale);
+      const subject = replySubject(message.subject);
+      const to = emailAddress(message.from);
+      let headers: { inReplyTo?: string; references?: string } = {};
+      try {
+        headers = await gmailThreadReplyHeaders(userId, message.threadId);
+      } catch (error) {
+        console.error("Private-customer reply headers failed", error);
+      }
+      const delivery = await gmailSend(userId, {
+        from: `Kajsa Sihlén <${emailAddress(CRM_MAILBOX)}>`,
+        to,
+        subject,
+        text: built.text,
+        html: built.html,
+        threadId: message.threadId,
+        inReplyTo: headers.inReplyTo,
+        references: headers.references,
+      });
+      privateReplyDelivery = {
+        subject,
+        text: built.text,
+        html: built.html,
+        to,
+        messageId: delivery.messageId,
+        threadId: delivery.threadId,
+      };
+    } catch (error) {
+      privateReplyError = error instanceof Error ? error.message : String(error);
+      console.error("Private-customer automatic reply failed", error);
+    }
+  }
+
   const requestPatch: Partial<typeof requests.$inferInsert> = {};
   if (parsed.startDate) requestPatch.startDate = parsed.startDate;
   if (parsed.endDate) requestPatch.endDate = parsed.endDate;
@@ -434,6 +509,25 @@ async function processQualificationReply(
       isRead: false,
       sentAt: message.date ? new Date(message.date).toISOString() : now,
     }).onConflictDoNothing();
+    if (privateReplyDelivery) {
+      await tx.insert(emails).values({
+        id: nanoid(),
+        companyId: state.companyId,
+        requestId: state.requestId,
+        contactId: state.contactId,
+        direction: "out",
+        subject: privateReplyDelivery.subject,
+        body: privateReplyDelivery.text,
+        html: privateReplyDelivery.html,
+        fromEmail: emailAddress(CRM_MAILBOX),
+        toEmail: privateReplyDelivery.to,
+        authorId: automationUserId ?? null,
+        gmailMessageId: privateReplyDelivery.messageId,
+        gmailThreadId: privateReplyDelivery.threadId,
+        isRead: true,
+        sentAt: now,
+      }).onConflictDoNothing();
+    }
     await tx.update(requests).set({ ...requestPatch, updatedAt: now }).where(eq(requests.id, state.requestId));
     await tx.insert(notes).values({
       id: nanoid(),
@@ -445,9 +539,14 @@ async function processQualificationReply(
         `Avsändare: ${message.from}`,
         `Gmail: ${gmailUrl}`,
         `Förfrågan: #${request.requestNumber ?? state.requestId} · ${request.city ?? "ort saknas"}`,
-        `Bedömning: ${parsed.declined ? "kunden avböjer/har inget kvarvarande behov" : complete ? "komplett nog för matchning" : "ofullständigt – behåll incoming"}`,
+        `Bedömning: ${privateCustomer ? "privatperson – ej aktuell för företagsuthyrning" : parsed.declined ? "kunden avböjer/har inget kvarvarande behov" : complete ? "komplett nog för matchning" : "ofullständigt – behåll incoming"}`,
+        privateCustomer
+          ? privateReplyDelivery
+            ? "Automatiskt svar skickat: StayOnSite hyr endast ut till företag."
+            : `Automatiskt svar misslyckades: ${privateReplyError?.slice(0, 300) ?? "okänt fel"}`
+          : null,
         "",
-        compactSummary(parsed),
+        compactSummary(parsed, existingCompanyName),
         "",
         `Övrigt: ${parsed.summary}`,
         parsed.relevantQuote ? `Kort utdrag: ”${parsed.relevantQuote.slice(0, 350)}”` : null,
@@ -466,7 +565,11 @@ async function processQualificationReply(
     await tx.update(companies).set({
       followUpDate: slot.date,
       followUpTime: slot.time,
-      followUpReason: parsed.declined
+      followUpReason: privateCustomer
+        ? privateReplyDelivery
+          ? "Privatkund – svarat, granska/avsluta"
+          : "Privatkund – autosvar misslyckades, svara manuellt"
+        : parsed.declined
         ? "Kvalificeringssvar: kunden avböjer – granska"
         : complete
           ? "Kvalificeringssvar inkommet – granska/matcha"
@@ -518,7 +621,7 @@ export async function runCorporateQualificationReplySweep(): Promise<{
           .filter((message) => message.threadId === newest.threadId)
           .map((message, index) => `Kundsvar ${index + 1}:\n${stripQuotedReply(message.text)}`)
           .join("\n\n");
-        const result = await processQualificationReply(state, newest, context);
+        const result = await processQualificationReply(state, newest, context, userId);
         summary.replies++;
         summary[result]++;
       }

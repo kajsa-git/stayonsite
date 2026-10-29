@@ -1,3 +1,4 @@
+import { billingTranslations } from "./billing-translations";
 import { blogTranslations } from './blog-translations';
 import { datacenterTranslations } from './datacenter-translations';
 import { cityGuideTranslations } from './city-guide-translations';
@@ -7,6 +8,7 @@ export type TranslationKey =
   | keyof typeof blogTranslations.sv
   | keyof typeof datacenterTranslations.sv
   | keyof typeof cityGuideTranslations.sv
+  | keyof typeof billingTranslations.sv
   | "crm.companyTable.city"
   | "crm.companyTable.persons"
   | "crm.companyTable.beds"
@@ -457,6 +459,7 @@ export const translations: Record<
   Record<TranslationKey, string>
 > = {
   sv: {
+    ...billingTranslations.sv,
     ...blogTranslations.sv,
     ...datacenterTranslations.sv,
     ...cityGuideTranslations.sv,
@@ -1010,6 +1013,7 @@ export const translations: Record<
     "cookie.deny": "Nej tack",
   },
   en: {
+    ...billingTranslations.en,
     ...blogTranslations.en,
     ...datacenterTranslations.en,
     ...cityGuideTranslations.en,
@@ -1567,6 +1571,7 @@ export const translations: Record<
     "cookie.deny": "No thanks",
   },
   pl: {
+    ...billingTranslations.pl,
     ...blogTranslations.pl,
     ...datacenterTranslations.pl,
     ...cityGuideTranslations.pl,

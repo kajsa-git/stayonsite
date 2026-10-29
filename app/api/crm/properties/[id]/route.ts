@@ -12,6 +12,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { shouldValidatePublication, validatePublicationSeo } from "@/lib/crm/publication-seo";
+import { hasPropertyPostalCode, PROPERTY_POSTAL_REQUIRED_ERROR } from "@/lib/crm/property-postal";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireApprovedSession();
@@ -21,6 +22,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json();
   if (body.status != null && !isValidPropertyStatus(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+  // Befintliga äldre objekt utan postnummer får fortfarande status-/snabbuppdateras,
+  // men ett uttryckligt postnummerfält får aldrig tömmas. Hela redigeringsformuläret
+  // skickar fältet och leder därför användaren till att komplettera innan sparning.
+  if (Object.prototype.hasOwnProperty.call(body, "postalCode") && !hasPropertyPostalCode(body.postalCode)) {
+    return NextResponse.json({ error: PROPERTY_POSTAL_REQUIRED_ERROR }, { status: 400 });
   }
   const [existing] = await db.select().from(properties).where(eq(properties.id, id));
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
