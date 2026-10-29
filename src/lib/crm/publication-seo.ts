@@ -1,7 +1,8 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "./db";
 import { properties, type Property } from "./schema";
 import { publicDisplayName } from "./slug";
+import { hasWebsitePropertyStatus, WEBSITE_PROPERTY_STATUSES } from "./publication";
 
 export const MIN_PUBLIC_DESCRIPTION_LENGTH = 80;
 
@@ -51,10 +52,10 @@ export function shouldValidatePublication(
   body: Record<string, unknown>,
   candidate: Pick<Property, "published" | "status">,
 ): boolean {
-  const willBePublic = candidate.published === true && (candidate.status ?? "available") === "available";
+  const willBePublic = candidate.published === true && hasWebsitePropertyStatus(candidate.status);
   if (!willBePublic) return false;
 
-  const wasPublic = existing?.published === true && existing.status === "available";
+  const wasPublic = existing?.published === true && hasWebsitePropertyStatus(existing.status);
   if (!wasPublic) return true;
 
   return SEO_FIELDS.some((field) => Object.prototype.hasOwnProperty.call(body, field));
@@ -114,7 +115,7 @@ export async function validatePublicationSeo(candidate: PublicationCandidate): P
       beds: properties.beds,
     })
     .from(properties)
-    .where(and(eq(properties.published, true), eq(properties.status, "available")));
+    .where(and(eq(properties.published, true), inArray(properties.status, WEBSITE_PROPERTY_STATUSES)));
 
   return publicationSeoProblem(candidate, otherListings);
 }

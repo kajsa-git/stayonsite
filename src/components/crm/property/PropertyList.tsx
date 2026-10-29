@@ -9,6 +9,7 @@ import { crmFetch, crmFetchJson, crmErrorMessage, swrFetcher, CrmFetchError } fr
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PROPERTY_INTAKE_MARKER } from "@/lib/crm/property-intake-marker";
+import { hasWebsitePropertyStatus } from "@/lib/crm/publication";
 import { IMPORT_MANAGED_KEYS, listingToPropertyPatch, PASTE_SOURCES, SOURCE_LABEL, type ImportedListing } from "@/lib/crm/import/types";
 import { parsePastedListing } from "@/lib/crm/import/paste";
 import { detectListing, type DetectedListing } from "@/lib/crm/import/url";
@@ -647,7 +648,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                           </div>
                         </TableCell>
                         <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
-                        <TableCell className="text-foreground">{p.published && p.contentReviewStatus === "approved" && p.status === "available" ? "✓" : "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.published && p.contentReviewStatus === "approved" && hasWebsitePropertyStatus(p.status) ? "✓" : "–"}</TableCell>
                       </TableRow>
                     );
                   })

@@ -7,6 +7,7 @@ import { db } from "./db";
 import { isSwedishCountry } from "./owners";
 import { R2_BUCKET, r2 } from "./r2";
 import { properties, propertyImages, type Property } from "./schema";
+import { hasWebsitePropertyStatus } from "./publication";
 
 // Tenant-säkra kolumner som får visas publikt. ALDRIG address, owner-* eller rent/price.
 const PUBLIC_COLUMNS = {
@@ -100,7 +101,7 @@ async function geocodeArea(
 
 // Laddar ett publikt objekt via slug ELLER id (slug först, id som fallback för äldre prospekt-länkar).
 // Tre oberoende ytor:
-//   surface: "web"      → publika listsidan/detaljsidan. Kräver published = true OCH status = available.
+//   surface: "web"      → publika listsidan/detaljsidan. Kräver published = true och tillåten status.
 //   surface: "prospekt" → delbar prospekt-länk. Kräver prospektPublished = true (oberoende av status/hemsida).
 //   surface: "offer"    → kundens erbjudandelänk (/erbjudande/<token>). Ingen publiceringsgate här —
 //                         åtkomsten styrs av share-länkens token + att erbjudandet är skickat
@@ -116,7 +117,7 @@ export async function loadPublicProperty(
     : await db.select(PUBLIC_COLUMNS).from(properties).where(eq(properties.id, idOrSlug)).limit(1);
   if (!row) return null;
   if (opts.surface === "web") {
-    if (!row.published || row.status !== "available") return null;
+    if (!row.published || !hasWebsitePropertyStatus(row.status)) return null;
   } else if (opts.surface === "prospekt") {
     if (!row.prospektPublished) return null;
   }

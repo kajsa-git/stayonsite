@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { crmFetchJson } from "@/lib/crm/fetcher";
-import { publicListingPatch } from "@/lib/crm/publication";
+import { hasWebsitePropertyStatus, publicListingPatch } from "@/lib/crm/publication";
 import { publicDisplayName } from "@/lib/crm/slug";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PublishConfirmSmsDialog } from "./PublishConfirmSmsDialog";
@@ -53,24 +53,27 @@ export function PropertyPublicControls({
         : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
     }`;
   const approved = property.contentReviewStatus === "approved";
-  const isPublic = approved && !!property.published && property.status === "available";
+  const websiteStatusAllowed = hasWebsitePropertyStatus(property.status);
+  const isPublic = approved && !!property.published && websiteStatusAllowed;
 
   return (
     <div>
       <div className="space-y-2">
-        {/* På hemsidan (publika listan /boenden — kräver även status = Tillgänglig) */}
+        {/* Hemsidans publicering styrs separat från uthyrningsstatus. */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={async () => {
-              const publishing = !isPublic;
+              const publishing = !property.published;
               try {
                 await onUpdate(publicListingPatch(publishing));
-                toast({ title: publishing ? "Publicerad på hemsidan" : "Borttagen från hemsidan" });
+                toast({ title: publishing
+                  ? websiteStatusAllowed ? "Publicerad på hemsidan" : "Publicering aktiverad, men statusen hindrar visning"
+                  : "Borttagen från hemsidan" });
               } catch {
                 /* feltoast visas av onUpdate */
                 return;
               }
-              if (publishing) await maybeOfferConfirmSms();
+              if (publishing && approved && websiteStatusAllowed) await maybeOfferConfirmSms();
             }}
             disabled={!approved && !property.published}
             className={toggleCls(isPublic)}
@@ -88,8 +91,8 @@ export function PropertyPublicControls({
             ) : (
               <span className="text-[11px] text-muted-foreground">Publik URL skapas när du sparar med en ort</span>
             ))}
-          {property.published && property.status !== "available" && (
-            <span className="text-[11px] text-amber-700">Syns i listan först när status = Tillgänglig</span>
+          {property.published && !websiteStatusAllowed && (
+            <span className="text-[11px] text-amber-700">Den aktuella statusen tillåter inte visning på hemsidan.</span>
           )}
         </div>
 

@@ -1,8 +1,9 @@
 import { approvedPropertyIds } from "./approved-property-content";
-import { and, asc, eq, isNotNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNotNull } from "drizzle-orm";
 import { db } from "./db";
 import { properties } from "./schema";
 import { publicDisplayName } from "./slug";
+import { WEBSITE_PROPERTY_STATUSES } from "./publication";
 
 export interface PublicListingLink {
   slug: string;
@@ -25,7 +26,7 @@ export async function getPublicListingLinks(): Promise<PublicListingLink[]> {
         beds: properties.beds,
       })
       .from(properties)
-      .where(and(eq(properties.published, true), eq(properties.status, "available"), isNotNull(properties.slug)))
+      .where(and(eq(properties.published, true), inArray(properties.status, WEBSITE_PROPERTY_STATUSES), isNotNull(properties.slug)))
       .orderBy(asc(properties.city), asc(properties.publicName));
 
     const approved = await approvedPropertyIds(rows.map((row) => row.id));

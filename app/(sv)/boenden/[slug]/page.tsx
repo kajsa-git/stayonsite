@@ -15,6 +15,7 @@ import { publicDisplayName } from "@/lib/crm/slug"
 import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/public-seo"
 import { cities } from "@/data/cities"
 import { WebsitePropertyShowcase } from "@/components/prospekt/WebsitePropertyShowcase"
+import { hasWebsitePropertyStatus } from "@/lib/crm/publication"
 
 export const dynamic = "force-dynamic"
 
@@ -48,8 +49,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params
   const p = await lookupForMeta(slug)
-  if (!p || !p.published || p.status !== "available" || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
-    return buildMetadata({ title: "Lediga boenden | StayOnSite", noindex: true, locale: "sv" })
+  if (!p || !p.published || !hasWebsitePropertyStatus(p.status) || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
+    return buildMetadata({ title: "Våra boenden | StayOnSite", noindex: true, locale: "sv" })
   }
   const name = publicDisplayName(
     p.publicName,
@@ -158,16 +159,27 @@ export default async function BoendeDetailPage(
             className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            Alla lediga boenden
+            Alla boenden
           </Link>
 
-          <WebsitePropertyShowcase data={data} title={name} description={description} />
+          <WebsitePropertyShowcase
+            data={{ ...data, row: {
+              ...p,
+              published: null,
+              prospektPublished: null,
+              status: null,
+              moveInFrom: p.status === "available" ? p.moveInFrom : null,
+              availableTo: p.status === "available" ? p.availableTo : null,
+            } }}
+            title={name}
+            description={description}
+          />
 
           {/* Intresse-CTA */}
           <div className="rounded-2xl border bg-white p-6 sm:p-8">
             <h2 className="text-lg font-bold text-nordic-900">Intresserad av {place}?</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Hör av dig så berättar vi mer och skickar detaljer — ofta med svar inom 24 timmar.
+              Hör av dig så bekräftar vi tillgänglighet och skickar detaljer — ofta med svar inom 24 timmar.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <a
@@ -200,7 +212,7 @@ export default async function BoendeDetailPage(
               href="/boenden"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
             >
-              Se fler lediga boenden
+              Se fler boenden
               <ArrowRight className="h-4 w-4" />
             </Link>
             {cityPage && (

@@ -7,8 +7,8 @@ import { Boenden } from '@/views/Boenden'
 export const dynamic = 'force-dynamic'
 
 export const metadata = buildMetadata({
-  title: 'Lediga boenden | StayOnSite',
-  description: 'Se våra tillgängliga personalboenden i Sverige. Möblerade hus och lägenheter för projektarbetare och företag. Kontakta oss för mer information.',
+  title: 'Boenden för företag | StayOnSite',
+  description: 'Se våra personalboenden i Sverige. Möblerade hus och lägenheter för projektarbetare och företag. Kontakta oss för aktuell tillgänglighet.',
   canonical: 'https://www.stayonsite.se/boenden',
   hreflangs: [
     { lang: 'sv', href: 'https://www.stayonsite.se/boenden' },

@@ -31,6 +31,9 @@ describe("SEO-spärr vid publicering", () => {
     expect(
       shouldValidatePublication({ published: true, status: "reserved" }, { status: "available" }, candidate),
     ).toBe(true);
+    for (const status of ["off_market", "rented"]) {
+      expect(shouldValidatePublication({ published: true, status: "reserved" }, { status }, { ...candidate, status })).toBe(true);
+    }
   });
 
   it("kräver en meningsfull extern beskrivning", () => {

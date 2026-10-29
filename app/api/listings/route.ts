@@ -6,6 +6,7 @@ import { r2, R2_BUCKET } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { publicDisplayName } from "@/lib/crm/slug";
+import { WEBSITE_PROPERTY_STATUSES } from "@/lib/crm/publication";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -33,10 +34,9 @@ export async function GET() {
       publicDescription: properties.publicDescription,
       publicDescriptionEn: properties.publicDescriptionEn,
       publicDescriptionPl: properties.publicDescriptionPl,
-      status: properties.status,
     })
     .from(properties)
-    .where(and(eq(properties.published, true), eq(properties.status, "available")))
+    .where(and(eq(properties.published, true), inArray(properties.status, WEBSITE_PROPERTY_STATUSES)))
     .orderBy(asc(properties.city));
 
   const approved = await approvedPropertyIds(candidates.map((p) => p.id), new Map(candidates.map((p) => [p.id, p.updatedAt])));

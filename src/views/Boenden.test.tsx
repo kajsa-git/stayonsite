@@ -110,7 +110,7 @@ describe('public accommodation search', () => {
     expect(cards()).toHaveLength(0);
     expect(screen.getByText('Inga boenden matchar din sökning')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Få hjälp att hitta boende' })).toHaveAttribute('href', '#hero-inquiry');
-    const directory = screen.getByRole('region', { name: 'Alla lediga boenden per ort' });
+    const directory = screen.getByRole('region', { name: 'Alla boenden per ort' });
     expect(within(directory).getByRole('link', { name: 'Alla orters boenden', hidden: true })).toHaveAttribute('href', '/boenden/directory-only');
   });
 

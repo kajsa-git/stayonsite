@@ -252,7 +252,7 @@ export const properties = sqliteTable("crm_properties", {
   // Uthyrar-uppföljning bor i crm_owner_outreach (rundor) — inte längre speglat på objektet.
   links: text("links", { mode: "json" }).$type<string[]>(), // externa länkar (Airbnb/Qasa/Booking/övrigt)
   status: text("status").default("available"),
-  published: integer("published", { mode: "boolean" }).default(false), // visas i publika listan /boenden (kräver även status=available)
+  published: integer("published", { mode: "boolean" }).default(false), // hemsidans publicering, utan att ändra uthyrningsstatus
   prospektPublished: integer("prospekt_published", { mode: "boolean" }).default(false), // delbar /prospekt-länk aktiv (oberoende av hemsidan/status)
   // Uthyrarens publiceringsgodkännande — bevis, skrivs aldrig om när satt.
   // Godkännandet är att annonsen FÅR visas online; Kajsa publicerar fortfarande manuellt.

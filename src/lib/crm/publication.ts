@@ -1,9 +1,11 @@
-// Publicering på hemsidan och objektets tillgänglighetsstatus är samma publika
-// beslut: /boenden visar bara objekt som både är publicerade och tillgängliga.
-// Alla publiceringsytor använder därför samma patch så att en delad länk aldrig
-// pekar på en avsiktligt dold 404-sida.
+// Hemsidans publicering ändrar inte uthyrningsstatusen i CRM.
+// Reserverade objekt visas ännu inte på hemsidan.
+export const WEBSITE_PROPERTY_STATUSES = ["available", "off_market", "rented"] as const;
+
+export function hasWebsitePropertyStatus(status: string | null | undefined): boolean {
+  return (WEBSITE_PROPERTY_STATUSES as readonly string[]).includes(status ?? "");
+}
+
 export function publicListingPatch(published: boolean) {
-  return published
-    ? ({ published: true, status: "available" } as const)
-    : ({ published: false } as const);
+  return { published };
 }

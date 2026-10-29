@@ -24,6 +24,8 @@ export type TranslationKey =
   | "navigation.companyHousing"
   | "navigation.availableHomes"
   | "listingSearch.title"
+  | "listingSearch.heroTitle"
+  | "listingSearch.availabilityNote"
   | "listingSearch.label"
   | "listingSearch.placeholder"
   | "listingSearch.clearSearch"
@@ -491,8 +493,10 @@ export const translations: Record<
     "projectBrief.eyebrow": "Berätta om ert projekt",
     "projectBrief.response": "Vi går igenom era behov och återkommer med möjliga boenden och villkor.",
     "navigation.companyHousing": "Läs om företagsboende",
-    "navigation.availableHomes": "Se lediga boenden",
+    "navigation.availableHomes": "Se boenden",
     "listingSearch.title": "Hitta boende för ert team",
+    "listingSearch.heroTitle": "Våra boenden",
+    "listingSearch.availabilityNote": "Kontakta oss så bekräftar vi aktuell tillgänglighet.",
     "listingSearch.label": "Sök ort, postnummer eller boende",
     "listingSearch.placeholder": "T.ex. Boden, 961 40…",
     "listingSearch.clearSearch": "Rensa sökning",
@@ -520,7 +524,7 @@ export const translations: Record<
     "nav.inquiryForm": "Skicka förfrågan",
     "nav.forCompanies": "För företag",
     "nav.locations": "Våra orter",
-    "nav.availableHousing": "Lediga boenden",
+    "nav.availableHousing": "Boenden",
     "nav.projectHousing": "Projektboende",
     "nav.dataCentreHousing": "Boende vid datacenter",
     "nav.rentOutProperty": "Hyr ut din bostad",
@@ -1045,8 +1049,10 @@ export const translations: Record<
     "projectBrief.eyebrow": "Tell us about your project",
     "projectBrief.response": "We review your requirements and get back to you with possible accommodation and terms.",
     "navigation.companyHousing": "Learn about corporate housing",
-    "navigation.availableHomes": "View available accommodation",
+    "navigation.availableHomes": "View accommodation",
     "listingSearch.title": "Find accommodation for your team",
+    "listingSearch.heroTitle": "Our accommodation",
+    "listingSearch.availabilityNote": "Contact us to confirm current availability.",
     "listingSearch.label": "Search location, postcode or property",
     "listingSearch.placeholder": "E.g. Boden, 961 40…",
     "listingSearch.clearSearch": "Clear search",
@@ -1074,7 +1080,7 @@ export const translations: Record<
     "nav.inquiryForm": "Send inquiry",
     "nav.forCompanies": "For companies",
     "nav.locations": "Locations",
-    "nav.availableHousing": "Available housing",
+    "nav.availableHousing": "Accommodation",
     "nav.projectHousing": "Project housing",
     "nav.dataCentreHousing": "Data centre accommodation",
     "nav.rentOutProperty": "Rent out your property",
@@ -1603,8 +1609,10 @@ export const translations: Record<
     "projectBrief.eyebrow": "Opowiedz nam o swoim projekcie",
     "projectBrief.response": "Przeanalizujemy Wasze potrzeby i przedstawimy dostępne możliwości zakwaterowania oraz warunki.",
     "navigation.companyHousing": "Dowiedz się więcej o zakwaterowaniu firmowym",
-    "navigation.availableHomes": "Zobacz dostępne zakwaterowanie",
+    "navigation.availableHomes": "Zobacz zakwaterowanie",
     "listingSearch.title": "Znajdź zakwaterowanie dla swojego zespołu",
+    "listingSearch.heroTitle": "Nasze zakwaterowanie",
+    "listingSearch.availabilityNote": "Skontaktuj się z nami, aby potwierdzić aktualną dostępność.",
     "listingSearch.label": "Szukaj miejscowości, kodu pocztowego lub obiektu",
     "listingSearch.placeholder": "Np. Boden, 961 40…",
     "listingSearch.clearSearch": "Wyczyść wyszukiwanie",
@@ -1632,7 +1640,7 @@ export const translations: Record<
     "nav.inquiryForm": "Wyślij zapytanie",
     "nav.forCompanies": "Dla firm",
     "nav.locations": "Lokalizacje",
-    "nav.availableHousing": "Dostępne noclegi",
+    "nav.availableHousing": "Noclegi",
     "nav.projectHousing": "Zakwaterowanie projektowe",
     "nav.dataCentreHousing": "Zakwaterowanie przy centrach danych",
     "nav.rentOutProperty": "Wynajmij nieruchomość",

@@ -7,7 +7,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
-import { publicListingPatch } from "@/lib/crm/publication";
+import { hasWebsitePropertyStatus, publicListingPatch } from "@/lib/crm/publication";
 import { publishedLinkSms } from "@/lib/crm/sms-templates";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -19,6 +19,7 @@ interface PropRow {
   city: string | null;
   status: string | null;
   published: boolean | null;
+  contentReviewStatus: string | null;
   publicDescription: string | null;
   slug: string | null;
   bedrooms: number | null;
@@ -38,6 +39,10 @@ interface PropRow {
   moveInFrom: string | null;
   availableTo: string | null;
 }
+
+const STATUS_LABELS: Record<string, string> = {
+  available: "Tillgänglig", reserved: "Reserverad", rented: "Uthyrd", off_market: "Av marknaden",
+};
 
 function Badge({ ok, yes, no }: { ok: boolean; yes: string; no: string }) {
   return (
@@ -106,14 +111,17 @@ export function PublishFlowDialog({
     });
   }
 
-  async function publish(p: PropRow): Promise<string | null> {
+  async function publish(p: PropRow): Promise<{ slug: string | null; isPublic: boolean }> {
     setStep("Publicerar…");
-    const updated = await crmFetchJson<{ slug?: string | null; published?: boolean }>(`/api/crm/properties/${p.id}`, {
+    const updated = await crmFetchJson<Pick<PropRow, "slug" | "published" | "status" | "contentReviewStatus">>(`/api/crm/properties/${p.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(publicListingPatch(true)),
     });
-    return updated?.slug ?? null;
+    return {
+      slug: updated.slug ?? null,
+      isPublic: !!updated.published && hasWebsitePropertyStatus(updated.status) && updated.contentReviewStatus === "approved",
+    };
   }
 
   async function sendLinkSms(propId: string) {
@@ -151,12 +159,14 @@ export function PublishFlowDialog({
       }
       if (what === "all") {
         await ensureDescription(p);
-        const slug = p.published && p.status === "available" && p.slug ? p.slug : await publish(p);
-        if (slug && ownerPhone) {
+        const { slug, isPublic } = await publish(p);
+        if (isPublic && slug && ownerPhone) {
           openSmsEditor(p, slug);
           toast({ title: "Beskrivning + publicering klar — justera SMS:et och skicka" });
-        } else if (slug) {
+        } else if (isPublic && slug) {
           toast({ title: "Klart: beskrivning + publicerad (uthyraren saknar telefonnummer för SMS)" });
+        } else if (!isPublic) {
+          toast({ title: "Publicering aktiverad — kontrollera granskning och status innan länken delas" });
         } else {
           toast({ title: "Publicerad, men publik URL saknas — öppna objektet och spara med ort", variant: "destructive" });
         }
@@ -190,15 +200,17 @@ export function PublishFlowDialog({
           <p className="text-sm text-muted-foreground italic py-4">Uthyraren har inga objekt i CRM:et.</p>
         ) : (
           <div className="space-y-2.5">
-            {props.map((p) => (
+            {props.map((p) => {
+              const isPublic = !!p.published && hasWebsitePropertyStatus(p.status) && p.contentReviewStatus === "approved";
+              return (
               <div key={p.id} className="rounded-lg border p-3">
                 <div className="font-medium text-sm">{p.address ?? "(adress saknas)"}{p.city ? ` · ${p.city}` : ""}</div>
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   <Badge ok={!!p.publicDescription?.trim()} yes="Beskrivning ✓" no="Beskrivning saknas" />
-                  <Badge ok={!!p.published && p.status === "available"} yes="Publicerad ✓" no="Ej publicerad" />
+                  <Badge ok={isPublic} yes="Publicerad ✓" no="Ej synlig på hemsidan" />
                   {p.status !== "available" && (
                     <span className="inline-block text-[11px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
-                      Status: {p.status} — visas publikt först som Tillgänglig
+                      Status i CRM: {STATUS_LABELS[p.status ?? ""] ?? "Okänd"}
                     </span>
                   )}
                 </div>
@@ -215,19 +227,19 @@ export function PublishFlowDialog({
                   </button>
                   <button
                     className={btn}
-                    disabled={busyId !== null || (!!p.published && p.status === "available")}
+                    disabled={busyId !== null || !!p.published}
                     onClick={() => run(p, "publish")}
                   >
                     Publicera
                   </button>
                   <button
                     className={btn}
-                    disabled={busyId !== null || !p.published || p.status !== "available" || !p.slug || !ownerPhone}
+                    disabled={busyId !== null || !isPublic || !p.slug || !ownerPhone}
                     onClick={() => run(p, "sms")}
                   >
                     Skicka länk-SMS
                   </button>
-                  {p.published && p.status === "available" && p.slug && (
+                  {isPublic && p.slug && (
                     <a
                       className="text-[11px] text-nordic-600 underline ml-auto"
                       href={`https://www.stayonsite.se/boenden/${p.slug}`}
@@ -267,7 +279,7 @@ export function PublishFlowDialog({
                   </div>
                 )}
               </div>
-            ))}
+            ); })}
           </div>
         )}
       </DialogContent>

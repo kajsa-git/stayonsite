@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { crmFetchJson, crmErrorMessage } from "@/lib/crm/fetcher";
+import { hasWebsitePropertyStatus } from "@/lib/crm/publication";
 
 const RESPONSE_FIELDS: Record<string, string> = {
   publicName: "namn för visning",
@@ -82,7 +83,7 @@ export function PropertyContentReview({ property }: { property: PropertyWithOwne
         </li>)}</ul>}
         {approved && !property.published && !property.publishConsentAt && <p>Publicering på hemsidan inväntar uthyrarens medgivande. Prospektlänken kan aktiveras redan nu.</p>}
         {approved && !property.autoPublishEnabled && <p>Automatisk publicering är pausad efter ett manuellt publiceringsbeslut.</p>}
-        {approved && property.status !== "available" && <p>Publicering väntar på att objektet markeras som tillgängligt.</p>}
+        {approved && !hasWebsitePropertyStatus(property.status) && <p>Den aktuella statusen tillåter inte visning på hemsidan.</p>}
         {approved && property.availableTo && property.availableTo < new Date().toISOString().slice(0, 10) && <p>Tillgänglighetsperioden har gått ut. Kontrollera datumen före publicering.</p>}
         {!approved && <p className="text-muted-foreground">Kundtext och bilder visas efter godkänd kontroll.</p>}
         <div><Button type="button" variant="outline" size="sm" disabled={busy} onClick={review}>{busy ? "Kontrollerar…" : "Kontrollera igen"}</Button></div>

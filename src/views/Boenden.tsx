@@ -278,10 +278,11 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
         <div className="bg-[#0f1c2e] text-white pt-28 pb-16 px-4">
           <div className="max-w-6xl mx-auto grid items-center gap-8 lg:grid-cols-2">
             <div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold mb-3">Lediga boenden</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-bold mb-3">{t('listingSearch.heroTitle')}</h1>
             <p className="text-white/70 text-lg max-w-xl">
               Möblerade hus och lägenheter för projektarbetare och företag i hela Sverige.
             </p>
+            <p className="mt-3 text-white/80">{t('listingSearch.availabilityNote')}</p>
             <a href="#available-homes" className="mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">{t('navigation.availableHomes')}</a>
             </div>
             <HeroIntentForm />
@@ -412,7 +413,7 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
             <section className="mt-16" aria-labelledby="all-listings-heading">
               <div className="mb-6">
                 <h2 id="all-listings-heading" className="text-2xl font-bold text-nordic-900">
-                  Alla lediga boenden per ort
+                  Alla boenden per ort
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
                   Öppna en ort för att se samtliga publicerade företagsboenden. Tillgängligheten kan ändras snabbt.
