@@ -79,7 +79,9 @@ export async function GET() {
     }),
   );
 
+  // Delad CDN-cache: fem minuter färskt + fem minuter stale medan Vercel hämtar nytt.
+  // Presignade bildlänkar gäller en timme, så ett cachat svar har alltid giltiga länkar.
   return NextResponse.json(result, {
-    headers: { "Cache-Control": "no-store" },
+    headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=300" },
   });
 }

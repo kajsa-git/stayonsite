@@ -48,7 +48,7 @@ const fetcher = async (url: string): Promise<Listing[]> => {
   return data
 }
 
-function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (listing: Listing) => void }) {
+function PropertyCard({ listing, onInterest, eager }: { listing: Listing; onInterest: (listing: Listing) => void; eager: boolean }) {
   const { language } = useLanguage()
   const description = localizedPropertyDescription(listing, language)
   const [imgIdx, setImgIdx] = useState(0)
@@ -75,6 +75,8 @@ function PropertyCard({ listing, onInterest }: { listing: Listing; onInterest: (
             <img
               src={imgs[imgIdx]}
               alt={listing.name}
+              loading={eager ? 'eager' : 'lazy'}
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
             {imgs.length > 1 && (
@@ -386,8 +388,9 @@ export function Boenden({ listingLinks = [] }: { listingLinks?: ListingLink[] })
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {visible.map(listing => (
-                  <PropertyCard key={listing.id} listing={listing} onInterest={setSelected} />
+                {/* Första raden (3 kort på desktop) är LCP-kandidater; resten laddas när de närmar sig vyn */}
+                {visible.map((listing, index) => (
+                  <PropertyCard key={listing.id} listing={listing} onInterest={setSelected} eager={index < 3} />
                 ))}
               </div>
               {filtered.length > visibleCount && (
