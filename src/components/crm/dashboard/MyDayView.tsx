@@ -5,7 +5,7 @@ import { sv } from "date-fns/locale";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, CalendarClock, Check, FileSignature, LogIn, LogOut, Phone, Send, Undo2, X } from "lucide-react";
+import { ArrowRight, CalendarClock, Check, EyeOff, FileSignature, LogIn, LogOut, MessageSquare, NotebookPen, Phone, Send, Undo2, X } from "lucide-react";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
@@ -826,23 +826,27 @@ function QBtn({
   children,
   onClick,
   disabled,
+  title,
   variant = "default",
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
-  variant?: "default" | "success" | "danger" | "primary";
+  title?: string;
+  variant?: "default" | "success" | "danger" | "primary" | "sms";
 }) {
   const styles = {
     default: "border-input bg-white text-muted-foreground hover:bg-nordic-100",
     primary: "border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 font-medium",
     success: "border-green-300 bg-green-50 text-green-800 hover:bg-green-100 font-medium",
     danger: "border-red-200 bg-red-50 text-red-700 hover:bg-red-100 font-medium",
+    sms: "border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-medium",
   };
   return (
     <button
       onClick={onClick}
       disabled={disabled}
+      title={title}
       className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded border transition-colors active:scale-[0.96] disabled:opacity-40 ${styles[variant]}`}
     >
       {children}
@@ -953,7 +957,7 @@ export function CompanyDayCard({
         onClick={onOpen}
       >
         <div className="flex items-start gap-2">
-          <div className="min-w-0 flex-1 font-medium text-sm">{item.name}</div>
+          <div className="min-w-0 flex-1 line-clamp-2 break-words font-medium text-sm leading-snug" title={item.name}>{item.name}</div>
           <span
             title={item.lastContactAt ? `Senaste kontakt: ${item.lastContactAt.slice(0, 10)}` : "Ingen anteckning, mejl eller SMS loggat"}
             className={`shrink-0 pt-px text-[11px] tabular-nums ${age.stale ? "font-medium text-[#d45200]" : "text-muted-foreground"}`}
@@ -965,7 +969,7 @@ export function CompanyDayCard({
         {/* Nästa steg — det första ögat ska landa på */}
         <div className="mt-1 flex items-start gap-1.5 text-[13px] leading-snug text-nordic-900">
           <ArrowRight className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#ff6300] transition-transform duration-200 group-hover:translate-x-0.5" />
-          <span className="min-w-0">{nextStep}</span>
+          <span className="min-w-0 line-clamp-3 break-words" title={nextStep}>{nextStep}</span>
         </div>
 
         {/* Återkomst-badge (followup-variant) */}
@@ -1017,12 +1021,8 @@ export function CompanyDayCard({
         </div>
       )}
 
-      {/* Snabbvals-rad — tonar fram vid hover på datorn, alltid synlig på touch */}
-      <div
-        className={`flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1.5 border-t border-dashed transition-opacity duration-200 ${
-          action ? "" : "[@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-        }`}
-      >
+      {/* Snabbvals-rad */}
+      <div className="flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1.5 border-t border-dashed">
         <QBtn variant="primary" onClick={() => setAction(action === "återkomst" ? null : "återkomst")}>
           <CalendarClock className="h-3 w-3" />
           Återkomst
@@ -1129,7 +1129,7 @@ export function CompanyDayCard({
   );
 }
 
-// ─── Uthyrare-korten (oförändrade) ────────────────────────────────────────────
+// ─── Uthyrare-korten ────────────────────────────────────────────
 
 function ChaseCard({
   item,
@@ -1158,61 +1158,95 @@ function ChaseCard({
   }
   const overdue = !!item.earliestDate && item.earliestDate <= today;
   return (
-    <div className={`p-3 rounded-lg bg-white border ${item.hasReply ? "border-blue-300" : ""}`}>
-      <button className="w-full text-left" onClick={onOpen}>
-        <div className="font-medium text-sm truncate">{item.source === "owner" ? item.ownerName ?? "Uthyrare" : item.address ?? "(adress saknas)"}</div>
+    <div
+      className={`group rounded-lg bg-white border transition-[border-color,box-shadow] duration-200 hover:shadow-md hover:shadow-nordic-900/5 ${
+        item.hasReply ? "border-blue-300" : "border-border hover:border-nordic-300"
+      }`}
+    >
+      <button
+        className="w-full text-left p-3 pb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-t-lg"
+        onClick={onOpen}
+      >
+        <div className="font-medium text-sm leading-snug truncate">{item.source === "owner" ? item.ownerName ?? "Uthyrare" : item.address ?? "(adress saknas)"}</div>
         <div className="text-xs text-muted-foreground truncate">
           {[item.source === "property" ? item.ownerName : null, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
         </div>
         {item.hasReply && (
-          <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1">
+          <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1.5">
             💬 Har svarat — läs i Svar-panelen
           </span>
         )}
-        <div className="text-xs mt-1">
-          <span className="italic text-nordic-500">{item.source === "owner" ? "Återkomst på uthyrarkortet" : "Uthyrarkontakt att följa upp"}</span>
-          {item.reason && <p className="mt-0.5 line-clamp-2 break-words text-muted-foreground" title={item.reason}>{item.reason}</p>}
-        </div>
-        {item.earliestDate && (
-          <div className={`text-[11px] mt-0.5 ${overdue ? "text-rose-600" : "text-muted-foreground"}`}>
-            {overdue ? `${item.earliestDate < today ? "Försenad" : "Idag"} · ${item.earliestDate}` : item.earliestDate}{item.earliestTime ? ` · kl. ${item.earliestTime}` : ""}
+        {item.reason && (
+          <div className="mt-1.5 flex items-start gap-1.5 text-[13px] leading-snug text-nordic-900">
+            <ArrowRight className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#ff6300] transition-transform duration-200 group-hover:translate-x-0.5" />
+            <span className="min-w-0 line-clamp-2 break-words" title={item.reason}>{item.reason}</span>
           </div>
         )}
+        <div className="mt-1.5 flex flex-wrap items-center gap-1">
+          {item.earliestDate && (
+            <span className={`inline-block text-[11px] font-medium px-1.5 py-0.5 rounded ${
+              item.earliestDate < today ? "bg-red-100 text-red-800" : overdue ? "bg-amber-100 text-amber-800" : "bg-nordic-100 text-nordic-700"
+            }`}>
+              {item.earliestDate < today ? `Försenad · ${item.earliestDate}` : overdue ? "Idag" : item.earliestDate}
+              {item.earliestTime && ` kl. ${item.earliestTime}`}
+            </span>
+          )}
+          {item.source === "owner" && (
+            <span className="inline-block text-[11px] px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-600">Återkomst på uthyrarkortet</span>
+          )}
+        </div>
       </button>
-      <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t">
+      <div className="flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1.5 border-t border-dashed">
         {item.ownerPhone && (
-          <button
+          <QBtn
+            variant="sms"
+            disabled={busy}
+            title={item.source === "owner" ? "Skriv ett SMS efter att ha kontrollerat senaste kontakten" : "Förifyllt uppföljnings-SMS — justera och skicka"}
             onClick={() => {
               if (!smsOpen) setSmsText(item.source === "owner" ? "" : ownerFollowUpSms(item.ownerName, item.address));
               setSmsOpen(!smsOpen);
             }}
-            disabled={busy}
-            className="text-[11px] px-1.5 py-0.5 rounded border border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100 font-medium disabled:opacity-40"
-            title={item.source === "owner" ? "Skriv ett SMS efter att ha kontrollerat senaste kontakten" : "Förifyllt uppföljnings-SMS — justera och skicka"}
           >
-            {item.source === "owner" ? "✉️ Skriv SMS" : "✉️ Uppföljnings-SMS"}
-          </button>
+            <MessageSquare className="h-3 w-3" />
+            {item.source === "owner" ? "Skriv SMS" : "SMS"}
+          </QBtn>
         )}
-        {(item.source === "owner" ? ["snooze3", "snooze7"] as const : ["snooze3", "snooze7", "answered", "off_market"] as const).map((a) => (
-          <button
-            key={a}
-            onClick={() => act(a)}
-            disabled={busy}
-            className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
-          >
-            {a === "snooze3" ? (item.source === "owner" ? "Flytta · +3 d" : "Ringd · +3 d") : a === "snooze7" ? (item.source === "owner" ? "Flytta · +7 d" : "Ringd · +7 d") : a === "answered" ? "Fick svar" : "Av marknaden"}
-          </button>
-        ))}
-        <button
-          onClick={onOpen}
-          disabled={busy}
-          className="text-[11px] px-1.5 py-0.5 rounded border border-input bg-white text-muted-foreground hover:bg-nordic-100 disabled:opacity-40"
-        >
+        {/* Ringd/Flytta: en etikett, två knappar */}
+        <span className="inline-flex items-center overflow-hidden rounded border border-input text-[11px]">
+          <span className="px-1.5 py-0.5 text-nordic-500 bg-nordic-100/60 border-r border-input">
+            {item.source === "owner" ? "Flytta" : "Ringd"}
+          </span>
+          {(["snooze3", "snooze7"] as const).map((a, i) => (
+            <button
+              key={a}
+              onClick={() => act(a)}
+              disabled={busy}
+              title={item.source === "owner" ? `Flytta återkomsten ${a === "snooze3" ? 3 : 7} dagar` : `Ringd — ny påminnelse om ${a === "snooze3" ? 3 : 7} dagar`}
+              className={`px-1.5 py-0.5 bg-white text-muted-foreground hover:bg-nordic-100 transition-colors active:scale-[0.96] disabled:opacity-40 ${i ? "border-l border-input" : ""}`}
+            >
+              +{a === "snooze3" ? 3 : 7} d
+            </button>
+          ))}
+        </span>
+        {item.source !== "owner" && (
+          <>
+            <QBtn disabled={busy} onClick={() => act("answered")}>
+              <Check className="h-3 w-3" />
+              Fick svar
+            </QBtn>
+            <QBtn disabled={busy} onClick={() => act("off_market")}>
+              <EyeOff className="h-3 w-3" />
+              Av marknaden
+            </QBtn>
+          </>
+        )}
+        <QBtn disabled={busy} onClick={onOpen} title="Öppna och skriv en anteckning">
+          <NotebookPen className="h-3 w-3" />
           Anteckning
-        </button>
+        </QBtn>
       </div>
       {smsOpen && (
-        <div className="mt-2 space-y-1.5">
+        <div className="px-2.5 pb-2.5 space-y-1.5">
           <textarea
             value={smsText}
             onChange={(e) => setSmsText(e.target.value)}
