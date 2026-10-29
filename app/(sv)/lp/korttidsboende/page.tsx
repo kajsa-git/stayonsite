@@ -2,9 +2,9 @@ import { buildMetadata } from '@/lib/metadata'
 import LpKorttidsboende from '@/views/lp/LpKorttidsboende'
 
 export const metadata = buildMetadata({
-  title: 'Möblerat korttidsboende i hela Sverige | StayOnSite',
+  title: 'Möblerat personalboende för projekt | StayOnSite',
   description:
-    'Möblerade lägenheter för företag och yrkesverksamma från tre månader. El, wifi och möbler ingår. Få ett konkret boendeförslag inom 24 timmar.',
+    'Möblerade hus och lägenheter för företag och projekt i hela Sverige, från tre månader till flera år. Skicka en förfrågan till StayOnSite.',
   canonical: 'https://www.stayonsite.se/lp/korttidsboende',
   noindex: true,
   locale: 'sv',

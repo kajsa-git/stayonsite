@@ -420,6 +420,21 @@ export type TranslationKey =
   | "brand.nollavgift.name"
   | "brand.nollavgift.tagline"
   | "brand.nollavgift.description"
+  | "lp.projectHousing.eyebrow"
+  | "lp.projectHousing.title"
+  | "lp.projectHousing.intro"
+  | "lp.projectHousing.response"
+  | "lp.projectHousing.flexibility"
+  | "lp.projectHousing.googleRating"
+  | "lp.projectHousing.furnished"
+  | "lp.projectHousing.oneContact"
+  | "lp.projectHousing.term"
+  | "lp.projectHousing.locations"
+  | "lp.projectHousing.process"
+  | "lp.projectHousing.formIntro"
+  | "lp.projectHousing.formSubmit"
+  | "lp.projectHousing.formAudience"
+  | "lp.projectHousing.whatsapp"
   | "lp.husagare.formTitle"
   | "lp.husagare.formSubtitle"
   | "lp.husagare.submitButton"
@@ -445,6 +460,21 @@ export const translations: Record<
     ...blogTranslations.sv,
     ...datacenterTranslations.sv,
     ...cityGuideTranslations.sv,
+    "lp.projectHousing.eyebrow": "Personalboende · Hela Sverige",
+    "lp.projectHousing.title": "Möblerat personalboende för projekt i hela Sverige",
+    "lp.projectHousing.intro": "Vi ordnar möblerade hus och lägenheter för företag och arbetslag. Hyresperiod från tre månader till flera år.",
+    "lp.projectHousing.response": "Svar inom 24 timmar",
+    "lp.projectHousing.flexibility": "Hyresperiod anpassad efter ert projekt",
+    "lp.projectHousing.googleRating": "{rating} av 5 på Google",
+    "lp.projectHousing.furnished": "Möblerade bostäder för ert team. Vad som ingår i boendet framgår av förslaget.",
+    "lp.projectHousing.oneContact": "StayOnSite samordnar boendet så att företaget slipper flera kontaktvägar.",
+    "lp.projectHousing.term": "Hyresperioden anpassas efter projektets behov, från tre månader till flera år.",
+    "lp.projectHousing.locations": "Vi söker bostäder nära arbetsplatsen, även på mindre orter.",
+    "lp.projectHousing.process": "Vi går igenom era behov och återkommer inom 24 timmar.",
+    "lp.projectHousing.formIntro": "Ange ort, antal personer och företag. Vi återkommer inom 24 timmar.",
+    "lp.projectHousing.formSubmit": "Skicka förfrågan",
+    "lp.projectHousing.formAudience": "För företag och arbetslag · Minsta hyrestid 3 månader",
+    "lp.projectHousing.whatsapp": "Skriv på WhatsApp",
     "crm.companyTable.city": "Stad",
     "crm.companyTable.persons": "Personer",
     "crm.companyTable.beds": "Bäddar",
@@ -983,6 +1013,21 @@ export const translations: Record<
     ...blogTranslations.en,
     ...datacenterTranslations.en,
     ...cityGuideTranslations.en,
+    "lp.projectHousing.eyebrow": "Staff housing · Across Sweden",
+    "lp.projectHousing.title": "Furnished staff housing for projects across Sweden",
+    "lp.projectHousing.intro": "We arrange furnished houses and apartments for companies and their teams, from three months to several years.",
+    "lp.projectHousing.response": "A response within 24 hours",
+    "lp.projectHousing.flexibility": "A rental period suited to your project",
+    "lp.projectHousing.googleRating": "{rating} out of 5 on Google",
+    "lp.projectHousing.furnished": "Furnished homes for your team. Your proposal explains what is included.",
+    "lp.projectHousing.oneContact": "StayOnSite coordinates the accommodation, giving your company one point of contact.",
+    "lp.projectHousing.term": "Rental periods are tailored to your project, from three months to several years.",
+    "lp.projectHousing.locations": "We look for housing near your workplace, including in smaller towns.",
+    "lp.projectHousing.process": "We review your needs and get back to you within 24 hours.",
+    "lp.projectHousing.formIntro": "Enter the location, number of people and company. We will get back to you within 24 hours.",
+    "lp.projectHousing.formSubmit": "Send inquiry",
+    "lp.projectHousing.formAudience": "For companies and teams · Minimum rental period of 3 months",
+    "lp.projectHousing.whatsapp": "Message us on WhatsApp",
     "crm.companyTable.city": "City",
     "crm.companyTable.persons": "People",
     "crm.companyTable.beds": "Beds",
@@ -1525,6 +1570,21 @@ export const translations: Record<
     ...blogTranslations.pl,
     ...datacenterTranslations.pl,
     ...cityGuideTranslations.pl,
+    "lp.projectHousing.eyebrow": "Zakwaterowanie pracowników · Cała Szwecja",
+    "lp.projectHousing.title": "Umeblowane zakwaterowanie dla pracowników w całej Szwecji",
+    "lp.projectHousing.intro": "Organizujemy umeblowane domy i mieszkania dla firm i zespołów na okres od trzech miesięcy do kilku lat.",
+    "lp.projectHousing.response": "Odpowiedź w ciągu 24 godzin",
+    "lp.projectHousing.flexibility": "Okres najmu dopasowany do projektu",
+    "lp.projectHousing.googleRating": "{rating} na 5 w Google",
+    "lp.projectHousing.furnished": "Umeblowane mieszkania i domy dla zespołu. Zakres wyposażenia podajemy w propozycji.",
+    "lp.projectHousing.oneContact": "StayOnSite koordynuje zakwaterowanie, zapewniając firmie jeden punkt kontaktu.",
+    "lp.projectHousing.term": "Okres najmu dostosowujemy do potrzeb projektu, od trzech miesięcy do kilku lat.",
+    "lp.projectHousing.locations": "Szukamy zakwaterowania blisko miejsca pracy, także w mniejszych miejscowościach.",
+    "lp.projectHousing.process": "Przeanalizujemy potrzeby i skontaktujemy się w ciągu 24 godzin.",
+    "lp.projectHousing.formIntro": "Podaj miejscowość, liczbę osób i nazwę firmy. Skontaktujemy się w ciągu 24 godzin.",
+    "lp.projectHousing.formSubmit": "Wyślij zapytanie",
+    "lp.projectHousing.formAudience": "Dla firm i zespołów · Minimalny okres najmu to 3 miesiące",
+    "lp.projectHousing.whatsapp": "Napisz na WhatsApp",
     "crm.companyTable.city": "Miasto",
     "crm.companyTable.persons": "Osoby",
     "crm.companyTable.beds": "Łóżka",

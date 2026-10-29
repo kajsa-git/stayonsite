@@ -1,51 +1,55 @@
 'use client'
 
+import Image from 'next/image'
 import {
   ArrowUp,
   CalendarClock,
   Check,
   FileText,
   MapPin,
+  MessageCircle,
   Phone,
   Sofa,
 } from 'lucide-react'
 
 import LpKorttidsboendeForm from '@/components/lp/LpKorttidsboendeForm'
 import { Button } from '@/components/ui/button'
+import { COMPANY_FACTS, RATING_VALUE } from '@/data/constants'
+import { useTranslation } from '@/hooks/use-translation'
 import { useUtmCapture } from '@/hooks/use-utm-capture'
-import { trackPhoneClick } from '@/lib/gtag'
+import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag'
 
 const BENEFITS = [
   {
     icon: Sofa,
     title: 'Möblerat och klart',
-    text: 'Sängar, kök, wifi och tvättmöjlighet. Boendet är redo från första dagen.',
+    text: 'lp.projectHousing.furnished',
   },
   {
     icon: FileText,
     title: 'En kontakt och en faktura',
-    text: 'StayOnSite samordnar boendet så att företaget slipper flera kontaktvägar.',
+    text: 'lp.projectHousing.oneContact',
   },
   {
     icon: CalendarClock,
     title: 'Flexibelt från 3 månader',
-    text: 'Hyrestiden anpassas efter uppdraget och kan förlängas när projektet ändras.',
+    text: 'lp.projectHousing.term',
   },
   {
     icon: MapPin,
     title: 'I hela Sverige',
-    text: 'Vi söker nära arbetsplatsen, även på mindre orter där hotellutbudet är begränsat.',
+    text: 'lp.projectHousing.locations',
   },
-]
-
-const STEPS = [
-  ['1', 'Beskriv behovet', 'Ange ort, antal personer och företag i formuläret.'],
-  ['2', 'Vi kontrollerar utbudet', 'Ni får återkoppling med ett konkret upplägg inom 24 timmar.'],
-  ['3', 'Flytta in', 'Vi samordnar avtal och praktiska detaljer inför inflyttningen.'],
-]
+] as const
 
 export default function LpKorttidsboende() {
+  const { t } = useTranslation()
   const utmParams = useUtmCapture()
+  const steps = [
+    ['1', 'Beskriv behovet', 'Ange ort, antal personer och företag i formuläret.'],
+    ['2', 'Vi kontrollerar utbudet', t('lp.projectHousing.process')],
+    ['3', 'Flytta in', 'Vi samordnar avtal och praktiska detaljer inför inflyttningen.'],
+  ]
 
   const scrollToForm = () => {
     document.getElementById('korttid-form')?.scrollIntoView({ behavior: 'smooth' })
@@ -53,10 +57,15 @@ export default function LpKorttidsboende() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="flex h-14 items-center justify-center border-b border-primary/5 bg-white">
-        <span className="text-xl font-bold tracking-tight text-primary">
-          Stay<span className="text-accent">On</span>Site
-        </span>
+      <div className="flex h-16 items-center justify-center border-b border-primary/5 bg-white">
+        <Image
+          src="/stayonsite-logo.png"
+          alt="StayOnSite"
+          width={182}
+          height={48}
+          className="h-9 w-auto"
+          priority
+        />
       </div>
 
       <main>
@@ -65,21 +74,20 @@ export default function LpKorttidsboende() {
             <div className="text-center md:text-left">
               <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent">
                 <span className="h-px w-6 bg-accent" />
-                Korttid & longstay · Sverige
+                {t('lp.projectHousing.eyebrow')}
               </div>
               <h1 className="mb-5 text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">
-                Möblerat korttidsboende i hela Sverige
+                {t('lp.projectHousing.title')}
               </h1>
               <p className="mb-6 text-base font-light leading-relaxed text-primary/70 md:text-lg">
-                Lägenheter och hus för företag och yrkesverksamma. Från 3 månader, fullt
-                möblerat och med el och wifi inkluderat.
+                {t('lp.projectHousing.intro')}
               </p>
 
               <div className="mx-auto mb-6 max-w-md space-y-3 text-left md:mx-0">
                 {[
                   'Från 5 900 kr per person och månad',
-                  'Boendeförslag med adress och pris inom 24 timmar',
-                  'Flexibla avtal för projekt, uppdrag och tillfällig flytt',
+                  t('lp.projectHousing.response'),
+                  t('lp.projectHousing.flexibility'),
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3 text-sm font-medium text-primary/75">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
@@ -91,7 +99,14 @@ export default function LpKorttidsboende() {
               </div>
 
               <p className="text-sm font-semibold text-primary/55">
-                500+ ordnade boenden sedan 2016 · 5,0 på Google
+                <a
+                  href={COMPANY_FACTS.googleBusinessProfile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-primary/25 underline-offset-4 hover:text-primary"
+                >
+                  {t('lp.projectHousing.googleRating').replace('{rating}', RATING_VALUE.replace('.', ','))}
+                </a>
               </p>
             </div>
 
@@ -109,7 +124,7 @@ export default function LpKorttidsboende() {
                   <Icon size={20} aria-hidden="true" />
                 </div>
                 <h2 className="mb-1 text-base font-bold text-primary">{title}</h2>
-                <p className="text-sm leading-relaxed text-primary/60">{text}</p>
+                <p className="text-sm leading-relaxed text-primary/60">{t(text)}</p>
               </div>
             ))}
           </div>
@@ -126,7 +141,7 @@ export default function LpKorttidsboende() {
               </h2>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
-              {STEPS.map(([number, title, text]) => (
+              {steps.map(([number, title, text]) => (
                 <div key={number} className="rounded-2xl border border-primary/10 bg-white p-6">
                   <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                     {number}
@@ -154,14 +169,24 @@ export default function LpKorttidsboende() {
               <span>Få ett boendeförslag</span>
               <ArrowUp size={18} aria-hidden="true" />
             </Button>
-            <div className="mt-6 flex items-center justify-center gap-2">
-              <Phone size={14} className="text-white/50" aria-hidden="true" />
+            <div className="mt-6 flex flex-col items-center gap-3">
               <a
                 href="tel:+46762498486"
                 onClick={trackPhoneClick}
-                className="text-sm font-medium text-white/60 transition-colors hover:text-white"
+                className="inline-flex items-center gap-2 text-sm font-medium text-white/70 transition-colors hover:text-white"
               >
+                <Phone size={14} aria-hidden="true" />
                 076-249 84 86
+              </a>
+              <a
+                href={COMPANY_FACTS.whatsappUrl}
+                onClick={trackWhatsAppClick}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-white/70 transition-colors hover:text-white"
+              >
+                <MessageCircle size={14} aria-hidden="true" />
+                {t('lp.projectHousing.whatsapp')}
               </a>
             </div>
           </div>

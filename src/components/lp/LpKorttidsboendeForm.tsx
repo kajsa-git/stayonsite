@@ -1,16 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle2, Phone, Send } from 'lucide-react'
+import { CheckCircle2, MessageCircle, Phone, Send } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { COMPANY_FACTS } from '@/data/constants'
 import { trackFbEvent } from '@/hooks/use-facebook-pixel'
+import { useTranslation } from '@/hooks/use-translation'
 import { useToast } from '@/hooks/use-toast'
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact'
 import { getContactFormErrorMessage, submitContactForm } from '@/lib/contact-form'
-import { trackFormStart, trackFormSubmit, trackPhoneClick } from '@/lib/gtag'
+import { trackFormStart, trackFormSubmit, trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag'
 
 interface LpKorttidsboendeFormProps {
   utmParams: Record<string, string>
@@ -22,6 +24,7 @@ const inputClass =
 export default function LpKorttidsboendeForm({
   utmParams,
 }: LpKorttidsboendeFormProps) {
+  const { t } = useTranslation()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
@@ -113,7 +116,7 @@ export default function LpKorttidsboendeForm({
       <div className="relative rounded-3xl border border-primary/5 bg-white p-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.12)] md:p-8">
         <h2 className="mb-1 text-xl font-bold text-primary">Få ett konkret boendeförslag</h2>
         <p className="mb-6 text-sm leading-relaxed text-primary/60">
-          Ange fem uppgifter. Vi återkommer med vad som är möjligt inom 24 timmar.
+          {t('lp.projectHousing.formIntro')}
         </p>
 
         <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-4">
@@ -215,23 +218,33 @@ export default function LpKorttidsboendeForm({
             disabled={isSubmitting}
             className="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#ff6300] to-[#ff8533] font-bold text-white shadow-xl transition-transform hover:scale-[1.01] active:scale-[0.99]"
           >
-            <span>{isSubmitting ? 'Skickar…' : 'Få boendeförslag inom 24h'}</span>
+            <span>{isSubmitting ? 'Skickar…' : t('lp.projectHousing.formSubmit')}</span>
             {!isSubmitting && <Send size={18} aria-hidden="true" />}
           </Button>
 
           <p className="text-center text-xs leading-relaxed text-primary/60">
-            För företag och yrkesverksamma · Minsta hyrestid 3 månader
+            {t('lp.projectHousing.formAudience')}
           </p>
         </form>
 
-        <div className="mt-5 flex items-center justify-center gap-2 border-t border-primary/10 pt-5">
-          <Phone size={15} className="text-accent" aria-hidden="true" />
+        <div className="mt-5 flex flex-col items-center gap-3 border-t border-primary/10 pt-5">
           <a
             href="tel:+46762498486"
             onClick={trackPhoneClick}
-            className="text-sm font-bold text-primary/70 transition-colors hover:text-accent"
+            className="inline-flex items-center gap-2 text-sm font-bold text-primary/70 transition-colors hover:text-accent"
           >
+            <Phone size={15} className="text-accent" aria-hidden="true" />
             Ring 076-249 84 86
+          </a>
+          <a
+            href={COMPANY_FACTS.whatsappUrl}
+            onClick={trackWhatsAppClick}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-bold text-primary/70 transition-colors hover:text-accent"
+          >
+            <MessageCircle size={15} className="text-accent" aria-hidden="true" />
+            {t('lp.projectHousing.whatsapp')}
           </a>
         </div>
       </div>
