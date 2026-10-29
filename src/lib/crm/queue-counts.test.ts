@@ -62,10 +62,15 @@ describe("computeQueueCounts", () => {
     expect(c.renewals).toBe(0);
   });
 
-  it("räknar även återkomster på uthyrarkortet utan att blanda ihop dem med bostadens kontaktrunda", async () => {
+  it("viker in uthyrarens återkomst i bostadens kontaktrunda — ett kort per uthyrare", async () => {
     await db.update(owners).set({ followUpDate: TODAY, followUpTime: "16:30" }).where(eq(owners.id, "o1"));
-    expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(2);
+    expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(1);
     await db.update(owners).set({ followUpDate: "2026-07-16" }).where(eq(owners.id, "o1"));
     expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(1);
+  });
+
+  it("räknar uthyrarens återkomst som eget kort när ingen kontaktrunda är förfallen", async () => {
+    await db.insert(owners).values([{ id: "o2", name: "Annan uthyrare", followUpDate: TODAY }]);
+    expect((await computeQueueCounts({ db, today: TODAY })).chaseLandlords).toBe(2);
   });
 });

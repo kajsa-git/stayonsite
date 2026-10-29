@@ -184,6 +184,8 @@ interface ChaseRow {
   earliestTime: string | null;
   reason: string | null;
   hasReply: boolean;
+  /** Bostadskortet bär även uthyrarens återkomst — snabbvalen flyttar båda. */
+  includesOwnerFollowUp?: boolean;
 }
 
 interface QueueData {
@@ -263,6 +265,19 @@ export function MyDayView() {
         body: JSON.stringify(isOwner ? { followUpDate: plusDays(action === "snooze7" ? 7 : 3) } : { action }),
       });
       if (!res.ok) throw new Error(String(res.status));
+      // Hopslaget kort: uthyrarens egen återkomst följer med, annars dyker den upp igen som eget kort.
+      if (!isOwner && item.includesOwnerFollowUp && item.ownerId && action !== "off_market") {
+        const ownerRes = await fetch(`/api/crm/owners/${item.ownerId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            action === "answered"
+              ? { followUpDate: null, followUpTime: null, followUpReason: null }
+              : { followUpDate: plusDays(action === "snooze7" ? 7 : 3) },
+          ),
+        });
+        if (!ownerRes.ok) throw new Error(String(ownerRes.status));
+      }
       mutate();
       toast({ title: CHASE_TOAST[action] ?? "Sparat" });
     } catch {

@@ -234,12 +234,13 @@ export async function GET() {
     ownerName: string | null;
     ownerPhone: string | null;
     followUps: { date: string; time: string | null; reason: string | null }[];
+    includesOwnerFollowUp: boolean;
   };
   const byProperty = new Map<string, Acc>();
   const ensure = (id: string): Acc => {
     let e = byProperty.get(id);
     if (!e) {
-      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, followUps: [] };
+      e = { propertyId: id, address: null, ownerId: null, ownerName: null, ownerPhone: null, followUps: [], includesOwnerFollowUp: false };
       byProperty.set(id, e);
     }
     return e;
@@ -252,6 +253,18 @@ export async function GET() {
     e.ownerPhone ??= o.ownerPhone ?? null;
     if (o.ownerFollowUpDate) e.followUps.push({ date: o.ownerFollowUpDate, time: o.ownerFollowUpTime, reason: o.ownerReason });
   }
+  // Ett kort per uthyrare: har uthyraren både en förfallen återkomst på kortet och en
+  // förfallen kontaktrunda, viks återkomsten in i (första) bostadskortet i stället för
+  // att ligga som ett eget kort bredvid. Snabbvalen flyttar då båda datumen.
+  const dueOwnerFollowUp = new Map(ownerFollowUps.map((o) => [o.ownerId, o]));
+  const mergedOwnerIds = new Set<string>();
+  for (const e of byProperty.values()) {
+    const o = e.ownerId ? dueOwnerFollowUp.get(e.ownerId) : undefined;
+    if (!o || mergedOwnerIds.has(o.ownerId)) continue;
+    mergedOwnerIds.add(o.ownerId);
+    e.includesOwnerFollowUp = true;
+    if (o.date) e.followUps.push({ date: o.date, time: o.time, reason: o.reason });
+  }
   // "Har svarat"-flaggan: oläst inkommande SMS från uthyraren → jaga inte i blindo.
   const unreadOwnerSet = new Set(unreadInboxOwners.map((r) => r.ownerId).filter((v): v is string => !!v));
   const chaseLandlords = [
@@ -261,10 +274,12 @@ export async function GET() {
         source: "property" as const, propertyId: e.propertyId, address: e.address,
         ownerId: e.ownerId, ownerName: e.ownerName, ownerPhone: e.ownerPhone,
         earliestDate: next?.date ?? null, earliestTime: next?.time ?? null,
-        reason: next?.reason ?? null, hasReply: e.ownerId ? unreadOwnerSet.has(e.ownerId) : false,
+        reason: next?.reason ?? e.followUps.find((f) => f.reason)?.reason ?? null,
+        hasReply: e.ownerId ? unreadOwnerSet.has(e.ownerId) : false,
+        includesOwnerFollowUp: e.includesOwnerFollowUp,
       };
     }),
-    ...ownerFollowUps.map((o) => ({
+    ...ownerFollowUps.filter((o) => !mergedOwnerIds.has(o.ownerId)).map((o) => ({
       source: "owner" as const, propertyId: null, address: null,
       ownerId: o.ownerId, ownerName: o.ownerName, ownerPhone: o.ownerPhone,
       earliestDate: o.date, earliestTime: o.time, reason: o.reason,

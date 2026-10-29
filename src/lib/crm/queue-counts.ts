@@ -6,7 +6,7 @@ import { addDaysYmd, todayStockholm } from "./date";
 import { db as defaultDb } from "./db";
 import { hasSignedMoveInContract } from "./move-checklists";
 import * as schema from "./schema";
-import { companies, inboxMessages, outboxMessages, owners, ownerOutreach, requests } from "./schema";
+import { companies, inboxMessages, outboxMessages, owners, ownerOutreach, properties, requests } from "./schema";
 
 type DB = LibSQLDatabase<typeof schema>;
 
@@ -53,8 +53,9 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
 
     // Förslags-jakten borttagen 2026-07-13 — bara kontaktrundorna jagar uthyrare.
     db
-      .select({ propertyId: ownerOutreach.propertyId })
+      .select({ propertyId: ownerOutreach.propertyId, ownerId: properties.ownerId })
       .from(ownerOutreach)
+      .leftJoin(properties, eq(ownerOutreach.propertyId, properties.id))
       .where(and(isNull(ownerOutreach.concludedAt), lte(ownerOutreach.nextFollowUpDate, today))),
 
     db.select({ id: owners.id }).from(owners).where(lte(owners.followUpDate, today)),
@@ -97,7 +98,13 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
   ]);
 
   const chaseProps = new Set<string>();
-  for (const o of chaseOwnerProps) chaseProps.add(o.propertyId);
+  const chaseOwnerIds = new Set<string>();
+  for (const o of chaseOwnerProps) {
+    chaseProps.add(o.propertyId);
+    if (o.ownerId) chaseOwnerIds.add(o.ownerId);
+  }
+  // Samma regel som /api/crm/queues: uthyrarens återkomst viks in i bostadskortet.
+  const ownOwnerCards = dueOwners.filter((o) => !chaseOwnerIds.has(o.id)).length;
 
   const agreementCompanies = new Set<string>();
   const toInvoiceCompanies = new Set<string>();
@@ -118,7 +125,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
     openWithoutFollowUp: openWithoutFollowUpRows.length,
     agreements: agreementCompanies.size,
     toInvoice: toInvoiceCompanies.size,
-    chaseLandlords: chaseProps.size + dueOwners.length,
+    chaseLandlords: chaseProps.size + ownOwnerCards,
     moveSchedule,
     replies: unreadReplies.length,
     drafts: draftRows.length,
