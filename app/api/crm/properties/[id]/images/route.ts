@@ -4,6 +4,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { propertyImages, properties } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { createImageVariants } from "@/lib/crm/image-variants";
 import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -113,11 +114,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   await r2.send(
     new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime })
   );
+  const variants = await createImageVariants(key, bytes);
 
   const imageId = nanoid();
   const [row] = await db
     .insert(propertyImages)
-    .values({ id: imageId, propertyId: id, key, fileName: file.name })
+    .values({ id: imageId, propertyId: id, key, ...variants, fileName: file.name })
     .returning();
 
   await db.update(properties).set(pendingContentReview()).where(eq(properties.id, id));

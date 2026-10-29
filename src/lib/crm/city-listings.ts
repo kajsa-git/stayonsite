@@ -58,13 +58,13 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
     // Samma huvudbild och reservordning som på objektets detaljsida.
     const ids = cityRows.map((r) => r.id);
     const images = await db
-      .select({ propertyId: propertyImages.propertyId, key: propertyImages.key })
+      .select({ propertyId: propertyImages.propertyId, key: propertyImages.key, thumbKey: propertyImages.thumbKey })
       .from(propertyImages)
       .where(inArray(propertyImages.propertyId, ids))
       .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
     const primaryKeys = new Map<string, string>();
     for (const image of images) {
-      if (!primaryKeys.has(image.propertyId)) primaryKeys.set(image.propertyId, image.key);
+      if (!primaryKeys.has(image.propertyId)) primaryKeys.set(image.propertyId, image.thumbKey ?? image.key);
     }
 
     const approved = await approvedPropertyIds(ids, new Map(cityRows.map((r) => [r.id, r.updatedAt])));

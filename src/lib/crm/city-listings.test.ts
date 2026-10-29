@@ -60,6 +60,16 @@ describe("city listing images", () => {
     expect((await getCityListings("Gävle"))[0].imageUrl).toBe("https://images.example.test/gavle/first.jpg");
   });
 
+  it("serves the 800 px WebP variant, and adding it later keeps the listing approved", async () => {
+    await state.db.insert(propertyImages).values({ id: "main", propertyId: "gavle", key: "gavle/main.jpg", isPrimary: true });
+    await approve("gavle");
+    expect((await getCityListings("Gävle"))[0].imageUrl).toBe("https://images.example.test/gavle/main.jpg");
+
+    // Backfill fyller i varianterna efter granskningen — originalnyckeln är oförändrad.
+    await state.db.update(propertyImages).set({ thumbKey: "gavle/main.w800.webp", displayKey: "gavle/main.w1600.webp" }).where(eq(propertyImages.id, "main"));
+    expect((await getCityListings("Gävle"))[0].imageUrl).toBe("https://images.example.test/gavle/main.w800.webp");
+  });
+
   it("falls back to gallery order and keeps listings with no image usable", async () => {
     await state.db.insert(propertyImages).values([
       { id: "later", propertyId: "gavle", key: "gavle/later.jpg", sortOrder: 1, createdAt: "2026-10-02" },

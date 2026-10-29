@@ -122,13 +122,14 @@ export async function loadPublicProperty(
   }
 
   const imgRows = await db
-    .select({ key: propertyImages.key })
+    .select({ key: propertyImages.key, displayKey: propertyImages.displayKey })
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, row.id))
     .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
   if (!(await approvedPropertyIds([row.id], new Map([[row.id, row.updatedAt]]))).has(row.id)) return null;
   const images = await Promise.all(
-    imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.key }), { expiresIn: 60 * 60 * 24 * 7 })),
+    // 1600 px-WebP för galleriet; originalet (kan vara flera MB) bara som reserv.
+    imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.displayKey ?? im.key }), { expiresIn: 60 * 60 * 24 * 7 })),
   );
 
   const mapArea = [row.postalCode, row.city].filter(Boolean).join(" ");

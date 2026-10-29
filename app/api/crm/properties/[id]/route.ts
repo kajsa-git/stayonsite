@@ -8,6 +8,7 @@ import { indexOwner, indexProperty, removeFromIndex } from "@/lib/crm/search-ind
 import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
 import { owners, properties, propertyImages } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { imageObjectKeys } from "@/lib/crm/image-variants";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -73,8 +74,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const [existing] = await db.select({ ownerId: properties.ownerId }).from(properties).where(eq(properties.id, id));
   // Hämta R2-nycklarna INNAN raderingen (bildraderna försvinner i transaktionen).
   const imageKeys = (
-    await db.select({ key: propertyImages.key }).from(propertyImages).where(eq(propertyImages.propertyId, id))
-  ).map((r) => r.key);
+    await db
+      .select({ key: propertyImages.key, thumbKey: propertyImages.thumbKey, displayKey: propertyImages.displayKey })
+      .from(propertyImages)
+      .where(eq(propertyImages.propertyId, id))
+  ).flatMap(imageObjectKeys);
 
   await db.transaction((tx) => deletePropertyDeep(tx, id));
 

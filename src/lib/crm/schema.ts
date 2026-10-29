@@ -409,6 +409,9 @@ export const propertyImages = sqliteTable("crm_property_images", {
     .notNull()
     .references(() => properties.id, { onDelete: "cascade" }),
   key: text("key").notNull(), // R2 object key
+  // WebP-varianter för publika ytor (null tills de skapats — läsare faller då tillbaka på key).
+  thumbKey: text("thumb_key"), // 800 px — listkort
+  displayKey: text("display_key"), // 1600 px — galleri/detaljsida
   fileName: text("file_name"),
   sortOrder: integer("sort_order").default(0),
   isPrimary: integer("is_primary", { mode: "boolean" }).default(false), // huvudbild i prospekt/OG

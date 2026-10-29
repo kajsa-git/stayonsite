@@ -46,7 +46,7 @@ export async function GET() {
   // Hämta primärbilder för alla publicerade objekt
   const ids = rows.map((r) => r.id);
   const imgRows = await db
-    .select({ propertyId: propertyImages.propertyId, key: propertyImages.key, isPrimary: propertyImages.isPrimary, sortOrder: propertyImages.sortOrder })
+    .select({ propertyId: propertyImages.propertyId, key: propertyImages.key, thumbKey: propertyImages.thumbKey, isPrimary: propertyImages.isPrimary, sortOrder: propertyImages.sortOrder })
     .from(propertyImages)
     .where(inArray(propertyImages.propertyId, ids))
     .orderBy(asc(propertyImages.sortOrder));
@@ -65,7 +65,8 @@ export async function GET() {
       const imgs = (imgsByProperty.get(p.id) ?? []).sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
       const imageUrls = await Promise.all(
         imgs.slice(0, 6).map((img) =>
-          getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: img.key }), { expiresIn: 3600 }),
+          // Listkorten är ~350 px breda: 800 px-WebP räcker även för retina; originalet bara som reserv.
+          getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: img.thumbKey ?? img.key }), { expiresIn: 3600 }),
         ),
       );
       // name = redigerbar rubrik (faller tillbaka till deterministiskt SEO-namn).
