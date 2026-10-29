@@ -10,6 +10,7 @@ import { imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { normalizePhoneE164 } from "@/lib/crm/phone-links";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { createImageVariants } from "@/lib/crm/image-variants";
 import { outboxMessages, propertyImages } from "@/lib/crm/schema";
 import { ensureShareLink } from "@/lib/crm/share-links";
 import { intakeConfirmSms } from "@/lib/crm/sms-templates";
@@ -51,6 +52,7 @@ async function uploadImage(propertyId: string, file: File, sortOrder: number, is
 
   const key = `properties/${propertyId}/${nanoid()}.${sniffed.ext}`;
   await r2.send(new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime }));
+  const variants = await createImageVariants(key, bytes);
 
   const [row] = await db
     .insert(propertyImages)
@@ -58,6 +60,7 @@ async function uploadImage(propertyId: string, file: File, sortOrder: number, is
       id: nanoid(),
       propertyId,
       key,
+      ...variants,
       fileName: file.name,
       sortOrder,
       isPrimary,

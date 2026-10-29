@@ -11,6 +11,7 @@ import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { appendPropertyIntakeImageSummary } from "@/lib/crm/property-intake";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { createImageVariants } from "@/lib/crm/image-variants";
 import { propertyImages, properties } from "@/lib/crm/schema";
 
 export const runtime = "nodejs";
@@ -78,6 +79,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     const key = `properties/${id}/${nanoid()}.${sniffed.ext}`;
 
     await r2.send(new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime }));
+    const variants = await createImageVariants(key, bytes);
 
     const [row] = await db
       .insert(propertyImages)
@@ -85,6 +87,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
         id: nanoid(),
         propertyId: id,
         key,
+        ...variants,
         fileName: file.name,
         sortOrder,
         isPrimary,

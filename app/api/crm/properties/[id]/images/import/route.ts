@@ -7,6 +7,7 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { propertyImages, properties } from "@/lib/crm/schema";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
+import { createImageVariants } from "@/lib/crm/image-variants";
 import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { safeFetchPublic } from "@/lib/crm/safe-fetch";
@@ -127,10 +128,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const key = `properties/${id}/${nanoid()}.${sniffed.ext}`;
     try {
       await r2.send(new PutObjectCommand({ Bucket: R2_BUCKET, Key: key, Body: bytes, ContentType: sniffed.mime }));
+      const variants = await createImageVariants(key, bytes);
       await db.insert(propertyImages).values({
         id: nanoid(),
         propertyId: id,
         key,
+        ...variants,
         fileName: fileNameFromUrl(url),
         sortOrder: existing.length + i, // behåll annonsens ordning även om någon bild fallerar
         isPrimary: !hasPrimary, // första lyckade bilden blir huvudbild i prospektet
