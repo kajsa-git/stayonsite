@@ -14,6 +14,7 @@ const PUBLIC_COLUMNS = {
   id: properties.id,
   updatedAt: properties.updatedAt,
   published: properties.published,
+  publishConsentAt: properties.publishConsentAt,
   prospektPublished: properties.prospektPublished,
   status: properties.status,
   publicName: properties.publicName,
@@ -45,7 +46,7 @@ const PUBLIC_COLUMNS = {
   availableTo: properties.availableTo,
 } as const;
 
-export type PublicPropertyRow = Pick<Property, Exclude<keyof typeof PUBLIC_COLUMNS, "updatedAt">>;
+export type PublicPropertyRow = Pick<Property, Exclude<keyof typeof PUBLIC_COLUMNS, "updatedAt" | "publishConsentAt">>;
 
 export type PublicProperty = {
   row: PublicPropertyRow;
@@ -117,7 +118,7 @@ export async function loadPublicProperty(
     : await db.select(PUBLIC_COLUMNS).from(properties).where(eq(properties.id, idOrSlug)).limit(1);
   if (!row) return null;
   if (opts.surface === "web") {
-    if (!row.published || !hasWebsitePropertyStatus(row.status)) return null;
+    if (!row.published || !hasWebsitePropertyStatus(row.status, row.publishConsentAt)) return null;
   } else if (opts.surface === "prospekt") {
     if (!row.prospektPublished) return null;
   }
@@ -136,5 +137,8 @@ export async function loadPublicProperty(
   const mapArea = [row.postalCode, row.city].filter(Boolean).join(" ");
   const mapCoords = row.postalCode || row.city ? await geocodeArea(row.postalCode, row.city, row.country) : null;
 
-  return { row: await completePublicDescription(row), images, mapCoords, mapArea };
+  const { publishConsentAt: consent, updatedAt: version, ...publicRow } = row;
+  void consent;
+  void version;
+  return { row: await completePublicDescription(publicRow), images, mapCoords, mapArea };
 }

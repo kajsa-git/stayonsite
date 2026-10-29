@@ -1,5 +1,5 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { and, eq, lt, or } from "drizzle-orm";
+import { and, eq, lt, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import sharp from "sharp";
 import { db } from "./db";
@@ -141,8 +141,7 @@ export async function autoPublishReviewedProperty(id: string) {
   if (!p.autoPublishEnabled) return;
   // Existing publication is legacy evidence of consent (same rule as the
   // landlord consent screen). Never fabricate a consent timestamp/name.
-  if (!p.publishConsentAt && !p.published) return;
-  if (p.status !== "available" || (p.availableTo && p.availableTo < new Date().toISOString().slice(0, 10))) return;
+  if (!p.publishConsentAt?.trim() && !p.published) return;
   const problem = await validatePublicationSeo({ ...p, published: true });
   if (problem) {
     await db.update(properties).set({ contentReviewReport: { ...p.contentReviewReport!, reasons: [problem] }, contentReviewStatus: "needs_review" })
@@ -151,7 +150,13 @@ export async function autoPublishReviewedProperty(id: string) {
   }
   // No SMS, mail, agreement or outreach status changes are made here.
   await db.update(properties).set({ published: true, prospektPublished: true, updatedAt: new Date().toISOString() })
-    .where(and(eq(properties.id, id), eq(properties.contentReviewStatus, "approved"), eq(properties.contentReviewHash, p.contentReviewHash!)));
+    .where(and(
+      eq(properties.id, id),
+      eq(properties.contentReviewStatus, "approved"),
+      eq(properties.contentReviewHash, p.contentReviewHash!),
+      eq(properties.autoPublishEnabled, true),
+      or(eq(properties.published, true), sql`length(trim(${properties.publishConsentAt})) > 0`),
+    ));
 }
 
 export async function reviewPropertyContent(id: string, opts: { force?: boolean; publish?: boolean } = {}) {

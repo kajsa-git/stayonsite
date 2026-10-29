@@ -53,7 +53,7 @@ export function PropertyPublicControls({
         : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
     }`;
   const approved = property.contentReviewStatus === "approved";
-  const websiteStatusAllowed = hasWebsitePropertyStatus(property.status);
+  const websiteStatusAllowed = hasWebsitePropertyStatus(property.status, property.publishConsentAt);
   const isPublic = approved && !!property.published && websiteStatusAllowed;
 
   return (
@@ -92,7 +92,7 @@ export function PropertyPublicControls({
               <span className="text-[11px] text-muted-foreground">Publik URL skapas när du sparar med en ort</span>
             ))}
           {property.published && !websiteStatusAllowed && (
-            <span className="text-[11px] text-amber-700">Den aktuella statusen tillåter inte visning på hemsidan.</span>
+            <span className="text-[11px] text-amber-700">Kontrollera publiceringsmedgivandet för den aktuella statusen.</span>
           )}
         </div>
 

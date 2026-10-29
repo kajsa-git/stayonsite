@@ -648,7 +648,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
                           </div>
                         </TableCell>
                         <TableCell className="text-foreground">{p.moveInFrom || "–"}</TableCell>
-                        <TableCell className="text-foreground">{p.published && p.contentReviewStatus === "approved" && hasWebsitePropertyStatus(p.status) ? "✓" : "–"}</TableCell>
+                        <TableCell className="text-foreground">{p.published && p.contentReviewStatus === "approved" && hasWebsitePropertyStatus(p.status, p.publishConsentAt) ? "✓" : "–"}</TableCell>
                       </TableRow>
                     );
                   })

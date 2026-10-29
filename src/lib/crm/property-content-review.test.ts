@@ -9,7 +9,8 @@ vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}) }));
 vi.mock("./r2", () => ({ R2_BUCKET: "test", r2: { send: vi.fn(async () => ({ Body: { transformToByteArray: async () => Buffer.from("image") } })) } }));
 vi.mock("sharp", () => ({ default: () => ({ rotate() { return this; }, resize() { return this; }, jpeg() { return this; }, toBuffer: async () => Buffer.from("jpeg") }) }));
-import { reviewPropertyContent, inspectPropertyContent, readReviewInput } from "./property-content-review";
+import { autoPublishReviewedProperty, reviewPropertyContent, inspectPropertyContent, readReviewInput } from "./property-content-review";
+import * as publicationSeo from "./publication-seo";
 import { approvedPropertyIds } from "./approved-property-content";
 import { isCurrentContentApproved, propertyContentHash, publicTextProblems } from "./property-content-policy";
 
@@ -41,7 +42,7 @@ beforeEach(async () => {
     return new Response(JSON.stringify({ stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify(result) }] }), { status: 200 });
   }));
 });
-afterEach(() => { cleanup(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 describe("automatic property approval", () => {
   it("cleans and translates, publishes with consent, and keeps private finance separate", async () => {
@@ -59,10 +60,28 @@ describe("automatic property approval", () => {
     expect(await reviewPropertyContent("p1")).toBe("approved");
     expect((await readReviewInput("p1"))!.property).toMatchObject({ published: false, prospektPublished: false, status: "rented" });
   });
+  it.each(["rented", "off_market", "reserved"])("publishes consented and reviewed %s properties without changing their status", async (status) => {
+    await state.db.update(properties).set({ status, availableTo: "2026-01-01" }).where(eq(properties.id, "p1"));
+    expect(await reviewPropertyContent("p1")).toBe("approved");
+    expect((await readReviewInput("p1"))!.property).toMatchObject({ published: true, prospektPublished: true, status });
+  });
   it("preserves a manual publication pause after text cleanup", async () => {
     await state.db.update(properties).set({ autoPublishEnabled: false }).where(eq(properties.id, "p1"));
     expect(await reviewPropertyContent("p1")).toBe("approved");
     expect((await readReviewInput("p1"))!.property).toMatchObject({ published: false, prospektPublished: false, autoPublishEnabled: false });
+  });
+  it.each([
+    ["publication is paused", { autoPublishEnabled: false }],
+    ["consent is removed", { publishConsentAt: null }],
+  ])("does not publish if %s during validation", async (_reason, change) => {
+    expect(await reviewPropertyContent("p1", { publish: false })).toBe("approved");
+    const validate = publicationSeo.validatePublicationSeo;
+    vi.spyOn(publicationSeo, "validatePublicationSeo").mockImplementation(async (candidate) => {
+      await state.db.update(properties).set(change).where(eq(properties.id, "p1"));
+      return validate(candidate);
+    });
+    await autoPublishReviewedProperty("p1");
+    expect((await readReviewInput("p1"))!.property).toMatchObject({ published: false, prospektPublished: false, ...change });
   });
   it("checks every image, including number nine; any inappropriate image blocks approval", async () => {
     for (let n = 2; n <= 9; n++) await state.db.insert(propertyImages).values({ id: `im${n}`, propertyId: "p1", key: `immutable/${n}.jpg` });

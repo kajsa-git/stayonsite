@@ -20,17 +20,19 @@ beforeEach(async () => {
   state.db = created.db;
   cleanup = created.cleanup;
 
-  for (const [id, status, published, approved] of [
-    ["available", "available", true, true],
-    ["off-market", "off_market", true, true],
-    ["rented", "rented", true, true],
-    ["reserved", "reserved", true, true],
-    ["unpublished", "off_market", false, true],
-    ["unreviewed", "rented", true, false],
-    ["stale", "off_market", true, true],
+  for (const [id, status, published, approved, consent] of [
+    ["available", "available", true, true, null],
+    ["off-market", "off_market", true, true, null],
+    ["rented", "rented", true, true, null],
+    ["reserved", "reserved", true, true, null],
+    ["reserved-consented", "reserved", true, true, "2026-09-01"],
+    ["no-status-consented", null, true, true, "2026-09-01"],
+    ["unpublished", "off_market", false, true, "2026-09-01"],
+    ["unreviewed", "rented", true, false, "2026-09-01"],
+    ["stale", "off_market", true, true, "2026-09-01"],
   ] as const) {
     await state.db.insert(properties).values({
-      id, slug: id, status, published,
+      id, slug: id, status, published, publishConsentAt: consent,
       address: "Privatgatan 9", rentIn: 12345, rentOut: 23456,
       publicName: `Boende ${id}`, publicDescription: "Ett möblerat boende.",
       publicDescriptionEn: "Furnished accommodation.", publicDescriptionPl: "Umeblowane zakwaterowanie.",
@@ -46,25 +48,27 @@ beforeEach(async () => {
 afterEach(() => cleanup());
 
 describe("public website publication", () => {
-  it("shows eligible statuses but keeps unpublished, reserved and unreviewed records private", async () => {
+  it("shows eligible statuses and keeps unconsented reserved, unpublished and unreviewed records private", async () => {
     const response = await GET();
     const rows = await response.json() as Record<string, unknown>[];
-    expect(rows.map((row) => row.id).sort()).toEqual(["available", "off-market", "rented"]);
+    expect(rows.map((row) => row.id).sort()).toEqual(["available", "no-status-consented", "off-market", "rented", "reserved-consented"]);
     for (const row of rows) {
       expect(row).not.toHaveProperty("address");
       expect(row).not.toHaveProperty("rentIn");
       expect(row).not.toHaveProperty("rentOut");
       expect(row).not.toHaveProperty("status");
+      expect(row).not.toHaveProperty("publishConsentAt");
     }
-    expect((await getPublicListingLinks()).map((row) => row.slug).sort()).toEqual(["available", "off-market", "rented"]);
+    expect((await getPublicListingLinks()).map((row) => row.slug).sort()).toEqual(["available", "no-status-consented", "off-market", "rented", "reserved-consented"]);
   });
 
   it("applies the same gates to direct property links", async () => {
-    for (const id of ["available", "off-market", "rented"]) {
+    for (const id of ["available", "no-status-consented", "off-market", "rented", "reserved-consented"]) {
       const result = await loadPublicProperty(id, { surface: "web" });
       expect(result?.row.id).toBe(id);
       expect(result?.row).not.toHaveProperty("address");
       expect(result?.row).not.toHaveProperty("rentIn");
+      expect(result?.row).not.toHaveProperty("publishConsentAt");
     }
     for (const id of ["reserved", "unpublished", "unreviewed", "stale"]) {
       expect(await loadPublicProperty(id, { surface: "web" })).toBeNull();

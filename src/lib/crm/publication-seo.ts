@@ -1,8 +1,9 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "./db";
 import { properties, type Property } from "./schema";
 import { publicDisplayName } from "./slug";
-import { hasWebsitePropertyStatus, WEBSITE_PROPERTY_STATUSES } from "./publication";
+import { hasWebsitePropertyStatus } from "./publication";
+import { websiteStatusWhere } from "./website-status-query";
 
 export const MIN_PUBLIC_DESCRIPTION_LENGTH = 80;
 
@@ -48,14 +49,14 @@ function normalizedSeoText(value: string | null | undefined): string {
 }
 
 export function shouldValidatePublication(
-  existing: Pick<Property, "published" | "status"> | undefined,
+  existing: (Pick<Property, "published" | "status"> & Partial<Pick<Property, "publishConsentAt">>) | undefined,
   body: Record<string, unknown>,
-  candidate: Pick<Property, "published" | "status">,
+  candidate: Pick<Property, "published" | "status"> & Partial<Pick<Property, "publishConsentAt">>,
 ): boolean {
-  const willBePublic = candidate.published === true && hasWebsitePropertyStatus(candidate.status);
+  const willBePublic = candidate.published === true && hasWebsitePropertyStatus(candidate.status, candidate.publishConsentAt);
   if (!willBePublic) return false;
 
-  const wasPublic = existing?.published === true && hasWebsitePropertyStatus(existing.status);
+  const wasPublic = existing?.published === true && hasWebsitePropertyStatus(existing.status, existing.publishConsentAt);
   if (!wasPublic) return true;
 
   return SEO_FIELDS.some((field) => Object.prototype.hasOwnProperty.call(body, field));
@@ -115,7 +116,7 @@ export async function validatePublicationSeo(candidate: PublicationCandidate): P
       beds: properties.beds,
     })
     .from(properties)
-    .where(and(eq(properties.published, true), inArray(properties.status, WEBSITE_PROPERTY_STATUSES)));
+    .where(and(eq(properties.published, true), websiteStatusWhere()));
 
   return publicationSeoProblem(candidate, otherListings);
 }

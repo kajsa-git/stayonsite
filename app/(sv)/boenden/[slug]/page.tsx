@@ -15,7 +15,7 @@ import { publicDisplayName } from "@/lib/crm/slug"
 import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/public-seo"
 import { cities } from "@/data/cities"
 import { WebsitePropertyShowcase } from "@/components/prospekt/WebsitePropertyShowcase"
-import { hasWebsitePropertyStatus } from "@/lib/crm/publication"
+import { hasCurrentPublicAvailability, hasWebsitePropertyStatus } from "@/lib/crm/publication"
 
 export const dynamic = "force-dynamic"
 
@@ -27,6 +27,7 @@ async function lookupForMeta(idOrSlug: string) {
     id: properties.id,
     updatedAt: properties.updatedAt,
     published: properties.published,
+    publishConsentAt: properties.publishConsentAt,
     status: properties.status,
     slug: properties.slug,
     publicName: properties.publicName,
@@ -49,7 +50,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params
   const p = await lookupForMeta(slug)
-  if (!p || !p.published || !hasWebsitePropertyStatus(p.status) || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
+  if (!p || !p.published || !hasWebsitePropertyStatus(p.status, p.publishConsentAt) || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
     return buildMetadata({ title: "Våra boenden | StayOnSite", noindex: true, locale: "sv" })
   }
   const name = publicDisplayName(
@@ -97,6 +98,7 @@ export default async function BoendeDetailPage(
     p.slug,
   )
   const place = p.city ?? "Sverige"
+  const showAvailability = hasCurrentPublicAvailability(p.status, p.availableTo)
   const canonical = `${BASE}/boenden/${p.slug ?? slug}`
   const description = publicPropertyDescription(p.publicDescription, {
     name,
@@ -168,8 +170,8 @@ export default async function BoendeDetailPage(
               published: null,
               prospektPublished: null,
               status: null,
-              moveInFrom: p.status === "available" ? p.moveInFrom : null,
-              availableTo: p.status === "available" ? p.availableTo : null,
+              moveInFrom: showAvailability ? p.moveInFrom : null,
+              availableTo: showAvailability ? p.availableTo : null,
             } }}
             title={name}
             description={description}

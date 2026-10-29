@@ -1,13 +1,13 @@
 import { approvedPropertyIds } from "@/lib/crm/approved-property-content";
 import type { MetadataRoute } from 'next'
-import { and, eq, inArray, isNotNull } from 'drizzle-orm'
+import { and, eq, isNotNull } from 'drizzle-orm'
 import { cities } from '@/data/cities'
 import { blogPosts } from '@/data/blog-posts'
 import { db } from '@/lib/crm/db'
 import { properties } from '@/lib/crm/schema'
 import { CONTENT_UPDATED } from '@/lib/seo-utils'
 import { DATACENTER_PATHS, DATACENTER_UPDATED } from '@/data/datacenter'
-import { WEBSITE_PROPERTY_STATUSES } from '@/lib/crm/publication'
+import { websiteStatusWhere } from '@/lib/crm/website-status-query'
 
 // Vid förfrågan, inte vid bygge: bygget når inte Turso → boenden saknades alltid.
 // Sitemap-anrop är sällsynta (crawlers), så SSR-kostnaden är noll i praktiken.
@@ -212,7 +212,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const rows = await db
       .select({ id: properties.id, slug: properties.slug, updatedAt: properties.updatedAt })
       .from(properties)
-      .where(and(eq(properties.published, true), inArray(properties.status, WEBSITE_PROPERTY_STATUSES), isNotNull(properties.slug)))
+      .where(and(eq(properties.published, true), websiteStatusWhere(), isNotNull(properties.slug)))
     const approved = await approvedPropertyIds(rows.map((r) => r.id));
     boendePages = rows.filter((r) => approved.has(r.id)).map((r) => ({
       url: `${BASE}/boenden/${r.slug}`,

@@ -83,8 +83,8 @@ export function PropertyContentReview({ property }: { property: PropertyWithOwne
         </li>)}</ul>}
         {approved && !property.published && !property.publishConsentAt && <p>Publicering på hemsidan inväntar uthyrarens medgivande. Prospektlänken kan aktiveras redan nu.</p>}
         {approved && !property.autoPublishEnabled && <p>Automatisk publicering är pausad efter ett manuellt publiceringsbeslut.</p>}
-        {approved && !hasWebsitePropertyStatus(property.status) && <p>Den aktuella statusen tillåter inte visning på hemsidan.</p>}
-        {approved && property.availableTo && property.availableTo < new Date().toISOString().slice(0, 10) && <p>Tillgänglighetsperioden har gått ut. Kontrollera datumen före publicering.</p>}
+        {approved && !hasWebsitePropertyStatus(property.status, property.publishConsentAt) && <p>Den aktuella statusen eller medgivandet tillåter inte visning på hemsidan.</p>}
+        {approved && property.availableTo && property.availableTo < new Date().toISOString().slice(0, 10) && <p>Tillgänglighetsperioden har gått ut. Kontrollera datumen.</p>}
         {!approved && <p className="text-muted-foreground">Kundtext och bilder visas efter godkänd kontroll.</p>}
         <div><Button type="button" variant="outline" size="sm" disabled={busy} onClick={review}>{busy ? "Kontrollerar…" : "Kontrollera igen"}</Button></div>
         {error && <p className="text-destructive" role="alert">{error}</p>}

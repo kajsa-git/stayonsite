@@ -19,6 +19,7 @@ interface PropRow {
   city: string | null;
   status: string | null;
   published: boolean | null;
+  publishConsentAt: string | null;
   contentReviewStatus: string | null;
   publicDescription: string | null;
   slug: string | null;
@@ -113,14 +114,14 @@ export function PublishFlowDialog({
 
   async function publish(p: PropRow): Promise<{ slug: string | null; isPublic: boolean }> {
     setStep("Publicerar…");
-    const updated = await crmFetchJson<Pick<PropRow, "slug" | "published" | "status" | "contentReviewStatus">>(`/api/crm/properties/${p.id}`, {
+    const updated = await crmFetchJson<Pick<PropRow, "slug" | "published" | "status" | "contentReviewStatus" | "publishConsentAt">>(`/api/crm/properties/${p.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(publicListingPatch(true)),
     });
     return {
       slug: updated.slug ?? null,
-      isPublic: !!updated.published && hasWebsitePropertyStatus(updated.status) && updated.contentReviewStatus === "approved",
+      isPublic: !!updated.published && hasWebsitePropertyStatus(updated.status, updated.publishConsentAt) && updated.contentReviewStatus === "approved",
     };
   }
 
@@ -201,7 +202,7 @@ export function PublishFlowDialog({
         ) : (
           <div className="space-y-2.5">
             {props.map((p) => {
-              const isPublic = !!p.published && hasWebsitePropertyStatus(p.status) && p.contentReviewStatus === "approved";
+              const isPublic = !!p.published && hasWebsitePropertyStatus(p.status, p.publishConsentAt) && p.contentReviewStatus === "approved";
               return (
               <div key={p.id} className="rounded-lg border p-3">
                 <div className="font-medium text-sm">{p.address ?? "(adress saknas)"}{p.city ? ` · ${p.city}` : ""}</div>
