@@ -1,4 +1,5 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
+import { normalizeCompanyFields } from "@/lib/crm/company-name";
 import { db } from "@/lib/crm/db";
 import { indexCompany } from "@/lib/crm/search-index";
 import { companies, contacts, requests } from "@/lib/crm/schema";
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
   const session = await requireApprovedSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
+  const body = normalizeCompanyFields(await req.json());
   const name = String(body.name ?? "").trim();
   if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
 

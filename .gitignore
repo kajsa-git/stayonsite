@@ -60,3 +60,4 @@ scripts/queue-fix-*-log.json
 tmp/
 .article-recovery/
 .claude/skills/shadcn
+scripts/*backup*.json

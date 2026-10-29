@@ -1,3 +1,5 @@
+import { isGeneratedCompanyLabel, isPlaceholderCompanyName } from "./company-name";
+
 export type CorporateQualificationLocale = "sv" | "en" | "pl";
 
 export interface CorporateQualificationSubmissionLike {
@@ -27,11 +29,9 @@ function clean(value: string | null | undefined) {
   return text || null;
 }
 
-const UNCLEAR_COMPANY_VALUES = /^(?:-|\?|n\/?a|nej|no|none|privat|privatperson|private|okänt|okand|unknown|vet ej)$/i;
-
 export function clearCorporateCompanyName(value: string | null | undefined): string | null {
   const company = clean(value);
-  if (!company || company.startsWith("Webbförfrågan") || UNCLEAR_COMPANY_VALUES.test(company)) return null;
+  if (!company || isGeneratedCompanyLabel(company) || isPlaceholderCompanyName(company)) return null;
   return company;
 }
 

@@ -1,6 +1,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { getCompanyDetail } from "@/lib/crm/company-detail";
+import { normalizeCompanyFields } from "@/lib/crm/company-name";
 import { deleteCompanyDeep } from "@/lib/crm/cascade-delete";
 import { indexCompany, removeCompanyCascadeFromIndex } from "@/lib/crm/search-index";
 import { companies } from "@/lib/crm/schema";
@@ -33,10 +34,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   ] as const;
   const data: Record<string, unknown> = {};
   for (const key of ALLOWED) if (key in body) data[key] = body[key];
+  const normalized = normalizeCompanyFields(data);
+  if ("name" in normalized && !normalized.name) return NextResponse.json({ error: "name required" }, { status: 400 });
 
   const [row] = await db
     .update(companies)
-    .set({ ...data, updatedAt: new Date().toISOString() })
+    .set({ ...normalized, updatedAt: new Date().toISOString() })
     .where(eq(companies.id, id))
     .returning();
   if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });

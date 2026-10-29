@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { todayStockholm } from "./date";
+import { cleanScrapedSiteName, normalizeCompanyName, privatePersonLabel } from "./company-name";
 import { db } from "./db";
 import { normalizePhoneForStorage } from "./phone-links";
 import { safeFetchPublic } from "./safe-fetch";
@@ -125,9 +126,8 @@ async function scrapeCompanyName(domain: string): Promise<string | null> {
     const html = await res.text();
     const ogSiteName = html.match(/<meta[^>]+property="og:site_name"[^>]+content="([^"]{1,120})"/i)?.[1]
       ?? html.match(/<meta[^>]+content="([^"]{1,120})"[^>]+property="og:site_name"/i)?.[1];
-    if (ogSiteName?.trim()) return ogSiteName.trim();
-    const title = html.match(/<title[^>]*>([^<]{1,120})<\/title>/i)?.[1]?.trim();
-    return title || null;
+    const title = html.match(/<title[^>]*>([^<]{1,200})<\/title>/i)?.[1];
+    return cleanScrapedSiteName(ogSiteName, domain, "og:site_name") ?? cleanScrapedSiteName(title, domain, "title");
   } catch {
     return null;
   }
@@ -143,6 +143,22 @@ async function companyNameFrom(email: string | null, phone: string | null): Prom
   }
   if (phone) return `Webbförfrågan · ${phone}`;
   return "Webbförfrågan";
+}
+
+// Fältet "Företag" är fritext: "Privat", "Nej", "000" blir en tydlig
+// privatpersonsetikett i stället för ett falskt bolag — utom när mejlen är en
+// bolagsdomän, då försöker vi hitta bolagets namn som vanligt.
+async function companyNameFor({ companyName, name, email, phone }: {
+  companyName?: string | null;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+}): Promise<string> {
+  const typed = normalizeCompanyName(companyName);
+  if (typed) return typed;
+  const domain = email?.split("@")[1]?.toLowerCase();
+  if (companyName && (!domain || isFreemailDomain(domain))) return privatePersonLabel({ name, email, phone });
+  return companyNameFrom(email, phone);
 }
 
 async function findCompanyByContact(email: string | null, phone: string | null) {
@@ -183,7 +199,7 @@ async function ensureCompanyAndContact({
     .insert(companies)
     .values({
       id: companyId,
-      name: companyName ?? (await companyNameFrom(email, phone)),
+      name: await companyNameFor({ companyName, name: name ?? null, email, phone }),
       leadSource: "webb",
       languages: [submission.locale],
       followUpDate: today(),
@@ -254,6 +270,7 @@ async function createCompanyRequest(
       billingProjectId: String(requestNumber),
       notes: sourceNotes(submission, [
         projectBriefNote(submission),
+        companyName && !normalizeCompanyName(companyName) ? `Angivet i fältet Företag: ${companyName}` : null,
         message ? `Meddelande:\n${message}` : null,
         email ? `E-post: ${email}` : null,
         phone ? `Telefon: ${phone}` : null,
