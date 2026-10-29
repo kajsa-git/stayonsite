@@ -1,6 +1,7 @@
 "use client";
 import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
 import { CompanyHeader } from "./CompanyHeader";
+import { CompanyStickyBar, DealProgress, dealNextStep, dealRequests } from "./DealProgress";
 import { CaseDrafts } from "./CaseDrafts";
 import { CompanyInfo } from "./CompanyInfo";
 import { ContactsList } from "./ContactsList";
@@ -29,7 +30,7 @@ import type { Company, Email, Request } from "@/lib/crm/schema";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarClock, CheckCircle2, MapPin, Trash2 } from "lucide-react";
+import { CalendarClock, CheckCircle2, MapPin, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { formatRequestSearchAreas } from "@/lib/crm/request-search-areas";
@@ -408,6 +409,9 @@ export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCar
       return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
     });
 
+  const focusRequest = dealRequests(company.requests ?? [], selectedRequestId)[0];
+  const focusNextStep = focusRequest && ["incoming", "matching", "won"].includes(focusRequest.status) ? dealNextStep(focusRequest) : null;
+
   return (
     // pb på mobil: den fasta beslutsraden längst ner får inte täcka sista innehållet.
     <div className="pb-24 md:pb-0">
@@ -417,6 +421,12 @@ export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCar
           <RatingControl value={company.rating} onChange={handleRating} label="Kund-skattning" />
         </div>}
       </div>
+      <CompanyStickyBar
+        name={company.name}
+        nextStep={focusNextStep}
+        phone={primaryContact?.phone}
+        contactName={primaryContact?.name}
+      />
       {workMode ? (
         <details className="mb-4 text-sm">
           <summary className="cursor-pointer text-muted-foreground">Företagsuppgifter och uppdragsavtal</summary>
@@ -429,7 +439,16 @@ export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCar
       {/* Company-level dates + snabbval. Avslutsdatumet är bara en upplysning —
           det får en liten ruta; beslutsytan (återkomsten) tar platsen. */}
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 mb-6">
-        <div ref={followUpPanelRef} className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2.5">
+        <div ref={followUpPanelRef} className="rounded-xl border border-nordic-200 bg-white px-4 py-3.5 shadow-sm">
+          <DealProgress
+            requests={company.requests ?? []}
+            selectedId={selectedRequestId}
+            onMatch={handleMatch}
+            onShowRequest={() =>
+              hasSeveralOpenRequests ? chooseRequest() : requestsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+          />
+          <div className="-mx-4 mb-2.5 border-t border-dashed border-nordic-200" />
           <span className="text-xs font-medium uppercase tracking-wide text-amber-800">Återkomst</span>
 
           {company.followUpDate ? (
@@ -468,7 +487,8 @@ export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCar
                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-green-300 bg-green-600 px-3 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-40"
                 title="Flytta förfrågan till avtal"
               >
-                ✓ Till avtal
+                <CheckCircle2 className="h-4 w-4" />
+                Till avtal
               </button>
             )}
             {hasOpenRequests && !hasSeveralOpenRequests && (
@@ -477,7 +497,8 @@ export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCar
                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-red-300 bg-red-50 px-3 text-sm font-semibold text-red-700 transition-colors hover:bg-red-100"
                 title="Stäng förfrågan"
               >
-                ✕ Nej
+                <X className="h-4 w-4" />
+                Nej
               </button>
             )}
             <button

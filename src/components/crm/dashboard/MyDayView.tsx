@@ -4,12 +4,13 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ArrowRight, FileSignature, LogIn, LogOut, Send, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, CalendarClock, Check, FileSignature, LogIn, LogOut, Phone, Send, Undo2, X } from "lucide-react";
+import { PhoneActions } from "@/components/crm/PhoneActions";
 import { toast } from "@/components/ui/use-toast";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { crmErrorMessage, swrFetcher } from "@/lib/crm/fetcher";
-import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { formatPhoneSv, normalizePhoneE164 } from "@/lib/crm/phone-links";
 import { REQUEST_STATUS_LABEL, REQUEST_STATUS_STYLE } from "@/lib/crm/request-status";
 import { LOST_REASONS } from "@/lib/crm/lost-reasons";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
@@ -149,6 +150,7 @@ const VERSES: { text: string; ref: string }[] = [
 ];
 
 const plusDays = plusDaysStockholm;
+const UNDO_MS = 5000;
 
 interface OpenRequest {
   id: string;
@@ -165,6 +167,9 @@ interface CompanyCard {
   followUpDate?: string | null;
   followUpReason?: string | null;
   followUpTime?: string | null;
+  contactName?: string | null;
+  contactPhone?: string | null;
+  lastContactAt?: string | null;
   openRequests: OpenRequest[];
 }
 
@@ -289,6 +294,7 @@ export function MyDayView() {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
         method: "PATCH",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followUpDate: null, followUpTime: null, followUpReason: null }),
       });
@@ -304,6 +310,7 @@ export function MyDayView() {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
         method: "PATCH",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followUpDate: plusDays(days) }),
       });
@@ -320,6 +327,7 @@ export function MyDayView() {
     try {
       const res = await fetch(`/api/crm/companies/${companyId}`, {
         method: "PATCH",
+        keepalive: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followUpDate: date, followUpTime: time || null }),
       });
@@ -338,6 +346,7 @@ export function MyDayView() {
       active.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
+          keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "won" }),
         }).catch(() => ({ ok: false }) as Response),
@@ -349,7 +358,6 @@ export function MyDayView() {
       toast({ title: `${failed} av ${active.length} kunde inte markeras`, variant: "destructive" });
       return;
     }
-    fireConfetti();
     toast({ title: active.length === 1 ? "🎉 Vunnen — avtal nästa!" : `🎉 ${active.length} förfrågningar — avtal nästa!` });
   }
 
@@ -359,6 +367,7 @@ export function MyDayView() {
       requests.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
+          keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "lost", lostReason: reason }),
         }).catch(() => ({ ok: false }) as Response),
@@ -380,6 +389,7 @@ export function MyDayView() {
       won.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
+          keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ moveInChecklist: withMoveInContractSent(r.moveInChecklist) }),
         }).catch(() => ({ ok: false }) as Response),
@@ -401,6 +411,7 @@ export function MyDayView() {
       won.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
+          keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ moveInChecklist: withSignedMoveInContract(r.moveInChecklist) }),
         }).catch(() => ({ ok: false }) as Response),
@@ -422,6 +433,7 @@ export function MyDayView() {
       won.map((r) =>
         fetch(`/api/crm/requests/${r.id}`, {
           method: "PATCH",
+          keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "invoiced" }),
         }).catch(() => ({ ok: false }) as Response),
@@ -440,6 +452,98 @@ export function MyDayView() {
       return;
     }
     toast({ title: won.length === 1 ? "Fakturerad ✓" : `${won.length} förfrågningar markerade som fakturerade` });
+  }
+
+  // ── Ångra-fönster ──────────────────────────────────────────────────────────
+  // Snabbvalen sparas först efter UNDO_MS. "Nej" stänger kundens länkar och
+  // "Till avtal" kan reservera objektet — det går inte att backa i efterhand,
+  // så Ångra betyder att åtgärden aldrig skickas. Lämnar man sidan skickas allt
+  // som väntar direkt (keepalive gör att det även klarar en stängd flik).
+  const pendingRef = useRef(new Map<string, { run: () => Promise<void>; timer: ReturnType<typeof setTimeout> }>());
+  const [pending, setPending] = useState<Record<string, string>>({});
+
+  async function commit(key: string) {
+    const p = pendingRef.current.get(key);
+    if (!p) return;
+    pendingRef.current.delete(key);
+    try {
+      await p.run();
+    } finally {
+      await mutate();
+      setPending(({ [key]: _done, ...rest }) => rest);
+    }
+  }
+
+  function defer(key: string, label: string, run: () => Promise<void>) {
+    if (pendingRef.current.has(key)) return;
+    const timer = setTimeout(() => commit(key), UNDO_MS);
+    pendingRef.current.set(key, { run, timer });
+    setPending((p) => ({ ...p, [key]: label }));
+  }
+
+  function undo(key: string) {
+    const p = pendingRef.current.get(key);
+    if (p) clearTimeout(p.timer);
+    pendingRef.current.delete(key);
+    setPending(({ [key]: _undone, ...rest }) => rest);
+  }
+
+  useEffect(() => {
+    const queued = pendingRef.current;
+    function flushAll() {
+      for (const [key, p] of queued) {
+        clearTimeout(p.timer);
+        queued.delete(key);
+        void p.run();
+      }
+    }
+    window.addEventListener("pagehide", flushAll);
+    return () => {
+      window.removeEventListener("pagehide", flushAll);
+      flushAll();
+    };
+  }, []);
+
+  function actionsFor(item: CompanyCard, variant: CardVariant) {
+    const key = `${variant}:${item.id}`;
+    return {
+      onSnooze: (days: number) =>
+        defer(key, days === 1 ? "Ny återkomst imorgon" : `Ny återkomst om ${days} dagar`, () => snoozeFollowUp(item.id, days)),
+      onSchedule: (date: string, time: string) =>
+        defer(key, `Återkomst ${date}${time ? ` kl. ${time}` : ""}`, () => scheduleFollowUp(item.id, date, time)),
+      onClearFollowUp: () => defer(key, "Återkomst borttagen", () => clearFollowUp(item.id)),
+      onMarkWon: () => {
+        fireConfetti();
+        defer(key, "Till avtal 🎉", () => markWon(item.openRequests));
+      },
+      onMarkLost: (reason: string) => defer(key, `Stängd: ${reason}`, () => markLost(item.openRequests, reason)),
+      onMarkContractSent: () => defer(key, "Avtal markerat skickat", () => markContractSent(item.openRequests)),
+      onMarkContractSigned: () => defer(key, "Signerat — vidare till fakturering", () => markContractSigned(item.openRequests)),
+      onMarkInvoiced: () => defer(key, "Fakturerad", () => markInvoiced(item.openRequests)),
+    };
+  }
+
+  function dayCard(item: CompanyCard, variant: CardVariant, onOpen: () => void) {
+    const key = `${variant}:${item.id}`;
+    if (pending[key]) return <PendingStrip key={key} label={pending[key]} name={item.name} onUndo={() => undo(key)} />;
+    const a = actionsFor(item, variant);
+    return (
+      <CompanyDayCard
+        key={key}
+        item={item}
+        today={today}
+        variant={variant}
+        onOpen={onOpen}
+        onSnooze={a.onSnooze}
+        onSchedule={a.onSchedule}
+        onMarkLost={a.onMarkLost}
+        onMarkWon={variant === "invoice" ? undefined : a.onMarkWon}
+        onClearFollowUp={variant === "followup" ? a.onClearFollowUp : undefined}
+        onMarkContractSent={variant === "agreement" ? a.onMarkContractSent : undefined}
+        onMarkContractSigned={variant === "agreement" ? a.onMarkContractSigned : undefined}
+        onMarkInvoiced={variant === "invoice" ? a.onMarkInvoiced : undefined}
+      />
+    );
   }
 
   return (
@@ -575,93 +679,53 @@ export function MyDayView() {
             title="Återkomster"
             emoji="📞"
             items={queues.followUps}
+            itemKey={(item) => `followup:${item.id}`}
             emptyText="Inga återkomster idag"
-            renderItem={(item) => (
-              <CompanyDayCard
-                key={item.id}
-                item={item}
-                today={today}
-                variant="followup"
-                onOpen={() => router.push(`/crm/work/followups/${item.id}`)}
-                onSnooze={(days) => snoozeFollowUp(item.id, days)}
-                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
-                onMarkWon={() => markWon(item.openRequests)}
-                onMarkLost={(reason) => markLost(item.openRequests, reason)}
-                onClearFollowUp={() => clearFollowUp(item.id)}
-              />
-            )}
+            renderItem={(item) => dayCard(item, "followup", () => router.push(`/crm/work/followups/${item.id}`))}
           />
 
           <QueueSection
             title="Öppna uppdrag"
             emoji="📋"
             items={queues.openWithoutFollowUp}
+            itemKey={(item) => `open:${item.id}`}
             emptyText="Inga öppna uppdrag"
-            renderItem={(item) => (
-              <CompanyDayCard
-                key={item.id}
-                item={item}
-                today={today}
-                variant="open"
-                onOpen={() => {
-                  const queue = item.openRequests.some((r) => r.status === "matching") ? "matching" : "incoming";
-                  // Skicka med rätt förfrågan så kö-bannern landar på den (annars första för bolaget).
-                  const req = item.openRequests.find((r) => r.status === queue);
-                  router.push(`/crm/work/${queue}/${item.id}${req ? `?request=${req.id}` : ""}`);
-                }}
-                onSnooze={(days) => snoozeFollowUp(item.id, days)}
-                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
-                onMarkWon={() => markWon(item.openRequests)}
-                onMarkLost={(reason) => markLost(item.openRequests, reason)}
-              />
-            )}
+            renderItem={(item) =>
+              dayCard(item, "open", () => {
+                const queue = item.openRequests.some((r) => r.status === "matching") ? "matching" : "incoming";
+                // Skicka med rätt förfrågan så kö-bannern landar på den (annars första för bolaget).
+                const req = item.openRequests.find((r) => r.status === queue);
+                router.push(`/crm/work/${queue}/${item.id}${req ? `?request=${req.id}` : ""}`);
+              })
+            }
           />
 
           <QueueSection
             title="Avtal"
             emoji="📝"
             items={queues.agreements}
+            itemKey={(item) => `agreement:${item.id}`}
             emptyText="Inga avtal att hantera"
-            renderItem={(item) => (
-              <CompanyDayCard
-                key={item.id}
-                item={item}
-                today={today}
-                variant="agreement"
-                onOpen={() => {
-                  const req = item.openRequests.find((r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist));
-                  router.push(`/crm/work/agreement/${item.id}${req ? `?request=${req.id}` : ""}`);
-                }}
-                onSnooze={(days) => snoozeFollowUp(item.id, days)}
-                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
-                onMarkContractSent={() => markContractSent(item.openRequests)}
-                onMarkContractSigned={() => markContractSigned(item.openRequests)}
-                onMarkLost={(reason) => markLost(item.openRequests, reason)}
-              />
-            )}
+            renderItem={(item) =>
+              dayCard(item, "agreement", () => {
+                const req = item.openRequests.find((r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist));
+                router.push(`/crm/work/agreement/${item.id}${req ? `?request=${req.id}` : ""}`);
+              })
+            }
           />
 
           <QueueSection
             title="Ska faktureras"
             emoji="🧾"
             items={queues.toInvoice}
+            itemKey={(item) => `invoice:${item.id}`}
             emptyText="Inget att fakturera"
-            renderItem={(item) => (
-              <CompanyDayCard
-                key={item.id}
-                item={item}
-                today={today}
-                variant="invoice"
-                onOpen={() => {
-                  const req = item.openRequests.find((r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist));
-                  router.push(`/crm/work/won/${item.id}${req ? `?request=${req.id}` : ""}`);
-                }}
-                onSnooze={(days) => snoozeFollowUp(item.id, days)}
-                onSchedule={(date, time) => scheduleFollowUp(item.id, date, time)}
-                onMarkInvoiced={() => markInvoiced(item.openRequests)}
-                onMarkLost={(reason) => markLost(item.openRequests, reason)}
-              />
-            )}
+            renderItem={(item) =>
+              dayCard(item, "invoice", () => {
+                const req = item.openRequests.find((r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist));
+                router.push(`/crm/work/won/${item.id}${req ? `?request=${req.id}` : ""}`);
+              })
+            }
           />
 
           <QueueSection
@@ -779,7 +843,7 @@ function QBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`text-[11px] px-2 py-0.5 rounded border transition-colors disabled:opacity-40 ${styles[variant]}`}
+      className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded border transition-colors active:scale-[0.96] disabled:opacity-40 ${styles[variant]}`}
     >
       {children}
     </button>
@@ -787,6 +851,40 @@ function QBtn({
 }
 
 // ─── Universellt företagskort med snabbval ────────────────────────────────────
+
+/** Det kortet ber dig göra härnäst — härlett från återkomstens skäl och förfrågans läge. */
+export function nextStepFor(item: CompanyCard, variant: CardVariant): string {
+  const reqs = item.openRequests;
+  const one = reqs.length === 1 ? reqs[0] : null;
+  const ref = one?.requestNumber ? ` #${one.requestNumber}` : "";
+  if (variant === "followup" && item.followUpReason?.trim()) return item.followUpReason.trim();
+  if (variant === "agreement") {
+    return reqs.some((r) => !hasMoveInContractSent(r.moveInChecklist)) ? `Skicka avtalet${ref}` : `Få avtalet signerat${ref}`;
+  }
+  if (variant === "invoice") return `Fakturera${ref}`;
+  if (reqs.length > 1) return `Välj vilken av ${reqs.length} förfrågningar du jobbar med`;
+  if (one?.status === "incoming") return `Kvalificera förfrågan${ref}`;
+  if (one?.status === "matching") return `Hitta boende och skicka förslag${ref}`;
+  if (one?.status === "won") {
+    if (hasSignedMoveInContract(one.moveInChecklist)) return `Fakturera${ref}`;
+    return hasMoveInContractSent(one.moveInChecklist) ? `Få avtalet signerat${ref}` : `Skicka avtalet${ref}`;
+  }
+  return variant === "followup" ? "Hör av dig och boka nästa steg" : "Boka en återkomst";
+}
+
+/** "4 d sedan" — orange efter en vecka utan kontakt, eller när ingen kontakt finns loggad. */
+export function contactAge(lastContactAt: string | null | undefined, today: string): { text: string; stale: boolean } {
+  if (!lastContactAt) return { text: "Ingen kontakt", stale: true };
+  const days = Math.round((Date.parse(today) - Date.parse(lastContactAt.slice(0, 10))) / 86_400_000);
+  if (days <= 0) return { text: "Idag", stale: false };
+  if (days === 1) return { text: "Igår", stale: false };
+  return { text: `${days} d sedan`, stale: days >= 7 };
+}
+
+function telHref(phone: string | null | undefined): string | null {
+  const e164 = normalizePhoneE164(phone);
+  return e164 ? `tel:${e164}` : null;
+}
 
 type CardVariant = "followup" | "open" | "agreement" | "invoice";
 
@@ -839,14 +937,36 @@ export function CompanyDayCard({
   const hasUnsentContract = unsignedWonRequests.some((r) => !hasMoveInContractSent(r.moveInChecklist));
   const hasSeveralRequests = item.openRequests.length > 1;
 
+  const nextStep = nextStepFor(item, variant);
+  const age = contactAge(item.lastContactAt, today);
+  const phoneHref = telHref(item.contactPhone);
+
   return (
-    <div className={`rounded-lg bg-white border transition-colors ${isPast ? "border-red-300" : "border-border"}`}>
+    <div
+      className={`group rounded-lg bg-white border transition-[border-color,box-shadow] duration-200 hover:shadow-md hover:shadow-nordic-900/5 ${
+        isPast ? "border-red-300" : "border-border hover:border-nordic-300"
+      }`}
+    >
       {/* Klickbar huvud */}
       <button
-        className="w-full text-left p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-t-lg"
+        className="w-full text-left p-3 pb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-t-lg"
         onClick={onOpen}
       >
-        <div className="font-medium text-sm">{item.name}</div>
+        <div className="flex items-start gap-2">
+          <div className="min-w-0 flex-1 font-medium text-sm">{item.name}</div>
+          <span
+            title={item.lastContactAt ? `Senaste kontakt: ${item.lastContactAt.slice(0, 10)}` : "Ingen anteckning, mejl eller SMS loggat"}
+            className={`shrink-0 pt-px text-[11px] tabular-nums ${age.stale ? "font-medium text-[#d45200]" : "text-muted-foreground"}`}
+          >
+            {age.text}
+          </span>
+        </div>
+
+        {/* Nästa steg — det första ögat ska landa på */}
+        <div className="mt-1 flex items-start gap-1.5 text-[13px] leading-snug text-nordic-900">
+          <ArrowRight className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#ff6300] transition-transform duration-200 group-hover:translate-x-0.5" />
+          <span className="min-w-0">{nextStep}</span>
+        </div>
 
         {/* Återkomst-badge (followup-variant) */}
         {variant === "followup" && item.followUpDate && (
@@ -857,9 +977,6 @@ export function CompanyDayCard({
               {isPast ? `Försenad · ${item.followUpDate}` : isToday ? "Återkomst idag" : item.followUpDate}
               {item.followUpTime && ` kl. ${item.followUpTime}`}
             </span>
-            {item.followUpReason && (
-              <span className="text-xs text-muted-foreground ml-1.5">{item.followUpReason}</span>
-            )}
           </div>
         )}
 
@@ -885,10 +1002,30 @@ export function CompanyDayCard({
         )}
       </button>
 
-      {/* Snabbvals-rad */}
-      <div className="flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1 border-t border-dashed">
+      {/* Vem man ringer */}
+      {phoneHref && (
+        <div className="flex items-center gap-2 px-3 pb-2 text-xs">
+          <a
+            href={phoneHref}
+            title={`Ring ${formatPhoneSv(item.contactPhone) ?? item.contactPhone}`}
+            className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-nordic-200 bg-nordic-100/60 px-2 py-0.5 text-nordic-800 transition-colors hover:border-[#ff6300]/40 hover:bg-[#fff1e8] hover:text-nordic-900"
+          >
+            <Phone className="h-3 w-3 shrink-0 text-[#ff6300]" />
+            <span className="truncate">Ring {item.contactName?.split(" ")[0] || formatPhoneSv(item.contactPhone)}</span>
+          </a>
+          <PhoneActions phone={item.contactPhone} />
+        </div>
+      )}
+
+      {/* Snabbvals-rad — tonar fram vid hover på datorn, alltid synlig på touch */}
+      <div
+        className={`flex flex-wrap items-center gap-1 px-2.5 pb-2 pt-1.5 border-t border-dashed transition-opacity duration-200 ${
+          action ? "" : "[@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+        }`}
+      >
         <QBtn variant="primary" onClick={() => setAction(action === "återkomst" ? null : "återkomst")}>
-          ↩ Återkomst
+          <CalendarClock className="h-3 w-3" />
+          Återkomst
         </QBtn>
         {variant === "followup" && onClearFollowUp && (
           <QBtn disabled={busy} onClick={() => run(async () => { await onClearFollowUp(); })}>
@@ -898,35 +1035,34 @@ export function CompanyDayCard({
         {hasSeveralRequests && <QBtn onClick={onOpen}>Välj förfrågan</QBtn>}
         {!hasSeveralRequests && variant !== "invoice" && hasActive && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkWon?.(); })}>
-            ✓ Till avtal
+            <Check className="h-3 w-3" />
+            Till avtal
           </QBtn>
         )}
         {!hasSeveralRequests && variant === "agreement" && hasUnsignedContract && (
           <>
             {hasUnsentContract && (
               <QBtn disabled={busy} onClick={() => run(async () => { await onMarkContractSent?.(); })}>
-                <span className="inline-flex items-center gap-1">
-                  <Send className="h-3 w-3" />
-                  Avtal skickat
-                </span>
+                <Send className="h-3 w-3" />
+                Avtal skickat
               </QBtn>
             )}
             <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkContractSigned?.(); })}>
-              <span className="inline-flex items-center gap-1">
-                <FileSignature className="h-3 w-3" />
-                Signerat avtal
-              </span>
+              <FileSignature className="h-3 w-3" />
+              Signerat avtal
             </QBtn>
           </>
         )}
         {!hasSeveralRequests && variant === "invoice" && (
           <QBtn variant="success" disabled={busy} onClick={() => run(async () => { await onMarkInvoiced?.(); })}>
-            ✓ Fakturerad
+            <Check className="h-3 w-3" />
+            Fakturerad
           </QBtn>
         )}
         {!hasSeveralRequests && item.openRequests.length === 1 && (
           <QBtn variant="danger" onClick={() => setAction(action === "nej" ? null : "nej")}>
-            ✕ Nej
+            <X className="h-3 w-3" />
+            Nej
           </QBtn>
         )}
       </div>
@@ -1120,6 +1256,7 @@ export function QueueSection<T>({
   emptyText,
   renderItem,
   initialLimit,
+  itemKey,
 }: {
   title: string;
   emoji: string;
@@ -1127,6 +1264,8 @@ export function QueueSection<T>({
   emptyText: string;
   renderItem: (item: T) => React.ReactNode;
   initialLimit?: number;
+  /** Med nyckel glider kort in/ut och resten flyttar mjukt upp. */
+  itemKey?: (item: T) => string;
 }) {
   const [expanded, setExpanded] = useState(false);
   const hiddenCount = !expanded && initialLimit ? Math.max(0, items.length - initialLimit) : 0;
@@ -1136,13 +1275,43 @@ export function QueueSection<T>({
       <div className="flex items-center gap-2 mb-3">
         <span>{emoji}</span>
         <h2 className="text-sm font-semibold">{title}</h2>
-        <span className="ml-auto text-xs font-bold text-muted-foreground bg-muted rounded-full px-2 py-0.5">
+        <motion.span
+          key={items.length}
+          initial={{ scale: 0.7, opacity: 0.4 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 600, damping: 22 }}
+          className="ml-auto text-xs font-bold text-muted-foreground bg-muted rounded-full px-2 py-0.5 tabular-nums"
+        >
           {items.length}
-        </span>
+        </motion.span>
       </div>
-      <div className="space-y-2">
+      <div className={itemKey ? "" : "space-y-2"}>
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">{emptyText}</p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-muted-foreground italic">
+            {emptyText}
+          </motion.p>
+        ) : itemKey ? (
+          <AnimatePresence initial={false}>
+            {shown.map((item) => (
+              <motion.div
+                key={itemKey(item)}
+                layout="position"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0, height: "auto", paddingBottom: 8 }}
+                exit={{
+                  opacity: 0,
+                  x: 28,
+                  height: 0,
+                  paddingBottom: 0,
+                  overflow: "hidden",
+                  transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1], height: { delay: 0.12, duration: 0.25 }, paddingBottom: { delay: 0.12, duration: 0.25 } },
+                }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {renderItem(item)}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         ) : (
           shown.map(renderItem)
         )}
@@ -1153,5 +1322,39 @@ export function QueueSection<T>({
         )}
       </div>
     </div>
+  );
+}
+
+// Raden som ersätter kortet under ångra-fönstret: vad som händer, en nedräkning
+// och Ångra. Försvinner när åtgärden sparats och kön laddats om.
+function PendingStrip({ label, name, onUndo }: { label: string; name: string; onUndo: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-hidden rounded-lg border border-nordic-200 bg-nordic-100/70"
+    >
+      <div className="flex items-center gap-2 px-3 py-2.5">
+        <Check className="h-3.5 w-3.5 shrink-0 text-green-700" />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[13px] font-medium text-nordic-900">{label}</div>
+          <div className="truncate text-[11px] text-muted-foreground">{name}</div>
+        </div>
+        <button
+          onClick={onUndo}
+          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-nordic-300 bg-white px-2 py-1 text-xs font-medium text-nordic-900 transition-colors hover:border-[#ff6300]/50 hover:text-[#d45200] active:scale-[0.96]"
+        >
+          <Undo2 className="h-3 w-3" />
+          Ångra
+        </button>
+      </div>
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{ scaleX: 0 }}
+        transition={{ duration: UNDO_MS / 1000, ease: "linear" }}
+        className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-[#ff6300]/70"
+      />
+    </motion.div>
   );
 }

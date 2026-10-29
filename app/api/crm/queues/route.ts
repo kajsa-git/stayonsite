@@ -2,8 +2,8 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { plusDaysStockholm, todayStockholm } from "@/lib/crm/date";
 import { hasSignedMoveInContract } from "@/lib/crm/move-checklists";
-import { companies, contacts, inboxMessages, matches, owners, ownerOutreach, properties, requests } from "@/lib/crm/schema";
-import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import { companies, contacts, emails, inboxMessages, matches, notes, owners, ownerOutreach, properties, requests } from "@/lib/crm/schema";
+import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, max, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 const ACTIVE_STATUSES = ["incoming", "matching"] as const;
@@ -124,7 +124,7 @@ export async function GET() {
   const renewalCompanyIds = [...new Set(renewalRows.map((r) => r.companyId))];
 
   // Wave 2: företagsdata + öppna förfrågningar för alla relevanta företag
-  const [openWithoutFollowUpCompanies, wonCompanies, allOpenRequests, renewalCompanies, renewalContacts] = await Promise.all([
+  const [openWithoutFollowUpCompanies, wonCompanies, allOpenRequests, renewalCompanies, renewalContacts, cardContacts, lastNotes, lastEmails, lastSms] = await Promise.all([
     openWithoutFollowUpIds.length
       ? db.select().from(companies).where(and(
           inArray(companies.id, openWithoutFollowUpIds),
@@ -157,7 +157,46 @@ export async function GET() {
           .from(contacts)
           .where(inArray(contacts.companyId, renewalCompanyIds))
       : Promise.resolve([]),
+    // Dagskorten: vem man ringer + när vi senast hade kontakt (anteckning, mejl eller SMS).
+    allRelevantIds.length
+      ? db
+          .select({ companyId: contacts.companyId, name: contacts.name, phone: contacts.phone, isPrimary: contacts.isPrimary })
+          .from(contacts)
+          .where(inArray(contacts.companyId, allRelevantIds))
+      : Promise.resolve([]),
+    allRelevantIds.length
+      ? db.select({ companyId: notes.companyId, at: max(notes.createdAt) }).from(notes)
+          .where(inArray(notes.companyId, allRelevantIds)).groupBy(notes.companyId)
+      : Promise.resolve([]),
+    allRelevantIds.length
+      ? db.select({ companyId: emails.companyId, at: max(emails.sentAt) }).from(emails)
+          .where(inArray(emails.companyId, allRelevantIds)).groupBy(emails.companyId)
+      : Promise.resolve([]),
+    allRelevantIds.length
+      ? db.select({ companyId: inboxMessages.companyId, at: max(inboxMessages.sentAt) }).from(inboxMessages)
+          .where(inArray(inboxMessages.companyId, allRelevantIds)).groupBy(inboxMessages.companyId)
+      : Promise.resolve([]),
   ]);
+
+  const cardContactByCompany = new Map<string, { name: string | null; phone: string | null }>();
+  for (const c of cardContacts) {
+    const existing = cardContactByCompany.get(c.companyId);
+    // Primär kontakt vinner; annars första med telefonnummer.
+    if (!existing || c.isPrimary || (!existing.phone && c.phone)) cardContactByCompany.set(c.companyId, { name: c.name, phone: c.phone });
+  }
+  // Anteckningar lagras "YYYY-MM-DD HH:MM:SS", mejl/SMS som ISO — normalisera före jämförelse.
+  const lastContactByCompany = new Map<string, string>();
+  for (const r of [...lastNotes, ...lastEmails, ...lastSms]) {
+    if (!r.companyId || !r.at) continue;
+    const at = r.at.replace(" ", "T");
+    const prev = lastContactByCompany.get(r.companyId);
+    if (!prev || at > prev) lastContactByCompany.set(r.companyId, at);
+  }
+  const cardExtras = (id: string) => ({
+    contactName: cardContactByCompany.get(id)?.name ?? null,
+    contactPhone: cardContactByCompany.get(id)?.phone ?? null,
+    lastContactAt: lastContactByCompany.get(id) ?? null,
+  });
 
   // Gruppera förfrågningar per företag
   const reqsByCompany = new Map<string, (typeof allOpenRequests)[number][]>();
@@ -166,11 +205,12 @@ export async function GET() {
     reqsByCompany.get(r.companyId)!.push(r);
   }
 
-  const followUps = followUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
-  const openWithoutFollowUp = openWithoutFollowUpCompanies.map((c) => ({ ...c, openRequests: reqsByCompany.get(c.id) ?? [] }));
+  const followUps = followUpCompanies.map((c) => ({ ...c, ...cardExtras(c.id), openRequests: reqsByCompany.get(c.id) ?? [] }));
+  const openWithoutFollowUp = openWithoutFollowUpCompanies.map((c) => ({ ...c, ...cardExtras(c.id), openRequests: reqsByCompany.get(c.id) ?? [] }));
   const agreements = wonCompanies
     .map((c) => ({
       ...c,
+      ...cardExtras(c.id),
       openRequests: (reqsByCompany.get(c.id) ?? []).filter(
         (r) => r.status === "won" && !hasSignedMoveInContract(r.moveInChecklist),
       ),
@@ -179,6 +219,7 @@ export async function GET() {
   const toInvoice = wonCompanies
     .map((c) => ({
       ...c,
+      ...cardExtras(c.id),
       openRequests: (reqsByCompany.get(c.id) ?? []).filter(
         (r) => r.status === "won" && hasSignedMoveInContract(r.moveInChecklist),
       ),
