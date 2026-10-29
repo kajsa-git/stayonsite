@@ -10,6 +10,8 @@ import { RequestsList } from "./RequestsList";
 import { RequestForm, type RequestFormData } from "./RequestForm";
 import { EmailThread } from "@/components/crm/email/EmailThread";
 import { useCompany } from "@/hooks/crm/useCompany";
+import { usePageTrail } from "@/components/crm/layout/PageTrail";
+import { useQueue } from "@/contexts/crm/QueueContext";
 import { RatingControl } from "../RatingControl";
 import { ReviewRequestSnippet } from "../ReviewRequestSnippet";
 import { Button } from "@/components/ui/button";
@@ -47,6 +49,16 @@ interface CompanyCardProps {
 export function CompanyCard({ companyId, activeRequestId, workMode }: CompanyCardProps) {
   const router = useRouter();
   const { company, mutate } = useCompany(companyId);
+  const queue = useQueue();
+  usePageTrail(
+    company
+      ? [
+          ...(queue ? [{ label: `${queue.label} · ${queue.currentIndex + 1} av ${queue.total}` }] : []),
+          { label: company.name },
+        ]
+      : null,
+    company ? { kind: "company", label: company.name, href: `/crm/company/${company.id}` } : undefined,
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showRequestChoices, setShowRequestChoices] = useState(false);
   const { data: caseEmails = [] } = useSWR<Email[]>(workMode ? `/api/crm/emails?companyId=${encodeURIComponent(companyId)}` : null, swrFetcher);

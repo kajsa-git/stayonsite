@@ -21,6 +21,7 @@ import { withinTravelTime } from "@/lib/crm/travel-time";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSWR from "swr";
 import { PropertyView } from "./PropertyView";
+import { usePageTrail } from "@/components/crm/layout/PageTrail";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 import { PropertyIntakeSharePanel } from "./PropertyIntakeSharePanel";
 
@@ -125,6 +126,12 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   // Tabelläget öppnar objektet i en dialog ovanpå tabellen (i stället för att hoppa
   // till listvyn) — redigera, stäng, och du är kvar där du var i tabellen.
   const [tableModal, setTableModal] = useState<PropertyWithOwner | null>(null);
+  const shownProperty = tableModal ?? selected;
+  const shownLabel = shownProperty ? shownProperty.address || "(Adress saknas)" : "";
+  usePageTrail(
+    shownProperty ? [{ label: shownLabel }] : null,
+    shownProperty ? { kind: "property", label: shownLabel, href: `/crm/properties?id=${shownProperty.id}` } : undefined,
+  );
   const isMobile = useIsMobile();
 
   const { data: properties = EMPTY_PROPERTIES, mutate, isLoading } = useSWR<PropertyWithThumb[]>(

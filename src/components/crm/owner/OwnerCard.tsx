@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 import { OwnerTimeline } from "./OwnerTimeline";
+import { usePageTrail } from "@/components/crm/layout/PageTrail";
 
 interface OwnerFull {
   id: string;
@@ -101,6 +102,10 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
   const { data: owner, mutate, isLoading } = useSWR<OwnerFull>(`/api/crm/owners/${ownerId}`, swrFetcher, {
     refreshInterval: 15000,
   });
+  usePageTrail(
+    owner ? [{ label: owner.name }] : null,
+    owner ? { kind: "owner", label: owner.name, href: `/crm/uthyrare/${owner.id}` } : undefined,
+  );
   const [smsText, setSmsText] = useState("");
   const [sending, setSending] = useState(false);
   const [notesDraft, setNotesDraft] = useState<string | null>(null);

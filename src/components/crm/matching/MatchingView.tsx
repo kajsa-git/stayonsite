@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { usePageTrail } from "@/components/crm/layout/PageTrail";
 import {
   Dialog,
   DialogContent,
@@ -98,6 +99,11 @@ const DEFAULT_MATCH_RADIUS_KM = "30";
 
 export function MatchingView({ request, companyName, companyInvoiceEmail }: Props) {
   const router = useRouter();
+  const matchLabel = `Matchning #${request.requestNumber ?? ""}`.trim();
+  usePageTrail(
+    [{ label: companyName || "Företag", href: `/crm/company/${request.companyId}` }, { label: matchLabel }],
+    { kind: "request", label: `${matchLabel} · ${companyName}`, href: `/crm/matching/${request.id}` },
+  );
   const [detailProperty, setDetailProperty] = useState<PropertyWithOwner | null>(null);
   const [confirmAccept, setConfirmAccept] = useState<MatchRow | null>(null);
   const [sendOffer, setSendOffer] = useState<MatchRow | null>(null);

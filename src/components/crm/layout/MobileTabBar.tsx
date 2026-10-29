@@ -4,10 +4,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { NewCompanyModal } from "@/components/crm/company/NewCompanyModal";
 import { useQueueCounts } from "@/hooks/crm/useQueueCounts";
 import { ProfitCalculatorDialog } from "@/components/crm/ProfitCalculatorDialog";
-import { BarChart3, Building2, Calculator, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
+import { BarChart3, BookOpen, Building2, Calculator, CalendarDays, Home, KeyRound, LogOut, type LucideIcon, Menu, Plus, Search, Truck } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { useRecent } from "@/lib/crm/recent";
+import { RECENT_ICON } from "./nav";
 import { billingTranslations } from "@/data/billing-translations";
 
 type Tab = { label: string; icon: LucideIcon; href?: string; exact?: boolean; action?: "more" };
@@ -27,6 +30,7 @@ export function MobileTabBar() {
   const pathname = usePathname();
   const { counts } = useQueueCounts();
   const { data: session } = useSession();
+  const recent = useRecent();
   const [moreOpen, setMoreOpen] = useState(false);
   const [showNewCompany, setShowNewCompany] = useState(false);
   const [showCalc, setShowCalc] = useState(false);
@@ -57,8 +61,17 @@ export function MobileTabBar() {
                 active ? "text-[#ff6300]" : "text-nordic-500 hover:text-nordic-800"
               }`}
             >
-              <Icon className="h-5 w-5" />
-              {tab.label}
+              {active && (
+                <motion.span
+                  layoutId="crm-tab-active"
+                  transition={{ type: "spring", stiffness: 520, damping: 40 }}
+                  className="absolute top-0 inset-x-5 h-[3px] rounded-b-full bg-[#ff6300]"
+                />
+              )}
+              <motion.span whileTap={{ scale: 0.88 }} className="flex flex-col items-center gap-0.5">
+                <Icon className="h-5 w-5" />
+                {tab.label}
+              </motion.span>
               {tab.action === "more" && morePending && (
                 <span className="absolute top-2 right-1/2 translate-x-3 h-2 w-2 rounded-full bg-[#ff6300]" />
               )}
@@ -85,7 +98,19 @@ export function MobileTabBar() {
               icon={Truck}
               onClick={() => go("/crm/flyttar")}
             />
+            <MoreLink label="Så arbetar vi" icon={BookOpen} onClick={() => go("/crm/guide")} />
           </div>
+
+          {recent.length > 0 && (
+            <div className="mt-5 border-t pt-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Senast besökta</p>
+              <div className="space-y-1">
+                {recent.slice(0, 5).map((r) => (
+                  <MoreLink key={r.href} label={r.label} icon={RECENT_ICON[r.kind]} onClick={() => go(r.href)} />
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-5 border-t pt-4">
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Din kö idag</p>
@@ -141,7 +166,7 @@ function MoreLink({
       className="w-full flex items-center gap-2 px-2 py-2.5 rounded-md text-sm text-nordic-800 hover:bg-nordic-100 transition-colors"
     >
       {Icon && <Icon className="h-4 w-4 text-nordic-500" />}
-      <span className="flex-1 text-left">{label}</span>
+      <span className="flex-1 text-left truncate">{label}</span>
       {badge != null && badge > 0 && (
         <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#ff6300] text-white text-[10px] font-bold tabular-nums">
           {badge}

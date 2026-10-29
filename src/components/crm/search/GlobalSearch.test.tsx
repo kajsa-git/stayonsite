@@ -3,6 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { GlobalSearchProvider, useGlobalSearch } from './GlobalSearch';
 const push = vi.hoisted(() => vi.fn());
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
+const PLACEHOLDER = 'Sök företag, förfrågan, objekt – eller hoppa till en sida…';
 function OpenSearch() {
   const { open } = useGlobalSearch();
   return <button onClick={open}>Öppna sök</button>;
@@ -16,10 +17,12 @@ it('keeps the result available and opens it with a normal click', async () => {
   }] }));
   render(<GlobalSearchProvider><OpenSearch /></GlobalSearchProvider>);
   fireEvent.click(screen.getByText('Öppna sök'));
-  fireEvent.change(screen.getByPlaceholderText('Sök företag, förfrågan, objekt, kontakt…'), { target: { value: 'Bergslagsvägen' } });
+  fireEvent.change(screen.getByPlaceholderText(PLACEHOLDER), { target: { value: 'Bergslagsvägen' } });
   await act(async () => { await vi.advanceTimersByTimeAsync(200); });
   await act(async () => { await vi.advanceTimersByTimeAsync(10000); });
   fireEvent.click(screen.getByRole('button', { name: /Bergslagsvägen 21/ }));
   expect(push).toHaveBeenCalledWith('/crm/properties?id=new');
-  expect(screen.queryByPlaceholderText('Sök företag, förfrågan, objekt, kontakt…')).not.toBeInTheDocument();
+  // Paletten tonar ut — låt stängningsanimationen gå klart.
+  await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
+  expect(screen.queryByPlaceholderText(PLACEHOLDER)).not.toBeInTheDocument();
 });
