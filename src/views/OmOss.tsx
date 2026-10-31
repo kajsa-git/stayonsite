@@ -6,6 +6,7 @@ import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import SEO from '@/components/SEO';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/gtag';
 import { cities } from '@/data/cities';
 import { COMPANY_FACTS, RATING_VALUE, REVIEW_COUNT } from '@/data/constants';
@@ -53,6 +54,7 @@ const OmOss = () => {
       founder: {
         '@type': 'Person',
         name: 'Kajsa Sihlén',
+        image: `${COMPANY_FACTS.url}/images/kajsa-sihlen-stayonsite.jpg`,
         jobTitle: 'Grundare & VD',
         sameAs: ['https://www.linkedin.com/in/kajsa-sihl%C3%A9n-4b16b657/'],
       },
@@ -170,6 +172,19 @@ const OmOss = () => {
                   'W całej Szwecji trwają budowy. Ktoś musi zorganizować zakwaterowanie.'
                 )}
               </h2>
+              <figure className="mb-10 max-w-lg mx-auto">
+                <Image
+                  src="/images/kajsa-sihlen-stayonsite.jpg"
+                  alt="Kajsa Sihlén, StayOnSite"
+                  width={1000}
+                  height={1000}
+                  sizes="(max-width: 640px) 100vw, 512px"
+                  className="w-full h-auto rounded-2xl"
+                />
+                <figcaption className="mt-3 text-sm text-nordic-600">
+                  Kajsa Sihlén, {t('grundare & VD', 'founder & CEO', 'założycielka i CEO')}
+                </figcaption>
+              </figure>
               <div className="space-y-6 text-nordic-700 leading-relaxed text-lg font-light">
                 <p>
                   {t(
