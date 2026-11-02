@@ -6,9 +6,11 @@ import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
@@ -35,7 +37,10 @@ type IntakeFormState = {
   bathrooms: string;
   washingMachines: string;
   dryers: string;
+  parkingSpaces: string;
   parkingType: string[];
+  parkingDetails: string;
+  parkingLargeVehicle: "" | "yes" | "no" | "unsure";
   furnished: boolean;
   kitchen: boolean;
   dishwasher: boolean;
@@ -97,7 +102,10 @@ const initialForm: IntakeFormState = {
   bathrooms: "",
   washingMachines: "",
   dryers: "",
+  parkingSpaces: "",
   parkingType: [],
+  parkingDetails: "",
+  parkingLargeVehicle: "",
   furnished: true,
   kitchen: true,
   dishwasher: false,
@@ -209,15 +217,19 @@ function Stepper({
   value,
   onChange,
   min = 0,
+  max,
+  description,
 }: {
   id: keyof IntakeFormState;
   label: string;
   value: string;
   onChange: (value: string) => void;
   min?: number;
+  max?: number;
+  description?: string;
 }) {
   const numeric = Number(value || 0);
-  const next = (delta: number) => onChange(String(Math.max(min, (Number.isFinite(numeric) ? numeric : 0) + delta)));
+  const next = (delta: number) => onChange(String(Math.min(max ?? Infinity, Math.max(min, (Number.isFinite(numeric) ? numeric : 0) + delta))));
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="text-sm font-semibold text-nordic-900">{label}</Label>
@@ -229,13 +241,18 @@ function Stepper({
           id={id}
           value={value}
           inputMode="numeric"
-          onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, 3))}
+          aria-describedby={description ? `${id}-description` : undefined}
+          onChange={(event) => {
+            const digits = event.target.value.replace(/\D/g, "").slice(0, 3);
+            onChange(digits && max !== undefined ? String(Math.min(max, Number(digits))) : digits);
+          }}
           className="h-11 min-w-0 flex-1 rounded-none border-x-0 text-center text-base font-semibold"
         />
         <Button type="button" variant="outline" className="h-11 w-10 shrink-0 rounded-l-none p-0 text-lg" onClick={() => next(1)} aria-label={`Öka ${label}`}>
           +
         </Button>
       </div>
+      {description && <p id={`${id}-description`} className="text-sm text-nordic-800">{description}</p>}
     </div>
   );
 }
@@ -380,7 +397,10 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
       bathrooms: toNumber(form.bathrooms),
       washingMachines: toNumber(form.washingMachines),
       dryers: toNumber(form.dryers),
+      parkingSpaces: toNumber(form.parkingSpaces),
       parkingType: form.parkingType,
+      parkingDetails: fieldValue(form.parkingDetails),
+      parkingLargeVehicle: form.parkingLargeVehicle || null,
       furnished: form.furnished,
       kitchen: form.kitchen,
       dishwasher: form.dishwasher,
@@ -773,6 +793,49 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                     ))}
                   </div>
                 </div>
+                <div className="max-w-sm">
+                  <Stepper
+                    id="parkingSpaces"
+                    label="Antal parkeringsplatser totalt"
+                    value={form.parkingSpaces}
+                    onChange={(value) => set("parkingSpaces", value)}
+                    max={500}
+                    description="Räkna med alla platser som hyresgästerna kan använda, även i garage."
+                  />
+                </div>
+                <Field>
+                  <FieldLabel htmlFor="parkingDetails">Hur är platserna fördelade?</FieldLabel>
+                  <Textarea
+                    id="parkingDetails"
+                    value={form.parkingDetails}
+                    onChange={(event) => set("parkingDetails", event.target.value)}
+                    maxLength={1000}
+                    placeholder="T.ex. 1 i garage och 2 på uppfarten"
+                  />
+                  <FieldDescription>Du kan också nämna om någon plats har begränsad tillgång.</FieldDescription>
+                </Field>
+                <FieldSet className="gap-2">
+                  <FieldLegend id="parking-large-vehicle-label" variant="label">
+                    Finns plats för större arbetsfordon, till exempel en skåpbil?
+                  </FieldLegend>
+                  <RadioGroup
+                    aria-labelledby="parking-large-vehicle-label"
+                    className="flex flex-wrap gap-6"
+                    value={form.parkingLargeVehicle}
+                    onValueChange={(value) => set("parkingLargeVehicle", value as IntakeFormState["parkingLargeVehicle"])}
+                  >
+                    {[
+                      { value: "yes", label: "Ja" },
+                      { value: "no", label: "Nej" },
+                      { value: "unsure", label: "Osäker" },
+                    ].map((option) => (
+                      <Field key={option.value} orientation="horizontal" className="w-auto">
+                        <RadioGroupItem id={`parking-large-vehicle-${option.value}`} value={option.value} />
+                        <FieldLabel htmlFor={`parking-large-vehicle-${option.value}`}>{option.label}</FieldLabel>
+                      </Field>
+                    ))}
+                  </RadioGroup>
+                </FieldSet>
                 <div className="space-y-2">
                   <Label htmlFor="equipmentNote" className="text-sm font-semibold text-nordic-900">Övrigt om utrustning</Label>
                   <Textarea id="equipmentNote" value={form.equipmentNote} onChange={(event) => set("equipmentNote", event.target.value)} placeholder="T.ex. bastu, altan, extra förvaring, redskap, larm, laddbox..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />

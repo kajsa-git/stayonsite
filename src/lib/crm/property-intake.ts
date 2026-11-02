@@ -87,6 +87,8 @@ export const propertyIntakeSchema = z
     dryers: nullableInt,
     parkingSpaces: nullableInt,
     parkingType: z.array(z.string().trim().max(60)).max(12).optional().nullable(),
+    parkingDetails: shortStringOrNull(1000),
+    parkingLargeVehicle: z.enum(["yes", "no", "unsure"]).optional().nullable().transform((value) => value ?? null),
     furnished: z.boolean().default(false),
     kitchen: z.boolean().default(false),
     dishwasher: z.boolean().default(false),
@@ -184,6 +186,9 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,
     included.length ? ["Vad ingår i hyran", ...included.map((item) => `- ${item}`)].join("\n") : null,
     line("Parkering", input.parkingType && input.parkingType.length ? input.parkingType.join(", ") : null),
+    line("Antal parkeringsplatser", input.parkingSpaces),
+    line("Fördelning av parkeringsplatser", input.parkingDetails),
+    line("Plats för större arbetsfordon", input.parkingLargeVehicle ? { yes: "Ja", no: "Nej", unsure: "Osäker" }[input.parkingLargeVehicle] : null),
     line("Övrigt om utrustning", input.equipmentNote),
     line("Något särskilt", input.specialNote),
   ].filter(Boolean).join("\n\n");
