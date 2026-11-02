@@ -330,6 +330,13 @@
       "when": 1793401200000,
       "tag": "0046_property_image_variants",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "6",
+      "when": 1793609000000,
+      "tag": "0047_property_rental_right",
+      "breakpoints": true
     }
   ]
 }

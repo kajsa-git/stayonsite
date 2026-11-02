@@ -14,7 +14,7 @@ import {
 } from "./property-form-state";
 import { ChevronRight, Languages, Loader2, Navigation, Plus, Sparkles, X } from "lucide-react";
 import { loadGoogleMapsLibrary } from "@/hooks/use-google-places";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 import { FIELD_CLS, Labeled, PropertyFact } from "./property-ui";
 
@@ -30,6 +30,7 @@ export function PropertyEditForm({
   onUpdate: (data: Partial<PropertyWithOwner>) => Promise<void>;
   onClose: () => void;
 }) {
+  const rentalRightInputId = useId();
   const [form, setForm] = useState<EditForm>(toPropertyForm(property));
   const initialForm = useRef<EditForm>(toPropertyForm(property));
   const [saving, setSaving] = useState(false);
@@ -334,11 +335,19 @@ export function PropertyEditForm({
             <Labeled label="Upplägg">
               <select className={FIELD_CLS} value={form.ownerArrangement} onChange={(e) => set("ownerArrangement", e.target.value)}>
                 <option value="">Okänt</option>
-                <option value="direkt">Direkt (fastighetsägaren själv)</option>
+                <option value="direkt">Direktkontakt med uthyraren</option>
                 <option value="formedlare">Förmedlare (ofta dyrare)</option>
               </select>
             </Labeled>
           </div>
+          <Labeled label="Uthyrningsform för bostaden" htmlFor={rentalRightInputId}>
+            <select id={rentalRightInputId} className={FIELD_CLS} value={form.rentalRight} onChange={(e) => set("rentalRight", e.target.value)}>
+              <option value="okand">Ej angiven</option>
+              <option value="ager">Äger bostaden</option>
+              <option value="andrahand">Andrahandsuthyrning</option>
+            </select>
+          </Labeled>
+          <p className="text-[11px] text-muted-foreground">Gäller den här bostaden.</p>
           <Labeled label={form.ownerType === "foretag" ? "Företagsnamn" : "Namn"}>
             <input className={FIELD_CLS} value={form.ownerName} onChange={(e) => set("ownerName", e.target.value)} />
           </Labeled>

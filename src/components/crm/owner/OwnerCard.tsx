@@ -10,6 +10,7 @@ import { PhoneActions } from "@/components/crm/PhoneActions";
 import { toast } from "@/components/ui/use-toast";
 import { crmErrorMessage, crmFetchJson, swrFetcher } from "@/lib/crm/fetcher";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { propertyRentalRightLabel, type PropertyRentalRight } from "@/lib/crm/property-rental-right";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -43,6 +44,7 @@ interface OwnerFull {
     beds: number | null;
     rentIn: number | null;
     rentOut: number | null;
+    rentalRight: PropertyRentalRight | null;
   }[];
 }
 
@@ -158,7 +160,7 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-xl font-bold text-nordic-900">{owner.name}</h1>
           {owner.ownerType && <span className="text-[11px] px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{TYPE_LABEL[owner.ownerType] ?? owner.ownerType}</span>}
-          {owner.ownerArrangement && <span className="text-[11px] px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{ARR_LABEL[owner.ownerArrangement] ?? owner.ownerArrangement}</span>}
+          {owner.ownerArrangement && !(owner.ownerArrangement === "direkt" && owner.properties.some((p) => p.rentalRight)) && <span className="text-[11px] px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{ARR_LABEL[owner.ownerArrangement] ?? owner.ownerArrangement}</span>}
           {owner.rating != null && <span className="text-[11px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Betyg {owner.rating}/10</span>}
           {owner.orgNr && <span className="text-[11px] font-mono text-muted-foreground">{owner.orgNr}</span>}
           {owner.phone && (
@@ -228,6 +230,7 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
                   <div className="font-medium text-sm">{p.address ?? "(adress saknas)"}{p.city ? ` · ${p.city}` : ""}</div>
                   <div className="flex flex-wrap items-center gap-1 mt-1.5 text-[11px]">
                     <span className={`px-1.5 py-0.5 rounded ${st.cls}`}>{st.label}</span>
+                    {p.rentalRight && <span className="px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{propertyRentalRightLabel(p.rentalRight)}</span>}
                     {p.published ? (
                       <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-800">På hemsidan ✓</span>
                     ) : (

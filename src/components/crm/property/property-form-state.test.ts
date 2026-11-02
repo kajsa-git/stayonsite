@@ -32,6 +32,7 @@ const fullProperty = {
   availableTo: "2026-12-31",
   ownerType: "foretag",
   ownerArrangement: "formedlare",
+  rentalRight: "andrahand",
   ownerName: "Hyresvärd AB",
   ownerOrgNr: "556677-8899",
   ownerContactPerson: "Anna Andersson",
@@ -70,11 +71,22 @@ const EXPECTED_PAYLOAD_KEYS = [
   "kitchen", "linensIncluded", "moveInFrom", "notes", "ownerArrangement", "ownerContactPerson",
   "ownerEmail", "ownerId", "ownerName", "ownerOrgNr", "ownerPhone", "ownerType", "parkingSpaces",
   "postalCode", "publicDescription", "publicDescriptionEn", "publicDescriptionPl", "publicName",
-  "rentIn", "rentOut", "skick", "skickEn", "skickPl", "slug", "specialNote", "squareMeters",
+  "rentIn", "rentOut", "rentalRight", "skick", "skickEn", "skickPl", "slug", "specialNote", "squareMeters",
   "washingMachines",
 ].sort();
 
 describe("propertyFormToPayload — payloadens fältuppsättning", () => {
+  it("allows the property-specific rental right to be corrected without changing the landlord", () => {
+    const initial = toPropertyForm({
+      ...fullProperty,
+      rentalRight: null,
+      specialNote: "Uthyrarens uppgift: Hyr ut i andra hand med godkännande från fastighetsägaren eller bostadsrättsföreningen.",
+    } as PropertyWithOwner);
+    expect(initial.rentalRight).toBe("andrahand");
+    expect(changedPropertyFormPayload(initial, initial)).toEqual({});
+    expect(changedPropertyFormPayload({ ...initial, rentalRight:"okand" }, initial)).toEqual({ rentalRight:"okand" });
+    expect(changedPropertyFormPayload({ ...initial, rentalRight:"ager" }, initial)).toEqual({ rentalRight:"ager" });
+  });
   it("innehåller exakt de förväntade nycklarna (fångar tappad rad)", () => {
     const payload = propertyFormToPayload(toPropertyForm(fullProperty));
     expect(Object.keys(payload).sort()).toEqual(EXPECTED_PAYLOAD_KEYS);

@@ -108,6 +108,7 @@ export const propertyIntakeSchema = z
     heatWaterIncluded: z.boolean().default(false),
     excludedNote: stringOrNull,
     specialNote: stringOrNull,
+    rentalRight: z.enum(["ager", "andrahand"]).optional().nullable(),
     page: z.string().trim().max(200).optional().nullable(),
     source: z.string().trim().max(100).optional().nullable(),
     startedAt: z.number().int().positive().optional().nullable(),
@@ -206,6 +207,7 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
 
 export function propertyIntakeToPropertyBody(input: PropertyIntakeInput): Record<string, unknown> {
   return {
+    rentalRight: input.rentalRight ?? null,
     ownerType: input.ownerType,
     ownerArrangement: input.ownerArrangement,
     ownerName: input.ownerName,

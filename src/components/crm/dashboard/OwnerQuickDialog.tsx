@@ -5,6 +5,7 @@
 // lämna sidan. Objektraderna länkar vidare till objektsbanken.
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatPhoneSv, smsHref, whatsappHref } from "@/lib/crm/phone-links";
+import { propertyRentalRightLabel, type PropertyRentalRight } from "@/lib/crm/property-rental-right";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ interface OwnerCard {
     beds: number | null;
     rentIn: number | null;
     rentOut: number | null;
+    rentalRight: PropertyRentalRight | null;
   }[];
 }
 
@@ -85,7 +87,7 @@ export function OwnerQuickDialog({
             {/* Kontakt & fakta */}
             <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
               {data.ownerType && <span className="px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{TYPE_LABEL[data.ownerType] ?? data.ownerType}</span>}
-              {data.ownerArrangement && <span className="px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{ARR_LABEL[data.ownerArrangement] ?? data.ownerArrangement}</span>}
+              {data.ownerArrangement && !(data.ownerArrangement === "direkt" && data.properties.some((p) => p.rentalRight)) && <span className="px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{ARR_LABEL[data.ownerArrangement] ?? data.ownerArrangement}</span>}
               {data.rating != null && <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Betyg {data.rating}/10</span>}
               {data.followUpDate && (
                 <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
@@ -134,6 +136,7 @@ export function OwnerQuickDialog({
                         <div className="font-medium text-sm">{p.address ?? "(adress saknas)"}{p.city ? ` · ${p.city}` : ""}</div>
                         <div className="flex flex-wrap items-center gap-1 mt-1 text-[11px]">
                           <span className={`px-1.5 py-0.5 rounded ${st.cls}`}>{st.label}</span>
+                          {p.rentalRight && <span className="px-1.5 py-0.5 rounded bg-nordic-100 text-nordic-700">{propertyRentalRightLabel(p.rentalRight)}</span>}
                           {p.published ? (
                             <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-800">På hemsidan ✓</span>
                           ) : (

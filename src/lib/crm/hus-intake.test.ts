@@ -25,6 +25,17 @@ const raw = {
 };
 
 describe("HUS registration", () => {
+  it("stores rental rights on each property independently for the same landlord", async () => {
+    const first = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, rentalRight:"ager" }));
+    const second = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, address:"Andra gatan 4", rentalRight:"andrahand" }));
+    expect(first.property.ownerId).toBe("o1");
+    expect(second.property.ownerId).toBe("o1");
+    const [owned] = await state.db.select().from(properties).where(eq(properties.id, first.property.id));
+    const [sublet] = await state.db.select().from(properties).where(eq(properties.id, second.property.id));
+    expect(owned.rentalRight).toBe("ager");
+    expect(sublet.rentalRight).toBe("andrahand");
+    expect(propertyIntakeSchema.safeParse({ ...raw, rentalRight:"invalid" }).success).toBe(false);
+  });
   it("records consent only for the submitted property and defers its SMS and publication", async () => {
     const { property } = await createPropertyIntake(propertyIntakeSchema.parse(raw));
     expect(property).toMatchObject({ ownerId: "o1", published: false, autoPublishEnabled: false, publishConsentName: "Anna Exempel", publishConsentSource: "hus", publishConsentIp: null });

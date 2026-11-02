@@ -5,6 +5,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { db as defaultDb } from "./db";
 import * as schema from "./schema";
 import { owners, properties, type Owner } from "./schema";
+import { propertyRentalRight, type PropertyRentalRight } from "./property-rental-right";
 
 type DB = LibSQLDatabase<typeof schema>;
 
@@ -20,6 +21,7 @@ export interface OwnerPropertySummary {
   beds: number | null;
   rentIn: number | null;
   rentOut: number | null;
+  rentalRight: PropertyRentalRight | null;
 }
 
 export type OwnerDetail = Owner & { properties: OwnerPropertySummary[] };
@@ -43,8 +45,13 @@ export async function getOwnerDetail(id: string, opts?: { db?: DB }): Promise<Ow
       beds: properties.beds,
       rentIn: properties.rentIn,
       rentOut: properties.rentOut,
+      rentalRight: properties.rentalRight,
+      specialNote: properties.specialNote,
     })
     .from(properties)
     .where(eq(properties.ownerId, id));
-  return { ...owner, properties: props };
+  return { ...owner, properties: props.map(({ rentalRight, specialNote, ...property }) => ({
+    ...property,
+    rentalRight: propertyRentalRight(rentalRight, specialNote),
+  })) };
 }

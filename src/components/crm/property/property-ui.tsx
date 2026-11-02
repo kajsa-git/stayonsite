@@ -46,10 +46,10 @@ export function PropertyFact({ label, value, onChange }: { label: string; value:
   );
 }
 
-export function Labeled({ label, children }: { label: string; children: React.ReactNode }) {
+export function Labeled({ label, children, htmlFor }: { label: string; children: React.ReactNode; htmlFor?: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs text-muted-foreground uppercase tracking-wide">{label}</label>
+      <label htmlFor={htmlFor} className="text-xs text-muted-foreground uppercase tracking-wide">{label}</label>
       {children}
     </div>
   );

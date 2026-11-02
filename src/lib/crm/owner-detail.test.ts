@@ -13,8 +13,8 @@ beforeEach(async () => {
     { id: "o2", name: "Berit Berg" },
   ]);
   await db.insert(properties).values([
-    { id: "p1", ownerId: "o1", address: "Gatan 1", city: "Boden", rentIn: 12000, rentOut: 18000 },
-    { id: "p2", ownerId: "o1", address: "Gatan 2", city: "Luleå" },
+    { id: "p1", ownerId: "o1", address: "Gatan 1", city: "Boden", rentIn: 12000, rentOut: 18000, rentalRight: "andrahand" },
+    { id: "p2", ownerId: "o1", address: "Gatan 2", city: "Luleå", specialNote: "Uthyrarens uppgift: Privatpersonen äger bostaden." },
     { id: "p-other", ownerId: "o2", address: "Annan väg 3", city: "Gävle" },
   ]);
 });
@@ -30,6 +30,8 @@ describe("getOwnerDetail", () => {
     const p1 = d!.properties.find((p) => p.id === "p1")!;
     expect(p1.rentIn).toBe(12000);
     expect(p1.rentOut).toBe(18000);
+    expect(p1.rentalRight).toBe("andrahand");
+    expect(d!.properties.find((p) => p.id === "p2")?.rentalRight).toBe("ager");
   });
 
   it("returnerar null för okänt id", async () => {

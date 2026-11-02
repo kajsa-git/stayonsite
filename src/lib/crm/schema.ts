@@ -224,6 +224,7 @@ export const properties = sqliteTable("crm_properties", {
   linensIncluded: integer("linens_included", { mode: "boolean" }), // sängkläder + handduk
   heatWaterIncluded: integer("heat_water_included", { mode: "boolean" }), // värme + varmvatten
   specialNote: text("special_note"), // något särskilt vi bör veta
+  rentalRight: text("rental_right"), // ager | andrahand | okand; per bostad
   skick: text("skick"), // fritext: kondition/standard
   // Uthyrarens identitet (namn/typ/kontakt/betyg) bor i owners-tabellen — länkas via ownerId.
   // Objektet speglar dem aldrig längre; läsvägar hämtar via JOIN (mergeOwnerIntoProperty).

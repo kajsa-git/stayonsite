@@ -30,3 +30,14 @@ describe("property status", () => {
     await waitFor(() => expect(onUpdate).toHaveBeenCalledWith({ status: "reserved" }));
   });
 });
+
+describe("property rental right", () => {
+  it("shows a sublet for the specific property instead of calling it direct", () => {
+    const property = { id:"test", address:"Exempelvägen", ownerType:"privatperson", ownerArrangement:"direkt", rentalRight:"andrahand" } as PropertyWithOwner;
+    const { rerender } = render(<PropertyView property={property} onUpdate={vi.fn()} />);
+    expect(screen.getByText(/Privatperson.*Andrahandsuthyrning/)).toBeInTheDocument();
+    expect(screen.queryByText(/Privatperson.*Direkt/)).not.toBeInTheDocument();
+    rerender(<PropertyView property={{ ...property, rentalRight:"ager" }} onUpdate={vi.fn()} />);
+    expect(screen.getByText(/Privatperson.*Äger bostaden/)).toBeInTheDocument();
+  });
+});

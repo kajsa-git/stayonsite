@@ -4,6 +4,7 @@
 // som tidigare låg inline i PropertyView.handleSave/toForm.
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { buildPublicName, slugify } from "@/lib/crm/slug";
+import { propertyRentalRight } from "@/lib/crm/property-rental-right";
 import type { OwnerPickerValue } from "./OwnerPicker";
 
 export type EditForm = {
@@ -26,6 +27,7 @@ export type EditForm = {
   availableTo: string;
   ownerType: string;
   ownerArrangement: string;
+  rentalRight: string;
   ownerName: string;
   ownerOrgNr: string;
   ownerContactPerson: string;
@@ -81,6 +83,7 @@ export function toPropertyForm(p: PropertyWithOwner): EditForm {
     availableTo: s(p.availableTo),
     ownerType: s(p.ownerType),
     ownerArrangement: s(p.ownerArrangement),
+    rentalRight: propertyRentalRight(p.rentalRight, p.specialNote) ?? "okand",
     ownerName: s(p.ownerName),
     ownerOrgNr: s(p.ownerOrgNr),
     ownerContactPerson: s(p.ownerContactPerson),
@@ -138,6 +141,7 @@ export function propertyFormToPayload(form: EditForm): Partial<PropertyWithOwner
     ownerType: t(form.ownerType),
     ownerId: form.ownerId || null,
     ownerArrangement: t(form.ownerArrangement),
+    rentalRight: t(form.rentalRight),
     ownerName: t(form.ownerName),
     ownerOrgNr: t(form.ownerOrgNr),
     ownerContactPerson: t(form.ownerContactPerson),

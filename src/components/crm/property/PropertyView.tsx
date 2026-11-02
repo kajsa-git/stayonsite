@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { propertyRentalRight, propertyRentalRightLabel } from "@/lib/crm/property-rental-right";
 import { Calculator, Home, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AgreementStatusPanel } from "@/components/crm/AgreementStatusPanel";
@@ -48,6 +49,7 @@ const FIELD_CLS = "w-full text-sm border rounded px-2 py-1.5 focus:outline-none 
 const fetcher = swrFetcher;
 
 export function PropertyView({ property, onUpdate, onDelete, startEditing }: Props) {
+  const rentalRight = propertyRentalRight(property.rentalRight, property.specialNote);
   const [editing, setEditing] = useState(!!startEditing);
   const [matchOpen, setMatchOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
@@ -261,7 +263,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
                 <CardTitle className="text-base">Uthyrare</CardTitle>
                 {property.ownerType && <p className="mt-1 text-xs text-muted-foreground">
                   {property.ownerType === "foretag" ? "Företag" : "Privatperson"}
-                  {property.ownerArrangement === "formedlare" ? " · Förmedlare" : " · Direkt"}
+                  {rentalRight ? ` · ${propertyRentalRightLabel(rentalRight)}` : property.rentalRight === "okand" ? " · Uthyrningsform ej angiven" : property.ownerArrangement === "formedlare" ? " · Förmedlare" : property.ownerArrangement === "direkt" ? " · Direkt" : ""}
                 </p>}
               </div>
               <div className="min-w-0 max-w-full [&>div]:flex-wrap">
