@@ -1,6 +1,7 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "./schema";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 
 const {
   agreementAcceptances,
@@ -11,6 +12,7 @@ const {
   matchEvents,
   notes,
   ownerOutreach,
+  outboxMessages,
   owners,
   properties,
   propertyImages,
@@ -82,6 +84,12 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
   await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.propertyId, propertyId));
   await tx.delete(matches).where(eq(matches.propertyId, propertyId));
   await tx.delete(ownerOutreach).where(eq(ownerOutreach.propertyId, propertyId));
+  // Do not leave an unsent link to an object that no longer exists.
+  await tx.delete(outboxMessages).where(and(
+    eq(outboxMessages.id, husPublicationSmsId(propertyId)),
+    eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE),
+    inArray(outboxMessages.status, ["pending_publication", "queued"]),
+  ));
   await tx.delete(propertyNotes).where(eq(propertyNotes.propertyId, propertyId));
   await tx.delete(propertyImages).where(eq(propertyImages.propertyId, propertyId));
   await tx.update(requests).set({ wonPropertyId: null }).where(eq(requests.wonPropertyId, propertyId));

@@ -11,6 +11,7 @@ import {
   type ReminderEmail,
 } from "./agreement-reminders";
 import { UTHYRNINGSUPPDRAG } from "./avtal";
+import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 import { todayStockholm } from "./date";
 import * as schema from "./schema";
 
@@ -103,6 +104,14 @@ function collector() {
 }
 
 describe("agreement reminder sweep", () => {
+  it("does not send agreement reminders for a HUS upload-only link", async () => {
+    const owner = await seedOwner();
+    await seedLink(owner.id, { createdBy: HUS_UPLOAD_LINK_ACTOR });
+    const { mails, sendEmail } = collector();
+    const summary = await runAgreementReminderSweep({ now: NOW, sendEmail, db });
+    expect(summary).toMatchObject({ checked: 0, emailed: 0, followUps: 0 });
+    expect(mails).toHaveLength(0);
+  });
   it("skickar påminnelse 1 två dagar efter registreringen och loggar utskicket", async () => {
     const owner = await seedOwner();
     const link = await seedLink(owner.id);

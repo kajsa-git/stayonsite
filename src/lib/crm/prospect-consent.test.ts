@@ -2,7 +2,8 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { createTestDb, type TestDB } from "./test-db";
-import { properties } from "./schema";
+import { outboxMessages, properties } from "./schema";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./auth", () => ({ requireApprovedSession: vi.fn(async () => ({ user: { id: "test" } })) }));
@@ -37,4 +38,14 @@ it("allows a new prospect without consent but rejects a new website listing", as
   expect(result.status).toBe(201);
   expect(await result.json()).toMatchObject({ prospektPublished: true, published: false, publishConsentAt: null });
   expect((await POST(request({ city: "Linköping", postalCode: "582 22", published: true, prospektPublished: true }))).status).toBe(422);
+});
+it("pauses an unsent HUS link when the listing is unpublished", async () => {
+  await state.db.update(properties).set({ published: true, publishConsentAt: "2026-11-02" }).where(eq(properties.id, "p1"));
+  await state.db.insert(outboxMessages).values({
+    id: husPublicationSmsId("p1"), toPhone: "+46701234567", body: "En länk",
+    source: HUS_PUBLICATION_SMS_SOURCE, status: "queued",
+  });
+  const result = await PATCH(request({ published: false }), { params: Promise.resolve({ id: "p1" }) });
+  expect(result.status).toBe(200);
+  expect((await state.db.select().from(outboxMessages))[0]).toMatchObject({ status: "pending_publication" });
 });

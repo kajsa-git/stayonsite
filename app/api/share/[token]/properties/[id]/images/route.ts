@@ -1,7 +1,7 @@
 import { pendingContentReview } from "@/lib/crm/invalidate-property-review";
 import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { authorizeLandlordProperty } from "@/lib/crm/landlord-properties";
 import { nanoid } from "nanoid";
@@ -12,7 +12,8 @@ import { sniffImageType } from "@/lib/crm/image-type";
 import { appendPropertyIntakeImageSummary } from "@/lib/crm/property-intake";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { createImageVariants } from "@/lib/crm/image-variants";
-import { propertyImages, properties } from "@/lib/crm/schema";
+import { outboxMessages, propertyImages, properties } from "@/lib/crm/schema";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "@/lib/crm/hus-publication";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -116,5 +117,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ to
   }
 
   await appendPropertyIntakeImageSummary(id, created, failed);
+  if (body.finalizeHusIntake === true) {
+    const [pending] = await db.select({ id: outboxMessages.id }).from(outboxMessages).where(and(
+      eq(outboxMessages.id, husPublicationSmsId(id)),
+      eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE),
+      eq(outboxMessages.status, "pending_publication"),
+    ));
+    if (!pending) return NextResponse.json({ error: "HUS-intaget kunde inte slutföras." }, { status: 409 });
+    // If an upload failed, leave publication paused for follow-up. Otherwise
+    // review the complete image set, including the zero-image case.
+    await db.update(properties).set({ ...pendingContentReview(), autoPublishEnabled: failed === 0 })
+      .where(and(eq(properties.id, id), eq(properties.published, false)));
+    schedulePropertyReview(id);
+  }
   return NextResponse.json({ ok: true });
 }

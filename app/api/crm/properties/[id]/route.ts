@@ -6,11 +6,12 @@ import { db } from "@/lib/crm/db";
 import { deletePropertyDeep } from "@/lib/crm/cascade-delete";
 import { indexOwner, indexProperty, removeFromIndex } from "@/lib/crm/search-index";
 import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
-import { owners, properties, propertyImages } from "@/lib/crm/schema";
+import { outboxMessages, owners, properties, propertyImages } from "@/lib/crm/schema";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "@/lib/crm/hus-publication";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { imageObjectKeys } from "@/lib/crm/image-variants";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { shouldValidatePublication, validatePublicationSeo } from "@/lib/crm/publication-seo";
 import { hasPropertyPostalCode, PROPERTY_POSTAL_REQUIRED_ERROR } from "@/lib/crm/property-postal";
@@ -55,6 +56,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .set({ ...values, updatedAt: new Date().toISOString() })
     .where(eq(properties.id, id))
     .returning();
+  if (body.published === false) {
+    // A not-yet-claimed message must not send a link to a withdrawn listing.
+    await db.update(outboxMessages).set({ status: "pending_publication", body: "Bostadslänken skickas när publiceringen är klar." })
+      .where(and(
+        eq(outboxMessages.id, husPublicationSmsId(id)),
+        eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE),
+        eq(outboxMessages.status, "queued"),
+      ));
+  }
   await indexProperty(id).catch((e) => console.error("search-index property:", e));
   if (row?.ownerId) {
     await indexOwner(row.ownerId).catch((e) => console.error("search-index owner:", e));

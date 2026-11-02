@@ -6,6 +6,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { shareLinks, type ShareLink } from "./schema";
+import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 
 export type ShareAudience = "tenant" | "landlord";
 
@@ -18,6 +19,7 @@ export async function ensureShareLink(opts: {
   matchId?: string | null;
   ownerId?: string | null;
   userId?: string | null;
+  intakePurpose?: "hus-upload" | "agreement";
 }): Promise<ShareLink> {
   const ownerId = opts.audience === "tenant" ? null : (opts.ownerId ?? null);
   const matchId = opts.audience === "tenant" || ownerId ? null : (opts.matchId ?? null);
@@ -38,7 +40,15 @@ export async function ensureShareLink(opts: {
     .from(shareLinks)
     .where(and(eq(shareLinks.audience, opts.audience), scope, isNull(shareLinks.revokedAt)))
     .limit(1);
-  if (existing) return existing;
+  if (existing) {
+    // A later, ordinary StayOnSite intake still needs its normal reminder.
+    if (opts.intakePurpose === "agreement" && existing.createdBy === HUS_UPLOAD_LINK_ACTOR) {
+      const [updated] = await db.update(shareLinks).set({ createdBy: null })
+        .where(eq(shareLinks.id, existing.id)).returning();
+      return updated;
+    }
+    return existing;
+  }
 
   const [row] = await db
     .insert(shareLinks)
@@ -49,7 +59,8 @@ export async function ensureShareLink(opts: {
       requestId,
       matchId,
       ownerId,
-      createdBy: opts.userId ?? null,
+      // The upload-only token must not enter the agreement reminder sweep.
+      createdBy: opts.intakePurpose === "hus-upload" ? HUS_UPLOAD_LINK_ACTOR : (opts.userId ?? null),
     })
     .returning();
   return row;

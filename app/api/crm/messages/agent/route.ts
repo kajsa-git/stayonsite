@@ -31,7 +31,12 @@ export async function GET(req: NextRequest) {
   const claimed = await db
     .update(outboxMessages)
     .set({ status: "sending" })
-    .where(inArray(outboxMessages.id, candidates.map((c) => c.id)))
+    .where(and(
+      inArray(outboxMessages.id, candidates.map((c) => c.id)),
+      // Re-check status: a queued publication link may have been withdrawn
+      // after selection, and a different agent may already have claimed it.
+      or(eq(outboxMessages.status, "queued"), and(eq(outboxMessages.status, "sending"), lt(outboxMessages.createdAt, staleCutoff))),
+    ))
     .returning();
   return NextResponse.json(claimed);
 }

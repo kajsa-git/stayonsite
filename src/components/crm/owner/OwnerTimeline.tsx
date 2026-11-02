@@ -34,6 +34,7 @@ const KIND_FILTERS: { value: KindFilter; label: string }[] = [
 ];
 
 const OUTBOX_STATUS: Record<string, { label: string; cls: string }> = {
+  pending_publication: { label: "Väntar på publicering", cls: "bg-slate-100 text-slate-700" },
   queued: { label: "Köad", cls: "bg-amber-100 text-amber-800" },
   sending: { label: "Skickas…", cls: "bg-blue-100 text-blue-800" },
   sent: { label: "Skickat · leverans okänd", cls: "bg-blue-100 text-blue-800" },

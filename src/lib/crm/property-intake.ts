@@ -3,10 +3,11 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import { db } from "./db";
 import { normalizePropertyWriteBody } from "./owners";
-import { normalizePhoneForStorage } from "./phone-links";
+import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
+import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
-import { ownerOutreach, owners, properties, type Owner, type Property, type PropertyInsert } from "./schema";
+import { outboxMessages, ownerOutreach, owners, properties, type Owner, type Property, type PropertyInsert } from "./schema";
 export { PROPERTY_INTAKE_MARKER };
 
 const phoneRegex = /^[+\d\s()-]{6,50}$/;
@@ -119,6 +120,8 @@ export const propertyIntakeSchema = z
       fbc: z.string().max(255).optional(),
       fbp: z.string().max(255).optional(),
     }).optional(),
+    // A separate choice from contact consent; older intake clients omit it.
+    husPublication: z.object({ version: z.literal(HUS_INTAKE_VERSION), approved: z.boolean() }).optional(),
     consent: z.literal(true),
   })
   .superRefine((input, ctx) => {
@@ -128,6 +131,12 @@ export const propertyIntakeSchema = z
         path: ["ownerArrangement"],
         message: "Privatperson kan inte vara förmedlare.",
       });
+    }
+    if (input.husPublication && (input.source !== "HUS" || !normalizePhoneE164(input.ownerPhone))) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ownerPhone"], message: "Ett giltigt mobilnummer behövs för HUS-registrering." });
+    }
+    if (input.husPublication && input.ownerType === "foretag" && !input.ownerContactPerson) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ownerContactPerson"], message: "Fyll i kontaktperson." });
     }
   });
 
@@ -181,6 +190,7 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
     "Inkommen från publik bostadsregistrering.",
     line("Sida", input.page),
     line("Källa", input.source),
+    input.husPublication ? `HUS webbpublicering (${input.husPublication.version}): ${input.husPublication.approved ? "godkänd" : "inte godkänd"}.` : null,
     line("UTM", utmLine(input)),
     line("Önskad hyra", money(input.desiredRent)),
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,
@@ -288,10 +298,38 @@ export async function createPropertyIntake(
   }
 
   const values = await normalizePropertyWriteBody(writeBody);
-  const [property] = await db
-    .insert(properties)
-    .values({ id: nanoid(), ...(values as Partial<PropertyInsert>) })
-    .returning();
+  const property = await db.transaction(async (tx) => {
+    const now = new Date().toISOString();
+    const approved = input.husPublication?.approved === true;
+    const [created] = await tx
+      .insert(properties)
+      .values({
+        id: nanoid(), ...(values as Partial<PropertyInsert>),
+        ...(input.husPublication ? {
+          // Wait until HUS finishes uploading every image before publication.
+          autoPublishEnabled: false,
+          publishConsentAt: approved ? now : null,
+          publishConsentName: approved ? (input.ownerType === "foretag" ? input.ownerContactPerson : input.ownerName) : null,
+          publishConsentSource: approved ? "hus" : null,
+          // The request passes through HUS; do not record its server IP as the owner's.
+          publishConsentIp: null,
+        } : {}),
+      })
+      .returning();
+    if (input.husPublication) {
+      // Save the number submitted for this property, not a later owner-record update.
+      // It cannot be picked up by the SMS agent until publication changes its status.
+      await tx.insert(outboxMessages).values({
+        id: husPublicationSmsId(created.id),
+        toPhone: normalizePhoneE164(input.ownerPhone)!,
+        body: "Bostadslänken skickas när publiceringen är klar.",
+        ownerId: created.ownerId,
+        status: "pending_publication",
+        source: HUS_PUBLICATION_SMS_SOURCE,
+      });
+    }
+    return created;
+  });
 
   if (property.ownerId) {
     await markOwnerForFollowUp(property.ownerId, input);

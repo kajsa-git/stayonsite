@@ -14,6 +14,28 @@ export interface BuiltEmail {
 const ORANGE_BTN =
   'style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:600"';
 
+// HUS asks for website publication separately at registration. The broker
+// agreement is handled later and must not be represented as already signed.
+export function buildHusIntakeConfirmationEmail(approved: boolean): BuiltEmail {
+  const next = approved
+    ? "Du har godkänt webbpublicering. När bostaden har granskats och publicerats får du ett sms med länken."
+    : "Du har inte godkänt webbpublicering. Bostaden publiceras inte utan ditt godkännande.";
+  const text = [
+    "Hej!", "",
+    "Tack för att du registrerade din bostad hos hus. Vi har tagit emot dina uppgifter och granskar dem.",
+    next, "", "Har du frågor? Svara på det här mejlet eller ring 076-249 84 86.", "",
+    "Vänliga hälsningar", "hus, en tjänst av StayOnSite",
+  ].join("\n");
+  const html = [
+    "<p>Hej!</p>",
+    "<p>Tack för att du registrerade din bostad hos hus. Vi har tagit emot dina uppgifter och granskar dem.</p>",
+    `<p>${next}</p>`,
+    "<p>Har du frågor? Svara på det här mejlet eller ring 076-249 84 86.</p>",
+    "<p>Vänliga hälsningar<br>hus, en tjänst av StayOnSite</p>",
+  ].join("\n");
+  return { subject: "Tack – vi har tagit emot din bostad", text, html };
+}
+
 // Kvittot till husägaren: bostaden är mottagen + de två snabba stegen på den
 // egna sidan (medgivande + val av publicering). Samma länk som
 // påminnelse-cronen använder — hela flödet pekar på ETT ställe.
@@ -89,6 +111,7 @@ export function buildIntakeNotificationEmail(args: {
   city: string | null;
   imageCount: number;
   imageErrors: string[];
+  imagesPending?: boolean;
 }): BuiltEmail {
   const where = [args.address, args.city].filter(Boolean).join(", ") || "adress saknas";
   const crmUrl = `https://www.stayonsite.se/crm/properties?id=${args.propertyId}`;
@@ -98,7 +121,7 @@ export function buildIntakeNotificationEmail(args: {
     ["Typ", args.ownerType === "foretag" ? "Företag" : "Privatperson"],
     ["Telefon", args.ownerPhone ?? "—"],
     ["E-post", args.ownerEmail ?? "— (bekräftelse gick som SMS om nummer finns)"],
-    ["Bilder", `${args.imageCount} uppladdade${args.imageErrors.length ? `, ${args.imageErrors.length} fel` : ""}`],
+    ["Bilder", args.imagesPending ? "Laddas upp separat" : `${args.imageCount} uppladdade${args.imageErrors.length ? `, ${args.imageErrors.length} fel` : ""}`],
   ];
 
   const text = [
@@ -122,5 +145,5 @@ export function buildIntakeNotificationEmail(args: {
     `<p><a href="${crmUrl}" ${ORANGE_BTN}>Öppna i CRM</a></p>`,
   ].join("\n");
 
-  return { subject: `Nytt bostadsintag: ${where} — ${args.imageCount} bilder`, text, html };
+  return { subject: `Nytt bostadsintag: ${where} — ${args.imagesPending ? "bilder behandlas" : `${args.imageCount} bilder`}`, text, html };
 }

@@ -10,3 +10,9 @@ export function classifyDelivery(rows, pending) {
   if (Number(matches[0].isDelivered ?? 0) === 1) return "delivered";
   return "unknown";
 }
+
+// HUS publication links were explicitly requested as SMS. Other CRM traffic
+// retains the existing history-based choice between iMessage and SMS.
+export function shouldForceSms(source, historicalPreference) {
+  return source === "hus_publication" || historicalPreference === true;
+}

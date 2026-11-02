@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import type { TestDB } from "./test-db";
 import { createTestDb } from "./test-db";
-import { properties, owners, propertyImages } from "./schema";
+import { properties, owners, propertyImages, outboxMessages } from "./schema";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
@@ -45,6 +46,39 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 describe("automatic property approval", () => {
+  it("waits for HUS uploads, then queues exactly one SMS only after reviewed publication", async () => {
+    await state.db.update(properties).set({ autoPublishEnabled: false, publishConsentName: "Anna Andersson" }).where(eq(properties.id, "p1"));
+    await state.db.insert(outboxMessages).values({
+      id: husPublicationSmsId("p1"), toPhone: "+46701234567", body: "Väntar", ownerId: "o1",
+      source: HUS_PUBLICATION_SMS_SOURCE, status: "pending_publication",
+    });
+    expect(await reviewPropertyContent("p1")).toBe("approved");
+    let [sms] = await state.db.select().from(outboxMessages);
+    expect(sms.status).toBe("pending_publication");
+    expect((await readReviewInput("p1"))!.property.published).toBe(false);
+    await state.db.update(properties).set({ autoPublishEnabled: true }).where(eq(properties.id, "p1"));
+    expect(await reviewPropertyContent("p1")).toBe("approved");
+    [sms] = await state.db.select().from(outboxMessages);
+    expect(sms).toMatchObject({ status: "queued", toPhone: "+46701234567" });
+    expect(sms.body).toContain("www.stayonsite.se/boenden/boende-boden");
+    expect(sms.body).toContain("Hej Anna!");
+    await autoPublishReviewedProperty("p1");
+    expect(await state.db.select().from(outboxMessages)).toHaveLength(1);
+  });
+  it("does not queue a HUS SMS without publication consent or when image review fails", async () => {
+    await state.db.insert(outboxMessages).values({
+      id: husPublicationSmsId("p1"), toPhone: "+46701234567", body: "Väntar",
+      source: HUS_PUBLICATION_SMS_SOURCE, status: "pending_publication",
+    });
+    await state.db.update(properties).set({ publishConsentAt: null }).where(eq(properties.id, "p1"));
+    expect(await reviewPropertyContent("p1")).toBe("approved");
+    expect((await state.db.select().from(outboxMessages))[0].status).toBe("pending_publication");
+    await state.db.update(properties).set({ publishConsentAt: "2026-11-02", contentReviewStatus: "pending", contentReviewReport: null }).where(eq(properties.id, "p1"));
+    rejectedImage = "im1";
+    expect(await reviewPropertyContent("p1")).toBe("needs_review");
+    expect((await state.db.select().from(outboxMessages))[0].status).toBe("pending_publication");
+    expect((await readReviewInput("p1"))!.property.published).toBe(false);
+  });
   it("cleans and translates, publishes with consent, and keeps private finance separate", async () => {
     expect(await reviewPropertyContent("p1")).toBe("approved");
     const input = (await readReviewInput("p1"))!;

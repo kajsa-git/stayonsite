@@ -255,10 +255,10 @@ export const properties = sqliteTable("crm_properties", {
   published: integer("published", { mode: "boolean" }).default(false), // hemsidans publicering, utan att ändra uthyrningsstatus
   prospektPublished: integer("prospekt_published", { mode: "boolean" }).default(false), // delbar /prospekt-länk aktiv (oberoende av hemsidan/status)
   // Uthyrarens publiceringsgodkännande — bevis, skrivs aldrig om när satt.
-  // Godkännandet är att annonsen FÅR visas online; Kajsa publicerar fortfarande manuellt.
+  // Godkännandet är att annonsen FÅR visas online efter innehållskontroll.
   publishConsentAt: text("publish_consent_at"),
   publishConsentName: text("publish_consent_name"),
-  publishConsentSource: text("publish_consent_source"), // web | sms | crm
+  publishConsentSource: text("publish_consent_source"), // web | sms | crm | hus
   publishConsentIp: text("publish_consent_ip"),
   // Intern kontroll av exakt den kundtext och de bilder som godkänts.
   contentReviewStatus: text("content_review_status").notNull().default("pending"),
@@ -442,7 +442,7 @@ export const outboxMessages = sqliteTable("crm_outbox_messages", {
   body: text("body").notNull(),
   ownerId: text("owner_id"),
   contactId: text("contact_id"),
-  status: text("status").notNull().default("queued"), // queued | sending | sent | failed
+  status: text("status").notNull().default("queued"), // pending_publication | draft | queued | sending | sent | failed
   error: text("error"),
   replyToInboxIds: text("reply_to_inbox_ids", { mode: "json" }).$type<string[]>(),
   deliveredAt: text("delivered_at"), // enbart bekräftad leverans, annars null
@@ -554,7 +554,7 @@ export const shareLinks = sqliteTable("crm_share_links", {
   requestId: text("request_id"), // kundlänk: satt. Fristående uthyrarlänk: null.
   matchId: text("match_id"), // satt för affärsknuten uthyrarlänk (visar villkoren för en affär)
   ownerId: text("owner_id"), // satt för FRISTÅENDE uthyrarlänk — uppdragsavtalet skickas före någon affär
-  createdBy: text("created_by"), // crm_users.id
+  createdBy: text("created_by"), // crm_users.id | system:hus-upload
   revokedAt: text("revoked_at"), // null = aktiv
   expiresAt: text("expires_at"), // valfri TTL
   lastViewedAt: text("last_viewed_at"),

@@ -45,6 +45,13 @@ export function intakeConfirmSms(ownerName: string | null | undefined, token: st
   return `${greet(ownerName)} Tack, vi har tagit emot din bostad 😊 Vi kontrollerar bilderna och gör beskrivningen klar för våra företagskunder.${link}\n/Kajsa, StayOnSite`;
 }
 
+export function husIntakeConfirmSms(ownerName: string | null | undefined, approved: boolean): string {
+  const next = approved
+    ? "När bostaden är granskad och publicerad får du ett sms med länken."
+    : "Bostaden publiceras inte utan ditt godkännande.";
+  return `${greet(ownerName)} Tack för att du registrerade din bostad hos hus. Vi har tagit emot dina uppgifter och granskar dem. ${next} /hus, en tjänst av StayOnSite`;
+}
+
 // För korta husägarlead från hemsidan/LP där vi bara har telefon + ev. ort:
 // nästa steg är komplett bostadsregistrering, inte signering.
 export function homeownerLeadIntakeSms(): string {

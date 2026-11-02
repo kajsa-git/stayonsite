@@ -3,7 +3,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { loadLandlordStanding } from "@/lib/crm/deal-projection";
-import { buildIntakeConfirmationEmail, buildIntakeNotificationEmail } from "@/lib/crm/intake-emails";
+import { buildHusIntakeConfirmationEmail, buildIntakeConfirmationEmail, buildIntakeNotificationEmail } from "@/lib/crm/intake-emails";
 import { appendPropertyIntakeImageSummary, createPropertyIntake, propertyIntakeSchema } from "@/lib/crm/property-intake";
 import { db } from "@/lib/crm/db";
 import { imageContentHash } from "@/lib/crm/image-dedup";
@@ -13,7 +13,7 @@ import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { createImageVariants } from "@/lib/crm/image-variants";
 import { outboxMessages, propertyImages } from "@/lib/crm/schema";
 import { ensureShareLink } from "@/lib/crm/share-links";
-import { intakeConfirmSms } from "@/lib/crm/sms-templates";
+import { husIntakeConfirmSms, intakeConfirmSms } from "@/lib/crm/sms-templates";
 import { sendMetaLeadEvent } from "@/lib/meta-conversions";
 
 export const runtime = "nodejs";
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       try {
         const [standing, link] = await Promise.all([
           loadLandlordStanding(ownerId),
-          ensureShareLink({ audience: "landlord", ownerId }),
+          ensureShareLink({ audience: "landlord", ownerId, intakePurpose: parsed.data.husPublication ? "hus-upload" : "agreement" }),
         ]);
         agreement = { token: link.token, alreadySigned: standing?.agreementAccepted ?? false };
       } catch (error) {
@@ -172,6 +172,7 @@ export async function POST(req: NextRequest) {
         city: property.city,
         imageCount,
         imageErrors,
+        imagesPending: !!parsed.data.husPublication,
       });
       // OBS: Resend kastar inte vid API-fel utan returnerar { error } — båda
       // vägarna måste loggas, annars försvinner misslyckade kvitton tyst.
@@ -192,7 +193,7 @@ export async function POST(req: NextRequest) {
       ];
 
       if (ownerEmail) {
-        const confirmation = buildIntakeConfirmationEmail({
+        const confirmation = parsed.data.husPublication ? buildHusIntakeConfirmationEmail(parsed.data.husPublication.approved) : buildIntakeConfirmationEmail({
           ownerName,
           address: property.address,
           city: property.city,
@@ -204,7 +205,7 @@ export async function POST(req: NextRequest) {
             .send({
               from,
               to: ownerEmail,
-              replyTo: "kajsa@stayonsite.se",
+              replyTo: parsed.data.husPublication ? "hej@hyrutsmart.se" : "kajsa@stayonsite.se",
               subject: confirmation.subject,
               text: confirmation.text,
               html: confirmation.html,
@@ -223,7 +224,7 @@ export async function POST(req: NextRequest) {
         await db.insert(outboxMessages).values({
           id: nanoid(),
           toPhone: ownerPhone,
-          body: intakeConfirmSms(ownerName, agreement?.token ?? null),
+          body: parsed.data.husPublication ? husIntakeConfirmSms(ownerName, parsed.data.husPublication.approved) : intakeConfirmSms(ownerName, agreement?.token ?? null),
           status: "queued",
           ownerId,
           source: "intake",

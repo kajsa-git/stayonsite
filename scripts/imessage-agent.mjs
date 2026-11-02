@@ -18,7 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { classifyDelivery } from "./imessage-delivery.mjs";
+import { classifyDelivery, shouldForceSms } from "./imessage-delivery.mjs";
 
 // Läs .env.local bredvid repot om env saknas (gör att agenten funkar både via
 // launchd med plist-env och manuellt via `node scripts/imessage-agent.mjs`).
@@ -370,7 +370,7 @@ async function sendQueued(chatDb) {
     let via = "";
     const sentAtMs = Date.now();
     try {
-      via = sendViaMessages(msg.toPhone, msg.body, preferSms(chatDb, msg.toPhone));
+      via = sendViaMessages(msg.toPhone, msg.body, shouldForceSms(msg.source, preferSms(chatDb, msg.toPhone)));
       ok = true;
     } catch (e) {
       error = String(e?.message ?? e).slice(0, 400);
