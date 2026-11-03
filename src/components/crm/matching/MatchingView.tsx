@@ -490,10 +490,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground mb-2">
-                      {[m.propertyCity, m.propertyRentOut && `${m.propertyRentOut.toLocaleString("sv-SE")} kr`, m.sentAt && `skickad ${m.sentAt.slice(0, 10)}`]
+                      {[m.propertyCity, m.sentAt && `skickad ${m.sentAt.slice(0, 10)}`]
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
+                    <PropertyRents rentIn={m.propertyRentIn} rentOut={m.propertyRentOut} />
                     {(() => {
                       // Uthyrarkontakten direkt på kortet — ring/SMS + kontaktlogg
                       // utan att lämna matchningen. Datat finns redan i objektlistan.
@@ -845,10 +846,10 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                   )}
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-3">
                     <Row label="Uthyrare" value={property.ownerName} />
-                    <Row label="Hyra ut" value={property.rentOut ? `${property.rentOut} kr/mån` : undefined} />
                     <Row label="Tillgänglig" value={property.moveInFrom} />
                     <Row label="Status" value={property.status} />
                   </dl>
+                  <PropertyRents rentIn={property.rentIn} rentOut={property.rentOut} />
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" className="text-xs" onClick={() => setDetailProperty(property)}>
                       Detaljer
@@ -972,6 +973,15 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function PropertyRents({ rentIn, rentOut }: { rentIn: number | null; rentOut: number | null }) {
+  return (
+    <dl className="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-xs [&_dd]:font-medium [&_dd]:tabular-nums">
+      <Row label="Vi hyr för" value={formatKr(rentIn) ?? "Ej angiven"} />
+      <Row label="Vi hyr ut för" value={formatKr(rentOut) ?? "Ej angiven"} />
+    </dl>
   );
 }
 
