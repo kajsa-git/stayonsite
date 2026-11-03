@@ -7,6 +7,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { REQUEST_STATUS_LABEL as STATUS_LABEL } from "@/lib/crm/request-status";
+import { landlordMatchStatusText, type LandlordMatchStatus } from "@/lib/crm/landlord-match-status";
 
 interface OpenRequest {
   id: string;
@@ -35,6 +36,7 @@ export function MatchToRequestModal({
   const [q, setQ] = useState("");
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Record<string, string>>({});
 
   const { data: requests = [] } = useSWR<OpenRequest[]>(
     open ? `/api/crm/open-requests?q=${encodeURIComponent(q)}` : null,
@@ -43,15 +45,27 @@ export function MatchToRequestModal({
 
   async function match(requestId: string) {
     setBusyId(requestId);
-    const res = await fetch("/api/crm/matches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ requestId, propertyId }),
-    });
-    if (res.ok || res.status === 409) {
-      setMatched((s) => new Set(s).add(requestId));
+    try {
+      const res = await fetch("/api/crm/matches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, propertyId }),
+      });
+      if (res.ok) {
+        const result = await res.json() as { landlordNotification: LandlordMatchStatus };
+        setMatched((s) => new Set(s).add(requestId));
+        setMessages((s) => ({ ...s, [requestId]: landlordMatchStatusText(result.landlordNotification) }));
+      } else if (res.status === 409) {
+        setMatched((s) => new Set(s).add(requestId));
+        setMessages((s) => ({ ...s, [requestId]: "Redan matchad – se matchningsvyn för utskicksstatus." }));
+      } else {
+        setMessages((s) => ({ ...s, [requestId]: "Kunde inte matcha bostaden." }));
+      }
+    } catch {
+      setMessages((s) => ({ ...s, [requestId]: "Kunde inte kontrollera resultatet. Se matchningsvyn innan du försöker igen." }));
+    } finally {
+      setBusyId(null);
     }
-    setBusyId(null);
   }
 
   return (
@@ -60,6 +74,7 @@ export function MatchToRequestModal({
         <DialogHeader>
           <DialogTitle>Matcha {propertyAddress ?? "bostaden"} mot förfrågan</DialogTitle>
         </DialogHeader>
+        <p className="text-sm text-muted-foreground">När du matchar skickas mejl och sms till husägaren med företagets behov. Uppgifter som saknas anges som inte angivna.</p>
 
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -94,6 +109,7 @@ export function MatchToRequestModal({
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
+                    {messages[r.id] && <p className="mt-1 text-xs" role="status">{messages[r.id]}</p>}
                   </div>
                   <button
                     onClick={() => match(r.id)}

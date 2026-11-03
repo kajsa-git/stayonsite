@@ -2,8 +2,8 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
 import { sanitizeKalkyl } from "@/lib/crm/kalkyl";
-import { companies, matches, matchEvents, requests } from "@/lib/crm/schema";
-import { eq } from "drizzle-orm";
+import { companies, matches, matchEvents, outboxMessages, requests } from "@/lib/crm/schema";
+import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -154,6 +154,18 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  await db.delete(matches).where(eq(matches.id, id));
+  await db.transaction(async (tx) => {
+    const [notification] = await tx.select().from(matchEvents)
+      .where(and(eq(matchEvents.matchId, id), eq(matchEvents.type, "landlord_match_notification"))).limit(1);
+    const smsId = notification?.data?.smsId;
+    if (typeof smsId === "string") {
+      // Bara ett sms som ännu inte tagits av agenten kan säkert stoppas.
+      await tx.update(outboxMessages).set({ status: "cancelled" })
+        .where(and(eq(outboxMessages.id, smsId), eq(outboxMessages.status, "queued")));
+    }
+    // Behåll historiken men frigör idempotensnyckeln för en eventuell ny matchning.
+    if (notification) await tx.update(matchEvents).set({ id: nanoid() }).where(eq(matchEvents.id, notification.id));
+    await tx.delete(matches).where(eq(matches.id, id));
+  });
   return NextResponse.json({ ok: true });
 }
