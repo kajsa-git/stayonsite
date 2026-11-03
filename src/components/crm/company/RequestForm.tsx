@@ -18,11 +18,6 @@ export interface RequestFormData {
   endDate: string | null;
   endDateOngoing: boolean;
   projectDurationMonths: number | null;
-  landlordProjectDuration: string | null;
-  landlordBedroomPreference: string | null;
-  landlordParkingPreference: string | null;
-  landlordOtherWishes: string | null;
-  parkingRequired: boolean | null;
   budgetMax: number | null;
   billingProjectId: string | null;
   furnishedRequired: boolean;
@@ -51,10 +46,6 @@ const EMPTY = {
   endDate: "",
   endDateOngoing: false,
   projectDurationMonths: "",
-  landlordProjectDuration: "",
-  landlordBedroomPreference: "",
-  landlordParkingPreference: "",
-  landlordOtherWishes: "",
   budgetMax: "",
   billingProjectId: "",
   notes: "",
@@ -113,10 +104,6 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
             endDate: request.endDate ?? "",
             endDateOngoing: !!request.endDateOngoing,
             projectDurationMonths: request.projectDurationMonths?.toString() ?? "",
-            landlordProjectDuration: request.landlordProjectDuration ?? "",
-            landlordBedroomPreference: request.landlordBedroomPreference ?? "",
-            landlordParkingPreference: request.landlordParkingPreference ?? (request.parkingRequired === true ? "yes" : ""),
-            landlordOtherWishes: request.landlordOtherWishes ?? "",
             budgetMax: request.budgetMax?.toString() ?? "",
             billingProjectId: request.billingProjectId ?? request.requestNumber?.toString() ?? "",
             notes: request.notes ?? "",
@@ -164,11 +151,6 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
           endDate: form.endDateOngoing ? null : form.endDate || null,
           endDateOngoing: form.endDateOngoing,
           projectDurationMonths: form.projectDurationMonths ? parseInt(form.projectDurationMonths, 10) : null,
-          landlordProjectDuration: form.landlordProjectDuration.trim() || null,
-          landlordBedroomPreference: form.landlordBedroomPreference || null,
-          landlordParkingPreference: form.landlordParkingPreference || null,
-          landlordOtherWishes: form.landlordOtherWishes.trim() || null,
-          parkingRequired: form.landlordParkingPreference === "yes" ? true : form.landlordParkingPreference === "no" ? false : (request?.parkingRequired ?? null),
           budgetMax: form.budgetMax ? parseFloat(form.budgetMax) : null,
           billingProjectId: form.billingProjectId.trim() || null,
           furnishedRequired: form.furnishedRequired,
@@ -293,30 +275,7 @@ export function RequestForm({ open, request, onClose, onSubmit }: Props) {
               <Field label="Projekttid (mån)">
                 <input type="number" min="0" value={form.projectDurationMonths} onChange={(e) => set("projectDurationMonths", e.target.value)} className={INPUT_CLS} placeholder="6" />
               </Field>
-              <Field label="Projekttid till husägaren" hint="Valfritt, används i utskicket i stället för antalet månader.">
-                <input aria-label="Projekttid till husägaren" value={form.landlordProjectDuration} onChange={(e) => set("landlordProjectDuration", e.target.value)} maxLength={100} className={INPUT_CLS} placeholder="t.ex. 3 veckor" />
-              </Field>
             </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Field label="Önskemål om sovrum" hint="Uppgiften delas med husägaren vid matchning.">
-                <select aria-label="Önskemål om sovrum" value={form.landlordBedroomPreference} onChange={(e) => set("landlordBedroomPreference", e.target.value)} className={INPUT_CLS}>
-                  <option value="">Inte angivet</option>
-                  <option value="separate">Separata sovrum</option>
-                  <option value="shared">Delade sovrum fungerar</option>
-                  <option value="flexible">Flexibelt</option>
-                </select>
-              </Field>
-              <Field label="Önskar parkering" hint="Uppgiften delas med husägaren vid matchning.">
-                <select aria-label="Önskar parkering" value={form.landlordParkingPreference} onChange={(e) => set("landlordParkingPreference", e.target.value)} className={INPUT_CLS}>
-                  <option value="">Inte angivet</option>
-                  <option value="yes">Ja</option>
-                  <option value="no">Nej</option>
-                </select>
-              </Field>
-            </div>
-            <Field label="Övriga önskemål till husägaren" hint="Texten skickas i mejlet vid matchning. Interna anteckningar delas inte.">
-              <textarea aria-label="Övriga önskemål till husägaren" value={form.landlordOtherWishes} onChange={(e) => set("landlordOtherWishes", e.target.value)} maxLength={500} className={`${INPUT_CLS} min-h-[60px] resize-y`} />
-            </Field>
             <Field label="Krav">
               <div className="flex flex-wrap gap-1.5">
                 <button type="button" onClick={() => set("furnishedRequired", !form.furnishedRequired)} className={togglePill(form.furnishedRequired)}>

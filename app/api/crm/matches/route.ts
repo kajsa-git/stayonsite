@@ -1,9 +1,9 @@
 import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { agreementAcceptances, matchEvents, matches, outboxMessages, properties } from "@/lib/crm/schema";
-import { createMatchWithLandlordNotification, MatchCreationError } from "@/lib/crm/landlord-match-notification";
+import { agreementAcceptances, matchEvents, matches, properties } from "@/lib/crm/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/crm/matches?requestId=... → matches for a request, joined with property summary
@@ -88,21 +88,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const notificationEvents = await db.select().from(matchEvents)
-    .where(and(eq(matchEvents.requestId, requestId), eq(matchEvents.type, "landlord_match_notification")));
-  const smsIds = notificationEvents.map((event) => event.data?.smsId).filter((id): id is string => typeof id === "string");
-  const smsRows = smsIds.length ? await db.select({ id: outboxMessages.id, status: outboxMessages.status, deliveredAt: outboxMessages.deliveredAt })
-    .from(outboxMessages).where(inArray(outboxMessages.id, smsIds)) : [];
-  const smsById = new Map(smsRows.map((sms) => [sms.id, sms]));
-  const notifications = new Map(notificationEvents.map((event) => {
-    const smsId = typeof event.data?.smsId === "string" ? event.data.smsId : null;
-    const sms = smsId ? smsById.get(smsId) : null;
-    return [event.matchId, {
-      sms: sms?.deliveredAt ? "delivered" : sms?.status ?? (smsId ? "unknown" : event.data?.smsStatus ?? "unknown"),
-      email: event.data?.emailStatus ?? "unknown",
-    }];
-  }));
-
   return NextResponse.json(
     rows.map((r) => ({
       ...r,
@@ -110,7 +95,6 @@ export async function GET(req: NextRequest) {
       landlordSignedAt: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedAt) ?? null,
       withdrawnAt: withdrawnByMatch.get(r.id)?.withdrawnAt ?? null,
       withdrawnSentAt: withdrawnByMatch.get(r.id)?.withdrawnSentAt ?? null,
-      landlordNotification: notifications.get(r.id) ?? null,
     }))
   );
 }
@@ -120,19 +104,31 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  if (typeof body.requestId !== "string" || !body.requestId || typeof body.propertyId !== "string" || !body.propertyId) {
+  if (!body.requestId || !body.propertyId) {
     return NextResponse.json({ error: "requestId and propertyId required" }, { status: 400 });
   }
 
-  try {
-    const row = await createMatchWithLandlordNotification({
-      requestId: body.requestId, propertyId: body.propertyId,
-      status: body.status, matchScore: body.matchScore, notes: body.notes,
-    });
-    return NextResponse.json(row, { status: 201 });
-  } catch (error) {
-    if (error instanceof MatchCreationError) return NextResponse.json({ error: error.message }, { status: error.status });
-    console.error("Match creation:", error);
-    return NextResponse.json({ error: "Kunde inte skapa matchningen" }, { status: 500 });
+  // Prevent suggesting the same property twice on the same request
+  const dupe = await db
+    .select({ id: matches.id })
+    .from(matches)
+    .where(and(eq(matches.requestId, body.requestId), eq(matches.propertyId, body.propertyId)));
+  if (dupe.length) {
+    return NextResponse.json({ error: "Already suggested" }, { status: 409 });
   }
+
+  const id = nanoid();
+  const [row] = await db
+    .insert(matches)
+    .values({
+      id,
+      requestId: body.requestId,
+      propertyId: body.propertyId,
+      status: body.status ?? "suggested",
+      matchScore: body.matchScore ?? null,
+      notes: body.notes ?? null,
+    })
+    .returning();
+
+  return NextResponse.json(row, { status: 201 });
 }

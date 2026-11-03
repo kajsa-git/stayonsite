@@ -483,7 +483,6 @@ async function processQualificationReply(
   if (parsed.beds != null) requestPatch.bedsFrom = requestPatch.bedsTo = parsed.beds;
   if (parsed.requirementsAnswered) {
     requestPatch.parkingRequired = parsed.parkingRequired ?? false;
-    if (parsed.parkingRequired != null) requestPatch.landlordParkingPreference = parsed.parkingRequired ? "yes" : "no";
     requestPatch.kitchenRequired = parsed.kitchenRequired ?? false;
     requestPatch.laundryRequired = parsed.laundryRequired ?? false;
   }

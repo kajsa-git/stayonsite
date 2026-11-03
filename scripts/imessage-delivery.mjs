@@ -11,8 +11,8 @@ export function classifyDelivery(rows, pending) {
   return "unknown";
 }
 
-// HUS publication links and landlord match notifications were requested as SMS.
-// Other CRM traffic retains the existing history-based choice.
+// HUS publication links were explicitly requested as SMS. Other CRM traffic
+// retains the existing history-based choice between iMessage and SMS.
 export function shouldForceSms(source, historicalPreference) {
-  return source === "hus_publication" || source === "landlord_match" || historicalPreference === true;
+  return source === "hus_publication" || historicalPreference === true;
 }

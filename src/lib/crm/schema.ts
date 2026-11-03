@@ -151,11 +151,6 @@ export const requests = sqliteTable("crm_requests", {
   endDate: text("end_date"),
   endDateOngoing: integer("end_date_ongoing", { mode: "boolean" }), // löpande: avslut tills vidare (inget bestämt slutdatum)
   projectDurationMonths: integer("project_duration_months"),
-  // Enbart uppgifter som får delas med husägaren vid en matchning.
-  landlordProjectDuration: text("landlord_project_duration"), // t.ex. 3 veckor eller 6 månader
-  landlordBedroomPreference: text("landlord_bedroom_preference"), // separate | shared | flexible | null
-  landlordParkingPreference: text("landlord_parking_preference"), // yes | no | null (okänt)
-  landlordOtherWishes: text("landlord_other_wishes"),
   budgetMax: real("budget_max"), // vad kunden söker inom (behov)
   accommodationType: text("accommodation_type"), // lägenhet | studio | hus | flera boenden | fritext
   parkingRequired: integer("parking_required", { mode: "boolean" }),

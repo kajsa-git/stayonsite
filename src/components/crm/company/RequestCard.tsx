@@ -185,15 +185,8 @@ export function RequestCard({ request, contact, isActive, compact, onSelect, onE
           />
           <Field
             label="Projekttid"
-            value={request.landlordProjectDuration ?? (request.projectDurationMonths ? `${request.projectDurationMonths} mån` : undefined)}
+            value={request.projectDurationMonths ? `${request.projectDurationMonths} mån` : undefined}
           />
-          {request.landlordBedroomPreference && (
-            <Field label="Önskemål om sovrum" value={{ separate: "Separata sovrum", shared: "Delade sovrum fungerar", flexible: "Flexibelt" }[request.landlordBedroomPreference] ?? "Inte angivet"} />
-          )}
-          {request.landlordParkingPreference && (
-            <Field label="Önskar parkering" value={request.landlordParkingPreference === "yes" ? "Ja" : "Nej"} />
-          )}
-          {request.landlordOtherWishes && <Field label="Övriga önskemål till husägaren" value={request.landlordOtherWishes} />}
           <Field
             label="Budget"
             value={

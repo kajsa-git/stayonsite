@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/matching";
-import { landlordMatchNeedsAttention, landlordMatchStatusText, type LandlordMatchStatus } from "@/lib/crm/landlord-match-status";
 import type { KalkylScenario } from "@/lib/crm/kalkyl";
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
@@ -63,7 +62,6 @@ interface MatchRow extends DealTermsMatch {
   landlordSignedAt: string | null;
   withdrawnAt: string | null;
   withdrawnSentAt: string | null;
-  landlordNotification: LandlordMatchStatus | null;
 }
 
 
@@ -139,8 +137,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const editProperty = editPropertyId ? (properties.find((p) => p.id === editPropertyId) ?? null) : null;
   const { data: matches = [], mutate: mutateMatches } = useSWR<MatchRow[]>(
     `/api/crm/matches?requestId=${request.id}`,
-    fetcher,
-    { refreshInterval: 15000 },
+    fetcher
   );
 
   const suggestedIds = new Set(matches.map((m) => m.propertyId));
@@ -262,15 +259,10 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         toast({ title: j.error ?? "Kunde inte lägga till förslag", variant: "destructive" });
         return;
       }
-      const result = await res.json() as { landlordNotification: LandlordMatchStatus };
       mutateMatches();
-      toast({
-        title: "Förslag tillagt",
-        description: landlordMatchStatusText(result.landlordNotification),
-        variant: landlordMatchNeedsAttention(result.landlordNotification) ? "destructive" : "default",
-      });
+      toast({ title: "Förslag tillagt" });
     } catch {
-      toast({ title: "Kunde inte kontrollera resultatet", description: "Kontrollera förslaget innan du försöker igen.", variant: "destructive" });
+      toast({ title: "Kunde inte lägga till förslag", variant: "destructive" });
     }
   }
 
@@ -348,8 +340,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   }
 
   async function removeMatch(id: string) {
-    const notification = matches.find((match) => match.id === id)?.landlordNotification;
-    if (notification && !window.confirm("Ta bort förslaget? Ett köat sms avbryts om det inte redan börjat skickas. Ett skickat mejl kan inte återkallas.")) return;
     await fetch(`/api/crm/matches/${id}`, { method: "DELETE" });
     mutateMatches();
     toast({ title: "Förslag borttaget" });
@@ -504,11 +494,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .filter(Boolean)
                         .join(" · ")}
                     </div>
-                    {m.landlordNotification && (
-                      <p className={`mb-2 text-xs ${landlordMatchNeedsAttention(m.landlordNotification) ? "text-destructive" : "text-muted-foreground"}`} role={landlordMatchNeedsAttention(m.landlordNotification) ? "alert" : undefined}>
-                        Uthyrare: {landlordMatchStatusText(m.landlordNotification)}
-                      </p>
-                    )}
                     {(() => {
                       // Uthyrarkontakten direkt på kortet — ring/SMS + kontaktlogg
                       // utan att lämna matchningen. Datat finns redan i objektlistan.
@@ -706,7 +691,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               <h2 className="text-sm font-semibold">Sök bostäder</h2>
               <span className="text-xs text-muted-foreground">{visible.length} av {properties.length}</span>
             </div>
-            <p className="text-xs text-muted-foreground">När du lägger till ett förslag skickas mejl och sms till husägaren med företagets behov. Uppgifter som saknas anges som inte angivna.</p>
             <div className="grid grid-cols-2 gap-2">
               <div className="col-span-2 relative">
                 <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
@@ -874,7 +858,6 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       variant="outline"
                       className="flex-1 text-xs"
                       disabled={already}
-                      title="Skickar mejl och köar sms till husägaren med företagets behov"
                       onClick={() => addSuggestion(property.id, score)}
                     >
                       {already ? "✓ Redan föreslagen" : "Lägg till som förslag"}
