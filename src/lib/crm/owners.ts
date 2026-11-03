@@ -34,7 +34,7 @@ export type OwnerView = {
   rating: number | null;
 };
 
-export type PropertyWithOwner = Property & OwnerView;
+export type PropertyWithOwner = Property & OwnerView & { rentalReviewCheckOn?: string | null };
 
 // Kanonisk uppsättning objekt-statusar (speglar UI och sökindex). Valideras vid skrivning.
 export const VALID_PROPERTY_STATUSES = ["available", "reserved", "rented", "off_market"] as const;

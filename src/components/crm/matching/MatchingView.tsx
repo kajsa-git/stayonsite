@@ -37,6 +37,8 @@ import { LandlordLogDialog } from "./LandlordLogDialog";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { swrFetcher } from "@/lib/crm/fetcher";
+import { todayStockholm } from "@/lib/crm/date";
+import { isRentalReviewDue } from "@/lib/crm/rental-review-date";
 
 interface Props {
   request: Request;
@@ -141,6 +143,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   );
 
   const suggestedIds = new Set(matches.map((m) => m.propertyId));
+  const today = todayStockholm();
+  const needsReview = (p: PropertyWithOwner) => isRentalReviewDue(p, today);
+  const matchNeedsReview = (propertyId: string) => {
+    const property = properties.find((p) => p.id === propertyId);
+    return !!property && needsReview(property);
+  };
+  // Ett gammalt ledigdatum kan inte bevisa att en uthyrd bostad är ledig.
+  const forScoring = (p: PropertyWithOwner) => p.status === "rented" ? { ...p, moveInFrom: null } : p;
 
   const scored = properties
     .filter((p) => {
@@ -154,14 +164,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       if (filters.minBeds && (p.beds ?? 0) < parseInt(filters.minBeds, 10)) return false;
       if (filters.maxRent && (p.rentOut ?? Infinity) > parseFloat(filters.maxRent)) return false;
       if (filters.minRating && (p.rating ?? 0) < parseInt(filters.minRating, 10)) return false;
-      if (filters.availableOnly && p.status !== "available") return false;
+      if (filters.availableOnly && p.status !== "available" && !needsReview(p)) return false;
       if (filters.furnished && !p.furnished) return false;
       if (filters.garage && !p.garage) return false;
-      if (filters.availableDates && !availableForRequest(request, p)) return false;
+      if (filters.availableDates && !needsReview(p) && (p.status !== "available" || !availableForRequest(request, p))) return false;
       if (filters.hideSuggested && suggestedIds.has(p.id)) return false;
       return true;
     })
-    .map((p) => ({ property: p, ...matchDetails(request, p) }))
+    .map((p) => ({ property: p, ...matchDetails(request, forScoring(p)) }))
     .filter((r) => filters.showWeak || r.score > 0)
     .sort((a, b) => b.score - a.score);
 
@@ -214,15 +224,15 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     )
     .map(({ property }) => ({
       property,
-      ...matchDetails(request, property, {
+      ...matchDetails(request, forScoring(property), {
         distanceKm: distances[property.id] ? distances[property.id].meters / 1000 : null,
         radiusKm,
       }),
     }))
     .sort((a, b) =>
-      filters.nearestFirst
+      Number(needsReview(a.property)) - Number(needsReview(b.property)) || (filters.nearestFirst
         ? (distances[a.property.id]?.meters ?? Infinity) - (distances[b.property.id]?.meters ?? Infinity)
-        : b.score - a.score
+        : b.score - a.score)
     );
   const distancesPending = !!workplaceAddress
     && distDests.length > 0
@@ -495,6 +505,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         .join(" · ")}
                     </div>
                     <PropertyRents rentIn={m.propertyRentIn} rentOut={m.propertyRentOut} />
+                    {matchNeedsReview(m.propertyId) && (
+                      <p className="mb-2 rounded-md bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
+                        Uthyrd – kontrollera tillgängligheten innan bostaden erbjuds kunden.
+                      </p>
+                    )}
                     {(() => {
                       // Uthyrarkontakten direkt på kortet — ring/SMS + kontaktlogg
                       // utan att lämna matchningen. Datat finns redan i objektlistan.
@@ -599,8 +614,9 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                             <button
                               key={s.label}
                               onClick={s.onClick}
-                              title={s.title}
-                              className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors ${
+                              disabled={i > 0 && matchNeedsReview(m.propertyId)}
+                              title={i > 0 && matchNeedsReview(m.propertyId) ? "Kontrollera tillgängligheten först" : s.title}
+                              className={`text-xs px-2 py-1 rounded border flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                                 s.done
                                   ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                                   : i === currentIdx
@@ -662,7 +678,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       </div>
                     ) : (
                       <div className="flex flex-wrap gap-1">
-                        <button onClick={() => setMatchStatus(m.id, "sent")} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1">
+                        <button onClick={() => setMatchStatus(m.id, "sent")} disabled={matchNeedsReview(m.propertyId)} className="text-xs px-2 py-1 rounded border border-input bg-white text-muted-foreground hover:bg-muted flex items-center gap-1 disabled:opacity-50">
                           <Pencil className="h-3 w-3" /> Ändra
                         </button>
                         <button onClick={() => removeMatch(m.id)} className="text-xs px-1.5 py-1 rounded hover:bg-muted text-muted-foreground ml-auto" title="Ta bort förslag">
@@ -805,10 +821,18 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               {isFiltered ? "Inga bostäder matchar filtren — justera eller rensa." : "Inga bostäder inlagda ännu."}
             </p>
           ) : (
-            visible.map(({ property, score, chips }) => {
+            visible.map(({ property, score, chips }, index) => {
               const already = suggestedIds.has(property.id);
+              const review = needsReview(property);
               return (
-                <div key={property.id} className="bg-white rounded-xl border p-4 hover:border-nordic-300 hover:shadow-sm transition-all">
+                <div key={property.id}>
+                {review && (index === 0 || !needsReview(visible[index - 1].property)) && (
+                  <div className="px-1 pb-2 pt-2">
+                    <h3 className="text-sm font-semibold">Uthyrda – kontrollera tillgänglighet</h3>
+                    <p className="text-xs text-muted-foreground">Möjliga träffar att fråga om. De är inte bekräftat lediga.</p>
+                  </div>
+                )}
+                <div className="bg-white rounded-xl border p-4 hover:border-nordic-300 hover:shadow-sm transition-all">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div>
                       <button
@@ -831,7 +855,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       )}
                       {property.status && PROP_UNAVAILABLE[property.status] && (
                         <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-800">
-                          ⚠️ {PROP_UNAVAILABLE[property.status]}
+                          ⚠️ {review ? "Uthyrd – kontrollera" : PROP_UNAVAILABLE[property.status]}
                         </span>
                       )}
                     </div>
@@ -846,10 +870,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                   )}
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-3">
                     <Row label="Uthyrare" value={property.ownerName} />
-                    <Row label="Tillgänglig" value={property.moveInFrom} />
+                    <Row label="Tillgänglig" value={review ? "Ej bekräftat" : property.moveInFrom} />
                     <Row label="Status" value={property.status} />
                   </dl>
                   <PropertyRents rentIn={property.rentIn} rentOut={property.rentOut} />
+                  {review && <div className="mb-2"><PhoneActions phone={property.ownerPhone} ownerId={property.ownerId ?? undefined} /></div>}
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" className="text-xs" onClick={() => setDetailProperty(property)}>
                       Detaljer
@@ -858,12 +883,13 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                       size="sm"
                       variant="outline"
                       className="flex-1 text-xs"
-                      disabled={already}
+                      disabled={already || review}
                       onClick={() => addSuggestion(property.id, score)}
                     >
-                      {already ? "✓ Redan föreslagen" : "Lägg till som förslag"}
+                      {already ? "✓ Redan föreslagen" : review ? "Kontrollera tillgänglighet först" : "Lägg till som förslag"}
                     </Button>
                   </div>
+                </div>
                 </div>
               );
             })

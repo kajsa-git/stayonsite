@@ -7,6 +7,7 @@ import { authorizeLandlordProperty } from "@/lib/crm/landlord-properties";
 import { landlordPropertyInput } from "@/lib/crm/landlord-property-input";
 import { indexProperty } from "@/lib/crm/search-index";
 import { PropertyTranslationError, withDescriptionTranslations } from "@/lib/crm/property-translations";
+import { syncRentalReview } from "@/lib/crm/rental-review";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ token: string; id: string }> }) {
   const { token, id } = await params;
@@ -27,8 +28,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ to
     if (error instanceof PropertyTranslationError) return NextResponse.json({ error: error.message }, { status: error.status });
     throw error;
   }
-  const [saved] = await db.update(properties).set({ ...values, ...pendingContentReview(), updatedAt: new Date().toISOString() })
-    .where(condition).returning({ id: properties.id });
+  const saved = await db.transaction(async (tx) => {
+    const [before] = await tx.select().from(properties).where(condition).limit(1);
+    if (!before) return null;
+    const [row] = await tx.update(properties).set({ ...values, ...pendingContentReview(), updatedAt: new Date().toISOString() })
+      .where(condition).returning();
+    if (row) await syncRentalReview(tx, before, row);
+    return row;
+  });
   if (!saved) return NextResponse.json({ error: "Bostaden finns inte kvar." }, { status: 404 });
   await indexProperty(id).catch((error) => console.error("search-index landlord property:", error));
   schedulePropertyReview(id);

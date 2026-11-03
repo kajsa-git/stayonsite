@@ -4,7 +4,8 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexOwner, indexProperty } from "@/lib/crm/search-index";
 import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
-import { owners, properties, propertyImages } from "@/lib/crm/schema";
+import { owners, properties, propertyImages, rentalReviews } from "@/lib/crm/schema";
+import { syncRentalReview } from "@/lib/crm/rental-review";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -20,9 +21,10 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q");
   const ownerId = req.nextUrl.searchParams.get("ownerId");
   let query = db
-    .select({ property: properties, owner: owners })
+    .select({ property: properties, owner: owners, rentalReviewCheckOn: rentalReviews.checkOn })
     .from(properties)
-    .leftJoin(owners, eq(properties.ownerId, owners.id));
+    .leftJoin(owners, eq(properties.ownerId, owners.id))
+    .leftJoin(rentalReviews, eq(properties.id, rentalReviews.propertyId));
 
   const conditions = [];
   if (ownerId) conditions.push(eq(properties.ownerId, ownerId));
@@ -46,7 +48,7 @@ export async function GET(req: NextRequest) {
   }
 
   const rows = await query;
-  const merged = rows.map(mergeOwnerIntoProperty);
+  const merged = rows.map((row) => ({ ...mergeOwnerIntoProperty(row), rentalReviewCheckOn: row.rentalReviewCheckOn }));
 
   // Bifoga en liten presignerad thumbnail (första bilden) per objekt för listvyn.
   const ids = merged.map((p) => p.id);
@@ -114,12 +116,17 @@ export async function POST(req: NextRequest) {
     if (error instanceof PropertyTranslationError) return NextResponse.json({ error: error.message }, { status: error.status });
     throw error;
   }
-  const [row] = await db.insert(properties).values({ id, ...values }).returning();
+  const row = await db.transaction(async (tx) => {
+    const [created] = await tx.insert(properties).values({ id, ...values }).returning();
+    await syncRentalReview(tx, null, created);
+    return created;
+  });
   await indexProperty(id).catch((e) => console.error("search-index property:", e));
   if (row?.ownerId) await indexOwner(row.ownerId).catch((e) => console.error("search-index owner:", e));
   const [owner] = row?.ownerId ? await db.select().from(owners).where(eq(owners.id, row.ownerId)) : [null];
   schedulePropertyReview(id);
-  return NextResponse.json(mergeOwnerIntoProperty({ property: row, owner: owner ?? null }), { status: 201 });
+  const [review] = row.status === "rented" ? await db.select({ checkOn: rentalReviews.checkOn }).from(rentalReviews).where(eq(rentalReviews.propertyId, id)) : [];
+  return NextResponse.json({ ...mergeOwnerIntoProperty({ property: row, owner: owner ?? null }), rentalReviewCheckOn: review?.checkOn ?? null }, { status: 201 });
 }
 
 export const maxDuration = 300;

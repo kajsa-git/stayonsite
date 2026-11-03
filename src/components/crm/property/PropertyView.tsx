@@ -57,6 +57,9 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [startedReview, setStartedReview] = useState<string | null>(null);
+  const [startingReview, setStartingReview] = useState(false);
+  const reviewDate = property.rentalReviewCheckOn ?? startedReview;
   const { data: propertyImages } = useSWR<{ id: string }[]>(`/api/crm/properties/${property.id}/images`, fetcher);
   const unspecified = [
     ...(propertyImages && propertyImages.length === 0 ? ["Bilder"] : []),
@@ -68,6 +71,21 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
 
   // Properties saknar namn → verifiera mot adressen (fallback "RADERA" om adress saknas).
   const delTarget = (property.address ?? "").trim() || "RADERA";
+
+  async function startRentalReview() {
+    setStartingReview(true);
+    try {
+      const response = await fetch(`/api/crm/properties/${property.id}/rental-review`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "start" }),
+      });
+      if (!response.ok) throw new Error("Kunde inte planera kontrollen");
+      const result = await response.json();
+      setStartedReview(result.checkOn);
+      toast({ title: `Kontroll planerad ${result.checkOn}` });
+    } catch {
+      toast({ title: "Kunde inte planera kontrollen", variant: "destructive" });
+    } finally { setStartingReview(false); }
+  }
 
   async function handleDelete() {
     if (!onDelete) return;
@@ -185,11 +203,18 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <SummaryStat label="Bäddar" value={property.beds?.toString()} />
             <SummaryStat label="Yta" value={property.squareMeters != null ? `${property.squareMeters.toLocaleString("sv-SE")} m²` : null} />
             <SummaryStat label="Badrum" value={property.bathrooms?.toString()} />
-            <SummaryStat label="Tillgänglig från" value={property.moveInFrom} />
+            <SummaryStat label={property.status === "rented" ? "Angivet ledigdatum" : "Tillgänglig från"} value={property.moveInFrom} />
             <SummaryStat label="Tillgänglig till" value={property.availableTo} />
+            {property.status === "rented" && reviewDate && <SummaryStat label="Kontrollera tillgänglighet" value={reviewDate} />}
             <SummaryStat label="Vi hyr för" value={property.rentIn != null ? `${property.rentIn.toLocaleString("sv-SE")} kr/mån` : null} />
             <SummaryStat label="Vi hyr ut för" value={property.rentOut != null ? `${property.rentOut.toLocaleString("sv-SE")} kr/mån` : null} />
           </dl>
+          {property.status === "rented" && !reviewDate && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-3 text-xs text-muted-foreground">
+              <span>Ingen tillgänglighetskontroll är planerad.</span>
+              <Button size="sm" variant="outline" disabled={startingReview} onClick={startRentalReview}>Planera kontroll</Button>
+            </div>
+          )}
           {unspecified.length > 0 && (
             <details className="mt-4 border-t pt-3 text-sm">
               <summary className="cursor-pointer font-medium text-muted-foreground">Uppgifter att kontrollera ({unspecified.length})</summary>

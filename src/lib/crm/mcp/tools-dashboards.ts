@@ -34,7 +34,7 @@ export function registerDashboardTools(server: McpServer, opts?: { db?: DB }) {
       description:
         "Badge counts for the work queues: due follow-ups (återkomster), open deals without " +
         "follow-up, to-invoice, landlord chasing, move-ins/outs due, unread replies, pending " +
-        "SMS drafts and renewal candidates.",
+        "SMS drafts and renewal candidates. Landlord chasing includes rented properties due for availability checks; list those with crm_rental_reviews_due.",
     },
     async () => jsonContent(await computeQueueCounts({ db: opts?.db })),
   );

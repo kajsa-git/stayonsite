@@ -1,9 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import { createClient, type Client } from "@libsql/client";
-import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { eq } from "drizzle-orm";
-import fs from "node:fs";
-import path from "node:path";
 import * as schema from "./schema";
 import { UTHYRNINGSUPPDRAG } from "./avtal";
 import { NextRequest } from "next/server";
@@ -16,21 +13,16 @@ import { authorizeLandlordProperty, loadLandlordProperties } from "./landlord-pr
 import { PATCH } from "../../../app/api/share/[token]/properties/[id]/route";
 import { GET as imagesGET } from "../../../app/api/share/[token]/properties/[id]/images/route";
 import { landlordPropertyInput } from "./landlord-property-input";
-let client: Client;
+import { createTestDb } from "./test-db";
+import { addDaysYmd, todayStockholm } from "./date";
+let cleanup: () => void;
 
 beforeEach(async () => {
   vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
   vi.stubGlobal("fetch", vi.fn(async () => Response.json({ stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify({ publicDescriptionEn: "New description", publicDescriptionPl: "Nowy opis", skickEn: "", skickPl: "", inclusionsEn: [], inclusionsPl: [] }) }] })));
-  client = createClient({ url: ":memory:" });
-  const dir = path.resolve(__dirname, "../../../drizzle");
-  const journal = JSON.parse(fs.readFileSync(path.join(dir, "meta/_journal.json"), "utf8"));
-  for (const entry of journal.entries) {
-    const statements = fs.readFileSync(path.join(dir, `${entry.tag}.sql`), "utf8")
-      .replace(/-->\s*statement-breakpoint/g, "").split(";").map((s) => s.trim())
-      .filter((s) => s && s.split("\n").some((l) => !l.trim().startsWith("--") && l.trim()));
-    for (const statement of statements) await client.execute(statement);
-  }
-  state.db = drizzle(client, { schema });
+  const testDb = await createTestDb("landlord-properties");
+  state.db = testDb.db;
+  cleanup = testDb.cleanup;
   await state.db.insert(schema.owners).values([{ id: "o1", name: "Anna" }, { id: "o2", name: "Bo" }]);
   await state.db.insert(schema.properties).values([
     { id: "p1", ownerId: "o1", address: "Gatan 1", rentIn: 5000, rentOut: 9000, notes: "secret", publicDescription: "Original" },
@@ -47,7 +39,7 @@ beforeEach(async () => {
     { id: "l5", token: "tenant-token", audience: "tenant", ownerId: "o1" },
   ]);
 });
-afterEach(() => { client.close(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 async function patch(body: unknown, token = "owner-token", id = "p1") {
   return PATCH(new NextRequest("http://localhost/api/share/test", {
@@ -74,6 +66,15 @@ describe("uthyrarens bostäder", () => {
     const rows = await state.db.select().from(schema.properties);
     expect(rows).toHaveLength(3);
     expect(rows.find((r) => r.id === "p1")).toMatchObject({ rentIn: 6000, rentOut: 9000, notes: "secret", publicDescription: "Ny text", publicDescriptionEn: "New description", publicDescriptionPl: "Nowy opis" });
+  });
+  it("uppdaterar kontrollen när uthyraren anger ett nytt ledigdatum för en uthyrd bostad", async () => {
+    const today = todayStockholm();
+    const date = addDaysYmd(today, 120);
+    await state.db.update(schema.properties).set({ status: "rented" }).where(eq(schema.properties.id, "p1"));
+    await state.db.insert(schema.rentalReviews).values({ propertyId: "p1", rentedSince: today, checkOn: addDaysYmd(today, 60), source: "two_months" });
+    expect((await patch({ moveInFrom: date })).status).toBe(200);
+    expect((await state.db.select().from(schema.rentalReviews))[0]).toMatchObject({ checkOn: date, source: "specified" });
+    expect((await state.db.select().from(schema.properties).where(eq(schema.properties.id, "p1")))[0].status).toBe("rented");
   });
   it.each(["unknown", "revoked-token", "expired-token", "tenant-token", "unsigned-token"])("avvisar %s", async (token) => {
     expect((await patch({ beds: 3 }, token)).status).toBe(404);

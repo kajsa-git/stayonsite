@@ -174,7 +174,7 @@ interface CompanyCard {
 }
 
 interface ChaseRow {
-  source: "property" | "owner";
+  source: "property" | "owner" | "rentalReview";
   propertyId: string | null;
   address: string | null;
   ownerId: string | null;
@@ -194,6 +194,7 @@ interface QueueData {
   agreements: CompanyCard[];
   toInvoice: CompanyCard[];
   chaseLandlords: ChaseRow[];
+  rentalReviews: ChaseRow[];
   renewals: RenewalRow[];
 }
 
@@ -233,7 +234,7 @@ export function MyDayView() {
   }
 
   const { data, mutate, isLoading, error } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
-  const queues = data ?? { followUps: [], openWithoutFollowUp: [], agreements: [], toInvoice: [], chaseLandlords: [], renewals: [] };
+  const queues = data ?? { followUps: [], openWithoutFollowUp: [], agreements: [], toInvoice: [], chaseLandlords: [], rentalReviews: [], renewals: [] };
   const loading = isLoading && !data;
 
   // Flytt-flagga: in-/avflyttningar på gång den närmaste veckan (≤ 7 dagar, samma räknare som fliken).
@@ -257,6 +258,16 @@ export function MyDayView() {
 
   async function chaseAction(item: ChaseRow, action: string) {
     try {
+      if (item.source === "rentalReview") {
+        if (!item.propertyId || !["snooze3", "snooze7", "snooze2months"].includes(action)) return;
+        const res = await fetch(`/api/crm/properties/${item.propertyId}/rental-review`, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        mutate();
+        toast({ title: "Tillgänglighetskontrollen flyttad" });
+        return;
+      }
       const isOwner = item.source === "owner";
       if (isOwner && (!item.ownerId || !["snooze3", "snooze7"].includes(action))) return;
       const res = await fetch(isOwner ? `/api/crm/owners/${item.ownerId}` : `/api/crm/properties/${item.propertyId}/chase`, {
@@ -743,6 +754,21 @@ export function MyDayView() {
             }
           />
 
+          {(queues.rentalReviews ?? []).length > 0 && <QueueSection
+            title="Kontrollera uthyrda bostäder"
+            emoji="🏠"
+            items={queues.rentalReviews}
+            emptyText="Inga bostäder att kontrollera"
+            renderItem={(item) => (
+              <ChaseCard
+                key={`rentalReview:${item.propertyId}`}
+                item={item} today={today}
+                onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
+                onAction={(action) => chaseAction(item, action)}
+                onSendSms={(body) => chaseSendSms(item, body)}
+              />
+            )}
+          />}
           <QueueSection
             title="Följ upp uthyrare"
             emoji="☎️"
@@ -1184,7 +1210,7 @@ function ChaseCard({
       >
         <div className="font-medium text-sm leading-snug truncate">{item.source === "owner" ? item.ownerName ?? "Uthyrare" : item.address ?? "(adress saknas)"}</div>
         <div className="text-xs text-muted-foreground truncate">
-          {[item.source === "property" ? item.ownerName : null, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
+          {[item.source !== "owner" ? item.ownerName : null, formatPhoneSv(item.ownerPhone)].filter(Boolean).join(" · ") || "—"}
         </div>
         {item.hasReply && (
           <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1.5">
@@ -1216,34 +1242,35 @@ function ChaseCard({
           <QBtn
             variant="sms"
             disabled={busy}
-            title={item.source === "owner" ? "Skriv ett SMS efter att ha kontrollerat senaste kontakten" : "Förifyllt uppföljnings-SMS — justera och skicka"}
+            title={item.source !== "property" ? "Skriv ett SMS efter att ha kontrollerat senaste kontakten" : "Förifyllt uppföljnings-SMS — justera och skicka"}
             onClick={() => {
-              if (!smsOpen) setSmsText(item.source === "owner" ? "" : ownerFollowUpSms(item.ownerName, item.address));
+              if (!smsOpen) setSmsText(item.source !== "property" ? "" : ownerFollowUpSms(item.ownerName, item.address));
               setSmsOpen(!smsOpen);
             }}
           >
             <MessageSquare className="h-3 w-3" />
-            {item.source === "owner" ? "Skriv SMS" : "SMS"}
+            {item.source !== "property" ? "Skriv SMS" : "SMS"}
           </QBtn>
         )}
         {/* Ringd/Flytta: en etikett, två knappar */}
         <span className="inline-flex items-center overflow-hidden rounded border border-input text-[11px]">
           <span className="px-1.5 py-0.5 text-nordic-500 bg-nordic-100/60 border-r border-input">
-            {item.source === "owner" ? "Flytta" : "Ringd"}
+            {item.source !== "property" ? "Flytta" : "Ringd"}
           </span>
           {(["snooze3", "snooze7"] as const).map((a, i) => (
             <button
               key={a}
               onClick={() => act(a)}
               disabled={busy}
-              title={item.source === "owner" ? `Flytta återkomsten ${a === "snooze3" ? 3 : 7} dagar` : `Ringd — ny påminnelse om ${a === "snooze3" ? 3 : 7} dagar`}
+              title={item.source !== "property" ? `Flytta återkomsten ${a === "snooze3" ? 3 : 7} dagar` : `Ringd — ny påminnelse om ${a === "snooze3" ? 3 : 7} dagar`}
               className={`px-1.5 py-0.5 bg-white text-muted-foreground hover:bg-nordic-100 transition-colors active:scale-[0.96] disabled:opacity-40 ${i ? "border-l border-input" : ""}`}
             >
               +{a === "snooze3" ? 3 : 7} d
             </button>
           ))}
+          {item.source === "rentalReview" && <button onClick={() => act("snooze2months")} disabled={busy} className="px-1.5 py-0.5 bg-white text-muted-foreground hover:bg-nordic-100 border-l border-input disabled:opacity-40">+2 mån</button>}
         </span>
-        {item.source !== "owner" && (
+        {item.source === "property" && (
           <>
             <QBtn disabled={busy} onClick={() => act("answered")}>
               <Check className="h-3 w-3" />

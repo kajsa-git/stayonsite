@@ -344,6 +344,13 @@
       "when": 1793695400000,
       "tag": "0048_landlord_match_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "6",
+      "when": 1793696400000,
+      "tag": "0049_rental_reviews",
+      "breakpoints": true
     }
   ]
 }

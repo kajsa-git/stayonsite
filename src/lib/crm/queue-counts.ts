@@ -7,6 +7,7 @@ import { db as defaultDb } from "./db";
 import { hasSignedMoveInContract } from "./move-checklists";
 import * as schema from "./schema";
 import { companies, inboxMessages, outboxMessages, owners, ownerOutreach, properties, requests } from "./schema";
+import { dueRentalReviews } from "./rental-review";
 
 type DB = LibSQLDatabase<typeof schema>;
 
@@ -30,7 +31,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
   // Markör-fönster: flyttar den närmaste veckan (overdue räknas också).
   const horizon = addDaysYmd(today, 7);
 
-  const [followUps, openWithoutFollowUpRows, wonRows, chaseOwnerProps, dueOwners, moveRows, unreadReplies, draftRows, renewalRows] = await Promise.all([
+  const [followUps, openWithoutFollowUpRows, wonRows, chaseOwnerProps, dueOwners, moveRows, unreadReplies, draftRows, renewalRows, rentalReviewRows] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(lte(companies.followUpDate, today)),
 
     // Öppna uppdrag: företag med incoming/matching + followUpDate IS NULL
@@ -59,6 +60,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
       .where(and(isNull(ownerOutreach.concludedAt), lte(ownerOutreach.nextFollowUpDate, today))),
 
     db.select({ id: owners.id }).from(owners).where(lte(owners.followUpDate, today)),
+
 
     // In-/avflyttningar att hantera: aktiva uppdrag med datum.
     db
@@ -95,6 +97,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
           isNull(requests.moveOutDoneAt),
         ),
       ),
+    dueRentalReviews(db, today),
   ]);
 
   const chaseProps = new Set<string>();
@@ -125,7 +128,7 @@ export async function computeQueueCounts(opts?: { db?: DB; today?: string }): Pr
     openWithoutFollowUp: openWithoutFollowUpRows.length,
     agreements: agreementCompanies.size,
     toInvoice: toInvoiceCompanies.size,
-    chaseLandlords: chaseProps.size + ownOwnerCards,
+    chaseLandlords: chaseProps.size + ownOwnerCards + rentalReviewRows.length,
     moveSchedule,
     replies: unreadReplies.length,
     drafts: draftRows.length,

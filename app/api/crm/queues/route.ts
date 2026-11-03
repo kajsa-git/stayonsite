@@ -5,6 +5,7 @@ import { hasSignedMoveInContract } from "@/lib/crm/move-checklists";
 import { companies, contacts, emails, inboxMessages, matches, notes, owners, ownerOutreach, properties, requests } from "@/lib/crm/schema";
 import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, max, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { dueRentalReviews } from "@/lib/crm/rental-review";
 
 const ACTIVE_STATUSES = ["incoming", "matching"] as const;
 const OPEN_STATUSES = ["incoming", "matching", "won"] as const;
@@ -25,7 +26,7 @@ export async function GET() {
   const today = todayStockholm();
 
   // Wave 1: alla köer + chase-data parallellt
-  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, ownerFollowUps, renewalRows, unreadInboxOwners] = await Promise.all([
+  const [followUpCompanies, activeRequestRows, wonRequestRows, chaseOwners, ownerFollowUps, renewalRows, unreadInboxOwners, rentalReviewRows] = await Promise.all([
     // Återkomster: företag med återkomst idag eller försenad
     db
       .select()
@@ -107,6 +108,7 @@ export async function GET() {
       .selectDistinct({ ownerId: inboxMessages.ownerId })
       .from(inboxMessages)
       .where(and(eq(inboxMessages.isRead, false), isNotNull(inboxMessages.ownerId))),
+    dueRentalReviews(db, today),
   ]);
 
   // Öppna uppdrag: bara företag utan satt återkomst (followUpDate IS NULL)
@@ -312,5 +314,12 @@ export async function GET() {
       contactPhone: primaryContactByCompany.get(r.companyId)?.phone ?? null,
     }));
 
-  return NextResponse.json({ followUps, openWithoutFollowUp, agreements, toInvoice, chaseLandlords, renewals });
+  const rentalReviews = rentalReviewRows.map((r) => ({
+    source: "rentalReview" as const, propertyId: r.propertyId, address: r.address,
+    ownerId: r.ownerId, ownerName: r.ownerName, ownerPhone: r.ownerPhone,
+    earliestDate: r.checkOn, earliestTime: null,
+    reason: "Uthyrd – kontrollera om tillgängligheten har ändrats",
+    hasReply: r.ownerId ? unreadOwnerSet.has(r.ownerId) : false,
+  }));
+  return NextResponse.json({ followUps, openWithoutFollowUp, agreements, toInvoice, chaseLandlords, rentalReviews, renewals });
 }

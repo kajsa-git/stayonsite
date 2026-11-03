@@ -15,6 +15,7 @@ const {
   outboxMessages,
   owners,
   properties,
+  rentalReviews,
   propertyImages,
   propertyNotes,
   requests,
@@ -84,6 +85,7 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
   await tx.delete(agreementAcceptances).where(eq(agreementAcceptances.propertyId, propertyId));
   await tx.delete(matches).where(eq(matches.propertyId, propertyId));
   await tx.delete(ownerOutreach).where(eq(ownerOutreach.propertyId, propertyId));
+  await tx.delete(rentalReviews).where(eq(rentalReviews.propertyId, propertyId));
   // Do not leave an unsent link to an object that no longer exists.
   await tx.delete(outboxMessages).where(and(
     eq(outboxMessages.id, husPublicationSmsId(propertyId)),

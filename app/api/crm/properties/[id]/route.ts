@@ -6,7 +6,7 @@ import { db } from "@/lib/crm/db";
 import { deletePropertyDeep } from "@/lib/crm/cascade-delete";
 import { indexOwner, indexProperty, removeFromIndex } from "@/lib/crm/search-index";
 import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
-import { outboxMessages, owners, properties, propertyImages } from "@/lib/crm/schema";
+import { outboxMessages, owners, properties, propertyImages, rentalReviews } from "@/lib/crm/schema";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "@/lib/crm/hus-publication";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { imageObjectKeys } from "@/lib/crm/image-variants";
@@ -15,6 +15,7 @@ import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { shouldValidatePublication, validatePublicationSeo } from "@/lib/crm/publication-seo";
 import { hasPropertyPostalCode, PROPERTY_POSTAL_REQUIRED_ERROR } from "@/lib/crm/property-postal";
+import { syncRentalReview } from "@/lib/crm/rental-review";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await requireApprovedSession();
@@ -51,11 +52,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const problem = await validatePublicationSeo(candidate);
     if (problem) return NextResponse.json({ error: problem }, { status: 422 });
   }
-  const [row] = await db
-    .update(properties)
-    .set({ ...values, updatedAt: new Date().toISOString() })
-    .where(eq(properties.id, id))
-    .returning();
+  const row = await db.transaction(async (tx) => {
+    // Läs statusen igen i transaktionen så samtidiga sparningar inte startar om kontrollen.
+    const [before] = await tx.select().from(properties).where(eq(properties.id, id));
+    if (!before) throw new Error("Bostaden finns inte kvar");
+    const [saved] = await tx.update(properties)
+      .set({ ...values, updatedAt: new Date().toISOString() })
+      .where(eq(properties.id, id)).returning();
+    await syncRentalReview(tx, before, saved);
+    return saved;
+  });
   if (body.published === false) {
     // A not-yet-claimed message must not send a link to a withdrawn listing.
     await db.update(outboxMessages).set({ status: "pending_publication", body: "Bostadslänken skickas när publiceringen är klar." })
@@ -73,7 +79,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     ? await db.select().from(owners).where(eq(owners.id, row.ownerId))
     : [null];
   if (changed || body.status === "available" || body.published === true || body.prospektPublished === true) schedulePropertyReview(id);
-  return NextResponse.json(mergeOwnerIntoProperty({ property: row, owner: owner ?? null }));
+  const [review] = row.status === "rented" ? await db.select({ checkOn: rentalReviews.checkOn }).from(rentalReviews).where(eq(rentalReviews.propertyId, id)) : [];
+  return NextResponse.json({ ...mergeOwnerIntoProperty({ property: row, owner: owner ?? null }), rentalReviewCheckOn: review?.checkOn ?? null });
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

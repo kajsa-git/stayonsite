@@ -4,15 +4,31 @@ import { listInbox } from "../inbox-list";
 import { listOpenRequests } from "../open-requests";
 import { fetchQueueItems, VALID_QUEUES } from "../queue";
 import { BASE_URL_NOTE, clampLimit, crmRoute, jsonContent, truncate, type DB } from "./shape";
+import { db as defaultDb } from "../db";
+import { dueRentalReviews } from "../rental-review";
 
 export function registerWorkTools(server: McpServer, opts?: { db?: DB }) {
+  server.registerTool(
+    "crm_rental_reviews_due",
+    {
+      title: "Rented properties to check",
+      description: "Due internal availability checks for rented properties. They remain rented until confirmed; no messages are sent automatically. This is separate from company followups and landlord outreach.",
+      inputSchema: { limit: z.number().int().min(1).max(100).optional().describe("Max items, default 30") },
+    },
+    async ({ limit }) => {
+      const rows = await dueRentalReviews(opts?.db ?? defaultDb);
+      return jsonContent(rows.slice(0, clampLimit(limit, 30, 100)).map((r) => ({
+        ...r, status: "rented_check", crmUrl: crmRoute.property(r.propertyId),
+      })));
+    },
+  );
   server.registerTool(
     "crm_queue_items",
     {
       title: "Work queue items",
       description:
-        "Items in a work queue: followups (dagens återkomster), incoming (nya förfrågningar), " +
-        `matching (pågående matchning), agreement (avtal) or won (att fakturera). ${BASE_URL_NOTE}`,
+        "Company items in a work queue: followups (kundernas återkomster), incoming (nya förfrågningar), " +
+        `matching (pågående matchning), agreement (avtal) or won (att fakturera). For rented properties due for checking use crm_rental_reviews_due. ${BASE_URL_NOTE}`,
       inputSchema: {
         queue: z.enum(VALID_QUEUES),
         limit: z.number().int().min(1).max(100).optional().describe("Max items, default 30"),

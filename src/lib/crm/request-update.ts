@@ -14,6 +14,7 @@ import * as schema from "./schema";
 import { matches, properties, requests, type Request } from "./schema";
 import { indexProperty as defaultIndexProperty, indexRequest as defaultIndexRequest } from "./search-index";
 import { revokeLinksForRequest as defaultRevokeLinks } from "./share-links";
+import { syncRentalReview } from "./rental-review";
 
 type DB = LibSQLDatabase<typeof schema>;
 
@@ -134,10 +135,13 @@ export async function applyRequestUpdate(
     const propertyId = row.wonPropertyId;
     const newStatus = data.status === "invoiced" ? "rented" : "reserved";
     try {
-      await db
-        .update(properties)
-        .set({ status: newStatus, updatedAt: now })
-        .where(eq(properties.id, propertyId));
+      await db.transaction(async (tx) => {
+        const [before] = await tx.select().from(properties).where(eq(properties.id, propertyId));
+        if (!before) return;
+        const [saved] = await tx.update(properties).set({ status: newStatus, updatedAt: now })
+          .where(eq(properties.id, propertyId)).returning();
+        await syncRentalReview(tx, before, saved);
+      });
 
       if (data.status === "won") {
         // Stäng öppna förslag på samma objekt som tillhör ANDRA förfrågningar

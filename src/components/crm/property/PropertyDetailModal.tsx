@@ -77,8 +77,9 @@ export function PropertyDetailModal({ property, onClose }: { property: PropertyW
           <Item label="Sovrum" value={p.bedrooms?.toString() ?? "–"} />
           <Item label="Bäddar" value={p.beds?.toString() ?? "–"} />
           <Item label="Badrum" value={p.bathrooms?.toString() ?? "–"} />
-          <Item label="Tillgänglig från" value={p.moveInFrom ?? "–"} />
+          <Item label={p.status === "rented" ? "Angivet ledigdatum" : "Tillgänglig från"} value={p.moveInFrom ?? "–"} />
           <Item label="Tillgänglig till" value={p.availableTo ?? "–"} />
+          {p.status === "rented" && p.rentalReviewCheckOn && <Item label="Kontrollera tillgänglighet" value={p.rentalReviewCheckOn} />}
           <Item label="Vi hyr för" value={p.rentIn ? `${p.rentIn.toLocaleString("sv-SE")} kr/mån` : "–"} />
           <Item label="Vi hyr ut för" value={p.rentOut ? `${p.rentOut.toLocaleString("sv-SE")} kr/mån` : "–"} />
           <Item label="Uthyrare" value={p.ownerName ?? "–"} />

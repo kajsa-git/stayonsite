@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { outboxMessages, searchIndex } from "../schema";
+import { outboxMessages, properties, rentalReviews, searchIndex } from "../schema";
 import { createTestDb, type TestDB } from "../test-db";
 import { registerCrmTools } from "./index";
 import { addNote, draftMessage, setFollowUp } from "./tools-write";
@@ -27,6 +27,7 @@ const READ_TOOLS = [
   "crm_today",
   "crm_queue_counts",
   "crm_queue_items",
+  "crm_rental_reviews_due",
   "crm_inbox",
   "crm_open_requests",
 ];
@@ -51,6 +52,20 @@ describe("registerCrmTools", () => {
   it("registrerar skrivverktygen med includeWrites", () => {
     const { tools } = makeServer({ db, includeWrites: true });
     for (const name of [...READ_TOOLS, ...WRITE_TOOLS]) expect(tools[name], name).toBeDefined();
+  });
+
+  it("list the due rental checks separately, without including available homes", async () => {
+    await db.insert(properties).values([
+      { id: "rented", address: "Uthyrd", status: "rented" },
+      { id: "available", address: "Ledig", status: "available" },
+    ]);
+    await db.insert(rentalReviews).values([
+      { propertyId: "rented", rentedSince: "2000-01-01", checkOn: "2000-03-01", source: "two_months" },
+      { propertyId: "available", rentedSince: "2000-01-01", checkOn: "2000-03-01", source: "two_months" },
+    ]);
+    const { tools } = makeServer({ db });
+    const result = await tools.crm_rental_reviews_due.handler({}, {});
+    expect(JSON.parse(result.content[0].text)).toEqual([expect.objectContaining({ propertyId: "rented", status: "rented_check" })]);
   });
 
   it("crm_search clampar limit server-side oavsett input", async () => {

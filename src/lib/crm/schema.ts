@@ -281,6 +281,14 @@ export const properties = sqliteTable("crm_properties", {
   uniqueIndex("crm_properties_slug_idx").on(t.slug),
 ]);
 
+// En separat, intern tillgänglighetskontroll per uthyrd bostad.
+export const rentalReviews = sqliteTable("crm_rental_reviews", {
+  propertyId: text("property_id").primaryKey().references(() => properties.id, { onDelete: "cascade" }),
+  rentedSince: text("rented_since").notNull(),
+  checkOn: text("check_on").notNull(),
+  source: text("source").notNull(), // two_months | specified | postponed
+}, (t) => [index("crm_rental_reviews_check_on_idx").on(t.checkOn)]);
+
 // Kontaktrundor mot uthyrare — en episod per objekt, ofta utlöst av en förfrågan.
 // Öppen runda = status ej i (bekraftad, nej). Driver "Följ upp uthyrare"-kön via nextFollowUpDate.
 export const ownerOutreach = sqliteTable("crm_owner_outreach", {
