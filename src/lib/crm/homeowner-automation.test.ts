@@ -57,14 +57,21 @@ describe("homeowner lead automation", () => {
       ownerId: "owner-1",
       source: "intake",
     });
-    expect(row.body).toBe([
-      "Hej! Tack för att du hörde av dig om din bostad.",
-      "Fyll gärna i bostaden här så vi kan bedöma och lägga ut den på hemsidan för uthyrning:",
-      "www.stayonsite.se/registrera-bostad",
-      "Mvh Kajsa",
-      "StayOnSite",
-    ].join("\n"));
+    expect(row.body).toContain("matcha den med hyresgäster");
+    expect(row.body).toContain("Inget visas utan ditt godkännande");
+    expect(row.body).toContain("www.hyrutsmart.se/registrera");
+    expect(row.body).not.toContain("https://");
+    expect(row.body).not.toContain("stayonsite.se/registrera-bostad");
     expect(row.body).not.toContain("uthyrare/");
+
+    // Ett GSM-7-sms rymmer 160 enheter. Tecken i extension-tabellen räknas
+    // dubbelt; andra tecken skulle tvinga Unicode och ett lägre gränsvärde.
+    const basic = "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà";
+    const extended = "^{}\\[~]|€\f";
+    const characters = [...row.body];
+    expect(characters.every((character) => basic.includes(character) || extended.includes(character))).toBe(true);
+    const septets = characters.reduce((total, character) => total + (extended.includes(character) ? 2 : 1), 0);
+    expect(septets).toBeLessThanOrEqual(160);
   });
 
   it("skapar inte dubbla identiska SMS samma dag", async () => {
