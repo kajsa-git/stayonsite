@@ -11,7 +11,6 @@ vi.mock('@/lib/crm/contact-intake', () => ({ mapWebSubmissionToCrm: mocks.map })
 vi.mock('@/lib/crm/corporate-qualification-email', () => ({ corporateQualificationRecipient: () => null }));
 vi.mock('@/lib/crm/corporate-qualification-workflow', () => ({ sendCorporateQualificationEmail: vi.fn() }));
 vi.mock('@/lib/crm/homeowner-automation', () => ({
-  isHomeownerLeadForm: (formType: string) => formType === 'homeowner' || formType === 'lp-homeowner',
   queueHomeownerLeadIntakeSms: vi.fn(), shouldQueueHomeownerLeadIntakeSms: () => false,
 }));
 vi.mock('@/lib/meta-conversions', () => ({ sendMetaLeadEvent: vi.fn().mockResolvedValue(undefined) }));
@@ -40,31 +39,4 @@ describe('contact API consent handling', () => {
       expect(submission.utmParams).toEqual(adsConsent === 'granted' ? { gclid: 'test-click' } : undefined);
     },
   );
-
-  it.each([
-    ['sv', 'Till bostadsregistreringen hos HyrUtSmart'],
-    ['en', 'Go to property registration at HyrUtSmart'],
-    ['pl', 'Przejdź do rejestracji w HyrUtSmart'],
-  ] as const)('sends the %s homeowner receipt with the Hyr ut smart registration link', async (locale, button) => {
-    const request = new NextRequest('https://example.com/api/contact', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        formType: 'homeowner', locale, page: '/for-husagare', startedAt: Date.now(),
-        fields: { name: 'Anna Exempel', email: 'anna@example.com', phone: '0701234567', bedrooms: '3', postalCode: '12345' },
-      }),
-    });
-
-    const response = await POST(request);
-    expect(response.status).toBe(200);
-    expect(mocks.email).toHaveBeenCalledTimes(2);
-    const confirmation = mocks.email.mock.calls[1][0];
-    expect(confirmation.to).toBe('anna@example.com');
-    expect(confirmation.replyTo).toBe('kajsa@stayonsite.se');
-    expect(confirmation.text).toContain('https://hyrutsmart.se/registrera');
-    expect(confirmation.html).toContain('href="https://hyrutsmart.se/registrera"');
-    expect(confirmation.html).toContain(button);
-    expect(confirmation.html).not.toContain('stayonsite.se/registrera-bostad');
-    expect(confirmation.html).not.toContain('/uthyrare/');
-  });
 });
