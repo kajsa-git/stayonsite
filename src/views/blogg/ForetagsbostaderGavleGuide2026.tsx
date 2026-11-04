@@ -90,6 +90,10 @@ const ForetagsbostaderGavleGuide2026 = () => {
 
       <h2>Vad projekten kan betyda för personalboende</h2>
       <p>
+        För uppdrag i Norrsundet, norr om Gävle, kan det vara praktiskt att bo närmare arbetsplatsen.
+        Läs mer om <Link href="/blogg/boende-norrsundet-foretag">boende i Norrsundet för företag och arbetslag</Link>.
+      </p>
+      <p>
         Större projekt kan innebära behov av boende för entreprenörer, underentreprenörer och konsulter. Hur stort
         behovet blir beror på bemanningen och vilka som pendlar. De planerade projekten har olika förutsättningar,
         så kontrollera aktuell tidsplan och efterfrågan innan ni reserverar bostäder.

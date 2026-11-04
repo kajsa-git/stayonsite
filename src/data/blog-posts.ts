@@ -72,6 +72,68 @@ const RENTAL_REFORM_SOURCES: BlogSource[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'boende-norrsundet-foretag',
+    title: {
+      sv: 'Boende i Norrsundet för företag och arbetslag',
+      en: 'Accommodation in Norrsundet for companies and project teams',
+      pl: 'Zakwaterowanie w Norrsundet dla firm i ekip projektowych',
+    },
+    description: {
+      sv: 'Söker ni boende i Norrsundet utanför Gävle? StayOnSite hjälper företag med personalboende från tre månader. Kontakta oss för aktuell tillgänglighet.',
+      en: 'Looking for company accommodation in Norrsundet near Gävle? Contact StayOnSite about availability for stays of at least three months.',
+      pl: 'Szukasz zakwaterowania dla firmy w Norrsundet koło Gävle? Skontaktuj się ze StayOnSite w sprawie dostępności pobytów od trzech miesięcy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-11-04',
+    category: 'Lokal guide',
+    tags: ['Norrsundet', 'Gävle', 'företagsboende', 'personalboende', 'projektboende'],
+    readingTime: 4,
+    audience: 'foretag',
+    keyTakeaways: [
+      'StayOnSite har boende registrerat i Norrsundet. Möjlig inflyttning är registrerad från januari 2027; aktuell tillgänglighet bekräftas vid förfrågan.',
+      'Våra företagsboenden hyrs ut för perioder från tre månader. Antal platser, standard och pris stäms av för det aktuella boendet.',
+      'Utgå från den faktiska arbetsplatsen och jämför Norrsundet med närliggande orter utifrån skift, transport och parkering.',
+    ],
+    faq: [
+      {
+        q: 'Finns det företagsboende i Norrsundet?',
+        a: 'Ja. StayOnSite har boende registrerat i Norrsundet med möjlig inflyttning från januari 2027. Kontakta oss för att kontrollera tillgänglighet och villkor för era datum.',
+      },
+      {
+        q: 'Hur länge behöver vi hyra?',
+        a: 'StayOnSite erbjuder företagsboende från tre månader och uppåt. Berätta hur lång period ni behöver och om ni vill kunna förlänga.',
+      },
+      {
+        q: 'Vad kostar personalboende i Norrsundet?',
+        a: 'Priset beror bland annat på boendet, antal personer, hyresperiod och vad som ingår. Skicka era behov till oss så kan vi återkomma med ett förslag utifrån tillgängligheten.',
+      },
+      {
+        q: 'Kan ni hjälpa oss att hitta boende nära Norrsundet om det inte finns plats på orten?',
+        a: 'Ja, vi kan undersöka alternativ i området. Ange arbetsplatsens adress och era skifttider så att vi kan jämföra boendets läge och resväg.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Norrsundet',
+        publisher: 'Gavlegårdarna',
+        url: 'https://www.gavlegardarna.se/hyr-bostad/vara-omraden/norrsundet/',
+        checkedDate: '2026-11-04',
+      },
+      {
+        title: 'Om Norrsundets hamn',
+        publisher: 'Norrsundets Hamn',
+        url: 'https://norrsundetshamn.com/',
+        checkedDate: '2026-11-04',
+      },
+      {
+        title: 'Ny kärnkraft – samråd',
+        publisher: 'Länsstyrelsen Gävleborg',
+        url: 'https://www.lansstyrelsen.se/gavleborg/samhalle/ny-karnkraft.html',
+        checkedDate: '2026-11-04',
+      },
+    ],
+  },
+  {
     slug: 'checklista-personalboende-boendebrief',
     title: {
       sv: 'Checklista för personalboende: fri boendebrief och PDF-mall',

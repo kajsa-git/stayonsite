@@ -48,8 +48,10 @@ import PersonalboendeDalarnaGuide from '@/views/blogg/PersonalboendeDalarnaGuide
 import ChecklistaPersonalboende from '@/views/blogg/ChecklistaPersonalboende'
 import ForberedHusBodenForetagetsArbetslag2026 from '@/views/blogg/ForberedHusBodenForetagetsArbetslag2026'
 import ForetagsbostaderGavleGuide2026 from '@/views/blogg/ForetagsbostaderGavleGuide2026'
+import BoendeNorrsundetForetag from '@/views/blogg/BoendeNorrsundetForetag'
 
 const componentMap: Record<string, React.ComponentType> = {
+  'boende-norrsundet-foretag': BoendeNorrsundetForetag,
   'checklista-personalboende-boendebrief': ChecklistaPersonalboende,
   'personalboende-okg-oskarshamn-guide': PersonalboendeOkgOskarshamnGuide,
   'personalboende-dalarna-falun-borlange-ludvika': PersonalboendeDalarnaGuide,

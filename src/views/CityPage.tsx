@@ -87,6 +87,11 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
   ],
   gavle: [
     {
+      href: '/blogg/boende-norrsundet-foretag',
+      title: 'Boende i Norrsundet för företag',
+      description: 'Läs om personalboende i Norrsundet och vad ni bör stämma av inför er förfrågan.',
+    },
+    {
       href: '/datacenter-boende',
       title: 'Planera boende för datacenterprojekt',
       description: 'Underlag för mobilisering, etapper och bemanning vid längre installationsuppdrag.',
