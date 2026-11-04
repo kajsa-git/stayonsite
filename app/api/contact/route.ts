@@ -7,7 +7,8 @@ import {
 } from "@/lib/crm/corporate-qualification-email";
 import { sendCorporateQualificationEmail } from "@/lib/crm/corporate-qualification-workflow";
 import { mapWebSubmissionToCrm, type WebSubmission } from "@/lib/crm/contact-intake";
-import { queueHomeownerLeadIntakeSms, shouldQueueHomeownerLeadIntakeSms } from "@/lib/crm/homeowner-automation";
+import { isHomeownerLeadForm, queueHomeownerLeadIntakeSms, shouldQueueHomeownerLeadIntakeSms } from "@/lib/crm/homeowner-automation";
+import { buildHomeownerLeadConfirmationEmail } from "@/lib/crm/homeowner-lead-email";
 import { sendMetaLeadEvent } from "@/lib/meta-conversions";
 
 // Node-runtime route handler. Importing @/lib/crm/* directly lets Next.js bundle
@@ -27,7 +28,6 @@ function isValidPhone(v: string) { return /^[\d\s()+-]{6,50}$/.test(v); }
 function isValidContact(v: string) { return isValidEmail(v) || isValidPhone(v); }
 
 const LOCALES = ["sv", "en", "pl"] as const;
-const PROPERTY_INTAKE_URL = "https://www.stayonsite.se/registrera-bostad";
 
 const base = {
   locale: z.enum(LOCALES),
@@ -209,7 +209,7 @@ function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true, crmEr
   return { subject, text, html, replyTo, customerEmail };
 }
 
-function buildConfirmationEmail(s: Submission, landlordToken?: string | null): { subject: string; text: string; html: string } {
+function buildConfirmationEmail(s: Submission): { subject: string; text: string; html: string } {
   const pl = s.locale === "pl";
 
   // Primary language block (sv default, pl if Polish)
@@ -242,59 +242,17 @@ function buildConfirmationEmail(s: Submission, landlordToken?: string | null): {
     footer: "You received this email because you filled out a form on stayonsite.se",
   };
 
-  // Husägare får inget tidslöfte ("inom 24 timmar" = handläggningsskuld) och
-  // inget "konkret förslag" (kundspråk) — nästa kontakt är händelsestyrd.
-  // Kundformulären behåller 24h-löftet: det är säljlöftet mot företag.
-  const isHomeowner = s.formType === "homeowner" || s.formType === "lp-homeowner";
-  if (isHomeowner) {
-    primary.body = pl
-      ? "Dziękujemy za rejestrację. Uzupełnij dane nieruchomości przez link poniżej — nic nie zostanie opublikowane bez Twojej zgody."
-      : "Tack för din registrering. Komplettera gärna bostadsuppgifterna via länken nedan — <strong>inget visas online utan ditt godkännande</strong>.";
-    primary.badge = pl ? "Nic nie pojawi się online bez Twojej zgody" : "Inget visas online utan ditt godkännande";
-    primary.urgent = pl ? "Masz pytania? Zadzwoń:" : "Har du frågor? Ring oss direkt:";
-    en.body =
-      "Thank you for registering your property. Please complete the property details through the link below — <strong>nothing is shown online without your approval</strong>.";
-    en.badge = "Nothing goes online without your approval";
-    en.urgent = "Questions? Call us directly:";
-  }
-
   const showSecondary = s.locale !== "en";
-
-  const subject = isHomeowner
-    ? pl
-      ? "Dziękujemy za rejestrację – StayOnSite"
-      : s.locale === "en"
-      ? "Thank you for registering your property – StayOnSite"
-      : "Tack för din registrering – StayOnSite"
-    : pl
+  const subject = pl
     ? "Otrzymaliśmy Twoje zapytanie – StayOnSite"
     : s.locale === "en"
     ? "We received your inquiry – StayOnSite"
     : "Vi har fått din förfrågan / We received your inquiry – StayOnSite";
 
-  // Husägare: den egna sidan (publiceringsgodkännande + uppdragssignering) —
-  // länken ska överleva att fliken stängs, därför alltid med i kvittomejlet.
-  const landlordUrl = landlordToken ? `https://www.stayonsite.se/uthyrare/${landlordToken}` : null;
-  const propertyIntakeUrl = isHomeowner && !landlordUrl ? PROPERTY_INTAKE_URL : null;
-
   const text = [
     `${primary.greeting} / ${en.greeting}`, "",
     primary.body.replace(/<[^>]+>/g, ""),
     en.body.replace(/<[^>]+>/g, ""), "",
-    ...(propertyIntakeUrl
-      ? [
-          "Komplettera bostaden här:",
-          propertyIntakeUrl,
-          "",
-        ]
-      : []),
-    ...(landlordUrl
-      ? [
-          "Din sida hos oss — läs och godkänn publiceringsmedgivandet och välj om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt:",
-          landlordUrl,
-          "",
-        ]
-      : []),
     primary.urgent, en.urgent, "076-249 84 86", "",
     `${primary.signoff},\nKajsa Sihlén\n${primary.title}`, "",
     "076-249 84 86", "kajsa@stayonsite.se", "www.stayonsite.se",
@@ -350,33 +308,6 @@ function buildConfirmationEmail(s: Submission, landlordToken?: string | null): {
               </td>
             </tr>
           </table>
-
-          ${landlordUrl ? `<!-- Husägarens egen sida: publicering + uppdrag -->
-          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 28px;width:100%;">
-            <tr>
-              <td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px 20px;">
-                <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f1c2e;">Din sida hos oss</p>
-                <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#374151;">
-                  1. Läs och godkänn publiceringsmedgivandet — kostnadsfritt och utan skyldighet att hyra ut.<br>
-                  2. Välj om annonsen får visas på stayonsite.se. Exakt adress visas aldrig publikt.
-                </p>
-                <a href="${landlordUrl}" style="display:inline-block;background:#ff6300;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:50px;text-decoration:none;">Öppna din sida</a>
-              </td>
-            </tr>
-          </table>` : ""}
-
-          ${propertyIntakeUrl ? `<!-- Kort husägarlead: komplettera bostadsintaget -->
-          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 28px;width:100%;">
-            <tr>
-              <td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px 20px;">
-                <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f1c2e;">Komplettera bostaden</p>
-                <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#374151;">
-                  Fyll i adress, bostadsuppgifter och bilder så kan vi bedöma boendet för uthyrning. Exakt adress visas aldrig publikt.
-                </p>
-                <a href="${propertyIntakeUrl}" style="display:inline-block;background:#ff6300;color:#ffffff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:50px;text-decoration:none;">Fyll i bostaden</a>
-              </td>
-            </tr>
-          </table>` : ""}
 
           <!-- Urgent CTA -->
           <p style="margin:0 0 4px;font-size:14px;color:#6b7280;">${esc(primary.urgent)}</p>
@@ -494,10 +425,14 @@ export async function POST(req: NextRequest) {
           console.error("Corporate qualification skipped because CRM intake was not mapped", { recipient: qualificationRecipient });
         }
       } else {
-        const confirmation = buildConfirmationEmail(submission, null);
+        const isHomeowner = isHomeownerLeadForm(submission.formType);
+        const confirmation = isHomeowner
+          ? buildHomeownerLeadConfirmationEmail(submission.locale)
+          : buildConfirmationEmail(submission);
         await resend.emails.send({
           from: process.env.RESEND_FROM || "StayOnSite <onboarding@resend.dev>",
           to: email.customerEmail,
+          ...(isHomeowner ? { replyTo: "kajsa@stayonsite.se" } : {}),
           subject: confirmation.subject,
           text: confirmation.text,
           html: confirmation.html,

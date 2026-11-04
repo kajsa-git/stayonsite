@@ -57,13 +57,11 @@ describe("homeowner lead automation", () => {
       ownerId: "owner-1",
       source: "intake",
     });
-    expect(row.body).toBe([
-      "Hej! Tack för att du hörde av dig om din bostad.",
-      "Fyll gärna i bostaden här så vi kan bedöma och lägga ut den på hemsidan för uthyrning:",
-      "www.stayonsite.se/registrera-bostad",
-      "Mvh Kajsa",
-      "StayOnSite",
-    ].join("\n"));
+    expect(row.body).toContain("Hyr ut smart");
+    expect(row.body).toContain("företagskunder");
+    expect(row.body).toContain("www.hyrutsmart.se/registrera");
+    expect(row.body).not.toContain("https://");
+    expect(row.body).not.toContain("stayonsite.se/registrera-bostad");
     expect(row.body).not.toContain("uthyrare/");
   });
 
