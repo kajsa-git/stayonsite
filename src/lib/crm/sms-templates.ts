@@ -59,7 +59,7 @@ export function husIntakeConfirmSms(ownerName: string | null | undefined, approv
 export function homeownerLeadIntakeSms(): string {
   return [
     "Hej! Tack för ditt intresse. Registrera din bostad hos Hyr ut smart så kan vi se om den passar våra företagskunder:",
-    HUS_REGISTRATION_URL.replace(/^https:\/\//, ""),
+    HUS_REGISTRATION_URL.replace(/^https:\/\//, "www."),
     "/Kajsa, StayOnSite",
   ].join("\n");
 }

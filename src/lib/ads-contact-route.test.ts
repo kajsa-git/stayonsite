@@ -42,9 +42,9 @@ describe('contact API consent handling', () => {
   );
 
   it.each([
-    ['sv', 'Registrera din bostad'],
-    ['en', 'Register your property'],
-    ['pl', 'Zarejestruj nieruchomość'],
+    ['sv', 'Till bostadsregistreringen hos HyrUtSmart'],
+    ['en', 'Go to property registration at HyrUtSmart'],
+    ['pl', 'Przejdź do rejestracji w HyrUtSmart'],
   ] as const)('sends the %s homeowner receipt with the Hyr ut smart registration link', async (locale, button) => {
     const request = new NextRequest('https://example.com/api/contact', {
       method: 'POST',
@@ -61,8 +61,8 @@ describe('contact API consent handling', () => {
     const confirmation = mocks.email.mock.calls[1][0];
     expect(confirmation.to).toBe('anna@example.com');
     expect(confirmation.replyTo).toBe('kajsa@stayonsite.se');
-    expect(confirmation.text).toContain('https://www.hyrutsmart.se/registrera');
-    expect(confirmation.html).toContain('href="https://www.hyrutsmart.se/registrera"');
+    expect(confirmation.text).toContain('https://hyrutsmart.se/registrera');
+    expect(confirmation.html).toContain('href="https://hyrutsmart.se/registrera"');
     expect(confirmation.html).toContain(button);
     expect(confirmation.html).not.toContain('stayonsite.se/registrera-bostad');
     expect(confirmation.html).not.toContain('/uthyrare/');
