@@ -58,9 +58,19 @@ export function husIntakeConfirmSms(ownerName: string | null | undefined, approv
 // nästa steg är komplett bostadsregistrering, inte signering.
 export function homeownerLeadIntakeSms(): string {
   return [
-    "Hej! Tack för ditt intresse. Registrera din bostad hos Hyr ut smart så kan vi se om den passar våra företagskunder:",
+    "Hej! Tack för ditt intresse att hyra ut din bostad. För att vi ska kunna matcha ditt boende med våra hyresgäster behöver vi uppgifter om ditt boende. Det görs via vår bostadsregistrering, HyrUtSmart.",
+    "",
+    "Fyll i bostaden",
+    "Till bostadsregistreringen hos HyrUtSmart:",
     HUS_REGISTRATION_URL.replace(/^https:\/\//, "www."),
-    "/Kajsa, StayOnSite",
+    "",
+    "När du har fyllt i uppgifterna återkommer vi om nästa steg. Du kan känna dig trygg med att din exakta adress aldrig visas offentligt, och inget visas online utan ditt godkännande.",
+    "",
+    "Har du frågor? Skriv gärna här så hjälper vi dig.",
+    "",
+    "Med vänliga hälsningar,",
+    "Kajsa Sihlén",
+    "HyrUtSmart – en del av StayOnSite",
   ].join("\n");
 }
 
