@@ -57,7 +57,7 @@ describe("homeowner lead automation", () => {
       ownerId: "owner-1",
       source: "intake",
     });
-    expect(row.body).toContain("hitta hyresgäster");
+    expect(row.body).toContain("matchning med hyresgäster");
     expect(row.body).toContain("Inget visas utan ditt godkännande");
     expect(row.body).not.toMatch(/gratis|kostnadsfri/i);
     expect(row.body).toContain("HyrUtSmart - en del av StayOnSite");
