@@ -58,7 +58,7 @@ export function husIntakeConfirmSms(ownerName: string | null | undefined, approv
 // nästa steg är komplett bostadsregistrering, inte signering.
 export function homeownerLeadIntakeSms(): string {
   return [
-    `Hej! Registrera boendet för matchning med hyresgäster. Gratis, inget visas utan ditt ja: ${HUS_REGISTRATION_URL.replace(/^https:\/\//, "www.")}`,
+    `Hej! Registrera boendet så vi kan hitta hyresgäster. Inget visas utan ditt godkännande: ${HUS_REGISTRATION_URL.replace(/^https:\/\//, "www.")}`,
     "/Kajsa, HyrUtSmart - en del av StayOnSite",
   ].join("\n");
 }
