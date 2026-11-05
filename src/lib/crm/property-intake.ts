@@ -9,6 +9,7 @@ import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
 import { outboxMessages, ownerOutreach, owners, properties, propertyImages, type Owner, type Property, type PropertyInsert } from "./schema";
 import { homeownerLeadIntakeSms } from "./sms-templates";
+import { isProvisionalWebOwner } from "./provisional-owner";
 export { PROPERTY_INTAKE_MARKER };
 
 const phoneRegex = /^[+\d\s()-]{6,50}$/;
@@ -259,8 +260,15 @@ async function findOwnerByContact(email: string | null, phone: string | null, hu
   const normalize = (value: string) => value.normalize("NFKC").trim().toLocaleLowerCase("sv").replace(/\s+/g, " ");
   // An exact email match is strong evidence; a phone shared by two people or
   // companies must not silently attach the new listing to the wrong owner.
-  return candidates.find((o) => email && o.email && normalize(o.email) === normalize(email)) ??
-    candidates.find((o) => phone && o.phone === phone && normalize(o.name) === normalize(husName)) ?? null;
+  const exact = candidates.find((o) => email && o.email && normalize(o.email) === normalize(email)) ??
+    candidates.find((o) => phone && o.phone === phone && normalize(o.name) === normalize(husName));
+  if (exact) return exact;
+  const phoneMatches = candidates.filter((o) => phone && o.phone === phone);
+  if (phoneMatches.length === 1 && isProvisionalWebOwner(phoneMatches[0])) {
+    const [existingProperty] = await db.select({ id: properties.id }).from(properties).where(eq(properties.ownerId, phoneMatches[0].id)).limit(1);
+    if (!existingProperty) return phoneMatches[0];
+  }
+  return null;
 }
 
 function appendNote(existing: string | null, note: string) {
@@ -276,6 +284,7 @@ async function markOwnerForFollowUp(ownerId: string, input: PropertyIntakeInput)
   await db
     .update(owners)
     .set({
+      ...(input.husPublication && isProvisionalWebOwner(owner) ? { name: input.ownerName } : {}),
       ownerType: input.ownerType,
       ownerArrangement: input.ownerArrangement,
       orgNr: input.ownerOrgNr ?? owner.orgNr,

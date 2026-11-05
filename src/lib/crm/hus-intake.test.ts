@@ -95,6 +95,23 @@ describe("HUS registration", () => {
     expect(original).toMatchObject({ name: "Anna Exempel", phone: "+46701234567", email: null });
   });
 
+  it("upgrades one unambiguous phone-only lead when the full HUS registration arrives", async () => {
+    await state.db.insert(owners).values({ id: "lead-owner", name: "Husägare · +46709998877", phone: "+46709998877", notes: "Inkommen från webb (lp-homeowner)", followUpReason: "Ny husägare från webb", followUpDate: "2026-11-04" });
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, ownerName: "Lisa Exempel", ownerPhone: "0709998877", ownerEmail: "lisa@example.se" }));
+    expect(property.ownerId).toBe("lead-owner");
+    const [owner] = await state.db.select().from(owners).where(eq(owners.id, "lead-owner"));
+    expect(owner).toMatchObject({ name: "Lisa Exempel", email: "lisa@example.se", followUpDate: null });
+    expect((await state.db.select().from(ownerOutreach).where(eq(ownerOutreach.ownerId, "lead-owner")))).toHaveLength(1);
+  });
+
+  it("does not attach an ambiguous phone-only lead when a named owner shares the number", async () => {
+    await state.db.insert(owners).values({ id: "lead-owner", name: "Husägare · +46701234567", phone: "+46701234567", notes: "Inkommen från webb (lp-homeowner)" });
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, ownerName: "Lisa Exempel", ownerEmail: "lisa@example.se" }));
+    expect(property.ownerId).not.toBe("lead-owner");
+    expect(property.ownerId).not.toBe("o1");
+    expect((await state.db.select().from(owners).where(eq(owners.id, "lead-owner")))[0].name).toBe("Husägare · +46701234567");
+  });
+
   it("rejects a stale consent version and an invalid number before saving", () => {
     expect(propertyIntakeSchema.safeParse({ ...raw, husPublication: { version: "old", approved: true } }).success).toBe(false);
     expect(propertyIntakeSchema.safeParse({ ...raw, ownerPhone: "123456" }).success).toBe(false);

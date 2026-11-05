@@ -17,6 +17,7 @@ import {
   type Request,
 } from "./schema";
 import { indexCompany, indexContact, indexOwner, indexRequest } from "./search-index";
+import { isProvisionalWebOwner } from "./provisional-owner";
 
 export type WebSubmission = {
   formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner" | "lp-corporate" | "project-brief";
@@ -286,19 +287,27 @@ async function createCompanyRequest(
   return { company, contact, request };
 }
 
-async function findOwner(email: string | null, phone: string | null, fallbackPhone?: string | null): Promise<Owner | null> {
+async function findOwner(email: string | null, phone: string | null, fallbackPhone?: string | null, submittedName?: string | null): Promise<Owner | null> {
   const phoneCandidates = [...new Set([phone, fallbackPhone].filter(Boolean))] as string[];
   if (!email && phoneCandidates.length === 0) return null;
   const conditions = [
     email ? eq(owners.email, email) : null,
     ...phoneCandidates.map((candidate) => eq(owners.phone, candidate)),
   ].filter(Boolean);
-  const [owner] = await db
+  const candidates = await db
     .select()
     .from(owners)
-    .where(or(...conditions))
-    .limit(1);
-  return owner ?? null;
+    .where(or(...conditions));
+  const normalize = (value: string) => value.normalize("NFKC").trim().toLocaleLowerCase("sv").replace(/\s+/g, " ");
+  const emailMatch = candidates.find((owner) => email && owner.email && normalize(owner.email) === normalize(email));
+  if (emailMatch) return emailMatch;
+  const nameMatch = candidates.find((owner) => submittedName && owner.phone && phoneCandidates.includes(owner.phone) && normalize(owner.name) === normalize(submittedName));
+  if (nameMatch) return nameMatch;
+  if (!submittedName && !email) {
+    const pending = candidates.filter((owner) => owner.phone && phoneCandidates.includes(owner.phone) && isProvisionalWebOwner(owner));
+    if (pending.length === 1) return pending[0];
+  }
+  return null;
 }
 
 async function markOwnerForWebFollowUp(
@@ -340,7 +349,7 @@ async function createHomeownerLead(
     clean(f.city) ? `Ort: ${clean(f.city)}` : null,
   ];
 
-  let owner = await findOwner(email, phone, rawPhone);
+  let owner = await findOwner(email, phone, rawPhone, clean(f.name));
   if (!owner) {
     const [row] = await db
       .insert(owners)
