@@ -41,6 +41,7 @@ const OUTBOX_STATUS: Record<string, { label: string; cls: string }> = {
   delivered: { label: "Levererat", cls: "bg-green-100 text-green-800" },
   failed: { label: "Misslyckades", cls: "bg-red-100 text-red-800" },
   draft: { label: "Utkast", cls: "bg-violet-100 text-violet-800" },
+  cancelled: { label: "Avbrutet", cls: "bg-slate-100 text-slate-700" },
 };
 
 function timeLabel(iso: string): string {

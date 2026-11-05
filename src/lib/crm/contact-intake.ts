@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, or } from "drizzle-orm";
+import { desc, eq, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { todayStockholm } from "./date";
 import { cleanScrapedSiteName, normalizeCompanyName, privatePersonLabel } from "./company-name";
@@ -9,8 +9,6 @@ import {
   companies,
   contacts,
   owners,
-  ownerOutreach,
-  properties,
   requests,
   type Company,
   type Contact,
@@ -18,7 +16,7 @@ import {
   type Property,
   type Request,
 } from "./schema";
-import { indexCompany, indexContact, indexOwner, indexProperty, indexRequest } from "./search-index";
+import { indexCompany, indexContact, indexOwner, indexRequest } from "./search-index";
 
 export type WebSubmission = {
   formType: "hero-intent" | "inquiry" | "homeowner" | "lp-homeowner" | "lp-corporate" | "project-brief";
@@ -315,44 +313,17 @@ async function markOwnerForWebFollowUp(
       phone: contact.phone ?? owner.phone,
       followUpDate: today(),
       followUpReason: "Ny husägare från webb",
-      notes: appendNote(owner.notes, sourceNotes(submission)),
+      notes: appendNote(owner.notes, sourceNotes(submission, [
+        clean(submission.fields.bedrooms) ? `Sovrum: ${clean(submission.fields.bedrooms)}` : null,
+        clean(submission.fields.postalCode) ? `Postnummer: ${clean(submission.fields.postalCode)}` : null,
+        clean(submission.fields.city) ? `Ort: ${clean(submission.fields.city)}` : null,
+      ])),
       updatedAt: new Date().toISOString(),
     })
     .where(eq(owners.id, owner.id))
     .returning();
 
   return updated ?? owner;
-}
-
-async function ensureOpenOwnerOutreach(propertyId: string, ownerId: string, reason: string) {
-  const [existing] = await db
-    .select()
-    .from(ownerOutreach)
-    .where(and(eq(ownerOutreach.propertyId, propertyId), isNull(ownerOutreach.concludedAt)))
-    .orderBy(desc(ownerOutreach.createdAt))
-    .limit(1);
-
-  if (existing) {
-    await db
-      .update(ownerOutreach)
-      .set({
-        ownerId,
-        nextFollowUpDate: today(),
-        nextFollowUpReason: reason,
-      })
-      .where(eq(ownerOutreach.id, existing.id));
-    return;
-  }
-
-  await db.insert(ownerOutreach).values({
-    id: nanoid(),
-    propertyId,
-    ownerId,
-    status: "ej_kontaktad",
-    startedAt: new Date().toISOString(),
-    nextFollowUpDate: today(),
-    nextFollowUpReason: reason,
-  });
 }
 
 async function createHomeownerLead(
@@ -363,9 +334,11 @@ async function createHomeownerLead(
   const rawPhone = clean(f.phone);
   const phone = normalizePhoneForStorage(rawPhone);
   const name = clean(f.name) ?? (phone ? `Husägare · ${phone}` : "Husägare från webb");
-  const postalCode = clean(f.postalCode);
-  const city = clean(f.city);
-  const bedrooms = int(f.bedrooms);
+  const leadDetails = [
+    clean(f.bedrooms) ? `Sovrum: ${clean(f.bedrooms)}` : null,
+    clean(f.postalCode) ? `Postnummer: ${clean(f.postalCode)}` : null,
+    clean(f.city) ? `Ort: ${clean(f.city)}` : null,
+  ];
 
   let owner = await findOwner(email, phone, rawPhone);
   if (!owner) {
@@ -380,7 +353,7 @@ async function createHomeownerLead(
         email,
         followUpDate: today(),
         followUpReason: "Ny husägare från webb",
-        notes: sourceNotes(submission),
+        notes: sourceNotes(submission, leadDetails),
       })
       .returning();
     owner = row;
@@ -388,45 +361,10 @@ async function createHomeownerLead(
     owner = await markOwnerForWebFollowUp(owner, submission, { email, phone });
   }
 
-  let existingProperty: Property | undefined;
-  const locationCondition = postalCode ? eq(properties.postalCode, postalCode) : city ? eq(properties.city, city) : null;
-  if (locationCondition) {
-    [existingProperty] = await db
-      .select()
-      .from(properties)
-      .where(and(eq(properties.ownerId, owner.id), locationCondition))
-      .limit(1);
-  }
-
-  if (existingProperty) {
-    await ensureOpenOwnerOutreach(existingProperty.id, owner.id, "Ny husägare från webb");
-    await Promise.all([indexOwner(owner.id), indexProperty(existingProperty.id)]);
-    return { owner, property: existingProperty };
-  }
-
-  const [property] = await db
-    .insert(properties)
-    .values({
-      id: nanoid(),
-      ownerId: owner.id,
-      address: null,
-      postalCode,
-      city,
-      bedrooms,
-      notes: sourceNotes(submission, [
-        bedrooms ? `Sovrum: ${bedrooms}` : null,
-        postalCode ? `Postnummer: ${postalCode}` : null,
-      ]),
-      status: "off_market",
-      published: false,
-    })
-    .returning();
-
-  // Öppna en kontaktrunda så husägaren dyker upp i "Följ upp uthyrare" idag.
-  await ensureOpenOwnerOutreach(property.id, owner.id, "Ny husägare från webb");
-
-  await Promise.all([indexOwner(owner.id), indexProperty(property.id)]);
-  return { owner, property };
+  // The short enquiry is a landlord follow-up, not an addressless property.
+  // HUS creates the real property once the owner supplies its details.
+  await indexOwner(owner.id);
+  return { owner, property: null };
 }
 
 export async function mapWebSubmissionToCrm(submission: WebSubmission) {

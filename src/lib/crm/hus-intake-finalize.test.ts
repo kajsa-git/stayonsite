@@ -29,10 +29,10 @@ function finish(token: string, failed: number) {
 }
 
 describe("finish HUS intake", () => {
-  it("enables review after the complete upload set, including no images", async () => {
+  it("schedules the complete upload set for review but keeps publication manual", async () => {
     expect((await finish("token", 0)).status).toBe(200);
     const [p] = await state.db.select().from(properties).where(eq(properties.id, "p1"));
-    expect(p).toMatchObject({ autoPublishEnabled: true, published: false, contentReviewStatus: "pending" });
+    expect(p).toMatchObject({ autoPublishEnabled: false, published: false, contentReviewStatus: "pending" });
     expect(state.schedule).toHaveBeenCalledWith("p1");
   });
   it("pauses automatic publication after a failed upload", async () => {

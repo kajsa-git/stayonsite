@@ -451,7 +451,7 @@ export const outboxMessages = sqliteTable("crm_outbox_messages", {
   body: text("body").notNull(),
   ownerId: text("owner_id"),
   contactId: text("contact_id"),
-  status: text("status").notNull().default("queued"), // pending_publication | draft | queued | sending | sent | failed
+  status: text("status").notNull().default("queued"), // pending_publication | draft | queued | sending | sent | failed | cancelled
   error: text("error"),
   replyToInboxIds: text("reply_to_inbox_ids", { mode: "json" }).$type<string[]>(),
   deliveredAt: text("delivered_at"), // enbart bekräftad leverans, annars null

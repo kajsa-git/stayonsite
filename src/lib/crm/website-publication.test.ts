@@ -12,6 +12,7 @@ vi.mock("./r2", () => ({ R2_BUCKET: "test", r2: {} }));
 import { GET } from "../../../app/api/listings/route";
 import { loadPublicProperty } from "./public-property";
 import { getPublicListingLinks } from "./public-listing-links";
+import { HUS_TEST_MARKER, isHusTestProperty } from "./test-property";
 
 let cleanup: () => void;
 
@@ -73,5 +74,15 @@ describe("public website publication", () => {
     for (const id of ["reserved", "unpublished", "unreviewed", "stale"]) {
       expect(await loadPublicProperty(id, { surface: "web" })).toBeNull();
     }
+  });
+
+  it("keeps labelled test properties out of public lists but available through their direct link", async () => {
+    await state.db.update(properties).set({ notes: `End-to-end test ${HUS_TEST_MARKER}` }).where(eq(properties.id, "available"));
+    const rows = await (await GET()).json() as Record<string, unknown>[];
+    expect(rows.map((row) => row.id)).not.toContain("available");
+    expect((await getPublicListingLinks()).map((row) => row.slug)).not.toContain("available");
+    expect((await loadPublicProperty("available", { surface: "web" }))?.row.id).toBe("available");
+    expect(isHusTestProperty(`End-to-end test ${HUS_TEST_MARKER}`)).toBe(true);
+    expect(isHusTestProperty(null)).toBe(false);
   });
 });

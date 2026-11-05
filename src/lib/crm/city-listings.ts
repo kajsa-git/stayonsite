@@ -14,6 +14,7 @@ import { db } from "./db";
 import { r2, R2_BUCKET } from "./r2";
 import { properties, propertyImages } from "./schema";
 import { publicDisplayName } from "./slug";
+import { websiteStatusWhere } from "./website-status-query";
 
 export interface CityListing {
   slug: string;
@@ -49,7 +50,7 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
         beds: properties.beds,
       })
       .from(properties)
-      .where(and(eq(properties.published, true), eq(properties.status, "available"), isNotNull(properties.slug)));
+      .where(and(eq(properties.published, true), eq(properties.status, "available"), isNotNull(properties.slug), websiteStatusWhere()));
 
     const want = normalizeCity(cityName);
     const cityRows = rows.filter((r) => r.city && normalizeCity(r.city) === want);

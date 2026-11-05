@@ -16,6 +16,7 @@ import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/pub
 import { cities } from "@/data/cities"
 import { WebsitePropertyShowcase } from "@/components/prospekt/WebsitePropertyShowcase"
 import { hasCurrentPublicAvailability, hasWebsitePropertyStatus } from "@/lib/crm/publication"
+import { isHusTestProperty } from "@/lib/crm/test-property"
 
 export const dynamic = "force-dynamic"
 
@@ -37,6 +38,7 @@ async function lookupForMeta(idOrSlug: string) {
     beds: properties.beds,
     postalCode: properties.postalCode,
     publicDescription: properties.publicDescription,
+    notes: properties.notes,
   }
   const bySlug = await db.select(cols).from(properties).where(eq(properties.slug, idOrSlug)).limit(1)
   const [row] = bySlug.length
@@ -52,6 +54,9 @@ export async function generateMetadata(
   const p = await lookupForMeta(slug)
   if (!p || !p.published || !hasWebsitePropertyStatus(p.status, p.publishConsentAt) || !(await approvedPropertyIds([p.id], new Map([[p.id, p.updatedAt]]))).has(p.id)) {
     return buildMetadata({ title: "Våra boenden | StayOnSite", noindex: true, locale: "sv" })
+  }
+  if (isHusTestProperty(p.notes)) {
+    return buildMetadata({ title: "Test av bostadsregistrering | StayOnSite", noindex: true, locale: "sv" })
   }
   const name = publicDisplayName(
     p.publicName,
@@ -91,6 +96,7 @@ export default async function BoendeDetailPage(
 
   const { row: p, images } = data
   if (p.slug && slug !== p.slug) permanentRedirect(`/boenden/${p.slug}`)
+  const testOnly = isHusTestProperty((await lookupForMeta(p.id))?.notes)
 
   const name = publicDisplayName(
     p.publicName,
@@ -153,7 +159,7 @@ export default async function BoendeDetailPage(
   return (
     <>
       <Header />
-      <SEO structuredData={structuredData} />
+      {!testOnly && <SEO structuredData={structuredData} />}
       <main className="min-h-screen bg-gray-50 pb-16 pt-24 md:pt-28">
         <div className="mx-auto max-w-3xl space-y-8 px-5 py-2">
           <Link
@@ -163,6 +169,8 @@ export default async function BoendeDetailPage(
             <ArrowLeft className="h-4 w-4" />
             Alla boenden
           </Link>
+
+          {testOnly && <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 font-semibold text-amber-950">Test av registreringsflödet – detta är inte ett boende som kan hyras.</p>}
 
           <WebsitePropertyShowcase
             data={{ ...data, row: {
@@ -178,7 +186,7 @@ export default async function BoendeDetailPage(
           />
 
           {/* Intresse-CTA */}
-          <div className="rounded-2xl border bg-white p-6 sm:p-8">
+          {!testOnly && <div className="rounded-2xl border bg-white p-6 sm:p-8">
             <h2 className="text-lg font-bold text-nordic-900">Intresserad av {place}?</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Hör av dig så bekräftar vi tillgänglighet och skickar detaljer — ofta med svar inom 24 timmar.
@@ -206,7 +214,7 @@ export default async function BoendeDetailPage(
             <p className="mt-4 text-xs text-muted-foreground">
               Telefon 076-249 84 86 · kajsa@stayonsite.se
             </p>
-          </div>
+          </div>}
 
           {/* Sekundär CTA till listan + stadssidan (intern länkkraft till "företagsboende <stad>") */}
           <div className="flex flex-col items-center gap-3 text-center">

@@ -8,7 +8,8 @@ vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}), indexOw
 import { createPropertyIntake, propertyIntakeSchema } from "./property-intake";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, HUS_UPLOAD_LINK_ACTOR, husPublicationSmsId } from "./hus-publication";
 import { ensureShareLink } from "./share-links";
-import { agreementAcceptances, outboxMessages, owners, properties } from "./schema";
+import { agreementAcceptances, outboxMessages, owners, ownerOutreach, properties } from "./schema";
+import { homeownerLeadIntakeSms } from "./sms-templates";
 
 let cleanup: () => void;
 beforeEach(async () => {
@@ -52,6 +53,46 @@ describe("HUS registration", () => {
     const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, husPublication: { ...raw.husPublication, approved: false } }));
     expect(property).toMatchObject({ published: false, autoPublishEnabled: false, publishConsentAt: null, publishConsentName: null });
     expect(property.notes).toContain("inte godkänd");
+  });
+
+  it("reuses an unambiguous older short enquiry and keeps one property follow-up", async () => {
+    await state.db.update(owners).set({ followUpDate: "2026-11-04", followUpReason: "Ny husägare från webb" }).where(eq(owners.id, "o1"));
+    await state.db.insert(properties).values({ id: "lead", ownerId: "o1", postalCode: "96100", status: "off_market", notes: "Inkommen från webb (homeowner)\nKälla: homeowner-conversion" });
+    await state.db.insert(ownerOutreach).values({ id: "lead-followup", ownerId: "o1", propertyId: "lead", status: "ej_kontaktad", nextFollowUpDate: "2026-11-04", nextFollowUpReason: "Ny husägare från webb" });
+    await state.db.insert(outboxMessages).values({ id: "old-sms", ownerId: "o1", toPhone: "+46701234567", body: homeownerLeadIntakeSms(), status: "queued", source: "intake" });
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse(raw));
+    expect(property).toMatchObject({ id: "lead", address: "Nygatan 2", published: false, autoPublishEnabled: false });
+    expect(property.notes).toContain("Inkommen från webb (homeowner)");
+    expect(property.notes).toContain("HUS webbpublicering");
+    expect((await state.db.select().from(properties).where(eq(properties.ownerId, "o1")))).toHaveLength(2);
+    const rounds = await state.db.select().from(ownerOutreach).where(eq(ownerOutreach.ownerId, "o1"));
+    expect(rounds).toHaveLength(1);
+    expect(rounds[0]).toMatchObject({ id: "lead-followup", nextFollowUpReason: "Nytt bostadsintag: granska uppgifter och bilder" });
+    const [owner] = await state.db.select().from(owners).where(eq(owners.id, "o1"));
+    expect(owner.followUpDate).toBeNull();
+    const [oldSms] = await state.db.select().from(outboxMessages).where(eq(outboxMessages.id, "old-sms"));
+    expect(oldSms.status).toBe("cancelled");
+  });
+
+  it("does not merge ambiguous addressless properties", async () => {
+    for (const id of ["lead1", "lead2"]) await state.db.insert(properties).values({ id, ownerId: "o1", postalCode: "96100", status: "off_market", notes: "Inkommen från webb (homeowner)" });
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse(raw));
+    expect(property.id).not.toMatch(/^lead/);
+    expect((await state.db.select().from(properties).where(eq(properties.ownerId, "o1")))).toHaveLength(4);
+  });
+
+  it("preserves an unrelated owner follow-up when a HUS intake arrives", async () => {
+    await state.db.update(owners).set({ followUpDate: "2026-12-01", followUpReason: "Stäm av en annan bostad" }).where(eq(owners.id, "o1"));
+    await createPropertyIntake(propertyIntakeSchema.parse(raw));
+    const [owner] = await state.db.select().from(owners).where(eq(owners.id, "o1"));
+    expect(owner).toMatchObject({ followUpDate: "2026-12-01", followUpReason: "Stäm av en annan bostad" });
+  });
+
+  it("does not merge different owners merely because they share a phone number", async () => {
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, ownerName: "Kajsa Flödestest", ownerEmail: "hus-test@example.se" }));
+    expect(property.ownerId).not.toBe("o1");
+    const [original] = await state.db.select().from(owners).where(eq(owners.id, "o1"));
+    expect(original).toMatchObject({ name: "Anna Exempel", phone: "+46701234567", email: null });
   });
 
   it("rejects a stale consent version and an invalid number before saving", () => {

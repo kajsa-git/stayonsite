@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { and, eq, inArray, isNull, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { db } from "./db";
@@ -7,7 +7,8 @@ import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
-import { outboxMessages, ownerOutreach, owners, properties, type Owner, type Property, type PropertyInsert } from "./schema";
+import { outboxMessages, ownerOutreach, owners, properties, propertyImages, type Owner, type Property, type PropertyInsert } from "./schema";
+import { homeownerLeadIntakeSms } from "./sms-templates";
 export { PROPERTY_INTAKE_MARKER };
 
 const phoneRegex = /^[+\d\s()-]{6,50}$/;
@@ -250,11 +251,16 @@ export function propertyIntakeToPropertyBody(input: PropertyIntakeInput): Record
   };
 }
 
-async function findOwnerByContact(email: string | null, phone: string | null): Promise<Owner | null> {
+async function findOwnerByContact(email: string | null, phone: string | null, husName?: string): Promise<Owner | null> {
   const conditions = [email ? eq(owners.email, email) : null, phone ? eq(owners.phone, phone) : null].filter(Boolean);
   if (conditions.length === 0) return null;
-  const [owner] = await db.select().from(owners).where(or(...conditions)).limit(1);
-  return owner ?? null;
+  const candidates = await db.select().from(owners).where(or(...conditions));
+  if (!husName) return candidates[0] ?? null;
+  const normalize = (value: string) => value.normalize("NFKC").trim().toLocaleLowerCase("sv").replace(/\s+/g, " ");
+  // An exact email match is strong evidence; a phone shared by two people or
+  // companies must not silently attach the new listing to the wrong owner.
+  return candidates.find((o) => email && o.email && normalize(o.email) === normalize(email)) ??
+    candidates.find((o) => phone && o.phone === phone && normalize(o.name) === normalize(husName)) ?? null;
 }
 
 function appendNote(existing: string | null, note: string) {
@@ -276,12 +282,30 @@ async function markOwnerForFollowUp(ownerId: string, input: PropertyIntakeInput)
       contactPerson: input.ownerContactPerson ?? owner.contactPerson,
       phone: input.ownerPhone || owner.phone,
       email: input.ownerEmail ?? owner.email,
-      followUpDate: today(),
-      followUpReason: "Nytt bostadsintag från webb",
+      ...(input.husPublication
+        ? (["Ny husägare från webb", "Nytt bostadsintag från webb"].includes(owner.followUpReason ?? "")
+          ? { followUpDate: null, followUpTime: null, followUpReason: null }
+          : {})
+        : { followUpDate: today(), followUpReason: "Nytt bostadsintag från webb" }),
       notes: appendNote(owner.notes, buildPropertyIntakeNotes(input)),
       updatedAt: new Date().toISOString(),
     })
     .where(eq(owners.id, ownerId));
+}
+
+// Older short enquiries created an addressless placeholder. Reuse only one
+// unmistakable, unpublished lead for the same owner and postcode; leave all
+// ambiguous or enriched property records untouched.
+async function findLegacyLead(ownerId: string, postalCode: string): Promise<Property | null> {
+  const rows = await db.select().from(properties).where(and(eq(properties.ownerId, ownerId), isNull(properties.address), eq(properties.status, "off_market")));
+  const postal = postalCode.replace(/\s/g, "");
+  const candidates = rows.filter((p) => !p.published && !p.prospektPublished && !p.publishConsentAt &&
+    p.postalCode?.replace(/\s/g, "") === postal &&
+    /Inkommen från webb \((?:homeowner|lp-homeowner)\)/.test(p.notes ?? "") &&
+    !p.publicName && !p.publicDescription && !p.skick && !p.rentIn && !p.beds && !p.squareMeters);
+  if (candidates.length !== 1) return null;
+  const [image] = await db.select({ id: propertyImages.id }).from(propertyImages).where(eq(propertyImages.propertyId, candidates[0].id)).limit(1);
+  return image ? null : candidates[0];
 }
 
 export async function createPropertyIntake(
@@ -293,20 +317,22 @@ export async function createPropertyIntake(
     ...rawInput,
     ownerPhone: normalizePhoneForStorage(rawInput.ownerPhone) ?? rawInput.ownerPhone,
   };
-  const existingOwner = await findOwnerByContact(input.ownerEmail, input.ownerPhone);
+  const existingOwner = await findOwnerByContact(input.ownerEmail, input.ownerPhone, input.husPublication ? input.ownerName : undefined);
+  const legacyLead = existingOwner && input.husPublication ? await findLegacyLead(existingOwner.id, input.postalCode) : null;
   const writeBody = propertyIntakeToPropertyBody(input);
   if (existingOwner) {
     writeBody.ownerId = existingOwner.id;
+    // Matching on phone or email must not silently rename an existing owner.
+    for (const key of ["ownerType", "ownerArrangement", "ownerName", "ownerOrgNr", "ownerContactPerson", "ownerPhone", "ownerEmail"]) delete writeBody[key];
   }
+  if (legacyLead) writeBody.notes = appendNote(legacyLead.notes, buildPropertyIntakeNotes(input));
 
-  const values = await normalizePropertyWriteBody(writeBody);
+  const values = await normalizePropertyWriteBody(writeBody, legacyLead ?? undefined);
   const property = await db.transaction(async (tx) => {
     const now = new Date().toISOString();
     const approved = input.husPublication?.approved === true;
-    const [created] = await tx
-      .insert(properties)
-      .values({
-        id: nanoid(), ...(values as Partial<PropertyInsert>),
+    const intakeValues = {
+        ...(values as Partial<PropertyInsert>),
         ...(input.husPublication ? {
           // Wait until HUS finishes uploading every image before publication.
           autoPublishEnabled: false,
@@ -316,8 +342,11 @@ export async function createPropertyIntake(
           // The request passes through HUS; do not record its server IP as the owner's.
           publishConsentIp: null,
         } : {}),
-      })
-      .returning();
+      };
+    const [created] = legacyLead
+      ? await tx.update(properties).set(intakeValues).where(and(eq(properties.id, legacyLead.id), isNull(properties.address))).returning()
+      : await tx.insert(properties).values({ id: nanoid(), ...intakeValues }).returning();
+    if (!created) throw new Error("Tidigare intresseanmälan ändrades under registreringen.");
     if (input.husPublication) {
       // Save the number submitted for this property, not a later owner-record update.
       // It cannot be picked up by the SMS agent until publication changes its status.
@@ -329,6 +358,12 @@ export async function createPropertyIntake(
         status: "pending_publication",
         source: HUS_PUBLICATION_SMS_SOURCE,
       });
+      // A queued invitation to register is obsolete once this owner has
+      // completed the full form; retain it in history rather than sending it.
+      if (created.ownerId) await tx.update(outboxMessages).set({ status: "cancelled", error: "Bostaden har redan registrerats." }).where(and(
+        eq(outboxMessages.ownerId, created.ownerId), eq(outboxMessages.source, "intake"),
+        eq(outboxMessages.body, homeownerLeadIntakeSms()), inArray(outboxMessages.status, ["queued", "draft"]),
+      ));
     }
     return created;
   });
@@ -337,15 +372,17 @@ export async function createPropertyIntake(
     await markOwnerForFollowUp(property.ownerId, input);
   }
 
-  await db.insert(ownerOutreach).values({
-    id: nanoid(),
-    propertyId: property.id,
-    ownerId: property.ownerId,
-    status: "ej_kontaktad",
-    startedAt: new Date().toISOString(),
-    nextFollowUpDate: today(),
-    nextFollowUpReason: "Nytt bostadsintag: granska uppgifter och bilder",
-  });
+  const [existingOutreach] = legacyLead ? await db.select().from(ownerOutreach).where(and(
+    eq(ownerOutreach.propertyId, property.id), isNull(ownerOutreach.concludedAt),
+  )).limit(1) : [];
+  if (existingOutreach) {
+    await db.update(ownerOutreach).set({ nextFollowUpDate: today(), nextFollowUpTime: null, nextFollowUpReason: "Nytt bostadsintag: granska uppgifter och bilder" }).where(eq(ownerOutreach.id, existingOutreach.id));
+  } else {
+    await db.insert(ownerOutreach).values({
+      id: nanoid(), propertyId: property.id, ownerId: property.ownerId, status: "ej_kontaktad",
+      startedAt: new Date().toISOString(), nextFollowUpDate: today(), nextFollowUpReason: "Nytt bostadsintag: granska uppgifter och bilder",
+    });
+  }
 
   const [owner] = property.ownerId ? await db.select().from(owners).where(eq(owners.id, property.ownerId)) : [null];
   await Promise.all([

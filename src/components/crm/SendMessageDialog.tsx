@@ -12,7 +12,7 @@ import useSWR from "swr";
 type OutboxMessage = {
   id: string;
   body: string;
-  status: "pending_publication" | "draft" | "queued" | "sending" | "sent" | "failed";
+  status: "pending_publication" | "draft" | "queued" | "sending" | "sent" | "failed" | "cancelled";
   error: string | null;
   deliveredAt: string | null;
   createdAt: string | null;
@@ -25,6 +25,7 @@ const STATUS_LABEL: Record<OutboxMessage["status"], { label: string; cls: string
   sent: { label: "Skickad", cls: "bg-green-100 text-green-800" },
   failed: { label: "Misslyckades", cls: "bg-red-100 text-red-800" },
   draft: { label: "Utkast", cls: "bg-violet-100 text-violet-800" },
+  cancelled: { label: "Avbrutet", cls: "bg-slate-100 text-slate-700" },
 };
 
 // Köar ett iMessage/SMS i CRM:ts utkorg — Mac-agenten skickar via Messages.app

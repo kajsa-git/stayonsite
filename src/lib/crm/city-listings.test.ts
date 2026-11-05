@@ -13,6 +13,7 @@ vi.mock("@aws-sdk/s3-request-presigner", () => ({
 }));
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getCityListings } from "./city-listings";
+import { HUS_TEST_MARKER } from "./test-property";
 
 let cleanup: () => void;
 
@@ -103,5 +104,11 @@ describe("city listing images", () => {
     expect((await getCityListings("Gävle")).map((l) => l.slug)).toEqual(["boende-gavle"]);
     expect(vi.mocked(getSignedUrl).mock.calls.map((call) => (call[1] as GetObjectCommand).input.Key)).toEqual(["gavle/main.jpg"]);
     expect(await getCityListings("Stockholm")).toEqual([]);
+  });
+
+  it("does not advertise test properties on city pages", async () => {
+    await state.db.update(properties).set({ notes: HUS_TEST_MARKER }).where(eq(properties.id, "gavle"));
+    await approve("gavle");
+    expect(await getCityListings("Gävle")).toEqual([]);
   });
 });

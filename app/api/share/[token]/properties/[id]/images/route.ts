@@ -124,9 +124,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ to
       eq(outboxMessages.status, "pending_publication"),
     ));
     if (!pending) return NextResponse.json({ error: "HUS-intaget kunde inte slutföras." }, { status: 409 });
-    // If an upload failed, leave publication paused for follow-up. Otherwise
-    // review the complete image set, including the zero-image case.
-    await db.update(properties).set({ ...pendingContentReview(), autoPublishEnabled: failed === 0 })
+    // Always require a manual publication decision. The automated content
+    // check still reviews the complete set, including zero images.
+    await db.update(properties).set({ ...pendingContentReview(), autoPublishEnabled: false })
       .where(and(eq(properties.id, id), eq(properties.published, false)));
     schedulePropertyReview(id);
   }

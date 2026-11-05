@@ -6,8 +6,7 @@ import { db } from "./db";
 import { R2_BUCKET, r2 } from "./r2";
 import { outboxMessages, owners, properties, propertyImages, type Property } from "./schema";
 import { validatePublicationSeo } from "./publication-seo";
-import { hasWebsitePropertyStatus } from "./publication";
-import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId, husPublishedLinkSms } from "./hus-publication";
+import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { indexProperty } from "./search-index";
 import {
   CONTENT_FIELDS, CONTENT_POLICY_VERSION, PROPERTY_CONTENT_SYSTEM,
@@ -140,6 +139,12 @@ export async function autoPublishReviewedProperty(id: string) {
   const input = await readReviewInput(id);
   if (!input || !isCurrentContentApproved(input.property, input.images)) return;
   const p = input.property;
+  // HUS properties require a person's explicit publication action in the CRM,
+  // even for older intakes whose automatic-publication flag is still enabled.
+  const [husMessage] = await db.select({ id: outboxMessages.id }).from(outboxMessages).where(and(
+    eq(outboxMessages.id, husPublicationSmsId(id)), eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE),
+  )).limit(1);
+  if (p.publishConsentSource === "hus" || husMessage || (p.notes ?? "").includes("HUS webbpublicering (")) return;
   if (!p.autoPublishEnabled) return;
   // Existing publication is legacy evidence of consent (same rule as the
   // landlord consent screen). Never fabricate a consent timestamp/name.
@@ -151,7 +156,7 @@ export async function autoPublishReviewedProperty(id: string) {
     return;
   }
   await db.transaction(async (tx) => {
-    const [published] = await tx.update(properties).set({ published: true, prospektPublished: true, updatedAt: new Date().toISOString() })
+    await tx.update(properties).set({ published: true, prospektPublished: true, updatedAt: new Date().toISOString() })
       .where(and(
         eq(properties.id, id),
         eq(properties.contentReviewStatus, "approved"),
@@ -159,22 +164,7 @@ export async function autoPublishReviewedProperty(id: string) {
         eq(properties.slug, p.slug!),
         eq(properties.autoPublishEnabled, true),
         or(eq(properties.published, true), sql`length(trim(${properties.publishConsentAt})) > 0`),
-      ))
-      .returning({ slug: properties.slug, status: properties.status, publishConsentAt: properties.publishConsentAt, name: properties.publishConsentName });
-    if (published?.slug && published.publishConsentAt?.trim() && hasWebsitePropertyStatus(published.status, published.publishConsentAt)) {
-      // The one per-property HUS message was saved with the registrant's
-      // number at intake. Publication and the transition to queued are atomic.
-      await tx.update(outboxMessages).set({
-        status: "queued",
-        body: husPublishedLinkSms(published.name, published.slug),
-        // The agent's stale-claim timer starts when the SMS becomes sendable.
-        createdAt: sql`datetime('now')`,
-      }).where(and(
-        eq(outboxMessages.id, husPublicationSmsId(id)),
-        eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE),
-        eq(outboxMessages.status, "pending_publication"),
       ));
-    }
   });
 }
 

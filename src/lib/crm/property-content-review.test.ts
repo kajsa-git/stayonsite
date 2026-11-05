@@ -46,7 +46,7 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 describe("automatic property approval", () => {
-  it("waits for HUS uploads, then queues exactly one SMS only after reviewed publication", async () => {
+  it("never auto-publishes a HUS intake, including older records with automatic publication enabled", async () => {
     await state.db.update(properties).set({ autoPublishEnabled: false, publishConsentName: "Anna Andersson" }).where(eq(properties.id, "p1"));
     await state.db.insert(outboxMessages).values({
       id: husPublicationSmsId("p1"), toPhone: "+46701234567", body: "Väntar", ownerId: "o1",
@@ -59,9 +59,8 @@ describe("automatic property approval", () => {
     await state.db.update(properties).set({ autoPublishEnabled: true }).where(eq(properties.id, "p1"));
     expect(await reviewPropertyContent("p1")).toBe("approved");
     [sms] = await state.db.select().from(outboxMessages);
-    expect(sms).toMatchObject({ status: "queued", toPhone: "+46701234567" });
-    expect(sms.body).toContain("www.stayonsite.se/boenden/boende-boden");
-    expect(sms.body).toContain("Hej Anna!");
+    expect(sms).toMatchObject({ status: "pending_publication", toPhone: "+46701234567" });
+    expect((await readReviewInput("p1"))!.property.published).toBe(false);
     await autoPublishReviewedProperty("p1");
     expect(await state.db.select().from(outboxMessages)).toHaveLength(1);
   });

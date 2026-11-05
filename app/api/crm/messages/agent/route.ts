@@ -3,8 +3,9 @@
 import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
 import { reportMessageStatus } from "@/lib/crm/message-status";
-import { outboxMessages } from "@/lib/crm/schema";
-import { and, asc, eq, inArray, lt, or } from "drizzle-orm";
+import { outboxMessages, properties } from "@/lib/crm/schema";
+import { HUS_PUBLICATION_SMS_SOURCE } from "@/lib/crm/hus-publication";
+import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -19,11 +20,17 @@ function agentAuthorized(req: NextRequest): boolean {
 export async function GET(req: NextRequest) {
   if (!agentAuthorized(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Re-check the listing at claim time. Images or copy can have changed after
+  // the message was queued, and the owner must not receive a broken link.
+  const validHusListing = sql`EXISTS (SELECT 1 FROM ${properties} WHERE ${outboxMessages.id} = 'hus-publication:' || ${properties.id} AND ${properties.published} = 1 AND ${properties.contentReviewStatus} = 'approved' AND length(trim(${properties.publishConsentAt})) > 0)`;
+  await db.update(outboxMessages).set({ status: "pending_publication", body: "Bostadslänken skickas när publiceringen är klar." })
+    .where(and(eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE), eq(outboxMessages.status, "queued"), sql`NOT ${validHusListing}`));
+  const eligible = or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing);
   const staleCutoff = new Date(Date.now() - 15 * 60_000).toISOString().replace("T", " ").slice(0, 19);
   const candidates = await db
     .select({ id: outboxMessages.id })
     .from(outboxMessages)
-    .where(or(eq(outboxMessages.status, "queued"), and(eq(outboxMessages.status, "sending"), lt(outboxMessages.createdAt, staleCutoff))))
+    .where(and(eligible, or(eq(outboxMessages.status, "queued"), and(eq(outboxMessages.status, "sending"), lt(outboxMessages.createdAt, staleCutoff)))))
     .orderBy(asc(outboxMessages.createdAt))
     .limit(10);
   if (candidates.length === 0) return NextResponse.json([]);
@@ -33,6 +40,7 @@ export async function GET(req: NextRequest) {
     .set({ status: "sending" })
     .where(and(
       inArray(outboxMessages.id, candidates.map((c) => c.id)),
+      eligible,
       // Re-check status: a queued publication link may have been withdrawn
       // after selection, and a different agent may already have claimed it.
       or(eq(outboxMessages.status, "queued"), and(eq(outboxMessages.status, "sending"), lt(outboxMessages.createdAt, staleCutoff))),

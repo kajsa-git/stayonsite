@@ -39,7 +39,7 @@ export function PropertyPublicControls({
       const history = await crmFetchJson<{ body: string }[]>(
         `/api/crm/messages?phone=${encodeURIComponent(ownerPhone)}`,
       );
-      if (history.some((m) => m.body.includes(`/boenden/${slug}`))) return;
+      if (history.some((m) => m.body.includes(`/boenden/${slug}`) || m.body.includes(`/boenden/${property.id}`))) return;
     } catch {
       /* historiken är bara en dubblettspärr — erbjud hellre än att tyst låta bli */
     }
@@ -53,6 +53,7 @@ export function PropertyPublicControls({
         : "bg-white border-input text-muted-foreground hover:bg-green-50 hover:text-green-700 hover:border-green-200"
     }`;
   const approved = property.contentReviewStatus === "approved";
+  const husIntake = property.publishConsentSource === "hus" || (property.notes ?? "").includes("HUS webbpublicering (");
   const websiteStatusAllowed = hasWebsitePropertyStatus(property.status, property.publishConsentAt);
   const isPublic = approved && !!property.published && websiteStatusAllowed;
 
@@ -73,7 +74,7 @@ export function PropertyPublicControls({
                 /* feltoast visas av onUpdate */
                 return;
               }
-              if (publishing && approved && websiteStatusAllowed) await maybeOfferConfirmSms();
+              if (publishing && approved && websiteStatusAllowed && !husIntake) await maybeOfferConfirmSms();
             }}
             disabled={!approved && !property.published}
             className={toggleCls(isPublic)}
@@ -95,6 +96,8 @@ export function PropertyPublicControls({
             <span className="text-[11px] text-amber-700">Kontrollera publiceringsmedgivandet för den aktuella statusen.</span>
           )}
         </div>
+
+        {husIntake && !property.published && <p className="text-xs text-muted-foreground">Granska bostaden först. När du publicerar skickas länken till uthyraren via sms.</p>}
 
         {/* Prospekt-länk (delbar säljlänk — oberoende av hemsidan och status) */}
         <div className="flex flex-wrap items-center gap-2">
