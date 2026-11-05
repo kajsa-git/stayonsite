@@ -79,3 +79,14 @@ it("refuses a HUS publication if the current pictures or description have not pa
   expect(response.status).toBe(422);
   expect((await state.db.select().from(properties).where(eq(properties.id, "p1")))[0].published).toBe(false);
 });
+it("requires property-specific HUS consent and current review before activating a public prospect link", async () => {
+  await state.db.update(properties).set({ notes: "HUS webbpublicering (2026-11-02.1): inte godkänd." }).where(eq(properties.id, "p1"));
+  expect((await PATCH(request({ prospektPublished: true }), { params: Promise.resolve({ id: "p1" }) })).status).toBe(422);
+  await state.db.update(properties).set({ publishConsentAt: "2026-11-05", publishConsentSource: "hus" }).where(eq(properties.id, "p1"));
+  expect((await PATCH(request({ prospektPublished: true }), { params: Promise.resolve({ id: "p1" }) })).status).toBe(422);
+  const [property] = await state.db.select().from(properties).where(eq(properties.id, "p1"));
+  await state.db.update(properties).set({ contentReviewHash: propertyContentHash(property, []) }).where(eq(properties.id, "p1"));
+  expect((await PATCH(request({ prospektPublished: true }), { params: Promise.resolve({ id: "p1" }) })).status).toBe(200);
+  const edited = await PATCH(request({ bedrooms: 3 }), { params: Promise.resolve({ id: "p1" }) });
+  expect(await edited.json()).toMatchObject({ published: false, prospektPublished: false });
+});

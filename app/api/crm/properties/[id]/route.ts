@@ -40,8 +40,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   )).limit(1);
   const husIntake = existing.publishConsentSource === "hus" || !!husMessage || (existing.notes ?? "").includes("HUS webbpublicering (");
   const publishingHus = husIntake && body.published === true && !existing.published;
+  const activatingHusProspect = husIntake && body.prospektPublished === true && !existing.prospektPublished;
   if (body.published === true && !existing.published && !existing.publishConsentAt) {
     return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas." }, { status: 422 });
+  }
+  if (activatingHusProspect && !existing.publishConsentAt) {
+    return NextResponse.json({ error: "Uthyrarens publiceringsmedgivande saknas för bostaden." }, { status: 422 });
   }
   let values;
   try { values = await normalizePropertyWriteBody(body, existing); }
@@ -53,7 +57,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   else if ((body.published === false && existing.published) || (body.prospektPublished === false && existing.prospektPublished)) values.autoPublishEnabled = false;
   else if ((body.published === true && !existing.published) || (body.prospektPublished === true && !existing.prospektPublished)) values.autoPublishEnabled = true;
   const changed = contentChanged(body);
-  if (publishingHus) {
+  if (publishingHus || activatingHusProspect) {
     const images = await db.select({ id: propertyImages.id, key: propertyImages.key }).from(propertyImages).where(eq(propertyImages.propertyId, id));
     if (changed || !isCurrentContentApproved(existing, images)) {
       return NextResponse.json({ error: "Granska uppgifterna och bilderna innan bostaden publiceras." }, { status: 422 });
@@ -61,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
   // A later substantive edit must not silently republish a HUS property after
   // the automated check: the changed text and images need a new human review.
-  if (husIntake && changed && existing.published) {
+  if (husIntake && changed && (existing.published || existing.prospektPublished)) {
     values.published = false;
     values.prospektPublished = false;
   }
@@ -76,7 +80,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     // Läs statusen igen i transaktionen så samtidiga sparningar inte startar om kontrollen.
     const [before] = await tx.select().from(properties).where(eq(properties.id, id));
     if (!before) throw new Error("Bostaden finns inte kvar");
-    if (publishingHus) {
+    if (publishingHus || activatingHusProspect) {
       const images = await tx.select({ id: propertyImages.id, key: propertyImages.key }).from(propertyImages).where(eq(propertyImages.propertyId, id));
       if (!before.publishConsentAt || !isCurrentContentApproved(before, images)) throw new Error("HUS_REVIEW_CHANGED");
     }

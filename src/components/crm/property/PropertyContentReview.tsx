@@ -81,7 +81,7 @@ export function PropertyContentReview({ property }: { property: PropertyWithOwne
           {reason.message}
           {reason.technical && <details className="mt-1"><summary className="cursor-pointer text-xs text-muted-foreground">Visa teknisk information</summary><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-all rounded bg-background p-3 text-xs">{reason.technical}</pre></details>}
         </li>)}</ul>}
-        {approved && !property.published && !property.publishConsentAt && <p>Publicering på hemsidan inväntar uthyrarens medgivande. Prospektlänken kan aktiveras redan nu.</p>}
+        {approved && !property.published && !property.publishConsentAt && <p>Publicering på hemsidan inväntar uthyrarens medgivande. {((property.notes ?? "").includes("HUS webbpublicering (") || property.publishConsentSource === "hus") ? "Även prospektlänken kräver godkännande för denna bostad." : "Prospektlänken kan aktiveras redan nu."}</p>}
         {approved && !property.published && !property.autoPublishEnabled && <p>Granska uppgifter och bilder själv och välj sedan om bostaden ska publiceras.</p>}
         {approved && !hasWebsitePropertyStatus(property.status, property.publishConsentAt) && <p>Den aktuella statusen eller medgivandet tillåter inte visning på hemsidan.</p>}
         {approved && property.availableTo && property.availableTo < new Date().toISOString().slice(0, 10) && <p>Tillgänglighetsperioden har gått ut. Kontrollera datumen.</p>}

@@ -36,10 +36,12 @@ export function AgreementStatusPanel({
   kind,
   id,
   contactName,
+  hasHusPropertyConsent = false,
 }: {
   kind: "owner" | "company";
   id: string;
   contactName?: string | null;
+  hasHusPropertyConsent?: boolean;
 }) {
   const { data, mutate } = useSWR<PanelData>(
     `/api/crm/share-links?${kind === "owner" ? "ownerId" : "companyId"}=${id}`,
@@ -50,7 +52,7 @@ export function AgreementStatusPanel({
   const a = data?.agreement ?? null;
   const previousOwnerAgreement = kind === "owner" && a?.valid && a.version !== a.currentVersion;
   const label = kind === "owner"
-    ? previousOwnerAgreement ? "Uthyrningsuppdrag" : "Publiceringsmedgivande"
+    ? previousOwnerAgreement ? "Uthyrningsuppdrag" : "Medgivande via uthyrarlänk"
     : "Uppdragsbekräftelse";
   const shareLabel = kind === "owner" ? "Dela uthyrarlänk" : "Dela kundlänk";
   const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
@@ -179,6 +181,8 @@ export function AgreementStatusPanel({
           </button>
         )}
       </div>
+
+      {kind === "owner" && hasHusPropertyConsent && <p className="text-xs text-muted-foreground">Det här avser ett separat godkännande via uthyrarlänken. Bostadens godkännande från HyrUtSmart visas under Publicering.</p>}
 
       <div className="flex flex-wrap items-center gap-2">
         {path ? (

@@ -60,6 +60,9 @@ export function PropertyPublicControls({
   return (
     <div>
       <div className="space-y-2">
+        {husIntake && <p className="text-xs text-muted-foreground">{property.publishConsentAt
+          ? `Publicering av den här bostaden är godkänd${property.publishConsentSource === "hus" ? " via HyrUtSmart" : ""}.`
+          : "Publicering av den här bostaden är inte godkänd."}</p>}
         {/* Hemsidans publicering styrs separat från uthyrningsstatus. */}
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -76,7 +79,7 @@ export function PropertyPublicControls({
               }
               if (publishing && approved && websiteStatusAllowed && !husIntake) await maybeOfferConfirmSms();
             }}
-            disabled={!approved && !property.published}
+            disabled={(!approved || (husIntake && !property.publishConsentAt)) && !property.published}
             className={toggleCls(isPublic)}
           >
             {isPublic ? "✓ På hemsidan" : property.published ? "Pausa publicering" : "Publicera på hemsidan"}
@@ -110,7 +113,7 @@ export function PropertyPublicControls({
                 /* feltoast visas av onUpdate */
               }
             }}
-            disabled={!approved && !property.prospektPublished}
+            disabled={(!approved || (husIntake && !property.publishConsentAt)) && !property.prospektPublished}
             className={toggleCls(approved && !!property.prospektPublished)}
           >
             {approved && property.prospektPublished ? "✓ Prospekt-länk" : property.prospektPublished ? "Pausa prospekt-länk" : "Aktivera prospekt-länk"}
