@@ -57,6 +57,12 @@ const sampleInput: PropertyIntakeInput = {
 };
 
 describe("property intake mapping", () => {
+  it.each(["070.123.45.67", "070–123 45 67", "+46 (0)70 123 45 67"])(
+    "accepts commonly formatted owner phone numbers: %s", (ownerPhone) => {
+      expect(propertyIntakeSchema.parse({ ...sampleInput, ownerPhone }).ownerPhone).toBe(ownerPhone);
+    },
+  );
+
   it("accepts the public intake shape and normalizes empty optional strings", () => {
     const parsed = propertyIntakeSchema.parse({
       ...sampleInput,

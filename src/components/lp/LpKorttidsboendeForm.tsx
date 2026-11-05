@@ -12,7 +12,7 @@ import { useTranslation } from '@/hooks/use-translation'
 import { useToast } from '@/hooks/use-toast'
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact'
 import { getContactFormErrorMessage, submitContactForm } from '@/lib/contact-form'
-import { trackFormStart, trackFormSubmit, trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag'
+import { trackFormPhoneError, trackFormStart, trackFormSubmit, trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag'
 
 interface LpKorttidsboendeFormProps {
   utmParams: Record<string, string>
@@ -55,7 +55,8 @@ export default function LpKorttidsboendeForm({
     }
 
     if (phone && !isValidPhoneNumber(phone)) {
-      setPhoneError('Ange ett giltigt telefonnummer eller lämna fältet tomt.')
+      trackFormPhoneError()
+      setPhoneError('Kontrollera numret, till exempel 070-123 45 67, eller lämna fältet tomt.')
       const phoneInput = event.currentTarget.elements.namedItem('phone')
       if (phoneInput instanceof HTMLInputElement) phoneInput.focus()
       return

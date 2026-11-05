@@ -2,12 +2,14 @@
 // Normaliserar till E.164 med svensk landskod som default (numren i CRM:et skrivs
 // oftast som "070-123 45 67" eller "+46 70…"). Rena funktioner — testas isolerat.
 
+import { stripInternationalTrunkZero } from "@/lib/contact";
+
 const SWEDEN_CC = "46";
 
 // "070-123 45 67" → "+46701234567". Returnerar null om det inte går att tolka rimligt.
 export function normalizePhoneE164(raw: string | null | undefined, defaultCc = SWEDEN_CC): string | null {
   if (!raw) return null;
-  const trimmed = raw.trim();
+  const trimmed = stripInternationalTrunkZero(raw.trim());
   const hasPlus = trimmed.startsWith("+");
   let digits = trimmed.replace(/\D/g, "");
   if (!digits) return null;

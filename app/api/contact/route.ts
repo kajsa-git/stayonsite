@@ -10,6 +10,7 @@ import { mapWebSubmissionToCrm, type WebSubmission } from "@/lib/crm/contact-int
 import { isHomeownerLeadForm, queueHomeownerLeadIntakeSms, shouldQueueHomeownerLeadIntakeSms } from "@/lib/crm/homeowner-automation";
 import { buildHomeownerLeadConfirmationEmail } from "@/lib/crm/homeowner-lead-email";
 import { sendMetaLeadEvent } from "@/lib/meta-conversions";
+import { PHONE_ALLOWED_CHARS_REGEX } from "@/lib/contact";
 
 // Node-runtime route handler. Importing @/lib/crm/* directly lets Next.js bundle
 // the CRM intake into the function — the old standalone api/contact.ts function
@@ -24,7 +25,7 @@ const CONTACT_TO = process.env.CONTACT_FORM_TO || "kajsa@stayonsite.se";
 // --- Validation ---
 
 function isValidEmail(v: string) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-function isValidPhone(v: string) { return /^[\d\s()+-]{6,50}$/.test(v); }
+function isValidPhone(v: string) { return v.length >= 6 && v.length <= 50 && PHONE_ALLOWED_CHARS_REGEX.test(v); }
 function isValidContact(v: string) { return isValidEmail(v) || isValidPhone(v); }
 
 const LOCALES = ["sv", "en", "pl"] as const;

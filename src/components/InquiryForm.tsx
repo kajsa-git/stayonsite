@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { isValidPhoneNumber } from '@/lib/contact';
 import {
@@ -38,6 +38,7 @@ const InquiryForm = () => {
     const phone = String(formData.get('phone') ?? '').trim();
 
     if (!isValidPhoneNumber(phone)) {
+      trackFormPhoneError();
       setPhoneError(t('homeowner.form.phoneError'));
       const phoneInput = e.currentTarget.elements.namedItem('phone');
       if (phoneInput instanceof HTMLInputElement) {

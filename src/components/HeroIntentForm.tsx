@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
-import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
@@ -56,6 +56,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
       hasError = true;
     }
     if (!isValidPhoneNumber(phoneValue)) {
+      trackFormPhoneError();
       setPhoneError(t('homeowner.form.phoneError'));
       hasError = true;
     }
@@ -218,7 +219,7 @@ const HeroIntentForm = ({ defaultCity = '' }: HeroIntentFormProps) => {
               className={`h-12 w-full bg-white/90 text-primary border-0 rounded-xl placeholder:text-primary/40 font-medium ${phoneError ? 'ring-2 ring-red-400' : ''}`}
             />
             {phoneError && (
-              <p id="hero-phone-error" className="text-red-300 text-xs mt-1 ml-1">
+              <p id="hero-phone-error" role="alert" className="text-red-300 text-xs mt-1 ml-1">
                 {phoneError}
               </p>
             )}

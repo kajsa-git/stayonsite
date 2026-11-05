@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { isValidPhoneNumber } from '@/lib/contact';
-import { trackPhoneClick, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackPhoneClick, trackFormSubmit } from '@/lib/gtag';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -36,6 +36,7 @@ const LpHeroForm = ({ utmParams }: LpHeroFormProps) => {
     setPhoneError('');
 
     if (!isValidPhoneNumber(phone)) {
+      trackFormPhoneError();
       setPhoneError(t('homeowner.form.phoneError'));
       const phoneInput = e.currentTarget.elements.namedItem('phone');
       if (phoneInput instanceof HTMLInputElement) {

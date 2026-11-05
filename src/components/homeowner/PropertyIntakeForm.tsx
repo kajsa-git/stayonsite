@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
+import { trackFormPhoneError } from "@/lib/gtag";
 import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { compressImage } from "@/lib/image-compress";
 import { getMetaTrackingContext, trackMetaEvent } from "@/lib/meta-pixel";
@@ -323,7 +324,10 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     const next: FieldErrors = {};
     if (targetStep === 0) {
       if (form.ownerName.trim().length < 2) next.ownerName = "Fyll i namn.";
-      if (!isValidPhoneNumber(form.ownerPhone)) next.ownerPhone = "Fyll i ett giltigt telefonnummer.";
+      if (!isValidPhoneNumber(form.ownerPhone)) {
+        trackFormPhoneError();
+        next.ownerPhone = "Kontrollera numret, till exempel 070-123 45 67.";
+      }
       if (form.ownerEmail.trim() && !isValidEmail(form.ownerEmail)) next.ownerEmail = "Fyll i en giltig e-postadress.";
       if (form.ownerType === "foretag" && !form.ownerContactPerson.trim()) next.ownerContactPerson = "Fyll i kontaktperson.";
     }

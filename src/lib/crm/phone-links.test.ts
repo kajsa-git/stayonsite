@@ -12,6 +12,9 @@ describe("normalizePhoneE164", () => {
     expect(normalizePhoneE164("+46 70 123 45 67")).toBe("+46701234567");
     expect(normalizePhoneE164("0046701234567")).toBe("+46701234567");
     expect(normalizePhoneE164("+1 (212) 555-0199")).toBe("+12125550199");
+    expect(normalizePhoneE164("+46 (0)70 123 45 67")).toBe("+46701234567");
+    expect(normalizePhoneE164("0044 (0)20 7946 0018")).toBe("+442079460018");
+    expect(normalizePhoneE164("070.123.45.67")).toBe("+46701234567");
   });
 
   it("redan med landskod utan plus", () => {

@@ -13,6 +13,8 @@ describe('contact validation', () => {
 
   it('accepts Swedish mobile numbers with full length', () => {
     expect(isValidPhoneNumber('076-249 84 86')).toBe(true);
+    expect(isValidPhoneNumber('070.123.45.67')).toBe(true);
+    expect(isValidPhoneNumber('070–123 45 67')).toBe(true);
   });
 
   it('rejects Swedish mobile numbers that are too short', () => {
@@ -27,6 +29,8 @@ describe('contact validation', () => {
   it('accepts international numbers with prefix', () => {
     expect(isValidPhoneNumber('+48 123 456 789')).toBe(true);
     expect(isValidPhoneNumber('0044 20 7946 0018')).toBe(true);
+    expect(isValidPhoneNumber('+46 (0)70 123 45 67')).toBe(true);
+    expect(isValidPhoneNumber('0044 (0)20 7946 0018')).toBe(true);
   });
 
   it('accepts country-code-first numbers without plus', () => {
@@ -36,5 +40,8 @@ describe('contact validation', () => {
   it('rejects malformed international numbers', () => {
     expect(isValidPhoneNumber('+49 123')).toBe(false);
     expect(isValidPhoneNumber('12+345678')).toBe(false);
+    expect(isValidPhoneNumber('070.123.45')).toBe(false);
+    expect(isValidPhoneNumber('70 123 45 67')).toBe(false);
+    expect(isValidPhoneNumber('70 ABC 45 67')).toBe(false);
   });
 });

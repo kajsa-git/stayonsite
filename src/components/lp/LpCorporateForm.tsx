@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { isValidPhoneNumber } from '@/lib/contact';
-import { trackPhoneClick, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackPhoneClick, trackFormSubmit } from '@/lib/gtag';
 import { getContactFormErrorMessage, submitContactForm } from '@/lib/contact-form';
 import { Send, Phone, CheckCircle2 } from 'lucide-react';
 
@@ -29,7 +29,8 @@ const LpCorporateForm = ({ utmParams }: LpCorporateFormProps) => {
     setPhoneError('');
 
     if (!isValidPhoneNumber(phone)) {
-      setPhoneError('Please enter a valid phone number.');
+      trackFormPhoneError();
+      setPhoneError('Check the number, for example +46 70 123 45 67.');
       const phoneInput = e.currentTarget.elements.namedItem('phone');
       if (phoneInput instanceof HTMLInputElement) phoneInput.focus();
       return;

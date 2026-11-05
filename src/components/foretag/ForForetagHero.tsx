@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
-import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackFormStart, trackFormSubmit } from '@/lib/gtag';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import {
   getContactFormErrorMessage,
@@ -73,11 +73,12 @@ const ForForetagHero = () => {
     }
 
     if (phone && !isValidPhoneNumber(phone)) {
+      trackFormPhoneError();
       setPhoneError(
         t(
-          'Ange ett giltigt telefonnummer',
-          'Enter a valid phone number',
-          'Podaj prawidłowy numer telefonu'
+          'Kontrollera numret, till exempel 070-123 45 67 eller +48 123 456 789.',
+          'Check the number, for example +46 70 123 45 67 or +48 123 456 789.',
+          'Sprawdź numer, np. +48 123 456 789 lub +46 70 123 45 67.'
         )
       );
       const phoneInput = e.currentTarget.elements.namedItem('phone');

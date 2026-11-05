@@ -41,6 +41,23 @@ describe('contact API consent handling', () => {
     },
   );
 
+  it.each(['070.123.45.67', '070–123 45 67', '+46 (0)70 123 45 67'])(
+    'accepts a commonly formatted phone number in the contact API: %s', async (phone) => {
+      const request = new NextRequest('https://example.com/api/contact', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          formType: 'hero-intent', locale: 'sv', page: '/stad/lulea', startedAt: Date.now(),
+          fields: { ort: 'Luleå', antal_personer: '2', email: 'test@example.com', phone },
+        }),
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mocks.map).toHaveBeenCalledWith(expect.objectContaining({ fields: expect.objectContaining({ phone }) }));
+    },
+  );
+
   it.each([
     ['sv', 'Till bostadsregistreringen hos HyrUtSmart'],
     ['en', 'Go to property registration at HyrUtSmart'],

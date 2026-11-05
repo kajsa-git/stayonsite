@@ -83,4 +83,13 @@ describe('buildMetaLeadEvent', () => {
       content_name: 'property-intake',
     })
   })
+
+  it.each(['070.123.45.67', '+46 (0)70 123 45 67'])('normalizes %s for matching', (phone) => {
+    const event = buildMetaLeadEvent({
+      formType: 'hero-intent',
+      fields: { phone },
+      tracking: { consent: true, eventId: 'lead-test-123', eventSourceUrl: 'https://example.com' },
+    }, {})
+    expect(event?.user_data.ph).toEqual([hash('46701234567')])
+  })
 })

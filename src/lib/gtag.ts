@@ -1,4 +1,5 @@
 import { clarityEvent, updateClarityConsent } from './clarity'
+import { stripInternationalTrunkZero } from './contact'
 
 declare global {
   interface Window {
@@ -58,7 +59,7 @@ export type LeadUserData = { email?: string; phone?: string }
 
 // Google kräver E.164 (+46701234567). Formulären tillåter 070-…, 0046…, +46…
 function toE164(phone: string): string | undefined {
-  const trimmed = phone.trim()
+  const trimmed = stripInternationalTrunkZero(phone.trim())
   const digits = trimmed.replace(/\D/g, '')
   if (!digits) return undefined
   if (trimmed.startsWith('+')) return `+${digits}`
@@ -97,4 +98,15 @@ export function trackWhatsAppClick() {
 // Clarity-only (ingen Google Ads-konvertering) — funnelsteg "började fylla i formulär"
 export function trackFormStart() {
   clarityEvent('form_start')
+}
+
+// Count validation friction without sending the entered phone number to Clarity.
+export function trackFormPhoneError() {
+  // Optional analytics must never stop the user from seeing the error message.
+  try {
+    if (getStoredConsent() !== 'granted') return
+    clarityEvent('form_phone_error')
+  } catch {
+    // Validation and submission must continue when Clarity is unavailable.
+  }
 }

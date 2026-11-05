@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
-import { trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackFormSubmit } from '@/lib/gtag';
 import { trackFbEvent } from '@/hooks/use-facebook-pixel';
 import {
   getContactFormErrorMessage,
@@ -178,6 +178,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
     setPhoneError('');
 
     if (!isValidPhoneNumber(phone)) {
+      trackFormPhoneError();
       setPhoneError(t('homeowner.form.phoneError'));
       const phoneInput = e.currentTarget.elements.namedItem('phone');
       if (phoneInput instanceof HTMLInputElement) {

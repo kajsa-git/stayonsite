@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
 import { getContactFormErrorMessage, submitContactForm } from '@/lib/contact-form';
 import { isValidEmail, isValidPhoneNumber } from '@/lib/contact';
-import { trackFormStart, trackFormSubmit } from '@/lib/gtag';
+import { trackFormPhoneError, trackFormStart, trackFormSubmit } from '@/lib/gtag';
 
 interface ProjectBriefFormProps {
   source?: string;
@@ -77,7 +77,8 @@ export default function ProjectBriefForm({
     }
 
     if (!isValidPhoneNumber(phone)) {
-      setPhoneError('Ange ett giltigt telefonnummer.');
+      trackFormPhoneError();
+      setPhoneError('Kontrollera numret, till exempel 070-123 45 67 eller +48 123 456 789.');
       const input = e.currentTarget.elements.namedItem('phone');
       if (input instanceof HTMLInputElement) input.focus();
       return;

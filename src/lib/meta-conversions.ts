@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { stripInternationalTrunkZero } from './contact'
 
 interface MetaTrackingData {
   consent: true
@@ -30,7 +31,7 @@ function normalizedEmail(value?: string): string | undefined {
 
 function normalizedPhone(value?: string): string | undefined {
   if (!value) return undefined
-  const trimmed = value.trim()
+  const trimmed = stripInternationalTrunkZero(value.trim())
   const digits = trimmed.replace(/\D/g, '')
   if (!digits) return undefined
   if (digits.startsWith('00')) return digits.slice(2)

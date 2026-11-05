@@ -1,6 +1,7 @@
 import { and, eq, inArray, isNull, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { z } from "zod";
+import { PHONE_ALLOWED_CHARS_REGEX } from "@/lib/contact";
 import { db } from "./db";
 import { normalizePropertyWriteBody } from "./owners";
 import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
@@ -12,7 +13,6 @@ import { homeownerLeadIntakeSms } from "./sms-templates";
 import { isProvisionalWebOwner } from "./provisional-owner";
 export { PROPERTY_INTAKE_MARKER };
 
-const phoneRegex = /^[+\d\s()-]{6,50}$/;
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
 const stringOrNull = z
@@ -68,7 +68,7 @@ export const propertyIntakeSchema = z
     ownerName: z.string().trim().min(2).max(160),
     ownerOrgNr: shortStringOrNull(60),
     ownerContactPerson: shortStringOrNull(160),
-    ownerPhone: z.string().trim().regex(phoneRegex).max(50),
+    ownerPhone: z.string().trim().min(6).max(50).regex(PHONE_ALLOWED_CHARS_REGEX),
     ownerEmail: z
       .string()
       .trim()
