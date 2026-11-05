@@ -38,6 +38,16 @@ const SECTIONS = [
     ],
   },
   {
+    id: "gallring-hyrutsmart",
+    title: "Granska äldre bostadsanmälningar",
+    steps: [
+      "Gå igenom inaktiva bostadsanmälningar och korta intresseanmälningar efter 12 månader utan kontakt med uthyraren. Räkna från den senaste dokumenterade kontakten; om ingen kontakt har skett, räkna från registreringen.",
+      "Kontrollera kontaktloggen och tillgängliga mejl och meddelanden. Om den senaste kontakten eller bostadens aktivitet är oklar, utred först i stället för att anta att anmälan är inaktiv.",
+      "Pågående uthyrningar och aktiva ärenden hanteras separat. Kontrollera även om vissa uppgifter behöver sparas för avtal, bokföring eller andra lagkrav.",
+      "Bedöm om uppgifterna fortfarande behövs för sitt ändamål. Dokumentera beslutet och när det ska ses över igen. Om uppgifter inte längre behövs, planera borttagning från alla relevanta lagringsplatser; radera inte automatiskt enbart för att tolv månader har gått.",
+    ],
+  },
+  {
     id: "vinna-fakturera",
     title: "Vinna & fakturera",
     steps: [
