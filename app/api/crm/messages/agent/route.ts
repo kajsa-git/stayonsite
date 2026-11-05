@@ -4,7 +4,7 @@ import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
 import { reportMessageStatus } from "@/lib/crm/message-status";
 import { outboxMessages, properties } from "@/lib/crm/schema";
-import { HUS_PUBLICATION_SMS_SOURCE } from "@/lib/crm/hus-publication";
+import { HUS_PUBLICATION_SMS_SOURCE, OLD_HUS_PUBLICATION_SENTENCE } from "@/lib/crm/hus-publication";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,6 +25,10 @@ export async function GET(req: NextRequest) {
   const validHusListing = sql`EXISTS (SELECT 1 FROM ${properties} WHERE ${outboxMessages.id} = 'hus-publication:' || ${properties.id} AND ${properties.published} = 1 AND ${properties.contentReviewStatus} = 'approved' AND length(trim(${properties.publishConsentAt})) > 0)`;
   await db.update(outboxMessages).set({ status: "pending_publication", body: "Bostadslänken skickas när publiceringen är klar." })
     .where(and(eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE), eq(outboxMessages.status, "queued"), sql`NOT ${validHusListing}`));
+  // Older queued publication messages may still contain the retired wording.
+  // Remove just that sentence before claiming; leave all other messages intact.
+  await db.update(outboxMessages).set({ body: sql`replace(${outboxMessages.body}, ${OLD_HUS_PUBLICATION_SENTENCE}, '')` })
+    .where(and(eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE), eq(outboxMessages.status, "queued"), sql`instr(${outboxMessages.body}, ${OLD_HUS_PUBLICATION_SENTENCE}) > 0`));
   const eligible = or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing);
   const staleCutoff = new Date(Date.now() - 15 * 60_000).toISOString().replace("T", " ").slice(0, 19);
   const candidates = await db

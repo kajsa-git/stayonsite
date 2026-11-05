@@ -33,8 +33,8 @@ const SECTIONS = [
     steps: [
       "Nya uthyrare kommer in via husägarformuläret eller läggs in manuellt; objekt kan även importeras från Qasa/Airbnb-länk eller registreras av uthyraren själv via /registrera-bostad.",
       "Jaga-rundor (ej kontaktad → kontaktad → i dialog → bekräftad/nej) håller ordning på var dialogen står — de dyker upp i Min dag under Följ upp uthyrare.",
-      "SMS skrivs som utkast och skickas aldrig utan ditt godkännande i utkastpanelen. Svar läses in automatiskt från Messages och hamnar under Svar i Min dag.",
-      "Ett JA på publiceringsfrågan → publiceringsflödet: AI-beskrivning, publicera på /boenden och länk-SMS som utkast. Publikt visas aldrig exakt adress eller ägarkontakt — bara postnummer.",
+      "Personliga SMS kan skrivas som utkast och godkännas i utkastpanelen. Automatiska kvitton kan också skickas efter en anmälan eller publicering. Svar läses in automatiskt från Messages och hamnar under Svar i Min dag.",
+      "För HyrUtSmart väljer uthyraren separat om bostaden får publiceras. AI-kontrollen hjälper till med beskrivning och bilder; granska dem själv och publicera sedan i CRM. När bostaden publiceras skickas länken automatiskt via SMS. Exakt adress och ägarkontakt visas inte publikt.",
     ],
   },
   {
