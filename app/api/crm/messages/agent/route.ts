@@ -6,6 +6,7 @@ import { reportMessageStatus } from "@/lib/crm/message-status";
 import { outboxMessages, properties } from "@/lib/crm/schema";
 import { HUS_PUBLICATION_SMS_SOURCE, OLD_HUS_PUBLICATION_SENTENCE } from "@/lib/crm/hus-publication";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import { ensureReplyEngineSchema } from "@/lib/crm/reply-engine/store";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,13 @@ export async function GET(req: NextRequest) {
   // Remove just that sentence before claiming; leave all other messages intact.
   await db.update(outboxMessages).set({ body: sql`replace(${outboxMessages.body}, ${OLD_HUS_PUBLICATION_SENTENCE}, '')` })
     .where(and(eq(outboxMessages.source, HUS_PUBLICATION_SMS_SOURCE), eq(outboxMessages.status, "queued"), sql`instr(${outboxMessages.body}, ${OLD_HUS_PUBLICATION_SENTENCE}) > 0`));
-  const eligible = or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing);
+  // Kanal: Mac-agenten (SMS/iMessage) får allt utom WhatsApp. WhatsApp-agenten
+  // hämtar med ?channel=whatsapp och får bara sina egna rader.
+  await ensureReplyEngineSchema(db);
+  const wantWhatsapp = req.nextUrl.searchParams.get("channel") === "whatsapp";
+  const isWhatsapp = sql`EXISTS (SELECT 1 FROM crm_outbox_channels c WHERE c.outbox_id = ${outboxMessages.id} AND c.channel = 'whatsapp')`;
+  const channelFilter = wantWhatsapp ? isWhatsapp : sql`NOT ${isWhatsapp}`;
+  const eligible = and(channelFilter, or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing));
   const staleCutoff = new Date(Date.now() - 15 * 60_000).toISOString().replace("T", " ").slice(0, 19);
   const candidates = await db
     .select({ id: outboxMessages.id })

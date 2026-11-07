@@ -88,6 +88,7 @@ export function MobileTabBar() {
 
           <div className="mt-4 space-y-1">
             <MoreLink label="Översikt" onClick={() => go("/crm/oversikt")} />
+            <MoreLink label="Svarsmotorn" onClick={() => go("/crm/svarsmotor")} />
             <MoreLink label="Veckorapport" icon={BarChart3} onClick={() => go("/crm/veckorapport")} />
             <MoreLink label="Uthyrare" icon={KeyRound} onClick={() => go("/crm/uthyrare")} />
             <MoreLink label={billingTranslations.sv["billing.title"]} onClick={() => go("/crm/uthyrningar")} />

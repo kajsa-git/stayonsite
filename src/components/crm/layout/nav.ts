@@ -8,6 +8,7 @@ import {
   Home,
   KeyRound,
   LayoutDashboard,
+  MessagesSquare,
   type LucideIcon,
   Search,
   Truck,
@@ -43,6 +44,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/crm", label: "Min dag", icon: CalendarDays, exact: true, key: "d", badge: "followUps", also: ["/crm/work"] },
       { href: "/crm/flyttar", label: "In- & avflyttningar", icon: Truck, key: "m", badge: "moveSchedule" },
+      { href: "/crm/svarsmotor", label: "Svarsmotorn", icon: MessagesSquare, key: "a" },
     ],
   },
   {

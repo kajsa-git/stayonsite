@@ -9,7 +9,8 @@ import { normalizePhoneE164 } from "@/lib/crm/phone-links";
 import { contacts, inboxMessages, owners } from "@/lib/crm/schema";
 import { inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
+import { runReplyEngine } from "@/lib/crm/reply-engine/run";
 
 export const dynamic = "force-dynamic";
 
@@ -99,5 +100,9 @@ export async function POST(req: NextRequest) {
 
   // Idempotent: samma guid två gånger (agent-omstart, överlappande cursor) → no-op.
   await db.insert(inboxMessages).values(values).onConflictDoNothing({ target: inboxMessages.guid });
+  // Nya svar från kända kontakter → svarsmotorn direkt (gör inget om den är avstängd).
+  if (values.some((v) => v.direction === "in" && (v.ownerId || v.contactId))) {
+    after(() => runReplyEngine().then(() => undefined).catch((error) => console.error("Reply engine after ingest:", error)));
+  }
   return NextResponse.json({ inserted: values.length });
 }

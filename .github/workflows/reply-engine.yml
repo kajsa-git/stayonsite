@@ -1,0 +1,27 @@
+name: Svarsmotorn
+
+on:
+  schedule:
+    # Var 5:e minut kl. 05–20 UTC (06–21 vintertid, 07–22 sommartid). Motorn agerar
+    # själv bara 07–21 svensk tid; nya SMS hanteras dessutom direkt när de kommer in.
+    - cron: "*/5 5-20 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: reply-engine
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Svara, följ upp och lär av utkasten
+        env:
+          SYNC_SECRET: ${{ secrets.QUALIFICATION_SYNC_SECRET }}
+        run: |
+          test -n "$SYNC_SECRET"
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-all-errors --max-time 290 \
+            -H "Authorization: Bearer $SYNC_SECRET" \
+            https://www.stayonsite.se/api/cron/reply-engine
