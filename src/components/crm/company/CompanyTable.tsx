@@ -13,6 +13,7 @@ import useSWR from "swr";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { todayStockholm } from "@/lib/crm/date";
 import { LEAD_SOURCE_LABELS } from "@/lib/crm/lead-sources";
+import { SenderSuggestionsPanel } from "./SenderSuggestionsPanel";
 
 type CompanyFilter = "all" | "active" | "followup" | "no_followup";
 
@@ -106,6 +107,7 @@ function CompanyTableContent() {
       </div>
 
       <div className="flex-1 overflow-auto p-4">
+        <SenderSuggestionsPanel />
         <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-nordic-100 [&_th]:h-auto [&_th]:py-2.5 [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wide [&_th]:font-semibold [&_th]:whitespace-nowrap [&_th]:text-nordic-900">

@@ -23,9 +23,9 @@ import {
 import { ownerFollowUpSms } from "@/lib/crm/sms-templates";
 import { crmFetchJson } from "@/lib/crm/fetcher";
 import { DraftsPanel } from "./DraftsPanel";
-import { EmailWaitingPanel } from "./EmailWaitingPanel";
 import { RenewalsPanel, type RenewalRow } from "./RenewalsPanel";
-import { RepliesPanel } from "./RepliesPanel";
+import { ReplyInbox } from "./ReplyInbox";
+import type { ReplyInbox as ReplyInboxData } from "@/lib/crm/reply-inbox";
 import { AnimatePresence, motion } from "framer-motion";
 function fireConfetti() {
   import("canvas-confetti").then((mod) =>
@@ -71,7 +71,7 @@ const CHASE_TOAST: Record<string, string> = {
 // Skrivna för någon som ALDRIG använt systemet — inga interna begrepp utan
 // förklaring. Korten är små (text-xs), håll varje text till 2–3 rader.
 const STEPS = [
-  { emoji: "💬", title: "Svar", text: "Inkomna SMS från uthyrare och kunder, automatiskt inlästa. Svarar en uthyrare ja på publicering kan du publicera och skicka länken med ett klick." },
+  { emoji: "📥", title: "Att svara på", text: "SMS och mejl från kunder och uthyrare, en rad per person. Svara och avsluta med ett beslut — återkomst, till avtal eller ny förfrågan — så landar det i kolumnerna nedan. Svarar en uthyrare ja på publicering kan du publicera och skicka länken med ett klick." },
   { emoji: "🔁", title: "Förlängningar", text: "Pågående uthyrningar som snart når sitt slutdatum. Fråga kunden om förlängning innan avtalet rinner ut — färdigt SMS finns." },
   { emoji: "📞", title: "Återkomster", text: "Företag du bokat att höra av dig till idag — skälet står på kortet. Avsluta alltid med ett beslut: ny återkomst, avtal/fakturering eller nej." },
   { emoji: "📋", title: "Öppna uppdrag", text: "Företag med aktiv förfrågan men ingen bokad återkomst — utan datum glöms de bort. Boka en återkomst så flyttas de till Återkomster." },
@@ -236,6 +236,12 @@ export function MyDayView() {
 
   const { data, mutate, isLoading, error } = useSWR<QueueData>("/api/crm/queues", fetcher, { refreshInterval: 15000 });
   const queues = data ?? { followUps: [], openWithoutFollowUp: [], agreements: [], toInvoice: [], chaseLandlords: [], rentalReviews: [], renewals: [] };
+
+  // Att svara på: olästa SMS + mejl som väntar på svar, per person. Samma data märker
+  // korten i kolumnerna nedan ("svar väntar") så att ingen hanteras två gånger.
+  const replies = useSWR<ReplyInboxData>("/api/crm/replies", fetcher, { refreshInterval: 15000 });
+  const replyCompanyIds = new Set((replies.data?.groups ?? []).map((g) => g.companyId).filter(Boolean) as string[]);
+  const replyOwnerIds = new Set((replies.data?.groups ?? []).map((g) => g.ownerId).filter(Boolean) as string[]);
   const loading = isLoading && !data;
 
   // Flytt-flagga: in-/avflyttningar på gång den närmaste veckan (≤ 7 dagar, samma räknare som fliken).
@@ -531,6 +537,58 @@ export function MyDayView() {
     };
   }, []);
 
+  // Var ligger företaget i funneln idag? (samma kort/variant som kolumnerna)
+  function funnelCard(companyId: string): { item: CompanyCard; variant: CardVariant } | null {
+    const columns: [CompanyCard[], CardVariant][] = [
+      [queues.followUps, "followup"],
+      [queues.openWithoutFollowUp, "open"],
+      [queues.agreements, "agreement"],
+      [queues.toInvoice, "invoice"],
+    ];
+    for (const [items, variant] of columns) {
+      const item = items.find((c) => c.id === companyId);
+      if (item) return { item, variant };
+    }
+    return null;
+  }
+
+  // Samma regel som "Till avtal" på kortet: en enda förfrågan, inkommen eller under matchning.
+  function canMarkWonFromReply(companyId: string): boolean {
+    const f = funnelCard(companyId);
+    if (!f || f.variant === "invoice" || f.item.openRequests.length > 1) return false;
+    return f.item.openRequests.some((r) => r.status === "incoming" || r.status === "matching");
+  }
+
+  async function ownerFollowUpFromReply(ownerId: string, days: number) {
+    await crmFetchJson(`/api/crm/owners/${ownerId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followUpDate: plusDays(days) }),
+    });
+    mutate();
+    toast({ title: days === 1 ? "Återkomst imorgon" : `Återkomst om ${days} dagar` });
+  }
+
+  async function companyFollowUpFromReply(companyId: string, days: number) {
+    await crmFetchJson(`/api/crm/companies/${companyId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followUpDate: plusDays(days) }),
+    });
+    mutate();
+    toast({ title: days === 1 ? "Återkomst imorgon" : `Återkomst om ${days} dagar` });
+  }
+
+  async function createRequestFromReply(companyId: string) {
+    await crmFetchJson("/api/crm/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ companyId, status: "incoming" }),
+    });
+    mutate();
+    toast({ title: "Förfrågan skapad — ligger i Öppna uppdrag" });
+  }
+
   function actionsFor(item: CompanyCard, variant: CardVariant) {
     const key = `${variant}:${item.id}`;
     return {
@@ -560,6 +618,7 @@ export function MyDayView() {
         item={item}
         today={today}
         variant={variant}
+        replyWaiting={replyCompanyIds.has(item.id)}
         onOpen={onOpen}
         onSnooze={a.onSnooze}
         onSchedule={a.onSchedule}
@@ -656,9 +715,19 @@ export function MyDayView() {
         </div>
       )}
 
-      {/* Svar + Förlängningar: dagens viktigaste — inkommande och utgående pengar. */}
-      <RepliesPanel />
-      <EmailWaitingPanel />
+      {/* Att svara på + Förlängningar: dagens viktigaste — inkommande och utgående pengar. */}
+      <ReplyInbox
+        data={replies.data}
+        onChanged={() => Promise.all([replies.mutate(), mutate()])}
+        canMarkWon={canMarkWonFromReply}
+        onMarkWon={(companyId) => {
+          const f = funnelCard(companyId);
+          if (f) actionsFor(f.item, f.variant).onMarkWon();
+        }}
+        onCompanyFollowUp={companyFollowUpFromReply}
+        onOwnerFollowUp={ownerFollowUpFromReply}
+        onCreateRequest={createRequestFromReply}
+      />
       <RenewalsPanel renewals={queues.renewals} onChanged={() => mutate()} />
 
       {counts.moveSchedule > 0 && (
@@ -764,7 +833,7 @@ export function MyDayView() {
             renderItem={(item) => (
               <ChaseCard
                 key={`rentalReview:${item.propertyId}`}
-                item={item} today={today}
+                item={{ ...item, hasReply: item.hasReply || (!!item.ownerId && replyOwnerIds.has(item.ownerId)) }} today={today}
                 onOpen={() => router.push(`/crm/properties?id=${item.propertyId}`)}
                 onAction={(action) => chaseAction(item, action)}
                 onSendSms={(body) => chaseSendSms(item, body)}
@@ -780,7 +849,7 @@ export function MyDayView() {
             renderItem={(item) => (
               <ChaseCard
                 key={`${item.source}:${item.propertyId ?? item.ownerId}`}
-                item={item}
+                item={{ ...item, hasReply: item.hasReply || (!!item.ownerId && replyOwnerIds.has(item.ownerId)) }}
                 today={today}
                 onOpen={() => router.push(item.source === "owner" ? `/crm/uthyrare/${item.ownerId}` : `/crm/properties?id=${item.propertyId}`)}
                 onAction={(action) => chaseAction(item, action)}
@@ -948,10 +1017,13 @@ export function CompanyDayCard({
   onMarkInvoiced,
   onMarkLost,
   onClearFollowUp,
+  replyWaiting = false,
 }: {
   item: CompanyCard;
   today: string;
   variant: CardVariant;
+  /** Personen har skrivit (SMS/mejl) och väntar på svar — hanteras i Att svara på. */
+  replyWaiting?: boolean;
   onOpen: () => void;
   onSnooze: (days: number) => void | Promise<void>;
   onSchedule: (date: string, time: string) => void | Promise<void>;
@@ -991,7 +1063,7 @@ export function CompanyDayCard({
   return (
     <div
       className={`group rounded-lg bg-white border transition-[border-color,box-shadow] duration-200 hover:shadow-md hover:shadow-nordic-900/5 ${
-        isPast ? "border-red-300" : "border-border hover:border-nordic-300"
+        isPast ? "border-red-300" : replyWaiting ? "border-blue-300" : "border-border hover:border-nordic-300"
       }`}
     >
       {/* Klickbar huvud */}
@@ -1014,6 +1086,12 @@ export function CompanyDayCard({
           <ArrowRight className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#ff6300] transition-transform duration-200 group-hover:translate-x-0.5" />
           <span className="min-w-0 line-clamp-3 break-words" title={nextStep}>{nextStep}</span>
         </div>
+
+        {replyWaiting && (
+          <span className="mt-1.5 inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
+            💬 Svar väntar — se Att svara på
+          </span>
+        )}
 
         {/* Återkomst-badge (followup-variant) */}
         {variant === "followup" && item.followUpDate && (
@@ -1216,7 +1294,7 @@ function ChaseCard({
         </div>
         {item.hasReply && (
           <span className="inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 mt-1.5">
-            💬 Har svarat — läs i Svar-panelen
+            💬 Har svarat — se Att svara på
           </span>
         )}
         {item.reason && (

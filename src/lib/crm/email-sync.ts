@@ -646,6 +646,7 @@ export interface WaitingThread {
   unreadIds: string[];
   companyId: string | null;
   companyName: string | null;
+  contactId: string | null;
   contactName: string | null;
   ownerId: string | null;
   ownerName: string | null;
@@ -669,6 +670,7 @@ export async function computeWaitingEmails(opts: { db?: DB; days?: number; now?:
       sentAt: emails.sentAt,
       companyId: emails.companyId,
       ownerId: emails.ownerId,
+      contactId: emails.contactId,
       companyName: companies.name,
       ownerName: owners.name,
       contactName: contacts.name,
@@ -707,7 +709,8 @@ export async function computeWaitingEmails(opts: { db?: DB; days?: number; now?:
       unreadIds: list.filter((m) => m.direction === "in" && !m.isRead).map((m) => m.id),
       companyId: linked.find((m) => m.companyId)?.companyId ?? null,
       companyName: linked.find((m) => m.companyName)?.companyName ?? null,
-      contactName: latest.contactName ?? null,
+      contactId: linked.find((m) => m.contactId)?.contactId ?? null,
+      contactName: linked.find((m) => m.contactName)?.contactName ?? null,
       ownerId: linked.find((m) => m.ownerId)?.ownerId ?? null,
       ownerName: linked.find((m) => m.ownerName)?.ownerName ?? null,
     });
