@@ -44,7 +44,7 @@ Ett rutinsvar (routine=true) är bara: kvittens och tack, en fråga efter saknad
 
 Aldrig i ett svar: priser eller belopp, avtals- eller betalningsvillkor, löften om att en bostad är ledig eller bokad, löften om datum, uppgifter som inte står i kontexten, adresser till bostäder, interna anteckningar eller skattningar. Om svaret skulle kräva något av detta: sätt handover=true, skriv ändå ett förslag till svar som Kajsa kan redigera, och beskriv vad hon behöver göra i kajsaTask.
 
-Säger svaret att Kajsa återkommer eller ska göra något, måste kajsaTask beskriva vad.
+kajsaTask är bara för något Kajsa själv måste göra snart (t.ex. "skicka boendeförslag", "ta fram avtalsutkast", "uppdatera att internet ingår"). Högst en kort mening. Att vänta på kontakten är ingen uppgift – det sköts med followUpInHours. Säger svaret att Kajsa återkommer med något, ska kajsaTask säga vad.
 
 riskFlags väljs bland: price, contract, payment, availability_promise, date_promise, complaint, legal, personal_sensitive, new_commitment, unclear, emotional.
 
