@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { db as defaultDb } from "../db";
 import { todayStockholm } from "../date";
 import { gmailAutomationUserId, gmailSend, gmailThreadReplyHeaders } from "../gmail";
-import { companies, emails, inboxMessages, notes, outboxMessages, owners } from "../schema";
+import { companies, emails, inboxMessages, notes, outboxMessages, owners, properties, propertyNotes } from "../schema";
 import { buildPartyContext, normalizeTime, stripQuoted, type Party } from "./context";
 import { buildDecisionPrompt, decide } from "./decide";
 import { applyPolicy, nextFollowUpAt, withinActiveHours, type ModelDecision } from "./policy";
@@ -196,6 +196,11 @@ async function notifyKajsa(db: DB, party: Party, reason: string): Promise<void> 
     const [o] = await db.select({ followUpDate: owners.followUpDate }).from(owners).where(eq(owners.id, party.ownerId));
     if (o && (!o.followUpDate || o.followUpDate > today)) {
       await db.update(owners).set({ followUpDate: today, followUpTime: time, followUpReason: label }).where(eq(owners.id, party.ownerId));
+    }
+    // Anteckning på bostaden när uthyraren bara har en – annars vet vi inte vilken det gäller.
+    const props = await db.select({ id: properties.id }).from(properties).where(eq(properties.ownerId, party.ownerId)).limit(2);
+    if (props.length === 1) {
+      await db.insert(propertyNotes).values({ id: nanoid(), propertyId: props[0].id, channel: "svarsmotor", content: label, source: "crm" });
     }
   }
 }
@@ -494,6 +499,8 @@ export interface PreviewResult {
   decision: ModelDecision | null;
   wouldDo: string;
   reasons: string[];
+  /** Vad Kajsa faktiskt svarade (första svaret efter meddelandet), för jämförelse. */
+  kajsaActual: string | null;
   error?: string;
 }
 
@@ -501,7 +508,7 @@ export interface PreviewResult {
 export async function previewRecent(opts: { db?: DB; limit?: number } = {}): Promise<PreviewResult[]> {
   const db = opts.db ?? defaultDb;
   const settings = await getSettings(db);
-  const limit = Math.min(10, Math.max(1, opts.limit ?? 5));
+  const limit = Math.min(20, Math.max(1, opts.limit ?? 5));
   const since = new Date(Date.now() - 30 * 24 * 3600_000).toISOString();
   const smsRows = await db.select().from(inboxMessages)
     .where(and(eq(inboxMessages.direction, "in"), gte(inboxMessages.sentAt, since), or(isNotNull(inboxMessages.ownerId), isNotNull(inboxMessages.contactId))))
@@ -526,16 +533,17 @@ export async function previewRecent(opts: { db?: DB; limit?: number } = {}): Pro
   const results: PreviewResult[] = [];
   for (const item of items) {
     try {
-      const ctx = await buildPartyContext(item.party, { db });
+      const ctx = await buildPartyContext(item.party, { db, until: item.at });
       const prompt = buildDecisionPrompt({
         ctx, channel: item.channel, inbound: { text: item.text, subject: item.subject, at: item.at },
-        playbook: settings.playbook, corrections, nowText: nowText(), mode: "reply",
+        playbook: settings.playbook, corrections, nowText: new Date(normalizeTime(item.at)).toLocaleString("sv-SE", { timeZone: "Europe/Stockholm", dateStyle: "full", timeStyle: "short" }), mode: "reply",
       });
       const { decision } = await decide(prompt);
       const policy = applyPolicy({ mode: "auto", channel: item.channel, inboundText: item.text, decision, autoSentLast24h: 0 });
-      results.push({ channel: item.channel, inbound: item.text.slice(0, 600), at: item.at, party: item.party, decision, wouldDo: policy.action, reasons: policy.reasons });
+      const kajsaActual = ctx.later.find((l) => l.from === "Kajsa")?.text ?? null;
+      results.push({ channel: item.channel, inbound: item.text.slice(0, 600), at: item.at, party: item.party, decision, wouldDo: policy.action, reasons: policy.reasons, kajsaActual });
     } catch (error) {
-      results.push({ channel: item.channel, inbound: item.text.slice(0, 600), at: item.at, party: item.party, decision: null, wouldDo: "error", reasons: [], error: error instanceof Error ? error.message : String(error) });
+      results.push({ channel: item.channel, inbound: item.text.slice(0, 600), at: item.at, party: item.party, decision: null, wouldDo: "error", reasons: [], kajsaActual: null, error: error instanceof Error ? error.message : String(error) });
     }
   }
   return results;

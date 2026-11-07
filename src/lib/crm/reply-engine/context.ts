@@ -42,6 +42,8 @@ export interface PartyContext {
   languages: string[];
   text: string;
   conversation: ConversationLine[];
+  /** Det som hände efter "until" (bara vid test mot historiken). */
+  later: ConversationLine[];
 }
 
 const clip = (s: string | null | undefined, n: number) => {
@@ -65,7 +67,7 @@ function line(label: string, value: unknown): string | null {
   return `${label}: ${value}`;
 }
 
-export async function buildPartyContext(party: Party, opts: { db?: DB; channelHint?: "sms" | "whatsapp" | "email" } = {}): Promise<PartyContext> {
+export async function buildPartyContext(party: Party, opts: { db?: DB; channelHint?: "sms" | "whatsapp" | "email"; until?: string } = {}): Promise<PartyContext> {
   const db = opts.db ?? defaultDb;
   const sections: string[] = [];
   let name: string | null = null;
@@ -218,7 +220,9 @@ export async function buildPartyContext(party: Party, opts: { db?: DB; channelHi
     }
   }
   conversation.sort((a, b) => normalizeTime(a.at).localeCompare(normalizeTime(b.at)));
-  const recent = conversation.slice(-30);
+  // "until": visa samtalet som det såg ut när meddelandet kom in (för test mot historiken).
+  const cutoff = opts.until ? normalizeTime(opts.until) : null;
+  const recent = (cutoff ? conversation.filter((l) => normalizeTime(l.at) <= cutoff) : conversation).slice(-30);
 
   const partyType = party.ownerId && companyId ? "both" : party.ownerId ? "owner" : companyId ? "company" : "unknown";
   return {
@@ -230,6 +234,7 @@ export async function buildPartyContext(party: Party, opts: { db?: DB; channelHi
     languages,
     text: sections.join("\n\n"),
     conversation: recent,
+    later: cutoff ? conversation.filter((l) => normalizeTime(l.at) > cutoff) : [],
   };
 }
 

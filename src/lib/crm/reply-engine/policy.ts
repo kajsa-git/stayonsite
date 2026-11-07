@@ -115,7 +115,13 @@ export function applyPolicy(input: PolicyInput): PolicyResult {
   const hasReply = Boolean(d.needsReply && d.reply?.trim());
 
   if (!d.needsReply && !d.handover) {
-    return { action: mode === "shadow" ? "shadow" : "no_reply", draft: false, notifyKajsa: false, reasons: ["inget svar behövs"] };
+    const task = d.kajsaTask?.trim();
+    return {
+      action: mode === "shadow" ? "shadow" : "no_reply",
+      draft: false,
+      notifyKajsa: mode !== "shadow" && Boolean(task),
+      reasons: task ? ["inget svar behövs", `att göra: ${task}`] : ["inget svar behövs"],
+    };
   }
 
   if (mode === "shadow") {

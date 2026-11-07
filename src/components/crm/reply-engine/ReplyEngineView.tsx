@@ -50,6 +50,7 @@ interface Preview {
   decision: { intent: string; outcomeGoal: string; nextStep: string | null; reply: string | null; kajsaTask: string | null; confidence: number } | null;
   wouldDo: string;
   reasons: string[];
+  kajsaActual: string | null;
   error?: string;
 }
 
@@ -180,7 +181,7 @@ export function ReplyEngineView() {
       {preview && (
         <section className="rounded-xl border bg-white p-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-nordic-900">Test – så här hade motorn gjort (inget skickat)</h2>
+            <h2 className="text-sm font-semibold text-nordic-900">Test – så här hade motorn gjort när meddelandet kom in (inget skickat)</h2>
             <button type="button" className="text-xs text-muted-foreground hover:underline" onClick={() => setPreview(null)}>Stäng</button>
           </div>
           <div className="mt-3 space-y-3">
@@ -198,6 +199,7 @@ export function ReplyEngineView() {
                     {p.decision.kajsaTask && <p className="mt-1 text-xs text-amber-800">Att göra för dig: {p.decision.kajsaTask}</p>}
                   </>
                 )}
+                {p.kajsaActual && <p className="mt-1 text-xs text-nordic-600">Du svarade då: “{p.kajsaActual}”</p>}
                 {p.reasons.length > 0 && <p className="mt-1 text-xs text-muted-foreground">Varför: {p.reasons.join("; ")}</p>}
                 {p.error && <p className="mt-1 text-xs text-red-700">{p.error}</p>}
               </div>

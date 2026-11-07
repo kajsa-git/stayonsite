@@ -77,6 +77,11 @@ describe("svarsmotorns regler", () => {
   it("svarar inte när inget svar behövs", () => {
     expect(input({ needsReply: false, reply: null })).toMatchObject({ action: "no_reply", notifyKajsa: false });
   });
+
+  it("lägger en uppgift hos Kajsa även när inget svar behövs", () => {
+    expect(input({ needsReply: false, reply: null, kajsaTask: "notera att internet ingår" })).toMatchObject({ action: "no_reply", notifyKajsa: true });
+    expect(input({ needsReply: false, reply: null, kajsaTask: "notera" }, { mode: "shadow" })).toMatchObject({ action: "shadow", notifyKajsa: false });
+  });
 });
 
 describe("tider", () => {

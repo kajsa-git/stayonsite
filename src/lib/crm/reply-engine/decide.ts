@@ -52,6 +52,8 @@ followUpInHours: om vi ställer en fråga eller väntar på något från kontakt
 
 needsReply=false när meddelandet bara är ett "ok/tack/👍", när Kajsa redan har svarat på det senaste, eller när det inte förtjänar ett svar.
 
+Skriv partyRole, intent, stage, outcomeGoal, nextStep, kajsaTask och summary på svenska och kort (några ord, högst en mening). kajsaTask bara när Kajsa faktiskt behöver göra något.
+
 Om playbooken nedan och dessa regler säger olika saker gäller dessa regler.`;
 
 export function buildDecisionPrompt(args: {
