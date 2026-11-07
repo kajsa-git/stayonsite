@@ -8,12 +8,13 @@ import Footer from "@/components/Footer"
 import SEO from "@/components/SEO"
 import { buildMetadata } from "@/lib/metadata"
 import { db } from "@/lib/crm/db"
-import { properties } from "@/lib/crm/schema"
+import { properties, propertyImages } from "@/lib/crm/schema"
 import { eq } from "drizzle-orm"
 import { loadPublicProperty } from "@/lib/crm/public-property"
 import { publicDisplayName } from "@/lib/crm/slug"
-import { publicPropertyDescription, truncateSeoDescription } from "@/lib/crm/public-seo"
-import { cities } from "@/data/cities"
+import { publicPropertyDescription, publicPropertyTitle, truncateSeoDescription } from "@/lib/crm/public-seo"
+import { getCityForLocality } from "@/data/cities"
+import { publicPropertyImageUrl } from "@/lib/crm/public-images"
 import { WebsitePropertyShowcase } from "@/components/prospekt/WebsitePropertyShowcase"
 import { hasCurrentPublicAvailability, hasWebsitePropertyStatus } from "@/lib/crm/publication"
 import { isHusTestProperty } from "@/lib/crm/test-property"
@@ -75,9 +76,13 @@ export async function generateMetadata(
       beds: p.beds,
     }),
   )
+  const [firstImage] = p.slug
+    ? await db.select({ id: propertyImages.id }).from(propertyImages).where(eq(propertyImages.propertyId, p.id)).limit(1)
+    : []
   return buildMetadata({
-    title: `${name} | StayOnSite`,
+    title: `${publicPropertyTitle({ name, city: p.city, bedrooms: p.bedrooms, beds: p.beds })} | StayOnSite`,
     description,
+    ...(firstImage && p.slug ? { ogImage: publicPropertyImageUrl(p.slug, 1) } : {}),
     canonical,
     hreflangs: [
       { lang: "sv", href: canonical },
@@ -116,8 +121,7 @@ export default async function BoendeDetailPage(
     beds: p.beds,
   })
 
-  const cityName = p.city?.trim().toLowerCase()
-  const cityPage = cityName ? cities.find((c) => c.name.toLowerCase() === cityName) : undefined
+  const cityPage = getCityForLocality(p.city)
 
   const contactMsg = `Hej Kajsa! Jag är intresserad av "${name}" i ${place}. Kan ni berätta mer om tillgänglighet?`
   const mailHref = `mailto:kajsa@stayonsite.se?subject=${encodeURIComponent(`Intresseanmälan: ${name}`)}&body=${encodeURIComponent(contactMsg)}`
@@ -130,7 +134,9 @@ export default async function BoendeDetailPage(
     name,
     url: canonical,
     description,
-    ...(images[0] ? { image: images[0] } : {}),
+    ...(images.length && p.slug
+      ? { image: images.slice(0, 10).map((_, i) => publicPropertyImageUrl(p.slug as string, i + 1)) }
+      : {}),
     ...(p.city
       ? {
           address: {

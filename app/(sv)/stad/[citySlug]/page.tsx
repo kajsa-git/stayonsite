@@ -46,6 +46,6 @@ export default async function Page({ params }: { params: Promise<{ citySlug: str
   const { citySlug } = await params
   const city = cities.find((c) => c.slug === citySlug)
   if (!city) notFound()
-  const listings = await getCityListings(city.name)
+  const listings = await getCityListings(city.name, city.listingLocalities)
   return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCitySummaries(citySlug)} listings={listings} />
 }

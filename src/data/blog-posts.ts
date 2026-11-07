@@ -72,6 +72,69 @@ const RENTAL_REFORM_SOURCES: BlogSource[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'boende-figeholm-okg-clab',
+    title: {
+      sv: 'Boende i Figeholm för arbete på OKG och Clab',
+      en: 'Accommodation in Figeholm for work at OKG and Clab',
+      pl: 'Zakwaterowanie w Figeholm przy pracy w OKG i Clab',
+    },
+    description: {
+      sv: 'Söker ni boende i Figeholm nära OKG och Clab i Simpevarp? Jämför Figeholm och Oskarshamn för skiftlag och revisionsteam. Företagsboende från tre månader.',
+      en: 'Looking for accommodation in Figeholm near OKG and Clab in Simpevarp? Compare Figeholm and Oskarshamn for shift and outage teams. Stays from three months.',
+      pl: 'Szukasz noclegów w Figeholm blisko OKG i Clab w Simpevarp? Porównaj Figeholm i Oskarshamn dla ekip zmianowych. Pobyty od trzech miesięcy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-11-07',
+    category: 'Lokal guide',
+    tags: ['Figeholm', 'Oskarshamn', 'OKG', 'Clab', 'personalboende', 'montörboende'],
+    readingTime: 5,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Figeholm ligger knappt två mil norr om Oskarshamns stad och enligt kommunen bara några kilometer från OKG.',
+      'Utgå från infarten eller mötesplatsen i Simpevarp och lagets skifttider när ni jämför Figeholm med Oskarshamn.',
+      'SKB planerar en inkapslingsanläggning intill Clab; byggstarten är inte fastställd och boendebehovet utgår från er egen bekräftade tidplan.',
+      'StayOnSite hyr ut möblerade företagsboenden i Oskarshamns kommun för perioder från tre månader.',
+    ],
+    faq: [
+      {
+        q: 'Finns det företagsboende i Figeholm?',
+        a: 'Ja. StayOnSite ordnar möblerade hus och lägenheter för arbetslag i Figeholm och resten av Oskarshamns kommun. Utbudet varierar, så kontakta oss för att stämma av tillgänglighet för era datum.',
+      },
+      {
+        q: 'Är Figeholm eller Oskarshamn bäst för arbete på OKG?',
+        a: 'Figeholm ger ofta kortare resväg till Simpevarp, medan Oskarshamn har fler bostäder och mer service. Jämför restiden från den konkreta bostaden vid lagets skifttider.',
+      },
+      {
+        q: 'Hur länge kan vi hyra?',
+        a: 'Vi hyr ut från tre månader och uppåt. Ange bekräftade datum och den period som kan tillkomma, så går vi igenom villkoren för förlängning innan ni bokar.',
+      },
+      {
+        q: 'Ordnar ni tillträde till OKG eller Clab?',
+        a: 'Nej. Tillträdeshandlingar, kontroller och utbildningar hanteras enligt anläggningens och arbetsgivarens rutiner. StayOnSite hjälper till med boendet.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Planlagd mark för bostäder med havsutsikt i Figeholm',
+        publisher: 'Oskarshamns kommun',
+        url: 'https://www.oskarshamn.se/bygga-bo-miljo/samhallsplanering-kart--och-mattjanster/mark-och-exploatering/planlagd-mark-for-bostader-med-havsutsikt-i-figeholm/',
+        checkedDate: '2026-11-07',
+      },
+      {
+        title: 'För dig som ska arbeta på OKG',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/',
+        checkedDate: '2026-11-07',
+      },
+      {
+        title: 'Inkapslingsanläggning',
+        publisher: 'SKB',
+        url: 'https://skb.se/projekt-for-framtiden/inkapslingsanlaggning/',
+        checkedDate: '2026-11-07',
+      },
+    ],
+  },
+  {
     slug: 'boende-norrsundet-foretag',
     title: {
       sv: 'Boende i Norrsundet för företag och arbetslag',

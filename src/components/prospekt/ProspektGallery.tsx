@@ -16,10 +16,13 @@ export function ProspektGallery({
   images,
   imagesLabel,
   fullBleed = false,
+  altBase,
 }: {
   images: string[];
   imagesLabel?: string;
   fullBleed?: boolean;
+  /** Objektets namn — ger beskrivande alt-texter ("Villa i Figeholm (2/9)"). */
+  altBase?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -44,6 +47,7 @@ export function ProspektGallery({
   };
 
   const [hero, ...rest] = images;
+  const altFor = (i: number) => (altBase?.trim() ? `${altBase.trim()} (${i + 1}/${images.length})` : `Bild ${i + 1}`);
 
   return (
     <>
@@ -56,7 +60,7 @@ export function ProspektGallery({
           }`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={hero} alt="Bild 1" className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+          <img src={hero} alt={altFor(0)} className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
           <span className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
             <Expand className="h-3.5 w-3.5" />
             {imagesLabel ?? `${images.length} bilder`}
@@ -75,7 +79,7 @@ export function ProspektGallery({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={url}
-                  alt={`Bild ${i + 2}`}
+                  alt={altFor(i + 1)}
                   className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </button>
@@ -92,7 +96,7 @@ export function ProspektGallery({
               {images.map((url, i) => (
                 <CarouselItem key={i} className="flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt={`Bild ${i + 1}`} className="max-h-[80vh] w-auto rounded-lg object-contain" />
+                  <img src={url} alt={altFor(i)} className="max-h-[80vh] w-auto rounded-lg object-contain" />
                 </CarouselItem>
               ))}
             </CarouselContent>

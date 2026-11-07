@@ -50,6 +50,7 @@ import CityGuideSections, { CityGuideNavigation } from '@/components/CityGuideSe
 interface CityListingItem {
   slug: string;
   name: string;
+  city: string | null;
   postalCode: string | null;
   bedrooms: number | null;
   beds: number | null;
@@ -83,6 +84,16 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
       href: '/blogg/personalboende-okg-oskarshamn-guide',
       title: 'Planera personalboende vid OKG',
       description: 'Checklista för skift, restid, parkering och ansvar vid arbete i Simpevarp.',
+    },
+    {
+      href: '/blogg/boende-figeholm-okg-clab',
+      title: 'Boende i Figeholm för OKG och Clab',
+      description: 'Jämför Figeholm och Oskarshamn utifrån resväg till Simpevarp, skift och lagets storlek.',
+    },
+    {
+      href: '/blogg/vad-kostar-personalboende-sverige-2026-verkliga-priser',
+      title: 'Vad kostar personalboende?',
+      description: 'Prisnivåer ur vårt utbud, bland annat i Oskarshamn, och vad som driver priset.',
     },
   ],
   gavle: [
@@ -689,10 +700,10 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                         </CardHeader>
                         <CardContent>
                           <div className="flex flex-wrap gap-2 text-sm text-gray-600">
-                            {l.postalCode && (
+                            {(l.postalCode || (l.city && l.city !== city.name)) && (
                               <span className="inline-flex items-center gap-1">
                                 <MapPin className="h-4 w-4" />
-                                {l.postalCode} {city.name}
+                                {[l.postalCode, l.city ?? city.name].filter(Boolean).join(' ')}
                               </span>
                             )}
                             {l.bedrooms != null && <Badge variant="secondary">{l.bedrooms} sovrum</Badge>}

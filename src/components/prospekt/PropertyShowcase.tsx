@@ -95,7 +95,7 @@ export function PropertyShowcase({
       )}
 
       {/* Gallery */}
-      <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} />
+      <ProspektGallery images={images} imagesLabel={tr.photos(images.length)} altBase={title} />
 
       {/* Description */}
       {description && (

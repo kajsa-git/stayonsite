@@ -69,6 +69,8 @@ export interface City {
   guide?: CityGuide;
   faq: CityFAQ[];
   nearby: string[];
+  /** Orter i samma kommun vars publicerade boenden också visas på stadssidan. */
+  listingLocalities?: string[];
 }
 
 export const cities: City[] = [
@@ -1455,6 +1457,7 @@ export const cities: City[] = [
       ['corporate housing oskarshamn', 'nuclear power staff apartments', 'accommodation oskarshamn', 'okg construction housing oskarshamn', 'worker accommodation oskarshamn sweden', 'temporary housing oskarshamn'],
       ['zakwaterowanie pracownicze oskarshamn', 'mieszkania energetyka jądrowa', 'noclegi okg oskarshamn', 'noclegi dla budowlańców oskarshamn szwecja', 'kwatery pracownicze oskarshamn', 'tymczasowe zakwaterowanie oskarshamn szwecja']
     ),
+    listingLocalities: ['Figeholm', 'Fårbo', 'Påskallavik', 'Kristdala', 'Misterhult'],
     ...cityGuideContent.oskarshamn
   },
   {
@@ -1468,6 +1471,7 @@ export const cities: City[] = [
       ['worker housing monsteras', 'accommodation monsteras sweden', 'corporate housing monsteras', 'sodra cell worker accommodation'],
       ['zakwaterowanie pracownicze monsteras', 'noclegi monsteras szwecja', 'kwatery pracownicze monsteras']
     ),
+    listingLocalities: ['Blomstermåla', 'Timmernabben', 'Ålem'],
     ...cityGuideContent.monsteras
   },
   {
@@ -2888,6 +2892,26 @@ export const citySlugs = cities.map((city) => city.slug);
 
 export const getCityBySlug = (slug: string): City | undefined => {
   return cities.find((city) => city.slug === slug);
+};
+
+const normalizeLocality = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/å/g, 'a')
+    .replace(/ä/g, 'a')
+    .replace(/ö/g, 'o')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+/** Stadssidan som ett boendes ort hör till: själva staden eller en av dess listade orter. */
+export const getCityForLocality = (locality: string | null | undefined): City | undefined => {
+  if (!locality?.trim()) return undefined;
+  const wanted = normalizeLocality(locality);
+  return (
+    cities.find((city) => normalizeLocality(city.name) === wanted) ??
+    cities.find((city) => city.listingLocalities?.some((name) => normalizeLocality(name) === wanted))
+  );
 };
 
 export const getNearbyCities = (slug: string, count = 2): City[] => {

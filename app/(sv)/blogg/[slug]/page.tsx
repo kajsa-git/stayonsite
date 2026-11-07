@@ -49,8 +49,10 @@ import ChecklistaPersonalboende from '@/views/blogg/ChecklistaPersonalboende'
 import ForberedHusBodenForetagetsArbetslag2026 from '@/views/blogg/ForberedHusBodenForetagetsArbetslag2026'
 import ForetagsbostaderGavleGuide2026 from '@/views/blogg/ForetagsbostaderGavleGuide2026'
 import BoendeNorrsundetForetag from '@/views/blogg/BoendeNorrsundetForetag'
+import BoendeFigeholmOkgClab from '@/views/blogg/BoendeFigeholmOkgClab'
 
 const componentMap: Record<string, React.ComponentType> = {
+  'boende-figeholm-okg-clab': BoendeFigeholmOkgClab,
   'boende-norrsundet-foretag': BoendeNorrsundetForetag,
   'checklista-personalboende-boendebrief': ChecklistaPersonalboende,
   'personalboende-okg-oskarshamn-guide': PersonalboendeOkgOskarshamnGuide,

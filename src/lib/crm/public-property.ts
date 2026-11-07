@@ -1,11 +1,12 @@
 import { approvedPropertyIds } from "./approved-property-content";
 import { completePublicDescription } from "./public-description-translations";
-import { asc, desc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { db } from "./db";
 import { isSwedishCountry } from "./owners";
 import { R2_BUCKET, r2 } from "./r2";
+import { galleryOrder, publicPropertyImagePath } from "./public-images";
 import { properties, propertyImages, type Property } from "./schema";
 import { hasWebsitePropertyStatus } from "./publication";
 
@@ -127,12 +128,16 @@ export async function loadPublicProperty(
     .select({ key: propertyImages.key, displayKey: propertyImages.displayKey })
     .from(propertyImages)
     .where(eq(propertyImages.propertyId, row.id))
-    .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
+    .orderBy(...galleryOrder);
   if (!(await approvedPropertyIds([row.id], new Map([[row.id, row.updatedAt]]))).has(row.id)) return null;
-  const images = await Promise.all(
-    // 1600 px-WebP för galleriet; originalet (kan vara flera MB) bara som reserv.
-    imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.displayKey ?? im.key }), { expiresIn: 60 * 60 * 24 * 7 })),
-  );
+  // Hemsidan får fasta bildadresser (indexerbara, går inte ut); prospekt och
+  // erbjudanden behåller presignerade länkar eftersom de inte kräver webbpublicering.
+  const images = opts.surface === "web" && row.slug
+    ? imgRows.map((_, i) => publicPropertyImagePath(row.slug as string, i + 1))
+    : await Promise.all(
+        // 1600 px-WebP för galleriet; originalet (kan vara flera MB) bara som reserv.
+        imgRows.map((im) => getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: im.displayKey ?? im.key }), { expiresIn: 60 * 60 * 24 * 7 })),
+      );
 
   const mapArea = [row.postalCode, row.city].filter(Boolean).join(" ");
   const mapCoords = row.postalCode || row.city ? await geocodeArea(row.postalCode, row.city, row.country) : null;

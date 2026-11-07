@@ -57,3 +57,19 @@ export function truncateSeoDescription(text: string, maxLength = 160): string {
   const lastSpace = prefix.lastIndexOf(" ");
   return `${prefix.slice(0, Math.max(lastSpace, maxLength - 20)).trimEnd()}…`;
 }
+
+// Sidtitel för en objektsida: namnet plus sovrum/bäddar när namnet inte redan
+// säger det ("Personalanläggning i Oskarshamn – 11 sovrum, 20 bäddar").
+// Lägger till ort när namnet saknar den, så att titeln matchar "boende <ort>".
+export function publicPropertyTitle(facts: Pick<PublicSeoFacts, "name" | "city" | "bedrooms" | "beds">): string {
+  const name = facts.name.trim();
+  const lower = name.toLowerCase();
+  const city = facts.city?.trim();
+  const withCity = city && !lower.includes(city.toLowerCase()) ? `${name}, ${city}` : name;
+  if (/\bsovrum\b|\bbädd(ar)?\b/.test(lower)) return withCity;
+  const counts = [
+    facts.bedrooms != null && facts.bedrooms > 0 && `${facts.bedrooms} sovrum`,
+    facts.beds != null && facts.beds > 0 && `${facts.beds} ${facts.beds === 1 ? "bädd" : "bäddar"}`,
+  ].filter(Boolean) as string[];
+  return counts.length ? `${withCity} – ${counts.join(", ")}` : withCity;
+}

@@ -6,12 +6,10 @@
 // try/catch är avsiktligt tyst: veckobloggens CI bygger med
 // TURSO_DATABASE_URL=file::memory: och stadssidorna får ALDRIG fälla bygget —
 // då blir sektionen bara tom tills nästa riktiga rendering.
-import { and, asc, desc, eq, inArray, isNotNull } from "drizzle-orm";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { approvedPropertyIds } from "./approved-property-content";
 import { db } from "./db";
-import { r2, R2_BUCKET } from "./r2";
+import { publicPropertyImagePath } from "./public-images";
 import { properties, propertyImages } from "./schema";
 import { publicDisplayName } from "./slug";
 import { websiteStatusWhere } from "./website-status-query";
@@ -19,6 +17,8 @@ import { websiteStatusWhere } from "./website-status-query";
 export interface CityListing {
   slug: string;
   name: string;
+  /** Boendets egen ort (t.ex. Figeholm på Oskarshamnssidan). */
+  city: string | null;
   postalCode: string | null;
   bedrooms: number | null;
   beds: number | null;
@@ -36,7 +36,9 @@ const normalizeCity = (s: string) =>
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "");
 
-export async function getCityListings(cityName: string): Promise<CityListing[]> {
+// `localities`: orter i samma kommun som också hör till stadssidan
+// (Figeholm, Påskallavik … för Oskarshamn). Stadens egna boenden visas först.
+export async function getCityListings(cityName: string, localities: string[] = []): Promise<CityListing[]> {
   try {
     const rows = await db
       .select({
@@ -53,24 +55,23 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
       .where(and(eq(properties.published, true), eq(properties.status, "available"), isNotNull(properties.slug), websiteStatusWhere()));
 
     const want = normalizeCity(cityName);
-    const cityRows = rows.filter((r) => r.city && normalizeCity(r.city) === want);
+    const extra = new Set(localities.map(normalizeCity));
+    const cityRows = [
+      ...rows.filter((r) => r.city && normalizeCity(r.city) === want),
+      ...rows.filter((r) => r.city && normalizeCity(r.city) !== want && extra.has(normalizeCity(r.city))),
+    ];
     if (!cityRows.length) return [];
 
-    // Samma huvudbild och reservordning som på objektets detaljsida.
+    // Huvudbilden är alltid nummer 1 i galleriets ordning → fast adress.
     const ids = cityRows.map((r) => r.id);
     const images = await db
-      .select({ propertyId: propertyImages.propertyId, key: propertyImages.key, thumbKey: propertyImages.thumbKey })
+      .select({ propertyId: propertyImages.propertyId })
       .from(propertyImages)
-      .where(inArray(propertyImages.propertyId, ids))
-      .orderBy(desc(propertyImages.isPrimary), asc(propertyImages.sortOrder), asc(propertyImages.createdAt));
-    const primaryKeys = new Map<string, string>();
-    for (const image of images) {
-      if (!primaryKeys.has(image.propertyId)) primaryKeys.set(image.propertyId, image.thumbKey ?? image.key);
-    }
+      .where(inArray(propertyImages.propertyId, ids));
+    const withImages = new Set(images.map((image) => image.propertyId));
 
     const approved = await approvedPropertyIds(ids, new Map(cityRows.map((r) => [r.id, r.updatedAt])));
-    return await Promise.all(cityRows.filter((r) => approved.has(r.id)).slice(0, 12).map(async (r) => {
-      const key = primaryKeys.get(r.id);
+    return cityRows.filter((r) => approved.has(r.id)).slice(0, 12).map((r) => {
       return {
         slug: r.slug as string,
         name: publicDisplayName(
@@ -78,14 +79,13 @@ export async function getCityListings(cityName: string): Promise<CityListing[]> 
           { city: r.city, bedrooms: r.bedrooms, beds: r.beds },
           r.slug,
         ),
+        city: r.city?.trim() || null,
         postalCode: r.postalCode,
         bedrooms: r.bedrooms,
         beds: r.beds,
-        imageUrl: key
-          ? await getSignedUrl(r2, new GetObjectCommand({ Bucket: R2_BUCKET, Key: key }), { expiresIn: 60 * 60 * 24 * 7 })
-          : null,
+        imageUrl: withImages.has(r.id) ? publicPropertyImagePath(r.slug as string, 1, "thumb") : null,
       };
-    }));
+    });
   } catch {
     return [];
   }

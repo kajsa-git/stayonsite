@@ -49,7 +49,9 @@ const PersonalboendeOkgOskarshamnGuide = () => {
       </p>
       <p>
         Be alltid om adresser innan bokning och kontrollera restiden vid de tider laget faktiskt
-        börjar och slutar. Formuleringen ”nära OKG” räcker inte som beslutsunderlag.
+        börjar och slutar. Formuleringen ”nära OKG” räcker inte som beslutsunderlag.{' '}
+        Läs mer i vår guide om{' '}
+        <Link href="/blogg/boende-figeholm-okg-clab">boende i Figeholm för OKG och Clab</Link>.
       </p>
 
       <h2>Skilj boendet från OKG:s tillträdeskrav</h2>

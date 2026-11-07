@@ -43,7 +43,7 @@ function page(slug: string, locale: AvailableLanguages, withListings = false) {
         city={city}
         nearbyCities={getNearbyCities(slug)}
         listings={withListings ? [{
-          slug: 'test-public-property', name: 'Publicerat boende', postalCode: null,
+          slug: 'test-public-property', name: 'Publicerat boende', city: null, postalCode: null,
           bedrooms: 4, beds: 4, imageUrl: null,
         }] : []}
       />
