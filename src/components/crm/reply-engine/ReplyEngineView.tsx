@@ -111,7 +111,16 @@ export function ReplyEngineView() {
     method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode }),
   }), "Läget är ändrat");
 
-  const learn = () => run("learn", () => crmFetchJson("/api/crm/reply-engine/learn", { method: "POST" }), "Inlärningen har startat – det tar några minuter");
+  const [learnProgress, setLearnProgress] = useState<string | null>(null);
+  const learn = () => run("learn", async () => {
+    type P = { total: number; done: number; finished: boolean };
+    let p = await crmFetchJson<P>("/api/crm/reply-engine/learn", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ start: true }) });
+    while (!p.finished) {
+      setLearnProgress(`Analyserar ${p.done} av ${p.total} delar…`);
+      p = await crmFetchJson<P>("/api/crm/reply-engine/learn", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    }
+    setLearnProgress(null);
+  }, "Playbooken är uppdaterad");
   const runNow = () => run("run", () => crmFetchJson("/api/cron/reply-engine"), "Motorn har körts");
   const savePlaybook = () => run("playbook", async () => {
     await crmFetchJson("/api/crm/reply-engine", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ playbook: playbookDraft ?? "" }) });
@@ -224,7 +233,7 @@ export function ReplyEngineView() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-nordic-900">Playbook – det motorn har lärt sig</h2>
           <button type="button" onClick={learn} disabled={busy === "learn"} className="rounded-md border px-2.5 py-1 text-xs font-medium text-nordic-800 hover:bg-nordic-50">
-            Lär av all historik
+            {busy === "learn" ? learnProgress ?? "Läser historiken…" : "Lär av all historik"}
           </button>
         </div>
         <p className="mt-1 text-xs text-muted-foreground">

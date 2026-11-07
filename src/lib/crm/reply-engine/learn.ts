@@ -77,17 +77,37 @@ Ta ALDRIG med personnamn, telefonnummer, mejladresser, gatuadresser, företagsna
 
 const MERGE_PROMPT = `Slå ihop anteckningarna nedan till en samlad playbook för Kajsas svarsassistent. Behåll rubrikerna, ta bort dubbletter, prioritera mönster som återkommer ofta, och håll den under 1 800 ord. Inga personnamn, telefonnummer, mejladresser, adresser, företagsnamn eller belopp. Skriv på svenska, konkret och användbart.`;
 
-export async function learnFromHistory(opts: { db?: DB; maxConversations?: number; batchChars?: number } = {}): Promise<{ conversations: number; batches: number; playbook: string }> {
-  const db = opts.db ?? defaultDb;
-  const status = (s: string) => setSetting(db, "learn_status", `${new Date().toISOString()} ${s}`);
-  await status("läser historiken");
-  const conversations = await loadConversations(db, opts.maxConversations ?? 150);
-  if (!conversations.length) {
-    await status("ingen historik att lära av");
-    return { conversations: 0, batches: 0, playbook: "" };
-  }
+// Inlärningen körs i steg, eftersom historiken är för stor för ett enda
+// serveranrop: start → ett antal delsteg (några delar åt gången) → sammanställning.
+const LEARN_TABLE = `CREATE TABLE IF NOT EXISTS crm_reply_learn_batches (
+  idx integer PRIMARY KEY NOT NULL,
+  text text NOT NULL,
+  notes text,
+  created_at text DEFAULT (datetime('now'))
+)`;
 
-  const batchChars = opts.batchChars ?? 45_000;
+export interface LearnProgress {
+  total: number;
+  done: number;
+  finished: boolean;
+  conversations?: number;
+}
+
+async function status(db: DB, s: string) {
+  await setSetting(db, "learn_status", `${new Date().toISOString()} ${s}`);
+}
+
+export async function learnStart(opts: { db?: DB; maxConversations?: number; batchChars?: number } = {}): Promise<LearnProgress> {
+  const db = opts.db ?? defaultDb;
+  await db.run(sql.raw(LEARN_TABLE));
+  await status(db, "läser historiken");
+  const conversations = await loadConversations(db, opts.maxConversations ?? 120);
+  await db.run(sql`DELETE FROM crm_reply_learn_batches`);
+  if (!conversations.length) {
+    await status(db, "ingen historik att lära av");
+    return { total: 0, done: 0, finished: true, conversations: 0 };
+  }
+  const batchChars = opts.batchChars ?? 40_000;
   const batches: string[] = [];
   let current = "";
   conversations.forEach((c, i) => {
@@ -96,23 +116,38 @@ export async function learnFromHistory(opts: { db?: DB; maxConversations?: numbe
     current += `${block}\n\n`;
   });
   if (current) batches.push(current);
-
-  const notesPerBatch: string[] = [];
   for (let i = 0; i < batches.length; i++) {
-    await status(`analyserar del ${i + 1} av ${batches.length}`);
-    const { text } = await callClaude(`${BATCH_PROMPT}\n\n${batches[i]}`, { maxTokens: 3000 });
-    notesPerBatch.push(text.trim());
+    await db.run(sql`INSERT INTO crm_reply_learn_batches (idx, text) VALUES (${i}, ${batches[i]})`);
   }
+  await status(db, `${conversations.length} konversationer uppdelade i ${batches.length} delar`);
+  return { total: batches.length, done: 0, finished: false, conversations: conversations.length };
+}
 
-  await status("sammanställer playbook");
-  const playbook = notesPerBatch.length === 1
-    ? notesPerBatch[0]
-    : (await callClaude(`${MERGE_PROMPT}\n\n${notesPerBatch.map((n, i) => `## Anteckningar ${i + 1}\n${n}`).join("\n\n")}`, { maxTokens: 4000 })).text.trim();
+export async function learnStep(opts: { db?: DB; maxBatches?: number } = {}): Promise<LearnProgress> {
+  const db = opts.db ?? defaultDb;
+  await db.run(sql.raw(LEARN_TABLE));
+  const rows = await db.all<{ idx: number; text: string; notes: string | null }>(sql`SELECT idx, text, notes FROM crm_reply_learn_batches ORDER BY idx`);
+  const total = rows.length;
+  if (!total) return { total: 0, done: 0, finished: true };
+  const pending = rows.filter((r) => r.notes == null).slice(0, opts.maxBatches ?? 3);
+  for (const r of pending) {
+    await status(db, `analyserar del ${r.idx + 1} av ${total}`);
+    const { text } = await callClaude(`${BATCH_PROMPT}\n\n${r.text}`, { maxTokens: 2500 });
+    await db.run(sql`UPDATE crm_reply_learn_batches SET notes = ${text.trim()} WHERE idx = ${r.idx}`);
+  }
+  const done = rows.filter((r) => r.notes != null).length + pending.length;
+  if (done < total) return { total, done, finished: false };
 
+  await status(db, "sammanställer playbook");
+  const all = await db.all<{ notes: string }>(sql`SELECT notes FROM crm_reply_learn_batches ORDER BY idx`);
+  const playbook = all.length === 1
+    ? all[0].notes
+    : (await callClaude(`${MERGE_PROMPT}\n\n${all.map((n, i) => `## Anteckningar ${i + 1}\n${n.notes}`).join("\n\n")}`, { maxTokens: 4000 })).text.trim();
   await setSetting(db, "playbook", playbook);
   await setSetting(db, "playbook_updated_at", new Date().toISOString());
-  await status(`klar: ${conversations.length} konversationer i ${batches.length} delar`);
-  return { conversations: conversations.length, batches: batches.length, playbook };
+  await db.run(sql`DELETE FROM crm_reply_learn_batches`);
+  await status(db, `klar: ${total} delar`);
+  return { total, done: total, finished: true };
 }
 
 export async function historyStats(db: DB = defaultDb): Promise<{ smsIn: number; smsOut: number; emailIn: number; emailOut: number }> {
