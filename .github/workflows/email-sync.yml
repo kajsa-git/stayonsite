@@ -1,0 +1,27 @@
+name: Mejlsynk till CRM
+
+on:
+  schedule:
+    # Var 15:e minut kl. 05–20 UTC alla dagar (06–21 vintertid, 07–22 sommartid).
+    # Nattens mejl hämtas av morgonens första körning — synken läser allt sedan förra gången.
+    - cron: "*/15 5-20 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: email-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Läs nya Gmail-mejl och koppla dem i CRM
+        env:
+          SYNC_SECRET: ${{ secrets.QUALIFICATION_SYNC_SECRET }}
+        run: |
+          test -n "$SYNC_SECRET"
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-all-errors --max-time 90 \
+            -H "Authorization: Bearer $SYNC_SECRET" \
+            https://www.stayonsite.se/api/cron/email-sync

@@ -505,10 +505,52 @@ export const emails = sqliteTable("crm_emails", {
   index("crm_emails_request_id_idx").on(t.requestId),
   index("crm_emails_owner_id_idx").on(t.ownerId),
   index("crm_emails_sent_at_idx").on(t.sentAt),
+  index("crm_emails_gmail_thread_id_idx").on(t.gmailThreadId),
   // Idempotent Gmail-synk: samma meddelande får aldrig dubblas. NULL (utgående/manuella
   // mejl utan gmail-id) räknas som distinkta i SQLite, så de krockar inte.
   uniqueIndex("crm_emails_gmail_message_id_unique_idx").on(t.gmailMessageId),
 ]);
+
+// Bakgrundssynk av Gmail: var den inkrementella synken senast slutade (Gmails
+// historik-id) per brevlåda, plus senaste körning för statusraden i Min dag.
+export const gmailSyncState = sqliteTable("crm_gmail_sync_state", {
+  mailbox: text("mailbox").primaryKey(),
+  historyId: text("history_id"),
+  // Första synken/återhämtningen tar flera körningar om brevlådan är stor: mejl
+  // efter den här tidpunkten återstår att gå igenom.
+  backfillAfter: text("backfill_after"),
+  lastRunAt: text("last_run_at"),
+  lastSuccessAt: text("last_success_at"),
+  lastError: text("last_error"),
+  lastImported: integer("last_imported").default(0).notNull(),
+  updatedAt: text("updated_at").default(sql`(datetime('now'))`),
+});
+
+// Okända avsändare på en domän som hör till ett känt företag. Kopplas aldrig
+// automatiskt — Kajsa väljer "koppla till företag" eller "ignorera" i Min dag.
+export const emailSenderSuggestions = sqliteTable("crm_email_sender_suggestions", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  name: text("name"),
+  domain: text("domain").notNull(),
+  companyIds: text("company_ids", { mode: "json" }).$type<string[]>().notNull(),
+  status: text("status").default("pending").notNull(), // pending | linked | ignored
+  messageCount: integer("message_count").default(1).notNull(),
+  lastGmailMessageId: text("last_gmail_message_id"),
+  lastGmailThreadId: text("last_gmail_thread_id"),
+  lastSubject: text("last_subject"),
+  lastSnippet: text("last_snippet"),
+  lastSeenAt: text("last_seen_at").notNull(),
+  resolvedContactId: text("resolved_contact_id").references(() => contacts.id, { onDelete: "set null" }),
+  resolvedAt: text("resolved_at"),
+  createdAt: text("created_at").default(sql`(datetime('now'))`),
+}, (t) => [
+  uniqueIndex("crm_email_sender_suggestions_email_unique_idx").on(t.email),
+  index("crm_email_sender_suggestions_status_idx").on(t.status),
+]);
+
+export type GmailSyncState = typeof gmailSyncState.$inferSelect;
+export type EmailSenderSuggestion = typeof emailSenderSuggestions.$inferSelect;
 
 export type Match = typeof matches.$inferSelect;
 export type MatchInsert = typeof matches.$inferInsert;

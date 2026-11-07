@@ -30,6 +30,7 @@ const READ_TOOLS = [
   "crm_rental_reviews_due",
   "crm_inbox",
   "crm_open_requests",
+  "crm_emails_waiting",
 ];
 const WRITE_TOOLS = ["crm_add_note", "crm_add_property_note", "crm_set_follow_up", "crm_update_request_status", "crm_draft_message"];
 

@@ -1,4 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { computeWaitingEmails } from "../email-sync";
 import { computeOverview } from "../overview";
 import { computeQueueCounts } from "../queue-counts";
 import { computeToday } from "../today";
@@ -37,5 +38,17 @@ export function registerDashboardTools(server: McpServer, opts?: { db?: DB }) {
         "SMS drafts and renewal candidates. Landlord chasing includes rented properties due for availability checks; list those with crm_rental_reviews_due.",
     },
     async () => jsonContent(await computeQueueCounts({ db: opts?.db })),
+  );
+
+  server.registerTool(
+    "crm_emails_waiting",
+    {
+      title: "Emails waiting for a reply",
+      description:
+        "Email threads from the last 14 days, linked to a company or landlord (uthyrare), where the " +
+        "latest message is an unhandled incoming email — i.e. the customer or landlord wrote last. " +
+        "Synced from Gmail every 15 minutes. Each row has the sender, subject, a short preview and the linked company/landlord.",
+    },
+    async () => jsonContent(await computeWaitingEmails({ db: opts?.db })),
   );
 }

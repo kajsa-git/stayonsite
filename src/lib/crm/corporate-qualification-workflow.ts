@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import {
@@ -508,7 +508,15 @@ async function processQualificationReply(
       gmailThreadId: message.threadId,
       isRead: false,
       sentAt: message.date ? new Date(message.date).toISOString() : now,
-    }).onConflictDoNothing();
+    }).onConflictDoUpdate({
+      // Bakgrundssynken kan ha importerat svaret först — knyt det då till förfrågan.
+      target: emails.gmailMessageId,
+      set: {
+        requestId: sql`coalesce(${emails.requestId}, excluded.request_id)`,
+        contactId: sql`coalesce(${emails.contactId}, excluded.contact_id)`,
+        companyId: sql`coalesce(${emails.companyId}, excluded.company_id)`,
+      },
+    });
     if (privateReplyDelivery) {
       await tx.insert(emails).values({
         id: nanoid(),

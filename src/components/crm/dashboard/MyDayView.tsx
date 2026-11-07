@@ -23,6 +23,7 @@ import {
 import { ownerFollowUpSms } from "@/lib/crm/sms-templates";
 import { crmFetchJson } from "@/lib/crm/fetcher";
 import { DraftsPanel } from "./DraftsPanel";
+import { EmailWaitingPanel } from "./EmailWaitingPanel";
 import { RenewalsPanel, type RenewalRow } from "./RenewalsPanel";
 import { RepliesPanel } from "./RepliesPanel";
 import { AnimatePresence, motion } from "framer-motion";
@@ -657,6 +658,7 @@ export function MyDayView() {
 
       {/* Svar + Förlängningar: dagens viktigaste — inkommande och utgående pengar. */}
       <RepliesPanel />
+      <EmailWaitingPanel />
       <RenewalsPanel renewals={queues.renewals} onChanged={() => mutate()} />
 
       {counts.moveSchedule > 0 && (
