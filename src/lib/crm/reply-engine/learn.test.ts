@@ -39,11 +39,14 @@ it("lär sig i steg och sparar en samlad playbook", async () => {
   let p = await learnStep({ db: state.db, maxBatches: 1 });
   expect(p).toMatchObject({ total: 2, done: 1, finished: false });
   p = await learnStep({ db: state.db, maxBatches: 1 });
+  expect(p).toMatchObject({ done: 2, finished: false });
+  p = await learnStep({ db: state.db, maxBatches: 1 });
   expect(p.finished).toBe(true);
 
   const settings = await getSettings(state.db);
   expect(settings.playbook).toBe("SAMLAD PLAYBOOK");
   expect(settings.learnStatus).toContain("klar");
   expect(state.prompts[0]).toContain("skicka gärna bilder");
+  expect(state.prompts[0]).toContain("StayOnSite");
   expect(state.prompts.join("\n")).not.toContain("Nyhetsbrev");
 });

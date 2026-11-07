@@ -73,9 +73,9 @@ Skriv anteckningar på svenska under rubrikerna:
 6. Saker Kajsa aldrig skriver eller undviker
 7. Exempel på bra korta svar (omskrivna, utan namn, telefonnummer, adresser eller belopp)
 
-Ta ALDRIG med personnamn, telefonnummer, mejladresser, gatuadresser, företagsnamn eller enskilda belopp. Beskriv mönster, inte enskilda personer.`;
+Ta ALDRIG med personnamn, telefonnummer, mejladresser, gatuadresser, kunders eller uthyrares företagsnamn eller enskilda belopp. Beskriv mönster, inte enskilda personer. Det egna bolaget heter StayOnSite – skriv det namnet rakt ut.`;
 
-const MERGE_PROMPT = `Slå ihop anteckningarna nedan till en samlad playbook för Kajsas svarsassistent. Behåll rubrikerna, ta bort dubbletter, prioritera mönster som återkommer ofta, och håll den under 1 800 ord. Inga personnamn, telefonnummer, mejladresser, adresser, företagsnamn eller belopp. Skriv på svenska, konkret och användbart.`;
+const MERGE_PROMPT = `Slå ihop anteckningarna nedan till en samlad playbook för Kajsas svarsassistent. Behåll alla sju rubrikerna, ta bort dubbletter, prioritera mönster som återkommer ofta, och håll den under 1 800 ord. Inga personnamn, telefonnummer, mejladresser, adresser, kunders eller uthyrares företagsnamn eller belopp. Det egna bolaget heter StayOnSite. Skriv på svenska, konkret och användbart.`;
 
 // Inlärningen körs i steg, eftersom historiken är för stor för ett enda
 // serveranrop: start → ett antal delsteg (några delar åt gången) → sammanställning.
@@ -129,20 +129,21 @@ export async function learnStep(opts: { db?: DB; maxBatches?: number } = {}): Pr
   const rows = await db.all<{ idx: number; text: string; notes: string | null }>(sql`SELECT idx, text, notes FROM crm_reply_learn_batches ORDER BY idx`);
   const total = rows.length;
   if (!total) return { total: 0, done: 0, finished: true };
-  const pending = rows.filter((r) => r.notes == null).slice(0, opts.maxBatches ?? 3);
+  const pending = rows.filter((r) => r.notes == null).slice(0, opts.maxBatches ?? 2);
   for (const r of pending) {
     await status(db, `analyserar del ${r.idx + 1} av ${total}`);
-    const { text } = await callClaude(`${BATCH_PROMPT}\n\n${r.text}`, { maxTokens: 2500 });
+    const { text } = await callClaude(`${BATCH_PROMPT}\n\n${r.text}`, { maxTokens: 8000 });
     await db.run(sql`UPDATE crm_reply_learn_batches SET notes = ${text.trim()} WHERE idx = ${r.idx}`);
   }
   const done = rows.filter((r) => r.notes != null).length + pending.length;
-  if (done < total) return { total, done, finished: false };
+  // Sammanställningen får ett eget anrop, så att inget enskilt anrop blir för långt.
+  if (pending.length > 0) return { total, done, finished: false };
 
   await status(db, "sammanställer playbook");
   const all = await db.all<{ notes: string }>(sql`SELECT notes FROM crm_reply_learn_batches ORDER BY idx`);
   const playbook = all.length === 1
     ? all[0].notes
-    : (await callClaude(`${MERGE_PROMPT}\n\n${all.map((n, i) => `## Anteckningar ${i + 1}\n${n.notes}`).join("\n\n")}`, { maxTokens: 4000 })).text.trim();
+    : (await callClaude(`${MERGE_PROMPT}\n\n${all.map((n, i) => `## Anteckningar ${i + 1}\n${n.notes}`).join("\n\n")}`, { maxTokens: 16000 })).text.trim();
   await setSetting(db, "playbook", playbook);
   await setSetting(db, "playbook_updated_at", new Date().toISOString());
   await db.run(sql`DELETE FROM crm_reply_learn_batches`);

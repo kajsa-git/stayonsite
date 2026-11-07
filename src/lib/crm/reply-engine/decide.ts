@@ -50,7 +50,9 @@ riskFlags väljs bland: price, contract, payment, availability_promise, date_pro
 
 followUpInHours: om vi ställer en fråga eller väntar på något från kontakten, hur många timmar vi ska vänta innan en vänlig påminnelse (het förfrågan 3–6 h, vanlig 24–48 h, uthyrare 24–72 h). null om ingen uppföljning behövs.
 
-needsReply=false när meddelandet bara är ett "ok/tack/👍", när Kajsa redan har svarat på det senaste, eller när det inte förtjänar ett svar.`;
+needsReply=false när meddelandet bara är ett "ok/tack/👍", när Kajsa redan har svarat på det senaste, eller när det inte förtjänar ett svar.
+
+Om playbooken nedan och dessa regler säger olika saker gäller dessa regler.`;
 
 export function buildDecisionPrompt(args: {
   ctx: PartyContext;
@@ -107,12 +109,15 @@ export async function callClaude(prompt: string, opts: { maxTokens?: number; mod
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify({
         model,
-        max_tokens: opts.maxTokens ?? 1500,
+        max_tokens: opts.maxTokens ?? 4000,
+        thinking: { type: "disabled" },
         messages: [{ role: "user", content: prompt }],
       }),
     });
     if (response.ok) {
-      const data = await response.json() as { content?: Array<{ type: string; text?: string }> };
+      const data = await response.json() as { content?: Array<{ type: string; text?: string }>; stop_reason?: string };
+      // Ett avklippt svar får aldrig användas – varken som playbook eller som kundsvar.
+      if (data.stop_reason === "max_tokens") throw new Error("Modellens svar blev avklippt (max_tokens).");
       return { text: (data.content ?? []).filter((b) => b.type === "text").map((b) => b.text ?? "").join(""), model };
     }
     lastError = `Claude API ${response.status}: ${(await response.text()).slice(0, 250)}`;
@@ -132,6 +137,6 @@ export function parseDecision(text: string): ModelDecision {
 }
 
 export async function decide(prompt: string): Promise<{ decision: ModelDecision; model: string }> {
-  const { text, model } = await callClaude(prompt, { maxTokens: 1500 });
+  const { text, model } = await callClaude(prompt, { maxTokens: 4000 });
   return { decision: parseDecision(text), model };
 }
