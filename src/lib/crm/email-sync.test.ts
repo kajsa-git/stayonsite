@@ -240,6 +240,25 @@ describe("runMailboxSync", () => {
     expect(state).toMatchObject({ historyId: "500", backfillAfter: null });
   });
 
+  it("saves its progress and stops quietly when Gmail's rate limit is hit", async () => {
+    for (let i = 0; i < 20; i++) addMessage(message(`r${i}`, { from: "anna@byggbolaget.se", hoursAgo: 40 - i }));
+    gmail.listed = [...gmail.messages.keys()].reverse();
+    const actual = await vi.importActual<typeof import("./gmail")>("./gmail");
+    const { gmailGetMessage } = await import("./gmail");
+    const original = vi.mocked(gmailGetMessage).getMockImplementation()!;
+    vi.mocked(gmailGetMessage).mockImplementation(async (user, id, format) => {
+      if (id === "r17") throw new actual.GmailRateLimitError("rate limit");
+      return original(user, id, format);
+    });
+
+    const summary = await runMailboxSync({ db, now: () => NOW });
+
+    vi.mocked(gmailGetMessage).mockImplementation(original);
+    expect(summary).toMatchObject({ partial: true, imported: 16 });
+    const [state] = await db.select().from(gmailSyncState);
+    expect(state).toMatchObject({ historyId: null, lastError: null, backfillAfter: gmail.messages.get("r15")!.receivedAt });
+  });
+
   it("records the error and rethrows when Gmail fails", async () => {
     const { gmailCurrentHistoryId } = await import("./gmail");
     vi.mocked(gmailCurrentHistoryId).mockRejectedValueOnce(new Error("Gmail nere"));

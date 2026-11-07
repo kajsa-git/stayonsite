@@ -57,7 +57,10 @@ async function loadAccessToken(userId: string): Promise<{ token: string; expires
 // GET mot Gmail-API:t med gemensam felhantering.
 // • 401: cachad token kan vara inaktuell (t.ex. efter ny inloggning) — läs om den en
 //   gång; nekas den igen ber vi om ny inloggning i stället för att visa ett tekniskt fel.
-// • 429/5xx: Gmails hastighetsgräns eller tillfälligt fel — försök igen med paus.
+// • Hastighetsgräns (429, eller 403 med rateLimitExceeded/userRateLimitExceeded) och
+//   tillfälliga 5xx-fel: försök igen med paus. Kvarstår gränsen kastas
+//   GmailRateLimitError, så att bakgrundssynken kan spara sina framsteg och fortsätta
+//   vid nästa körning.
 async function gmailGet(userId: string, path: string): Promise<Response> {
   let refreshed = false;
   for (let attempt = 0; ; attempt++) {
@@ -71,11 +74,37 @@ async function gmailGet(userId: string, path: string): Promise<Response> {
       refreshed = true;
       continue;
     }
-    if ((res.status === 429 || res.status >= 500) && attempt < 3) {
-      await new Promise((resolve) => setTimeout(resolve, 400 * 2 ** attempt));
-      continue;
+    const rateLimited = res.status === 429 || (res.status === 403 && await isRateLimitResponse(res));
+    if (rateLimited || res.status >= 500) {
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
+        continue;
+      }
+      if (rateLimited) throw new GmailRateLimitError("Gmails hastighetsgräns nådd — fortsätter vid nästa körning.");
     }
     return res;
+  }
+}
+
+async function isRateLimitResponse(res: Response): Promise<boolean> {
+  try {
+    const body = await res.clone().json() as { error?: { errors?: { reason?: string }[]; status?: string } };
+    const reasons = (body.error?.errors ?? []).map((e) => e.reason ?? "");
+    return reasons.some((r) => /ratelimit|quota/i.test(r)) || body.error?.status === "RESOURCE_EXHAUSTED";
+  } catch {
+    return false;
+  }
+}
+
+export class GmailRateLimitError extends Error {}
+
+// Gmails felbeskrivning i klartext, för felraden i Min dag och Vercel-loggen.
+async function gmailErrorDetail(res: Response): Promise<string> {
+  try {
+    const body = await res.clone().json() as { error?: { message?: string } };
+    return body.error?.message ? `: ${body.error.message.slice(0, 200)}` : "";
+  } catch {
+    return "";
   }
 }
 
@@ -330,14 +359,14 @@ export async function gmailGetMessage(
     : "format=full";
   const res = await gmailGet(userId, `messages/${messageId}?${query}`);
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`Gmail message fetch failed (${res.status})`);
+  if (!res.ok) throw new Error(`Gmail message fetch failed (${res.status})${await gmailErrorDetail(res)}`);
   return parseGmailMessage(await res.json());
 }
 
 // Brevlådans aktuella historik-id — startpunkten för nästa inkrementella synk.
 export async function gmailCurrentHistoryId(userId: string): Promise<string> {
   const res = await gmailGet(userId, "profile");
-  if (!res.ok) throw new Error(`Gmail profile fetch failed (${res.status})`);
+  if (!res.ok) throw new Error(`Gmail profile fetch failed (${res.status})${await gmailErrorDetail(res)}`);
   const data = await res.json();
   return String(data.historyId);
 }
@@ -360,7 +389,7 @@ export async function gmailListAddedMessageIds(
     if (pageToken) params.set("pageToken", pageToken);
     const res = await gmailGet(userId, `history?${params}`);
     if (res.status === 404) throw new GmailHistoryExpiredError("Gmail-historiken är för gammal");
-    if (!res.ok) throw new Error(`Gmail history fetch failed (${res.status})`);
+    if (!res.ok) throw new Error(`Gmail history fetch failed (${res.status})${await gmailErrorDetail(res)}`);
     const data = await res.json() as {
       history?: { messagesAdded?: { message: { id: string; labelIds?: string[] } }[] }[];
       historyId?: string;
@@ -388,7 +417,7 @@ export async function gmailListMessageIds(userId: string, q: string, max: number
     const params = new URLSearchParams({ q, maxResults: String(Math.min(500, max - ids.length)) });
     if (pageToken) params.set("pageToken", pageToken);
     const res = await gmailGet(userId, `messages?${params}`);
-    if (!res.ok) throw new Error(`Gmail message search failed (${res.status})`);
+    if (!res.ok) throw new Error(`Gmail message search failed (${res.status})${await gmailErrorDetail(res)}`);
     const data = await res.json() as { messages?: { id: string }[]; nextPageToken?: string };
     for (const m of data.messages ?? []) ids.push(m.id);
     if (!data.nextPageToken) break;

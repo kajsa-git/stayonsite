@@ -25,6 +25,7 @@ import {
 } from "./email-matching";
 import {
   GmailHistoryExpiredError,
+  GmailRateLimitError,
   gmailAutomationUserId,
   gmailCurrentHistoryId,
   gmailGetMessage,
@@ -108,11 +109,17 @@ function chunk<T>(items: T[], size: number): T[][] {
 async function mapLimited<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
   const results = new Array<R>(items.length);
   let next = 0;
+  let failed = false; // ett fel stoppar övriga arbetare — inga fler anrop i onödan
   await Promise.all(
     Array.from({ length: Math.min(limit, items.length) }, async () => {
-      while (next < items.length) {
+      while (next < items.length && !failed) {
         const index = next++;
-        results[index] = await fn(items[index]);
+        try {
+          results[index] = await fn(items[index]);
+        } catch (error) {
+          failed = true;
+          throw error;
+        }
       }
     }),
   );
@@ -538,12 +545,8 @@ export async function runMailboxSync(opts: {
 
     // I historikordning (äldst först) så att en tråd som kopplas av ett tidigare
     // meddelande också fångar senare svar från nya adresser i samma körning.
-    for (const ids of chunk(pending, 16)) {
-      if (now() > deadline) {
-        summary.partial = true;
-        break;
-      }
-      const metas = (await mapLimited(ids, 5, (id) => gmailGetMessage(userId, id, "metadata")))
+    const processChunk = async (ids: string[]) => {
+      const metas = (await mapLimited(ids, 3, (id) => gmailGetMessage(userId, id, "metadata")))
         .filter((m): m is GmailMessage => Boolean(m))
         .filter((m) => !m.labelIds.some((l) => l === "DRAFT" || l === "SPAM" || l === "TRASH" || l === "CHAT"));
       summary.scanned += ids.length;
@@ -566,7 +569,7 @@ export async function runMailboxSync(opts: {
         if (suggestion && (await recordSenderSuggestion(db, suggestion, meta)) !== "skipped") summary.suggested++;
       }
 
-      const fulls = await mapLimited(toImport, 4, ({ meta }) => gmailGetMessage(userId, meta.id, "full"));
+      const fulls = await mapLimited(toImport, 2, ({ meta }) => gmailGetMessage(userId, meta.id, "full"));
       for (let i = 0; i < toImport.length; i++) {
         const full = fulls[i];
         if (!full) continue;
@@ -579,6 +582,21 @@ export async function runMailboxSync(opts: {
       }
       for (const meta of metas) {
         if (meta.receivedAt && (!processedUntil || meta.receivedAt > processedUntil)) processedUntil = meta.receivedAt;
+      }
+    };
+
+    for (const ids of chunk(pending, 16)) {
+      if (now() > deadline) {
+        summary.partial = true;
+        break;
+      }
+      try {
+        await processChunk(ids);
+      } catch (error) {
+        // Gmails hastighetsgräns: spara det som hunnits och fortsätt vid nästa körning.
+        if (!(error instanceof GmailRateLimitError)) throw error;
+        summary.partial = true;
+        break;
       }
     }
 
