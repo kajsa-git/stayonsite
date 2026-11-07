@@ -6,7 +6,9 @@ import { nanoid } from "nanoid";
 import { db as defaultDb } from "../db";
 import { todayStockholm } from "../date";
 import { gmailAutomationUserId, gmailSend, gmailThreadReplyHeaders } from "../gmail";
-import { companies, emails, inboxMessages, notes, outboxMessages, owners, properties, propertyNotes } from "../schema";
+import { landlordConversationLockKey, isLandlordConversationReserved } from "../landlord-dialog-coordination";
+import { acquireLandlordPropertyLock, releaseLandlordPropertyLock, renewLandlordPropertyLock } from "../landlord-property-lock";
+import { companies, emails, inboxMessages, landlordDialogs, landlordSmsDialogs, notes, outboxMessages, owners, properties, propertyNotes } from "../schema";
 import { buildPartyContext, normalizeTime, stripQuoted, type Party } from "./context";
 import { buildDecisionPrompt, decide } from "./decide";
 import { applyPolicy, nextFollowUpAt, withinActiveHours, type ModelDecision } from "./policy";
@@ -71,7 +73,9 @@ function emailAddressOf(value: string): string {
 
 async function pendingSms(db: DB, since: string): Promise<{ items: InboundItem[]; skipped: { id: string; reason: string; party: Party; at: string }[] }> {
   const rows = await db.select().from(inboxMessages)
-    .where(and(eq(inboxMessages.direction, "in"), gte(inboxMessages.sentAt, since), or(isNotNull(inboxMessages.ownerId), isNotNull(inboxMessages.contactId))))
+    .where(and(eq(inboxMessages.direction, "in"), gte(inboxMessages.sentAt, since), or(isNotNull(inboxMessages.ownerId), isNotNull(inboxMessages.contactId)),
+      or(sql`lower(coalesce(${inboxMessages.service}, '')) LIKE '%whats%'`,
+        sql`NOT EXISTS (SELECT 1 FROM ${landlordSmsDialogs} WHERE ${landlordSmsDialogs.phone} = ${inboxMessages.fromPhone})`)))
     .orderBy(desc(inboxMessages.sentAt)).limit(200);
   const done = await decidedSourceIds(db, "sms", rows.map((r) => r.id));
   const fresh = rows.filter((r) => !done.has(r.id));
@@ -114,7 +118,8 @@ async function pendingSms(db: DB, since: string): Promise<{ items: InboundItem[]
 
 async function pendingEmails(db: DB, since: string): Promise<{ items: InboundItem[]; skipped: { id: string; reason: string; party: Party; at: string }[] }> {
   const rows = await db.select().from(emails)
-    .where(and(eq(emails.direction, "in"), gte(emails.sentAt, since), or(isNotNull(emails.companyId), isNotNull(emails.ownerId))))
+    .where(and(eq(emails.direction, "in"), gte(emails.sentAt, since), or(isNotNull(emails.companyId), isNotNull(emails.ownerId)),
+      sql`NOT EXISTS (SELECT 1 FROM ${landlordDialogs} WHERE ${landlordDialogs.gmailThreadId} = ${emails.gmailThreadId})`))
     .orderBy(desc(emails.sentAt)).limit(200);
   const done = await decidedSourceIds(db, "email", rows.map((r) => r.id));
   const fresh = rows.filter((r) => !done.has(r.id));
@@ -316,6 +321,17 @@ async function execute({ db, settings, decisionId, item, decision, model, follow
 }
 
 async function handleItem(db: DB, settings: EngineSettings, item: InboundItem, corrections: string, summary: RunSummary) {
+  const key = landlordConversationLockKey(item.channel, item.toAddress, item.threadId);
+  if (!key) return handleItemInner(db, settings, item, corrections, summary);
+  const token = await acquireLandlordPropertyLock(key, db, 360_000);
+  if (!token) return; // Another enrollment or response is in progress; retry later.
+  try {
+    if (await isLandlordConversationReserved(db, item.channel, item.toAddress, item.threadId)) return;
+    await handleItemInner(db, settings, item, corrections, summary, { key, token });
+  } finally { await releaseLandlordPropertyLock(key, token, db); }
+}
+
+async function handleItemInner(db: DB, settings: EngineSettings, item: InboundItem, corrections: string, summary: RunSummary, lease?: { key: string; token: string }) {
   const decisionId = nanoid();
   const claimed = await insertDecision(db, {
     id: decisionId,
@@ -342,6 +358,10 @@ async function handleItem(db: DB, settings: EngineSettings, item: InboundItem, c
       playbook: settings.playbook, corrections, nowText: nowText(), mode: "reply",
     });
     const { decision, model } = await decide(prompt);
+    if (lease && (!await renewLandlordPropertyLock(lease.key, lease.token, db, 360_000)
+      || await isLandlordConversationReserved(db, item.channel, item.toAddress, item.threadId))) {
+      throw new Error("Dialogen ändrades under behandlingen och behöver kontrolleras.");
+    }
     const action = await execute({ db, settings, decisionId, item, decision, model, followUpCount: 0 });
     summary.processed++;
     if (action === "auto_sent") summary.autoSent++;
@@ -358,9 +378,18 @@ async function handleItem(db: DB, settings: EngineSettings, item: InboundItem, c
 // ─── Uppföljningar ───────────────────────────────────────────────────────────
 
 async function processFollowUps(db: DB, settings: EngineSettings, corrections: string, summary: RunSummary, budget: number) {
-  const due = await db.all<DecisionRow>(sql`SELECT * FROM crm_reply_decisions
-    WHERE follow_up_status = 'pending' AND follow_up_at <= ${new Date().toISOString()} ORDER BY follow_up_at LIMIT ${budget}`);
+  const due = await db.all<DecisionRow>(sql`SELECT * FROM crm_reply_decisions d
+    WHERE follow_up_status = 'pending' AND follow_up_at <= ${new Date().toISOString()}
+      AND NOT ((d.channel = 'sms' AND EXISTS (SELECT 1 FROM crm_landlord_sms_dialogs l WHERE l.phone = d.to_address))
+        OR (d.channel = 'email' AND EXISTS (SELECT 1 FROM crm_landlord_dialogs l WHERE l.gmail_thread_id = d.thread_id)))
+    ORDER BY follow_up_at LIMIT ${budget}`);
   for (const d of due) {
+    const channel = d.channel as InboundItem["channel"];
+    const key = landlordConversationLockKey(channel, d.to_address ?? "", d.thread_id);
+    const token = key ? await acquireLandlordPropertyLock(key, db, 360_000) : null;
+    if (key && !token) continue;
+    try {
+    if (await isLandlordConversationReserved(db, channel, d.to_address ?? "", d.thread_id)) continue;
     const party: Party = { ownerId: d.owner_id, contactId: d.contact_id, companyId: d.company_id };
     const sentAt = normalizeTime(d.created_at);
     // Har kontakten svarat, eller har Kajsa själv skrivit, sedan dess? Då är uppföljningen inaktuell.
@@ -401,6 +430,10 @@ async function processFollowUps(db: DB, settings: EngineSettings, corrections: s
         nowText: nowText(), mode: "followup", followUp: { lastMessage: d.reply_text ?? "", reason: d.outcome_goal },
       });
       const { decision, model } = await decide(prompt);
+      if (key && token && (!await renewLandlordPropertyLock(key, token, db, 360_000)
+        || await isLandlordConversationReserved(db, channel, d.to_address ?? "", d.thread_id))) {
+        throw new Error("Dialogen ändrades under behandlingen och behöver kontrolleras.");
+      }
       // En påminnelse frågar inte vidare – nästa steg efter den är alltid Kajsa.
       const action = await execute({ db, settings, decisionId, item: { ...item, text: "" }, decision: { ...decision, followUpInHours: decision.followUpInHours ?? 48 }, model, followUpCount: d.follow_up_count + 1 });
       summary.followUps++;
@@ -410,6 +443,7 @@ async function processFollowUps(db: DB, settings: EngineSettings, corrections: s
       summary.errors.push(message.slice(0, 200));
       await updateDecision(db, decisionId, { action: "error", reason: message.slice(0, 500) });
     }
+    } finally { if (key && token) await releaseLandlordPropertyLock(key, token, db); }
   }
 }
 

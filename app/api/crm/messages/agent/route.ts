@@ -5,6 +5,7 @@ import { db } from "@/lib/crm/db";
 import { reportMessageStatus } from "@/lib/crm/message-status";
 import { outboxMessages, properties } from "@/lib/crm/schema";
 import { HUS_PUBLICATION_SMS_SOURCE, OLD_HUS_PUBLICATION_SENTENCE } from "@/lib/crm/hus-publication";
+import { LANDLORD_SMS_SOURCE } from "@/lib/crm/landlord-sms-source";
 import { and, asc, eq, inArray, lt, or, sql } from "drizzle-orm";
 import { ensureReplyEngineSchema } from "@/lib/crm/reply-engine/store";
 import { NextRequest, NextResponse } from "next/server";
@@ -36,7 +37,8 @@ export async function GET(req: NextRequest) {
   const wantWhatsapp = req.nextUrl.searchParams.get("channel") === "whatsapp";
   const isWhatsapp = sql`EXISTS (SELECT 1 FROM crm_outbox_channels c WHERE c.outbox_id = ${outboxMessages.id} AND c.channel = 'whatsapp')`;
   const channelFilter = wantWhatsapp ? isWhatsapp : sql`NOT ${isWhatsapp}`;
-  const eligible = and(channelFilter, or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing));
+  const eligible = and(channelFilter, sql`${outboxMessages.source} <> ${LANDLORD_SMS_SOURCE}`,
+    or(sql`${outboxMessages.source} <> ${HUS_PUBLICATION_SMS_SOURCE}`, validHusListing));
   const staleCutoff = new Date(Date.now() - 15 * 60_000).toISOString().replace("T", " ").slice(0, 19);
   const candidates = await db
     .select({ id: outboxMessages.id })

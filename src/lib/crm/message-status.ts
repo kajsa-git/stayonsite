@@ -3,6 +3,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { db as defaultDb } from "./db";
 import * as schema from "./schema";
 import { inboxMessages, outboxMessages } from "./schema";
+import { LANDLORD_SMS_SOURCE } from "./landlord-sms-source";
 
 type DB = LibSQLDatabase<typeof schema>;
 type AgentReport = { ok: boolean; error?: string } | { delivered: true };
@@ -29,7 +30,9 @@ export async function reportMessageStatus(id: string, report: AgentReport, opts?
       : { status: "failed", deliveredAt: null, error: (report.error || "okänt fel").slice(0, 500) },
     ).where(eq(outboxMessages.id, id)).returning();
 
-    const ids = existing.replyToInboxIds ?? [];
+    // An automatic qualification reply must not silently remove the user's
+    // open inbox item from the CRM queue. A person decides how to follow up.
+    const ids = existing.source === LANDLORD_SMS_SOURCE ? [] : (existing.replyToInboxIds ?? []);
     if (ids.length) {
       let affected = ids;
       if (!report.ok) {

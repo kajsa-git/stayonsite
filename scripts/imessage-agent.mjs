@@ -7,8 +7,8 @@
 //      postas till CRM:et (idempotent via chat.db-guid) och dyker upp i Min dag.
 //   2. UTGÅENDE: hämtar köade meddelanden från CRM:t, skickar via Messages.app
 //      (iMessage, fallback SMS) och rapporterar tillbaka status.
-//      TYSTA TIMMAR: mellan 21:00 och 08:00 svensk tid skickas INGENTING —
-//      köade meddelanden ligger kvar och går ut först på morgonen.
+//      TYSTA TIMMAR: mellan 21:00 och 08:00 svensk tid väntar den vanliga
+//      kön. Uttryckligen anslutna automatiska uthyrarsvar är separerade.
 //
 // Konfiguration (env, sätts i plisten eller läses ur .env.local):
 //   CRM_AGENT_TOKEN  — bearer-token, samma som i Vercel
@@ -175,7 +175,16 @@ async function ingestIncoming() {
       .prepare(
         `SELECT m.ROWID AS rowid, m.guid AS guid, m.text AS text, m.attributedBody AS ab,
                 CASE WHEN m.date > 100000000000 THEN m.date / 1000000 ELSE m.date * 1000 END AS date_ms,
-                m.service AS service, m.is_from_me AS is_from_me, h.id AS handle
+                m.service AS service, m.is_from_me AS is_from_me, h.id AS handle,
+                CASE WHEN
+                  (SELECT COUNT(*) FROM chat_message_join cm WHERE cm.message_id = m.ROWID) = 1
+                  AND EXISTS (
+                    SELECT 1 FROM chat_message_join cm JOIN chat c ON c.ROWID = cm.chat_id
+                    WHERE cm.message_id = m.ROWID AND c.style = 45
+                      AND (SELECT COUNT(*) FROM chat_handle_join ch WHERE ch.chat_id = c.ROWID) = 1
+                      AND EXISTS (SELECT 1 FROM chat_handle_join ch WHERE ch.chat_id = c.ROWID AND ch.handle_id = m.handle_id)
+                  ) THEN 'direct' ELSE 'unknown' END AS conversation_kind,
+                (SELECT COUNT(*) FROM message_attachment_join aj WHERE aj.message_id = m.ROWID) AS attachment_count
          FROM message m
          JOIN handle h ON h.ROWID = m.handle_id
          WHERE m.ROWID > ?
@@ -198,6 +207,8 @@ async function ingestIncoming() {
         body,
         service: r.service ? String(r.service) : null,
         direction: Number(r.is_from_me) === 1 ? "out" : "in",
+        conversationKind: r.conversation_kind === "direct" ? "direct" : "unknown",
+        attachmentCount: Number(r.attachment_count) || 0,
         sentAt: appleMsToIso(r.date_ms),
       });
     }
@@ -353,10 +364,14 @@ async function verifyDeliveries(chatDb) {
   writeState({ ...readState(), pendingChecks: keep.slice(-200) });
 }
 
-async function sendQueued(chatDb) {
-  if (isQuietHours(stockholmHour())) return; // tysta timmar: rör inte ens kön
+async function sendQueued(chatDb, landlordRepliesOnly = false) {
+  if (!landlordRepliesOnly && isQuietHours(stockholmHour())) return; // den vanliga kön väntar
 
-  const res = await fetch(`${BASE}/api/crm/messages/agent`, { headers: AUTH });
+  // The dedicated endpoint cannot accidentally claim ordinary messages when
+  // the updated server is not deployed yet (an old server returns 404).
+  const endpoint = landlordRepliesOnly ? "/api/crm/messages/agent/landlord-replies" : "/api/crm/messages/agent";
+  const res = await fetch(`${BASE}${endpoint}`, { headers: AUTH });
+  if (landlordRepliesOnly && res.status === 404) return;
   if (!res.ok) {
     console.error(`${ts()} kunde inte hämta kön: HTTP ${res.status}`);
     return;
@@ -418,6 +433,11 @@ async function runOnce() {
     await sendQueued(sendChatDb);
   } catch (e) {
     console.error(`${ts()} utskick: nätverksfel: ${e?.message ?? e}`);
+  }
+  try {
+    await sendQueued(sendChatDb, true);
+  } catch (e) {
+    console.error(`${ts()} uthyrarsvar: nätverksfel: ${e?.message ?? e}`);
   }
   try {
     sendChatDb?.close();

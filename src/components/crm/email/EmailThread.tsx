@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import type { Email } from "@/lib/crm/schema";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -11,6 +13,7 @@ import DOMPurify from "dompurify";
 import { EmailComposeModal } from "./EmailComposeModal";
 import { EmailLogModal } from "./EmailLogModal";
 import { swrFetcher } from "@/lib/crm/fetcher";
+import { toast } from "sonner";
 
 const fetcher = swrFetcher;
 
@@ -48,6 +51,7 @@ interface ContactOption {
 interface Props {
   companyId?: string;
   ownerId?: string;
+  propertyId?: string;
   defaultTo?: string;
   contactId?: string;
   contacts?: ContactOption[];
@@ -98,12 +102,54 @@ function EmailMessage({ email, onReply, compact }: { email: Email; onReply: (ema
 
 // ─── Tråd (grupp av mejl med samma gmailThreadId) ─────────────────────────────
 
-function EmailThreadGroup({ messages, onReply, compact }: { messages: Email[]; onReply: (email: Email) => void; compact?: boolean }) {
+type LandlordRun = { gmailMessageId: string; status: string; requiresReview: boolean; attachmentsNeedReview?: boolean };
+type LandlordDialog = { id: string; gmailThreadId: string; active: boolean; recentRuns: LandlordRun[] };
+
+function EmailThreadGroup({ messages, onReply, compact, propertyId, automation, automationReady, automationError, automationHealthy, onAutomationChange }: {
+  messages: Email[]; onReply: (email: Email) => void; compact?: boolean; propertyId?: string;
+  automation?: LandlordDialog; automationReady?: boolean; automationError?: boolean; automationHealthy?: boolean; onAutomationChange?: () => void;
+}) {
   const sorted = [...messages].sort((a, b) => a.sentAt.localeCompare(b.sentAt));
   const latest = sorted[sorted.length - 1];
   const hasUnread = sorted.some((m) => m.direction === "in" && !m.isRead);
   const [open, setOpen] = useState(hasUnread || !!compact);
   const [showOlder, setShowOlder] = useState(false);
+  const [savingAutomation, setSavingAutomation] = useState(false);
+  const threadId = latest.gmailThreadId;
+  const reviewRuns = automation?.recentRuns.filter((run) => run.requiresReview) ?? [];
+
+  async function setAutomation(active: boolean) {
+    if (!propertyId || !threadId) return;
+    setSavingAutomation(true);
+    try {
+      const response = await fetch("/api/crm/landlord-dialogs", {
+        method: automation ? "PATCH" : "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(automation ? { id: automation.id, active } : { propertyId, gmailThreadId: threadId }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Kunde inte spara inställningen.");
+      onAutomationChange?.();
+      toast.success(active ? "Automatiska svar är påslagna" : "Automatiska svar är pausade");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Kunde inte spara inställningen.");
+    } finally { setSavingAutomation(false); }
+  }
+
+  async function markReviewed(gmailMessageId: string) {
+    setSavingAutomation(true);
+    try {
+      const response = await fetch("/api/crm/landlord-dialogs", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gmailMessageId, checked: true }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Kunde inte markera som kontrollerat.");
+      onAutomationChange?.();
+      toast.success("Kontrollen är sparad");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Kunde inte markera som kontrollerat.");
+    } finally { setSavingAutomation(false); }
+  }
 
   const inCount = sorted.filter((m) => m.direction === "in").length;
   const outCount = sorted.filter((m) => m.direction === "out").length;
@@ -142,6 +188,32 @@ function EmailThreadGroup({ messages, onReply, compact }: { messages: Email[]; o
           {(compact && !showOlder ? sorted.slice(-1) : sorted).map((m) => (
             <EmailMessage key={m.id} email={m} onReply={onReply} compact={compact} />
           ))}
+          {propertyId && threadId && !automationReady && (
+            <p className="text-xs text-muted-foreground">{automationError ? "Kunde inte hämta status för automatiska svar." : "Hämtar status för automatiska svar…"}</p>
+          )}
+          {propertyId && threadId && automationReady && (
+            <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm">Automatiska svar för detta boende</span>
+                <Badge variant={automation?.active ? "default" : "outline"}>{automation?.active ? "Påslaget" : "Av"}</Badge>
+                <Button type="button" variant="outline" size="sm" disabled={savingAutomation} onClick={() => setAutomation(!automation?.active)}>
+                  {automation?.active ? "Pausa" : "Slå på"}
+                </Button>
+              </div>
+              {automation?.active && !automationHealthy && <p className="text-xs text-amber-800">Mejlbevakningen har inte bekräftats nyligen eller har stött på ett fel. Kontrollera inkommande mejl.</p>}
+              {!automation && <p className="text-xs text-muted-foreground">Kommande svar i den här tråden kan besvaras automatiskt och sparas på boendet.</p>}
+              {reviewRuns.map((run) => (
+                <Alert key={run.gmailMessageId}>
+                  <AlertDescription className="flex flex-col items-start gap-2">
+                    {run.attachmentsNeedReview && <span>Det kan finnas bilder i mejlet som behöver hämtas och läggas in på boendet.</span>}
+                    {run.status !== "sent" && <span>Dialogen behöver din kontroll. Kontrollera i Gmail om ett svar redan har skickats innan du svarar igen.</span>}
+                    <a className="underline" href={`https://mail.google.com/mail/u/0/#all/${encodeURIComponent(threadId)}`} target="_blank" rel="noreferrer">Öppna mejltråden</a>
+                    <Button type="button" variant="outline" size="sm" disabled={savingAutomation} onClick={() => markReviewed(run.gmailMessageId)}>Jag har kontrollerat</Button>
+                  </AlertDescription>
+                </Alert>
+              ))}
+            </div>
+          )}
           {compact && sorted.length > 1 && <button type="button" className="text-xs text-muted-foreground underline" onClick={() => setShowOlder((value) => !value)}>{showOlder ? "Dölj äldre mejl" : `Visa ${sorted.length - 1} äldre mejl`}</button>}
         </div>
       )}
@@ -151,7 +223,7 @@ function EmailThreadGroup({ messages, onReply, compact }: { messages: Email[]; o
 
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
-export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts = [], compact }: Props) {
+export function EmailThread({ companyId, ownerId, propertyId, defaultTo, contactId, contacts = [], compact }: Props) {
   const [composeOpen, setComposeOpen] = useState(false);
   const [replyTo, setReplyTo] = useState<{ to: string; subject: string; threadId: string | null } | null>(null);
   const [logOpen, setLogOpen] = useState(false);
@@ -170,6 +242,11 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
     companyId || ownerId ? `/api/crm/emails?${param}` : null,
     fetcher,
   );
+  const { data: automationData, error: automationError, mutate: mutateAutomation } = useSWR<{ dialogs: LandlordDialog[]; health?: { healthy: boolean; lastSuccessAt: string | null } | null }>(
+    propertyId ? `/api/crm/landlord-dialogs?propertyId=${encodeURIComponent(propertyId)}` : null, fetcher,
+    { refreshInterval: 30_000 },
+  );
+  const automationHealthy = automationData?.health?.healthy === true && !automationError;
 
   async function handleSync() {
     if (!companyId && !ownerId) return;
@@ -244,7 +321,10 @@ export function EmailThread({ companyId, ownerId, defaultTo, contactId, contacts
       ) : (
         <div className="space-y-2">
           {(compact && !showOtherThreads ? threads.slice(0, 1) : threads).map((group) => (
-            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} onReply={handleReply} compact={compact} />
+            <EmailThreadGroup key={group[0].gmailThreadId ?? group[0].id} messages={group} onReply={handleReply} compact={compact}
+              propertyId={propertyId} automation={automationData?.dialogs.find((item) => item.gmailThreadId === group[0].gmailThreadId)}
+              automationReady={!!automationData} automationError={!!automationError} automationHealthy={automationHealthy}
+              onAutomationChange={() => { void mutateAutomation(); }} />
           ))}
           {compact && threads.length > 1 && <button type="button" className="text-xs text-muted-foreground underline" onClick={() => setShowOtherThreads((value) => !value)}>{showOtherThreads ? "Dölj äldre trådar" : `Visa ${threads.length - 1} andra trådar`}</button>}
         </div>

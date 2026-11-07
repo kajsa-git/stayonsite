@@ -552,6 +552,117 @@ export const emailSenderSuggestions = sqliteTable("crm_email_sender_suggestions"
 export type GmailSyncState = typeof gmailSyncState.$inferSelect;
 export type EmailSenderSuggestion = typeof emailSenderSuggestions.$inferSelect;
 
+// A landlord thread is enrolled explicitly. Matching an email address alone
+// must never cause the agent to answer unrelated correspondence.
+export const landlordDialogs = sqliteTable("crm_landlord_dialogs", {
+  id: text("id").primaryKey(),
+  ownerId: text("owner_id").notNull().references(() => owners.id, { onDelete: "cascade" }),
+  propertyId: text("property_id").notNull().references(() => properties.id, { onDelete: "cascade" }),
+  gmailThreadId: text("gmail_thread_id").notNull(),
+  landlordEmail: text("landlord_email").notNull(),
+  enrolledAt: text("enrolled_at").notNull(),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+  lastSeenFingerprint: text("last_seen_fingerprint"),
+  lastCheckedAt: text("last_checked_at"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, (t) => [
+  uniqueIndex("crm_landlord_dialogs_thread_unique").on(t.gmailThreadId),
+  index("crm_landlord_dialogs_property_idx").on(t.propertyId),
+]);
+
+// Each incoming Gmail message can be claimed at most once. A send whose
+// outcome is uncertain is left for review, never sent again automatically.
+export const landlordReplyRuns = sqliteTable("crm_landlord_reply_runs", {
+  gmailMessageId: text("gmail_message_id").primaryKey(),
+  dialogId: text("dialog_id").notNull().references(() => landlordDialogs.id, { onDelete: "cascade" }),
+  status: text("status").notNull(), // claimed | sending | sent | needs_review | send_uncertain | resolved
+  draftBody: text("draft_body"),
+  outboundGmailMessageId: text("outbound_gmail_message_id"),
+  attachmentsNeedReview: integer("attachments_need_review", { mode: "boolean" }).notNull().default(false),
+  reviewNoticeAttemptedAt: text("review_notice_attempted_at"),
+  followUpNoticeSentAt: text("follow_up_notice_sent_at"),
+  error: text("error"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, (t) => [index("crm_landlord_reply_runs_status_idx").on(t.status)]);
+
+export const landlordAgentHealth = sqliteTable("crm_landlord_agent_health", {
+  id: text("id").primaryKey(),
+  lastSuccessAt: text("last_success_at"),
+  lastErrorAt: text("last_error_at"),
+  failureStartedAt: text("failure_started_at"),
+  alertSentAt: text("alert_sent_at"),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+});
+
+export const landlordSmsDialogs = sqliteTable("crm_landlord_sms_dialogs", {
+  id: text("id").primaryKey(),
+  ownerId: text("owner_id").notNull().references(() => owners.id, { onDelete: "cascade" }),
+  propertyId: text("property_id").notNull().references(() => properties.id, { onDelete: "cascade" }),
+  phone: text("phone").notNull(),
+  enrolledAt: text("enrolled_at").notNull(),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  lastCheckedAt: text("last_checked_at"),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, (t) => [uniqueIndex("crm_landlord_sms_dialogs_phone_unique").on(t.phone)]);
+
+// The Mac agent provides direct/group metadata from Messages. Rows without
+// this proof must never receive an automatic SMS reply.
+export const landlordSmsReceipts = sqliteTable("crm_landlord_sms_receipts", {
+  guid: text("guid").primaryKey(),
+  conversationKind: text("conversation_kind").notNull(),
+  attachmentCount: integer("attachment_count").notNull().default(0),
+});
+
+export const landlordSmsRuns = sqliteTable("crm_landlord_sms_runs", {
+  inboxGuid: text("inbox_guid").primaryKey(),
+  dialogId: text("dialog_id").notNull().references(() => landlordSmsDialogs.id, { onDelete: "cascade" }),
+  status: text("status").notNull(),
+  outboxId: text("outbox_id"),
+  error: text("error"),
+  reviewNoticeSentAt: text("review_notice_sent_at"),
+  attachmentsNeedReview: integer("attachments_need_review", { mode: "boolean" }).notNull().default(false),
+  attachmentNoticeSentAt: text("attachment_notice_sent_at"),
+  followUpNoticeSentAt: text("follow_up_notice_sent_at"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const landlordImageCandidates = sqliteTable("crm_landlord_image_candidates", {
+  id: text("id").primaryKey(),
+  propertyId: text("property_id").notNull().references(() => properties.id, { onDelete: "cascade" }),
+  gmailMessageId: text("gmail_message_id").notNull(),
+  replyRunId: text("reply_run_id").notNull(),
+  attachmentId: text("attachment_id").notNull(),
+  fileName: text("file_name").notNull(),
+  mimeType: text("mime_type").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  status: text("status").notNull().default("pending"), // pending | imported | needs_review
+  objectKey: text("object_key"),
+  error: text("error"),
+  reviewNoticeSentAt: text("review_notice_sent_at"),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, (t) => [
+  uniqueIndex("crm_landlord_image_candidates_unique").on(t.gmailMessageId, t.attachmentId),
+  index("crm_landlord_image_candidates_status").on(t.status),
+]);
+
+export const landlordPropertyLocks = sqliteTable("crm_landlord_property_locks", {
+  propertyId: text("property_id").primaryKey(),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+});
+
 export type Match = typeof matches.$inferSelect;
 export type MatchInsert = typeof matches.$inferInsert;
 export type PropertyImage = typeof propertyImages.$inferSelect;

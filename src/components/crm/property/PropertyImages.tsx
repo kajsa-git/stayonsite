@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { toast } from "@/components/ui/use-toast";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { compressImage } from "@/lib/image-compress";
+import { LandlordImageCandidates } from "./LandlordImageCandidates";
 
 interface Image {
   id: string;
@@ -19,7 +20,8 @@ const fetcher = swrFetcher;
 export function PropertyImages({ propertyId }: { propertyId: string }) {
   const { data: images = [], mutate } = useSWR<Image[]>(
     `/api/crm/properties/${propertyId}/images`,
-    fetcher
+    fetcher,
+    { refreshInterval: 30_000 },
   );
   const [uploading, setUploading] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -160,6 +162,8 @@ export function PropertyImages({ propertyId }: { propertyId: string }) {
       </div>
 
       {error && <p className="text-xs text-destructive mb-2">{error}</p>}
+
+      <LandlordImageCandidates propertyId={propertyId} />
 
       {images.length === 0 ? (
         <p className="text-sm text-muted-foreground italic">Inga bilder ännu.</p>

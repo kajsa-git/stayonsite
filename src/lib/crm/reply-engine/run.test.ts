@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq, sql } from "drizzle-orm";
 import { createTestDb, type TestDB } from "../test-db";
-import { companies, contacts, emails, inboxMessages, outboxMessages, owners } from "../schema";
+import { companies, contacts, emails, inboxMessages, landlordDialogs, landlordPropertyLocks, landlordSmsDialogs, outboxMessages, owners, properties } from "../schema";
 import type { ModelDecision } from "./policy";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB, decisions: [] as unknown[], prompts: [] as string[] }));
@@ -26,7 +26,8 @@ vi.mock("./decide", async (orig) => {
 
 import { gmailSend } from "../gmail";
 import { runReplyEngine } from "./run";
-import { getSettings, listDecisions, setMode, setSetting } from "./store";
+import { decide } from "./decide";
+import { getSettings, insertDecision, listDecisions, setMode, setSetting } from "./store";
 
 const routine = (over: Partial<ModelDecision> = {}): ModelDecision => ({
   partyRole: "uthyrare", intent: "fråga om bilder", stage: "registrering", outcomeGoal: "publicerad bostad",
@@ -63,6 +64,65 @@ async function sms(id: string, opts: { from?: string; owner?: string | null; con
 }
 
 describe("svarsmotorn", () => {
+  it.each([true, false])("lämnar SMS till en ansluten bostadsdialog även när den är pausad (%s)", async (active) => {
+    await state.db.insert(properties).values({ id: "p1", ownerId: "o1", address: "Testgatan 1" });
+    await state.db.insert(landlordSmsDialogs).values({ id: "ld", ownerId: "o1", propertyId: "p1", phone: "+46701112233", active,
+      enrolledAt: minutesAgo(30), createdAt: minutesAgo(30), updatedAt: minutesAgo(30) });
+    await sms("reserved");
+    state.decisions.push(routine());
+    const result = await runReplyEngine({ db: state.db, force: true });
+    expect(result.processed).toBe(0);
+    expect(state.prompts).toHaveLength(0);
+    expect(await state.db.select().from(outboxMessages)).toHaveLength(0);
+  });
+
+  it("lämnar en ansluten mejltråd till bostadsdialogen", async () => {
+    await state.db.insert(properties).values({ id: "p1", ownerId: "o1", address: "Testgatan 1" });
+    await state.db.insert(landlordDialogs).values({ id: "ld", ownerId: "o1", propertyId: "p1", gmailThreadId: "landlord-thread",
+      landlordEmail: "anna@example.se", active: true, enrolledAt: minutesAgo(30), createdAt: minutesAgo(30), updatedAt: minutesAgo(30) });
+    await state.db.insert(emails).values({ id: "reserved", ownerId: "o1", direction: "in", subject: "Huset", body: "Två bäddar.",
+      fromEmail: "anna@example.se", toEmail: "kajsa@stayonsite.se", gmailMessageId: "gm-in", gmailThreadId: "landlord-thread", sentAt: minutesAgo(5) });
+    state.decisions.push(routine());
+    const result = await runReplyEngine({ db: state.db, force: true });
+    expect(result.processed).toBe(0);
+    expect(gmailSend).not.toHaveBeenCalled();
+  });
+
+  it("behåller WhatsApp som egen kanal när samma nummer har en ansluten SMS-dialog", async () => {
+    await state.db.insert(properties).values({ id: "p1", ownerId: "o1", address: "Testgatan 1" });
+    await state.db.insert(landlordSmsDialogs).values({ id: "ld", ownerId: "o1", propertyId: "p1", phone: "+46701112233", active: true,
+      enrolledAt: minutesAgo(30), createdAt: minutesAgo(30), updatedAt: minutesAgo(30) });
+    await sms("whatsapp", { service: "WhatsApp" });
+    state.decisions.push(routine());
+    expect((await runReplyEngine({ db: state.db, force: true })).autoSent).toBe(1);
+    const [out] = await state.db.select().from(outboxMessages);
+    const channel = await state.db.all<{ channel: string }>(sql`SELECT channel FROM crm_outbox_channels WHERE outbox_id = ${out.id}`);
+    expect(channel[0]?.channel).toBe("whatsapp");
+  });
+
+  it("väntar med en äldre uppföljning i en ansluten bostadsdialog", async () => {
+    await state.db.insert(properties).values({ id: "p1", ownerId: "o1", address: "Testgatan 1" });
+    await state.db.insert(landlordSmsDialogs).values({ id: "ld", ownerId: "o1", propertyId: "p1", phone: "+46701112233", active: true,
+      enrolledAt: minutesAgo(30), createdAt: minutesAgo(30), updatedAt: minutesAgo(30) });
+    await insertDecision(state.db, { id: "old", source_type: "sms", source_id: "prior", channel: "sms", action: "auto_sent",
+      owner_id: "o1", to_address: "+46701112233", follow_up_status: "pending", follow_up_at: minutesAgo(1) });
+    expect((await runReplyEngine({ db: state.db, force: true })).followUps).toBe(0);
+    const [decision] = await listDecisions(state.db);
+    expect(decision.follow_up_status).toBe("pending");
+    expect(await state.db.select().from(outboxMessages)).toHaveLength(0);
+  });
+
+  it("skickar inte om samtalslåset går ut medan svaret skrivs", async () => {
+    await sms("in1");
+    vi.mocked(decide).mockImplementationOnce(async () => {
+      await state.db.update(landlordPropertyLocks).set({ leaseUntil: minutesAgo(1) });
+      return { decision: routine(), model: "test-model" };
+    });
+    const result = await runReplyEngine({ db: state.db, force: true });
+    expect(result.autoSent).toBe(0);
+    expect(result.errors).toHaveLength(1);
+    expect(await state.db.select().from(outboxMessages)).toHaveLength(0);
+  });
   it("svarar direkt på ett rutinmeddelande och lägger svaret i utkorgen", async () => {
     await sms("in1");
     state.decisions.push(routine({ followUpInHours: 24 }));

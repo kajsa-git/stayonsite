@@ -6,7 +6,7 @@
 import { bearerAuthorized } from "@/lib/crm/bearer-auth";
 import { db } from "@/lib/crm/db";
 import { normalizePhoneE164 } from "@/lib/crm/phone-links";
-import { contacts, inboxMessages, owners } from "@/lib/crm/schema";
+import { contacts, inboxMessages, landlordSmsReceipts, owners } from "@/lib/crm/schema";
 import { inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { after, NextRequest, NextResponse } from "next/server";
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   const list = Array.isArray(raw.messages) ? raw.messages.slice(0, MAX_BATCH) : [];
   if (list.length === 0) return NextResponse.json({ inserted: 0 });
 
-  type Incoming = { guid: string; fromPhone: string; body: string; service: string | null; sentAt: string; direction: "in" | "out" };
+  type Incoming = { guid: string; fromPhone: string; body: string; service: string | null; sentAt: string; direction: "in" | "out"; conversationKind: "direct" | "unknown"; attachmentCount: number };
   const cleaned: Incoming[] = [];
   for (const m of list) {
     if (typeof m !== "object" || m === null) continue;
@@ -63,6 +63,8 @@ export async function POST(req: NextRequest) {
       service: typeof r.service === "string" ? r.service : null,
       sentAt,
       direction: r.direction === "out" ? "out" : "in",
+      conversationKind: r.conversationKind === "direct" ? "direct" : "unknown",
+      attachmentCount: typeof r.attachmentCount === "number" && Number.isInteger(r.attachmentCount) && r.attachmentCount >= 0 && r.attachmentCount <= 100 ? r.attachmentCount : 0,
     });
   }
   if (cleaned.length === 0) return NextResponse.json({ inserted: 0 });
@@ -99,8 +101,13 @@ export async function POST(req: NextRequest) {
   });
 
   // Idempotent: samma guid två gånger (agent-omstart, överlappande cursor) → no-op.
-  await db.insert(inboxMessages).values(values).onConflictDoNothing({ target: inboxMessages.guid });
-  // Nya svar från kända kontakter → svarsmotorn direkt (gör inget om den är avstängd).
+  await db.transaction(async (tx) => {
+    await tx.insert(inboxMessages).values(values).onConflictDoNothing({ target: inboxMessages.guid });
+    await tx.insert(landlordSmsReceipts).values(cleaned.map((message) => ({ guid: message.guid, conversationKind: message.conversationKind, attachmentCount: message.attachmentCount })))
+      .onConflictDoNothing({ target: landlordSmsReceipts.guid });
+  });
+  // Preserve the existing reply engine's immediate trigger after both the
+  // message and its conversation classification have been committed.
   if (values.some((v) => v.direction === "in" && (v.ownerId || v.contactId))) {
     after(() => runReplyEngine().then(() => undefined).catch((error) => console.error("Reply engine after ingest:", error)));
   }

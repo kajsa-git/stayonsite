@@ -23,6 +23,7 @@ import { EmailThread } from "@/components/crm/email/EmailThread";
 import { PropertyEditForm } from "./PropertyEditForm";
 import { PropertyContentReview } from "./PropertyContentReview";
 import { PropertyPublicControls } from "./PropertyPublicControls";
+import { LandlordSmsAutomation } from "./LandlordSmsAutomation";
 import { Equip, InfoRow } from "./property-ui";
 import { PhoneActions } from "@/components/crm/PhoneActions";
 import { RatingControl } from "../RatingControl";
@@ -316,6 +317,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
               </dl>
               <div className="mt-4"><ReviewRequestSnippet name={property.ownerContactPerson ?? property.ownerName} variant="owner" /></div>
               {property.ownerId && <OwnerObjectLinks ownerId={property.ownerId} currentPropertyId={property.id} />}
+              {property.ownerId && property.ownerPhone && <div className="mt-4 border-t pt-4"><LandlordSmsAutomation propertyId={property.id} /></div>}
             </CardContent>
           </Card>
 
@@ -329,7 +331,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
 
           {property.ownerId && (
             <Card className="rounded-xl shadow-none">
-              <CardContent className="p-5"><EmailThread ownerId={property.ownerId} defaultTo={property.ownerEmail ?? undefined} /></CardContent>
+              <CardContent className="p-5"><EmailThread ownerId={property.ownerId} propertyId={property.id} defaultTo={property.ownerEmail ?? undefined} /></CardContent>
             </Card>
           )}
 

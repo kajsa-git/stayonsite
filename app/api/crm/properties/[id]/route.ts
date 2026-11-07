@@ -6,7 +6,7 @@ import { db } from "@/lib/crm/db";
 import { deletePropertyDeep } from "@/lib/crm/cascade-delete";
 import { indexOwner, indexProperty, removeFromIndex } from "@/lib/crm/search-index";
 import { isValidPropertyStatus, mergeOwnerIntoProperty, normalizePropertyWriteBody } from "@/lib/crm/owners";
-import { outboxMessages, owners, properties, propertyImages, rentalReviews } from "@/lib/crm/schema";
+import { landlordImageCandidates, outboxMessages, owners, properties, propertyImages, rentalReviews } from "@/lib/crm/schema";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId, husPublishedLinkSms } from "@/lib/crm/hus-publication";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { imageObjectKeys } from "@/lib/crm/image-variants";
@@ -133,12 +133,14 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       .from(propertyImages)
       .where(eq(propertyImages.propertyId, id))
   ).flatMap(imageObjectKeys);
+  const candidateKeys = (await db.select({ key: landlordImageCandidates.objectKey }).from(landlordImageCandidates)
+    .where(eq(landlordImageCandidates.propertyId, id))).map((row) => row.key).filter((key): key is string => !!key);
 
   await db.transaction((tx) => deletePropertyDeep(tx, id));
 
   // Städa bildobjekten i R2 (best-effort — DB-raderingen har redan lyckats).
   await Promise.all(
-    imageKeys.map((key) =>
+    [...new Set([...imageKeys, ...candidateKeys])].map((key) =>
       r2.send(new DeleteObjectCommand({ Bucket: R2_BUCKET, Key: key })).catch((e) => console.error("R2 delete:", e)),
     ),
   );

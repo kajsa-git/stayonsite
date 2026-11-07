@@ -209,6 +209,10 @@ export async function gmailSend(
 export interface GmailMessage {
   id: string;
   threadId: string;
+  // Gmail's received timestamp, independent of the sender's Date header.
+  internalDate?: string;
+  possibleImageAttachments?: number;
+  imageAttachments?: Array<{ attachmentId: string; fileName: string; mimeType: string; sizeBytes: number }>;
   from: string;
   to: string;
   cc: string;
@@ -232,7 +236,7 @@ interface RawGmailMessage {
   labelIds?: string[];
   snippet?: string;
   internalDate?: string;
-  payload?: { headers?: { name: string; value: string }[]; mimeType?: string; body?: { data?: string }; parts?: unknown[] };
+  payload?: { headers?: { name: string; value: string }[]; mimeType?: string; filename?: string; body?: { data?: string; size?: number; attachmentId?: string }; parts?: unknown[] };
 }
 
 function header(msg: RawGmailMessage, name: string) {
@@ -248,9 +252,12 @@ function decodeB64Url(data?: string): string {
 
 function extractBody(payload: {
   mimeType?: string;
+  filename?: string;
   body?: { data?: string };
   parts?: typeof payload[];
 }): { text: string; html: string | null } {
+  // Attached files do not replace the actual conversation body.
+  if (payload.filename) return { text: "", html: null };
   if (payload.mimeType === "text/plain") return { text: decodeB64Url(payload.body?.data), html: null };
   if (payload.mimeType === "text/html") return { text: "", html: decodeB64Url(payload.body?.data) };
   if (payload.parts) {
@@ -264,6 +271,31 @@ function extractBody(payload: {
     return { text, html };
   }
   return { text: "", html: null };
+}
+
+function countPossibleImages(payload: { mimeType?: string; body?: { size?: number }; parts?: unknown[] }): number {
+  const own = payload.mimeType?.startsWith("image/") && (payload.body?.size ?? 0) > 0 ? 1 : 0;
+  return own + (payload.parts ?? []).reduce<number>((count, part) => count + countPossibleImages(part as typeof payload), 0);
+}
+
+function listImageAttachments(payload: { mimeType?: string; filename?: string; body?: { size?: number; attachmentId?: string }; parts?: unknown[] }): NonNullable<GmailMessage["imageAttachments"]> {
+  const own = payload.mimeType?.startsWith("image/") && payload.body?.attachmentId && (payload.body.size ?? 0) > 0
+    ? [{ attachmentId: payload.body.attachmentId, fileName: (payload.filename || "bild").slice(0, 150), mimeType: payload.mimeType, sizeBytes: payload.body.size! }]
+    : [];
+  return [...own, ...(payload.parts ?? []).flatMap((part) => listImageAttachments(part as typeof payload))];
+}
+
+export async function gmailGetImageAttachment(userId: string, messageId: string, attachmentId: string): Promise<Buffer> {
+  const token = await getAccessToken(userId);
+  const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${encodeURIComponent(messageId)}/attachments/${encodeURIComponent(attachmentId)}`, {
+    headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) throw new Error(`Bildbilagan kunde inte hämtas (${res.status}).`);
+  const data = await res.json() as { data?: string; size?: number };
+  if (!data.data || (data.size ?? 0) > 15 * 1024 * 1024 || data.data.length > 21 * 1024 * 1024) throw new Error("Bildbilagan saknas eller är för stor.");
+  const bytes = Buffer.from(data.data, "base64url");
+  if (!bytes.length || bytes.length > 15 * 1024 * 1024) throw new Error("Bildbilagan saknas eller är för stor.");
+  return bytes;
 }
 
 function decodeHtmlEntities(value: string): string {
@@ -285,6 +317,9 @@ export function parseGmailMessage(msg: RawGmailMessage): GmailMessage {
   return {
     id: msg.id,
     threadId: msg.threadId,
+    internalDate: msg.internalDate,
+    possibleImageAttachments: msg.payload ? countPossibleImages(msg.payload) : 0,
+    imageAttachments: msg.payload ? listImageAttachments(msg.payload) : [],
     from: header(msg, "from"),
     to: header(msg, "to"),
     cc: header(msg, "cc"),
@@ -313,19 +348,44 @@ export async function gmailSearchThreadIds(userId: string, email: string): Promi
   return ((data.threads ?? []) as { id: string }[]).map((t) => t.id);
 }
 
+// One mailbox search lets the worker skip enrolled threads without new mail;
+// an hourly full sweep catches replies missed after an outage.
+export async function gmailRecentThreadMessages(userId: string): Promise<Map<string, string[]>> {
+  const ids = new Map<string, string[]>();
+  let pageToken: string | undefined;
+  for (let page = 0; page < 10; page++) {
+    const q = new URLSearchParams({ q: "newer_than:1d -in:spam -in:trash", maxResults: "500" });
+    if (pageToken) q.set("pageToken", pageToken);
+    const res = await gmailGet(userId, `messages?${q}`);
+    if (!res.ok) throw new Error(`Gmail search failed (${res.status})`);
+    const data = await res.json() as { messages?: Array<{ id?: string; threadId?: string }>; nextPageToken?: string };
+    for (const message of data.messages ?? []) {
+      if (!message.threadId || !message.id) continue;
+      const existing = ids.get(message.threadId) ?? [];
+      existing.push(message.id);
+      ids.set(message.threadId, existing);
+    }
+    pageToken = data.nextPageToken;
+    if (!pageToken) return ids;
+  }
+  throw new Error("För många nya Gmail-meddelanden för en säker genomsökning.");
+}
+
 // Hämta In-Reply-To/References för att besvara en tråd korrekt. Gmails threadId
 // trådar i avsändarens konto, men RFC-headern (Message-ID) krävs för korrekt trådning
 // hos mottagaren och i strikta mejlklienter. Bygger References-kedjan.
 export async function gmailThreadReplyHeaders(
   userId: string,
   threadId: string,
+  expectedLastMessageId?: string,
 ): Promise<{ inReplyTo?: string; references?: string }> {
   const res = await gmailGet(userId, `threads/${threadId}?format=metadata&metadataHeaders=Message-ID&metadataHeaders=References`);
   if (!res.ok) return {};
   const data = await res.json();
-  const msgs = (data.messages ?? []) as { payload?: { headers?: { name: string; value: string }[] } }[];
+  const msgs = (data.messages ?? []) as { id?: string; payload?: { headers?: { name: string; value: string }[] } }[];
   if (!msgs.length) return {};
   const last = msgs[msgs.length - 1];
+  if (expectedLastMessageId && last.id !== expectedLastMessageId) return {};
   const getH = (n: string) => last.payload?.headers?.find((h) => h.name.toLowerCase() === n)?.value;
   const messageId = getH("message-id");
   if (!messageId) return {};
