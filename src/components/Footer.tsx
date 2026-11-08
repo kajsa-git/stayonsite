@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { trackPhoneClick, trackWhatsAppClick, trackEmailClick } from '@/lib/gtag';
 import Link from 'next/link';
 import { DATACENTER_PATHS } from '@/data/datacenter';
+import { OPENAI_PIXEL_ID, OPEN_CONSENT_SETTINGS_EVENT } from '@/lib/openai-pixel';
 // Sajtvid länksignal till de viktigaste stadssidorna med beskrivande ankartext —
 // utan den rankar startsidan i stället för stadssidan på "företagsboende <stad>".
 const popularCities: { slug: string; name: string }[] = [
@@ -190,6 +191,11 @@ const Footer = () => {
         <div className="mt-16 pt-8 text-center border-t border-white/10">
           <p className="font-light text-white/50">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
           <p className="font-light text-white/40 mt-2">{t('footer.care')}</p>
+          {OPENAI_PIXEL_ID && (
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_SETTINGS_EVENT))} className="mt-4 text-sm text-white/70 underline hover:text-white">
+              {t('cookie.settings')}
+            </button>
+          )}
         </div>
       </div>
     </footer>;

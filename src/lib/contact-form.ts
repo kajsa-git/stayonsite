@@ -1,3 +1,5 @@
+import { trackOpenAILead } from '@/lib/openai-pixel';
+
 export type ContactFormType =
   | 'hero-intent'
   | 'inquiry'
@@ -61,6 +63,14 @@ export async function submitContactForm(
 
   if (!response.ok || !result?.success) {
     throw new Error(result?.error || 'contact_form_request_failed');
+  }
+
+  if (['hero-intent', 'lp-corporate', 'project-brief'].includes(submission.formType)) {
+    try {
+      trackOpenAILead();
+    } catch {
+      // Measurement must never change the outcome of an accepted inquiry.
+    }
   }
 
   return {

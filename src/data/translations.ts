@@ -453,6 +453,8 @@ export type TranslationKey =
   | "twotrack.homeowner.description"
   | "twotrack.homeowner.cta"
   | "cookie.text"
+  | "cookie.openaiText"
+  | "cookie.settings"
   | "cookie.accept"
   | "cookie.deny";
 
@@ -1013,6 +1015,8 @@ export const translations: Record<
     "twotrack.homeowner.description": "Garanterad hyra varje månad, inga avdrag, 0 % i avgift.",
     "twotrack.homeowner.cta": "Hyr ut din bostad",
     "cookie.text": "Vi använder cookies för att mäta vår annonsering.",
+    "cookie.openaiText": "Vi använder cookies för att mäta annonsering, bland annat med OpenAI. Om du accepterar kan OpenAI få uppgifter om besök och skickade formulär samt hashade kontaktuppgifter.",
+    "cookie.settings": "Cookieinställningar",
     "cookie.accept": "Acceptera",
     "cookie.deny": "Nej tack",
   },
@@ -1573,6 +1577,8 @@ export const translations: Record<
     "twotrack.homeowner.description": "Guaranteed rent every month, no deductions, 0% fee.",
     "twotrack.homeowner.cta": "Rent out your property",
     "cookie.text": "We use cookies to measure our advertising.",
+    "cookie.openaiText": "We use cookies to measure advertising, including with OpenAI. If you accept, OpenAI may receive information about visits and submitted forms, as well as hashed contact details.",
+    "cookie.settings": "Cookie settings",
     "cookie.accept": "Accept",
     "cookie.deny": "No thanks",
   },
@@ -2137,6 +2143,8 @@ export const translations: Record<
     "twotrack.homeowner.description": "Gwarantowany czynsz co miesiąc, bez potrąceń, 0% opłat.",
     "twotrack.homeowner.cta": "Wynajmij swoją nieruchomość",
     "cookie.text": "Używamy plików cookie do pomiaru reklam.",
+    "cookie.openaiText": "Używamy plików cookie do pomiaru reklam, także z OpenAI. Jeśli zaakceptujesz, OpenAI może otrzymać informacje o wizytach i wysłanych formularzach oraz zahaszowane dane kontaktowe.",
+    "cookie.settings": "Ustawienia plików cookie",
     "cookie.accept": "Akceptuję",
     "cookie.deny": "Nie, dziękuję",
   },

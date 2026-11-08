@@ -1,35 +1,58 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Cookie } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { GA_ADS_ID, getStoredConsent, updateConsent } from '@/lib/gtag'
+import { CONSENT_CHANGE_EVENT, GA_ADS_ID, getStoredConsent, updateConsent } from '@/lib/gtag'
 import { META_PIXEL_ID } from '@/lib/meta-pixel'
+import { OPENAI_PIXEL_ID, OPEN_CONSENT_SETTINGS_EVENT, getStoredOpenAIConsent, storeOpenAIConsent } from '@/lib/openai-pixel'
+
+function subscribeToConsent(callback: () => void) {
+  window.addEventListener(CONSENT_CHANGE_EVENT, callback)
+  window.addEventListener('storage', callback)
+  return () => {
+    window.removeEventListener(CONSENT_CHANGE_EVENT, callback)
+    window.removeEventListener('storage', callback)
+  }
+}
+
+function shouldShowConsent(): boolean {
+  if (!GA_ADS_ID && !META_PIXEL_ID && !OPENAI_PIXEL_ID) return false
+  try {
+    const stored = getStoredConsent()
+    if (!stored) return true
+    // A previous general advertising choice predates the OpenAI disclosure.
+    return stored !== 'denied' && Boolean(OPENAI_PIXEL_ID) && !getStoredOpenAIConsent()
+  } catch {
+    return true
+  }
+}
 
 export default function CookieConsent() {
   const { t } = useLanguage()
-  const [visible, setVisible] = useState(false)
+  const showNotice = useSyncExternalStore(subscribeToConsent, shouldShowConsent, () => false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
-    if (!GA_ADS_ID && !META_PIXEL_ID) return
     const stored = getStoredConsent()
-    if (stored) {
-      updateConsent(stored)
-    } else {
-      setVisible(true)
-    }
+    if (stored) updateConsent(stored)
+    const openSettings = () => setSettingsOpen(true)
+    window.addEventListener(OPEN_CONSENT_SETTINGS_EVENT, openSettings)
+    return () => window.removeEventListener(OPEN_CONSENT_SETTINGS_EVENT, openSettings)
   }, [])
 
-  if (!visible) return null
+  if (!showNotice && !settingsOpen) return null
 
   const handleAccept = () => {
+    if (OPENAI_PIXEL_ID) storeOpenAIConsent('granted')
     updateConsent('granted')
-    setVisible(false)
+    setSettingsOpen(false)
   }
 
   const handleDeny = () => {
+    if (OPENAI_PIXEL_ID) storeOpenAIConsent('denied')
     updateConsent('denied')
-    setVisible(false)
+    setSettingsOpen(false)
   }
 
   return (
@@ -40,7 +63,7 @@ export default function CookieConsent() {
             <Cookie size={16} className="text-accent" />
           </div>
           <p className="text-xs md:text-sm text-nordic-700 leading-[1.15] md:leading-relaxed">
-            {t('cookie.text')}
+            {t(OPENAI_PIXEL_ID ? 'cookie.openaiText' : 'cookie.text')}
           </p>
         </div>
         <div className="flex flex-shrink-0 gap-1 md:gap-3 md:mt-4 md:ml-11">
