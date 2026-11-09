@@ -36,6 +36,20 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 describe("automatic landlord SMS", () => {
+  it("uses Kajsa's latest branded SMS even when a newer acknowledgement is unbranded", async () => {
+    await state.db.insert(inboxMessages).values([
+      { id: "signed", guid: "signed-guid", fromPhone: phone, body: "Tack! /Kajsa, HyrUtSmart", direction: "out", ownerId: "owner", sentAt: "2026-11-07T11:58:00.000Z", isRead: true },
+      { id: "ack", guid: "ack-guid", fromPhone: phone, body: "Toppen!", direction: "out", ownerId: "owner", sentAt: "2026-11-07T11:59:00.000Z", isRead: true },
+    ]);
+    expect(await runLandlordSmsSweep()).toMatchObject({ queued: 1 });
+    expect(vi.mocked(planLandlordReply).mock.calls[0][0].brand).toBe("HyrUtSmart");
+  });
+  it("requests review if the last branded SMS names both businesses", async () => {
+    await state.db.insert(inboxMessages).values({ id: "signed", guid: "signed-guid", fromPhone: phone,
+      body: "Kajsa, HyrUtSmart och StayOnSite", direction: "out", ownerId: "owner", sentAt: "2026-11-07T11:59:00.000Z", isRead: true });
+    expect(await runLandlordSmsSweep()).toMatchObject({ queued: 0, review: 1 });
+    expect(planLandlordReply).not.toHaveBeenCalled();
+  });
   it("does not respond to an acknowledgement by itself", async () => {
     await state.db.update(inboxMessages).set({ body: "👍🏻👍🏻" });
     expect(await runLandlordSmsSweep()).toMatchObject({ queued: 0, review: 0 });

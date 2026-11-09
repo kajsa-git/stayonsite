@@ -2,7 +2,7 @@ import { and, asc, desc, eq, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { sendLandlordSmsAttachmentNotice, sendLandlordSmsReviewNotice } from "./landlord-dialog-alerts";
-import { planLandlordReply, propertyPatchFromFacts } from "./landlord-dialog-model";
+import { planLandlordReply, propertyPatchFromFacts, type LandlordBrand } from "./landlord-dialog-model";
 import { asksToStopContact, isAcknowledgementOnly } from "./landlord-dialog-policy";
 import { indexProperty } from "./search-index";
 import { LANDLORD_SMS_SOURCE } from "./landlord-sms-source";
@@ -12,6 +12,20 @@ import { normalizePhoneE164 } from "./phone-links";
 import { inboxMessages, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties, propertyImages, propertyNotes } from "./schema";
 
 type Dialog = typeof landlordSmsDialogs.$inferSelect;
+
+function smsBrand(history: Array<{ direction: string | null; body: string }>, consentSource: string | null): LandlordBrand {
+  // Use Kajsa's most recent explicitly branded outgoing message, ignoring
+  // unbranded acknowledgements and text supplied by the landlord.
+  for (const message of history) {
+    if (message.direction !== "out") continue;
+    const hus = /\bHyrUtSmart\b/i.test(message.body);
+    const stay = /\bStayOnSite\b/i.test(message.body);
+    if (hus && stay) throw new Error("Dialogens avsändare är oklar; kontrollera manuellt.");
+    if (hus) return "HyrUtSmart";
+    if (stay) return "StayOnSite";
+  }
+  return consentSource === "hus" ? "HyrUtSmart" : "StayOnSite";
+}
 
 async function review(guid: string, reason: string) {
   await db.update(landlordSmsRuns).set({ status: "needs_review", error: reason, updatedAt: new Date().toISOString() })
@@ -102,7 +116,7 @@ async function processDialog(dialog: Dialog): Promise<"sent_to_queue" | "review"
       const pictures = await db.select({ id: propertyImages.id }).from(propertyImages).where(eq(propertyImages.propertyId, property.id));
       const notes = await db.select({ content: propertyNotes.content }).from(propertyNotes)
         .where(eq(propertyNotes.propertyId, property.id)).orderBy(desc(propertyNotes.createdAt)).limit(10);
-      const plan = await planLandlordReply({ ownerName: owner.name, property: {
+      const plan = await planLandlordReply({ ownerName: owner.name, brand: smsBrand(history, property.publishConsentSource), property: {
         address: property.address, city: property.city, squareMeters: property.squareMeters, bedrooms: property.bedrooms,
         beds: property.beds, bathrooms: property.bathrooms, furnished: property.furnished, broadband: property.broadband,
         kitchen: property.kitchen, rentIn: property.rentIn, excludedNote: property.excludedNote, notes: property.notes,

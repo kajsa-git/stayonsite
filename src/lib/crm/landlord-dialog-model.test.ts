@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { parsePropertyFact, propertyPatchFromFacts, validateLandlordPlan } from "./landlord-dialog-model";
+import { describe, expect, it, vi } from "vitest";
+import { parsePropertyFact, planLandlordReply, propertyPatchFromFacts, validateLandlordPlan } from "./landlord-dialog-model";
 
 describe("landlord extraction safety", () => {
   it("requires evidence from the new message", () => {
@@ -22,6 +22,20 @@ describe("landlord extraction safety", () => {
     const plan = validateLandlordPlan({ action: "reply", summary: "Svar", reply, facts: [] }, "Hej");
     expect(plan.reply).toBe("Tack för svaret!\n\nVi ser gärna en fast hyra där allt ingår.\n\nMvh Kajsa");
     expect(() => validateLandlordPlan({ action: "reply", summary: "Svar", reply: "Annars kan vi stämma av när vi har en konkret förfrågan.", facts: [] }, "Hej")).toThrow();
+  });
+  it("uses the selected brand and refuses an answer signed by the other business", async () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
+    const response = (reply: string) => ({ ok: true, json: async () => ({ stop_reason: "end_turn", content: [{ type: "text",
+      text: JSON.stringify({ action: "reply", summary: "Svar.", reply, facts: [] }) }] }) }) as Response;
+    const mock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(response("Tack!\nMvh\nKajsa\nHyrUtSmart"))
+      .mockResolvedValueOnce(response("Tack!\nMvh\nKajsa\nStayOnSite"));
+    const input = { ownerName: "Uthyrare", property: {}, conversation: "", newReply: "Hej", possibleImageAttachments: 0, brand: "HyrUtSmart" as const };
+    try {
+      expect((await planLandlordReply(input)).reply).toContain("HyrUtSmart");
+      const request = JSON.parse(String(mock.mock.calls[0][1]?.body));
+      expect(request.system).toContain("Kajsa på HyrUtSmart");
+      await expect(planLandlordReply(input)).rejects.toThrow("fel avsändare");
+    } finally { mock.mockRestore(); vi.unstubAllEnvs(); }
   });
   it("fills only clear, empty numeric fields, never capacity or an approximate count", () => {
     const facts = [
