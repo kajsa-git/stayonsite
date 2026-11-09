@@ -455,6 +455,8 @@ export async function syncEntityEmails(
   for (const threadId of threadIds) {
     const messages = await gmailGetThread(userId, threadId);
     for (const msg of messages) {
+      // Drafts are not sent mail. Never display or count them as a reply.
+      if (msg.labelIds.some((label) => ["DRAFT", "SPAM", "TRASH", "CHAT"].includes(label))) continue;
       // Kortets egen koppling gäller alltid; övriga (t.ex. samma person som uthyrare)
       // läggs till utifrån adresserna.
       const links = resolveMessageLinks(msg, book, mailbox, scopeLinks);

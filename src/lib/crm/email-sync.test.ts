@@ -294,6 +294,14 @@ describe("company and landlord on the same mail", () => {
     const [reply] = await rowsFor("m-lisa-2");
     expect(reply).toMatchObject({ companyId: "co-el", ownerId: "ow-lisa", direction: "out" });
   });
+  it("does not import a Gmail draft as a sent reply during card sync", async () => {
+    addMessage(message("sent", { from: `Kajsa <${MAILBOX}>`, to: "lisa@elfirma.se", threadId: "t-lisa", labelIds: ["SENT"] }));
+    addMessage(message("draft", { from: `Kajsa <${MAILBOX}>`, to: "lisa@elfirma.se", threadId: "t-lisa", labelIds: ["DRAFT"] }));
+    gmail.searchResults.set("lisa@elfirma.se", ["t-lisa"]);
+    expect(await syncEntityEmails(db, "user-kajsa", { ownerId: "ow-lisa" }, { mailbox: MAILBOX })).toEqual({ synced: 1 });
+    expect(await rowsFor("sent")).toHaveLength(1);
+    expect(await rowsFor("draft")).toHaveLength(0);
+  });
 });
 
 describe("waiting emails", () => {

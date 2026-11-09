@@ -8,7 +8,7 @@ import { normalizePhoneE164 } from "@/lib/crm/phone-links";
 import { unambiguousLandlordPhone } from "@/lib/crm/landlord-sms-identity";
 import { landlordConversationLockKey } from "@/lib/crm/landlord-dialog-coordination";
 import { acquireLandlordPropertyLock, releaseLandlordPropertyLock } from "@/lib/crm/landlord-property-lock";
-import { contacts, landlordAgentHealth, landlordSmsDialogs, landlordSmsRuns, owners, properties } from "@/lib/crm/schema";
+import { landlordAgentHealth, landlordSmsDialogs, landlordSmsRuns, owners, properties } from "@/lib/crm/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,9 +59,7 @@ export async function POST(req: NextRequest) {
   const phone = normalizePhoneE164(row?.phone);
   if (!row || !phone) return NextResponse.json({ error: "Bostaden saknar en uthyrare med giltigt telefonnummer." }, { status: 400 });
   // A number shared by multiple owners is ambiguous even if one is selected.
-  const all = await db.select({ id: owners.id, phone: owners.phone }).from(owners);
-  const contactsWithPhones = await db.select({ phone: contacts.phone }).from(contacts);
-  if (!unambiguousLandlordPhone(phone, row.ownerId, all, contactsWithPhones)) {
+  if (!await unambiguousLandlordPhone(db, phone, row.ownerId)) {
     return NextResponse.json({ error: "Numret används av flera kontakter eller uthyrare och måste hanteras manuellt." }, { status: 409 });
   }
   const key = landlordConversationLockKey("sms", phone, null)!;

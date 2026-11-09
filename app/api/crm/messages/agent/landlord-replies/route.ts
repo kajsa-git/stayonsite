@@ -5,7 +5,7 @@ import { db } from "@/lib/crm/db";
 import { LANDLORD_SMS_SOURCE } from "@/lib/crm/landlord-sms-source";
 import { unambiguousLandlordPhone } from "@/lib/crm/landlord-sms-identity";
 import { normalizePhoneE164 } from "@/lib/crm/phone-links";
-import { contacts, inboxMessages, landlordAgentHealth, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties } from "@/lib/crm/schema";
+import { inboxMessages, landlordAgentHealth, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties } from "@/lib/crm/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -34,13 +34,12 @@ export async function GET(req: NextRequest) {
         eq(outboxMessages.toPhone, candidate.toPhone), ne(outboxMessages.id, candidate.id),
         inArray(outboxMessages.status, ["draft", "queued", "sending"]),
       )).limit(1);
-      const allOwners = await tx.select({ id: owners.id, phone: owners.phone }).from(owners);
-      const allContacts = await tx.select({ phone: contacts.phone }).from(contacts);
+      const unambiguous = dialog ? await unambiguousLandlordPhone(tx, dialog.phone, dialog.ownerId) : false;
       const valid = dialog?.active && run?.status === "queued" && Date.parse(run.createdAt) > Date.parse(dialog.enrolledAt)
         && property && dialog.phone === candidate.toPhone
         && normalizePhoneE164(owner?.phone) === dialog.phone && latest?.direction === "in"
         && latest.guid === run.inboxGuid && candidate.replyToInboxIds?.includes(latest.id)
-        && receipt?.conversationKind === "direct" && !otherPending.length && unambiguousLandlordPhone(dialog.phone, dialog.ownerId, allOwners, allContacts);
+        && receipt?.conversationKind === "direct" && !otherPending.length && unambiguous;
       if (!valid) {
         await tx.update(outboxMessages).set({ status: "failed", error: "Dialogen ändrades eller pausades före utskicket; kontrollera manuellt." })
           .where(and(eq(outboxMessages.id, candidate.id), eq(outboxMessages.status, "queued")));

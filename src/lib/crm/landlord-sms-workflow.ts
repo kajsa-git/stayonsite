@@ -9,7 +9,7 @@ import { LANDLORD_SMS_SOURCE } from "./landlord-sms-source";
 import { unambiguousLandlordPhone } from "./landlord-sms-identity";
 import { acquireLandlordPropertyLock, releaseLandlordPropertyLock } from "./landlord-property-lock";
 import { normalizePhoneE164 } from "./phone-links";
-import { contacts, inboxMessages, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties, propertyImages, propertyNotes } from "./schema";
+import { inboxMessages, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties, propertyImages, propertyNotes } from "./schema";
 
 type Dialog = typeof landlordSmsDialogs.$inferSelect;
 
@@ -98,8 +98,7 @@ async function processDialog(dialog: Dialog): Promise<"sent_to_queue" | "review"
       const [property] = await db.select().from(properties).where(and(eq(properties.id, dialog.propertyId), eq(properties.ownerId, dialog.ownerId))).limit(1);
       const [owner] = await db.select().from(owners).where(eq(owners.id, dialog.ownerId)).limit(1);
       if (!property || !owner || normalizePhoneE164(owner.phone) !== dialog.phone) throw new Error("Uthyraren eller telefonnumret har ändrats.");
-      const [allOwners, allContacts] = await Promise.all([db.select({ id: owners.id, phone: owners.phone }).from(owners), db.select({ phone: contacts.phone }).from(contacts)]);
-      if (!unambiguousLandlordPhone(dialog.phone, owner.id, allOwners, allContacts)) throw new Error("Telefonnumret används av flera kontakter och behöver kontrolleras.");
+      if (!await unambiguousLandlordPhone(db, dialog.phone, owner.id)) throw new Error("Telefonnumret används av flera kontakter och behöver kontrolleras.");
       const pictures = await db.select({ id: propertyImages.id }).from(propertyImages).where(eq(propertyImages.propertyId, property.id));
       const notes = await db.select({ content: propertyNotes.content }).from(propertyNotes)
         .where(eq(propertyNotes.propertyId, property.id)).orderBy(desc(propertyNotes.createdAt)).limit(10);

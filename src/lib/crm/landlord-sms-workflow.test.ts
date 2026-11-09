@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { createTestDb, type TestDB } from "./test-db";
-import { inboxMessages, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, outboxMessages, owners, properties, propertyNotes } from "./schema";
+import { companies, contacts, inboxMessages, landlordSmsDialogs, landlordSmsReceipts, landlordSmsRuns, notes, outboxMessages, owners, properties, propertyNotes, requests } from "./schema";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
@@ -125,6 +125,17 @@ describe("automatic landlord SMS", () => {
     expect(await (await claimReplies(agentRequest())).json()).toEqual([]);
     expect((await state.db.select().from(outboxMessages))[0].status).toBe("failed");
     expect(await runLandlordSmsSweep()).toMatchObject({ review: 1 });
+  });
+  it("does not send when a previously closed duplicate contact becomes an active customer", async () => {
+    await state.db.update(owners).set({ email: "anna@example.se" });
+    await state.db.insert(companies).values({ id: "company", name: "Webbförfrågan · anna@example.se" });
+    await state.db.insert(contacts).values({ id: "contact", companyId: "company", email: "anna@example.se", phone });
+    await state.db.insert(requests).values({ id: "old", companyId: "company", status: "lost" });
+    await state.db.insert(notes).values({ id: "note", companyId: "company", channel: "övrigt", content: "Felriktad kundförfrågan avslutad. Anna registrerar uthyrning." });
+    expect(await runLandlordSmsSweep()).toMatchObject({ queued: 1 });
+    await state.db.insert(requests).values({ id: "new", companyId: "company", status: "incoming" });
+    expect(await (await claimReplies(agentRequest())).json()).toEqual([]);
+    expect((await state.db.select().from(outboxMessages))[0].status).toBe("failed");
   });
   it("surfaces a delivery failure reported after the message was sent", async () => {
     await runLandlordSmsSweep();

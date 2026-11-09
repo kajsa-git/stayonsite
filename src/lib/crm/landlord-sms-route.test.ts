@@ -1,13 +1,14 @@
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDb, type TestDB } from "./test-db";
-import { companies, contacts, landlordSmsDialogs, landlordSmsRuns, owners, properties } from "./schema";
+import { companies, contacts, landlordSmsDialogs, landlordSmsRuns, notes, owners, properties, requests } from "./schema";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB, authorized: true }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./auth", () => ({ requireApprovedSession: async () => state.authorized ? { user: { id: "test" } } : null }));
 import { POST, PUT } from "../../../app/api/crm/landlord-sms-dialogs/route";
 import { acquireLandlordPropertyLock, releaseLandlordPropertyLock } from "./landlord-property-lock";
+import { unambiguousLandlordPhone } from "./landlord-sms-identity";
 let cleanup: () => void;
 function request() { return new NextRequest("https://example.test/api/crm/landlord-sms-dialogs", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ propertyId: "property" }) }); }
 beforeEach(async () => {
@@ -44,6 +45,18 @@ describe("landlord SMS enrollment", () => {
     await state.db.insert(contacts).values({ id: "contact", companyId: "company", name: "Kontakt", phone: "+46700000000" });
     expect((await POST(request())).status).toBe(409);
     expect(await state.db.select().from(landlordSmsDialogs)).toHaveLength(0);
+  });
+  it("permits only a documented mistaken, closed enquiry for the same person and rechecks later", async () => {
+    await state.db.update(owners).set({ email: "anna@example.se" });
+    await state.db.insert(companies).values({ id: "company", name: "Webbförfrågan · anna@example.se" });
+    await state.db.insert(contacts).values({ id: "contact", companyId: "company", email: "anna@example.se", phone: "+46700000000" });
+    await state.db.insert(requests).values({ id: "old", companyId: "company", status: "lost" });
+    expect((await POST(request())).status).toBe(409);
+    await state.db.insert(notes).values({ id: "note", companyId: "company", channel: "övrigt", content: "Felriktad kundförfrågan avslutad. Anna registrerar uthyrning." });
+    expect((await POST(request())).status).toBe(201);
+    expect(await unambiguousLandlordPhone(state.db, "+46700000000", "owner")).toBe(true);
+    await state.db.insert(requests).values({ id: "new", companyId: "company", status: "incoming" });
+    expect(await unambiguousLandlordPhone(state.db, "+46700000000", "owner")).toBe(false);
   });
   it("records a checked attachment without changing the delivery status", async () => {
     await POST(request());
