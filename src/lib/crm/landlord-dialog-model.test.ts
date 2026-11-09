@@ -17,6 +17,12 @@ describe("landlord extraction safety", () => {
   it("does not accept an empty automatic reply", () => {
     expect(() => validateLandlordPlan({ action: "reply", summary: "Svar", reply: "", facts: [] }, "Hej")).toThrow();
   });
+  it("removes the unwanted rent wording while keeping the rest of the reply", () => {
+    const reply = "Tack för svaret!\n\nVi ser gärna en fast hyra där allt ingår. Vet du vad hyran skulle bli vid möblerad företagsuthyrning? Annars kan vi stämma av när vi har en konkret förfrågan.\n\nMvh Kajsa";
+    const plan = validateLandlordPlan({ action: "reply", summary: "Svar", reply, facts: [] }, "Hej");
+    expect(plan.reply).toBe("Tack för svaret!\n\nVi ser gärna en fast hyra där allt ingår.\n\nMvh Kajsa");
+    expect(() => validateLandlordPlan({ action: "reply", summary: "Svar", reply: "Annars kan vi stämma av när vi har en konkret förfrågan.", facts: [] }, "Hej")).toThrow();
+  });
   it("fills only clear, empty numeric fields, never capacity or an approximate count", () => {
     const facts = [
       { field: "beds" as const, value: "2", evidence: "2 bäddar" },
