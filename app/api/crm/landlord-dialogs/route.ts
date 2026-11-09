@@ -47,8 +47,18 @@ export async function POST(req: NextRequest) {
   const email = mailboxAddress(row.ownerEmail);
   const userId = await gmailAutomationUserId();
   const messages = await gmailGetThread(userId, parsed.data.gmailThreadId);
-  if (!messages.some((message) => mailboxAddress(message.from) === email)) {
-    return NextResponse.json({ error: "Tråden innehåller inget mejl från objektets uthyrare" }, { status: 400 });
+  const mailbox = mailboxAddress(process.env.CRM_FROM ?? "kajsa@stayonsite.se");
+  const verified = messages.some((message) => {
+    if (message.labelIds?.some((label) => ["DRAFT", "SPAM", "TRASH"].includes(label))) return false;
+    if (mailboxAddress(message.from) === email) return true;
+    // A sent first message to exactly this landlord is sufficient even before
+    // their first reply. Exclude group threads and unsent drafts.
+    const recipients = message.to?.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? [];
+    return mailboxAddress(message.from) === mailbox && message.labelIds?.includes("SENT")
+      && !message.cc?.trim() && recipients.length === 1 && recipients[0].toLowerCase() === email;
+  });
+  if (!verified) {
+    return NextResponse.json({ error: "Tråden kan inte kopplas säkert till objektets uthyrare" }, { status: 400 });
   }
   const key = landlordConversationLockKey("email", email, parsed.data.gmailThreadId)!;
   const token = await acquireLandlordPropertyLock(key);

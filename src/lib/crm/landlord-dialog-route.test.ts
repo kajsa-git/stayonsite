@@ -3,12 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDb, type TestDB } from "./test-db";
 import { landlordDialogs, landlordReplyRuns, owners, properties } from "./schema";
 
-const state = vi.hoisted(() => ({ db: null as unknown as TestDB, authorized: true, sender: "anna@example.com" }));
+const state = vi.hoisted(() => ({ db: null as unknown as TestDB, authorized: true, sender: "anna@example.com", recipient: "kajsa@stayonsite.se", cc: "", labels: [] as string[] }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./auth", () => ({ requireApprovedSession: async () => state.authorized ? { user: { id: "test" } } : null }));
 vi.mock("./gmail", () => ({
   gmailAutomationUserId: vi.fn().mockResolvedValue("user"),
-  gmailGetThread: vi.fn(async () => [{ from: state.sender }]),
+  gmailGetThread: vi.fn(async () => [{ from: state.sender, to: state.recipient, cc: state.cc, labelIds: state.labels }]),
 }));
 import { POST, PUT } from "../../../app/api/crm/landlord-dialogs/route";
 
@@ -18,7 +18,7 @@ function request(method: string, body: object) {
 }
 beforeEach(async () => {
   ({ db: state.db, cleanup } = await createTestDb("landlord-route"));
-  state.authorized = true; state.sender = "anna@example.com";
+  state.authorized = true; state.sender = "anna@example.com"; state.recipient = "kajsa@stayonsite.se"; state.cc = ""; state.labels = [];
   await state.db.insert(owners).values({ id: "owner", name: "Anna", email: "anna@example.com" });
   await state.db.insert(properties).values({ id: "property", ownerId: "owner" });
 });
@@ -36,6 +36,18 @@ describe("landlord dialog enrollment", () => {
     expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(201);
     expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(409);
     expect((await state.db.select().from(landlordDialogs))[0]).toMatchObject({ landlordEmail: "anna@example.com", active: true });
+  });
+  it("enrols a sent one-to-one thread while waiting for the landlord's first reply", async () => {
+    state.sender = "kajsa@stayonsite.se"; state.recipient = "Anna <anna@example.com>"; state.labels = ["SENT"];
+    expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(201);
+  });
+  it("does not enrol an unsent draft or a message sent to multiple recipients", async () => {
+    state.sender = "kajsa@stayonsite.se"; state.recipient = "anna@example.com"; state.labels = ["DRAFT"];
+    expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(400);
+    state.labels = ["SENT"]; state.recipient = "anna@example.com, other@example.com";
+    expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(400);
+    state.recipient = "anna@example.com"; state.cc = "other@example.com";
+    expect((await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }))).status).toBe(400);
   });
   it("won't resolve an uncertain send while the dialog is still running", async () => {
     await POST(request("POST", { propertyId: "property", gmailThreadId: "thread" }));
