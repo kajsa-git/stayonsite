@@ -10,6 +10,7 @@ import { db } from "@/lib/crm/db";
 import { existingImageHashes, imageContentHash } from "@/lib/crm/image-dedup";
 import { sniffImageType } from "@/lib/crm/image-type";
 import { appendPropertyIntakeImageSummary } from "@/lib/crm/property-intake";
+import { finishPropertyIntakeUpload, touchPropertyIntakeUpload } from "@/lib/crm/property-intake-notifications";
 import { R2_BUCKET, r2 } from "@/lib/crm/r2";
 import { createImageVariants } from "@/lib/crm/image-variants";
 import { outboxMessages, propertyImages, properties } from "@/lib/crm/schema";
@@ -50,6 +51,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
   const { token, id } = await params;
   const authorized = await authorize(token, id);
   if (!authorized) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  await touchPropertyIntakeUpload(id).catch(() => console.error("Intake upload activity could not be recorded"));
 
   const formData = await req.formData();
   const file = formData.get("file");
@@ -95,6 +98,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       })
       .returning();
 
+    await touchPropertyIntakeUpload(id).catch(() => console.error("Intake upload activity could not be recorded"));
+
     await db.update(properties).set(pendingContentReview()).where(eq(properties.id, id));
     schedulePropertyReview(id);
     return NextResponse.json({ id: row.id, fileName: row.fileName, sortOrder: row.sortOrder }, { status: 201 });
@@ -129,6 +134,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ to
     await db.update(properties).set({ ...pendingContentReview(), autoPublishEnabled: false })
       .where(and(eq(properties.id, id), eq(properties.published, false)));
     schedulePropertyReview(id);
+  } else {
+    // Legacy StayOnSite clients also send this summary after their last image.
+    await finishPropertyIntakeUpload(id, Math.min(failed, 10))
+      .catch(() => console.error("Intake notification finalization failed"));
   }
   return NextResponse.json({ ok: true });
 }

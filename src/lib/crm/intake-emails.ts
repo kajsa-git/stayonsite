@@ -112,6 +112,8 @@ export function buildIntakeNotificationEmail(args: {
   imageCount: number;
   imageErrors: string[];
   imagesPending?: boolean;
+  uploadIncomplete?: boolean;
+  uploadUpdate?: boolean;
 }): BuiltEmail {
   const where = [args.address, args.city].filter(Boolean).join(", ") || "adress saknas";
   const crmUrl = `https://www.stayonsite.se/crm/properties?id=${args.propertyId}`;
@@ -121,7 +123,9 @@ export function buildIntakeNotificationEmail(args: {
     ["Typ", args.ownerType === "foretag" ? "Företag" : "Privatperson"],
     ["Telefon", args.ownerPhone ?? "—"],
     ["E-post", args.ownerEmail ?? "— (bekräftelse gick som SMS om nummer finns)"],
-    ["Bilder", args.imagesPending ? "Laddas upp separat" : `${args.imageCount} uppladdade${args.imageErrors.length ? `, ${args.imageErrors.length} fel` : ""}`],
+    ["Bilder", args.imagesPending ? "Laddas upp separat" : args.uploadIncomplete
+      ? `${args.imageCount} uppladdade hittills. Uppladdningen har inte bekräftats som klar – kontrollera bostaden i CRM.`
+      : `${args.imageCount} uppladdade${args.imageErrors.length ? `, ${args.imageErrors.length} fel` : ""}`],
   ];
 
   const text = [
@@ -145,5 +149,9 @@ export function buildIntakeNotificationEmail(args: {
     `<p><a href="${crmUrl}" ${ORANGE_BTN}>Öppna i CRM</a></p>`,
   ].join("\n");
 
-  return { subject: `Nytt bostadsintag: ${where} — ${args.imagesPending ? "bilder behandlas" : `${args.imageCount} bilder`}`, text, html };
+  const imageLabel = `${args.imageCount} ${args.imageCount === 1 ? "bild" : "bilder"}`;
+  const imagesSubject = args.imagesPending ? "bilder behandlas" : args.uploadIncomplete
+    ? `${imageLabel} hittills – uppladdningen inte bekräftad`
+    : `${imageLabel}${args.uploadUpdate ? " – uppdatering" : ""}`;
+  return { subject: `Nytt bostadsintag: ${where} — ${imagesSubject}`, text, html };
 }

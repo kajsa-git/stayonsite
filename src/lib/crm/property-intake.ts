@@ -8,7 +8,7 @@ import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
-import { outboxMessages, ownerOutreach, owners, properties, propertyImages, type Owner, type Property, type PropertyInsert } from "./schema";
+import { outboxMessages, ownerOutreach, owners, properties, propertyImages, propertyIntakeNotifications, type Owner, type Property, type PropertyInsert } from "./schema";
 import { homeownerLeadIntakeSms } from "./sms-templates";
 import { isProvisionalWebOwner } from "./provisional-owner";
 export { PROPERTY_INTAKE_MARKER };
@@ -125,6 +125,8 @@ export const propertyIntakeSchema = z
     }).optional(),
     // A separate choice from contact consent; older intake clients omit it.
     husPublication: z.object({ version: z.literal(HUS_INTAKE_VERSION), approved: z.boolean() }).optional(),
+    // New clients report how many photos they intend to upload separately.
+    expectedImageCount: z.number().int().min(0).max(10).optional(),
     consent: z.literal(true),
   })
   .superRefine((input, ctx) => {
@@ -356,6 +358,19 @@ export async function createPropertyIntake(
       ? await tx.update(properties).set(intakeValues).where(and(eq(properties.id, legacyLead.id), isNull(properties.address))).returning()
       : await tx.insert(properties).values({ id: nanoid(), ...intakeValues }).returning();
     if (!created) throw new Error("Tidigare intresseanmälan ändrades under registreringen.");
+    if (!input.husPublication) {
+      await tx.insert(propertyIntakeNotifications).values({
+        propertyId: created.id,
+        ownerName: input.ownerName,
+        ownerPhone: input.ownerPhone,
+        ownerEmail: input.ownerEmail,
+        ownerType: input.ownerType,
+        address: created.address,
+        city: created.city,
+        createdAt: now,
+        lastActivityAt: now,
+      });
+    }
     if (input.husPublication) {
       // Save the number submitted for this property, not a later owner-record update.
       // It cannot be picked up by the SMS agent until publication changes its status.

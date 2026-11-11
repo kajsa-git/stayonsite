@@ -24,6 +24,7 @@ const {
   properties,
   rentalReviews,
   propertyImages,
+  propertyIntakeNotifications,
   propertyNotes,
   requests,
   shareLinks,
@@ -123,6 +124,7 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
   await tx.delete(propertyNotes).where(eq(propertyNotes.propertyId, propertyId));
   await tx.delete(landlordImageCandidates).where(eq(landlordImageCandidates.propertyId, propertyId));
   await tx.delete(landlordPropertyLocks).where(eq(landlordPropertyLocks.propertyId, propertyId));
+  await tx.delete(propertyIntakeNotifications).where(eq(propertyIntakeNotifications.propertyId, propertyId));
   await tx.delete(propertyImages).where(eq(propertyImages.propertyId, propertyId));
   await tx.update(requests).set({ wonPropertyId: null }).where(eq(requests.wonPropertyId, propertyId));
   await tx.delete(properties).where(eq(properties.id, propertyId));
@@ -132,6 +134,10 @@ export async function deletePropertyDeep(tx: Tx, propertyId: string): Promise<vo
 // Avtalslänkar och signeringar raderas — de saknar mening utan uthyraren.
 export async function deleteOwnerDeep(tx: Tx, ownerId: string): Promise<void> {
   await removeLandlordDialogLinks(tx, "owner", ownerId);
+  // Intake notices contain contact snapshots; do not retain or send them
+  // after the associated landlord has been removed.
+  const owned = await tx.select({ id: properties.id }).from(properties).where(eq(properties.ownerId, ownerId));
+  if (owned.length) await tx.delete(propertyIntakeNotifications).where(inArray(propertyIntakeNotifications.propertyId, owned.map((row) => row.id)));
   const now = new Date().toISOString();
   await tx.update(properties).set({ ownerId: null, updatedAt: now }).where(eq(properties.ownerId, ownerId));
   await tx.update(ownerOutreach).set({ ownerId: null }).where(eq(ownerOutreach.ownerId, ownerId));

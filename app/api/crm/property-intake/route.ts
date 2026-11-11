@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { buildHusIntakeConfirmationEmail, buildIntakeConfirmationEmail, buildIntakeNotificationEmail } from "@/lib/crm/intake-emails";
+import { finishPropertyIntakeUpload } from "@/lib/crm/property-intake-notifications";
 import { appendPropertyIntakeImageSummary, createPropertyIntake, propertyIntakeSchema } from "@/lib/crm/property-intake";
 import { db } from "@/lib/crm/db";
 import { imageContentHash } from "@/lib/crm/image-dedup";
@@ -162,25 +163,21 @@ export async function POST(req: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const from = process.env.RESEND_FROM || "StayOnSite <onboarding@resend.dev>";
 
-      const notification = buildIntakeNotificationEmail({
-        propertyId: property.id,
-        ownerName,
-        ownerPhone,
-        ownerEmail,
-        ownerType: parsed.data.ownerType ?? null,
-        address: property.address,
-        city: property.city,
-        imageCount,
-        imageErrors,
-        imagesPending: !!parsed.data.husPublication,
-      });
       // OBS: Resend kastar inte vid API-fel utan returnerar { error } — båda
       // vägarna måste loggas, annars försvinner misslyckade kvitton tyst.
       const logSend = (label: string) => (result: { error?: unknown } | void) => {
         if (result && result.error) console.error(`${label} failed`, result.error);
       };
-      const sends: Promise<unknown>[] = [
-        resend.emails
+      const sends: Promise<unknown>[] = [];
+      // HUS is a separate intake flow and already describes its uploads as
+      // pending. StayOnSite's notice is sent from the durable upload job.
+      if (parsed.data.husPublication) {
+        const notification = buildIntakeNotificationEmail({
+          propertyId: property.id, ownerName, ownerPhone, ownerEmail,
+          ownerType: parsed.data.ownerType ?? null, address: property.address, city: property.city,
+          imageCount, imageErrors, imagesPending: true,
+        });
+        sends.push(resend.emails
           .send({
             from,
             to: process.env.CONTACT_FORM_TO || "kajsa@stayonsite.se",
@@ -189,8 +186,8 @@ export async function POST(req: NextRequest) {
             html: notification.html,
           })
           .then(logSend("Intake notification email"))
-          .catch((e) => console.error("Intake notification email failed", e)),
-      ];
+          .catch((e) => console.error("Intake notification email failed", e)));
+      }
 
       if (ownerEmail) {
         const confirmation = parsed.data.husPublication ? buildHusIntakeConfirmationEmail(parsed.data.husPublication.approved) : buildIntakeConfirmationEmail({
@@ -217,6 +214,15 @@ export async function POST(req: NextRequest) {
       await Promise.all(sends);
     } catch (error) {
       console.error("Intake emails failed", error);
+    }
+
+    // A new client with no selected images is already complete. If its upload
+    // link could not be created, report the selected images as failed. Older
+    // clients finish through PATCH or receive a fallback after inactivity.
+    const expected = parsed.data.expectedImageCount;
+    if (!parsed.data.husPublication && (expected === 0 || (expected == null && files.length > 0) || (expected != null && !agreement))) {
+      const failed = imageErrors.length + (expected && !agreement ? expected : 0);
+      await finishPropertyIntakeUpload(property.id, failed).catch(() => console.error("Intake notification finalization failed"));
     }
 
     if (!ownerEmail && ownerPhone) {

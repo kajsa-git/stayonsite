@@ -427,6 +427,29 @@ export const propertyImages = sqliteTable("crm_property_images", {
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 
+// A durable notification for each StayOnSite web intake. The intake and this
+// row are committed together, so an abandoned browser cannot lose the notice.
+export const propertyIntakeNotifications = sqliteTable("crm_property_intake_notifications", {
+  propertyId: text("property_id").primaryKey().references(() => properties.id, { onDelete: "cascade" }),
+  ownerName: text("owner_name"),
+  ownerPhone: text("owner_phone"),
+  ownerEmail: text("owner_email"),
+  ownerType: text("owner_type"),
+  address: text("address"),
+  city: text("city"),
+  createdAt: text("created_at").notNull(),
+  lastActivityAt: text("last_activity_at").notNull(),
+  completedAt: text("completed_at"),
+  failedImages: integer("failed_images").notNull().default(0),
+  interruptedNotifiedAt: text("interrupted_notified_at"),
+  completedNotifiedAt: text("completed_notified_at"),
+  activeKind: text("active_kind"),
+  messageSnapshot: text("message_snapshot"),
+  leaseToken: text("lease_token"),
+  leaseUntil: text("lease_until"),
+  retryAfter: text("retry_after"),
+}, (t) => [index("crm_property_intake_notifications_activity_idx").on(t.lastActivityAt)]);
+
 // Kontaktlogg på objektnivå (kontakt med uthyrare om bostaden)
 export const propertyNotes = sqliteTable("crm_property_notes", {
   id: text("id").primaryKey(),

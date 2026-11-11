@@ -427,6 +427,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
       website: form.website,
       page: window.location.pathname,
       source: "property-intake",
+      expectedImageCount: files.length,
       startedAt: Date.now(),
       utmParams,
     };

@@ -25,6 +25,7 @@ const {
   owners,
   properties,
   propertyImages,
+  propertyIntakeNotifications,
   propertyNotes,
   requests,
   shareLinks,
@@ -159,6 +160,7 @@ describe("deletePropertyDeep", () => {
     await db.insert(matches).values({ id: "m1", requestId: "r1", propertyId: "p1", status: "accepted" });
     await db.insert(ownerOutreach).values({ id: "o1", propertyId: "p1", status: "bekraftad" });
     await db.insert(propertyImages).values({ id: "img1", propertyId: "p1", key: "k/1.jpg" });
+    await db.insert(propertyIntakeNotifications).values({ propertyId: "p1", ownerName: "Test", createdAt: "2026-11-11T10:00:00Z", lastActivityAt: "2026-11-11T10:00:00Z" });
     await db.insert(propertyNotes).values({ id: "pn1", propertyId: "p1", channel: "telefon", content: "ok" });
 
     await db.transaction((tx) => deletePropertyDeep(tx, "p1"));
@@ -167,6 +169,7 @@ describe("deletePropertyDeep", () => {
     expect(await db.$count(matches)).toBe(0);
     expect(await db.$count(ownerOutreach)).toBe(0);
     expect(await db.$count(propertyImages)).toBe(0);
+    expect(await db.$count(propertyIntakeNotifications)).toBe(0);
     expect(await db.$count(propertyNotes)).toBe(0);
 
     // Förfrågan finns kvar men wonPropertyId är nollställt.
@@ -195,6 +198,7 @@ describe("deleteOwnerDeep", () => {
   it("nollställer objekt/rundor/mejl-kopplingar och raderar uthyraren", async () => {
     await db.insert(owners).values({ id: "ow1", name: "Hyresvärd AB" });
     await db.insert(properties).values({ id: "p1", ownerId: "ow1" });
+    await db.insert(propertyIntakeNotifications).values({ propertyId: "p1", ownerName: "Hyresvärd", createdAt: "2026-11-11T10:00:00Z", lastActivityAt: "2026-11-11T10:00:00Z" });
     await db.insert(ownerOutreach).values({ id: "o1", propertyId: "p1", ownerId: "ow1", status: "i_dialog" });
     await db.insert(emails).values({
       id: "e1", ownerId: "ow1", direction: "out", subject: "s", body: "b",
@@ -204,6 +208,7 @@ describe("deleteOwnerDeep", () => {
     await db.transaction((tx) => deleteOwnerDeep(tx, "ow1"));
 
     expect(await db.$count(owners)).toBe(0);
+    expect(await db.$count(propertyIntakeNotifications)).toBe(0);
     // Beroende rader finns kvar men ägar-referensen är nollställd.
     const [prop] = await db.select({ id: properties.id, ownerId: properties.ownerId }).from(properties);
     expect(prop.ownerId).toBeNull();
