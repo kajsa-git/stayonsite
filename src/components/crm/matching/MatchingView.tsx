@@ -30,6 +30,7 @@ import {
   type DealTermsMatch,
 } from "./DealTermsDialogs";
 import { OfferLinkPanel } from "./OfferLinkPanel";
+import { QasaSearchPanel } from "./QasaSearchPanel";
 import { LandlordAgreementShareDialog, type LandlordShareTarget } from "./LandlordAgreementShareDialog";
 import { PropertyDetailModal } from "../property/PropertyDetailModal";
 import { PropertyEditModal } from "../property/PropertyEditModal";
@@ -116,6 +117,10 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [landlordShare, setLandlordShare] = useState<LandlordShareTarget | null>(null);
   const [wonValue, setWonValue] = useState("");
   const [showCriteria, setShowCriteria] = useState(false);
+  // Höger kolumn: våra egna objekt eller Qasa-sök. Qasa-panelen monteras först när
+  // fliken öppnas (den söker direkt) och ligger sedan kvar dold → träffarna överlever flikbyte.
+  const [source, setSource] = useState<"crm" | "qasa">("crm");
+  const [qasaOpened, setQasaOpened] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
@@ -257,7 +262,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     });
   }
 
-  async function addSuggestion(propertyId: string, score: number) {
+  async function addSuggestion(propertyId: string, score: number): Promise<boolean> {
     try {
       const res = await fetch("/api/crm/matches", {
         method: "POST",
@@ -267,12 +272,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         toast({ title: j.error ?? "Kunde inte lägga till förslag", variant: "destructive" });
-        return;
+        return false;
       }
       mutateMatches();
       toast({ title: "Förslag tillagt" });
+      return true;
     } catch {
       toast({ title: "Kunde inte lägga till förslag", variant: "destructive" });
+      return false;
     }
   }
 
@@ -701,8 +708,41 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
           </div>
         </div>
 
-        {/* Right: available properties */}
+        {/* Right: available properties — egna objekt eller Qasa */}
         <div className="space-y-3">
+          <div className="inline-flex rounded-lg border bg-white p-0.5 text-xs" role="tablist">
+            {([["crm", "Våra bostäder"], ["qasa", "Sök på Qasa"]] as const).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={source === key}
+                onClick={() => {
+                  setSource(key);
+                  if (key === "qasa") setQasaOpened(true);
+                }}
+                className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
+                  source === key ? "bg-nordic-800 text-white" : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {qasaOpened && (
+          <div className={source === "qasa" ? "" : "hidden"}>
+            <QasaSearchPanel
+              request={request}
+              suggestedIds={suggestedIds}
+              onSuggest={addSuggestion}
+              onImported={(id) => {
+                mutateProperties();
+                setEditPropertyId(id);
+              }}
+            />
+          </div>
+          )}
+          <div className={source === "crm" ? "space-y-3" : "hidden"}>
           <div className="bg-white rounded-xl border p-3 space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-sm font-semibold">Sök bostäder</h2>
@@ -894,6 +934,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
               );
             })
           )}
+          </div>
         </div>
       </div>
 
