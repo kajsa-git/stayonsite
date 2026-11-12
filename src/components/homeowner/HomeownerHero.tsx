@@ -268,9 +268,9 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                   )
                 : (
                   <>
-                    {tr('Lista din', 'List your', 'Wystaw swoją')}{' '}
+                    {tr('Hyr ut ditt hus', 'List your', 'Wystaw swoją')}{' '}
                     <span className="text-[#ff6300]">
-                      {tr('bostad.', 'property.', 'nieruchomość.')}
+                      {tr('till företag.', 'property.', 'nieruchomość.')}
                     </span>
                   </>
                 )}

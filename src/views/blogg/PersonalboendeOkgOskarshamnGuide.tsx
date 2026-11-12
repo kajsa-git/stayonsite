@@ -53,6 +53,21 @@ const PersonalboendeOkgOskarshamnGuide = () => {
         Läs mer i vår guide om{' '}
         <Link href="/blogg/boende-figeholm-okg-clab">boende i Figeholm för OKG och Clab</Link>.
       </p>
+      <p>
+        Fråga också er kontaktperson på OKG om ni omfattas av OKG:s egen logi. OKG erbjuder boende på
+        Figeholm Konferens, knappt tio minuters bilresa från anläggningen, och entreprenörer med boendeavtal
+        debiteras enligt OKG 130 kronor per natt inklusive moms. Priset gäller inte vid arbete med
+        avvecklingen av O1 och O2.{' '}
+        <a
+          href="https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Läs OKG:s sida om bostad och fritid
+        </a>
+        . Ett eget hus via StayOnSite passar när ni inte omfattas, när platserna är slut eller när laget
+        ska bo tillsammans i en egen bostad under en längre period.
+      </p>
 
       <h2>Skilj boendet från OKG:s tillträdeskrav</h2>
       <p>

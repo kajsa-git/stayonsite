@@ -497,7 +497,7 @@ export const translations: Record<
     "navigation.companyHousing": "Läs om företagsboende",
     "navigation.availableHomes": "Se boenden",
     "listingSearch.title": "Hitta boende för ert team",
-    "listingSearch.heroTitle": "Våra boenden",
+    "listingSearch.heroTitle": "Företagsboenden i Sverige",
     "listingSearch.availabilityNote": "Kontakta oss så bekräftar vi aktuell tillgänglighet.",
     "listingSearch.label": "Sök ort, postnummer eller boende",
     "listingSearch.placeholder": "T.ex. Boden, 961 40…",
