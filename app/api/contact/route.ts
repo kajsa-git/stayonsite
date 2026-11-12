@@ -144,7 +144,8 @@ function getSubject(s: Submission): string {
     return `Snabbförfrågan: ${city} – ${people} pers`;
   }
   if (s.formType === "inquiry") return "Ny förfrågan från StayOnSite";
-  if (s.formType === "lp-homeowner") return "Ny husägare via Facebook-annons";
+  // Hus skickar sin korta intresseanmälan hit oavsett var besökaren kom ifrån.
+  if (s.formType === "lp-homeowner") return s.source === "HUS" ? "Ny husägare via hyrutsmart.se" : "Ny husägare via Facebook-annons";
   if (s.formType === "lp-corporate") {
     const f = s.fields as Record<string, string>;
     return `Företagslead (engelsk annons): ${f.company || ""} – ${f.city || ""}`.trim();
