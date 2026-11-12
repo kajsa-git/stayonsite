@@ -1223,9 +1223,9 @@ export const blogPosts: BlogPost[] = [
       pl: 'Nowe zasady wynajmu blokowego od 1 lipca 2026: Przewodnik dla właścicieli',
     },
     description: {
-      sv: 'Från 1 juli 2026 ändras reglerna för blockhyra och privatuthyrning. Vad innebär det för dig som vill hyra ut till företag?',
-      en: 'From July 1, 2026, rules for block rental and private leasing change. What does it mean for property owners?',
-      pl: 'Od 1 lipca 2026 r. zmieniają się zasady wynajmu grupowego. Co to oznacza dla właścicieli nieruchomości?',
+      sv: 'Sedan 1 juli 2026 gäller nya regler för blockhyra och privatuthyrning. Vad innebär det för dig som vill hyra ut till företag?',
+      en: 'Since July 1, 2026, new rules apply to block rental and private leasing. What does it mean for property owners?',
+      pl: 'Od 1 lipca 2026 r. obowiązują nowe zasady wynajmu grupowego. Co to oznacza dla właścicieli nieruchomości?',
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-05-06',

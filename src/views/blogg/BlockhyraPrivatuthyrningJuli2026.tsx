@@ -14,7 +14,7 @@ const BlockhyraPrivatuthyrningJuli2026 = () => {
 
       <p>
         
-Lagändringarna föreslås träda i kraft den 1 juli 2026.
+Lagändringarna trädde i kraft den 1 juli 2026.
 {' '}
         
 Regeringen lämnar nu en proposition med förslag som ska göra det enklare att hyra ut bostäder och öka tillgången på hyresbostäder. Propositionen innehåller bland annat en ny privatuthyrningslag, utökade möjligheter till andrahandsuthyrning av bostadsrätter och moderniserade regler för blockhyra av företags- och delningsbostäder.
@@ -328,7 +328,7 @@ Det finns regler kring hur mycket hyra du kan ta ut. Samma regler gäller vid ut
       <h3>När träder de nya reglerna i kraft?</h3>
 
       <p>
-        De nya reglerna träder i kraft den 1 juli 2026. Regeringens proposition har antagits och lagändringarna väntas börja gälla från detta datum.
+        De nya reglerna gäller sedan den 1 juli 2026.
       </p>
 
       <h3>Kan jag hyra ut fler än två bostäder?</h3>

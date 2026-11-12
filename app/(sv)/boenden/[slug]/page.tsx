@@ -162,19 +162,42 @@ export default async function BoendeDetailPage(
       : {}),
   }
 
+  // Brödsmulor: Hem → Boenden → ortens stadssida → objektet. Visar sökmotorerna
+  // att stadssidan är överordnad de enskilda objekten på orten.
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { name: "Hem", item: "https://www.stayonsite.se/" },
+      { name: "Boenden", item: "https://www.stayonsite.se/boenden" },
+      ...(cityPage ? [{ name: `Företagsboende ${cityPage.name}`, item: `https://www.stayonsite.se/stad/${cityPage.slug}` }] : []),
+      { name, item: canonical },
+    ].map((crumb, i) => ({ "@type": "ListItem", position: i + 1, ...crumb })),
+  }
+
   return (
     <>
       <Header />
-      {!testOnly && <SEO structuredData={structuredData} />}
+      {!testOnly && <SEO structuredData={[structuredData, breadcrumbs]} />}
       <main className="min-h-screen bg-gray-50 pb-16 pt-24 md:pt-28">
         <div className="mx-auto max-w-3xl space-y-8 px-5 py-2">
-          <Link
-            href="/boenden"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Alla boenden
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link
+              href="/boenden"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Alla boenden
+            </Link>
+            {cityPage && (
+              <Link
+                href={`/stad/${cityPage.slug}`}
+                className="inline-flex items-center text-sm font-medium text-nordic-600 transition-colors hover:text-nordic-900"
+              >
+                Företagsboende {cityPage.name}
+              </Link>
+            )}
+          </div>
 
           {testOnly && <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 font-semibold text-amber-950">Test av registreringsflödet – detta är inte ett boende som kan hyras.</p>}
 

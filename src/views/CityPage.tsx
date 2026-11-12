@@ -98,6 +98,11 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
   ],
   gavle: [
     {
+      href: '/blogg/foretagsbostader-gavle-rattscentrum-nyhamn-guide-2026',
+      title: 'Företagsbostäder i Gävle: pågående projekt',
+      description: 'Rättscentrum, Nyhamn och dubbelspåret Gävle–Kringlan, och vad de betyder för boendeplaneringen.',
+    },
+    {
       href: '/blogg/boende-norrsundet-foretag',
       title: 'Boende i Norrsundet för företag',
       description: 'Läs om personalboende i Norrsundet och vad ni bör stämma av inför er förfrågan.',
@@ -155,6 +160,9 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
     const d = n % 10, dd = n % 100;
     return d >= 2 && d <= 4 && (dd < 12 || dd > 14) ? few : many;
   };
+
+  const cityHref = (slug: string) =>
+    translate(`/stad/${slug}`, `/en/corporate-housing/${slug}`, `/pl/zakwaterowanie/${slug}`);
 
   const heroHeading = getLocalizedText(city.heroHook, language);
   const heroDescription = getLocalizedText(city.intro, language);
@@ -901,7 +909,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                   {nearbyCities.map((nearCity) => (
                     <Link
                       key={nearCity.slug}
-                      href={`/stad/${nearCity.slug}`}
+                      href={cityHref(nearCity.slug)}
                       className="flex items-center justify-between rounded-2xl border border-nordic-100 bg-white px-5 py-4 hover:border-[#ff6300]/60 hover:shadow-lg transition"
                     >
                       <div>
@@ -912,6 +920,13 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                     </Link>
                   ))}
                 </div>
+                <p className="mt-6 text-sm text-gray-600">
+                  {translate('Gäller projektet flera orter? Läs om ', 'Does the project span several locations? Read about ', 'Projekt obejmuje kilka miejscowości? Zobacz ')}
+                  <Link href={translate('/for-foretag', '/en/corporate-housing-sweden', '/pl/zakwaterowanie-firmowe')} className="font-medium text-[#ff6300] hover:underline">
+                    {translate('företagsbostäder och personalboende i hela Sverige', 'corporate housing across Sweden', 'zakwaterowanie firmowe w całej Szwecji')}
+                  </Link>
+                  .
+                </p>
               </div>
             </div>
           </section>

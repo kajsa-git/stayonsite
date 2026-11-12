@@ -44,7 +44,7 @@ const BlockhyraRegler2026 = () => {
       <h2>De nya reglerna från 1 juli 2026 &mdash; konkret genomgång</h2>
 
       <p>
-        Den 20 mars 2026 presenterade regeringen propositionen &quot;En mer flexibel hyresmarknad&quot; (prop. 2025/26:187), som bygger på utredningen SOU 2025:65. Lagändringarna träder i kraft den 1 juli 2026 och innebär flera betydande förändringar för företag som behöver hyra bostäder.
+        Den 20 mars 2026 presenterade regeringen propositionen &quot;En mer flexibel hyresmarknad&quot; (prop. 2025/26:187), som bygger på utredningen SOU 2025:65. Lagändringarna trädde i kraft den 1 juli 2026 och innebär flera betydande förändringar för företag som behöver hyra bostäder.
       </p>
 
       <blockquote>
@@ -321,7 +321,7 @@ const BlockhyraRegler2026 = () => {
       <h2>Kom igång idag</h2>
 
       <p>
-        De nya reglerna träder i kraft den 1 juli 2026 &mdash; nu är det dags att förbereda er. Oavsett om ni behöver <Link href="/stad/stockholm">företagsboende i Stockholm</Link>, <Link href="/stad/goteborg">Göteborg</Link>, <Link href="/stad/norrkoping">Norrköping</Link>, <Link href="/stad/lulea">Luleå</Link> eller någon annan ort hjälper vi er att hitta rätt lösning.
+        De nya reglerna gäller sedan den 1 juli 2026. Oavsett om ni behöver <Link href="/stad/stockholm">företagsboende i Stockholm</Link>, <Link href="/stad/goteborg">Göteborg</Link>, <Link href="/stad/norrkoping">Norrköping</Link>, <Link href="/stad/lulea">Luleå</Link> eller någon annan ort hjälper vi er att hitta rätt lösning.
       </p>
 
       <p>
@@ -330,8 +330,8 @@ const BlockhyraRegler2026 = () => {
 
       <ul>
         <li>Telefon: <a href="tel:0762498486">076-249 84 86</a></li>
-        <li>För företag: <Link href="/for-foretag">stayonsite.se/for-foretag</Link></li>
-        <li>För husägare: <Link href="/for-husagare">stayonsite.se/for-husagare</Link></li>
+        <li>För företag: <Link href="/for-foretag">företagsbostäder och personalboende</Link></li>
+        <li>För husägare: <Link href="/for-husagare">hyra ut hus till företag</Link></li>
       </ul>
 
       <p>

@@ -239,8 +239,8 @@ Fastighetsägare som inte erbjuder laddmöjlighet riskerar att förlora hyresgä
         erbjuder garanterad hyra och en boendeplan inom 24 timmar &ndash; vi återkommer alltid inom en
         arbetsdag, ofta inom några timmar. StayOnSite grundades 2016 och har betyg 5,0 på Google. Är du
         byggföretag och söker boende till era montörer, se{' '}
-        <Link href="/for-foretag">/for-foretag</Link>. Är du husägare som vill hyra ut, läs mer på{' '}
-        <Link href="/for-husagare">/for-husagare</Link>. Ring oss gärna direkt på{' '}
+        <Link href="/for-foretag">företagsbostäder och personalboende</Link>. Är du husägare som vill hyra ut, läs mer om att{' '}
+        <Link href="/for-husagare">hyra ut hus till företag</Link>. Ring oss gärna direkt på{' '}
         <a href="tel:0762498486">076-249 84 86</a> för att komma igång.
       </p>
     </BlogLayout>

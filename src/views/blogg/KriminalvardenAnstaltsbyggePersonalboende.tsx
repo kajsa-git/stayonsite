@@ -222,10 +222,10 @@ Anstalter är komplexa projekt som kräver en speciell kompetens, och storleken 
       <p>
         Planerar ni ett kriminalvårdsprojekt eller ett annat storskaligt bygge och behöver säkra personalboende inför byggstart? Kontakta StayOnSite på{' '}
         <a href="tel:0762498486">076-249 84 86</a>{' '}
-        så tar vi fram en boendeplan som matchar era behov. Läs mer på{' '}
-        <Link href="/for-foretag">/for-foretag</Link>{' '}
-        om ni är ett byggföretag som söker boende, eller på{' '}
-        <Link href="/for-husagare">/for-husagare</Link>{' '}
+        så tar vi fram en boendeplan som matchar era behov. Läs mer om{' '}
+        <Link href="/for-foretag">företagsbostäder och personalboende</Link>{' '}
+        om ni är ett byggföretag som söker boende, eller om att{' '}
+        <Link href="/for-husagare">hyra ut hus till företag</Link>{' '}
         om ni äger en fastighet och vill hyra ut med garanterad hyra och utan avgift.
       </p>
     </BlogLayout>
