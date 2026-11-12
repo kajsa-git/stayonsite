@@ -36,12 +36,10 @@ export function AgreementStatusPanel({
   kind,
   id,
   contactName,
-  hasHusPropertyConsent = false,
 }: {
   kind: "owner" | "company";
   id: string;
   contactName?: string | null;
-  hasHusPropertyConsent?: boolean;
 }) {
   const { data, mutate } = useSWR<PanelData>(
     `/api/crm/share-links?${kind === "owner" ? "ownerId" : "companyId"}=${id}`,
@@ -50,9 +48,8 @@ export function AgreementStatusPanel({
   const [working, setWorking] = useState(false);
 
   const a = data?.agreement ?? null;
-  const previousOwnerAgreement = kind === "owner" && a?.valid && a.version !== a.currentVersion;
   const label = kind === "owner"
-    ? previousOwnerAgreement ? "Uthyrningsuppdrag" : "Medgivande via uthyrarlänk"
+    ? "Uthyrarlänk"
     : "Uppdragsbekräftelse";
   const shareLabel = kind === "owner" ? "Dela uthyrarlänk" : "Dela kundlänk";
   const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
@@ -150,7 +147,7 @@ export function AgreementStatusPanel({
         {a?.valid ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800">
             <ShieldCheck className="h-3 w-3" />
-            {kind === "owner" ? "Godkänt" : "Signerat"} av {a.acceptedName} · giltigt till {a.validUntil}
+            {kind === "owner" ? "Förmedlingsvillkor godkända" : "Signerat"} av {a.acceptedName} · giltigt till {a.validUntil}
           </span>
         ) : a ? (
           <span
@@ -162,14 +159,14 @@ export function AgreementStatusPanel({
             }
           >
             <ShieldQuestion className="h-3 w-3" />
-            Behöver omsignering — skicka länken igen
+            {kind === "owner" ? "Förmedlingsvillkor behöver ses över inför förfrågan" : "Behöver omsignering — skicka länken igen"}
           </span>
-        ) : (
+        ) : kind === "company" ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800">
             <ShieldQuestion className="h-3 w-3" />
-            {kind === "owner" ? "Ej godkänt" : "Ej signerat"}
+            Ej signerat
           </span>
-        )}
+        ) : null}
         {a && (
           <button
             onClick={annulSignature}
@@ -182,7 +179,7 @@ export function AgreementStatusPanel({
         )}
       </div>
 
-      {kind === "owner" && hasHusPropertyConsent && <p className="text-xs text-muted-foreground">Det här avser ett separat godkännande via uthyrarlänken. Bostadens godkännande från HyrUtSmart visas under Publicering.</p>}
+      {kind === "owner" && <p className="text-xs text-muted-foreground">Publiceringsmedgivande registreras för varje bostad under Publicering. Förmedlingsvillkor hanteras separat vid en aktuell förfrågan.</p>}
 
       <div className="flex flex-wrap items-center gap-2">
         {path ? (

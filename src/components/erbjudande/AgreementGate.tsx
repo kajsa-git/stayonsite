@@ -18,8 +18,6 @@ const UI: Record<AgreementLanguage, {
   submitting: string;
   footer: (version: string) => string;
   svPrevails: string | null;
-  consentLabel: string;
-  consentHint: string;
 }> = {
   sv: {
     nameLabel: "Godkänn med ditt namn",
@@ -29,9 +27,6 @@ const UI: Record<AgreementLanguage, {
     submitting: "Godkänner…",
     footer: (v) => `Godkännandet registreras med namn, datum, IP-adress, språk och avtalsversion (${v}).`,
     svPrevails: null,
-    consentLabel: "Visa annonsen på stayonsite.se.",
-    consentHint:
-      "Exakt adress visas aldrig publikt — bara område och ort. Kryssa ur om du inte vill att annonsen syns online.",
   },
   en: {
     nameLabel: "Approve with your name",
@@ -41,8 +36,6 @@ const UI: Record<AgreementLanguage, {
     submitting: "Approving…",
     footer: (v) => `Your approval is recorded with name, date, IP address, language and agreement version (${v}).`,
     svPrevails: "This is a translation — in case of any discrepancy, the Swedish version prevails.",
-    consentLabel: "Show the listing on stayonsite.se.",
-    consentHint: "The exact address is never shown publicly — only area and city. Untick if you prefer not to.",
   },
 };
 
@@ -54,7 +47,6 @@ export function AgreementGate({
   version,
   submitLabel,
   lang = "sv",
-  publishConsent = false,
   onAccepted,
 }: {
   token: string;
@@ -64,19 +56,14 @@ export function AgreementGate({
   version: string;
   submitLabel: string;
   lang?: AgreementLanguage;
-  // Visar en förifylld bock "visa annonsen online" i signeringsformuläret —
-  // godkännandet åker med i samma inskick (kryssas ur = inget godkännande).
-  // Bara relevant för uthyrarlänkar med opublicerade objekt.
-  publishConsent?: boolean;
   // Utan callback laddas sidan om server-side (token-gatade sidorna). Med callback
   // (t.ex. bostadsregistreringens del 2) hanterar anroparen fortsättningen själv.
-  onAccepted?: (result: { publishConsented: boolean }) => void;
+  onAccepted?: () => void;
 }) {
   const router = useRouter();
   const ui = UI[lang];
   const [name, setName] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — människor ser aldrig fältet
-  const [consentChecked, setConsentChecked] = useState(true); // förifylld — kryssas ur aktivt
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,7 +76,6 @@ export function AgreementGate({
     setSubmitting(true);
     setError(null);
     try {
-      const publishConsented = publishConsent && consentChecked;
       const res = await fetch(`/api/share/${token}/agreement`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,7 +84,6 @@ export function AgreementGate({
           website,
           language: lang,
           version,
-          ...(publishConsented ? { publishConsent: true } : {}),
         }),
       });
       if (!res.ok) {
@@ -106,7 +91,7 @@ export function AgreementGate({
         setError(j.error ?? ui.genericError);
         return;
       }
-      if (onAccepted) onAccepted({ publishConsented });
+      if (onAccepted) onAccepted();
       else router.refresh();
     } catch {
       setError(ui.genericError);
@@ -171,20 +156,6 @@ export function AgreementGate({
           aria-hidden="true"
           className="hidden"
         />
-        {publishConsent && (
-          <label className="flex cursor-pointer items-start gap-2.5 rounded-lg bg-nordic-50 p-3">
-            <input
-              type="checkbox"
-              checked={consentChecked}
-              onChange={(e) => setConsentChecked(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff6300]"
-            />
-            <span className="text-sm leading-relaxed">
-              <span className="font-medium text-nordic-900">{ui.consentLabel}</span>{" "}
-              <span className="text-nordic-700">{ui.consentHint}</span>
-            </span>
-          </label>
-        )}
         {error && <p className="text-sm text-red-700">{error}</p>}
         <button
           type="submit"

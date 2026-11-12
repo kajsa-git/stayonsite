@@ -1,13 +1,11 @@
-import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 // PUBLIK, token-gatad avtalssignering. Länkens målgrupp avgör avtalet och scopet:
 //   tenant   → uppdragsbekräftelsen, gäller FÖRETAGET i 12 månader.
-//   landlord → uthyrningsuppdraget, gäller UTHYRAREN (alla objekt) i 12 månader.
-//              Länken kan vara fristående (owner_id) eller affärsknuten (match_id).
+//   landlord → förmedlingsvillkor via en affärsknuten länk (match_id).
+//              Fristående länkar använder en separat endpoint för publicering.
 // Finns redan en GILTIG acceptans (rätt version, inom 12 mån) svaras ok utan ny rad;
 // utgången/gammal version ⇒ ny rad läggs till (raderna är bevis och skrivs aldrig om).
 import { isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { db } from "@/lib/crm/db";
-import { recordPublishConsent } from "@/lib/crm/publish-consent";
 import { agreementAcceptances, matches, properties, requests } from "@/lib/crm/schema";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { and, desc, eq } from "drizzle-orm";
@@ -42,6 +40,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
   const link = await resolveShareLink(token);
   if (!link || (link.audience !== "tenant" && link.audience !== "landlord")) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // Fristående uthyrarlänkar används enbart för publiceringsmedgivande. Ett
+  // gammalt öppet formulär får inte signera förmedlingsvillkor vid onboarding.
+  if (link.audience === "landlord" && !link.matchId) {
+    return NextResponse.json({ error: "Ladda om sidan för det nya publiceringsmedgivandet." }, { status: 409 });
   }
 
   const body = await req.json().catch(() => ({}));
@@ -99,20 +103,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     }
     if (!ownerId && !propertyId) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    // Bocken "visa annonsen online" i signeringsformuläret — förifylld, så
-    // godkännandet åker med signeringen. Idempotent (stämplade rader rörs ej).
-    const wantsPublishConsent = body.publishConsent === true && !!ownerId;
-    const stampConsent = async () => {
-      const stamped = await recordPublishConsent({ ownerId: ownerId!, name, source: "web", ip });
-      for (const property of stamped) schedulePropertyReview(property.id);
-    };
-
     const existing = await latestAcceptance(
       ownerId ? { ownerId } : { propertyId: propertyId! },
       UTHYRNINGSUPPDRAG.type
     );
     if (isAcceptanceValid(existing, UTHYRNINGSUPPDRAG)) {
-      if (wantsPublishConsent) await stampConsent();
       return NextResponse.json({ ok: true });
     }
 
@@ -130,7 +125,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       ip,
       language,
     });
-    if (wantsPublishConsent) await stampConsent();
     return NextResponse.json({ ok: true }, { status: 201 });
   }
 

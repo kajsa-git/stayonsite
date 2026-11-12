@@ -354,9 +354,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     toast({ title: "Förslag borttaget" });
   }
 
-  // Uthyrarens signeringslänk — den FRISTÅENDE (ownerId-scope): uthyraren ser
-  // bara uppdragsavtalet + tacksida, inga affärsvillkor (avtalet kommer alltid
-  // först). Öppnar delningsdialogen (SMS/WhatsApp/kopiera/mejl direkt till uthyraren).
+  // Förmedlingsvillkoren hör till den aktuella matchningen, inte registreringen.
   function shareLandlordLink(m: MatchRow) {
     if (!m.propertyOwnerId) {
       toast({ title: "Objektet saknar uthyrare — koppla en uthyrare först", variant: "destructive" });
@@ -365,6 +363,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     const p = properties.find((x) => x.id === m.propertyId);
     setLandlordShare({
       ownerId: m.propertyOwnerId,
+      requestId: request.id,
+      matchId: m.id,
       ownerName: p?.ownerName ?? null,
       ownerPhone: p?.ownerPhone ?? null,
       ownerEmail: p?.ownerEmail ?? null,
@@ -567,8 +567,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                     )}
                     {m.status !== "rejected" ? (
                       // Kortet visar bara OBJEKTETS egna steg i två spår: uthyrarens
-                      // (uppdragsavtalet, alltid först — grönt direkt om uthyraren
-                      // signerade vid onboarding) och kundens (prisa & skicka → accept).
+                      // (förmedlingsvillkor inför aktuell förfrågan) och kundens
+                      // (prisa & skicka → accept).
                       // Det gemensamma — kundlänk, uppdragsbekräftelse — bor i
                       // affärspanelen ovanför. Klart = grönt ✓, nästa steg markeras,
                       // kommande dämpas — allt förblir klickbart vid behov.
@@ -580,8 +580,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                           const ds = displayStatus(m);
                           const steps = [
                             {
-                              label: "Publiceringsmedgivande",
-                              title: "Uthyraren godkänner publiceringsmedgivandet först — öppnar delning av den personliga länken",
+                              label: "Förmedlingsvillkor",
+                              title: "Dela förmedlingsvillkoren när en kundförfrågan är aktuell",
                               done: !!m.landlordSignedAt,
                               onClick: () => shareLandlordLink(m),
                             },

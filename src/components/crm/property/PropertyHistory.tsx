@@ -25,6 +25,7 @@ interface MatchRow {
 interface Note {
   id: string;
   channel: string;
+  source: string;
   content: string;
   createdAt: string | null;
 }
@@ -278,7 +279,7 @@ function NoteEntry({ note, onRemove }: { note: Note; onRemove: (id: string) => P
     <article className="rounded-lg bg-muted/40 p-3">
       <div className="mb-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{CHANNELS.find((c) => c.value === note.channel)?.label ?? note.channel}{note.createdAt ? ` · ${format(new Date(note.createdAt), "d MMM yyyy HH:mm", { locale: sv })}` : ""}</span>
-        <button type="button" onClick={() => onRemove(note.id)} className="flex size-7 shrink-0 items-center justify-center rounded hover:bg-red-50 hover:text-red-700" aria-label="Ta bort loggpost" title="Ta bort loggpost"><Trash2 className="size-3.5" /></button>
+        {note.source !== "publication-consent" && <button type="button" onClick={() => onRemove(note.id)} className="flex size-7 shrink-0 items-center justify-center rounded hover:bg-red-50 hover:text-red-700" aria-label="Ta bort loggpost" title="Ta bort loggpost"><Trash2 className="size-3.5" /></button>}
       </div>
       <p className={`whitespace-pre-wrap break-words text-sm leading-relaxed ${long && !expanded ? "line-clamp-3" : ""}`}>{note.content}</p>
       {long && <button type="button" onClick={() => setExpanded((value) => !value)} className="mt-2 text-sm font-medium text-primary-600 hover:underline" aria-expanded={expanded}>{expanded ? "Visa mindre" : "Visa hela anteckningen"}</button>}

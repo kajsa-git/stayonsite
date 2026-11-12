@@ -6,11 +6,19 @@ Priser, intern ekonomi, kontakter, exakt adress och olämpligt språk får inte 
 
 Godkänd kontroll gäller endast den granskade versionen av uppgifter och hela bildsamlingen. Ändringar stoppar externa vyer tills den nya versionen har granskats. Originaltexten sparas internt. Granskningsrapporter och originaltext skickas inte till kundvyer.
 
-Publicering sker automatiskt för tillgängliga objekt med uthyrarens medgivande och godkänd kontroll. Tidigare publicering räknas som historiskt medgivande enligt befintlig regel. Manuellt avpublicerade objekt förblir pausade. Bokade, uthyrda och avpublicerade objekt ändrar inte tillgänglighetsstatus. Utgångna datum behöver uppdateras. Uppdragssignering är en separat handling.
+Publicering kan ske automatiskt efter uthyrarens medgivande och godkänd kontroll när automatisk publicering är aktiverad. Tidigare publicerade objekt fortsätter hanteras enligt befintliga regler utan att ett nytt ja hittas på. Manuellt avpublicerade objekt förblir pausade. Bokade och uthyrda objekt behöver inte avpubliceras om uthyraren accepterar visningen och texten är korrekt. Publicering ändrar inte tillgänglighetsstatus.
 
-Prospektlänkar kan aktiveras manuellt utan uthyrarens publiceringsmedgivande, även när objektet inte är tillgängligt. Godkänd kontroll av kundtext och bilder krävs fortfarande för att prospektet ska visas. Aktivering innebär inget medgivande till publicering på hemsidan.
+Prospektlänkar för vanliga objekt kan aktiveras manuellt utan webbmedgivande, även när objektet inte är tillgängligt. För HyrUtSmart-objekt krävs dock medgivande även för prospektet. Godkänd kontroll av kundtext och bilder krävs. Aktivering innebär inte i sig ett medgivande till publicering på hemsidan.
 
 Kontrollen startar efter intag, bildändring, ändrade bostadsuppgifter eller nytt medgivande. En daglig återhämtning försöker igen efter avbrott och upptäcker ändringar från direktimporter. CRM-knappen **Kontrollera igen** kan användas efter rättning.
+
+## Publiceringsmedgivande
+
+Ett tydligt ja till webbpublicering kan komma via sms, mejl, chatt, samtal eller uthyrarlänken. Registrera beskedet under **Publicering** på den berörda bostaden: vem som svarade, datum, kanal, vad som godkändes och var underlaget finns. Ett senare nej eller återkallande går också att registrera; det avpublicerar bostaden, stänger prospektlänken och bevarar underlaget i kontaktloggen. Uthyraren kan även själv ta bort bostaden via sin personliga länk.
+
+I Objektsbanken finns filter för granskade bostäder som saknar registrerat medgivande och för opublicerade bostäder med medgivande. De är kandidater för genomgång, inte bevis för att publicering fortfarande är önskad. Kontrollera senare besked, rätt att använda bilderna och att kundtexten stämmer.
+
+Den fristående uthyrarlänken begär enbart medgivande för de bostäder som visas och väljs. Förmedlingsvillkor hanteras separat när en konkret förfrågan är aktuell. Ett publiceringsja signerar inte förmedlingsavtalet; äldre avtal och deras versioner skrivs inte om.
 
 ## Befintliga objekt
 

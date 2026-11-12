@@ -322,7 +322,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
           </Card>
 
           {property.ownerId && (
-            <AgreementStatusPanel kind="owner" id={property.ownerId} contactName={property.ownerContactPerson ?? property.ownerName ?? undefined} hasHusPropertyConsent={property.publishConsentSource === "hus" && !!property.publishConsentAt} />
+            <AgreementStatusPanel kind="owner" id={property.ownerId} contactName={property.ownerContactPerson ?? property.ownerName ?? undefined} />
           )}
 
           <Card className="rounded-xl shadow-none">

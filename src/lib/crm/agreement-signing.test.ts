@@ -22,15 +22,17 @@ beforeEach(async () => {
   ]);
   await state.db.insert(schema.companies).values({ id: "c1", name: "Testföretaget" });
   await state.db.insert(schema.requests).values({ id: "r1", companyId: "c1" });
+  await state.db.insert(schema.matches).values({ id: "m1", requestId: "r1", propertyId: "p1" });
   await state.db.insert(schema.shareLinks).values([
     { id: "l1", token: "owner-token", audience: "landlord", ownerId: "o1" },
     { id: "l2", token: "tenant-token", audience: "tenant", requestId: "r1" },
+    { id: "l3", token: "match-token", audience: "landlord", requestId: "r1", matchId: "m1" },
   ]);
 });
 
 afterEach(() => cleanup());
 
-function approve(body: Record<string, unknown>, token = "owner-token") {
+function approve(body: Record<string, unknown>, token = "match-token") {
   return POST(new NextRequest(`http://localhost/api/share/${token}/agreement`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,7 +49,7 @@ describe("godkännande av aktuell avtalstext", () => {
     expect(property.publishConsentAt).toBeNull();
   });
 
-  it("registrerar medgivandet och publiceringsvalet enbart för uthyrarens egna bostäder", async () => {
+  it("registrerar förmedlingsvillkor separat och skapar inte webbmedgivande", async () => {
     expect((await approve({ version: UTHYRNINGSUPPDRAG.version, publishConsent: true })).status).toBe(201);
     const [acceptance] = await state.db.select().from(schema.agreementAcceptances);
     expect(acceptance).toMatchObject({
@@ -55,8 +57,15 @@ describe("godkännande av aktuell avtalstext", () => {
       acceptedName: "Anna Andersson", language: "sv",
     });
     const properties = await state.db.select().from(schema.properties);
-    expect(properties.find((p) => p.id === "p1")?.publishConsentAt).toBeTruthy();
+    expect(properties.find((p) => p.id === "p1")?.publishConsentAt).toBeNull();
     expect(properties.find((p) => p.id === "p2")?.publishConsentAt).toBeNull();
+  });
+
+  it("låter inte ett gammalt öppet onboardingformulär signera förmedlingsvillkor", async () => {
+    const response = await approve({ version: UTHYRNINGSUPPDRAG.version, publishConsent: true }, "owner-token");
+    expect(response.status).toBe(409);
+    expect(await state.db.select().from(schema.agreementAcceptances)).toHaveLength(0);
+    expect((await state.db.select().from(schema.properties).where(eq(schema.properties.id, "p1")))[0].publishConsentAt).toBeNull();
   });
 
   it("registrerar inte lov att visa annonsen online om publiceringsvalet inte gjorts", async () => {
@@ -65,10 +74,10 @@ describe("godkännande av aktuell avtalstext", () => {
     expect(property.publishConsentAt).toBeNull();
   });
 
-  it("behåller ett giltigt tidigare godkännande utan att byta version eller starta om giltighetstiden", async () => {
+  it.each(["2026-07-16.8", "2026-10-16.1"])("behåller giltig tidigare version %s utan att ändra beviset", async (version) => {
     const acceptedAt = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     await state.db.insert(schema.agreementAcceptances).values({
-      id: "previous", ownerId: "o1", agreementType: "uthyrningsuppdrag", version: "2026-07-16.8",
+      id: "previous", ownerId: "o1", agreementType: "uthyrningsuppdrag", version,
       acceptedName: "Tidigare namn", acceptedAt,
     });
     const input = { version: UTHYRNINGSUPPDRAG.version };
@@ -76,7 +85,7 @@ describe("godkännande av aktuell avtalstext", () => {
     const acceptances = await state.db.select().from(schema.agreementAcceptances);
     expect(acceptances).toHaveLength(1);
     expect(acceptances.find((a) => a.id === "previous")).toMatchObject({
-      version: "2026-07-16.8", acceptedName: "Tidigare namn", acceptedAt,
+      version, acceptedName: "Tidigare namn", acceptedAt,
     });
   });
 

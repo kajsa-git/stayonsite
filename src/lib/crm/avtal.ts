@@ -72,7 +72,7 @@ export const UPPDRAGSBEKRAFTELSE: AgreementText = {
 
 // Uthyrarens publiceringsmedgivande — godkänns via uthyrarlänken.
 // Databasnyckeln behålls så att tidigare godkännanden finns kvar som historik.
-export const UTHYRNINGSUPPDRAG: AgreementText = {
+export const UTHYRNINGSUPPDRAG_LEGACY: AgreementText = {
   type: "uthyrningsuppdrag",
   version: "2026-10-16.1", // Används vid nya godkännanden och förnyelse efter att tidigare avtal gått ut.
   validPreviousVersions: ["2026-07-13.7", "2026-07-16.8"],
@@ -113,6 +113,18 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
         "Förmedlingsskyddet gäller under medgivandets giltighetstid och i 12 månader efter presentationen av hyresgästen.",
     },
   ],
+};
+
+// Förmedlingsvillkoren presenteras först för en konkret kundförfrågan. Den
+// tidigare texten och dess version lämnas kvar så äldre signeringar kan förstås.
+export const UTHYRNINGSUPPDRAG: AgreementText = {
+  ...UTHYRNINGSUPPDRAG_LEGACY,
+  version: "2026-11-12.1",
+  validPreviousVersions: ["2026-07-13.7", "2026-07-16.8", "2026-10-16.1"],
+  title: "Förmedlingsvillkor inför en förfrågan",
+  points: UTHYRNINGSUPPDRAG_LEGACY.points.map((point) => point.heading === "Giltighet och ändringar"
+    ? { ...point, body: "Förmedlingsvillkoren gäller i 12 månader från godkännandet och kan förnyas. Ni kan när som helst kontakta StayOnSite för att ändra en annons eller dra tillbaka en bostad. Förmedlingsskyddet gäller under villkorens giltighetstid och i 12 månader efter presentationen av hyresgästen." }
+    : point),
 };
 
 // Engelska översättningar — SAMMA version som svenskan (en version = en innebörd,
@@ -166,10 +178,10 @@ export const UPPDRAGSBEKRAFTELSE_EN: AgreementText = {
   ],
 };
 
-export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
+export const UTHYRNINGSUPPDRAG_LEGACY_EN: AgreementText = {
   type: "uthyrningsuppdrag",
-  version: UTHYRNINGSUPPDRAG.version,
-  validPreviousVersions: UTHYRNINGSUPPDRAG.validPreviousVersions,
+  version: UTHYRNINGSUPPDRAG_LEGACY.version,
+  validPreviousVersions: UTHYRNINGSUPPDRAG_LEGACY.validPreviousVersions,
   title: "Publication Consent",
   intro:
     "The service is free of charge for you; StayOnSite charges the tenant. " +
@@ -207,6 +219,16 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
         "The non-circumvention terms apply for the duration of this consent and for 12 months after the tenant is introduced.",
     },
   ],
+};
+
+export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
+  ...UTHYRNINGSUPPDRAG_LEGACY_EN,
+  version: UTHYRNINGSUPPDRAG.version,
+  validPreviousVersions: UTHYRNINGSUPPDRAG.validPreviousVersions,
+  title: "Mediation Terms",
+  points: UTHYRNINGSUPPDRAG_LEGACY_EN.points.map((point) => point.heading === "Validity and changes"
+    ? { ...point, body: "These mediation terms are valid for 12 months from approval and can be renewed. You may contact StayOnSite at any time to change a listing or withdraw a property. The non-circumvention terms apply for the duration of these terms and for 12 months after the tenant is introduced." }
+    : point),
 };
 
 export const AGREEMENTS: Record<AgreementType, AgreementText> = {

@@ -2,10 +2,12 @@ import { LandlordPropertyForm } from "@/components/erbjudande/LandlordPropertyFo
 import { loadLandlordProperties } from "@/lib/crm/landlord-properties";
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
-import { agreementValidUntil, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
+import { PublicationWithdrawal } from "@/components/erbjudande/PublicationWithdrawal";
+import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { loadLandlordDeal, loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { loadPublishConsentState } from "@/lib/crm/publish-consent";
 import { resolveShareLink } from "@/lib/crm/share-links";
+import { HUS_UPLOAD_LINK_ACTOR } from "@/lib/crm/hus-publication";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -19,26 +21,22 @@ const STATUS_LABEL: Record<string, { text: string; cls: string }> = {
 };
 
 // PUBLIK uthyrarsida via kapabilitets-token (crm_share_links, audience landlord,
-// scope = en affär). Gate: publiceringsmedgivandet signeras innan överenskommelsen
+// scope = en affär). Gate: förmedlingsvillkoren godkänns innan överenskommelsen
 // visas. Uthyrarens projektion (deal-projection.ts): eget objekt + löftesvillkor —
 // ALDRIG utpris, marginal eller kundföretagets identitet.
 export default async function UthyrarePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
   const link = await resolveShareLink(token);
-  if (!link || link.audience !== "landlord" || (!link.matchId && !link.ownerId)) notFound();
+  if (!link || link.audience !== "landlord" || (!link.matchId && !link.ownerId) || link.createdBy === HUS_UPLOAD_LINK_ACTOR) notFound();
 
-  // Fristående länk (uppdragsavtalet skickas före någon affär): uthyrarens egen
-  // sida. Publiceringsgodkännandet är en liten bock — förifylld inne i
-  // signeringsformuläret för osignerade; för redan signerade en egen kryssrad
-  // som sparar direkt (Kajsas riktning 2026-08-18: inget dramatiskt godkännande).
+  // Fristående uthyrarlänk: endast publicering för utvalda bostäder. Ett ja
+  // här är inte ett godkännande av förmedlingsvillkoren för en senare affär.
   if (!link.matchId && link.ownerId) {
     const standing = await loadLandlordStanding(link.ownerId);
     if (!standing) notFound();
     const consent = await loadPublishConsentState(link.ownerId);
-    const editableProperties = standing.agreementAccepted ? await loadLandlordProperties(link) : [];
-    const pendingAddresses = consent.pending.map((p) => [p.address, p.city].filter(Boolean).join(", ")).filter(Boolean);
-    const showConsent = consent.pending.length > 0 || consent.consented.length > 0;
+    const editableProperties = standing.portalAllowed ? await loadLandlordProperties(link) : [];
     return (
       <div className="min-h-screen pb-16">
         <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
@@ -50,42 +48,9 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
           </div>
         </header>
         <div className="mx-auto max-w-3xl space-y-6 px-5 py-8">
-          {standing.agreementAccepted && showConsent && (
-            <PublishConsentCard
-              token={token}
-              addresses={pendingAddresses}
-              initiallyConsented={consent.pending.length === 0}
-            />
-          )}
-          {!standing.agreementAccepted ? (
-            <AgreementGate
-              token={token}
-              title={UTHYRNINGSUPPDRAG.title}
-              intro={UTHYRNINGSUPPDRAG.intro}
-              points={UTHYRNINGSUPPDRAG.points}
-              version={UTHYRNINGSUPPDRAG.version}
-              submitLabel="Godkänn publiceringsmedgivandet"
-              lang="sv"
-              publishConsent={consent.pending.length > 0}
-            />
-          ) : (
-            <div className="rounded-2xl border bg-white p-6 sm:p-8 space-y-4">
-              <h1 className="text-[1.8rem] leading-tight tracking-tight text-nordic-900" style={editorial}>
-                Tack — ditt godkännande gäller
-              </h1>
-              <p className="text-sm text-nordic-700">
-                Godkänt av {standing.acceptedName} den {standing.acceptedAt?.slice(0, 10)}. Godkännandet gäller till{" "}
-                {standing.acceptedAt ? agreementValidUntil(standing.acceptedAt) : "—"} och omfattar alla objekt ni
-                presenterar genom StayOnSite.
-              </p>
-              <p className="text-sm text-nordic-700">
-                Nästa steg: när vi har en hyresgäst till ert boende hör vi av oss med hyra, period och övriga
-                villkor. Inget hyrs ut utan ert godkännande.
-              </p>
-              <p className="text-xs text-muted-foreground">Frågor? Hör av dig till Kajsa på StayOnSite.</p>
-            </div>
-          )}
-          {standing.agreementAccepted && (
+          <PublishConsentCard key={consent.pending.map((p) => p.id).join(":")} token={token} properties={consent.pending} />
+          {consent.consented.length > 0 && <PublicationWithdrawal token={token} properties={consent.consented} />}
+          {standing.portalAllowed && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-2xl text-nordic-900" style={editorial}>Min bostad</h2>
@@ -116,7 +81,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
           <img src="/stayonsite-logo.png" alt="StayOnSite" className="h-7 w-auto" />
           <span className="border-l pl-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Publiceringsmedgivande
+              Förmedlingsvillkor
           </span>
         </div>
       </header>
@@ -134,7 +99,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               intro={UTHYRNINGSUPPDRAG.intro}
               points={UTHYRNINGSUPPDRAG.points}
               version={UTHYRNINGSUPPDRAG.version}
-              submitLabel="Godkänn publiceringsmedgivandet"
+              submitLabel="Godkänn förmedlingsvillkoren"
               lang="sv"
             />
           </>

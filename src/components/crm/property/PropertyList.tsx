@@ -170,6 +170,9 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
       if (minBr && (p.bedrooms ?? 0) < minBr) return false;
       if (publishedFilter === "yes" && !p.published) return false;
       if (publishedFilter === "no" && p.published) return false;
+      if (publishedFilter === "consented" && (p.published || !p.publishConsentAt)) return false;
+      if (publishedFilter === "needs-consent" && (p.published || !!p.publishConsentAt || p.publishConsentSource === "withdrawn" || p.contentReviewStatus !== "approved")) return false;
+      if (publishedFilter === "withdrawn" && p.publishConsentSource !== "withdrawn") return false;
       if (intakeFilter === "yes" && !isPropertyIntake(p)) return false;
       if (postalFilter === "missing" && p.postalCode?.trim()) return false;
       return true;
@@ -504,6 +507,9 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
             <option value="">Alla (publicering)</option>
             <option value="yes">Publicerad</option>
             <option value="no">Ej publicerad</option>
+            <option value="consented">Medgivande finns – ej publicerad</option>
+            <option value="needs-consent">Granskad – saknar medgivande</option>
+            <option value="withdrawn">Nej eller återkallat</option>
           </select>
           <select
             value={intakeFilter}

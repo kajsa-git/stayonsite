@@ -30,11 +30,20 @@ export function offerLinkSms(contactName: string | null | undefined, token: stri
   return `${greet(contactName)} Här är ert boendeförslag från StayOnSite: www.stayonsite.se/erbjudande/${token}\nLänken är personlig för er — där ser ni objekt, pris och kan godkänna uppdraget. Hör av dig vid frågor. /Kajsa, StayOnSite`;
 }
 
-// Uppdragsavtal till uthyraren — avtalet skickas alltid FÖRST, fristående
-// (gäller alla deras objekt i 12 månader). Länk utan https:// av smishing-skäl.
+// Fristående länk till publiceringsmedgivande. Länk utan https:// av smishing-skäl.
 // Ordalydelsen är Kajsas egen (2026-07-13) — ändra inte utan hennes ok.
 export function landlordAvtalStandaloneSms(ownerName: string | null | undefined, token: string): string {
   return `${greet(ownerName)}\nHär kommer publiceringsmedgivandet: www.stayonsite.se/uthyrare/${token}\nMvh Kajsa\nStayOnSite`;
+}
+
+export function landlordMediationSms(ownerName: string | null | undefined, token: string): string {
+  return `${greet(ownerName)}\nHär är förmedlingsvillkoren inför den aktuella förfrågan: www.stayonsite.se/uthyrare/${token}\nHör gärna av dig om du har frågor. /Kajsa, StayOnSite`;
+}
+
+export function landlordMediationEmailHtml(ownerName: string | null | undefined, token: string): string {
+  const first = firstNameOf(ownerName)?.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const url = `https://www.stayonsite.se/uthyrare/${token}`;
+  return `<p>${first ? `Hej ${first},` : "Hej,"}</p><p>Här är förmedlingsvillkoren inför den aktuella förfrågan:<br><a href="${url}">${url}</a></p><p>Hör gärna av dig om du har frågor.</p><p>Mvh Kajsa<br>StayOnSite</p>`;
 }
 
 // Kvitto vid bostadsintag när e-post saknas — skickas AUTOMATISKT (transaktions-
@@ -71,7 +80,7 @@ export function landlordAvtalEmailHtml(ownerName: string | null | undefined, tok
   return (
     `<p>${hej}</p>` +
     `<p>Här kommer publiceringsmedgivandet:<br><a href="${url}">${url}</a></p>` +
-    `<p>Läs igenom medgivandet och godkänn med ditt namn. Det är kostnadsfritt och innebär ingen skyldighet att hyra ut. På sidan väljer du också om annonsen får visas på stayonsite.se.</p>` +
+    `<p>På sidan kan du välja vilka bostäder vi får visa på stayonsite.se. Det är kostnadsfritt och innebär ingen skyldighet att hyra ut.</p>` +
     `<p>Mvh Kajsa<br>StayOnSite</p>`
   );
 }

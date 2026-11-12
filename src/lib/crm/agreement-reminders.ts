@@ -12,14 +12,14 @@
 // uppföljningskön (owners.followUpDate) så Kajsa kan skicka länken via SMS,
 // och loggas med channel "crm_followup". Varje utskick loggas i
 // crm_agreement_reminders; signerat uppdrag ⇒ uthyraren lämnar svepet av sig själv.
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, or } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "./avtal";
 import { todayStockholm } from "./date";
 import { db as defaultDb } from "./db";
 import * as schema from "./schema";
-import { agreementAcceptances, agreementReminders, owners, shareLinks, type Owner, type ShareLink } from "./schema";
+import { agreementAcceptances, agreementReminders, owners, properties, shareLinks, type Owner, type ShareLink } from "./schema";
 
 // Injicerbar DB (som cascade-delete.ts) så svepet kan enhetstestas mot en
 // tempfils-libSQL med det riktiga, migrerade schemat.
@@ -113,6 +113,11 @@ async function sendViaResend(mail: ReminderEmail): Promise<void> {
 }
 
 async function hasValidAcceptance(db: DB, ownerId: string): Promise<boolean> {
+  // A yes received through any channel must stop a reminder asking for a
+  // signature. Retain the previous suppression for legacy signed agreements.
+  const [consented] = await db.select({ id: properties.id }).from(properties)
+    .where(and(eq(properties.ownerId, ownerId), or(isNotNull(properties.publishConsentAt), eq(properties.publishConsentSource, "withdrawn")))).limit(1);
+  if (consented) return true;
   const [latest] = await db
     .select()
     .from(agreementAcceptances)

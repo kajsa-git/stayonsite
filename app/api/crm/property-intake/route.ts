@@ -2,7 +2,6 @@ import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
-import { loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { buildHusIntakeConfirmationEmail, buildIntakeConfirmationEmail, buildIntakeNotificationEmail } from "@/lib/crm/intake-emails";
 import { finishPropertyIntakeUpload } from "@/lib/crm/property-intake-notifications";
 import { appendPropertyIntakeImageSummary, createPropertyIntake, propertyIntakeSchema } from "@/lib/crm/property-intake";
@@ -131,8 +130,8 @@ export async function POST(req: NextRequest) {
 
     await appendPropertyIntakeImageSummary(property.id, imageCount, imageErrors.length);
 
-    // Del 2 av registreringen: uthyrarens egen sida (publiceringsgodkännande +
-    // uppdragssignering). Fristående uthyrarlänk (ownerId, createdBy null =
+    // Del 2 av registreringen: uthyrarens egen sida för publiceringsgodkännande.
+    // Fristående uthyrarlänk (ownerId, createdBy null =
     // intagsflödet). Skapas för ALLA ägartyper — även företag ska kunna godkänna
     // publicering; påminnelse-cronen filtrerar fortfarande på privatperson.
     // Får aldrig fälla intaget — bostaden är redan sparad.
@@ -140,11 +139,10 @@ export async function POST(req: NextRequest) {
     let agreement: { token: string; alreadySigned: boolean } | null = null;
     if (ownerId) {
       try {
-        const [standing, link] = await Promise.all([
-          loadLandlordStanding(ownerId),
-          ensureShareLink({ audience: "landlord", ownerId, intakePurpose: parsed.data.husPublication ? "hus-upload" : "agreement" }),
-        ]);
-        agreement = { token: link.token, alreadySigned: standing?.agreementAccepted ?? false };
+        const link = await ensureShareLink({ audience: "landlord", ownerId, intakePurpose: parsed.data.husPublication ? "hus-upload" : "agreement" });
+        // Approval is property-specific. An older owner agreement does not
+        // grant website publication for a newly registered property.
+        agreement = { token: link.token, alreadySigned: !!property.publishConsentAt };
       } catch (error) {
         console.error("Intake agreement link failed", error);
       }

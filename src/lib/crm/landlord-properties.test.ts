@@ -48,7 +48,7 @@ async function patch(body: unknown, token = "owner-token", id = "p1") {
 }
 
 describe("uthyrarens bostäder", () => {
-  it.each(["2026-07-13.7", "2026-07-16.8"])("låter en uthyrare med giltig tidigare version %s fortsätta uppdatera sin bostad", async (version) => {
+  it.each(["2026-07-13.7", "2026-07-16.8", "2026-10-16.1"])("låter en uthyrare med giltig tidigare version %s fortsätta uppdatera sin bostad", async (version) => {
     await state.db.update(schema.agreementAcceptances).set({ version }).where(eq(schema.agreementAcceptances.id, "a1"));
     expect((await patch({ beds: 5 })).status).toBe(200);
     const [acceptance] = await state.db.select().from(schema.agreementAcceptances).where(eq(schema.agreementAcceptances.id, "a1"));
@@ -78,6 +78,15 @@ describe("uthyrarens bostäder", () => {
   });
   it.each(["unknown", "revoked-token", "expired-token", "tenant-token", "unsigned-token"])("avvisar %s", async (token) => {
     expect((await patch({ beds: 3 }, token)).status).toBe(404);
+  });
+  it("ger inte en uppladdningslänk bredare rättigheter bara för att ett HUS-medgivande finns", async () => {
+    await state.db.update(schema.properties).set({ publishConsentAt: "2026-11-01", publishConsentSource: "hus" }).where(eq(schema.properties.id, "p2"));
+    expect((await patch({ beds: 3 }, "unsigned-token", "p2")).status).toBe(404);
+  });
+  it("låter uthyraren uppdatera sina uppgifter efter ett ja via den egna länken utan förmedlingsavtal", async () => {
+    await state.db.insert(schema.agreementAcceptances).values({ id: "pub", ownerId: "o2", propertyId: "p2", agreementType: "publiceringsmedgivande", version: "2026-11-12.1", acceptedName: "Bo", acceptedAt: new Date().toISOString() });
+    expect((await patch({ beds: 3 }, "unsigned-token", "p2")).status).toBe(200);
+    expect((await patch({ beds: 3 }, "unsigned-token", "p1")).status).toBe(404);
   });
   it("avvisar en annan ägares bostad även för bildläsning", async () => {
     expect((await patch({ beds: 3 }, "owner-token", "p2")).status).toBe(404);

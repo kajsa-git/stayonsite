@@ -17,7 +17,7 @@ export async function landlordPropertyScope(link: ShareLink, requireAgreement = 
   if (!link.ownerId) return null;
   if (requireAgreement) {
     const standing = await loadLandlordStanding(link.ownerId);
-    if (!standing?.agreementAccepted) return null;
+    if (!standing?.portalAllowed) return null;
   }
   return eq(properties.ownerId, link.ownerId);
 }

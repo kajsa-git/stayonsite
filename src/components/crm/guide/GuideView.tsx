@@ -10,7 +10,7 @@ const SECTIONS = [
     title: "Ny förfrågan",
     steps: [
       "Förfrågningar landar som Inkommen — antingen från hemsidans formulär (företaget och kontakten skapas automatiskt) eller manuellt via Nytt företag → Ny förfrågan.",
-      "Skicka uppdragsavtalet FÖRST, fristående: kundens uppdragsbekräftelse via kundlänken (företagskortet visar status), uthyrarens publiceringsmedgivande via uthyrarlänken på uthyrarkortet. Signerade avtal gäller i 12 månader — korten visar giltigt till-datum och flaggar när omsignering behövs.",
+      "Kundens uppdragsbekräftelse delas via kundlänken. Uthyrarens ja till webbpublicering hanteras separat per bostad och kan registreras utifrån sms, mejl, chatt, samtal eller uthyrarlänken.",
       "Kontrollera stad, antal personer, period och budget. Sätt uppföljningsdatum om kunden ska jagas.",
       "Öppna Matcha förfrågan och sök i objektsbanken — filtrera på ort, bäddar, hyra, betyg och max km till arbetsadressen (kör-avstånd), eller sortera närmast först. Förslag läggs alltid till manuellt.",
     ],
@@ -20,11 +20,11 @@ const SECTIONS = [
     title: "Matchning & erbjudande",
     steps: [
       "Lägg till objekt som förslag från listan till höger. Kalkylen på varje förslag räknar marginal per scenario — Bas-scenariot förifyller allt senare. Klicka på objektnamnet på förslagskortet för att redigera objektet direkt i en modal (priser, bäddar, beskrivning) utan att lämna vyn — pilen ↗ öppnar Objektsbanken.",
-      "Stegen på förslagskortet går i ordning — avtalet alltid först: 1) Publiceringsmedgivande — uthyraren godkänner det först (grönt direkt om det redan är godkänt vid registreringen). 2) Skicka erbjudande stämplar kundens pris, period och notis på affären — villkoren ligger fast även om objektets listpriser ändras efteråt, och en återkomst sätts på kunden (+3 dagar, 'Väntar svar på erbjudande') i Återkomster-kön. 3) Acceptera när kunden tackat ja. Uthyrarens exakta villkor (hyra, period, uppsägning) fylls i vid det skarpa kontraktet.",
+      "Förmedlingsvillkor kan hanteras när en konkret kundförfrågan är aktuell. Att uthyraren har godkänt webbpublicering innebär inte att förmedlingsvillkoren är godkända. Skicka erbjudande stämplar kundens pris, period och notis på affären och sätter en återkomst (+3 dagar). Acceptera när kunden tackat ja; exakta hyresvillkor fastställs separat.",
       "Skapa kundlänken i panelen Kundens länk och dela via SMS-text (färdig text, www-länk utan https) eller Mejl-knappen (öppnar interna mejlklienten förifylld med mottagare, ämne 'Boende – {stad}' och länken). SMS-texten väljer rätt copy själv: avtalsutskick innan erbjudandet är skickat, erbjudandetext därefter. Första gången kunden öppnar länken signeras uppdragsbekräftelsen; finns inget skickat erbjudande ser de en väntsida som automatiskt byts mot förslaget. Panelen visar när kunden öppnat sidan.",
-      "Steg 1 Publiceringsmedgivande öppnar en delningsruta — skicka medgivandet direkt till uthyraren via SMS, WhatsApp, kopiera text eller Mejl (interna klienten, förifylld). WhatsApp/SMS/mejl går till uthyrarens sparade nummer respektive mejl.",
+      "Förmedlingsvillkor på förslagskortet öppnar en delningsruta för den aktuella förfrågan. Text kan förberedas för SMS, WhatsApp eller mejl till uthyraren.",
       "Kundens sida visar alltid det stämplade priset — aldrig adress, uthyrare eller inpris.",
-      "Boka aldrig visning förrän båda avtalen är signerade: uppdragsbekräftelsen (badge i panelen) och publiceringsmedgivandet ('godkänt av …' på kortet).",
+      "Kontrollera kundens uppdragsbekräftelse och stäm av en eventuell visning med uthyraren. Förmedlingsvillkor och hyresavtal hanteras separat från publiceringsmedgivandet.",
     ],
   },
   {
@@ -32,6 +32,7 @@ const SECTIONS = [
     title: "Uthyrare & objekt",
     steps: [
       "Nya uthyrare kommer in via husägarformuläret eller läggs in manuellt; objekt kan även importeras från Qasa/Airbnb-länk eller registreras av uthyraren själv via /registrera-bostad.",
+      "Ett tydligt ja till hemsidan kan registreras under Publicering på den berörda bostaden. Spara kanal, datum, person och underlag. Ett senare nej eller återkallande ska respekteras och registreras på bostaden.",
       "Jaga-rundor (ej kontaktad → kontaktad → i dialog → bekräftad/nej) håller ordning på var dialogen står — de dyker upp i Min dag under Följ upp uthyrare.",
       "Personliga SMS kan skrivas som utkast och godkännas i utkastpanelen. Automatiska kvitton kan också skickas efter en anmälan eller publicering. Svar läses in automatiskt från Messages och hamnar under Svar i Min dag.",
       "För HyrUtSmart väljer uthyraren separat om bostaden får publiceras. AI-kontrollen hjälper till med beskrivning och bilder; granska dem själv och publicera sedan i CRM. När bostaden publiceras skickas länken automatiskt via SMS. Exakt adress och ägarkontakt visas inte publikt.",

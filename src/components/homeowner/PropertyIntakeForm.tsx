@@ -2,7 +2,6 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Phone, Upload, X } from "lucide-react";
-import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
 import { trackFormPhoneError } from "@/lib/gtag";
-import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { compressImage } from "@/lib/image-compress";
 import { getMetaTrackingContext, trackMetaEvent } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
@@ -551,17 +549,11 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
             </div>
           </div>
 
-          <AgreementGate
+          <PublishConsentCard
             token={success.agreement.token}
-            title={UTHYRNINGSUPPDRAG.title}
-            intro={UTHYRNINGSUPPDRAG.intro}
-            points={UTHYRNINGSUPPDRAG.points}
-            version={UTHYRNINGSUPPDRAG.version}
-            submitLabel="Godkänn publiceringsmedgivandet"
-            lang="sv"
-            publishConsent
-            onAccepted={({ publishConsented: consented }) => {
-              if (consented) setPublishConsented(true);
+            properties={[{ id: success.propertyId, address: form.address, city: form.city }]}
+            onConsented={() => {
+              setPublishConsented(true);
               setAgreementOutcome("signed");
             }}
           />
@@ -599,7 +591,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
           )}
           {publishConsented && (
             <p className="mt-4 rounded-md border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-900">
-              Ditt publiceringsmedgivande är sparat. Annonsen läggs ut när beskrivningen och bilderna har klarat kontrollen.
+              Ditt publiceringsmedgivande är sparat. Vi kontrollerar beskrivningen och bilderna före publicering.
             </p>
           )}
           {agreementOutcome === "skipped" && success.agreement && (
@@ -612,19 +604,6 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                 </a>
                 {" "}— {publishConsented ? "vi har mejlat dig länken." : "där kan du också godkänna publiceringen. Länken finns i mejlet du fått."}
               </p>
-            </div>
-          )}
-
-          {/* Redan signerade ägare hoppar över del 2-vyn — publiceringsfrågan
-              ska ändå ställas för det nya objektet. */}
-          {success.agreement && !publishConsented && agreementOutcome === null && (
-            <div className="mt-5">
-              <PublishConsentCard
-                token={success.agreement.token}
-                addresses={[[form.address, form.city].filter(Boolean).join(", ")].filter(Boolean)}
-                initiallyConsented={false}
-                onConsented={() => setPublishConsented(true)}
-              />
             </div>
           )}
 

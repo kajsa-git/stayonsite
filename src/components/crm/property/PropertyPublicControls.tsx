@@ -8,6 +8,7 @@ import { publicDisplayName } from "@/lib/crm/slug";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PublishConfirmSmsDialog } from "./PublishConfirmSmsDialog";
 import { ShareLinkButton } from "./ShareLinkButton";
+import { PropertyPublicationConsent } from "./PropertyPublicationConsent";
 
 // Publicering — hemsidan (published) och prospekt-länken (prospektPublished) styrs
 // oberoende av varandra. Delningstexten använder bara publikt säkra fält
@@ -59,6 +60,7 @@ export function PropertyPublicControls({
 
   return (
     <div>
+      <PropertyPublicationConsent key={property.id} property={property} />
       <div className="space-y-2">
         {husIntake && <p className="text-xs text-muted-foreground">{property.publishConsentAt
           ? `Publicering av den här bostaden är godkänd${property.publishConsentSource === "hus" ? " via HyrUtSmart" : ""}.`
@@ -79,7 +81,7 @@ export function PropertyPublicControls({
               }
               if (publishing && approved && websiteStatusAllowed && !husIntake) await maybeOfferConfirmSms();
             }}
-            disabled={(!approved || (husIntake && !property.publishConsentAt)) && !property.published}
+            disabled={(!approved || !property.publishConsentAt) && !property.published}
             className={toggleCls(isPublic)}
           >
             {isPublic ? "✓ På hemsidan" : property.published ? "Pausa publicering" : "Publicera på hemsidan"}

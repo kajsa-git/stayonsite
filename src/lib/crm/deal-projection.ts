@@ -261,6 +261,7 @@ export async function loadLandlordDeal(matchId: string): Promise<LandlordDealVie
 export interface LandlordStandingView {
   ownerName: string | null;
   agreementAccepted: boolean;
+  portalAllowed: boolean;
   acceptedName: string | null;
   acceptedAt: string | null;
 }
@@ -279,9 +280,17 @@ export async function loadLandlordStanding(ownerId: string): Promise<LandlordSta
     .limit(1);
   const acceptance = isAcceptanceValid(latest, UTHYRNINGSUPPDRAG) ? latest : null;
 
+  // Only an approval actually made through the owner's link grants access to
+  // that page. An SMS or HUS approval must not widen an upload-only token's
+  // existing access to every property belonging to the owner.
+  const [publicationAcceptance] = await db.select({ id: agreementAcceptances.id }).from(agreementAcceptances)
+    .where(and(eq(agreementAcceptances.ownerId, ownerId), eq(agreementAcceptances.agreementType, "publiceringsmedgivande")))
+    .limit(1);
+
   return {
     ownerName: owner.name,
     agreementAccepted: acceptance != null,
+    portalAllowed: acceptance != null || !!publicationAcceptance,
     acceptedName: acceptance?.acceptedName ?? null,
     acceptedAt: acceptance?.acceptedAt ?? null,
   };

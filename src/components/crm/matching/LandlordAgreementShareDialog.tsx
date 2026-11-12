@@ -1,20 +1,20 @@
 "use client";
 
-// Delningsdialog för uthyrarens publiceringsmedgivande (steg 1 på förslagskortet).
-// Skapar/återanvänder den fristående ägarlänken och låter Kajsa skicka den direkt:
-// SMS (sms: till uthyrarens nummer), WhatsApp (wa.me), kopiera text, eller mejl via
-// interna klienten. Uthyraren ser BARA avtalet — inga affärsvillkor.
+// Delningsdialog för förmedlingsvillkoren i en konkret kundförfrågan. Länken är
+// knuten till matchningen och kan delas som utkast via valfri kanal.
 
 import { EmailComposeModal } from "@/components/crm/email/EmailComposeModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { formatPhoneSv, smsHref, whatsappHref } from "@/lib/crm/phone-links";
-import { landlordAvtalStandaloneSms, landlordAvtalEmailHtml } from "@/lib/crm/sms-templates";
+import { landlordMediationSms, landlordMediationEmailHtml } from "@/lib/crm/sms-templates";
 import { Copy, Mail, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 export interface LandlordShareTarget {
   ownerId: string;
+  requestId: string;
+  matchId: string;
   ownerName: string | null;
   ownerPhone: string | null;
   ownerEmail: string | null;
@@ -38,7 +38,7 @@ export function LandlordAgreementShareDialog({
     fetch("/api/crm/share-links", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ownerId: target!.ownerId }),
+      body: JSON.stringify({ audience: "landlord", requestId: target!.requestId, matchId: target!.matchId }),
     })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((link) => setToken(link.token))
@@ -51,7 +51,7 @@ export function LandlordAgreementShareDialog({
     onClose();
   }
 
-  const smsText = token ? landlordAvtalStandaloneSms(target?.ownerName, token) : "";
+  const smsText = token ? landlordMediationSms(target?.ownerName, token) : "";
   const sms = target?.ownerPhone ? smsHref(target.ownerPhone) : null;
   const wa = target?.ownerPhone ? whatsappHref(target.ownerPhone) : null;
 
@@ -59,7 +59,7 @@ export function LandlordAgreementShareDialog({
     <Dialog open={open} onOpenChange={(o) => !o && close()}>
       <DialogContent className="max-w-md w-[calc(100vw-2rem)]">
         <DialogHeader>
-          <DialogTitle>Skicka publiceringsmedgivande — {target?.ownerName ?? "uthyrare"}</DialogTitle>
+          <DialogTitle>Förmedlingsvillkor för förfrågan — {target?.ownerName ?? "uthyrare"}</DialogTitle>
         </DialogHeader>
 
         {!token ? (
@@ -67,7 +67,7 @@ export function LandlordAgreementShareDialog({
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Uthyraren läser och godkänner publiceringsmedgivandet via länken. Det gäller alla deras bostäder i 12 månader.
+              Uthyraren kan läsa förmedlingsvillkoren via länken inför den aktuella förfrågan.
               {target?.ownerPhone ? ` ${formatPhoneSv(target.ownerPhone)}` : ""}
             </p>
 
@@ -131,8 +131,8 @@ export function LandlordAgreementShareDialog({
             open={emailOpen}
             ownerId={target?.ownerId}
             defaultTo={target?.ownerEmail ?? ""}
-            defaultSubject="Publiceringsmedgivande – StayOnSite"
-            defaultBody={landlordAvtalEmailHtml(target?.ownerName, token)}
+            defaultSubject="Förmedlingsvillkor – StayOnSite"
+            defaultBody={landlordMediationEmailHtml(target?.ownerName, token)}
             onClose={() => setEmailOpen(false)}
             onSent={() => setEmailOpen(false)}
           />

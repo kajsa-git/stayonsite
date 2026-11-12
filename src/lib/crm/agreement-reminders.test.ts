@@ -104,6 +104,26 @@ function collector() {
 }
 
 describe("agreement reminder sweep", () => {
+  it("skickar ingen påminnelse när webbpublicering redan godkänts via sms", async () => {
+    const owner = await seedOwner();
+    await seedLink(owner.id);
+    await db.insert(schema.properties).values({ id: "consented-property", ownerId: owner.id, publishConsentAt: "2026-07-26", publishConsentSource: "sms" });
+    const { mails, sendEmail } = collector();
+    const summary = await runAgreementReminderSweep({ now: NOW, sendEmail, db });
+    expect(summary.emailed).toBe(0);
+    expect(summary.followUps).toBe(0);
+    expect(mails).toHaveLength(0);
+  });
+  it("skickar ingen påminnelse när uthyraren har sagt nej", async () => {
+    const owner = await seedOwner();
+    await seedLink(owner.id);
+    await db.insert(schema.properties).values({ id: "declined-property", ownerId: owner.id, publishConsentSource: "withdrawn" });
+    const { mails, sendEmail } = collector();
+    const summary = await runAgreementReminderSweep({ now: NOW, sendEmail, db });
+    expect(summary.emailed).toBe(0);
+    expect(summary.followUps).toBe(0);
+    expect(mails).toHaveLength(0);
+  });
   it("does not send agreement reminders for a HUS upload-only link", async () => {
     const owner = await seedOwner();
     await seedLink(owner.id, { createdBy: HUS_UPLOAD_LINK_ACTOR });
