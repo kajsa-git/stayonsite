@@ -117,7 +117,7 @@ export async function withdrawPublishConsent(input: {
     await tx.insert(propertyNotes).values({
       id: nanoid(), propertyId: input.propertyId, channel: input.source === "mejl" ? "mail" : input.source === "web" ? "övrigt" : input.source,
       source: "publication-consent", authorId: input.authorId ?? null, createdAt: now,
-      content: `Publiceringsmedgivande återkallat av ${input.name.trim()} via ${input.source}.\nUnderlag: ${input.evidence.trim()}\nTidigare registrering: ${before.publishConsentAt ?? "saknas"}, ${before.publishConsentSource ?? "källa saknas"}.`,
+      content: `Publiceringsmedgivande återkallat av ${input.name.trim()} via ${input.source}.\nUnderlag: ${input.evidence.trim()}\nTidigare registrering: ${before.publishConsentAt ?? "saknas"}, ${before.publishConsentSource ?? "källa saknas"}, namn: ${before.publishConsentName ?? "saknas"}${before.publishConsentIp ? `, IP: ${before.publishConsentIp}` : ""}.`,
     });
     await tx.update(properties).set({
       publishConsentAt: null, publishConsentName: input.name.trim(), publishConsentSource: "withdrawn", publishConsentIp: null,

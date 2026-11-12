@@ -8,6 +8,7 @@ import { outboxMessages, owners, properties, propertyImages, type Property } fro
 import { validatePublicationSeo } from "./publication-seo";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { indexProperty } from "./search-index";
+import { translatePropertyText } from "./property-translations";
 import {
   CONTENT_FIELDS, CONTENT_POLICY_VERSION, PROPERTY_CONTENT_SYSTEM,
   isCurrentContentApproved, propertyContentHash, publicTextProblems, readableReviewReason,
@@ -129,6 +130,18 @@ export async function inspectPropertyContent(id: string, opts: { onImageChecks?:
     reasons.push(...checked.reasons);
   }
   const forbidden = [property.address, owner?.name, owner?.email, owner?.phone].filter((v): v is string => !!v);
+  const suppliedDescription = property.publicDescription?.trim();
+  // An already safe description can contain a condition on the owner's
+  // permission (for example, photos show a previous tenant's furniture).
+  // Editing it down can silently remove that condition. Keep the source text
+  // verbatim and translate that exact text, rather than the shortened rewrite.
+  // Unsafe source text still goes through the existing cleaning flow.
+  if (suppliedDescription && suppliedDescription !== values.publicDescription && !publicTextProblems(suppliedDescription, forbidden).length) {
+    const translated = await translatePropertyText({ publicDescription: suppliedDescription });
+    values.publicDescription = suppliedDescription;
+    values.publicDescriptionEn = translated.publicDescriptionEn;
+    values.publicDescriptionPl = translated.publicDescriptionPl;
+  }
   const output = [values.publicName, values.publicDescription, values.publicDescriptionEn, values.publicDescriptionPl, values.skick, values.skickEn, values.skickPl, ...values.inclusions, ...values.inclusionsEn, ...values.inclusionsPl, ...(property.distances ?? []).map((d) => d.label)];
   reasons.push(...output.flatMap((value) => publicTextProblems(value, forbidden)));
   const report: ContentReport = { reasons: [...new Set(reasons.map(readableReviewReason))], images: checks, version: CONTENT_POLICY_VERSION };

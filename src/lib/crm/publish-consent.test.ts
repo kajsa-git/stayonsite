@@ -73,13 +73,14 @@ describe("publiceringsmedgivande", () => {
 
   it("återkallar publicering och prospekt, behåller historiken och stoppar ett väntande HUS-sms", async () => {
     await recordPublishConsent({ propertyIds: ["p1"], name: "Anna", source: "sms", evidence: "SMS: ja till publicering" }, { db });
-    await db.update(properties).set({ published: true, prospektPublished: true, autoPublishEnabled: true }).where(eq(properties.id, "p1"));
+    await db.update(properties).set({ published: true, prospektPublished: true, autoPublishEnabled: true, publishConsentIp: "192.0.2.1" }).where(eq(properties.id, "p1"));
     await db.insert(outboxMessages).values({ id: husPublicationSmsId("p1"), toPhone: "+46701234567", body: "länk", source: HUS_PUBLICATION_SMS_SOURCE, status: "queued" });
     expect(await withdrawPublishConsent({ propertyId: "p1", source: "mejl", name: "Anna", evidence: "Ta bort annonsen" }, { db })).toBe(true);
     expect((await db.select().from(properties).where(eq(properties.id, "p1")))[0]).toMatchObject({ publishConsentAt: null, publishConsentSource: "withdrawn", published: false, prospektPublished: false, autoPublishEnabled: false });
     expect((await db.select().from(outboxMessages))[0].status).toBe("pending_publication");
     expect((await db.select().from(propertyNotes)).map((n) => n.content).join(" ")).toContain("SMS: ja till publicering");
     expect((await db.select().from(propertyNotes)).map((n) => n.content).join(" ")).toContain("Ta bort annonsen");
+    expect((await db.select().from(propertyNotes)).map((n) => n.content).join(" ")).toContain("namn: Anna, IP: 192.0.2.1");
     await recordPublishConsent({ propertyIds: ["p1"], name: "Anna", source: "mejl", evidence: "Ett nytt ja till publicering" }, { db });
     expect(await db.select().from(propertyNotes)).toHaveLength(3);
   });

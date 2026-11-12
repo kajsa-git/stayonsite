@@ -38,6 +38,10 @@ beforeEach(async () => {
   vi.stubGlobal("fetch", vi.fn(async (_url, init) => {
     const body = JSON.parse(init.body); calls.push(body);
     const content = body.messages[0].content;
+    if (typeof content === "string") return new Response(JSON.stringify({ stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify({
+      publicDescriptionEn: "The photos show a previous guest's furniture.", publicDescriptionPl: "Zdjęcia pokazują meble poprzedniego gościa.",
+      skickEn: "", skickPl: "", inclusionsEn: [], inclusionsPl: [],
+    }) }] }), { status: 200 });
     const labels = content.filter((b: { type: string; text?: string }) => b.type === "text" && b.text?.startsWith("Bild-id:"));
     const result = labels.length ? { images: labels.map((b: { text: string }) => ({ id: b.text.slice(9).trim(), suitable: b.text.slice(9).trim() !== rejectedImage, reason: b.text.slice(9).trim() === rejectedImage ? "Privat dokument, inte en boendebild." : "" })) } : modelCopy;
     return new Response(JSON.stringify({ stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify(result) }] }), { status: 200 });
@@ -87,6 +91,29 @@ describe("automatic property approval", () => {
     expect(input.property.contentReviewOriginal?.publicDescription).toContain("12 000 kr");
     const textInput = JSON.stringify(calls.at(-1));
     expect(textInput).not.toMatch(/HEMLIG INTERN NOTERING|rentIn|rentOut|12345|23456|Privatgatan 9|private@example/);
+  });
+  it("preserves an owner's photo condition when the review model leaves it out", async () => {
+    const description = "Lägenhet i Boden med eget kök och ett separat allrum. Bilderna visar möblering från en tidigare gäst.";
+    await state.db.update(properties).set({ publicDescription: description, published: false }).where(eq(properties.id, "p1"));
+    expect(await reviewPropertyContent("p1")).toBe("approved");
+    const input = (await readReviewInput("p1"))!;
+    expect(input.property.publicDescription).toBe(description);
+    expect(input.property.publicDescriptionEn).toContain("previous guest's furniture");
+    expect(input.property.publicDescriptionPl).toContain("poprzedniego gościa");
+    expect(input.property.published).toBe(true);
+  });
+  it("does not publish the rewritten text when translating the preserved description fails", async () => {
+    const description = "Lägenhet i Boden med eget kök och ett separat allrum. Bilderna visar möblering från en tidigare gäst.";
+    await state.db.update(properties).set({ publicDescription: description, published: false }).where(eq(properties.id, "p1"));
+    const previousFetch = globalThis.fetch;
+    vi.stubGlobal("fetch", vi.fn(async (url, init) => {
+      const body = JSON.parse(init!.body as string);
+      return typeof body.messages[0].content === "string" ? new Response("down", { status: 503 }) : previousFetch(url, init);
+    }));
+    expect(await reviewPropertyContent("p1")).toBe("retry");
+    const input = (await readReviewInput("p1"))!;
+    expect(input.property.publicDescription).toBe(description);
+    expect(input.property.published).toBe(false);
   });
   it("does not publish without owner consent or change rented/off-market status", async () => {
     await state.db.update(properties).set({ publishConsentAt: null, status: "rented" }).where(eq(properties.id, "p1"));
