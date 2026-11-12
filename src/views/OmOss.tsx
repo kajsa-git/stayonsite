@@ -134,7 +134,7 @@ const OmOss = () => {
             <div className="max-w-3xl">
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 {t(
-                  'Personalboende i hela Sverige – en kontaktperson, ett samtal',
+                  'Om StayOnSite',
                   'Worker accommodation across Sweden – one contact, one call',
                   'Noclegi pracownicze w całej Szwecji – jeden kontakt, jeden telefon'
                 )}

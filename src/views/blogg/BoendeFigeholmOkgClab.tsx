@@ -74,6 +74,29 @@ const BoendeFigeholmOkgClab = () => {
         <Link href="/stad/oskarshamn">företagsboende i Oskarshamn</Link>.
       </p>
 
+      <h2>OKG:s egen logi på Figeholm Konferens</h2>
+      <p>
+        Kontrollera först om ni omfattas av OKG:s eget erbjudande. OKG erbjuder logi på Figeholm Konferens,
+        knappt tio minuters bilresa från anläggningen, med stugor i olika storlekar, camping och ett mindre
+        hotell. Entreprenörer som har boendeavtal med OKG debiteras enligt OKG 130 kronor per natt
+        inklusive moms. Priset gäller inte vid arbete med avvecklingen av O1 och O2, och anläggningen kan
+        låta gäster dela boende.{' '}
+        <a
+          href="https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Läs OKG:s sida om bostad och fritid
+        </a>
+        . Villkoren kan ändras, så stäm av dem med er kontaktperson på OKG.
+      </p>
+      <p>
+        Har ni ett sådant avtal och får plats är det svårt att hitta något billigare. Ett eget hus eller en
+        egen lägenhet via StayOnSite passar när ni inte omfattas av avtalet, när platserna är slut under
+        revisionen, eller när laget ska bo tillsammans i en egen bostad under en längre period. Vi hyr ut
+        från tre månader.
+      </p>
+
       <h2>Boende för revision och skiftarbete</h2>
       <p>
         När dag- och nattpersonal delar bostad räcker det inte med tillräckligt många bäddar. Egna sovrum,

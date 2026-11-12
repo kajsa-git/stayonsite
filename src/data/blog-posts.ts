@@ -115,6 +115,12 @@ export const blogPosts: BlogPost[] = [
     ],
     sources: [
       {
+        title: 'Bostad och fritid',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/',
+        checkedDate: '2026-11-12',
+      },
+      {
         title: 'Revision 2026 – en viktig pusselbit för framtidens drift',
         publisher: 'OKG',
         url: 'https://www.mynewsdesk.com/se/okg/news/revision-2026-en-viktig-pusselbit-foer-framtidens-drift-507304',
@@ -211,6 +217,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-11-07',
+    updatedDate: '2026-11-12',
     category: 'Lokal guide',
     tags: ['Figeholm', 'Oskarshamn', 'OKG', 'Clab', 'personalboende', 'montörboende'],
     readingTime: 5,
@@ -240,6 +247,12 @@ export const blogPosts: BlogPost[] = [
       },
     ],
     sources: [
+      {
+        title: 'Bostad och fritid',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/',
+        checkedDate: '2026-11-12',
+      },
       {
         title: 'Planlagd mark för bostäder med havsutsikt i Figeholm',
         publisher: 'Oskarshamns kommun',
@@ -375,6 +388,7 @@ export const blogPosts: BlogPost[] = [
     },
     author: 'Kajsa Sihlén',
     publishedDate: '2026-09-06',
+    updatedDate: '2026-11-12',
     category: 'Lokal guide',
     tags: ['Oskarshamn', 'OKG', 'personalboende', 'montörboende', 'kärnkraft'],
     readingTime: 7,
@@ -400,6 +414,12 @@ export const blogPosts: BlogPost[] = [
       },
     ],
     sources: [
+      {
+        title: 'Bostad och fritid',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/',
+        checkedDate: '2026-11-12',
+      },
       {
         title: 'Revision 2026 – en viktig pusselbit för framtidens drift',
         publisher: 'OKG AB',

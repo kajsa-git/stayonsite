@@ -61,6 +61,18 @@ const BoendeKarnkraftverkRevisionProjekt = () => {
         igenom vad som bör stämmas av före kontrakt.
       </p>
       <p>
+        OKG erbjuder också egen logi på Figeholm Konferens för entreprenörer med boendeavtal. Fråga er
+        kontaktperson på OKG om ni omfattas innan ni bokar annat boende.{' '}
+        <a
+          href="https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/bostad-och-fritid/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Läs OKG:s sida om bostad och fritid
+        </a>
+        .
+      </p>
+      <p>
         SKB planerar dessutom en inkapslingsanläggning intill Clab. Mark- och miljödomstolen gav
         miljötillstånd i oktober 2024, men bygglov från Oskarshamns kommun återstår och SKB anger ingen
         fast byggstart.{' '}
