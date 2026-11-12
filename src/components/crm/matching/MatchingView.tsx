@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { matchDetails, availableForRequest, type MatchChip } from "@/lib/crm/matching";
+import { matchDetails, matchesDistanceFilter, matchesPropertyFilters, unknownMatchChips, type MatchChip, type MatchSearchFilters } from "@/lib/crm/matching";
 import type { KalkylScenario } from "@/lib/crm/kalkyl";
 import type { Request } from "@/lib/crm/schema";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
@@ -123,7 +123,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const [qasaOpened, setQasaOpened] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<MatchSearchFilters>({
     q: "",
     // Ort lämnas tom: geografisk avgränsning görs med köravstånd så närliggande
     // orter (t.ex. Oskarshamn för Mönsterås) inte sorteras bort i förväg.
@@ -158,26 +158,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const forScoring = (p: PropertyWithOwner) => p.status === "rented" ? { ...p, moveInFrom: null } : p;
 
   const scored = properties
-    .filter((p) => {
-      const q = filters.q.trim().toLowerCase();
-      const hay = [p.address, p.postalCode, p.city, p.ownerName, p.ownerContactPerson, p.notes]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      if (q && !hay.includes(q)) return false;
-      if (filters.city.trim() && !(p.city ?? "").toLowerCase().includes(filters.city.trim().toLowerCase())) return false;
-      if (filters.minBeds && (p.beds ?? 0) < parseInt(filters.minBeds, 10)) return false;
-      if (filters.maxRent && (p.rentOut ?? Infinity) > parseFloat(filters.maxRent)) return false;
-      if (filters.minRating && (p.rating ?? 0) < parseInt(filters.minRating, 10)) return false;
-      if (filters.availableOnly && p.status !== "available" && !needsReview(p)) return false;
-      if (filters.furnished && !p.furnished) return false;
-      if (filters.garage && !p.garage) return false;
-      if (filters.availableDates && !needsReview(p) && (p.status !== "available" || !availableForRequest(request, p))) return false;
-      if (filters.hideSuggested && suggestedIds.has(p.id)) return false;
-      return true;
-    })
+    .filter((p) => matchesPropertyFilters(p, request, filters, needsReview(p), suggestedIds))
     .map((p) => ({ property: p, ...matchDetails(request, forScoring(p)) }))
-    .filter((r) => filters.showWeak || r.score > 0)
     .sort((a, b) => b.score - a.score);
 
   const isFiltered =
@@ -204,10 +186,11 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
   const distDests = (() => {
     const byId = new Map<string, string>();
     for (const { property } of scored) {
-      byId.set(property.id, [property.address, property.postalCode, property.city].filter(Boolean).join(" "));
+      // Ort utan gatuadress ger inte ett tillförlitligt avstånd till bostaden.
+      if (property.address?.trim()) byId.set(property.id, [property.address, property.postalCode, property.city].filter(Boolean).join(" "));
     }
     for (const m of matches) {
-      if (!byId.has(m.propertyId)) byId.set(m.propertyId, [m.propertyAddress, m.propertyCity].filter(Boolean).join(" "));
+      if (m.propertyAddress?.trim() && !byId.has(m.propertyId)) byId.set(m.propertyId, [m.propertyAddress, m.propertyCity].filter(Boolean).join(" "));
     }
     return [...byId].map(([id, address]) => ({ id, address }));
   })();
@@ -215,25 +198,34 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
 
   // Avståndsfilter + närmast-sortering appliceras EFTER scored (distanserna
   // hämtas för scored-listan — att filtrera scored på avstånd vore cirkulärt).
-  // När beräkningen är klar exkluderas okända avstånd om maxvärde är satt.
+  // Okända avstånd behålls även när beräkningen är klar.
   const parsedMaxKm = filters.maxKm ? parseFloat(filters.maxKm) : null;
   const maxMeters = parsedMaxKm != null && Number.isFinite(parsedMaxKm) ? parsedMaxKm * 1000 : null;
   const radiusKm = parsedMaxKm != null && Number.isFinite(parsedMaxKm) ? parsedMaxKm : 30;
   const visible = scored
     // Vid API-fel visar vi de övriga matchkriterierna i stället för en falskt tom
     // lista. Varningen under filtret gör tydligt att radien då inte är applicerad.
-    .filter(({ property }) =>
-      maxMeters == null
-      || distanceStatus !== "ready"
-      || (distances[property.id]?.meters ?? Infinity) <= maxMeters
-    )
-    .map(({ property }) => ({
-      property,
-      ...matchDetails(request, forScoring(property), {
-        distanceKm: distances[property.id] ? distances[property.id].meters / 1000 : null,
+    .filter(({ property }) => matchesDistanceFilter(
+      maxMeters,
+      distanceStatus === "ready",
+      property.address?.trim() ? distances[property.id]?.meters ?? null : null,
+    ))
+    .map(({ property }) => {
+      const distance = property.address?.trim() ? distances[property.id] : undefined;
+      const result = matchDetails(request, forScoring(property), {
+        distanceKm: distance ? distance.meters / 1000 : null,
         radiusKm,
-      }),
-    }))
+      });
+      const unknown = unknownMatchChips(request, property, filters, distance?.meters ?? null);
+      const labels = new Set(result.chips.map((chip) => chip.label));
+      return {
+        property,
+        score: result.score,
+        chips: [...result.chips, ...unknown.filter((chip) => !labels.has(chip.label))],
+        hasUnknown: unknown.length > 0,
+      };
+    })
+    .filter((result) => filters.showWeak || result.score > 0 || result.hasUnknown)
     .sort((a, b) =>
       Number(needsReview(a.property)) - Number(needsReview(b.property)) || (filters.nearestFirst
         ? (distances[a.property.id]?.meters ?? Infinity) - (distances[b.property.id]?.meters ?? Infinity)
@@ -842,6 +834,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                 </button>
               )}
             </div>
+            <p className="text-xs text-muted-foreground">Bostäder med okända uppgifter visas också. Kontrollera markeringarna på varje träff.</p>
           </div>
           {isLoading || (maxMeters != null && distancesPending) ? (
             <div className="space-y-3">
@@ -880,14 +873,14 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                         className="font-medium text-sm text-left hover:text-primary-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded"
                         title="Visa alla detaljer"
                       >
-                        {property.address}
+                        {property.address || property.publicName || "Adress saknas"}
                       </button>
                       <div className="text-xs text-muted-foreground">
                         {[property.city, property.beds && `${property.beds} bäddar`, property.bedrooms && `${property.bedrooms} sovrum`]
                           .filter(Boolean)
                           .join(" · ")}
                       </div>
-                      {distances[property.id] && (
+                      {property.address?.trim() && distances[property.id] && (
                         <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700">
                           <Navigation className="h-3 w-3" />
                           {distances[property.id].distanceText} · {distances[property.id].durationText} till arbetsplatsen

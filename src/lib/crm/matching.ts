@@ -1,4 +1,5 @@
 import type { Property, Request } from "./schema";
+import type { PropertyWithOwner } from "./owners";
 
 export type MatchTone = "good" | "warn" | "bad";
 export interface MatchChip {
@@ -15,6 +16,80 @@ export interface MatchLocationContext {
   distanceKm?: number | null;
   /** Radien som räknas som rätt sökområde. */
   radiusKm?: number;
+}
+
+export interface MatchSearchFilters {
+  q: string;
+  city: string;
+  minBeds: string;
+  maxRent: string;
+  minRating: string;
+  maxKm: string;
+  nearestFirst: boolean;
+  availableOnly: boolean;
+  hideSuggested: boolean;
+  furnished: boolean;
+  garage: boolean;
+  availableDates: boolean;
+  showWeak: boolean;
+}
+
+/** Unknown values stay in the results; only a known mismatch fails a filter. */
+export function matchesPropertyFilters(
+  property: PropertyWithOwner,
+  request: Request,
+  filters: MatchSearchFilters,
+  needsReview: boolean,
+  suggestedIds: ReadonlySet<string>,
+): boolean {
+  const q = filters.q.trim().toLowerCase();
+  const hay = [property.address, property.postalCode, property.city, property.ownerName, property.ownerContactPerson, property.notes]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  if (q && !hay.includes(q)) return false;
+
+  const city = property.city?.trim();
+  if (filters.city.trim() && city && !city.toLowerCase().includes(filters.city.trim().toLowerCase())) return false;
+  if (filters.minBeds && property.beds != null && property.beds < parseInt(filters.minBeds, 10)) return false;
+  if (filters.maxRent && property.rentOut != null && property.rentOut > parseFloat(filters.maxRent)) return false;
+  if (filters.minRating && property.rating != null && property.rating < parseInt(filters.minRating, 10)) return false;
+
+  const status = property.status?.trim();
+  if (filters.availableOnly && status && status !== "available" && !needsReview) return false;
+  if (filters.furnished && property.furnished === false) return false;
+  if (filters.garage && property.garage === false) return false;
+  if (filters.availableDates && !needsReview && ((status && status !== "available") || !availableForRequest(request, property))) return false;
+  if (filters.hideSuggested && suggestedIds.has(property.id)) return false;
+  return true;
+}
+
+/** A missing distance cannot establish that a property is outside the radius. */
+export function matchesDistanceFilter(maxMeters: number | null, distanceReady: boolean, distanceMeters: number | null): boolean {
+  return maxMeters == null || !distanceReady || distanceMeters == null || distanceMeters <= maxMeters;
+}
+
+/** Explain which relevant criteria could not be checked, without assuming an answer. */
+export function unknownMatchChips(
+  request: Request,
+  property: PropertyWithOwner,
+  filters: MatchSearchFilters,
+  distanceMeters: number | null,
+): MatchChip[] {
+  const chips: MatchChip[] = [];
+  const unknown = (label: string) => chips.push({ label, tone: "warn" });
+
+  if ((filters.city.trim() || request.city) && !property.city?.trim()) unknown("Ort okänd");
+  if ((filters.minBeds || request.persons != null || request.bedsFrom != null || request.bedsTo != null) && property.beds == null) unknown("Bäddar okänt");
+  if ((request.bedroomsFrom != null || request.bedroomsTo != null) && property.bedrooms == null) unknown("Sovrum okänt");
+  if ((filters.maxRent || request.budgetMax != null) && property.rentOut == null) unknown("Kundhyra okänd");
+  if (filters.minRating && property.rating == null) unknown("Betyg okänt");
+  if (!property.status?.trim()) unknown("Status okänd");
+  if ((filters.furnished || request.furnishedRequired) && property.furnished == null) unknown("Möblering okänd");
+  if ((filters.garage || request.garageRequired) && property.garage == null) unknown("Garage okänt");
+  if (request.startDate && (!property.moveInFrom || (request.endDate && !property.availableTo))) unknown("Tillgänglighet ej bekräftad");
+  if (filters.maxKm && distanceMeters == null) unknown("Avstånd okänt");
+  return chips;
 }
 
 // Ortjämförelse tål stavningsvarianter ("Mönsterås"/"Monsteras", "västerås"/"Västerås"):
@@ -93,7 +168,7 @@ export function matchDetails(
 
   // Beds vs persons
   if (request.persons) {
-    if (property.beds) {
+    if (property.beds != null) {
       if (property.beds >= request.persons) {
         score += 30;
         if (property.beds === request.persons || property.beds === request.persons + 1) score += 10;
@@ -157,23 +232,27 @@ export function matchDetails(
 
   // Furnished requirement
   if (request.furnishedRequired) {
-    if (property.furnished) {
+    if (property.furnished === true) {
       score += 10;
       chips.push({ label: "Möblerat ✓", tone: "good" });
-    } else {
+    } else if (property.furnished === false) {
       score -= 15;
       chips.push({ label: "Ej möblerat", tone: "bad" });
+    } else {
+      chips.push({ label: "Möblering okänd", tone: "warn" });
     }
   }
 
   // Garage requirement
   if (request.garageRequired) {
-    if (property.garage) {
+    if (property.garage === true) {
       score += 5;
       chips.push({ label: "Garage ✓", tone: "good" });
-    } else {
+    } else if (property.garage === false) {
       score -= 10;
       chips.push({ label: "Inget garage", tone: "bad" });
+    } else {
+      chips.push({ label: "Garage okänt", tone: "warn" });
     }
   }
 
