@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
 import { cities, getNearbyCitySummaries } from '@/data/cities'
-import { getCityListings } from '@/lib/crm/city-listings'
 import { getLocalizedKeywords, getLocalizedText } from '@/lib/utils'
+import { cityListingsOgImage } from '@/lib/crm/city-listings'
+import { getCityListingsCached } from '@/lib/crm/city-listings-cached'
 import CityPage from '@/views/CityPage'
 
 export function generateStaticParams() {
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   const { citySlug } = await params
   const city = cities.find((c) => c.slug === citySlug)
   if (!city) return {}
+  const listings = await getCityListingsCached(city.name, city.listingLocalities)
 
   const sv = `https://www.stayonsite.se/stad/${city.slug}`
   const en = `https://www.stayonsite.se/en/corporate-housing/${city.slug}`
@@ -39,6 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
       { lang: 'x-default', href: sv },
     ],
     locale: 'sv',
+    ogImage: cityListingsOgImage(listings),
   })
 }
 
@@ -46,6 +49,6 @@ export default async function Page({ params }: { params: Promise<{ citySlug: str
   const { citySlug } = await params
   const city = cities.find((c) => c.slug === citySlug)
   if (!city) notFound()
-  const listings = await getCityListings(city.name, city.listingLocalities)
+  const listings = await getCityListingsCached(city.name, city.listingLocalities)
   return <CityPage citySlug={citySlug} locale="sv" city={city} nearbyCities={getNearbyCitySummaries(citySlug)} listings={listings} />
 }

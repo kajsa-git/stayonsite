@@ -44,7 +44,7 @@ import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import { trackPhoneClick, trackWhatsAppClick } from '@/lib/gtag';
 import CityGuideSections, { CityGuideNavigation } from '@/components/CityGuideSections';
 
-// Publicerade boenden i staden (skickas bara med från svenska stadssidan).
+// Publicerade boenden i staden (samma lista på sv/en/pl).
 // Typen dupliceras medvetet — importeras den från crm/city-listings dras
 // db-modulen in i klientbunten.
 interface CityListingItem {
@@ -147,6 +147,13 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
     if (language === 'en') return en;
     if (language === 'pl') return pl;
     return sv;
+  };
+
+  // Polska: 1 → one, 2–4 (ej 12–14) → few, övrigt → many.
+  const plPlural = (n: number, one: string, few: string, many: string) => {
+    if (n === 1) return one;
+    const d = n % 10, dd = n % 100;
+    return d >= 2 && d <= 4 && (dd < 12 || dd > 14) ? few : many;
   };
 
   const heroHeading = getLocalizedText(city.heroHook, language);
@@ -642,7 +649,7 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
         )}
 
         {/* Lediga boenden just nu — intern länkning stadssida → objektsidor (SEO)
-            + levande bevis på utbud. Renderas bara på svenska sidan med träffar. */}
+            + levande bevis på utbud. Samma lista på alla språk; boendenamn och objektsidor är svenska. */}
         {listings && listings.length > 0 && (
           <section id="homes" className="section-spacing scroll-mt-28 bg-white border-t border-nordic-100">
             <div className="container mx-auto px-6 md:px-8">
@@ -652,21 +659,21 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                     <h2 className="text-3xl font-bold text-nordic-900">
                       {city.pageContent
                         ? translate(`Publicerade företagsboenden i ${city.name}`, `Published corporate housing in ${city.name}`, `Opublikowane oferty zakwaterowania w ${city.name}`)
-                        : `Lediga företagsboenden i ${city.name} just nu`}
+                        : translate(`Lediga företagsboenden i ${city.name} just nu`, `Available corporate housing in ${city.name}`, `Dostępne zakwaterowanie firmowe w ${city.name}`)}
                     </h2>
                     <p className="text-gray-600 mt-2">
                       {city.pageContent
                         ? getLocalizedText(city.pageContent.listingNote, language)
                         : listings.length === 1
-                          ? 'Ett publicerat boende redo för inflytt — hör av dig för visning.'
-                          : `${listings.length} publicerade boenden redo för inflytt — hör av dig för visning.`}
+                          ? translate('Ett publicerat boende redo för inflytt — hör av dig för visning.', 'One published property ready for move-in — get in touch to arrange a viewing.', 'Jeden opublikowany obiekt gotowy do zamieszkania — skontaktuj się z nami, aby umówić oglądanie.')
+                          : translate(`${listings.length} publicerade boenden redo för inflytt — hör av dig för visning.`, `${listings.length} published properties ready for move-in — get in touch to arrange a viewing.`, `${listings.length} ${plPlural(listings.length, 'opublikowany obiekt gotowy', 'opublikowane obiekty gotowe', 'opublikowanych obiektów gotowych')} do zamieszkania — skontaktuj się z nami, aby umówić oglądanie.`)}
                     </p>
                   </div>
                   <Link
                     href="/boenden"
                     className="inline-flex items-center gap-1.5 text-[#ff6300] font-medium mt-4 md:mt-0 hover:underline shrink-0"
                   >
-                    {city.pageContent ? translate('Se alla boenden', 'View all properties', 'Zobacz wszystkie obiekty') : 'Se alla lediga boenden'}
+                    {city.pageContent ? translate('Se alla boenden', 'View all properties', 'Zobacz wszystkie obiekty') : translate('Se alla lediga boenden', 'View all available properties', 'Zobacz wszystkie dostępne obiekty')}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -706,11 +713,11 @@ const CityPage = ({ citySlug, locale, city, nearbyCities, listings }: CityPagePr
                                 {[l.postalCode, l.city ?? city.name].filter(Boolean).join(' ')}
                               </span>
                             )}
-                            {l.bedrooms != null && <Badge variant="secondary">{l.bedrooms} sovrum</Badge>}
-                            {l.beds != null && <Badge variant="secondary">{l.beds} bäddar</Badge>}
+                            {l.bedrooms != null && <Badge variant="secondary">{l.bedrooms} {translate('sovrum', l.bedrooms === 1 ? 'bedroom' : 'bedrooms', plPlural(l.bedrooms, 'sypialnia', 'sypialnie', 'sypialni'))}</Badge>}
+                            {l.beds != null && <Badge variant="secondary">{l.beds} {translate(l.beds === 1 ? 'bädd' : 'bäddar', l.beds === 1 ? 'bed' : 'beds', plPlural(l.beds, 'łóżko', 'łóżka', 'łóżek'))}</Badge>}
                           </div>
                           <p className="text-sm text-[#ff6300] font-medium mt-4 inline-flex items-center gap-1">
-                            Se boendet
+                            {translate('Se boendet', 'View property', 'Zobacz obiekt')}
                             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                           </p>
                         </CardContent>
