@@ -70,7 +70,9 @@ const BoendeNorrsundetForetag = () => {
       <p>
         Har ni ett eget uppdrag i området, utgå från den tidplan och bemanning som er beställare har
         bekräftat. Framtida projektplaner säger inte i sig när det kommer att finnas ett konkret
-        boendebehov eller vilka bostäder som är tillgängliga.
+        boendebehov eller vilka bostäder som är tillgängliga. Mer om planering inför arbete vid
+        kärntekniska anläggningar finns i artikeln om{' '}
+        <Link href="/blogg/boende-karnkraftverk-revision-projekt">boende vid kärnkraftverk</Link>.
       </p>
 
       <h2>Vanliga frågor om boende i Norrsundet</h2>

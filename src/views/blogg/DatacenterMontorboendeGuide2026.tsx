@@ -43,7 +43,8 @@ const DatacenterMontorboendeGuide2026 = () => {
           <strong>Gävle–Sandviken:</strong> Microsofts svenska datacenterregion
           omfattar Gävle, Sandviken och Staffanstorp. För uppdrag i{' '}
           <Link href="/stad/gavle">Gävle</Link> eller Sandviken behöver ni ange
-          vilken anläggning och entreprenad som berörs.
+          vilken anläggning och entreprenad som berörs. Läs mer om{' '}
+          <Link href="/blogg/boende-datacenter-gavle-sandviken">boende vid datacenterbyggena i Gävle och Sandviken</Link>.
         </li>
       </ul>
       <p>

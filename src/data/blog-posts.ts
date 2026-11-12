@@ -72,6 +72,132 @@ const RENTAL_REFORM_SOURCES: BlogSource[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'boende-karnkraftverk-revision-projekt',
+    title: {
+      sv: 'Boende vid kärnkraftverk: planera för revision och projekt',
+      en: 'Accommodation near nuclear power plants: planning for outages and projects',
+      pl: 'Zakwaterowanie przy elektrowniach jądrowych: planowanie na czas remontów i projektów',
+    },
+    description: {
+      sv: 'Ska ni skicka personal till ett kärnkraftverk? Så planerar ni boendet inför revision och projekt vid OKG och Clab i Oskarshamn. Företagsboende från tre månader.',
+      en: 'Sending staff to a nuclear power plant? How to plan accommodation for outages and projects at OKG and Clab in Oskarshamn. Stays from three months.',
+      pl: 'Wysyłacie pracowników do elektrowni jądrowej? Jak zaplanować zakwaterowanie na czas remontów i projektów w OKG i Clab w Oskarshamn. Pobyty od trzech miesięcy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-11-12',
+    category: 'Guide',
+    tags: ['kärnkraft', 'revision', 'OKG', 'Oskarshamn', 'Norrsundet', 'personalboende', 'projektboende'],
+    readingTime: 5,
+    audience: 'foretag',
+    keyTakeaways: [
+      'En revision har fast startdatum: OKG inledde revisionen på Oskarshamn 3 den 19 mars 2026 med omkring 2 000 arbetsordrar.',
+      'Sätt inflyttningen efter dagen för inpassering och utbildning, inte efter första arbetspasset. Tillträdet hanteras av anläggningen och arbetsgivaren.',
+      'StayOnSite har publicerade bostäder i Oskarshamns kommun och hyr ut möblerade företagsboenden från tre månader.',
+      'Blykallas planerade reaktorpark i Norrsundet är i samrådsskede och har inga tillstånd att bygga; det finns inget byggprojekt att bemanna i dag.',
+    ],
+    faq: [
+      {
+        q: 'När ska vi boka boende inför en revision?',
+        a: 'När ni har era datum från beställaren, även om den sista bemanningen inte är klar. Ange ett spann för antalet personer och vilka veckor som är bekräftade.',
+      },
+      {
+        q: 'Ordnar ni tillträde till kärnkraftverket?',
+        a: 'Nej. Tillstånd, tillträdeshandlingar, kontroller och utbildningar hanteras enligt anläggningens och arbetsgivarens rutiner. StayOnSite ordnar boendet.',
+      },
+      {
+        q: 'Var bor man vid arbete på OKG eller Clab?',
+        a: 'Oftast i Figeholm eller Oskarshamns tätort. Figeholm ligger närmare Simpevarp, medan Oskarshamn har fler bostäder och mer service. Jämför restiden från den konkreta bostaden vid lagets skifttider.',
+      },
+      {
+        q: 'Hur länge kan vi hyra?',
+        a: 'Vi hyr ut från tre månader och uppåt. Ange bekräftade datum och den period som kan tillkomma, så går vi igenom villkoren för förlängning innan ni bokar.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Revision 2026 – en viktig pusselbit för framtidens drift',
+        publisher: 'OKG',
+        url: 'https://www.mynewsdesk.com/se/okg/news/revision-2026-en-viktig-pusselbit-foer-framtidens-drift-507304',
+        checkedDate: '2026-11-12',
+      },
+      {
+        title: 'För dig som ska arbeta på OKG',
+        publisher: 'OKG',
+        url: 'https://okg.se/arbeta-pa-okg/for-dig-som-ska-arbeta-pa-okg/',
+        checkedDate: '2026-11-12',
+      },
+      {
+        title: 'Inkapslingsanläggning',
+        publisher: 'SKB',
+        url: 'https://skb.se/projekt-for-framtiden/inkapslingsanlaggning/',
+        checkedDate: '2026-11-12',
+      },
+      {
+        title: 'Ny kärnkraft – samråd',
+        publisher: 'Länsstyrelsen Gävleborg',
+        url: 'https://www.lansstyrelsen.se/gavleborg/samhalle/ny-karnkraft.html',
+        checkedDate: '2026-11-12',
+      },
+    ],
+  },
+  {
+    slug: 'boende-datacenter-gavle-sandviken',
+    title: {
+      sv: 'Boende vid datacenterbyggen i Gävle och Sandviken',
+      en: 'Accommodation for data centre projects in Gävle and Sandviken',
+      pl: 'Zakwaterowanie przy budowie centrów danych w Gävle i Sandviken',
+    },
+    description: {
+      sv: 'Boende för arbetslag vid datacenterbyggena i Ersbo, Stackbo och Tuna. Jämför Gävle, Valbo och Sandviken utifrån anläggning och etapp. Företagsboende från tre månader.',
+      en: 'Crew accommodation for the data centre sites at Ersbo, Stackbo and Tuna. Compare Gävle, Valbo and Sandviken by site and project phase. Stays from three months.',
+      pl: 'Zakwaterowanie ekip przy budowie centrów danych w Ersbo, Stackbo i Tuna. Porównaj Gävle, Valbo i Sandviken według obiektu i etapu. Pobyty od trzech miesięcy.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-11-12',
+    category: 'Lokal guide',
+    tags: ['datacenter', 'Gävle', 'Sandviken', 'Valbo', 'personalboende', 'montörboende'],
+    readingTime: 4,
+    audience: 'foretag',
+    keyTakeaways: [
+      'Enligt Gävle kommun ligger Microsofts mark i Ersbo i Gävle, Tuna i Sandviken och Stackbo i Valbo, och tre byggen av datacenterhallar pågår.',
+      'Utgå från vilken anläggning laget arbetar vid. Valbo ligger mellan Gävle och Sandviken och kan fungera när uppdraget gäller mer än en plats.',
+      'Dela upp boendebehovet per etapp: kärnlag, toppar och korta specialistinsatser.',
+      'StayOnSite hyr ut möblerade företagsboenden för perioder från tre månader.',
+    ],
+    faq: [
+      {
+        q: 'Var ligger datacenterbyggena i Gävle och Sandviken?',
+        a: 'Enligt Gävle kommun ligger Microsofts mark i Ersbo i Gävle, Tuna i Sandviken och Stackbo i Valbo. Kommunen uppger att tre byggen av datacenterhallar pågår i Gävle och Sandviken.',
+      },
+      {
+        q: 'Ska vi bo i Gävle, Valbo eller Sandviken?',
+        a: 'Det beror på vilken anläggning laget arbetar vid. Jämför restiden från den konkreta bostaden till rätt infart vid lagets arbetstider. Valbo ligger mellan städerna och kan passa när uppdraget gäller flera platser.',
+      },
+      {
+        q: 'Kan vi ändra antalet personer under projektet?',
+        a: 'Berätta redan i förfrågan hur bemanningen ser ut per etapp och vad som är bekräftat. Då kan vi föreslå en bostad för kärnlaget och gå igenom hur toppar och förlängning hanteras innan ni bokar.',
+      },
+      {
+        q: 'Hur länge behöver vi hyra?',
+        a: 'Vi hyr ut från tre månader och uppåt. Tillgängligheten varierar, så kontakta oss för att stämma av era datum.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Etablering av datacenter i Gävle-Sandviken',
+        publisher: 'Gävle kommun',
+        url: 'https://www.gavle.se/kommun-och-politik/samarbeten-projekt-och-arbetssatt/etablering-av-datacenter/',
+        checkedDate: '2026-11-12',
+      },
+      {
+        title: 'Hur Microsoft adresserar digital suveränitet i Sverige',
+        publisher: 'Microsoft',
+        url: 'https://news.microsoft.com/source/emea/2026/10/hur-microsoft-adresserar-digital-suveranitet-i-sverige/?lang=sv',
+        checkedDate: '2026-11-12',
+      },
+    ],
+  },
+  {
     slug: 'boende-figeholm-okg-clab',
     title: {
       sv: 'Boende i Figeholm för arbete på OKG och Clab',

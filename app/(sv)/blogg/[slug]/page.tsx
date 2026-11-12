@@ -50,8 +50,12 @@ import ForberedHusBodenForetagetsArbetslag2026 from '@/views/blogg/ForberedHusBo
 import ForetagsbostaderGavleGuide2026 from '@/views/blogg/ForetagsbostaderGavleGuide2026'
 import BoendeNorrsundetForetag from '@/views/blogg/BoendeNorrsundetForetag'
 import BoendeFigeholmOkgClab from '@/views/blogg/BoendeFigeholmOkgClab'
+import BoendeKarnkraftverkRevisionProjekt from '@/views/blogg/BoendeKarnkraftverkRevisionProjekt'
+import BoendeDatacenterGavleSandviken from '@/views/blogg/BoendeDatacenterGavleSandviken'
 
 const componentMap: Record<string, React.ComponentType> = {
+  'boende-karnkraftverk-revision-projekt': BoendeKarnkraftverkRevisionProjekt,
+  'boende-datacenter-gavle-sandviken': BoendeDatacenterGavleSandviken,
   'boende-figeholm-okg-clab': BoendeFigeholmOkgClab,
   'boende-norrsundet-foretag': BoendeNorrsundetForetag,
   'checklista-personalboende-boendebrief': ChecklistaPersonalboende,
