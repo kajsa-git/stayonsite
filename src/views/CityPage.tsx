@@ -91,9 +91,9 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
       description: 'Jämför Figeholm och Oskarshamn utifrån resväg till Simpevarp, skift och lagets storlek.',
     },
     {
-      href: '/blogg/vad-kostar-personalboende-sverige-2026-verkliga-priser',
-      title: 'Vad kostar personalboende?',
-      description: 'Prisnivåer ur vårt utbud, bland annat i Oskarshamn, och vad som driver priset.',
+      href: '/blogg/boende-karnkraftverk-revision-projekt',
+      title: 'Boende vid kärnkraftverk',
+      description: 'Så hänger revisionsdatum, inpassering och inflyttning ihop när ni planerar boendet.',
     },
   ],
   gavle: [
@@ -108,9 +108,9 @@ const LOCAL_GUIDES: Record<string, LocalGuide[]> = {
       description: 'Läs om personalboende i Norrsundet och vad ni bör stämma av inför er förfrågan.',
     },
     {
-      href: '/datacenter-boende',
-      title: 'Planera boende för datacenterprojekt',
-      description: 'Underlag för mobilisering, etapper och bemanning vid längre installationsuppdrag.',
+      href: '/blogg/boende-datacenter-gavle-sandviken',
+      title: 'Boende vid datacenterbyggen i Gävle och Sandviken',
+      description: 'Ersbo, Stackbo eller Tuna: välj läge efter anläggning och dela upp behovet per etapp.',
     },
   ],
   falun: [

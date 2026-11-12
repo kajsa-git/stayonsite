@@ -69,7 +69,9 @@ const PersonalboendeOkgOskarshamnGuide = () => {
       </p>
       <p>
         Lägg därför två separata spår i projektplanen: ett för inpassering och utbildning och ett
-        för personalboendet. Då blir det tydligt vem som ansvarar för respektive deadline.
+        för personalboendet. Då blir det tydligt vem som ansvarar för respektive deadline. Hur
+        datumen hänger ihop inför en revision beskriver vi i artikeln om{' '}
+        <Link href="/blogg/boende-karnkraftverk-revision-projekt">boende vid kärnkraftverk</Link>.
       </p>
 
       <h2>Boendebrief för montörer och revisionsteam</h2>
