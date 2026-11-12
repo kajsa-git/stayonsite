@@ -221,8 +221,8 @@ Enligt Boverkets byggregler ska installationer skyddas mot frost, men äldre hus
         professionella hyresgäster, och vi återkommer alltid inom en arbetsdag &mdash; ofta inom
         några timmar &mdash; med en boendeplan inom 24 timmar. Är du företag som söker
         vinterboende för din personal, se{' '}
-        <Link href="/for-foretag">/for-foretag</Link>. Är du fastighetsägare som vill hyra ut,
-        läs mer på <Link href="/for-husagare">/for-husagare</Link>. StayOnSites egna erbjudande
+        <Link href="/for-foretag">företagsbostäder och personalboende</Link>. Är du fastighetsägare som vill hyra ut,
+        läs mer om att <Link href="/for-husagare">hyra ut hus till företag</Link>. StayOnSites egna erbjudande
         börjar från 5 900 kr per person och månad. Ring oss på{' '}
         <a href="tel:0762498486">076-249 84 86</a> så hjälper vi dig komma igång inför
         vintersäsongen 2026.

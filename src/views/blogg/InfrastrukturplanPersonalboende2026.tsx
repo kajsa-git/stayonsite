@@ -416,8 +416,8 @@ Behovet av investeringar och underhåll är omfattande, bland annat som del av d
 
       <ul>
         <li>Telefon: <a href="tel:0762498486">076-249 84 86</a></li>
-        <li>För byggföretag: <Link href="/for-foretag">stayonsite.se/for-foretag</Link></li>
-        <li>För husägare: <Link href="/for-husagare">stayonsite.se/for-husagare</Link></li>
+        <li>För byggföretag: <Link href="/for-foretag">företagsbostäder och personalboende</Link></li>
+        <li>För husägare: <Link href="/for-husagare">hyra ut hus till företag</Link></li>
       </ul>
 
       <p>

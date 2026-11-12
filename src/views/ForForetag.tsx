@@ -18,6 +18,7 @@ import Footer from '@/components/Footer';
 import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 import MobileStickyFormCTA from '@/components/MobileStickyFormCTA';
 import ProjectBriefForm from '@/components/ProjectBriefForm';
+import CityLinks from '@/components/CityLinks';
 import HeroIntentForm from '@/components/HeroIntentForm';
 import SEO from '@/components/SEO';
 import { COMPANY_FACTS } from '@/data/constants';
@@ -79,6 +80,18 @@ const processSteps = [
     text: 'Rotation, extra bäddar, felanmälan, ersättningsboende och avslut hanteras mot samma kontakt.',
     icon: RotateCcw,
   },
+];
+
+// Orter där efterfrågan och utbud är störst just nu — övriga nås via ortslistan under.
+const featuredCities = [
+  { slug: 'boden', name: 'Boden' },
+  { slug: 'lulea', name: 'Luleå' },
+  { slug: 'gavle', name: 'Gävle' },
+  { slug: 'oskarshamn', name: 'Oskarshamn' },
+  { slug: 'monsteras', name: 'Mönsterås' },
+  { slug: 'saffle', name: 'Säffle' },
+  { slug: 'umea', name: 'Umeå' },
+  { slug: 'ornskoldsvik', name: 'Örnsköldsvik' },
 ];
 
 const faqItems = [
@@ -474,6 +487,36 @@ export default function ForForetag() {
             </div>
           </div>
         </section>
+
+        <section className="border-t border-nordic-100 bg-white py-16 md:py-20">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="max-w-3xl">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#ff6300]">Orter</p>
+              <h2 className="mt-3 text-3xl font-bold text-nordic-900 md:text-4xl">
+                Företagsbostäder per ort
+              </h2>
+              <p className="mt-4 text-nordic-700">
+                Ortssidorna visar publicerade bostäder, lokala projekt och vad som brukar
+                styra restid och pris på platsen. Saknas er ort utgår vi från projektbriefen.
+              </p>
+            </div>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredCities.map((city) => (
+                <li key={city.slug}>
+                  <Link
+                    href={`/stad/${city.slug}`}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-nordic-100 bg-white px-4 py-3 font-medium text-nordic-900 transition hover:border-[#ff6300]/60 hover:text-[#ff6300]"
+                  >
+                    Företagsbostäder i {city.name}
+                    <ArrowRight className="h-4 w-4 shrink-0 text-[#ff6300]" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <CityLinks />
 
         <section className="border-t border-nordic-100 bg-nordic-900 py-14 text-white">
           <div className="container mx-auto grid gap-8 px-6 md:px-12 lg:grid-cols-[1fr_0.8fr] lg:items-center">

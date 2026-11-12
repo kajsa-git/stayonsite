@@ -494,7 +494,7 @@ Norrbotniabanan pågår med trafikstart på sträckan Umeå&ndash;Dåva 2026, me
       <h3>Så fungerar det</h3>
 
       <ol>
-        <li><strong>Kontakta oss</strong> &ndash; Ring 076-249 84 86 eller besök <Link href="/for-foretag">stayonsite.se/for-foretag</Link></li>
+        <li><strong>Kontakta oss</strong> &ndash; Ring 076-249 84 86 eller läs om <Link href="/for-foretag">företagsbostäder och personalboende</Link></li>
         <li><strong>Berätta om ditt projekt</strong> &ndash; Antal personer, period, ort, särskilda behov</li>
         <li><strong>Få förslag inom 24h</strong> &ndash; Vi matchar dig med lämpliga bostäder</li>
         <li><strong>Besök och besiktning</strong> &ndash; Se boendet innan ni beslutar</li>
@@ -529,7 +529,7 @@ Norrbotniabanan pågår med trafikstart på sträckan Umeå&ndash;Dåva 2026, me
           StayOnSite hjälper byggföretag att hitta trygga, kostnadseffektiva boendelösningar i hela Sverige. Vi tar 0% avgift från företag och svarar inom 24 timmar.
         </p>
         <p style={{ marginBottom: 0 }}>
-          <strong>Ring oss på 076-249 84 86</strong> eller besök <Link href="/for-foretag">stayonsite.se/for-foretag</Link> för mer information. Har du en fastighet att hyra ut? Se <Link href="/for-husagare">stayonsite.se/for-husagare</Link>.
+          <strong>Ring oss på 076-249 84 86</strong> eller läs om <Link href="/for-foretag">företagsbostäder och personalboende</Link>. Har du en fastighet att hyra ut? Läs om att <Link href="/for-husagare">hyra ut hus till företag</Link>.
         </p>
       </div>
     </BlogLayout>
