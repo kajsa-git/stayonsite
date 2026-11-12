@@ -6,7 +6,7 @@ import { propertyContentHash } from "./property-content-policy";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB }));
 vi.mock("./db", () => ({ get db() { return state.db; } }));
-import { getCityListings } from "./city-listings";
+import { cityListingsOgImage, getCityListings } from "./city-listings";
 import { resolvePublicPropertyImageKey } from "./public-images";
 import { HUS_TEST_MARKER } from "./test-property";
 
@@ -135,5 +135,21 @@ describe("public property images", () => {
     await state.db.update(properties).set({ published: false }).where(eq(properties.id, "gavle"));
     expect(await resolvePublicPropertyImageKey("boende-gavle", 1)).toBeNull();
     expect(await resolvePublicPropertyImageKey("missing", 1)).toBeNull();
+  });
+});
+
+describe("city listings og image", () => {
+  const base = { name: "x", city: null, postalCode: null, bedrooms: null, beds: null };
+
+  it("uses the first listing that has an image, in full size and absolute", () => {
+    expect(cityListingsOgImage([
+      { ...base, slug: "utan-bild", imageUrl: null },
+      { ...base, slug: "boende-gavle", imageUrl: "/boenden/boende-gavle/bilder/1?w=800" },
+    ])).toBe("https://www.stayonsite.se/boenden/boende-gavle/bilder/1");
+  });
+
+  it("falls back to the generic image when no listing has one", () => {
+    expect(cityListingsOgImage([])).toBeUndefined();
+    expect(cityListingsOgImage([{ ...base, slug: "utan-bild", imageUrl: null }])).toBeUndefined();
   });
 });

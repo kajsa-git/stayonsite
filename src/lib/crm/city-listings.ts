@@ -9,7 +9,7 @@
 import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { approvedPropertyIds } from "./approved-property-content";
 import { db } from "./db";
-import { publicPropertyImagePath } from "./public-images";
+import { publicPropertyImagePath, publicPropertyImageUrl } from "./public-images";
 import { properties, propertyImages } from "./schema";
 import { publicDisplayName } from "./slug";
 import { websiteStatusWhere } from "./website-status-query";
@@ -89,4 +89,10 @@ export async function getCityListings(cityName: string, localities: string[] = [
   } catch {
     return [];
   }
+}
+
+/** Delningsbild för stadssidan: första boendets huvudbild i full storlek, annars undefined (generisk bild). */
+export function cityListingsOgImage(listings: CityListing[]): string | undefined {
+  const first = listings.find((l) => l.imageUrl);
+  return first ? publicPropertyImageUrl(first.slug, 1) : undefined;
 }
