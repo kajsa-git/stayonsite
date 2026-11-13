@@ -135,6 +135,70 @@ export function renewalSms(
   return `${greet(contactName)} Ert boende${where} löper ut${when}. Vill ni förlänga, eller behöver ni boende till nästa projekt? Säg till så ordnar jag det. /Kajsa, StayOnSite`;
 }
 
+// Utflyttnings-SMS till hyresgästen. Uppgifter som saknas lämnas tydligt som
+// platshållare så att de måste kontrolleras innan meddelandet skickas.
+export function moveOutTenantSms(
+  language: "sv" | "en",
+  address: string | null | undefined,
+  date: string | null | undefined,
+): string {
+  const place = address?.trim() || (language === "sv" ? "[adress]" : "[address]");
+  const day = date?.trim() || (language === "sv" ? "[dag och datum]" : "[day and date]");
+
+  if (language === "en") return `Hello! Your check-out from the accommodation at ${place} is on ${day}.
+
+Check-out checklist:
+
+• Empty the fridge, freezer and food cupboards, and take out the rubbish.
+• Please don’t leave any dirty dishes.
+• Leave the accommodation in good condition.
+• Take the bed linen off and leave it on each bed.
+• Take all your personal belongings with you.
+• Close all windows and lock the door.
+• Leave the keys as follows: [instructions].
+• Film the accommodation just before you leave and send me the video.
+• Please let me know if anything has been broken during your stay.
+
+We hope you’ve enjoyed your stay! Please get in touch when you’re planning your next project if you need accommodation again – we’ll be happy to help. 😊
+
+Best regards,
+Kajsa, StayOnSite`;
+
+  return `Hej! På ${day} är det dags att checka ut från boendet på ${place}.
+
+Checklista inför utcheckning:
+
+• Töm kyl, frys och skafferi och släng soporna.
+• Lämna ingen smutsig disk.
+• Lämna bostaden i fint skick.
+• Ta av sängkläderna och lägg dem på respektive säng.
+• Ta med alla era personliga tillhörigheter.
+• Stäng alla fönster och lås dörren.
+• Lämna nycklarna enligt följande: [instruktion].
+• Filma bostaden precis innan ni går och skicka videon till mig.
+• Meddela mig gärna om något har gått sönder under er vistelse.
+
+Vi hoppas att ni har trivts bra i boendet! Hör gärna av er inför nästa projekt om ni behöver boende igen – vi hjälper er gärna. 😊
+
+Mvh Kajsa, StayOnSite`;
+}
+
+// Förslag till uthyraren; varje utskick visas och kan redigeras före skickning.
+export function moveOutLandlordSms(
+  language: "sv" | "en",
+  ownerName: string | null | undefined,
+  address: string | null | undefined,
+  date: string | null | undefined,
+): string {
+  const first = firstNameOf(ownerName);
+  const place = address?.trim() || (language === "sv" ? "[adress]" : "[address]");
+  const day = date?.trim() || (language === "sv" ? "[datum]" : "[date]");
+  if (language === "en") {
+    return `${first ? `Hi ${first}!` : "Hi!"} The guests at ${place} are moving out on ${day}. Where would you like them to leave the keys and any access fobs? Could you check the property after they leave and let me know if anything is damaged or missing, with photos if possible? We’ll ask them to empty the fridge and freezer, take their belongings and dispose of the rubbish. Is there anything else they should know? /Kajsa, StayOnSite`;
+  }
+  return `${first ? `Hej ${first}!` : "Hej!"} Hyresgästerna på ${place} flyttar ut ${day}. Var vill du att de lämnar nycklarna och eventuella taggar? Kan du göra en slutkontroll och meddela mig om något är skadat eller saknas, gärna med foton? Vi ber dem tömma kyl och frys, ta med sina saker och slänga soporna. Är det något mer de behöver tänka på? /Kajsa, StayOnSite`;
+}
+
 // Återkomst till företag (allmän uppföljning från "Återkomster"-kön).
 export function companyFollowUpSms(contactName: string | null | undefined, reason: string | null | undefined): string {
   const why = reason ? ` (${reason.trim()})` : "";

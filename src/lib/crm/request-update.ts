@@ -11,7 +11,8 @@ import {
   isMoveOutChecklistComplete,
 } from "./move-checklists";
 import * as schema from "./schema";
-import { matches, properties, requests, type Request } from "./schema";
+import { matches, outboxMessages, properties, requests, type Request } from "./schema";
+import { moveOutSmsSource, withSentMoveOutSms } from "./move-out-sms";
 import { indexProperty as defaultIndexProperty, indexRequest as defaultIndexRequest } from "./search-index";
 import { revokeLinksForRequest as defaultRevokeLinks } from "./share-links";
 import { syncRentalReview } from "./rental-review";
@@ -106,12 +107,19 @@ export async function applyRequestUpdate(
       body: { error: "checklist_incomplete", message: "Bocka av hela inflyttningschecklistan först." },
     };
   }
-  if (data.moveOutDoneAt && !isMoveOutChecklistComplete(merged.moveOutChecklist)) {
-    return {
-      ok: false,
-      status: 400,
-      body: { error: "checklist_incomplete", message: "Bocka av hela avflyttningschecklistan först." },
-    };
+  if (data.moveOutDoneAt) {
+    const sentSms = await db.select({ source: outboxMessages.source }).from(outboxMessages)
+      .where(and(inArray(outboxMessages.source, [moveOutSmsSource(id, "tenant"), moveOutSmsSource(id, "landlord")]), eq(outboxMessages.status, "sent")));
+    if (!isMoveOutChecklistComplete(withSentMoveOutSms(merged.moveOutChecklist, {
+      tenant: sentSms.some((m) => m.source === moveOutSmsSource(id, "tenant")),
+      landlord: sentSms.some((m) => m.source === moveOutSmsSource(id, "landlord")),
+    }))) {
+      return {
+        ok: false,
+        status: 400,
+        body: { error: "checklist_incomplete", message: "Bocka av hela avflyttningschecklistan först." },
+      };
+    }
   }
 
   const now = new Date().toISOString();

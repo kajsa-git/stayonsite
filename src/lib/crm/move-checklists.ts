@@ -45,9 +45,14 @@ export const withMoveInContractSent = (checked: string[] | null | undefined) =>
 export const withSignedMoveInContract = (checked: string[] | null | undefined) =>
   Array.from(new Set([...(checked ?? []), MOVE_IN_CONTRACT_SENT_KEY, MOVE_IN_CONTRACT_SIGNED_KEY]));
 
+export const LEGACY_MOVE_OUT_SMS_KEY = "move_out_sms_sent";
+export const MOVE_OUT_TENANT_MESSAGE_KEY = "move_out_tenant_message_sent";
+export const MOVE_OUT_LANDLORD_MESSAGE_KEY = "move_out_landlord_message_sent";
+
 export const MOVE_OUT_CHECKLIST: ChecklistItem[] = [
   { key: "confirmed", label: "Slutdatum bekräftat med kund" },
-  { key: "move_out_sms_sent", label: "Skickat utflyttnings-sms" },
+  { key: MOVE_OUT_TENANT_MESSAGE_KEY, label: "Utflyttningsmeddelande till hyresgäst" },
+  { key: MOVE_OUT_LANDLORD_MESSAGE_KEY, label: "Utflyttningsmeddelande till uthyrare" },
   { key: "keys_back", label: "Nycklar återlämnade" },
   { key: "cleaning", label: "Slutstädning bokad/utförd" },
   {

@@ -2,13 +2,19 @@
 
 import { toast } from "@/components/ui/use-toast";
 import {
+  LEGACY_MOVE_OUT_SMS_KEY,
   MOVE_IN_CHECKLIST,
   MOVE_OUT_CHECKLIST,
+  MOVE_OUT_LANDLORD_MESSAGE_KEY,
+  MOVE_OUT_TENANT_MESSAGE_KEY,
   isChecklistItemDone,
   isMoveInChecklistComplete,
   isMoveOutChecklistComplete,
   type ChecklistItem,
 } from "@/lib/crm/move-checklists";
+import { withSentMoveOutSms, type MoveOutRecipient } from "@/lib/crm/move-out-sms";
+import { formatPhoneSv } from "@/lib/crm/phone-links";
+import { MoveOutSmsDialog, type MoveOutContact, type MoveOutOwner } from "./MoveOutSmsDialog";
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import { sv } from "date-fns/locale";
 import { ArrowRight, Check, LogIn, LogOut } from "lucide-react";
@@ -29,6 +35,14 @@ interface MoveItem {
   date: string;
   checklist: string[];
   doneAt: string | null;
+  smsAddress?: string | null;
+  requestContactId?: string | null;
+  contacts?: MoveOutContact[];
+  owner?: MoveOutOwner | null;
+  messages?: Record<MoveOutRecipient, {
+    latest: { status: string; toPhone: string; sentAt: string | null; deliveredAt: string | null };
+    hasSent: boolean;
+  } | null>;
 }
 
 interface MoveData {
@@ -171,6 +185,7 @@ export function MoveScheduleView() {
             onChooseOption={chooseOption}
             onDone={markDone}
             onUndo={undoDone}
+            onSmsQueued={mutate}
           />
           <Column
             kind="out"
@@ -182,6 +197,7 @@ export function MoveScheduleView() {
             onChooseOption={chooseOption}
             onDone={markDone}
             onUndo={undoDone}
+            onSmsQueued={mutate}
           />
         </div>
       )}
@@ -199,6 +215,7 @@ function Column({
   onChooseOption,
   onDone,
   onUndo,
+  onSmsQueued,
 }: {
   kind: "in" | "out";
   title: string;
@@ -209,6 +226,7 @@ function Column({
   onChooseOption: (kind: "in" | "out", item: MoveItem, optionKey: string, allOptionKeys: string[]) => void;
   onDone: (kind: "in" | "out", item: MoveItem) => void;
   onUndo: (kind: "in" | "out", item: MoveItem) => void;
+  onSmsQueued: () => Promise<unknown>;
 }) {
   const [showDone, setShowDone] = useState(false);
   const open = items.filter((i) => !i.doneAt);
@@ -228,7 +246,7 @@ function Column({
           <p className="text-sm text-muted-foreground italic">Inget på gång</p>
         ) : (
           open.map((item) => (
-            <MoveCard key={item.requestId} kind={kind} item={item} template={template} onToggle={onToggle} onChooseOption={onChooseOption} onDone={onDone} />
+            <MoveCard key={item.requestId} kind={kind} item={item} template={template} onToggle={onToggle} onChooseOption={onChooseOption} onDone={onDone} onSmsQueued={onSmsQueued} />
           ))
         )}
       </div>
@@ -275,6 +293,7 @@ function MoveCard({
   onToggle,
   onChooseOption,
   onDone,
+  onSmsQueued,
 }: {
   kind: "in" | "out";
   item: MoveItem;
@@ -282,10 +301,16 @@ function MoveCard({
   onToggle: (kind: "in" | "out", item: MoveItem, key: string) => void;
   onChooseOption: (kind: "in" | "out", item: MoveItem, optionKey: string, allOptionKeys: string[]) => void;
   onDone: (kind: "in" | "out", item: MoveItem) => void;
+  onSmsQueued: () => Promise<unknown>;
 }) {
   const router = useRouter();
-  const complete = kind === "in" ? isMoveInChecklistComplete(item.checklist) : isMoveOutChecklistComplete(item.checklist);
-  const checkedCount = template.filter((t) => isChecklistItemDone(t, item.checklist)).length;
+  const [messageFor, setMessageFor] = useState<MoveOutRecipient | null>(null);
+  const effectiveChecklist = kind === "out" ? withSentMoveOutSms(item.checklist, {
+    tenant: item.messages?.tenant?.hasSent ?? false,
+    landlord: item.messages?.landlord?.hasSent ?? false,
+  }) : item.checklist;
+  const complete = kind === "in" ? isMoveInChecklistComplete(effectiveChecklist) : isMoveOutChecklistComplete(effectiveChecklist);
+  const checkedCount = template.filter((t) => isChecklistItemDone(t, effectiveChecklist)).length;
 
   const diff = differenceInCalendarDays(parseISO(item.date), new Date());
   const overdue = diff < 0;
@@ -318,6 +343,45 @@ function MoveCard({
 
         <div className="mt-3 space-y-1.5">
           {template.map((t) => {
+            if (kind === "out" && (t.key === MOVE_OUT_TENANT_MESSAGE_KEY || t.key === MOVE_OUT_LANDLORD_MESSAGE_KEY)) {
+              const recipient: MoveOutRecipient = t.key === MOVE_OUT_TENANT_MESSAGE_KEY ? "tenant" : "landlord";
+              const message = item.messages?.[recipient];
+              const pending = message?.latest.status === "queued" || message?.latest.status === "sending";
+              const sent = isChecklistItemDone(t, effectiveChecklist);
+              const manuallyMarked = item.checklist.includes(t.key);
+              const status = pending ? "Sms köat för skickning"
+                : message?.latest.status === "failed" ? (message.hasSent ? "Tidigare skickat · senaste försöket misslyckades" : "Sms:et kunde inte skickas")
+                : message?.hasSent ? `Sms skickat till ${formatPhoneSv(message.latest.toPhone) ?? message.latest.toPhone}${message.latest.deliveredAt ? " · levererat" : " · leverans okänd"}`
+                : manuallyMarked ? "Markerat som skickat" : "";
+              return (
+                <div key={t.key} className="text-sm">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span aria-hidden="true" className={`h-4 w-4 shrink-0 rounded border flex items-center justify-center text-[10px] ${sent ? "bg-[#ff6300] border-[#ff6300] text-white" : "border-nordic-300"}`}>
+                      {sent ? "✓" : ""}
+                    </span>
+                    <span className={sent ? "text-muted-foreground" : ""}>{t.label}</span>
+                    <span className="sr-only">{sent ? "Skickat" : "Inte skickat"}</span>
+                    <button
+                      type="button"
+                      aria-label={`${sent ? "Skicka igen" : "Skriv och skicka"} till ${recipient === "tenant" ? "hyresgäst" : "uthyrare"}`}
+                      onClick={() => setMessageFor(recipient)}
+                      disabled={pending}
+                      className="text-[11px] px-2 py-0.5 rounded border border-orange-300 bg-orange-50 text-orange-800 hover:bg-orange-100 font-medium disabled:opacity-40"
+                    >
+                      {sent ? "Skicka igen" : "Skriv och skicka"}
+                    </button>
+                  </div>
+                  <div className="ml-6 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                    {status && <span role={message?.latest.status === "failed" ? "alert" : undefined}>{status}</span>}
+                    {manuallyMarked && !message?.hasSent ? (
+                      <button type="button" aria-label={`Ångra markering för ${recipient === "tenant" ? "hyresgäst" : "uthyrare"}`} className="underline hover:text-foreground" onClick={() => onToggle(kind, item, t.key)}>Ångra markering</button>
+                    ) : !sent && !pending ? (
+                      <button type="button" aria-label={`Markera skickat manuellt till ${recipient === "tenant" ? "hyresgäst" : "uthyrare"}`} className="underline hover:text-foreground" onClick={() => onToggle(kind, item, t.key)}>Markera skickat manuellt</button>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            }
             // Valpunkt: rubrik + två ömsesidigt uteslutande knappar (t.ex. skick med/utan foton).
             if (t.options) {
               const allKeys = t.options.map((o) => o.key);
@@ -364,6 +428,10 @@ function MoveCard({
               </label>
             );
           })}
+          {kind === "out" && item.checklist.includes(LEGACY_MOVE_OUT_SMS_KEY)
+            && (!effectiveChecklist.includes(MOVE_OUT_TENANT_MESSAGE_KEY) || !effectiveChecklist.includes(MOVE_OUT_LANDLORD_MESSAGE_KEY)) && (
+            <p className="text-xs text-amber-800">Ett utflyttnings-sms var tidigare markerat manuellt. Kontrollera vilka mottagare som har fått det.</p>
+          )}
         </div>
       </div>
 
@@ -387,6 +455,20 @@ function MoveCard({
           {kind === "in" ? "Klarmarkera inflytt" : "Klarmarkera avflytt"}
         </button>
       </div>
+      {messageFor && (
+        <MoveOutSmsDialog
+          requestId={item.requestId}
+          companyName={item.companyName}
+          address={item.smsAddress ?? null}
+          date={item.date}
+          contacts={item.contacts ?? []}
+          requestContactId={item.requestContactId ?? null}
+          owner={item.owner ?? null}
+          recipient={messageFor}
+          onOpenChange={(open) => { if (!open) setMessageFor(null); }}
+          onQueued={onSmsQueued}
+        />
+      )}
     </div>
   );
 }
