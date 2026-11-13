@@ -47,6 +47,7 @@ export const withSignedMoveInContract = (checked: string[] | null | undefined) =
 
 export const MOVE_OUT_CHECKLIST: ChecklistItem[] = [
   { key: "confirmed", label: "Slutdatum bekräftat med kund" },
+  { key: "move_out_sms_sent", label: "Skickat utflyttnings-sms" },
   { key: "keys_back", label: "Nycklar återlämnade" },
   { key: "cleaning", label: "Slutstädning bokad/utförd" },
   {
