@@ -7,7 +7,7 @@ vi.mock("./PropertyView", () => ({ PropertyView: () => null }));
 vi.mock("./OwnerPicker", () => ({ OwnerPicker: () => null }));
 vi.mock("./PropertyIntakeSharePanel", () => ({ PropertyIntakeSharePanel: () => null }));
 vi.mock("swr", () => ({ default: (url: string) => ({
-  data: url.includes("q=Stockholm") ? [] : [
+  data: url.includes("owner-search-leads") || url.includes("q=Stockholm") ? [] : [
     { id: "near", address: "Dånviksvägen 30", city: "Rönninge", status: "available" },
     { id: "far", address: "För långt bort", city: "Uppsala", status: "available" },
     { id: "rented", address: "Redan uthyrd", city: "Stockholm", status: "rented" },

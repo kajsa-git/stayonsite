@@ -40,6 +40,8 @@ import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { swrFetcher } from "@/lib/crm/fetcher";
 import { todayStockholm } from "@/lib/crm/date";
 import { isRentalReviewDue } from "@/lib/crm/rental-review-date";
+import { isOwnerSearchCity, type OwnerSearchLead } from "@/lib/crm/owner-search-leads";
+import { OwnerSearchLeads } from "@/components/crm/owner/OwnerSearchLeads";
 
 interface Props {
   request: Request;
@@ -141,6 +143,7 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
     showWeak: false,
   });
   const { data: properties = [], isLoading, mutate: mutateProperties } = useSWR<PropertyWithOwner[]>(`/api/crm/properties?q=`, fetcher);
+  const { data: ownerLeads = [], error: ownerLeadsError } = useSWR<OwnerSearchLead[]>("/api/crm/owner-search-leads", fetcher);
   const editProperty = editPropertyId ? (properties.find((p) => p.id === editPropertyId) ?? null) : null;
   const { data: matches = [], mutate: mutateMatches } = useSWR<MatchRow[]>(
     `/api/crm/matches?requestId=${request.id}`,
@@ -836,6 +839,12 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
             </div>
             <p className="text-xs text-muted-foreground">Bostäder med okända uppgifter visas också. Kontrollera markeringarna på varje träff.</p>
           </div>
+          <OwnerSearchLeads
+            leads={ownerLeads}
+            city={filters.city || (isOwnerSearchCity(ownerLeads, filters.q) ? "" : request.city)}
+            query={filters.q}
+            error={ownerLeadsError}
+          />
           {isLoading || (maxMeters != null && distancesPending) ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -199,6 +199,7 @@ export function OwnerCard({ ownerId }: { ownerId: string }) {
             className="mt-0.5 w-full border rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary-400"
           />
         </label>
+        <p className="text-xs text-muted-foreground">För att visa uthyraren i bostadssökningen, skriv till exempel: Sökorter: Örebro, Knivsta.</p>
       </div>
 
       {/* Uppdragsavtal — skickas fristående, tidigt; gäller alla objekt i 12 mån */}

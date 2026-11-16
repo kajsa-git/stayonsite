@@ -25,9 +25,12 @@ import { PropertyView } from "./PropertyView";
 import { usePageTrail } from "@/components/crm/layout/PageTrail";
 import { OwnerPicker, type OwnerPickerValue } from "./OwnerPicker";
 import { PropertyIntakeSharePanel } from "./PropertyIntakeSharePanel";
+import { OwnerSearchLeads } from "@/components/crm/owner/OwnerSearchLeads";
+import type { OwnerSearchLead } from "@/lib/crm/owner-search-leads";
 
 const fetcher = swrFetcher;
 const EMPTY_PROPERTIES: PropertyWithThumb[] = [];
+const EMPTY_OWNER_LEADS: OwnerSearchLead[] = [];
 
 const PROP_STATUS: Record<string, { label: string; cls: string }> = {
   available: { label: "Tillgänglig", cls: "bg-green-100 text-green-800" },
@@ -140,6 +143,7 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
     fetcher,
     { keepPreviousData: true, refreshInterval: (data) => data?.some((p) => ["pending", "checking"].includes(p.contentReviewStatus)) ? 5000 : 0 }
   );
+  const { data: ownerLeads = EMPTY_OWNER_LEADS, error: ownerLeadsError } = useSWR<OwnerSearchLead[]>("/api/crm/owner-search-leads", fetcher);
   const loading = isLoading && properties.length === 0;
   const destinations = useMemo(() => travelCity && !isLoading ? properties
     .filter((p) => (p.status ?? "available") === "available" && !!(p.address || p.postalCode || p.city))
@@ -157,8 +161,8 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
   }, [properties]);
 
   const cities = useMemo(
-    () => [...new Set(properties.map((p) => p.city).filter(Boolean) as string[])].sort(),
-    [properties]
+    () => [...new Set([...properties.map((p) => p.city).filter(Boolean) as string[], ...ownerLeads.flatMap((owner) => owner.cities)])].sort(),
+    [properties, ownerLeads]
   );
 
   const filtered = useMemo(() => {
@@ -532,6 +536,11 @@ export function PropertyList({ propertyId = null, ownerId = "" }: { propertyId?:
               Rensa
             </button>
           )}
+        </div>
+      )}
+      {!adding && (travelCity || cityFilter || search) && (
+        <div className="px-3 py-2">
+          <OwnerSearchLeads leads={ownerLeads} city={travelCity || cityFilter} query={travelCity ? "" : search} ownerId={ownerFilter} error={ownerLeadsError} travelSearch={!!travelCity} />
         </div>
       )}
       </>
