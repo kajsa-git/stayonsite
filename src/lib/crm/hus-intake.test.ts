@@ -7,6 +7,7 @@ vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}), indexOwner: vi.fn(async () => {}) }));
 import { createPropertyIntake, propertyIntakeSchema } from "./property-intake";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, HUS_UPLOAD_LINK_ACTOR, husPublicationSmsId } from "./hus-publication";
+import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { ensureShareLink } from "./share-links";
 import { agreementAcceptances, outboxMessages, owners, ownerOutreach, properties } from "./schema";
 import { homeownerLeadIntakeSms } from "./sms-templates";
@@ -53,6 +54,15 @@ describe("HUS registration", () => {
     const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...raw, husPublication: { ...raw.husPublication, approved: false } }));
     expect(property).toMatchObject({ published: false, autoPublishEnabled: false, publishConsentAt: null, publishConsentName: null });
     expect(property.notes).toContain("inte godkänd");
+  });
+
+  it("stores the new HUS consent version and the precise approved text for this property", async () => {
+    const input = propertyIntakeSchema.parse({ ...raw, husPublication: { version: PUBLICATION_CONSENT_VERSION, approved: true } });
+    const { property } = await createPropertyIntake(input);
+    expect(property.notes).toContain(`HUS webbpublicering (${PUBLICATION_CONSENT_VERSION}): godkänd`);
+    expect(property.notes).toContain(PUBLICATION_CONSENT_TEXT);
+    expect(property.notes).toContain(PUBLICATION_CONSENT_CHECKBOX_LABEL);
+    expect(await state.db.select().from(agreementAcceptances)).toHaveLength(0);
   });
 
   it("reuses an unambiguous older short enquiry and keeps one property follow-up", async () => {

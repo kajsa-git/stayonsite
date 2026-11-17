@@ -12,7 +12,7 @@
 // uppföljningskön (owners.followUpDate) så Kajsa kan skicka länken via SMS,
 // och loggas med channel "crm_followup". Varje utskick loggas i
 // crm_agreement_reminders; signerat uppdrag ⇒ uthyraren lämnar svepet av sig själv.
-import { and, desc, eq, isNotNull, isNull, or } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, ne, or } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "./avtal";
@@ -122,7 +122,8 @@ async function hasValidAcceptance(db: DB, ownerId: string): Promise<boolean> {
     .select()
     .from(agreementAcceptances)
     .where(
-      and(eq(agreementAcceptances.ownerId, ownerId), eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type))
+      and(eq(agreementAcceptances.ownerId, ownerId), eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type),
+        ne(agreementAcceptances.version, UTHYRNINGSUPPDRAG.version))
     )
     .orderBy(desc(agreementAcceptances.acceptedAt))
     .limit(1);
@@ -161,6 +162,7 @@ export async function runAgreementReminderSweep(opts?: {
     .where(
       and(
         eq(shareLinks.audience, "landlord"),
+        isNull(shareLinks.matchId),
         isNull(shareLinks.revokedAt),
         isNull(shareLinks.createdBy), // skapad av intagsflödet — CRM-skickade länkar påminner Kajsa om själv
         eq(owners.ownerType, "privatperson")

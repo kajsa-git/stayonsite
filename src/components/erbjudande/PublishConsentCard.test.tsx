@@ -20,9 +20,12 @@ it("asks only for publication and sends approval for the homes explicitly select
   fireEvent.change(screen.getByLabelText("Ditt namn"), { target: { value: "Anna Andersson" } });
   fireEvent.click(screen.getByRole("checkbox", { name: "Gatan 1, Boden" }));
   fireEvent.click(screen.getByRole("button", { name: "Godkänn publicering" }));
+  expect(send).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("checkbox", { name: /Jag godkänner att HyrUtSmart använder uppgifterna/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Godkänn publicering" }));
   await waitFor(() => expect(send).toHaveBeenCalledTimes(1));
   const [url, options] = send.mock.calls[0] as unknown as [string, RequestInit];
   expect(url).toBe("/api/share/token/publish-consent");
-  expect(JSON.parse(String(options.body))).toMatchObject({ name: "Anna Andersson", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION });
+  expect(JSON.parse(String(options.body))).toMatchObject({ name: "Anna Andersson", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION });
   await waitFor(() => expect(screen.getByText("Gatan 2, Boden")).toBeInTheDocument());
 });

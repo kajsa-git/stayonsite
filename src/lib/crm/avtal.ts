@@ -117,7 +117,7 @@ export const UTHYRNINGSUPPDRAG_LEGACY: AgreementText = {
 
 // Förmedlingsvillkoren presenteras först för en konkret kundförfrågan. Den
 // tidigare texten och dess version lämnas kvar så äldre signeringar kan förstås.
-export const UTHYRNINGSUPPDRAG: AgreementText = {
+export const UTHYRNINGSUPPDRAG_2026_11_12: AgreementText = {
   ...UTHYRNINGSUPPDRAG_LEGACY,
   version: "2026-11-12.1",
   validPreviousVersions: ["2026-07-13.7", "2026-07-16.8", "2026-10-16.1"],
@@ -125,6 +125,15 @@ export const UTHYRNINGSUPPDRAG: AgreementText = {
   points: UTHYRNINGSUPPDRAG_LEGACY.points.map((point) => point.heading === "Giltighet och ändringar"
     ? { ...point, body: "Förmedlingsvillkoren gäller i 12 månader från godkännandet och kan förnyas. Ni kan när som helst kontakta StayOnSite för att ändra en annons eller dra tillbaka en bostad. Förmedlingsskyddet gäller under villkorens giltighetstid och i 12 månader efter presentationen av hyresgästen." }
     : point),
+};
+
+// Den nya versionen registreras per matchning. Tidigare godkännanden och deras
+// villkor lämnas kvar oförändrade, men ersätter inte ett ja för en ny förfrågan.
+export const UTHYRNINGSUPPDRAG: AgreementText = {
+  ...UTHYRNINGSUPPDRAG_2026_11_12,
+  version: "2026-11-17.1",
+  validPreviousVersions: [...(UTHYRNINGSUPPDRAG_2026_11_12.validPreviousVersions ?? []), UTHYRNINGSUPPDRAG_2026_11_12.version],
+  intro: "Vi ber om ditt godkännande inför den aktuella förfrågan. " + UTHYRNINGSUPPDRAG_2026_11_12.intro,
 };
 
 // Engelska översättningar — SAMMA version som svenskan (en version = en innebörd,
@@ -226,6 +235,7 @@ export const UTHYRNINGSUPPDRAG_EN: AgreementText = {
   version: UTHYRNINGSUPPDRAG.version,
   validPreviousVersions: UTHYRNINGSUPPDRAG.validPreviousVersions,
   title: "Mediation Terms",
+  intro: "We ask for your approval for the current enquiry. " + UTHYRNINGSUPPDRAG_LEGACY_EN.intro,
   points: UTHYRNINGSUPPDRAG_LEGACY_EN.points.map((point) => point.heading === "Validity and changes"
     ? { ...point, body: "These mediation terms are valid for 12 months from approval and can be renewed. You may contact StayOnSite at any time to change a listing or withdraw a property. The non-circumvention terms apply for the duration of these terms and for 12 months after the tenant is introduced." }
     : point),

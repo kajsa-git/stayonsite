@@ -58,13 +58,16 @@ export function formatPeriod(start: string | null, end: string | null, ongoing: 
   return ongoing ? `${from} → tills vidare` : `${from} → ${end ?? "?"}`;
 }
 
-async function patchMatch(id: string, body: Record<string, unknown>): Promise<boolean> {
+async function patchMatch(id: string, body: Record<string, unknown>): Promise<void> {
   const res = await fetch(`/api/crm/matches/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  return res.ok;
+  if (!res.ok) {
+    const result = await res.json().catch(() => ({}));
+    throw new Error(result.error || "Kunde inte spara erbjudandet");
+  }
 }
 
 // Förhandlingshistorik i dialogerna: tidigare stämplingar av samma villkorsgrupp,
@@ -166,7 +169,7 @@ function SendOfferForm({
     }
     setSaving(true);
     try {
-      const ok = await patchMatch(match.id, {
+      await patchMatch(match.id, {
         ...(match.status === "suggested" ? { status: "sent" } : {}),
         offerRentOut: parsed,
         offerStartDate: startDate || null,
@@ -174,15 +177,11 @@ function SendOfferForm({
         offerOngoing: ongoing,
         offerNote: note.trim() || null,
       });
-      if (!ok) {
-        toast({ title: "Kunde inte spara erbjudandet", variant: "destructive" });
-        return;
-      }
       toast({ title: isUpdate ? "Erbjudandet uppdaterat" : "Erbjudande skickat — villkoren stämplade" });
       onSaved();
       onClose();
-    } catch {
-      toast({ title: "Kunde inte spara erbjudandet", variant: "destructive" });
+    } catch (error) {
+      toast({ title: error instanceof Error ? error.message : "Kunde inte spara erbjudandet", variant: "destructive" });
     } finally {
       setSaving(false);
     }

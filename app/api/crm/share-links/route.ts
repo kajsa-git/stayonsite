@@ -109,12 +109,19 @@ export async function POST(req: NextRequest) {
   }
   const { audience, requestId, matchId, ownerId } = parsed.input;
 
-  const link = await ensureShareLink({
-    audience,
-    requestId,
-    matchId,
-    ownerId,
-    userId: (session.user as { id?: string } | undefined)?.id ?? null,
-  });
-  return NextResponse.json(link, { status: 201 });
+  try {
+    const link = await ensureShareLink({
+      audience,
+      requestId,
+      matchId,
+      ownerId,
+      userId: (session.user as { id?: string } | undefined)?.id ?? null,
+    });
+    return NextResponse.json(link, { status: 201 });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Förfrågan eller uthyraren saknas.") {
+      return NextResponse.json({ error: error.message }, { status: 422 });
+    }
+    throw error;
+  }
 }

@@ -26,7 +26,7 @@ beforeEach(async () => {
   await state.db.insert(schema.shareLinks).values([
     { id: "l1", token: "owner-token", audience: "landlord", ownerId: "o1" },
     { id: "l2", token: "tenant-token", audience: "tenant", requestId: "r1" },
-    { id: "l3", token: "match-token", audience: "landlord", requestId: "r1", matchId: "m1" },
+    { id: "l3", token: "match-token", audience: "landlord", requestId: "r1", matchId: "m1", ownerId: "o1" },
   ]);
 });
 
@@ -54,7 +54,7 @@ describe("godkännande av aktuell avtalstext", () => {
     const [acceptance] = await state.db.select().from(schema.agreementAcceptances);
     expect(acceptance).toMatchObject({
       ownerId: "o1", agreementType: "uthyrningsuppdrag", version: UTHYRNINGSUPPDRAG.version,
-      acceptedName: "Anna Andersson", language: "sv",
+      requestId: "r1", propertyId: "p1", shareLinkId: "l3", acceptedName: "Anna Andersson", language: "sv",
     });
     const properties = await state.db.select().from(schema.properties);
     expect(properties.find((p) => p.id === "p1")?.publishConsentAt).toBeNull();
@@ -74,16 +74,17 @@ describe("godkännande av aktuell avtalstext", () => {
     expect(property.publishConsentAt).toBeNull();
   });
 
-  it.each(["2026-07-16.8", "2026-10-16.1"])("behåller giltig tidigare version %s utan att ändra beviset", async (version) => {
+  it.each(["2026-07-16.8", "2026-10-16.1", "2026-11-12.1"])("behåller tidigare version %s och registrerar ett separat ja för matchningen", async (version) => {
     const acceptedAt = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     await state.db.insert(schema.agreementAcceptances).values({
       id: "previous", ownerId: "o1", agreementType: "uthyrningsuppdrag", version,
       acceptedName: "Tidigare namn", acceptedAt,
     });
     const input = { version: UTHYRNINGSUPPDRAG.version };
+    expect((await approve(input)).status).toBe(201);
     expect((await approve(input)).status).toBe(200);
     const acceptances = await state.db.select().from(schema.agreementAcceptances);
-    expect(acceptances).toHaveLength(1);
+    expect(acceptances).toHaveLength(2);
     expect(acceptances.find((a) => a.id === "previous")).toMatchObject({
       version, acceptedName: "Tidigare namn", acceptedAt,
     });

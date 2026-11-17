@@ -288,7 +288,8 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
         body: JSON.stringify({ status }),
       });
       if (!res.ok) {
-        toast({ title: "Kunde inte uppdatera förslaget", variant: "destructive" });
+        const result = await res.json().catch(() => ({}));
+        toast({ title: result.error || "Kunde inte uppdatera förslaget", variant: "destructive" });
         return;
       }
       mutateMatches();
@@ -590,7 +591,9 @@ export function MatchingView({ request, companyName, companyInvoiceEmail }: Prop
                             },
                             {
                               label: m.sentAt ? "Skickat" : ds === "withdrawn" ? "Skicka igen" : "Prisa & skicka",
-                              title: "Stämpla kundens pris och period — objektet dyker upp i kundlänken direkt",
+                              title: m.landlordSignedAt || m.sentAt
+                                ? "Stämpla kundens pris och period — objektet dyker upp i kundlänken direkt"
+                                : "Uthyraren behöver först godkänna förmedlingsvillkoren för förfrågan",
                               done: !!m.sentAt,
                               onClick: () => setSendOffer(m),
                             },

@@ -2,7 +2,8 @@ import { requireApprovedSession } from "@/lib/crm/auth";
 import { plusDaysStockholm } from "@/lib/crm/date";
 import { db } from "@/lib/crm/db";
 import { sanitizeKalkyl } from "@/lib/crm/kalkyl";
-import { companies, matches, matchEvents, requests } from "@/lib/crm/schema";
+import { loadMediationAcceptance } from "@/lib/crm/mediation-acceptance";
+import { companies, matches, matchEvents, properties, requests } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   if (body.status && !VALID.includes(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+
+  if (body.status === "sent") {
+    const [current] = await db.select({
+      requestId: matches.requestId, propertyId: matches.propertyId,
+      sentAt: matches.sentAt, ownerId: properties.ownerId,
+    }).from(matches).leftJoin(properties, eq(properties.id, matches.propertyId))
+      .where(eq(matches.id, id)).limit(1);
+    if (!current) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    // Do not retroactively hide or interrupt an offer already sent.
+    if (!current.sentAt) {
+      const accepted = await loadMediationAcceptance({ matchId: id, ...current });
+      if (!accepted) return NextResponse.json({
+        error: "Uthyraren behöver godkänna förmedlingsvillkoren för den här förfrågan innan bostaden kan skickas till kunden.",
+      }, { status: 409 });
+    }
   }
 
   // Whitelist redigerbara fält — klienten får aldrig repeka requestId/propertyId eller byta id.

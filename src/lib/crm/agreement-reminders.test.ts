@@ -198,7 +198,7 @@ describe("agreement reminder sweep", () => {
     await db.insert(agreementAcceptances).values({
       id: "acc-1",
       agreementType: UTHYRNINGSUPPDRAG.type,
-      version: UTHYRNINGSUPPDRAG.version,
+      version: "2026-11-12.1",
       ownerId: owner.id,
       acceptedName: "Anna Andersson",
       acceptedAt: new Date().toISOString(),
@@ -209,6 +209,21 @@ describe("agreement reminder sweep", () => {
 
     expect(summary).toMatchObject({ checked: 0, emailed: 0 });
     expect(mails).toHaveLength(0);
+  });
+
+  it("ett separat förmedlingsgodkännande räknas inte som webbmedgivande", async () => {
+    const owner = await seedOwner();
+    await seedLink(owner.id);
+    await db.insert(agreementAcceptances).values({
+      id: "deal-acceptance", agreementType: UTHYRNINGSUPPDRAG.type,
+      version: UTHYRNINGSUPPDRAG.version, ownerId: owner.id,
+      requestId: "request", propertyId: "property", shareLinkId: "deal-link",
+      acceptedName: "Anna Andersson", acceptedAt: new Date().toISOString(),
+    });
+    const { mails, sendEmail } = collector();
+    const summary = await runAgreementReminderSweep({ now: NOW, sendEmail, db });
+    expect(summary).toMatchObject({ checked: 1, emailed: 1 });
+    expect(mails).toHaveLength(1);
   });
 
   it.each([

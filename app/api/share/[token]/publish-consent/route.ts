@@ -28,6 +28,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
   if (body.version !== PUBLICATION_CONSENT_VERSION) {
     return NextResponse.json({ error: "Texten har uppdaterats. Ladda om sidan innan du godkänner." }, { status: 409 });
   }
+  if (body.accepted !== true) {
+    return NextResponse.json({ error: "Godkänn publiceringsmedgivandet innan du fortsätter." }, { status: 400 });
+  }
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const propertyIds = body.propertyIds;
   if (name.length < 2 || name.length > 120 || !Array.isArray(propertyIds) || !propertyIds.length || propertyIds.length > 100 ||

@@ -17,6 +17,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "./avtal";
 import { db } from "./db";
+import { loadHistoricalMediationAcceptance, loadMediationAcceptance } from "./mediation-acceptance";
 import { loadPublicProperty, type PublicProperty } from "./public-property";
 import {
   agreementAcceptances,
@@ -222,22 +223,11 @@ export async function loadLandlordDeal(matchId: string): Promise<LandlordDealVie
     ownerName = owner?.name ?? null;
   }
 
-  // Uthyrningsuppdraget gäller UTHYRAREN (alla objekt) i 12 mån — en signering
-  // täcker allt under giltighetstiden. Objekt utan ägare faller till objektscope.
-  const [latest] = await db
-    .select()
-    .from(agreementAcceptances)
-    .where(
-      and(
-        property.ownerId
-          ? eq(agreementAcceptances.ownerId, property.ownerId)
-          : eq(agreementAcceptances.propertyId, match.propertyId),
-        eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type)
-      )
-    )
-    .orderBy(desc(agreementAcceptances.acceptedAt))
-    .limit(1);
-  const acceptance = isAcceptanceValid(latest, UTHYRNINGSUPPDRAG) ? latest : null;
+  const scope = {
+    matchId: match.id, requestId: match.requestId, propertyId: match.propertyId, ownerId: property.ownerId,
+  };
+  const acceptance = await loadMediationAcceptance(scope) ??
+    (match.sentAt ? await loadHistoricalMediationAcceptance(scope) : null);
 
   return {
     ownerName,
@@ -256,8 +246,7 @@ export async function loadLandlordDeal(matchId: string): Promise<LandlordDealVie
   };
 }
 
-// Fristående uthyrarlänk (utan affär): uthyraren signerar uppdragsavtalet tidigt,
-// innan någon matchning finns. Efter signering visas en enkel bekräftelsevy.
+// Fristående uthyrarlänk: webbmedgivande och eventuell tillgång till bostäderna.
 export interface LandlordStandingView {
   ownerName: string | null;
   agreementAccepted: boolean;

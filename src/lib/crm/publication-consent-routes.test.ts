@@ -37,12 +37,13 @@ function crm(body: object, id = "p1") {
 describe("publikationsflödets endpoints", () => {
   it("avvisar ett gammalt öppet formulär och en bostad som inte tillhör länken", async () => {
     expect((await web({ name: "Anna", propertyIds: ["p1"], version: "gammal" })).status).toBe(409);
-    expect((await web({ name: "Anna", propertyIds: ["p1", "other"], version: PUBLICATION_CONSENT_VERSION })).status).toBe(404);
+    expect((await web({ name: "Anna", propertyIds: ["p1", "other"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(404);
     expect((await state.db.select().from(schema.properties).where(eq(schema.properties.id, "p1")))[0].publishConsentAt).toBeNull();
   });
 
   it("sparar bara de valda bostäderna utan att registrera ett förmedlingsavtal", async () => {
-    expect((await web({ name: "Anna", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION })).status).toBe(201);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION })).status).toBe(400);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(201);
     const rows = await state.db.select().from(schema.properties);
     expect(rows.find((p) => p.id === "p1")?.publishConsentAt).toBeTruthy();
     expect(rows.find((p) => p.id === "p2")?.publishConsentAt).toBeNull();
@@ -50,7 +51,7 @@ describe("publikationsflödets endpoints", () => {
   });
 
   it("låter uthyraren återkalla sin egen bostad men aldrig någon annans", async () => {
-    await web({ name: "Anna", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION });
+    await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION });
     await state.db.update(schema.properties).set({ published: true, prospektPublished: true }).where(eq(schema.properties.id, "p1"));
     expect((await web({ action: "withdraw", propertyIds: ["other"] })).status).toBe(404);
     expect((await web({ action: "withdraw", propertyIds: ["p1"] })).status).toBe(200);

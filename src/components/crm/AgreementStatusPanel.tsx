@@ -55,7 +55,7 @@ export function AgreementStatusPanel({
   const createLabel = kind === "owner" ? "Skapa uthyrarlänk" : "Skapa kundlänk";
   const activeLink =
     kind === "owner"
-      ? (data?.links.find((l) => l.audience === "landlord" && l.ownerId === id && !l.revokedAt) ?? null)
+      ? (data?.links.find((l) => l.audience === "landlord" && l.ownerId === id && !l.matchId && !l.revokedAt) ?? null)
       : (data?.links.find((l) => l.audience === "tenant" && !l.matchId && !l.revokedAt) ?? null);
   const path = activeLink
     ? kind === "owner"
@@ -147,7 +147,7 @@ export function AgreementStatusPanel({
         {a?.valid ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-800">
             <ShieldCheck className="h-3 w-3" />
-            {kind === "owner" ? "Förmedlingsvillkor godkända" : "Signerat"} av {a.acceptedName} · giltigt till {a.validUntil}
+            {kind === "owner" ? "Tidigare förmedlingsvillkor godkända" : "Signerat"} av {a.acceptedName} · giltigt till {a.validUntil}
           </span>
         ) : a ? (
           <span
@@ -179,7 +179,7 @@ export function AgreementStatusPanel({
         )}
       </div>
 
-      {kind === "owner" && <p className="text-xs text-muted-foreground">Publiceringsmedgivande registreras för varje bostad under Publicering. Förmedlingsvillkor hanteras separat vid en aktuell förfrågan.</p>}
+      {kind === "owner" && <p className="text-xs text-muted-foreground">Publiceringsmedgivande registreras för varje bostad under Publicering. Godkännandet för en aktuell förfrågan visas vid matchningen.</p>}
 
       <div className="flex flex-wrap items-center gap-2">
         {path ? (

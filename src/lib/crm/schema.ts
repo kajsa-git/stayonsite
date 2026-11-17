@@ -738,7 +738,7 @@ export const shareLinks = sqliteTable("crm_share_links", {
   audience: text("audience").notNull(), // tenant | landlord
   requestId: text("request_id"), // kundlänk: satt. Fristående uthyrarlänk: null.
   matchId: text("match_id"), // satt för affärsknuten uthyrarlänk (visar villkoren för en affär)
-  ownerId: text("owner_id"), // satt för FRISTÅENDE uthyrarlänk — uppdragsavtalet skickas före någon affär
+  ownerId: text("owner_id"), // uthyraren som en fristående eller affärsknuten länk utfärdats till
   createdBy: text("created_by"), // crm_users.id | system:hus-upload
   revokedAt: text("revoked_at"), // null = aktiv
   expiresAt: text("expires_at"), // valfri TTL
@@ -763,10 +763,10 @@ export const agreementAcceptances = sqliteTable("crm_agreement_acceptances", {
   id: text("id").primaryKey(),
   agreementType: text("agreement_type").notNull(), // uppdragsbekraftelse | uthyrningsuppdrag
   version: text("version").notNull(), // godkänd textversion; giltighet enligt avtal.ts
-  requestId: text("request_id"), // via vilken förfrågan signeringen skedde (kund)
+  requestId: text("request_id"), // förfrågan som godkännandet gäller
   companyId: text("company_id"), // AVTALSSCOPE kund: uppdragsbekräftelsen gäller företaget i 12 mån
-  ownerId: text("owner_id"), // AVTALSSCOPE uthyrare: uthyrningsuppdraget gäller uthyraren (alla objekt) i 12 mån
-  propertyId: text("property_id"), // via vilket objekt signeringen skedde (affärsknuten uthyrarlänk)
+  ownerId: text("owner_id"), // uthyrare som godkänt; äldre uppdrag kunde gälla hela uthyraren
+  propertyId: text("property_id"), // bostad vid affärs- eller publiceringsgodkännande
   shareLinkId: text("share_link_id"), // via vilken länk godkännandet gjordes
   acceptedName: text("accepted_name").notNull(), // namnet parten skrev vid godkännandet
   acceptedAt: text("accepted_at").notNull(), // ISO-stämpel

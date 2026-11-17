@@ -3,7 +3,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { db as defaultDb } from "./db";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
-import { PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import * as schema from "./schema";
 import { agreementAcceptances, outboxMessages, properties, propertyNotes } from "./schema";
 
@@ -130,5 +130,5 @@ export async function withdrawPublishConsent(input: {
 }
 
 export function webConsentEvidence(): string {
-  return `Godkänt via uthyrarlänken, version ${PUBLICATION_CONSENT_VERSION}. Text: ${PUBLICATION_CONSENT_TEXT}`;
+  return `Godkänt via uthyrarlänken, version ${PUBLICATION_CONSENT_VERSION}. Text: ${PUBLICATION_CONSENT_TEXT}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}`;
 }

@@ -6,6 +6,7 @@
 // utgången/gammal version ⇒ ny rad läggs till (raderna är bevis och skrivs aldrig om).
 import { isAcceptanceValid, UPPDRAGSBEKRAFTELSE, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { db } from "@/lib/crm/db";
+import { loadMediationAcceptance } from "@/lib/crm/mediation-acceptance";
 import { agreementAcceptances, matches, properties, requests } from "@/lib/crm/schema";
 import { resolveShareLink } from "@/lib/crm/share-links";
 import { and, desc, eq } from "drizzle-orm";
@@ -83,31 +84,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
   const language = body.language === "en" ? "en" : "sv";
 
   if (link.audience === "landlord") {
-    // Uthyrarscope: ownerId direkt (fristående länk) eller via affärens objekt.
-    let ownerId: string | null = link.ownerId;
-    let propertyId: string | null = null;
-    if (!ownerId && link.matchId) {
-      const [match] = await db
-        .select({ propertyId: matches.propertyId })
-        .from(matches)
-        .where(eq(matches.id, link.matchId))
-        .limit(1);
-      if (!match) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      propertyId = match.propertyId;
-      const [property] = await db
-        .select({ ownerId: properties.ownerId })
-        .from(properties)
-        .where(eq(properties.id, propertyId))
-        .limit(1);
-      ownerId = property?.ownerId ?? null;
+    // Scope comes from the match itself, never from a separately supplied owner.
+    const [match] = await db.select({
+      requestId: matches.requestId, propertyId: matches.propertyId,
+      ownerId: properties.ownerId, requestStatus: requests.status,
+    }).from(matches)
+      .innerJoin(properties, eq(properties.id, matches.propertyId))
+      .innerJoin(requests, eq(requests.id, matches.requestId))
+      .where(eq(matches.id, link.matchId!)).limit(1);
+    if (!match || !match.ownerId || match.requestId !== link.requestId ||
+        link.ownerId !== match.ownerId || ["lost", "archived"].includes(match.requestStatus)) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
-    if (!ownerId && !propertyId) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-    const existing = await latestAcceptance(
-      ownerId ? { ownerId } : { propertyId: propertyId! },
-      UTHYRNINGSUPPDRAG.type
-    );
-    if (isAcceptanceValid(existing, UTHYRNINGSUPPDRAG)) {
+    const existing = await loadMediationAcceptance({
+      matchId: link.matchId!, requestId: match.requestId, propertyId: match.propertyId, ownerId: match.ownerId,
+    });
+    if (existing) {
       return NextResponse.json({ ok: true });
     }
 
@@ -115,9 +107,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
       id: nanoid(),
       agreementType: UTHYRNINGSUPPDRAG.type,
       version: UTHYRNINGSUPPDRAG.version,
-      requestId: link.requestId,
-      ownerId,
-      propertyId,
+      requestId: match.requestId,
+      ownerId: match.ownerId,
+      propertyId: match.propertyId,
       shareLinkId: link.id,
       acceptedName: name,
       acceptedAt: now,

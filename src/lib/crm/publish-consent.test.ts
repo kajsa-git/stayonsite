@@ -68,7 +68,7 @@ describe("publiceringsmedgivande", () => {
       evidence: webConsentEvidence(), webAcceptance: { shareLinkId: "l1", language: "sv" } }, { db });
     const [acceptance] = await db.select().from(agreementAcceptances);
     expect(acceptance).toMatchObject({ agreementType: "publiceringsmedgivande", version: PUBLICATION_CONSENT_VERSION, propertyId: "p1", ownerId: "o1" });
-    expect((await db.select().from(propertyNotes))[0].content).toContain("ingen skyldighet att hyra ut");
+    expect((await db.select().from(propertyNotes))[0].content).toContain("Du bestämmer själv om du vill gå vidare");
   });
 
   it("återkallar publicering och prospekt, behåller historiken och stoppar ett väntande HUS-sms", async () => {

@@ -109,7 +109,9 @@ describe("uthyrarens bostäder", () => {
     await state.db.insert(schema.companies).values({ id: "c1", name: "Company" });
     await state.db.insert(schema.requests).values({ id: "r1", companyId: "c1", status: "matching" });
     await state.db.insert(schema.matches).values({ id: "m1", requestId: "r1", propertyId: "p1", promisedRentIn: 4500 });
-    await state.db.insert(schema.shareLinks).values({ id: "lm", token: "match-token", audience: "landlord", requestId: "r1", matchId: "m1" });
+    await state.db.insert(schema.shareLinks).values({ id: "lm", token: "match-token", audience: "landlord", requestId: "r1", matchId: "m1", ownerId: "o1" });
+    await state.db.insert(schema.agreementAcceptances).values({ id: "deal-approval", ownerId: "o1", propertyId: "p1", requestId: "r1", shareLinkId: "lm", agreementType: UTHYRNINGSUPPDRAG.type,
+      version: UTHYRNINGSUPPDRAG.version, acceptedName: "Anna", acceptedAt: new Date().toISOString() });
     expect((await patch({ rentIn: 7000 }, "match-token")).status).toBe(200);
     expect((await patch({ beds: 3 }, "match-token", "p3")).status).toBe(404);
     const [match] = await state.db.select().from(schema.matches);

@@ -6,7 +6,7 @@ import { PublicationWithdrawal } from "@/components/erbjudande/PublicationWithdr
 import { UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { loadLandlordDeal, loadLandlordStanding } from "@/lib/crm/deal-projection";
 import { loadPublishConsentState } from "@/lib/crm/publish-consent";
-import { resolveShareLink } from "@/lib/crm/share-links";
+import { isCurrentLandlordMatchLink, resolveShareLink } from "@/lib/crm/share-links";
 import { HUS_UPLOAD_LINK_ACTOR } from "@/lib/crm/hus-publication";
 import { notFound } from "next/navigation";
 
@@ -66,6 +66,10 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
     );
   }
 
+  if (!(await isCurrentLandlordMatchLink(link))) {
+    return <main className="mx-auto max-w-xl p-8"><h1 className="text-2xl font-semibold">Länken behöver förnyas</h1>
+      <p className="mt-3">Kontakta oss på StayOnSite för att få en ny länk till förmedlingsvillkoren.</p></main>;
+  }
   const deal = await loadLandlordDeal(link.matchId!);
   if (!deal) notFound();
 

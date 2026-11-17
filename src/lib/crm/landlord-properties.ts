@@ -2,15 +2,16 @@ import { and, eq } from "drizzle-orm";
 import { db } from "./db";
 import { loadLandlordDeal, loadLandlordStanding } from "./deal-projection";
 import { matches, properties, type ShareLink } from "./schema";
-import { resolveShareLink } from "./share-links";
+import { isCurrentLandlordMatchLink, resolveShareLink } from "./share-links";
 
 export async function landlordPropertyScope(link: ShareLink, requireAgreement = true) {
   if (link.audience !== "landlord") return null;
   if (link.matchId) {
+    if (!(await isCurrentLandlordMatchLink(link))) return null;
     const deal = await loadLandlordDeal(link.matchId);
     if (!deal || (requireAgreement && !deal.agreementAccepted)) return null;
-    const [match] = await db.select({ propertyId: matches.propertyId, requestId: matches.requestId })
-      .from(matches).where(eq(matches.id, link.matchId)).limit(1);
+    const [match] = await db.select({ propertyId: matches.propertyId, requestId: matches.requestId, ownerId: properties.ownerId })
+      .from(matches).innerJoin(properties, eq(properties.id, matches.propertyId)).where(eq(matches.id, link.matchId)).limit(1);
     if (!match || match.requestId !== link.requestId) return null;
     return eq(properties.id, match.propertyId);
   }

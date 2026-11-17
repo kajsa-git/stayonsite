@@ -5,14 +5,15 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "./db";
-import { shareLinks, type ShareLink } from "./schema";
+import { matches, properties, requests, shareLinks, type ShareLink } from "./schema";
 import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
+import { loadHistoricalMediationAcceptance } from "./mediation-acceptance";
 
 export type ShareAudience = "tenant" | "landlord";
 
 // Returnerar befintlig aktiv länk för ärendet, annars skapas en ny.
 // Tre länktyper: kundlänk (requestId), affärsknuten uthyrarlänk (requestId+matchId)
-// och FRISTÅENDE uthyrarlänk (ownerId — uppdragsavtalet skickas före någon affär).
+// och fristående uthyrarlänk (ownerId — publiceringsmedgivande).
 export async function ensureShareLink(opts: {
   audience: ShareAudience;
   requestId?: string | null;
@@ -21,16 +22,24 @@ export async function ensureShareLink(opts: {
   userId?: string | null;
   intakePurpose?: "hus-upload" | "agreement";
 }): Promise<ShareLink> {
-  const ownerId = opts.audience === "tenant" ? null : (opts.ownerId ?? null);
-  const matchId = opts.audience === "tenant" || ownerId ? null : (opts.matchId ?? null);
-  const requestId = opts.audience === "landlord" && ownerId ? null : (opts.requestId ?? null);
+  const matchId = opts.audience === "landlord" ? (opts.matchId ?? null) : null;
+  let ownerId = opts.audience === "tenant" ? null : (opts.ownerId ?? null);
+  const requestId = opts.audience === "landlord" && !matchId && ownerId ? null : (opts.requestId ?? null);
   if (opts.audience === "tenant" && !requestId) throw new Error("ensureShareLink: requestId krävs för kundlänk");
-  if (opts.audience === "landlord" && !ownerId && (!requestId || !matchId)) {
+  if (opts.audience === "landlord" && !matchId && !ownerId) {
     throw new Error("ensureShareLink: ownerId eller requestId + matchId krävs för uthyrarlänk");
   }
+  if (matchId) {
+    const [match] = await db.select({ requestId: matches.requestId, ownerId: properties.ownerId, status: requests.status })
+      .from(matches).innerJoin(properties, eq(properties.id, matches.propertyId))
+      .innerJoin(requests, eq(requests.id, matches.requestId)).where(eq(matches.id, matchId)).limit(1);
+    if (!match || !match.ownerId || match.requestId !== requestId || ["lost", "archived"].includes(match.status) ||
+        (ownerId && ownerId !== match.ownerId)) throw new Error("Förfrågan eller uthyraren saknas.");
+    ownerId = match.ownerId;
+  }
 
-  const scope = ownerId
-    ? eq(shareLinks.ownerId, ownerId)
+  const scope = ownerId && !matchId
+    ? and(eq(shareLinks.ownerId, ownerId), isNull(shareLinks.matchId))
     : and(
         eq(shareLinks.requestId, requestId!),
         matchId ? eq(shareLinks.matchId, matchId) : isNull(shareLinks.matchId)
@@ -41,13 +50,19 @@ export async function ensureShareLink(opts: {
     .where(and(eq(shareLinks.audience, opts.audience), scope, isNull(shareLinks.revokedAt)))
     .limit(1);
   if (existing) {
-    // A later, ordinary StayOnSite intake still needs its normal reminder.
-    if (opts.intakePurpose === "agreement" && existing.createdBy === HUS_UPLOAD_LINK_ACTOR) {
-      const [updated] = await db.update(shareLinks).set({ createdBy: null })
-        .where(eq(shareLinks.id, existing.id)).returning();
-      return updated;
+    // An old unbound token may have been shared with a previous owner. Do not
+    // silently attach it to the current owner; issue a fresh capability.
+    if (matchId && existing.ownerId !== ownerId) {
+      await db.update(shareLinks).set({ revokedAt: new Date().toISOString() }).where(eq(shareLinks.id, existing.id));
+    } else {
+      // A later, ordinary StayOnSite intake still needs its normal reminder.
+      if (opts.intakePurpose === "agreement" && existing.createdBy === HUS_UPLOAD_LINK_ACTOR) {
+        const [updated] = await db.update(shareLinks).set({ createdBy: null })
+          .where(eq(shareLinks.id, existing.id)).returning();
+        return updated;
+      }
+      return existing;
     }
-    return existing;
   }
 
   const [row] = await db
@@ -99,6 +114,21 @@ export async function revokeShareLink(id: string): Promise<void> {
     .update(shareLinks)
     .set({ revokedAt: new Date().toISOString() })
     .where(and(eq(shareLinks.id, id), isNull(shareLinks.revokedAt)));
+}
+
+// A deal link is issued to the owner of the matched property at that time.
+export async function isCurrentLandlordMatchLink(link: ShareLink): Promise<boolean> {
+  if (link.audience !== "landlord" || !link.matchId || !link.requestId) return false;
+  const [match] = await db.select({ requestId: matches.requestId, propertyId: matches.propertyId, ownerId: properties.ownerId, sentAt: matches.sentAt })
+    .from(matches).innerJoin(properties, eq(properties.id, matches.propertyId))
+    .where(eq(matches.id, link.matchId)).limit(1);
+  if (!match || match.requestId !== link.requestId || !match.ownerId) return false;
+  if (link.ownerId) return match.ownerId === link.ownerId;
+  if (!match.sentAt) return false;
+  const historical = await loadHistoricalMediationAcceptance({
+    matchId: link.matchId, requestId: match.requestId, propertyId: match.propertyId, ownerId: match.ownerId,
+  }, link.id);
+  return historical?.shareLinkId === link.id;
 }
 
 // Anropas när en förfrågan blir lost/archived eller raderas — inga externa

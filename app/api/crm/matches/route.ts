@@ -1,8 +1,8 @@
-import { isAcceptanceValid, UTHYRNINGSUPPDRAG } from "@/lib/crm/avtal";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
-import { agreementAcceptances, matchEvents, matches, properties } from "@/lib/crm/schema";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { loadHistoricalMediationAcceptance, loadMediationAcceptances } from "@/lib/crm/mediation-acceptance";
+import { matchEvents, matches, properties } from "@/lib/crm/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -48,27 +48,17 @@ export async function GET(req: NextRequest) {
     .where(eq(matches.requestId, requestId))
     .orderBy(desc(matches.createdAt));
 
-  // Uthyrningsuppdragets signeringsstatus — gäller UTHYRAREN (alla objekt) i 12
-  // mån. Bara GILTIGA signeringar visas (rätt version + inom giltighetstiden).
-  const ownerIds = [...new Set(rows.map((r) => r.propertyOwnerId).filter((v): v is string => !!v))];
-  const acceptRows = ownerIds.length
-    ? await db
-        .select()
-        .from(agreementAcceptances)
-        .where(
-          and(
-            inArray(agreementAcceptances.ownerId, ownerIds),
-            eq(agreementAcceptances.agreementType, UTHYRNINGSUPPDRAG.type)
-          )
-        )
-        .orderBy(desc(agreementAcceptances.acceptedAt))
-    : [];
-  const signedByOwner = new Map<string, { acceptedName: string; acceptedAt: string }>();
-  for (const a of acceptRows) {
-    if (a.ownerId && !signedByOwner.has(a.ownerId) && isAcceptanceValid(a, UTHYRNINGSUPPDRAG)) {
-      signedByOwner.set(a.ownerId, { acceptedName: a.acceptedName, acceptedAt: a.acceptedAt });
-    }
-  }
+  const signedByMatch = await loadMediationAcceptances(rows.map((r) => ({
+    matchId: r.id, requestId: r.requestId, propertyId: r.propertyId, ownerId: r.propertyOwnerId,
+  })));
+  // Preserve the visible status of previously sent deals with evidence tied to
+  // their own link. Historical owner-wide approvals never release a new offer.
+  await Promise.all(rows.filter((r) => r.sentAt && !signedByMatch.has(r.id)).map(async (r) => {
+    const historical = await loadHistoricalMediationAcceptance({
+      matchId: r.id, requestId: r.requestId, propertyId: r.propertyId, ownerId: r.propertyOwnerId,
+    });
+    if (historical) signedByMatch.set(r.id, historical);
+  }));
 
   // Senaste tillbakadragningen per match — kortet visar "skickat X → tillbaka-
   // draget Y" när erbjudandet dragits tillbaka. Händelsens data bär originalets
@@ -91,8 +81,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(
     rows.map((r) => ({
       ...r,
-      landlordSignedName: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedName) ?? null,
-      landlordSignedAt: (r.propertyOwnerId && signedByOwner.get(r.propertyOwnerId)?.acceptedAt) ?? null,
+      landlordSignedName: signedByMatch.get(r.id)?.acceptedName ?? null,
+      landlordSignedAt: signedByMatch.get(r.id)?.acceptedAt ?? null,
       withdrawnAt: withdrawnByMatch.get(r.id)?.withdrawnAt ?? null,
       withdrawnSentAt: withdrawnByMatch.get(r.id)?.withdrawnSentAt ?? null,
     }))
