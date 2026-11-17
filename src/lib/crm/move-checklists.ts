@@ -26,6 +26,7 @@ export const MOVE_IN_CHECKLIST: ChecklistItem[] = [
     ],
   },
   { key: "customer_info", label: "Kund informerad (adress, wifi, instruktioner)" },
+  { key: "reference_requested", label: "Be om referens" },
 ];
 
 export const MOVE_IN_CONTRACT_SENT_KEY = "contract_sent";

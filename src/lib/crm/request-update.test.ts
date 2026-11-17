@@ -108,6 +108,23 @@ describe("applyRequestUpdate", () => {
     if (r.ok === false) expect(r.body.error).toBe("checklist_incomplete");
   });
 
+  it("kräver att referens har efterfrågats innan inflytten klarmarkeras", async () => {
+    const previousItems = ["contract", "keys", "cleaned", "condition_note", "customer_info"];
+    await applyRequestUpdate("r1", { moveInChecklist: previousItems }, { db, ...noopEffects });
+
+    const incomplete = await applyRequestUpdate("r1", { moveInDoneAt: "2026-07-15T10:00:00Z" }, { db, ...noopEffects });
+    expect(incomplete.ok).toBe(false);
+    if (incomplete.ok === false) expect(incomplete.body.error).toBe("checklist_incomplete");
+
+    const saved = await applyRequestUpdate("r1", { moveInChecklist: [...previousItems, "reference_requested"] }, { db, ...noopEffects });
+    expect(saved.ok).toBe(true);
+    const [row] = await db.select().from(requests).where(eq(requests.id, "r1"));
+    expect(row.moveInChecklist).toContain("reference_requested");
+
+    const complete = await applyRequestUpdate("r1", { moveInDoneAt: "2026-07-15T10:00:00Z" }, { db, ...noopEffects });
+    expect(complete.ok).toBe(true);
+  });
+
   it("won: stämplar statusChangedAt, reserverar objektet och stänger andras öppna förslag", async () => {
     const r = await applyRequestUpdate("r1", { status: "won" }, { db, ...noopEffects });
     expect(r.ok).toBe(true);
