@@ -9,7 +9,8 @@ const state = vi.hoisted(() => ({ db: null as unknown as LibSQLDatabase<typeof s
 vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./schedule-property-review", () => ({ schedulePropertyReview: vi.fn() }));
 vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}) }));
-import { authorizeLandlordProperty, loadLandlordProperties } from "./landlord-properties";
+import { authorizeLandlordProperty, loadConsentedImageProperties, loadLandlordProperties } from "./landlord-properties";
+import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 import { PATCH } from "../../../app/api/share/[token]/properties/[id]/route";
 import { GET as imagesGET } from "../../../app/api/share/[token]/properties/[id]/images/route";
 import { landlordPropertyInput } from "./landlord-property-input";
@@ -82,6 +83,19 @@ describe("uthyrarens bostäder", () => {
   it("ger inte en uppladdningslänk bredare rättigheter bara för att ett HUS-medgivande finns", async () => {
     await state.db.update(schema.properties).set({ publishConsentAt: "2026-11-01", publishConsentSource: "hus" }).where(eq(schema.properties.id, "p2"));
     expect((await patch({ beds: 3 }, "unsigned-token", "p2")).status).toBe(404);
+  });
+  it("visar bara den egna godkända bostaden för bilduppladdning efter ett ja i chatt", async () => {
+    await state.db.insert(schema.properties).values({ id: "p4", ownerId: "o2", address: "Gatan 4" });
+    await state.db.update(schema.properties).set({ publishConsentAt: "2026-11-17", publishConsentSource: "chatt", notes: "intern information" }).where(eq(schema.properties.id, "p2"));
+    const [link] = await state.db.select().from(schema.shareLinks).where(eq(schema.shareLinks.id, "l2"));
+    const rows = await loadConsentedImageProperties(link);
+    expect(rows).toEqual([{ id: "p2", address: "Gatan 2", city: null }]);
+    expect(JSON.stringify(rows)).not.toMatch(/notes|intern information|rentIn/);
+    expect((await patch({ beds: 3 }, "unsigned-token", "p2")).status).toBe(404);
+    expect(await loadConsentedImageProperties({ ...link, createdBy: HUS_UPLOAD_LINK_ACTOR })).toEqual([]);
+    expect(await loadConsentedImageProperties({ ...link, matchId: "match" })).toEqual([]);
+    await state.db.update(schema.properties).set({ publishConsentAt: null, publishConsentSource: "withdrawn" }).where(eq(schema.properties.id, "p2"));
+    expect(await loadConsentedImageProperties(link)).toEqual([]);
   });
   it("låter uthyraren uppdatera sina uppgifter efter ett ja via den egna länken utan förmedlingsavtal", async () => {
     await state.db.insert(schema.agreementAcceptances).values({ id: "pub", ownerId: "o2", propertyId: "p2", agreementType: "publiceringsmedgivande", version: "2026-11-12.1", acceptedName: "Bo", acceptedAt: new Date().toISOString() });

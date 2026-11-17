@@ -54,3 +54,17 @@ it("försöker bara om misslyckade bilder efter en delvis lyckad uppladdning", a
   const uploads = fetcher.mock.calls.filter((call) => call[1]?.method === "POST");
   expect(((uploads[2][1]!.body as FormData).get("file") as File).name).toBe("two.jpg");
 });
+it("visar endast bilduppladdning när medgivandet registrerats via chatt", async () => {
+  const fetcher = vi.fn(async (_url: string, options?: RequestInit) => options?.method === "POST"
+    ? new Response(JSON.stringify({ id: "image" }), { status: 201 }) : new Response("[]"));
+  vi.stubGlobal("fetch", fetcher);
+  render(<LandlordPropertyForm token="test" property={{ id: "p1", address: "Testgatan 1", city: "Teststad" }} photosOnly />);
+  expect(screen.queryByLabelText("Önskad hyra (kr/månad)")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Spara uppgifter" })).not.toBeInTheDocument();
+  const file = new File(["image"], "bild.jpg", { type: "image/jpeg" });
+  fireEvent.change(screen.getByLabelText("Lägg till bilder (upp till 10 åt gången)"), { target: { files: [file] } });
+  fireEvent.click(screen.getByRole("button", { name: "Ladda upp bilder" }));
+  expect(await screen.findByRole("status")).toHaveTextContent("1 bild sparad");
+  const post = fetcher.mock.calls.find((call) => call[1]?.method === "POST");
+  expect(post?.[0]).toBe("/api/share/test/properties/p1/images");
+});

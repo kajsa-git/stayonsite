@@ -1,6 +1,7 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { db } from "./db";
 import { loadLandlordDeal, loadLandlordStanding } from "./deal-projection";
+import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 import { matches, properties, type ShareLink } from "./schema";
 import { isCurrentLandlordMatchLink, resolveShareLink } from "./share-links";
 
@@ -43,4 +44,14 @@ export async function loadLandlordProperties(link: ShareLink) {
     bedrooms: properties.bedrooms, beds: properties.beds, squareMeters: properties.squareMeters,
     availability: properties.availability, moveInFrom: properties.moveInFrom, availableTo: properties.availableTo,
   }).from(properties).where(scope).orderBy(properties.address);
+}
+
+// Manual publication consent permits adding images to that property, but does
+// not grant the full editing portal for all of the owner's properties.
+export async function loadConsentedImageProperties(link: ShareLink) {
+  if (link.audience !== "landlord" || link.matchId || !link.ownerId || link.createdBy === HUS_UPLOAD_LINK_ACTOR) return [];
+  return db.select({ id: properties.id, address: properties.address, city: properties.city })
+    .from(properties)
+    .where(and(eq(properties.ownerId, link.ownerId), isNotNull(properties.publishConsentAt)))
+    .orderBy(properties.address);
 }

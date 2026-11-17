@@ -15,7 +15,13 @@ const numberFields = [
   ["beds", "Antal bäddar", 10000, "1"],
 ] as const;
 
-export function LandlordPropertyForm({ token, property }: { token: string; property: LandlordProperty }) {
+type PropertyFormProps =
+  | { token: string; property: LandlordProperty; photosOnly?: false }
+  | { token: string; property: Pick<LandlordProperty, "id" | "address" | "city">; photosOnly: true };
+
+export function LandlordPropertyForm(props: PropertyFormProps) {
+  const { token, property } = props;
+  const editableProperty = props.photosOnly === true ? null : props.property as LandlordProperty;
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -99,30 +105,30 @@ export function LandlordPropertyForm({ token, property }: { token: string; prope
         <h2 id={`${property.id}-heading`} className="text-xl font-semibold text-nordic-900">{property.address || "Min bostad"}</h2>
         {property.city && <p className="mt-1 text-sm text-nordic-700">{property.city}</p>}
       </div>
-      <form onSubmit={save} onChange={() => setSaved(false)} className="space-y-5">
+      {editableProperty && <form onSubmit={save} onChange={() => setSaved(false)} className="space-y-5">
         <fieldset disabled={busy} className="space-y-5 disabled:opacity-70">
           <label className="block space-y-2 text-sm font-medium">
             <span>Beskrivning av bostaden</span>
-            <Textarea name="publicDescription" defaultValue={property.publicDescription ?? ""} maxLength={5000} rows={5} />
+            <Textarea name="publicDescription" defaultValue={editableProperty.publicDescription ?? ""} maxLength={5000} rows={5} />
             <span className="block text-xs font-normal text-muted-foreground">Beskriv bostaden och vad som ingår. Texten kan visas i annonsen — skriv inte kontaktuppgifter eller exakt adress här.</span>
           </label>
           <div className="grid gap-4 sm:grid-cols-2">
             {numberFields.map(([name, label, max, step]) => (
               <label key={name} className="block space-y-2 text-sm font-medium">
                 <span>{label}</span>
-                <Input name={name} type="number" min={0} max={max} step={step} defaultValue={property[name] ?? ""} />
+                <Input name={name} type="number" min={0} max={max} step={step} defaultValue={editableProperty[name] ?? ""} />
               </label>
             ))}
             <label className="block space-y-2 text-sm font-medium">
-              <span>Ledig från</span><Input name="moveInFrom" type="date" defaultValue={property.moveInFrom ?? ""} />
+              <span>Ledig från</span><Input name="moveInFrom" type="date" defaultValue={editableProperty.moveInFrom ?? ""} />
             </label>
             <label className="block space-y-2 text-sm font-medium">
-              <span>Ledig till (lämna tomt för tills vidare)</span><Input name="availableTo" type="date" defaultValue={property.availableTo ?? ""} />
+              <span>Ledig till (lämna tomt för tills vidare)</span><Input name="availableTo" type="date" defaultValue={editableProperty.availableTo ?? ""} />
             </label>
           </div>
           <label className="block space-y-2 text-sm font-medium">
             <span>Övrigt om tillgängligheten</span>
-            <Textarea name="availability" defaultValue={property.availability ?? ""} maxLength={1000} rows={2} placeholder="Till exempel flexibel inflyttning eller redan bokade perioder" />
+            <Textarea name="availability" defaultValue={editableProperty.availability ?? ""} maxLength={1000} rows={2} placeholder="Till exempel flexibel inflyttning eller redan bokade perioder" />
           </label>
           <p className="text-xs text-muted-foreground">Önskad hyra och tillgänglighet gäller kommande uthyrningar. Redan överenskomna villkor ändras inte.</p>
           <Button type="submit" className="w-full rounded-full bg-[#ff6300] text-white hover:bg-[#e65800] sm:w-auto">
@@ -131,7 +137,7 @@ export function LandlordPropertyForm({ token, property }: { token: string; prope
         </fieldset>
         {saved && <p role="status" className="text-sm font-medium text-green-800">Dina uppgifter är sparade. Du kan komma tillbaka via samma länk när du vill uppdatera dem.</p>}
         {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-      </form>
+      </form>}
       <div className="space-y-4 border-t pt-6">
         <h3 className="font-semibold text-nordic-900">Bilder på bostaden</h3>
         {photos.length > 0 && <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

@@ -1,5 +1,5 @@
 import { LandlordPropertyForm } from "@/components/erbjudande/LandlordPropertyForm";
-import { loadLandlordProperties } from "@/lib/crm/landlord-properties";
+import { loadConsentedImageProperties, loadLandlordProperties } from "@/lib/crm/landlord-properties";
 import { AgreementGate } from "@/components/erbjudande/AgreementGate";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
 import { PublicationWithdrawal } from "@/components/erbjudande/PublicationWithdrawal";
@@ -37,6 +37,7 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
     if (!standing) notFound();
     const consent = await loadPublishConsentState(link.ownerId);
     const editableProperties = standing.portalAllowed ? await loadLandlordProperties(link) : [];
+    const imageProperties = standing.portalAllowed ? [] : await loadConsentedImageProperties(link);
     return (
       <div className="min-h-screen pb-16">
         <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
@@ -58,6 +59,15 @@ export default async function UthyrarePage({ params }: { params: Promise<{ token
               </div>
               {editableProperties.length === 0 && <p className="rounded-xl border bg-white p-5 text-sm">Ingen bostad är kopplad till din sida ännu. Kontakta Kajsa på StayOnSite så hjälper vi dig.</p>}
               {editableProperties.map((property) => <LandlordPropertyForm key={property.id} token={token} property={property} />)}
+            </div>
+          )}
+          {!standing.portalAllowed && imageProperties.length > 0 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl text-nordic-900" style={editorial}>Lägg till bilder</h2>
+                <p className="mt-2 text-sm text-nordic-700">Här kan du lägga till bilder för bostäder som du har godkänt för publicering.</p>
+              </div>
+              {imageProperties.map((property) => <LandlordPropertyForm key={property.id} token={token} property={property} photosOnly />)}
             </div>
           )}
           <p className="text-center text-xs text-muted-foreground">StayOnSite · Corporate housing i hela Sverige</p>
