@@ -4,13 +4,24 @@ export const PUBLICATION_CONSENT_LEGACY_2026_11_12 =
   "Beskrivningen kan språkgranskas och översättas. Exakt adress och kontaktuppgifter visas inte offentligt. " +
   "Publiceringen är kostnadsfri och innebär ingen skyldighet att hyra ut. Jag kan när som helst kontakta StayOnSite för att ändra eller ta bort en annons.";
 
-export const PUBLICATION_CONSENT_VERSION = "2026-11-17.1";
+export const PUBLICATION_CONSENT_PREVIOUS_VERSION = "2026-11-17.1";
 
-export const PUBLICATION_CONSENT_PARAGRAPHS = [
+export const PUBLICATION_CONSENT_PREVIOUS_PARAGRAPHS = [
   "Det är kostnadsfritt att registrera din bostad hos HyrUtSmart – en del av StayOnSite.",
   "När du godkänner medgivandet får vi använda de uppgifter och bilder du har lämnat för att beskriva din bostad på vår hemsida och för potentiella hyresgäster. Din exakta adress och dina kontaktuppgifter visas inte offentligt.",
   "Om vi får en förfrågan som kan passa din bostad kontaktar vi dig för att stämma av hyra, hyresperiod och andra villkor. Du bestämmer själv om du vill gå vidare. Innan vi föreslår bostaden för en kund ber vi dig godkänna villkoren för den förmedlingen separat.",
   "Du kan när som helst kontakta oss om du vill ändra uppgifterna eller återkalla ditt medgivande. Om du återkallar det tar vi bort annonsen från hemsidan.",
+] as const;
+
+export const PUBLICATION_CONSENT_PREVIOUS_TEXT = PUBLICATION_CONSENT_PREVIOUS_PARAGRAPHS.join("\n\n");
+
+export const PUBLICATION_CONSENT_VERSION = "2026-11-17.2";
+export const PUBLICATION_CONSENT_PARAGRAPHS = [
+  "Det är kostnadsfritt att registrera din bostad hos HyrUtSmart, en del av StayOnSite.",
+  "När du godkänner får vi använda dina uppgifter och bilder för att presentera bostaden på vår hemsida och för potentiella hyresgäster. Din exakta adress och dina kontaktuppgifter visas inte offentligt.",
+  "Om en förfrågan passar din bostad kontaktar vi dig för att stämma av hyra, hyresperiod och övriga villkor. Du bestämmer om du vill gå vidare och godkänner förmedlingsvillkoren separat innan vi föreslår bostaden för en kund.",
+  "Du kan när som helst kontakta oss för att ändra uppgifter eller återkalla medgivandet. Om du återkallar det tar vi bort annonsen från hemsidan.",
+  "Godkänner du publiceringsmedgivandet?",
 ] as const;
 
 export const PUBLICATION_CONSENT_TEXT = PUBLICATION_CONSENT_PARAGRAPHS.join("\n\n");

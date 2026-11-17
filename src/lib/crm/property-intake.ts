@@ -6,7 +6,7 @@ import { db } from "./db";
 import { normalizePropertyWriteBody } from "./owners";
 import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
-import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_PREVIOUS_TEXT, PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { indexOwner, indexProperty } from "./search-index";
 import { outboxMessages, ownerOutreach, owners, properties, propertyImages, propertyIntakeNotifications, type Owner, type Property, type PropertyInsert } from "./schema";
@@ -125,7 +125,7 @@ export const propertyIntakeSchema = z
       fbp: z.string().max(255).optional(),
     }).optional(),
     // A separate choice from contact consent; older intake clients omit it.
-    husPublication: z.object({ version: z.enum([HUS_INTAKE_VERSION, PUBLICATION_CONSENT_VERSION]), approved: z.boolean() }).optional(),
+    husPublication: z.object({ version: z.enum([HUS_INTAKE_VERSION, PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_VERSION]), approved: z.boolean() }).optional(),
     // New clients report how many photos they intend to upload separately.
     expectedImageCount: z.number().int().min(0).max(10).optional(),
     consent: z.literal(true),
@@ -178,6 +178,12 @@ export function propertyIntakeInclusions(input: PropertyIntakeInput): string[] {
 }
 
 export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
+  // A form opened before deployment must retain the text its owner actually saw.
+  const approvedText = input.husPublication?.version === PUBLICATION_CONSENT_VERSION
+    ? PUBLICATION_CONSENT_TEXT
+    : input.husPublication?.version === PUBLICATION_CONSENT_PREVIOUS_VERSION
+      ? PUBLICATION_CONSENT_PREVIOUS_TEXT
+      : null;
   const availability = [
     line("Tillgänglig från", input.moveInFrom),
     input.availableUntilFurtherNotice ? "Tillgänglig till: tills vidare/osäkert" : line("Tillgänglig till", input.availableTo),
@@ -197,8 +203,8 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
     line("Sida", input.page),
     line("Källa", input.source),
     input.husPublication ? `HUS webbpublicering (${input.husPublication.version}): ${input.husPublication.approved ? "godkänd" : "inte godkänd"}.` : null,
-    input.husPublication?.approved && input.husPublication.version === PUBLICATION_CONSENT_VERSION
-      ? `Godkänd text: ${PUBLICATION_CONSENT_TEXT}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}` : null,
+    input.husPublication?.approved && approvedText
+      ? `Godkänd text: ${approvedText}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}` : null,
     line("UTM", utmLine(input)),
     line("Önskad hyra", money(input.desiredRent)),
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 import * as schema from "./schema";
 import { createTestDb, type TestDB } from "./test-db";
@@ -37,6 +37,7 @@ function crm(body: object, id = "p1") {
 describe("publikationsflödets endpoints", () => {
   it("avvisar ett gammalt öppet formulär och en bostad som inte tillhör länken", async () => {
     expect((await web({ name: "Anna", propertyIds: ["p1"], version: "gammal" })).status).toBe(409);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_PREVIOUS_VERSION })).status).toBe(409);
     expect((await web({ name: "Anna", propertyIds: ["p1", "other"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(404);
     expect((await state.db.select().from(schema.properties).where(eq(schema.properties.id, "p1")))[0].publishConsentAt).toBeNull();
   });

@@ -7,7 +7,7 @@ vi.mock("./db", () => ({ get db() { return state.db; } }));
 vi.mock("./search-index", () => ({ indexProperty: vi.fn(async () => {}), indexOwner: vi.fn(async () => {}) }));
 import { createPropertyIntake, propertyIntakeSchema } from "./property-intake";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, HUS_UPLOAD_LINK_ACTOR, husPublicationSmsId } from "./hus-publication";
-import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_PREVIOUS_TEXT, PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { ensureShareLink } from "./share-links";
 import { agreementAcceptances, outboxMessages, owners, ownerOutreach, properties } from "./schema";
 import { homeownerLeadIntakeSms } from "./sms-templates";
@@ -61,6 +61,16 @@ describe("HUS registration", () => {
     const { property } = await createPropertyIntake(input);
     expect(property.notes).toContain(`HUS webbpublicering (${PUBLICATION_CONSENT_VERSION}): godkänd`);
     expect(property.notes).toContain(PUBLICATION_CONSENT_TEXT);
+    expect(property.notes).toContain(PUBLICATION_CONSENT_CHECKBOX_LABEL);
+    expect(await state.db.select().from(agreementAcceptances)).toHaveLength(0);
+  });
+
+  it("records the old text when an already-open HUS form is submitted after an update", async () => {
+    const input = propertyIntakeSchema.parse({ ...raw, husPublication: { version: PUBLICATION_CONSENT_PREVIOUS_VERSION, approved: true } });
+    const { property } = await createPropertyIntake(input);
+    expect(property.notes).toContain("HUS webbpublicering (2026-11-17.1): godkänd");
+    expect(property.notes).toContain(PUBLICATION_CONSENT_PREVIOUS_TEXT);
+    expect(property.notes).not.toContain(PUBLICATION_CONSENT_TEXT);
     expect(property.notes).toContain(PUBLICATION_CONSENT_CHECKBOX_LABEL);
     expect(await state.db.select().from(agreementAcceptances)).toHaveLength(0);
   });
