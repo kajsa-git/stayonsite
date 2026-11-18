@@ -1,6 +1,8 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import { defineChannel, POST } from "eve/channels";
+import { defineChannel, GET, POST } from "eve/channels";
 import { kajsasChatId } from "../lib/config.ts";
+import { lasResultat, tolkaResultat } from "../lib/facebook-resultat.ts";
+import { avslutaUppdrag, blobLagring, hamtaUppdrag, oppnaUppdrag, sparaGrupp } from "../lib/facebook-uppdrag.ts";
 import { skickaTillKajsa } from "../lib/telegram-api.ts";
 import telegram from "./telegram.ts";
 
@@ -38,12 +40,48 @@ export function formateraHandelser(events: Event[]): string {
   );
 }
 
+const MAC = { authenticator: "mac", principalType: "service", principalId: "kajsas-mac", attributes: {} } as const;
+
 export default defineChannel({
   routes: [
+    // Datorn frågar efter uppdrag (söka grupper, gå med, svara på medlemsfrågor).
+    GET("/mac/uppdrag", async (req) => {
+      if (!behorig(req)) return new Response("unauthorized", { status: 401 });
+      return Response.json({ uppdrag: await oppnaUppdrag(blobLagring()) });
+    }),
+
     POST("/mac/facebook", async (req, ctx) => {
       if (!behorig(req)) return new Response("unauthorized", { status: 401 });
-      const body = (await req.json().catch(() => null)) as { events?: unknown; status?: unknown; reason?: unknown } | null;
+      const body = (await req.json().catch(() => null)) as
+        | { events?: unknown; status?: unknown; reason?: unknown; resultat?: unknown }
+        | null;
       if (!body) return new Response("bad request", { status: 400 });
+
+      if (body.resultat !== undefined) {
+        const r = lasResultat(body.resultat);
+        if (!r) return new Response("bad request", { status: 400 });
+        const lagring = blobLagring();
+        const uppdrag = await hamtaUppdrag(lagring, r.uppdrag);
+        const atgarder = tolkaResultat(r, uppdrag);
+        for (const g of atgarder.sparaGrupper) await sparaGrupp(lagring, g);
+        if (r.klar) await avslutaUppdrag(lagring, r.uppdrag);
+        const nyckel = createHash("sha256").update(JSON.stringify(body.resultat)).digest("hex").slice(0, 32);
+        if (atgarder.tillAgenten) {
+          ctx.waitUntil(
+            ctx.to(telegram, { chatId: kajsasChatId() }).send(atgarder.tillAgenten, {
+              auth: MAC,
+              idempotencyKey: `mac:resultat:${nyckel}`,
+            }),
+          );
+        } else if (atgarder.direkt) {
+          ctx.waitUntil(
+            skickaTillKajsa({ text: atgarder.direkt }).catch((e) =>
+              console.error("kajsas-agent: kunde inte meddela Kajsa", e instanceof Error ? e.message : e),
+            ),
+          );
+        }
+        return Response.json({ ok: true, klar: r.klar }, { status: 202 });
+      }
 
       if (body.status === "needs_kajsa") {
         // Ingen modell behövs: säg till Kajsa direkt.
@@ -67,7 +105,7 @@ export default defineChannel({
 
       ctx.waitUntil(
         ctx.to(telegram, { chatId: kajsasChatId() }).send(formateraHandelser(events), {
-          auth: { authenticator: "mac", principalType: "service", principalId: "kajsas-mac", attributes: {} },
+          auth: MAC,
           idempotencyKey: `mac:facebook:${nyckel}`,
         }),
       );

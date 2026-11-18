@@ -8,7 +8,9 @@
     "start": "node agent.mjs --loop",
     "once": "node agent.mjs --once",
     "login": "node agent.mjs --login",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "grupp": "node agent.mjs --grupp",
+    "sok": "node agent.mjs --sok"
   },
   "engines": {
     "node": ">=20"

@@ -151,3 +151,124 @@ export function rememberNames(names, add) {
   for (const n of add) if (n && !out.includes(n)) out.push(n);
   return out.slice(-500);
 }
+
+// ─── Grupper: söka, gå med, svara på medlemsfrågor ────────────────────────────
+// Uppdragen kommer från Kajsas agent (GET /mac/uppdrag) efter att Kajsa har sagt ja.
+export const MAX_JOINS_PER_DAY = 5;
+export const MAX_JOINS_PER_RUN = 2;
+export const TASK_CHECK_MINUTES = 3;
+export const TASK_RUN_GAP_MINUTES = 5;
+
+/** Dagens datum i Sverige, YYYY-MM-DD. */
+export function swedishDate(now = new Date()) {
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+}
+
+/** Hur många grupper datorn får gå med i till i dag. */
+export function joinsLeft(state, now = new Date()) {
+  const j = state.joins ?? {};
+  return j.date === swedishDate(now) ? Math.max(0, MAX_JOINS_PER_DAY - (j.count ?? 0)) : MAX_JOINS_PER_DAY;
+}
+
+export function countJoin(state, now = new Date()) {
+  const d = swedishDate(now);
+  const j = state.joins?.date === d ? state.joins : { date: d, count: 0 };
+  state.joins = { date: d, count: j.count + 1 };
+}
+
+const RESERVED = new Set(["feed", "discover", "joins", "create", "notifications", "search", "you", "your_groups", "join"]);
+
+/** Kanonisk grupplänk (samma regel som agentens gruppUrl), eller null. */
+export function groupUrl(href) {
+  try {
+    const u = new URL(href, "https://www.facebook.com");
+    if (!/^(www\.|m\.|web\.)?facebook\.com$/.test(u.hostname)) return null;
+    const m = /^\/groups\/([A-Za-z0-9._-]{2,100})\/?/.exec(u.pathname);
+    if (!m || RESERVED.has(m[1].toLowerCase())) return null;
+    return `https://www.facebook.com/groups/${m[1]}`;
+  } catch {
+    return null;
+  }
+}
+
+const JOIN = /^(gå med i gruppen|gå med|join group|join)$/i;
+const PENDING = /^(avbryt förfrågan|förfrågan skickad|förfrågan har skickats|cancel request|requested)$/i;
+const MEMBER = /^(gått med|medlem|joined|visa grupp|besök grupp|visit group|view group)$/i;
+
+export function isJoinLabel(label) {
+  return JOIN.test(normaliseText(label));
+}
+
+/** Medlemskap utifrån knapparna i gruppens sidhuvud eller ett sökkort. */
+export function membershipFromButtons(labels) {
+  const l = (labels ?? []).map((x) => normaliseText(x));
+  if (l.some((x) => PENDING.test(x))) return "vantar";
+  if (l.some((x) => MEMBER.test(x))) return "medlem";
+  if (l.some((x) => JOIN.test(x))) return "ej_medlem";
+  return "okand";
+}
+
+/** Kort beskrivning ur ett sökkort: offentlig/privat, medlemmar, inlägg per dag. */
+export function cardInfo(text, name) {
+  const t = normaliseText(text).replace(normaliseText(name), "").trim();
+  const delar = t
+    .split(/\s*·\s*|\s{2,}/)
+    .filter((d) => /(offentlig|privat|public|private|medlem|members|inlägg|posts)/i.test(d));
+  return truncate(delar.join(" · ").trim(), 160);
+}
+
+/** Frågetext jämförd utan skiljetecken, stjärnor och "obligatorisk". */
+export function normQuestion(text) {
+  return normaliseText(text)
+    .toLowerCase()
+    .replace(/\b(obligatorisk|obligatoriskt|required|valfri|optional)\b/g, "")
+    .replace(/[*?:.!"”“'’()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Matchar frågorna i rutan mot de svar Kajsa har godkänt. Allt måste stämma, annars
+ * skickas ingenting: en fråga utan godkänt svar, ett svar som inte finns bland
+ * alternativen eller regler som inte är godkända stoppar.
+ */
+export function matchAnswers(questions, approved, godkannRegler) {
+  const byQ = new Map((approved ?? []).map((a) => [normQuestion(a.fraga), a.svar]));
+  const plan = [];
+  const saknas = [];
+  for (const q of questions) {
+    if (!q.fraga) {
+      saknas.push("(oläslig fråga)");
+      continue;
+    }
+    if (q.typ === "regler") {
+      if (godkannRegler) plan.push({ ...q, val: q.alternativ ?? [] });
+      else saknas.push(q.fraga);
+      continue;
+    }
+    const svar = byQ.get(normQuestion(q.fraga));
+    if (svar == null) {
+      saknas.push(q.fraga);
+      continue;
+    }
+    if (q.typ === "text") {
+      plan.push({ ...q, text: svar });
+      continue;
+    }
+    const valda = q.typ === "flerval" ? svar.split(/\s*\|\s*/) : [svar];
+    const alt = q.alternativ ?? [];
+    const traffar = valda.map((v) => alt.find((a) => normQuestion(a) === normQuestion(v)));
+    if (!valda.length || traffar.some((t) => t == null)) saknas.push(q.fraga);
+    else plan.push({ ...q, val: traffar });
+  }
+  return saknas.length ? { ok: false, saknas } : { ok: true, plan };
+}
+
+const REGEL = /(regler|regel|rules|godkänn|agree|accept)/i;
+
+/** Rättar frågetypen: en kryssruta om gruppens regler är "regler". */
+export function questionType(kind, fraga, alternativ = []) {
+  if (kind === "text") return "text";
+  if (kind === "checkbox" && (REGEL.test(fraga) || alternativ.some((a) => REGEL.test(a)))) return "regler";
+  return kind === "radio" ? "val" : "flerval";
+}

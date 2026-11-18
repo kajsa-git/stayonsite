@@ -2,7 +2,9 @@
 // inlägg) och nya Messenger-trådar i ett eget Chrome-fönster där Kajsa är inloggad,
 // och skickar texten till Kajsas agent (kajsas-agent.vercel.app) som tar hand om resten.
 //
-// Den här versionen LÄSER bara. Den postar, kommenterar och skickar ingenting.
+// Den läser notiser och meddelanden. Den postar, kommenterar och skickar inga
+// meddelanden. Den enda skrivande handlingen är att gå med i grupper och svara på deras
+// medlemsfrågor, och bara på uppdrag som Kajsa har godkänt i Telegram (se grupper.mjs).
 // Kontot är Kajsas privata: bara jobbrelaterat (bostadsgrupper, boendeord, personer som
 // svarat på hennes bostadsinlägg) skickas vidare. Privata notiser och meddelanden
 // stannar på datorn och skickas aldrig (se integritetsfiltret i lib.mjs).
@@ -17,6 +19,12 @@
 //   node agent.mjs --login   öppna fönstret så att Kajsa kan logga in på Facebook en gång
 //   node agent.mjs --once    en körning nu (struntar i tid och orördhet)
 //   node agent.mjs --loop    för launchd (se se.stayonsite.facebook-agent.plist)
+//   node agent.mjs --grupp <länk>   visa medlemskap i en grupp (klickar inget, skickar inget)
+//   node agent.mjs --sok "<sökord>" sök grupper och visa träffarna (skickar inget)
+//
+// Uppdateringar: i --loop hämtar agenten själv ny version från GitHub var 30:e minut
+// (bara när något i mac/facebook-agent har ändrats), installerar paket om de har ändrats
+// och avslutar sig. launchd startar den direkt igen med den nya koden.
 //
 // Konfiguration (läses ur repots .env.local om den inte finns i miljön):
 //   KAJSA_AGENT_URL    https://kajsas-agent.vercel.app
@@ -34,6 +42,8 @@ import {
   rememberNames,
   MIN_IDLE_SECONDS,
   RUN_EVERY_MINUTES,
+  TASK_CHECK_MINUTES,
+  TASK_RUN_GAP_MINUTES,
   cleanUrl,
   isDaytime,
   isRelevantNotification,
@@ -48,6 +58,8 @@ import {
   truncate,
   unreadFromTitle,
 } from "./lib.mjs";
+import { inspectGroup, runTask, searchGroups } from "./grupper.mjs";
+import { UPDATE_EVERY_MINUTES, updateIfNewer } from "./uppdatera.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../..");
@@ -63,7 +75,19 @@ const AGENT_URL = (process.env.KAJSA_AGENT_URL ?? "https://kajsas-agent.vercel.a
 const SECRET = process.env.MAC_AGENT_SECRET;
 const PROFILE_DIR = path.join(os.homedir(), "Library/Application Support/stayonsite-facebook-agent");
 const STATE_FILE = path.join(os.homedir(), ".stayonsite-facebook-agent.json");
-const mode = process.argv.includes("--login") ? "login" : process.argv.includes("--once") ? "once" : "loop";
+const argAfter = (flag) => {
+  const i = process.argv.indexOf(flag);
+  return i >= 0 ? process.argv[i + 1] : undefined;
+};
+const mode = process.argv.includes("--login")
+  ? "login"
+  : process.argv.includes("--once")
+    ? "once"
+    : process.argv.includes("--grupp")
+      ? "grupp"
+      : process.argv.includes("--sok")
+        ? "sok"
+        : "loop";
 
 const ts = () => new Date().toISOString().slice(0, 19).replace("T", " ");
 const log = (...a) => console.log(ts(), ...a);
@@ -96,6 +120,16 @@ async function postToAgent(body) {
     signal: AbortSignal.timeout(20_000),
   });
   if (!res.ok) throw new Error(`Agenten svarade ${res.status}`);
+}
+
+async function fetchTasks() {
+  const res = await fetch(`${AGENT_URL}/mac/uppdrag`, {
+    headers: { authorization: `Bearer ${SECRET}` },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!res.ok) throw new Error(`Agenten svarade ${res.status}`);
+  const body = await res.json();
+  return Array.isArray(body.uppdrag) ? body.uppdrag : [];
 }
 
 async function openBrowser() {
@@ -189,6 +223,39 @@ async function readDetail(page, item) {
   return { human: false, detail: item.kind === "meddelande" ? tail(text, 3000) : truncate(text, 3500) };
 }
 
+/** Uppdrag från agenten: söka grupper, gå med, svara på medlemsfrågor. */
+async function runTasks(state, { force = false } = {}) {
+  if (!SECRET) throw new Error("MAC_AGENT_SECRET saknas i .env.local");
+  const now = new Date();
+  if (state.pausedUntil && new Date(state.pausedUntil) > now && !force) return;
+  if (!force && !isDaytime(now)) return;
+  const tasks = (await fetchTasks()).filter((t) => !(state.doneTasks ?? []).includes(t.id));
+  if (!tasks.length) return;
+  if (!force) {
+    const idle = idleSeconds();
+    if (idle == null || idle < MIN_IDLE_SECONDS) return;
+    if (state.lastTaskRunAt && now - new Date(state.lastTaskRunAt) < TASK_RUN_GAP_MINUTES * 60_000) return;
+  }
+  state.lastTaskRunAt = now.toISOString();
+  writeState(state);
+  const task = tasks[0];
+  log(`uppdrag ${task.id} (${task.typ}) startar`);
+  const context = await openBrowser();
+  try {
+    const page = context.pages()[0] ?? (await context.newPage());
+    const r = await runTask(page, task, state, { settle, checkHuman });
+    writeState(state);
+    if (r.human) return await pauseForHuman(state, "Facebook vill att någon loggar in eller verifierar kontot (grupper)");
+    if (!r.resultat) return log(`uppdrag ${task.id}: inget att rapportera ännu`);
+    await postToAgent({ resultat: r.resultat });
+    if (r.resultat.klar) state.doneTasks = [...(state.doneTasks ?? []), task.id].slice(-200);
+    writeState(state);
+    log(`uppdrag ${task.id}: rapporterat${r.resultat.klar ? ", klart" : ", fortsätter senare"}`);
+  } finally {
+    await context.close().catch(() => {});
+  }
+}
+
 async function runOnce(state, { force = false } = {}) {
   if (!SECRET) throw new Error("MAC_AGENT_SECRET saknas i .env.local");
   const now = new Date();
@@ -273,13 +340,43 @@ async function login() {
   log("klart. Agenten fortsätter vid nästa körning.");
 }
 
+async function debug(fn) {
+  const context = await openBrowser();
+  try {
+    const page = context.pages()[0] ?? (await context.newPage());
+    console.log(JSON.stringify(await fn(page), null, 2));
+  } finally {
+    await context.close().catch(() => {});
+  }
+}
+
 if (mode === "login") {
   await login();
 } else if (mode === "once") {
+  await runTasks(readState(), { force: true }).catch((e) => log("fel i uppdrag:", e?.message ?? e));
   await runOnce(readState(), { force: true });
+} else if (mode === "grupp") {
+  await debug((page) => inspectGroup(page, argAfter("--grupp"), { settle, checkHuman }));
+} else if (mode === "sok") {
+  await debug((page) => searchGroups(page, [argAfter("--sok")], { settle, checkHuman }));
 } else {
-  log("Facebook-agenten startar (läser bara, postar inget)");
+  log("Facebook-agenten startar (läser, och går med i grupper bara på Kajsas uppdrag)");
+  let lastTaskCheck = 0;
+  let lastUpdateCheck = Date.now();
   for (;;) {
+    if (Date.now() - lastUpdateCheck >= UPDATE_EVERY_MINUTES * 60_000) {
+      lastUpdateCheck = Date.now();
+      // Avsluta mellan körningar; launchd (KeepAlive) startar om med den nya koden.
+      if (updateIfNewer({ repoRoot, agentDir: here, log })) process.exit(0);
+    }
+    if (Date.now() - lastTaskCheck >= TASK_CHECK_MINUTES * 60_000) {
+      lastTaskCheck = Date.now();
+      try {
+        await runTasks(readState());
+      } catch (e) {
+        log("fel i uppdrag:", e?.message ?? e);
+      }
+    }
     try {
       await runOnce(readState());
     } catch (e) {

@@ -1,6 +1,8 @@
 # Facebook-agenten på Kajsas Mac
 
-Läser nya kommentarer på Kajsas inlägg och nya Messenger-trådar i ett eget Chrome-fönster där hon är inloggad, och skickar texten till Kajsas agent i Telegram. Agenten sorterar ut uthyrarna, matchar dem mot förfrågningarna och föreslår svar. **Den här versionen läser bara. Den postar, kommenterar och skickar ingenting på Facebook.**
+Läser nya kommentarer på Kajsas inlägg och nya Messenger-trådar i ett eget Chrome-fönster där hon är inloggad, och skickar texten till Kajsas agent i Telegram. Agenten sorterar ut uthyrarna, matchar dem mot förfrågningarna och föreslår svar.
+
+Den söker också nya Facebook-grupper, går med i dem och svarar på gruppernas medlemsfrågor, men bara på uppdrag som Kajsa har sagt ja till i Telegram. **Den postar, kommenterar och skickar aldrig meddelanden på Facebook.**
 
 ## Så beter den sig
 
@@ -11,6 +13,17 @@ Läser nya kommentarer på Kajsas inlägg och nya Messenger-trådar i ett eget C
 - Vill Facebook att någon loggar in eller verifierar kontot **pausar den i två timmar och säger till i Telegram**. Den försöker aldrig ta sig förbi en kontroll.
 - Första körningen markerar allt som redan finns som sett, så Kajsa får bara det som kommer efteråt.
 - Är datorn avstängd händer inget; den fortsätter när datorn är igång igen.
+
+### Grupper
+
+- Söker grupper när agenten ber om det (Kajsa ber om fler grupper, eller en förfrågan gäller en ort med få grupper). Sökningen ändrar ingenting.
+- Går med bara i de grupper Kajsa har sagt ja till, **högst 5 per dag** och högst 2 per körning med pauser emellan. Den trycker bara på Gå med-knappen högst upp på gruppens sida.
+- Har gruppen medlemsfrågor stänger den rutan utan att skicka och lämnar frågorna till agenten, som skriver förslag på svar. Kajsa ser varje fråga och svar, säger ja och trycker Godkänn. Först då fyller datorn i och skickar.
+- Har frågorna ändrats sedan Kajsa godkände svaren skickas ingenting.
+
+### Uppdateringar
+
+Datorn hämtar själv nya versioner från GitHub var 30:e minut, när något i den här mappen har ändrats, och startar om sig. Ingen behöver göra något. Lokala ändringar skrivs aldrig över; då står det "kunde inte uppdatera" i loggen.
 
 ## Installera (en gång, på Kajsas Mac)
 
@@ -45,12 +58,23 @@ Kräver Google Chrome och Node (finns redan för iMessage-agenten).
    launchctl load -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist
    ```
 
+## Byt till versionen som uppdaterar sig själv (en gång)
+
+Den första installationen (18 november) uppdaterar sig inte själv. Kör det här en gång, sedan sker det automatiskt:
+
+```bash
+cd ~/Projects/stayonsite && git pull && cd mac/facebook-agent && npm install
+launchctl unload ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist
+launchctl load -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist
+```
+
 ## Vardag
 
 - **Logg:** `tail -f ~/Library/Logs/stayonsite-facebook-agent.log`
 - **Stoppa:** `launchctl unload -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist`
 - **Facebook har loggat ut:** `cd ~/Projects/stayonsite/mac/facebook-agent && npm run login`
-- **Ny version:** `cd ~/Projects/stayonsite && git pull`, sedan `launchctl unload` och `launchctl load` enligt ovan.
+- **Ny version:** sker automatiskt (se Uppdateringar).
+- **Felsöka grupper** (klickar och skickar inget): `npm run grupp -- https://www.facebook.com/groups/...` visar medlemskap, `npm run sok -- "bostad Gävle"` visar sökträffarna.
 
 ## Tester
 

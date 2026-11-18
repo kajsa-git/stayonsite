@@ -116,3 +116,85 @@ describe("svarsknappar", () => {
     assert.throws(() => svarsknappar(["x".repeat(41), "b"]));
   });
 });
+
+import { arKajsa } from "../agent/lib/config.ts";
+import { avslutaUppdrag, gruppUrl, minnesLagring, nyaGrupper, oppnaUppdrag, skapaUppdrag, sparaGrupp } from "../agent/lib/facebook-uppdrag.ts";
+import { lasResultat, tolkaResultat } from "../agent/lib/facebook-resultat.ts";
+
+describe("uppdrag till Facebook-datorn", () => {
+  it("godkänner bara Facebook-grupplänkar och tar bort spårning", () => {
+    assert.equal(gruppUrl("https://www.facebook.com/groups/123456/?ref=share"), "https://www.facebook.com/groups/123456");
+    assert.equal(gruppUrl("https://m.facebook.com/groups/bostad.gavle/posts/9"), "https://www.facebook.com/groups/bostad.gavle");
+    assert.equal(gruppUrl("https://evil.example/groups/1"), null);
+    assert.equal(gruppUrl("https://www.facebook.com/profile.php?id=1"), null);
+  });
+  it("skapar, listar och avslutar uppdrag", async () => {
+    const l = minnesLagring();
+    const a = await skapaUppdrag(l, { typ: "sok_grupper", ort: "Gävle", sokord: ["bostad Gävle"] }, new Date("2026-11-18T10:00:00Z"));
+    const b = await skapaUppdrag(l, { typ: "ga_med", ort: "Gävle", grupper: [{ namn: "X", url: "https://www.facebook.com/groups/1" }] }, new Date("2026-11-18T11:00:00Z"));
+    assert.deepEqual((await oppnaUppdrag(l)).map((u) => u.id), [a.id, b.id]);
+    await avslutaUppdrag(l, a.id);
+    await avslutaUppdrag(l, "../../annat");
+    assert.deepEqual((await oppnaUppdrag(l)).map((u) => u.id), [b.id]);
+    await sparaGrupp(l, { namn: "X", url: "https://www.facebook.com/groups/1", ort: "Gävle", status: "vantar", datum: "2026-11-18" });
+    await sparaGrupp(l, { namn: "X", url: "https://www.facebook.com/groups/1", ort: "Gävle", status: "medlem", datum: "2026-11-19" });
+    assert.deepEqual((await nyaGrupper(l)).map((g) => g.status), ["medlem"]);
+  });
+  it("känner bara igen Kajsa i Telegram", () => {
+    const env = { KAJSA_TELEGRAM_ID: "42" };
+    assert.equal(arKajsa({ principalId: "telegram:42" }, env), true);
+    assert.equal(arKajsa({ principalId: "telegram:7" }, env), false);
+    assert.equal(arKajsa({ principalId: "kajsas-mac" }, env), false);
+    assert.equal(arKajsa(null, env), false);
+  });
+});
+
+describe("resultat från Facebook-datorn", () => {
+  const id = "abcdef123456";
+  it("sökträffar går till agenten som data", () => {
+    const r = lasResultat({ uppdrag: id, typ: "sok_grupper", grupper: [{ namn: "Bostad Gävle", url: "https://www.facebook.com/groups/1", info: "Privat · 12 tn medlemmar" }] });
+    assert.ok(r);
+    const a = tolkaResultat(r, { id, skapad: "", typ: "sok_grupper", ort: "Gävle", sokord: [] });
+    assert.match(a.tillAgenten ?? "", /facebook-grupper/);
+    assert.match(a.tillAgenten ?? "", /<facebook_text>\n1\. Bostad Gävle \| https:\/\/www\.facebook\.com\/groups\/1 \| Privat/);
+    assert.equal(a.direkt, undefined);
+  });
+  it("enkla inträden sparas och meddelas direkt utan modell", () => {
+    const r = lasResultat({
+      uppdrag: id,
+      typ: "ga_med",
+      utfall: [
+        { namn: "A", url: "https://www.facebook.com/groups/1", status: "medlem" },
+        { namn: "B", url: "https://www.facebook.com/groups/2", status: "vantar" },
+        { namn: "C", url: "https://www.facebook.com/groups/3", status: "dagsgrans" },
+      ],
+      klar: false,
+    });
+    assert.ok(r);
+    assert.equal(r.klar, false);
+    const a = tolkaResultat(r, { id, skapad: "", typ: "ga_med", ort: "Gävle", grupper: [] }, new Date("2026-11-18T12:00:00Z"));
+    assert.deepEqual(a.sparaGrupper.map((g) => [g.namn, g.status, g.ort]), [["A", "medlem", "Gävle"], ["B", "vantar", "Gävle"]]);
+    assert.match(a.direkt ?? "", /Medlem: A/);
+    assert.match(a.direkt ?? "", /i morgon: C/);
+    assert.equal(a.tillAgenten, undefined);
+  });
+  it("medlemsfrågor går till agenten tillsammans med övriga utfall", () => {
+    const r = lasResultat({
+      uppdrag: id,
+      typ: "ga_med",
+      utfall: [
+        { namn: "A", url: "https://www.facebook.com/groups/1", status: "medlem" },
+        { namn: "D", url: "https://www.facebook.com/groups/4", status: "fragor", fragor: [{ fraga: "Varför vill du gå med?", typ: "text" }, { fraga: "Hyr du ut eller söker du?", typ: "val", alternativ: ["Hyr ut", "Söker"] }] },
+      ],
+    });
+    assert.ok(r);
+    const a = tolkaResultat(r, null);
+    assert.match(a.tillAgenten ?? "", /Grupp: D/);
+    assert.match(a.tillAgenten ?? "", /\[val\] Hyr du ut eller söker du\?\n {5}Alternativ: Hyr ut \| Söker/);
+    assert.match(a.tillAgenten ?? "", /Medlem: A/);
+  });
+  it("avvisar trasiga resultat", () => {
+    assert.equal(lasResultat({ uppdrag: "../x", typ: "ga_med" }), null);
+    assert.equal(lasResultat({ uppdrag: id, typ: "posta" }), null);
+  });
+});

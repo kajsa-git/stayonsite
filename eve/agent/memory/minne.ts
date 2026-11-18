@@ -3,8 +3,8 @@ import { fileMemory } from "eve/memory/file";
 import { kajsasTelegramIds } from "../lib/config.ts";
 
 // Ett gemensamt minne för Kajsa: hennes preferenser och arbetssätt, sparat i en privat
-// Vercel Blob-butik. Samma minne gäller när hon skriver själv och när CRM:et startar en
-// tur vid en ny förfrågan. Alla andra får inget minne alls.
+// Vercel Blob-butik. Samma minne gäller när hon skriver själv och när CRM:et eller Facebook-
+// datorn startar en tur. Alla andra får inget minne alls.
 export default defineMemory({
   description:
     "Kom ihåg Kajsas preferenser och arbetssätt som gäller framåt: hur uthyrare ska kontakta henne i " +
@@ -15,6 +15,8 @@ export default defineMemory({
     const caller = ctx.session.auth.current;
     if (!caller) return null;
     if (caller.authenticator === "crm" && caller.principalId === "stayonsite-crm") return "kajsa";
+    // Facebook-datorn: agenten behöver Kajsas sparade svar och preferenser när den skriver förslag.
+    if (caller.authenticator === "mac" && caller.principalId === "kajsas-mac") return "kajsa";
     const telegramId = caller.principalId?.startsWith("telegram:") ? caller.principalId.slice(9) : null;
     return telegramId && kajsasTelegramIds().has(telegramId) ? "kajsa" : null;
   },

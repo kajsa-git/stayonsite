@@ -33,3 +33,12 @@ export function kravs(namn: string, env: Record<string, string | undefined> = pr
   if (!v) throw new Error(`${namn} saknas i miljön.`);
   return v;
 }
+
+/** Sant när turen startades av Kajsa själv i Telegram (inte av CRM:et eller Mac:en). */
+export function arKajsa(
+  principal: { principalId?: string | null } | null | undefined,
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  const id = principal?.principalId ?? "";
+  return id.startsWith("telegram:") && kajsasTelegramIds(env).has(id.slice(9));
+}

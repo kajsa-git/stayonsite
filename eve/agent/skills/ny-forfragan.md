@@ -20,7 +20,7 @@ description: Källsökning när en ny förfrågan kommer in från CRM:et. Matcha
    Facebook: 3 grupper i Gävle, 2 för Gävleborg, 6 i närliggande orter, 9 rikstäckande.
    Vad vill du göra? Du kan också skriva fritt.
 
-   Knappar: "Facebook-inlägg #128", "Sms till uthyrarna #128", "Vänta med #128". Ta bara med knappar som passar: finns inga uthyrare med sökorten, hoppa över sms-knappen.
+   Knappar: "Facebook-inlägg #128", "Sms till uthyrarna #128", "Vänta med #128". Ta bara med knappar som passar: finns inga uthyrare med sökorten, hoppa över sms-knappen. Har orten högst två bostadsgrupper i facebook_grupper, lägg till "Hitta fler grupper i Gävle" (färdigheten facebook-grupper). Högst fyra knappar.
 
    - Visa högst tre CRM-objekt. Skriv ut vad som inte stämmer (t.ex. "ledigt först 15 mars") i stället för bara poängen.
    - Objekt som redan är föreslagna (alreadySuggested) nämns som redan skickade.

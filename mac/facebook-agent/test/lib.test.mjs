@@ -89,3 +89,71 @@ describe("integritetsfilter", () => {
     assert.deepEqual(rememberNames(["A"], ["A", "B", null]), ["A", "B"]);
   });
 });
+
+import {
+  MAX_JOINS_PER_DAY,
+  cardInfo,
+  countJoin,
+  groupUrl,
+  joinsLeft,
+  matchAnswers,
+  membershipFromButtons,
+  normQuestion,
+  questionType,
+} from "../lib.mjs";
+
+describe("grupper", () => {
+  it("läser medlemskap ur knapparna", () => {
+    assert.equal(membershipFromButtons(["Gå med i gruppen", "Dela"]), "ej_medlem");
+    assert.equal(membershipFromButtons(["Avbryt förfrågan"]), "vantar");
+    assert.equal(membershipFromButtons(["Gått med", "Gå med"]), "medlem");
+    assert.equal(membershipFromButtons(["Dela", "Mer"]), "okand");
+  });
+  it("tar bara riktiga grupplänkar", () => {
+    assert.equal(groupUrl("https://www.facebook.com/groups/123/?ref=search"), "https://www.facebook.com/groups/123");
+    assert.equal(groupUrl("/groups/bostad.gavle/"), "https://www.facebook.com/groups/bostad.gavle");
+    assert.equal(groupUrl("https://www.facebook.com/groups/feed/"), null);
+    assert.equal(groupUrl("https://example.com/groups/1"), null);
+  });
+  it("räknar dagens inträden i svensk tid", () => {
+    const state = {};
+    const dag = new Date("2026-11-18T10:00:00Z");
+    for (let i = 0; i < MAX_JOINS_PER_DAY; i++) countJoin(state, dag);
+    assert.equal(joinsLeft(state, dag), 0);
+    assert.equal(joinsLeft(state, new Date("2026-11-18T23:30:00Z")), MAX_JOINS_PER_DAY); // 00:30 nästa dag i Sverige
+  });
+  it("plockar ut info ur ett sökkort", () => {
+    assert.equal(cardInfo("Bostad Gävle Privat · 12 tn medlemmar · 10+ inlägg om dagen Gå med", "Bostad Gävle"), "Privat · 12 tn medlemmar · 10+ inlägg om dagen Gå med");
+  });
+  it("känner igen regler", () => {
+    assert.equal(questionType("checkbox", "Godkänner du gruppens regler?", ["Jag godkänner"]), "regler");
+    assert.equal(questionType("checkbox", "Vad söker du?", ["Bostad", "Lokal"]), "flerval");
+    assert.equal(questionType("radio", "Hyr du ut?", ["Ja", "Nej"]), "val");
+  });
+});
+
+describe("svar på medlemsfrågor", () => {
+  const fragor = [
+    { fraga: "Varför vill du gå med? *", typ: "text", falt: ["0"] },
+    { fraga: "Hyr du ut eller söker du?", typ: "val", alternativ: ["Hyr ut", "Söker"], falt: ["1", "2"] },
+    { fraga: "Godkänner du reglerna?", typ: "regler", alternativ: ["Jag godkänner"], falt: ["3"] },
+  ];
+  const svar = [
+    { fraga: "Varför vill du gå med?", svar: "Jag driver StayOnSite." },
+    { fraga: "hyr du ut eller söker du", svar: "söker" },
+  ];
+  it("matchar frågor oavsett stjärnor och skiljetecken", () => {
+    assert.equal(normQuestion("Varför vill du gå med? * (obligatorisk)"), "varför vill du gå med");
+    const m = matchAnswers(fragor, svar, true);
+    assert.equal(m.ok, true);
+    assert.equal(m.plan[0].text, "Jag driver StayOnSite.");
+    assert.deepEqual(m.plan[1].val, ["Söker"]);
+    assert.deepEqual(m.plan[2].val, ["Jag godkänner"]);
+  });
+  it("skickar inget om reglerna inte är godkända eller en fråga saknar svar", () => {
+    assert.equal(matchAnswers(fragor, svar, false).ok, false);
+    assert.deepEqual(matchAnswers(fragor, svar.slice(0, 1), true).saknas, ["Hyr du ut eller söker du?"]);
+    assert.equal(matchAnswers(fragor, [svar[0], { fraga: "Hyr du ut eller söker du?", svar: "Kanske" }], true).ok, false);
+    assert.equal(matchAnswers([{ fraga: "", typ: "text" }], [], true).ok, false);
+  });
+});
