@@ -17,7 +17,7 @@ Säg till Kajsa hur många grupper det blev och fråga om hon vill lägga till e
 - Ta aldrig med kundens namn, kontaktpersoner eller exakt arbetsplats. "Ett byggföretag" eller "projektpersonal" räcker.
 - Det som får uthyrare att svara: fast hyra under hela perioden, betalning från företag, ordnade hyresgäster, StayOnSite sköter kontakten.
 - Kort: 4-8 rader. Ingen hashtagg, inga versaler i rubriker, högst en emoji.
-- Kontaktväg: fråga Kajsa första gången hur uthyrare ska höra av sig (PM, sms till ett nummer, eller mejl) och använd sedan det. Hitta aldrig på ett telefonnummer.
+- Kontaktväg: använd det som står i minnet. Finns inget, fråga Kajsa hur uthyrare ska höra av sig (PM, sms till ett nummer, eller mejl) och spara svaret i minnet. Hitta aldrig på ett telefonnummer.
 - Fler än 10 grupper: skriv 2-3 varianter med olika inledning och ordning, så att inläggen inte ser ut som spam. Fördela varianterna jämnt över grupperna, och ge grupper i samma ort olika varianter.
 
 ## Skicka listan
