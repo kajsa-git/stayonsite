@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
+import { notifyAgentNewRequest } from "@/lib/crm/agent-notify";
 import { Resend } from "resend";
 import { z } from "zod";
 import {
@@ -384,6 +385,8 @@ export async function POST(req: NextRequest) {
     let crmResult: Awaited<ReturnType<typeof mapWebSubmissionToCrm>> | null = null;
     try {
       crmResult = await mapWebSubmissionToCrm(submission as WebSubmission);
+      const newRequestId = crmResult?.type === "request" && "request" in crmResult ? crmResult.request?.id : undefined;
+      if (newRequestId) after(() => notifyAgentNewRequest(newRequestId, "webb"));
     } catch (err) {
       crmError = err instanceof Error ? err.message : String(err);
       console.error("CRM intake mapping failed", err);

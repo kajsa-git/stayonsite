@@ -1,0 +1,26 @@
+{
+  "name": "kajsas-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Kajsas agent i Telegram: läser CRM:et, söker boende vid nya förfrågningar och håller ordning på Facebook-postningar.",
+  "scripts": {
+    "dev": "eve dev",
+    "build": "eve build",
+    "info": "eve info",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.ts"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "ai": "^7.0.176",
+    "eve": "1.0.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

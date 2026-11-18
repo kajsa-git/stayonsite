@@ -5,6 +5,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerDashboardTools } from "./tools-dashboards";
 import { registerEntityTools } from "./tools-entities";
 import { registerSearchTools } from "./tools-search";
+import { registerSourcingTools } from "./tools-sourcing";
 import { registerWorkTools } from "./tools-work";
 import { registerWriteTools } from "./tools-write";
 import type { DB } from "./shape";
@@ -19,5 +20,6 @@ export function registerCrmTools(server: McpServer, opts?: RegisterCrmToolsOpts)
   registerEntityTools(server, opts);
   registerDashboardTools(server, opts);
   registerWorkTools(server, opts);
+  registerSourcingTools(server, opts);
   if (opts?.includeWrites) registerWriteTools(server, opts);
 }
