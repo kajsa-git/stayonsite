@@ -21,7 +21,7 @@ Kajsas assistent i Telegram, byggd på Vercels ramverk [eve](https://eve.dev/doc
    - `TELEGRAM_BOT_TOKEN`: från steg 1
    - `TELEGRAM_WEBHOOK_SECRET_TOKEN`: slumpa, t.ex. `openssl rand -hex 32`
    - `KAJSA_TELEGRAM_ID`: från steg 2
-   - `CRM_MCP_WRITE_TOKEN`: samma värde som i CRM-projektet `stayonsite`
+   - `CRM_MCP_WRITE_TOKEN`: samma värde som `CRM_MCP_AGENT_TOKEN` i CRM-projektet `stayonsite` (agentens egen nyckel)
    - `KAJSA_AGENT_SECRET`: slumpa
 5. **Webhook:** när agenten är driftsatt:
    ```bash

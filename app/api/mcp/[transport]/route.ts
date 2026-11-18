@@ -1,7 +1,7 @@
 // MCP-servern: AI-agenter (Claude Code, Codex m.fl.) chattar med CRM:et via
 // Streamable HTTP på /api/mcp/mcp. Auth är statisk bearer-token (samma mönster
 // som Mac-agenten): CRM_MCP_TOKEN ger läsverktygen, CRM_MCP_WRITE_TOKEN ger
-// läs + icke-destruktiva skrivverktyg. Fail-closed: utan tokens i miljön är
+// läs + icke-destruktiva skrivverktyg (CRM_MCP_AGENT_TOKEN likadant, för Kajsas agent). Fail-closed: utan tokens i miljön är
 // endpointen avstängd (Vercel preview saknar dem med flit).
 //
 // Middleware täcker inte /api/mcp — den här grinden är hela auth-lagret.
@@ -36,8 +36,10 @@ const writeHandler = createMcpHandler(
   HANDLER_CONFIG,
 );
 
+// Kajsas agent (eve/) har en egen skrivnyckel, så att den kan stängas av utan att
+// röra CRM_MCP_WRITE_TOKEN som andra klienter använder.
 const guarded = (req: Request): Promise<Response> | Response =>
-  bearerAuthorized(req, process.env.CRM_MCP_WRITE_TOKEN)
+  bearerAuthorized(req, process.env.CRM_MCP_WRITE_TOKEN) || bearerAuthorized(req, process.env.CRM_MCP_AGENT_TOKEN)
     ? writeHandler(req)
     : bearerAuthorized(req, process.env.CRM_MCP_TOKEN)
       ? readHandler(req)

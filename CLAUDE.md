@@ -127,6 +127,8 @@ React Hook Form + Zod validation. Forms POST to FormSubmit.co (`https://formsubm
 | `CRM_AGENT_TOKEN` | `.env.local` + Vercel | Mac-agenten (iMessage) mot `/api/crm/*/agent` |
 | `CRM_MCP_TOKEN` | `.env.local` + Vercel | MCP-servern `/api/mcp` — läsverktyg (se `docs/mcp.md`) |
 | `CRM_MCP_WRITE_TOKEN` | `.env.local` + Vercel | MCP-servern — läs + icke-destruktiva skrivverktyg |
+| `CRM_MCP_AGENT_TOKEN` | Vercel (stayonsite + kajsas-agent) | Kajsas agent i Telegram (`eve/`) — samma rättigheter som skrivnyckeln, egen så att den kan stängas av separat |
+| `KAJSA_AGENT_URL`, `KAJSA_AGENT_SECRET` | Vercel (stayonsite) | Ny förfrågan meddelar agenten (`src/lib/crm/agent-notify.ts`); utan dem händer inget |
 | `BING_WEBMASTER_API_KEY` | `.env.local` | Bing Webmaster API — statistik via `node --env-file=.env.local scripts/bing-stats.mjs` |
 
 ## Team & Operations
