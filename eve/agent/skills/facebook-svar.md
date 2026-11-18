@@ -13,14 +13,16 @@ Datorn skickar bara det som verkar röra jobbet, men filtret kan ta fel. Är en 
 
 2. För uthyrare: ta ut namn, ort, typ av boende, rum eller bäddar, pris, period, möblerat och kontaktuppgifter som står i texten. Sök personen i CRM:et (crm_search på namn eller nummer). Jämför med öppna förfrågningar (crm_open_requests): samma ort eller pendlingsavstånd, tillräckligt stort, rätt period.
 
-3. Skriv EN kort sammanfattning till Kajsa, t.ex.:
+3. Skicka EN kort sammanfattning till Kajsa, med fraga_kajsa när hon ska välja något, t.ex.:
 
    2 nya svar på Facebook:
    - Anna Svensson (Lägenheter i Gävle): villa i Valbo, 4 bäddar, möblerat, ledigt från mars. Passar #128. Ny i CRM:et.
      Förslag på svar: "Hej Anna! Tack för svaret. Vi söker åt ett företag med 4 personer från mars. Kan jag ringa dig? /Kajsa"
    - Bertil: frågade om priset. Förslag på svar: ...
-   Ska jag lägga in Anna som uthyrare? Svara ja.
    (1 ointressant: en reaktion.)
+   Ska jag lägga in Anna som uthyrare?
+
+   Knappar: "Lägg in Anna", "Hoppa över". Finns inget att välja, skicka ett vanligt svar utan knappar.
 
    - Ointressanta händelser nämns bara som antal.
    - Firmor och konkurrenter nämns på en rad, utan svarsförslag om Kajsa inte frågar.

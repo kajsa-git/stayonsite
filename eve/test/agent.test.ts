@@ -101,3 +101,18 @@ describe("Facebook-datorns händelser", () => {
     assert.ok(text.length < 4500);
   });
 });
+
+import { svarsknappar } from "../agent/lib/knappar.ts";
+
+describe("svarsknappar", () => {
+  it("gör en knapp per rad som döljs efter ett tryck", () => {
+    const m = svarsknappar(["Facebook-inlägg #128", "  Vänta  med #128 ", "Facebook-inlägg #128"]);
+    assert.deepEqual(m.keyboard, [[{ text: "Facebook-inlägg #128" }], [{ text: "Vänta med #128" }]]);
+    assert.equal(m.one_time_keyboard, true);
+    assert.equal(m.resize_keyboard, true);
+  });
+  it("stoppar för många eller för långa knappar", () => {
+    assert.throws(() => svarsknappar(["a", "b", "c", "d", "e"]));
+    assert.throws(() => svarsknappar(["x".repeat(41), "b"]));
+  });
+});
