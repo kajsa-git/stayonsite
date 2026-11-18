@@ -51,14 +51,19 @@ describe("startdelen", () => {
     let out = "";
     p.stdout.on("data", (b) => (out += b));
     p.stderr.on("data", (b) => (out += b));
-    assert.ok(await until(() => posts.length > 0), `ingen kraschrapport. Utdata:\n${out}`);
-    assert.equal(posts[0].path, "/mac/facebook");
-    assert.equal(posts[0].auth, "Bearer hemlis");
-    assert.equal(posts[0].body.status, "krasch");
-    assert.match(posts[0].body.reason, /trasig version/);
-    assert.ok((out.match(/huvud startar/g) ?? []).length >= 3);
-    p.kill("SIGTERM");
-    const code = await new Promise((r) => p.on("exit", r));
+    try {
+      const krasch = () => posts.find((x) => x.body.status === "krasch");
+      assert.ok(await until(() => krasch()), `ingen kraschrapport. Utdata:\n${out}`);
+      assert.equal(krasch().path, "/mac/facebook");
+      assert.equal(krasch().auth, "Bearer hemlis");
+      assert.match(krasch().body.reason, /trasig version/);
+      assert.ok((out.match(/huvud startar/g) ?? []).length >= 3);
+      // Mappen är inget git-repo, så uppdateringen misslyckas och rapporteras (en gång).
+      assert.equal(posts.filter((x) => x.body.status === "uppdateringsfel").length, 1);
+    } finally {
+      p.kill("SIGTERM");
+    }
+    const code = await new Promise((r) => (p.exitCode != null ? r(p.exitCode) : p.on("exit", r)));
     assert.equal(code, 0);
     s.close();
   });
@@ -72,8 +77,11 @@ describe("startdelen", () => {
     const p = spawn(process.execPath, [path.join(dir, "agent.mjs")], { env, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
     p.stdout.on("data", (b) => (out += b));
-    assert.ok(await until(() => out.includes("igång")));
-    p.kill("SIGTERM");
+    try {
+      assert.ok(await until(() => out.includes("igång")));
+    } finally {
+      p.kill("SIGTERM");
+    }
     const code = await new Promise((r) => p.on("exit", r));
     assert.equal(code, 0);
     assert.match(out, /stoppad/);

@@ -89,6 +89,16 @@ export default defineChannel({
         return Response.json({ ok: true, klar: r.klar }, { status: 202 });
       }
 
+      if (body.status === "uppdateringsfel") {
+        // Datorn kunde inte hämta ny version. Bara till loggen och kontaktposten, inte till Kajsa.
+        const lagring = blobLagring();
+        const k = await lasKontakt(lagring);
+        const orsak = str(body.reason, 300);
+        console.error("kajsas-agent: Facebook-datorn kunde inte uppdatera sig", str((body as { version?: unknown }).version, 40), orsak);
+        await sparaKontakt(lagring, { senast: new Date().toISOString(), ...k, uppdateringsfel: { tid: new Date().toISOString(), orsak } });
+        return Response.json({ ok: true });
+      }
+
       if (body.status === "krasch") {
         // Startdelen på datorn meddelar att en ny version inte startar. En gång per version.
         const lagring = blobLagring();

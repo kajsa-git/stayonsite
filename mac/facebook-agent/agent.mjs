@@ -68,17 +68,27 @@ function ensurePackages() {
   });
 }
 
-async function reportCrash(reason) {
+async function report(status, reason) {
   const env = readEnv();
   const url = (env.KAJSA_AGENT_URL ?? "https://kajsas-agent.vercel.app").replace(/\/+$/, "");
   if (!env.MAC_AGENT_SECRET) return;
   await fetch(`${url}/mac/facebook`, {
     method: "POST",
     headers: { authorization: `Bearer ${env.MAC_AGENT_SECRET}`, "content-type": "application/json", "user-agent": `stayonsite-facebook-agent/${version()}` },
-    body: JSON.stringify({ status: "krasch", version: version(), reason: reason.slice(-1500) }),
+    body: JSON.stringify({ status, version: version(), reason: reason.slice(-1500) }),
     signal: AbortSignal.timeout(20_000),
   });
 }
+
+// Uppdateringsfel syns bara i agentens loggar (inte för Kajsa), högst en gång per dag.
+let lastUpdateErrorReport = "";
+function updateError(orsak) {
+  const idag = new Date().toISOString().slice(0, 10);
+  if (lastUpdateErrorReport === idag) return;
+  lastUpdateErrorReport = idag;
+  report("uppdateringsfel", orsak).catch(() => {});
+}
+const update = () => updateIfNewer({ repoRoot, agentDir: here, log, onError: updateError });
 
 let child = null;
 let startedAt = 0;
@@ -111,7 +121,7 @@ function startChild() {
     log(`huvuddelen avslutades (${code ?? signal}); startar om om ${Math.round(wait / 1000)} s`);
     if (crashes >= 3 && !reported) {
       reported = true;
-      reportCrash(tail).catch((e) => log("kunde inte meddela agenten:", e?.message ?? e));
+      report("krasch", tail).catch((e) => log("kunde inte meddela agenten:", e?.message ?? e));
     }
     setTimeout(() => {
       if (!stopping) startChild();
@@ -136,14 +146,14 @@ process.on("SIGTERM", stopAndExit);
 process.on("SIGINT", stopAndExit);
 
 log(`startar version ${version()}`);
-if (updateIfNewer({ repoRoot, agentDir: here, log })) process.exit(0); // launchd startar om med ny kod
+if (update()) process.exit(0); // launchd startar om med ny kod
 startChild();
 
 let lastCheck = Date.now();
 setInterval(() => {
   if (stopping || Date.now() - lastCheck < (crashes > 0 ? CHECK_CRASH_MS : CHECK_OK_MS)) return;
   lastCheck = Date.now();
-  if (updateIfNewer({ repoRoot, agentDir: here, log })) {
+  if (update()) {
     log("ny version hämtad, startar om");
     stopAndExit();
   }

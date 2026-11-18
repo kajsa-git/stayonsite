@@ -2,7 +2,13 @@
 import type { Lagring } from "./facebook-uppdrag.ts";
 
 const KONTAKT = "facebook-datorn/kontakt.json";
-export type Kontakt = { senast: string; version?: string; larmat?: boolean; krasch?: { version: string; tid: string } };
+export type Kontakt = {
+  senast: string;
+  version?: string;
+  larmat?: boolean;
+  krasch?: { version: string; tid: string };
+  uppdateringsfel?: { tid: string; orsak: string };
+};
 
 const ANTECKNA_VAR_MINUT = 10;
 
