@@ -10,7 +10,7 @@ SMS använder den befintliga agenten på Macen: datorn behöver vara på, vaken 
 
 CRM:s separata svarsmotor lämnar anslutna och pausade bostadsdialoger till den här kopplingen. Ett delat lås hindrar att en bostad ansluts medan svarsmotorn redan behandlar samma telefonnummer eller mejltråd. WhatsApp är en separat kanal och påverkas inte av en SMS-anslutning.
 
-Med Vercel Pro kontrollerar cron inkorgen ungefär varje minut, utan garanterad svarstid, och kompletterar med en roterande kontroll varje timme. Problem som upptäcks meddelas till Kajsa via Resend och status visas i CRM. Det finns inget externt larm om både Vercel och dess larmväg är nere. Anrop till Vercel, Gmail, Turso och Anthropic kan påverka användningskostnader; det finns ingen kostnadsgräns i prototypen.
+Med Vercel Pro kontrollerar cron inkorgen ungefär var femte minut, utan garanterad svarstid, och kompletterar med en roterande kontroll varje timme. Problem som upptäcks meddelas till Kajsa via Resend och status visas i CRM. Det finns inget externt larm om både Vercel och dess larmväg är nere. Anrop till Vercel, Gmail, Turso och Anthropic kan påverka användningskostnader; det finns ingen kostnadsgräns i prototypen.
 
 För att följa CRM-regeln skickas en fråga till Kajsa efter varje automatiskt svar om kontakten ska ligga kvar i dialog, klarmarkeras eller få nytt uppföljningsdatum. Inget val görs automatiskt. För att skriva svar och bedöma mejlbilder skickas relevanta meddelanden, objektuppgifter och de bilder som granskas till Anthropic. Resend används för interna aviseringar till Kajsa, inte för svar till uthyraren.
 
