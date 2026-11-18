@@ -5,7 +5,7 @@ import { skickaTillKajsa } from "../lib/telegram-api.ts";
 
 export default defineTool({
   description:
-    "Skickar ditt svar till Kajsa i Telegram med 2-4 svarsknappar under. Ett tryck skickar knappens text " +
+    "Skickar ditt svar till Kajsa i Telegram med 2-3 svarsknappar under (högst 4). Ett tryck skickar knappens text " +
     "som hennes nästa meddelande; hon kan också skriva fritt. Använd när du avslutar en sammanfattning " +
     "eller ett förslag och nästa steg är ett val. Lägg hela svaret i text (det här ersätter ditt vanliga " +
     "svar, skriv inget mer efteråt). Knapptexterna ska vara korta och självklara, med förfrågans nummer " +

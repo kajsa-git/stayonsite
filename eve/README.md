@@ -47,4 +47,4 @@ Varje meddelande från Kajsa och varje ny förfrågan kör modellen. Taket i `ag
 
 ## Meta Ads
 
-Meta-åtkomsten är konfigurerad med `META_ADS_TOKEN` i Vercel-projektet `kajsas-agent`. Annonsintegrationen och den tekniska gränsen på **1 000 kr per ort och vecka** återstår att implementera. Konton, verifiering och budgetkrav finns i [Meta Ads-uppsättningen](META_ADS.md).
+Agenten läser och styr Kajsas Meta-annonser med `META_ADS_TOKEN` i Vercel-projektet `kajsas-agent`, inom gränsen **1 000 kr per ort och vecka** som koden och annonsvakten håller. Konton, verifiering och hur gränsen räknas finns i [Meta Ads-uppsättningen](META_ADS.md).

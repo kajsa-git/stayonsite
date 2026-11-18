@@ -17,6 +17,8 @@ export default defineMemory({
     if (caller.authenticator === "crm" && caller.principalId === "stayonsite-crm") return "kajsa";
     // Facebook-datorn: agenten behöver Kajsas sparade svar och preferenser när den skriver förslag.
     if (caller.authenticator === "mac" && caller.principalId === "kajsas-mac") return "kajsa";
+    // Scheman (annonsvakten) kör som appen och behöver också Kajsas preferenser.
+    if (caller.authenticator === "app" && caller.principalId === "eve:app") return "kajsa";
     const telegramId = caller.principalId?.startsWith("telegram:") ? caller.principalId.slice(9) : null;
     return telegramId && kajsasTelegramIds().has(telegramId) ? "kajsa" : null;
   },

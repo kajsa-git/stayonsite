@@ -9,23 +9,18 @@ description: Källsökning när en ny förfrågan kommer in från CRM:et. Matcha
    - qasa_search_for_request med requestId
    - facebook_grupper med förfrågans ort
 
-3. Skicka en sammanfattning till Kajsa med fraga_kajsa. Håll den kort, ungefär så här:
+3. Skicka en kort sammanfattning med fraga_kajsa, högst fyra rader:
 
-   Ny förfrågan #128: BS Logistics, 4 pers i Gävle, 1 mars-1 juni, max 25 000 kr/mån.
-   CRM: 2 bra
-   - Storgatan 1, Gävle, 4 bäddar, 92 p (länk)
-   - ...
-   Qasa: 5 träffar, bästa: (länkar till 2-3)
-   Uthyrare med Gävle som sökort: Anna Hyr 070-...
-   Facebook: 3 grupper i Gävle, 2 för Gävleborg, 6 i närliggande orter, 9 rikstäckande.
-   Vad vill du göra? Du kan också skriva fritt.
+   Ny förfrågan #128: 4 pers i Gävle, 1 mars-1 juni.
+   Bäst i CRM:et: Storgatan 1, 4 bäddar, ledigt från mars.
+   Dessutom 5 på Qasa och 2 uthyrare med Gävle som sökort.
 
-   Knappar: "Facebook-inlägg #128", "Sms till uthyrarna #128", "Vänta med #128". Ta bara med knappar som passar: finns inga uthyrare med sökorten, hoppa över sms-knappen. Har orten högst två bostadsgrupper i facebook_grupper, lägg till "Hitta fler grupper i Gävle" (färdigheten facebook-grupper). Högst fyra knappar.
+   Knappar (högst tre): "Facebook-inlägg #128", "Visa alla träffar #128", "Vänta med #128". Byt en knapp mot "Sms till uthyrarna #128" om det finns uthyrare med sökorten, eller mot "Hitta fler grupper i Gävle" om orten har högst två bostadsgrupper i facebook_grupper.
 
-   - Visa högst tre CRM-objekt. Skriv ut vad som inte stämmer (t.ex. "ledigt först 15 mars") i stället för bara poängen.
-   - Objekt som redan är föreslagna (alreadySuggested) nämns som redan skickade.
-   - Saknas något i förfrågan som behövs för att söka (ort, period, antal), säg det först.
-   - Gick Qasa-sökningen inte att göra, säg det på en rad och gå vidare.
+   - Nämn bara det bästa objektet. Resten när hon trycker "Visa alla träffar": högst tre CRM-objekt med det som inte stämmer (t.ex. "ledigt först 15 mars"), och de 2-3 bästa Qasa-länkarna.
+   - Objekt som redan är föreslagna (alreadySuggested) räknas inte som nya träffar.
+   - Saknas något i förfrågan som behövs för att söka (ort, period, antal), säg bara det.
+   - Gick Qasa-sökningen inte att göra, hoppa över Qasa i texten.
 
 4. Vänta på Kajsas svar. Gör inga utkast och skicka ingen postningslista innan hon har bett om det. Svarar hon "Vänta med #128", säg kort att du låter den vara och att hon kan skriva när hon vill ta upp den igen.
    - Postningslista: följ färdigheten facebook-inlagg.

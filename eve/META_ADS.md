@@ -1,6 +1,6 @@
 # Meta Ads – anslutning och budget
 
-Verifierat 2026-11-18. Meta-åtkomsten är konfigurerad och testad med ett läsanrop. Agenten har ännu ingen Meta Ads-integration som använder nyckeln.
+Verifierat 2026-11-18. Meta-åtkomsten är konfigurerad och testad med ett läsanrop. Agenten styr annonserna sedan 2026-11-18 (se Integrationen nedan).
 
 ## Konton och åtkomst
 
@@ -24,7 +24,15 @@ Kajsas gräns är **högst 1 000 kr per ort och vecka**, sammanlagt över alla k
 
 Metas befintliga kontotak är **5 000 kr**, med återställning den första varje månad enligt faktureringsvyn. Det är ett separat tak för hela kontot och ersätter inte gränsen per ort.
 
-Kontouppsättningen och denna dokumentation inför ingen teknisk veckospärr. Innan agenten får starta eller ändra annonser behöver Meta Ads-integrationen och en gemensam budgetkontroll per ort implementeras och verifieras.
+## Integrationen
+
+- `annonser_oversikt`: per ort kostnaden den här veckan, löpande dagsbudget och prognos; per kampanj kostnad och leads; Meta-kontots månadstak. Ändrar inget.
+- `annonser_andra`: pausa går direkt. Starta och ny dagsbudget kräver Kajsas Godkänn i Telegram och nekas av koden om någon ort skulle gå över taket för veckan (veckans kostnad + löpande dagsbudget × dagar kvar). Sänkningar och pauser är alltid tillåtna.
+- `annonser_tak`: ändrar kronor per ort och vecka (standard 1 000 kr, sparas i agentens Blob-butik). Kräver Godkänn.
+- **Annonsvakten** (`agent/schedules/annonsvakt.ts`, varje timme, utan modell): varnar vid 90 % och pausar en orts aktiva annonsuppsättningar när orten når taket. En ny vecka frågar agenten Kajsa om det som pausades ska startas igen. Kan vakten inte läsa kostnaden säger den till en gång per dag.
+- `GET /annonser/status` med `ANNONS_STATUS_SECRET` visar läget för felsökning och ändrar inget.
+
+Hur orten räknas: orten är första staden (eller platsen/regionen) i annonsuppsättningens målgrupp. En kampanjbudget räknas fullt mot varje ort som kampanjen når, eftersom Meta kan lägga allt på en ort. Annonsuppsättningar utan stad i målgruppen kan inte startas eller höjas av agenten. Livstidsbudgetar ändras i Ads Manager. Metas kostnadssiffror kan släpa någon timme, så en ort kan hamna något över taket innan vakten pausar.
 
 ## Administration
 
