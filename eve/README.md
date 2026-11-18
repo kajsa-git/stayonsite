@@ -44,3 +44,7 @@ pnpm dev          # eve dev, kräver .env.local med variablerna ovan
 ## Kostnad
 
 Varje meddelande från Kajsa och varje ny förfrågan kör modellen. Taket i `agent/agent.ts` gör att agenten frågar om den ska fortsätta när ett samtal har kostat ca 3 USD sedan förra godkännandet.
+
+## Meta Ads
+
+Meta-åtkomsten är konfigurerad med `META_ADS_TOKEN` i Vercel-projektet `kajsas-agent`. Annonsintegrationen och den tekniska gränsen på **1 000 kr per ort och vecka** återstår att implementera. Konton, verifiering och budgetkrav finns i [Meta Ads-uppsättningen](META_ADS.md).
