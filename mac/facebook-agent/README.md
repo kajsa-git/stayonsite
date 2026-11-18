@@ -21,9 +21,14 @@ Den söker också nya Facebook-grupper, går med i dem och svarar på gruppernas
 - Har gruppen medlemsfrågor stänger den rutan utan att skicka och lämnar frågorna till agenten, som skriver förslag på svar. Kajsa ser varje fråga och svar, säger ja och trycker Godkänn. Först då fyller datorn i och skickar.
 - Har frågorna ändrats sedan Kajsa godkände svaren skickas ingenting.
 
-### Uppdateringar
+### Uppdateringar och larm
 
-Datorn hämtar själv nya versioner från GitHub var 30:e minut, när något i den här mappen har ändrats, och startar om sig. Ingen behöver göra något. Lokala ändringar skrivs aldrig över; då står det "kunde inte uppdatera" i loggen.
+Programmet består av en liten startdel (`agent.mjs`, den som launchd kör) och huvuddelen (`huvud.mjs`).
+
+- Startdelen hämtar själv nya versioner från GitHub vid start och var 30:e minut, när något i den här mappen har ändrats, och startar om. Ingen behöver göra något. Lokala ändringar skrivs aldrig över; då står det "kunde inte uppdatera" i loggen.
+- Startdelen hålls liten och ändras sällan, så den fungerar även om en ny huvuddel är trasig. Den installerar paket som saknas, startar om huvuddelen när den kraschar och letar då efter en rättad version var 5:e minut.
+- Kraschar huvuddelen tre gånger i rad får Kajsa ett meddelande i Telegram, en gång per version.
+- Har datorn inte hört av sig på tre timmar dagtid (10-20) säger agenten till i Telegram, en gång. Är datorn avstängd är det lugnt.
 
 ## Installera (en gång, på Kajsas Mac)
 
@@ -73,7 +78,7 @@ launchctl load -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist
 - **Logg:** `tail -f ~/Library/Logs/stayonsite-facebook-agent.log`
 - **Stoppa:** `launchctl unload -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist`
 - **Facebook har loggat ut:** `cd ~/Projects/stayonsite/mac/facebook-agent && npm run login`
-- **Ny version:** sker automatiskt (se Uppdateringar).
+- **Ny version:** sker automatiskt (se Uppdateringar och larm).
 - **Felsöka grupper** (klickar och skickar inget): `npm run grupp -- https://www.facebook.com/groups/...` visar medlemskap, `npm run sok -- "bostad Gävle"` visar sökträffarna.
 
 ## Tester

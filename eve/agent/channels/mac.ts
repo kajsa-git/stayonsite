@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { defineChannel, GET, POST } from "eve/channels";
 import { kajsasChatId } from "../lib/config.ts";
 import { lasResultat, tolkaResultat } from "../lib/facebook-resultat.ts";
+import { antecknaKontakt, lasKontakt, sparaKontakt, versionUrHeader } from "../lib/datorkontakt.ts";
 import { avslutaUppdrag, blobLagring, hamtaUppdrag, oppnaUppdrag, sparaGrupp } from "../lib/facebook-uppdrag.ts";
 import { skickaTillKajsa } from "../lib/telegram-api.ts";
 import telegram from "./telegram.ts";
@@ -45,9 +46,14 @@ const MAC = { authenticator: "mac", principalType: "service", principalId: "kajs
 export default defineChannel({
   routes: [
     // Datorn frågar efter uppdrag (söka grupper, gå med, svara på medlemsfrågor).
-    GET("/mac/uppdrag", async (req) => {
+    GET("/mac/uppdrag", async (req, ctx) => {
       if (!behorig(req)) return new Response("unauthorized", { status: 401 });
-      return Response.json({ uppdrag: await oppnaUppdrag(blobLagring()) });
+      const lagring = blobLagring();
+      const { varLarmad } = await antecknaKontakt(lagring, versionUrHeader(req.headers.get("user-agent"))).catch(() => ({ varLarmad: false }));
+      if (varLarmad) {
+        ctx.waitUntil(skickaTillKajsa({ text: "Facebook-datorn är igång igen." }).catch(() => {}));
+      }
+      return Response.json({ uppdrag: await oppnaUppdrag(lagring) });
     }),
 
     POST("/mac/facebook", async (req, ctx) => {
@@ -81,6 +87,23 @@ export default defineChannel({
           );
         }
         return Response.json({ ok: true, klar: r.klar }, { status: 202 });
+      }
+
+      if (body.status === "krasch") {
+        // Startdelen på datorn meddelar att en ny version inte startar. En gång per version.
+        const lagring = blobLagring();
+        const version = str((body as { version?: unknown }).version, 40) || "okänd";
+        const k = await lasKontakt(lagring);
+        if (k?.krasch?.version !== version) {
+          await sparaKontakt(lagring, { senast: k?.senast ?? new Date().toISOString(), ...k, krasch: { version, tid: new Date().toISOString() } });
+          console.error("kajsas-agent: Facebook-datorn kraschar", version, str(body.reason, 500));
+          ctx.waitUntil(
+            skickaTillKajsa({
+              text: "Facebook-datorn startar inte efter en uppdatering. Den försöker igen och hämtar rättningar själv. Säg till David om det håller i sig.",
+            }).catch(() => {}),
+          );
+        }
+        return Response.json({ ok: true });
       }
 
       if (body.status === "needs_kajsa") {

@@ -291,3 +291,30 @@ describe("annonsbudget per ort och vecka", () => {
     assert.equal(minorFaktor("SEK"), 100);
   });
 });
+
+import { antecknaKontakt, borLarma, versionUrHeader } from "../agent/lib/datorkontakt.ts";
+
+describe("datorns kontakt", () => {
+  it("läser versionen ur user-agent", () => {
+    assert.equal(versionUrHeader("stayonsite-facebook-agent/5d195fb"), "5d195fb");
+    assert.equal(versionUrHeader("node"), undefined);
+  });
+  it("larmar dagtid efter tre tysta timmar, en gång", () => {
+    const k = { senast: "2026-11-18T08:00:00Z" };
+    assert.equal(borLarma(k, new Date("2026-11-18T10:30:00Z")), false); // 2,5 h
+    assert.equal(borLarma(k, new Date("2026-11-18T11:30:00Z")), true); // 12.30 i Sverige
+    assert.equal(borLarma({ ...k, larmat: true }, new Date("2026-11-18T11:30:00Z")), false);
+    assert.equal(borLarma({ senast: "2026-11-17T19:00:00Z" }, new Date("2026-11-18T06:30:00Z")), false); // 07.30, för tidigt
+    assert.equal(borLarma(null), false);
+  });
+  it("antecknar kontakt sparsamt och nollställer larmet", async () => {
+    const l = minnesLagring();
+    const t0 = new Date("2026-11-18T10:00:00Z");
+    assert.deepEqual(await antecknaKontakt(l, "a1", t0), { varLarmad: false });
+    await antecknaKontakt(l, "a1", new Date("2026-11-18T10:03:00Z"));
+    assert.equal(JSON.parse(l.data.get("facebook-datorn/kontakt.json")!).senast, t0.toISOString());
+    await l.spara("facebook-datorn/kontakt.json", { senast: t0.toISOString(), version: "a1", larmat: true });
+    assert.deepEqual(await antecknaKontakt(l, "a1", new Date("2026-11-18T14:00:00Z")), { varLarmad: true });
+    assert.equal(JSON.parse(l.data.get("facebook-datorn/kontakt.json")!).larmat, false);
+  });
+});
