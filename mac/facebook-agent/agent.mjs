@@ -73,6 +73,16 @@ if (fs.existsSync(envFile)) {
 
 const AGENT_URL = (process.env.KAJSA_AGENT_URL ?? "https://kajsas-agent.vercel.app").replace(/\/+$/, "");
 const SECRET = process.env.MAC_AGENT_SECRET;
+// Versionen (git-commit) skickas med i varje anrop, så att det syns i agentens loggar
+// vilken version som kör på Kajsas dator.
+const VERSION = (() => {
+  try {
+    return execFileSync("/usr/bin/git", ["-C", repoRoot, "rev-parse", "--short", "HEAD"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  } catch {
+    return "okand";
+  }
+})();
+const USER_AGENT = `stayonsite-facebook-agent/${VERSION}`;
 const PROFILE_DIR = path.join(os.homedir(), "Library/Application Support/stayonsite-facebook-agent");
 const STATE_FILE = path.join(os.homedir(), ".stayonsite-facebook-agent.json");
 const argAfter = (flag) => {
@@ -115,7 +125,7 @@ function idleSeconds() {
 async function postToAgent(body) {
   const res = await fetch(`${AGENT_URL}/mac/facebook`, {
     method: "POST",
-    headers: { authorization: `Bearer ${SECRET}`, "content-type": "application/json" },
+    headers: { authorization: `Bearer ${SECRET}`, "content-type": "application/json", "user-agent": USER_AGENT },
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(20_000),
   });
@@ -124,7 +134,7 @@ async function postToAgent(body) {
 
 async function fetchTasks() {
   const res = await fetch(`${AGENT_URL}/mac/uppdrag`, {
-    headers: { authorization: `Bearer ${SECRET}` },
+    headers: { authorization: `Bearer ${SECRET}`, "user-agent": USER_AGENT },
     signal: AbortSignal.timeout(20_000),
   });
   if (!res.ok) throw new Error(`Agenten svarade ${res.status}`);
@@ -360,7 +370,7 @@ if (mode === "login") {
 } else if (mode === "sok") {
   await debug((page) => searchGroups(page, [argAfter("--sok")], { settle, checkHuman }));
 } else {
-  log("Facebook-agenten startar (läser, och går med i grupper bara på Kajsas uppdrag)");
+  log(`Facebook-agenten ${VERSION} startar (läser, och går med i grupper bara på Kajsas uppdrag)`);
   let lastTaskCheck = 0;
   let lastUpdateCheck = Date.now();
   for (;;) {
