@@ -1,10 +1,11 @@
+import { notifyAgentNewRequest } from "@/lib/crm/agent-notify";
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { indexRequest } from "@/lib/crm/search-index";
 import { requests } from "@/lib/crm/schema";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
@@ -50,5 +51,6 @@ export async function POST(req: NextRequest) {
   });
 
   await indexRequest(id).catch((e) => console.error("search-index request:", e));
+  after(() => notifyAgentNewRequest(id, "crm"));
   return NextResponse.json(result, { status: 201 });
 }

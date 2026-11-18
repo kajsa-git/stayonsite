@@ -31,6 +31,9 @@ const READ_TOOLS = [
   "crm_inbox",
   "crm_open_requests",
   "crm_emails_waiting",
+  "crm_request_matches",
+  "crm_owner_search_leads",
+  "qasa_search_for_request",
 ];
 const WRITE_TOOLS = ["crm_add_note", "crm_add_property_note", "crm_set_follow_up", "crm_update_request_status", "crm_draft_message"];
 
