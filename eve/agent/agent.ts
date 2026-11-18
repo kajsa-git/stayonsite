@@ -13,6 +13,17 @@ const PRIS = { input: 4, output: 20, cacheLas: 0.2, cacheSkriv: 8 };
 export default defineAgent({
   model: anthropic("claude-opus-5-5"),
   reasoning: "medium",
+  modelOptions: {
+    providerOptions: {
+      anthropic: {
+        // Kajsas chatt lever över många deployer. När instruktionerna eller verktygen
+        // ändras passar gamla tankeblock inte längre, och Anthropic avvisar då hela anropet
+        // (hände 2026-11-18: en ny förfrågan gick förlorad). drop_block släpper bara de
+        // blocken och svarar ändå. Samma typ och visning som reasoning ger annars.
+        thinking: { type: "adaptive", display: "summarized", blockBinding: { prefixMismatchBehavior: "drop_block" } },
+      },
+    },
+  },
   limits: {
     // Kajsas chatt är ett enda långt samtal. Vid ca 3 USD sedan förra godkännandet frågar
     // agenten om den ska fortsätta, så att en loop aldrig kan dra iväg kostnaden.
