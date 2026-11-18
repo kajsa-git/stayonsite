@@ -75,7 +75,8 @@ launchctl load -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist
 
 ## Vardag
 
-- **Logg:** `tail -f ~/Library/Logs/stayonsite-facebook-agent.log`
+- **Logg:** `tail -f ~/Library/Logs/stayonsite-facebook-agent.log`. Rader med `[start]` kommer från startdelen (uppdateringar, omstarter), övriga från huvuddelen.
+- **Vilken version kör?** Första raden efter en omstart: `[start] startar version <commit>`.
 - **Stoppa:** `launchctl unload -w ~/Library/LaunchAgents/se.stayonsite.facebook-agent.plist`
 - **Facebook har loggat ut:** `cd ~/Projects/stayonsite/mac/facebook-agent && npm run login`
 - **Ny version:** sker automatiskt (se Uppdateringar och larm).
