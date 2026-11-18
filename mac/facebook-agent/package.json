@@ -1,0 +1,19 @@
+{
+  "name": "stayonsite-facebook-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Läser nya kommentarer och meddelanden på Kajsas Facebook från hennes egen Mac och skickar dem till Kajsas agent.",
+  "scripts": {
+    "start": "node agent.mjs --loop",
+    "once": "node agent.mjs --once",
+    "login": "node agent.mjs --login",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright-core": "1.65.1"
+  }
+}

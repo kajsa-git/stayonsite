@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>se.stayonsite.facebook-agent</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/Users/kajsa/Projects/stayonsite/mac/facebook-agent/agent.mjs</string>
+    <string>--loop</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/kajsa/Projects/stayonsite/mac/facebook-agent</string>
+  <!-- Egen loop med 60 s-tick (själva körningen sker högst var 20:e minut, dagtid,
+       när datorn är orörd). KeepAlive startar om vid krasch. -->
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+  <!-- Chrome-fönstret behöver Kajsas inloggade skrivbordssession. -->
+  <key>LimitLoadToSessionType</key>
+  <string>Aqua</string>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>/Users/kajsa/Library/Logs/stayonsite-facebook-agent.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/kajsa/Library/Logs/stayonsite-facebook-agent.log</string>
+</dict>
+</plist>

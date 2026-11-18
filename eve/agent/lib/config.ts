@@ -6,6 +6,7 @@
 //   CRM_MCP_URL           standard https://www.stayonsite.se/api/mcp/mcp
 //   CRM_MCP_WRITE_TOKEN   samma värde som i CRM:ets Vercel-projekt
 //   KAJSA_AGENT_SECRET    delad hemlighet med CRM:et för "ny förfrågan"-anropet
+//   MAC_AGENT_SECRET      delad hemlighet med Facebook-agenten på Kajsas Mac (mac/facebook-agent)
 
 export function kajsasTelegramIds(env: Record<string, string | undefined> = process.env): Set<string> {
   return new Set(

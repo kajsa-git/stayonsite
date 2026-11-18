@@ -6,6 +6,7 @@ import { registerDashboardTools } from "./tools-dashboards";
 import { registerEntityTools } from "./tools-entities";
 import { registerSearchTools } from "./tools-search";
 import { registerEmailReadTools, registerEmailWriteTools } from "./tools-email";
+import { registerOwnerWriteTools } from "./tools-owner";
 import { registerSourcingTools } from "./tools-sourcing";
 import { registerWorkTools } from "./tools-work";
 import { registerWriteTools } from "./tools-write";
@@ -26,5 +27,6 @@ export function registerCrmTools(server: McpServer, opts?: RegisterCrmToolsOpts)
   if (opts?.includeWrites) {
     registerWriteTools(server, opts);
     registerEmailWriteTools(server, opts);
+    registerOwnerWriteTools(server, opts);
   }
 }

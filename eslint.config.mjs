@@ -8,6 +8,7 @@ const eslintConfig = [
       "node_modules/**",
       "stayonsite-quick-lodgings-finder/**",
       "eve/**",
+      "mac/**",
       "next-env.d.ts",
       "tsconfig.tsbuildinfo",
     ],
