@@ -1,10 +1,7 @@
 name: Mejlsynk till CRM
 
 on:
-  schedule:
-    # Var 15:e minut kl. 05–20 UTC alla dagar (06–21 vintertid, 07–22 sommartid).
-    # Nattens mejl hämtas av morgonens första körning — synken läser allt sedan förra gången.
-    - cron: "*/15 5-20 * * *"
+  # Den ordinarie synken schemaläggs i vercel.json.
   workflow_dispatch:
 
 concurrency:

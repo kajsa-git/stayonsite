@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { GmailMessage } from "./gmail";
+import { gmailCurrentHistoryId, type GmailMessage } from "./gmail";
 import * as schema from "./schema";
 import { createTestDb, type TestDB } from "./test-db";
 
@@ -127,6 +127,30 @@ describe("schema", () => {
 });
 
 describe("runMailboxSync", () => {
+  it("uses one mailbox cursor when a scheduled and manual sync overlap", async () => {
+    let enter!: () => void;
+    let release!: () => void;
+    const started = new Promise<void>((resolve) => { enter = resolve; });
+    const hold = new Promise<void>((resolve) => { release = resolve; });
+    vi.mocked(gmailCurrentHistoryId).mockImplementationOnce(async () => {
+      enter();
+      await hold;
+      return "600";
+    });
+    const first = runMailboxSync({ db, now: () => NOW });
+    try {
+      await started;
+      const second = await runMailboxSync({ db, now: () => NOW + 1000 });
+      expect(second.mode).toBe("in_progress");
+    } finally {
+      release();
+      await first;
+    }
+    const [state] = await db.select().from(gmailSyncState);
+    expect(state.historyId).toBe("600");
+    expect(state.lastSuccessAt).toBeTruthy();
+  });
+
   it("bootstraps from the last 30 days, links known people and queues unknown colleagues", async () => {
     addMessage(message("m-anna", { from: "Anna Berg <anna@byggbolaget.se>", hoursAgo: 2 }));
     addMessage(message("m-old", { from: "anna@byggbolaget.se", hoursAgo: 24 * 10, threadId: "t-old" }));

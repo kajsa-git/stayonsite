@@ -36,13 +36,22 @@ const writeHandler = createMcpHandler(
   HANDLER_CONFIG,
 );
 
+const agentHandler = createMcpHandler(
+  (server) => registerCrmTools(server, { includeWrites: true, includeConversationContext: true }),
+  SERVER_INFO,
+  HANDLER_CONFIG,
+);
+
 // Kajsas agent (eve/) har en egen skrivnyckel, så att den kan stängas av utan att
-// röra CRM_MCP_WRITE_TOKEN som andra klienter använder.
+// röra CRM_MCP_WRITE_TOKEN som andra klienter använder. Den samlade historiken
+// med Messenger är en del av agentens egen anslutning.
 const guarded = (req: Request): Promise<Response> | Response =>
-  bearerAuthorized(req, process.env.CRM_MCP_WRITE_TOKEN) || bearerAuthorized(req, process.env.CRM_MCP_AGENT_TOKEN)
-    ? writeHandler(req)
-    : bearerAuthorized(req, process.env.CRM_MCP_TOKEN)
-      ? readHandler(req)
-      : Response.json({ error: "Unauthorized" }, { status: 401 });
+  bearerAuthorized(req, process.env.CRM_MCP_AGENT_TOKEN)
+    ? agentHandler(req)
+    : bearerAuthorized(req, process.env.CRM_MCP_WRITE_TOKEN)
+      ? writeHandler(req)
+      : bearerAuthorized(req, process.env.CRM_MCP_TOKEN)
+        ? readHandler(req)
+        : Response.json({ error: "Unauthorized" }, { status: 401 });
 
 export { guarded as GET, guarded as POST, guarded as DELETE };

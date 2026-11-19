@@ -14,6 +14,7 @@ Datorn skickar bara det som verkar röra jobbet, men filtret kan ta fel. Är en 
 2. För uthyrare: ta ut namn, ort, typ av boende, rum eller bäddar, pris, period, möblerat och kontaktuppgifter som står i texten. Jämför med öppna förfrågningar (crm_open_requests): samma ort eller pendlingsavstånd, tillräckligt stort, rätt period.
    - Messenger-meddelanden har en rad "CRM:". Står det att tråden är kopplad vet du vem det är; sök inte igen.
    - Är tråden inte kopplad: sök personen i CRM:et (crm_search på namn eller nummer). Hittar du en trolig träff, fråga kort: "Är det Anna Svensson i CRM:et?" med knapparna "Ja, koppla", "Ny uthyrare", "Hoppa över". På "Ja, koppla": crm_messenger_link med trådens länk och ownerId (eller contactId).
+   - När personkopplingen är klar, läs `crm_conversation_context` för personens CRM-id. Använd tidigare dialog och befintliga objekt eller förfrågningar för nästa steg. En kopplad kontakt kan vara en hyrare eller företräda en kund.
 
 3. Ta en händelse i taget och skicka högst tre rader, med fraga_kajsa när hon ska välja något, t.ex.:
 

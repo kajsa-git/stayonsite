@@ -2,6 +2,7 @@
   "regions": ["dub1"],
   "crons": [
     { "path": "/api/cron/property-intake-notifications", "schedule": "*/5 * * * *" },
+    { "path": "/api/cron/email-sync", "schedule": "*/15 5-20 * * *" },
     { "path": "/api/cron/landlord-dialog-replies", "schedule": "*/5 * * * *" },
     { "path": "/api/cron/landlord-dialog-replies-full", "schedule": "17 * * * *" },
     { "path": "/api/cron/landlord-sms-replies", "schedule": "*/5 * * * *" },

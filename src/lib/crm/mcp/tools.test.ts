@@ -60,6 +60,14 @@ describe("registerCrmTools", () => {
     for (const name of [...READ_TOOLS, ...WRITE_TOOLS]) expect(tools[name], name).toBeDefined();
   });
 
+  it("provides combined conversation history only for the agent connection", async () => {
+    const { tools: general } = makeServer({ db, includeWrites: true });
+    const { tools: agent } = makeServer({ db, includeWrites: true, includeConversationContext: true });
+    expect(general.crm_conversation_context).toBeUndefined();
+    const out = await agent.crm_conversation_context.handler({ kind: "owner", id: "missing" }, {});
+    expect(out.isError).toBe(true);
+  });
+
   it("list the due rental checks separately, without including available homes", async () => {
     await db.insert(properties).values([
       { id: "rented", address: "Uthyrd", status: "rented" },

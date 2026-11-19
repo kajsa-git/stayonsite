@@ -1,11 +1,11 @@
 // Gmail ↔ CRM-synk. Två vägar in, samma importregler:
-//  • runMailboxSync: bakgrundsjobbet (GitHub Actions var 15:e minut). Läser bara det som
+//  • runMailboxSync: bakgrundsjobbet i Vercel. Läser bara det som
 //    hänt i brevlådan sedan förra körningen via Gmails historik-API och kopplar varje
 //    nytt mejl till rätt företag och/eller uthyrare.
 //  • syncEntityEmails: ↻ Synka på ett enskilt företags-/uthyrarkort (sökning per adress).
 // Okända avsändare på ett känt företags domän hamnar i en förslagskö i stället för att
 // kopplas automatiskt.
-import { and, desc, eq, gte, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { db as defaultDb } from "./db";
@@ -474,7 +474,7 @@ const MAX_SCAN = 1000;
 const RECENT_UNREAD_MS = 48 * 60 * 60 * 1000;
 
 export interface MailboxSyncSummary {
-  mode: "bootstrap" | "incremental" | "recovery";
+  mode: "bootstrap" | "incremental" | "recovery" | "in_progress";
   scanned: number;
   imported: number;
   linked: number;
@@ -495,12 +495,22 @@ export async function runMailboxSync(opts: {
   const deadline = started + (opts.budgetMs ?? 45_000);
   await ensureEmailSyncSchema(db);
 
-  const [state] = await db.select().from(gmailSyncState).where(eq(gmailSyncState.mailbox, mailbox)).limit(1);
   const startedIso = new Date(started).toISOString();
-  await db
+  // Ett lika lastRunAt och updatedAt är en pågående synk. Håll en kort lease
+  // något längre än cron-routens maxDuration, så att ett avbrott kan återhämtas.
+  const expiredBefore = new Date(started - 90_000).toISOString();
+  const [state] = await db
     .insert(gmailSyncState)
-    .values({ mailbox, lastRunAt: startedIso })
-    .onConflictDoUpdate({ target: gmailSyncState.mailbox, set: { lastRunAt: startedIso, updatedAt: startedIso } });
+    .values({ mailbox, lastRunAt: startedIso, updatedAt: startedIso })
+    .onConflictDoUpdate({
+      target: gmailSyncState.mailbox,
+      set: { lastRunAt: startedIso, updatedAt: startedIso },
+      setWhere: or(isNull(gmailSyncState.lastRunAt), lte(gmailSyncState.lastRunAt, expiredBefore),
+        sql`${gmailSyncState.updatedAt} IS NOT ${gmailSyncState.lastRunAt}`),
+    }).returning();
+  if (!state) return { mode: "in_progress", scanned: 0, imported: 0, linked: 0, suggested: 0, partial: false };
+  const claim = and(eq(gmailSyncState.mailbox, mailbox), eq(gmailSyncState.lastRunAt, startedIso));
+  const finishedAt = () => new Date(Math.max(started + 1, now())).toISOString();
 
   try {
     const userId = await gmailAutomationUserId(mailbox);
@@ -602,7 +612,7 @@ export async function runMailboxSync(opts: {
       }
     }
 
-    const finishedIso = new Date(now()).toISOString();
+    const finishedIso = finishedAt();
     const progress: Partial<typeof gmailSyncState.$inferInsert> = !summary.partial
       ? { historyId: nextHistoryId, backfillAfter: null, lastSuccessAt: finishedIso }
       : mode === "incremental"
@@ -611,14 +621,14 @@ export async function runMailboxSync(opts: {
     await db
       .update(gmailSyncState)
       .set({ ...progress, lastError: null, lastImported: summary.imported + summary.linked, updatedAt: finishedIso })
-      .where(eq(gmailSyncState.mailbox, mailbox));
+      .where(claim);
     return summary;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     await db
       .update(gmailSyncState)
-      .set({ lastError: message.slice(0, 500), updatedAt: new Date(now()).toISOString() })
-      .where(eq(gmailSyncState.mailbox, mailbox));
+      .set({ lastError: message.slice(0, 500), updatedAt: finishedAt() })
+      .where(claim);
     throw error;
   }
 }

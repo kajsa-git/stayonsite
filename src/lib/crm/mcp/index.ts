@@ -3,7 +3,7 @@
 // Raderingar exponeras aldrig via MCP — de görs av en människa i CRM-UI:t.
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerDashboardTools } from "./tools-dashboards";
-import { registerEntityTools } from "./tools-entities";
+import { registerConversationContextTool, registerEntityTools } from "./tools-entities";
 import { registerSearchTools } from "./tools-search";
 import { registerEmailReadTools, registerEmailWriteTools } from "./tools-email";
 import { registerMessengerWriteTools } from "./tools-messenger";
@@ -15,6 +15,7 @@ import type { DB } from "./shape";
 
 export interface RegisterCrmToolsOpts {
   includeWrites?: boolean;
+  includeConversationContext?: boolean;
   db?: DB; // injicerbar för tester — default är den lata produktions-klienten
 }
 
@@ -25,6 +26,7 @@ export function registerCrmTools(server: McpServer, opts?: RegisterCrmToolsOpts)
   registerWorkTools(server, opts);
   registerSourcingTools(server, opts);
   registerEmailReadTools(server, opts);
+  if (opts?.includeConversationContext) registerConversationContextTool(server, opts);
   if (opts?.includeWrites) {
     registerWriteTools(server, opts);
     registerEmailWriteTools(server, opts);

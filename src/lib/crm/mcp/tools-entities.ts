@@ -2,10 +2,11 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getCompanyDetail } from "../company-detail";
+import { getConversationContext } from "../conversation-context";
 import { db as defaultDb } from "../db";
 import { getOwnerDetail } from "../owner-detail";
 import { companies, contacts, matches, owners, properties, propertyImages, propertyNotes, requests, type Property } from "../schema";
-import { BASE_URL_NOTE, crmRoute, errorContent, jsonContent, truncate, type DB } from "./shape";
+import { BASE_URL_NOTE, clampLimit, crmRoute, errorContent, jsonContent, truncate, type DB } from "./shape";
 
 const NOTE_CAP = 20;
 const NOTE_CHARS = 500;
@@ -16,6 +17,28 @@ const MATCH_CAP = 10;
 function stripLocalized(p: Property): Omit<Property, "publicDescriptionEn" | "publicDescriptionPl" | "skickEn" | "skickPl" | "inclusionsEn" | "inclusionsPl"> {
   const { publicDescriptionEn, publicDescriptionPl, skickEn, skickPl, inclusionsEn, inclusionsPl, ...rest } = p;
   return rest;
+}
+
+export function registerConversationContextTool(server: McpServer, opts?: { db?: DB }) {
+  server.registerTool(
+    "crm_conversation_context",
+    {
+      title: "Current CRM conversation and case context",
+      description: "Read the current landlord, property, renter contact, company or request by its exact CRM id. Returns current cases, linked SMS/iMessage, WhatsApp, email, Messenger and notes, newest first, plus a separate list of pending/failed outgoing messages and the last successful Gmail sync. Use it before answering about a person or drafting any follow-up. Request a specific channel or pass the returned nextCursor as before for older items. Person-level messages may concern several cases; use explicit propertyId and requestId links where present. " + BASE_URL_NOTE,
+      inputSchema: {
+        kind: z.enum(["owner", "property", "contact", "company", "request"]),
+        id: z.string().min(1).max(100),
+        channel: z.enum(["sms", "whatsapp", "email", "messenger", "note"]).optional(),
+        before: z.object({ at: z.string().datetime(), id: z.string().min(1).max(160) }).optional(),
+        limit: z.number().int().min(1).max(30).optional(),
+      },
+    },
+    async ({ kind, id, channel, before, limit }) => {
+      const cursor = before ? { at: before.at, id: before.id } : undefined;
+      const result = await getConversationContext({ kind, id, channel, before: cursor, limit: clampLimit(limit, 15, 30) }, opts?.db ?? defaultDb);
+      return result ? jsonContent(result) : errorContent(`not found: ${kind} ${id}`);
+    },
+  );
 }
 
 export function registerEntityTools(server: McpServer, opts?: { db?: DB }) {
