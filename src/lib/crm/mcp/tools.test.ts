@@ -27,6 +27,7 @@ const READ_TOOLS = [
   "crm_today",
   "crm_queue_counts",
   "crm_queue_items",
+  "crm_property_intake_followups",
   "crm_rental_reviews_due",
   "crm_inbox",
   "crm_open_requests",

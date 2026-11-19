@@ -372,6 +372,13 @@
       "when": 1794384000000,
       "tag": "0052_property_intake_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "6",
+      "when": 1795102800000,
+      "tag": "0053_property_intake_follow_ups",
+      "breakpoints": true
     }
   ]
 }

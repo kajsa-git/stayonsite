@@ -6,8 +6,29 @@ import { fetchQueueItems, VALID_QUEUES } from "../queue";
 import { BASE_URL_NOTE, clampLimit, crmRoute, jsonContent, truncate, type DB } from "./shape";
 import { db as defaultDb } from "../db";
 import { dueRentalReviews } from "../rental-review";
+import { getPropertyIntakeFollowUp, listOpenPropertyIntakeFollowUps } from "../property-intake-follow-up";
 
 export function registerWorkTools(server: McpServer, opts?: { db?: DB }) {
+  server.registerTool(
+    "crm_property_intake_followups",
+    {
+      title: "Bostadsintag att följa upp",
+      description: `Follow-up state for new HyrUtSmart and StayOnSite properties: missing details, next follow-up date and whether the property is ready for internal matching. With propertyId, return the state of that property, including completed registrations. ${BASE_URL_NOTE}`,
+      inputSchema: {
+        propertyId: z.string().optional().describe("CRM property id"),
+        limit: z.number().int().min(1).max(50).optional().describe("Max open items, default 20"),
+      },
+    },
+    async ({ propertyId, limit }) => {
+      const db = opts?.db ?? defaultDb;
+      if (propertyId) {
+        const row = await getPropertyIntakeFollowUp(propertyId, db);
+        return jsonContent(row ? { ...row, propertyId, crmUrl: crmRoute.property(propertyId) } : { propertyId, status: "not_found" });
+      }
+      const rows = await listOpenPropertyIntakeFollowUps(db, clampLimit(limit, 20, 50));
+      return jsonContent(rows.map((row) => ({ ...row, crmUrl: crmRoute.property(row.propertyId) })));
+    },
+  );
   server.registerTool(
     "crm_rental_reviews_due",
     {

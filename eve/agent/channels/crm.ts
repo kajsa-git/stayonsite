@@ -17,6 +17,26 @@ function behorig(req: Request): boolean {
 
 export default defineChannel({
   routes: [
+    POST("/crm/bostadsintag", async (req, ctx) => {
+      if (!behorig(req)) return new Response("unauthorized", { status: 401 });
+      const body = (await req.json().catch(() => null)) as { propertyId?: unknown; eventId?: unknown; kind?: unknown } | null;
+      const idPattern = /^[A-Za-z0-9_-]{4,40}$/;
+      if (!body || typeof body.propertyId !== "string" || !idPattern.test(body.propertyId)
+        || typeof body.eventId !== "string" || !idPattern.test(body.eventId)
+        || (body.kind !== "progress" && body.kind !== "reply" && body.kind !== "due")) {
+        return new Response("bad request", { status: 400 });
+      }
+      const kind = body.kind === "due" ? "en uppföljning har förfallit"
+        : body.kind === "reply" ? "ett nytt svar är loggat på bostaden" : "läget har ändrats";
+      await ctx.to(telegram, { chatId: kajsasChatId() }).send(
+        `[Från CRM:et] Bostadsintag ${body.propertyId}: ${kind}. Följ färdigheten bostadsintag.`,
+        {
+          auth: { authenticator: "crm", principalType: "service", principalId: "stayonsite-crm", attributes: {} },
+          idempotencyKey: `crm:bostadsintag:${body.eventId}`,
+        },
+      );
+      return Response.json({ ok: true }, { status: 202 });
+    }),
     POST("/crm/ny-forfragan", async (req, ctx) => {
       if (!behorig(req)) return new Response("unauthorized", { status: 401 });
       const body = (await req.json().catch(() => null)) as { requestId?: unknown; source?: unknown } | null;

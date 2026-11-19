@@ -450,6 +450,18 @@ export const propertyIntakeNotifications = sqliteTable("crm_property_intake_noti
   retryAfter: text("retry_after"),
 }, (t) => [index("crm_property_intake_notifications_activity_idx").on(t.lastActivityAt)]);
 
+export const propertyIntakeFollowUps = sqliteTable("crm_property_intake_follow_ups", {
+  propertyId: text("property_id").primaryKey().references(() => properties.id, { onDelete: "cascade" }),
+  source: text("source", { enum: ["hus", "stayonsite"] }).notNull(),
+  status: text("status", { enum: ["checking", "waiting", "ready", "paused"] }).notNull().default("checking"),
+  createdAt: text("created_at").notNull(),
+  nextCheckAt: text("next_check_at"),
+  nextFollowUpOn: text("next_follow_up_on"),
+  assessment: text("assessment", { mode: "json" }).$type<{ missing: string[]; photoCount: number; replyId: string | null }>(),
+  notice: text("notice", { mode: "json" }).$type<{ id: string; kind: "progress" | "reply" | "due" }>(),
+  remindedOn: text("reminded_on"),
+}, (t) => [index("crm_property_intake_follow_ups_check_idx").on(t.nextCheckAt)]);
+
 // Kontaktlogg på objektnivå (kontakt med uthyrare om bostaden)
 export const propertyNotes = sqliteTable("crm_property_notes", {
   id: text("id").primaryKey(),

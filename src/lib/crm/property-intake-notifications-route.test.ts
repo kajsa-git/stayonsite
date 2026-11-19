@@ -3,7 +3,7 @@ import { File as NodeFile } from "node:buffer";
 import { NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { createTestDb, type TestDB } from "./test-db";
-import { propertyIntakeNotifications } from "./schema";
+import { propertyIntakeFollowUps, propertyIntakeNotifications } from "./schema";
 import { HUS_INTAKE_VERSION } from "./hus-publication";
 
 const state = vi.hoisted(() => ({ db: null as unknown as TestDB, send: vi.fn(), put: vi.fn() }));
@@ -73,9 +73,12 @@ describe("public property intake notification flow", () => {
   });
 
   it("sends a zero-image notice without waiting when no images were selected", async () => {
-    await submit(0);
+    const intake = await submit(0);
     expect(state.send).toHaveBeenCalledOnce();
     expect(state.send.mock.calls[0][0].subject).toContain("0 bilder");
+    expect(await state.db.select().from(propertyIntakeFollowUps)).toEqual([
+      expect.objectContaining({ propertyId: intake.propertyId, source: "stayonsite", status: "checking" }),
+    ]);
   });
 
   it("notifies after an interrupted upload and requires the cron secret", async () => {
@@ -93,10 +96,13 @@ describe("public property intake notification flow", () => {
   });
 
   it("preserves the separate HUS intake notice and does not create a StayOnSite job", async () => {
-    await submit(2, { source: "HUS", husPublication: { version: HUS_INTAKE_VERSION, approved: true } });
+    const intake = await submit(2, { source: "HUS", husPublication: { version: HUS_INTAKE_VERSION, approved: true } });
     expect(state.send).toHaveBeenCalledOnce();
     expect(state.send.mock.calls[0][0].subject).toContain("bilder behandlas");
     expect(await state.db.select().from(propertyIntakeNotifications)).toHaveLength(0);
+    expect(await state.db.select().from(propertyIntakeFollowUps)).toEqual([
+      expect.objectContaining({ propertyId: intake.propertyId, source: "hus", status: "checking" }),
+    ]);
   });
 
   it("reports failed images when the upload link cannot be created", async () => {

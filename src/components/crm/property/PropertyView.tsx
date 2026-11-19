@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
+import type { PropertyIntakeFollowUpView } from "@/lib/crm/property-intake-follow-up";
 import { formatPhoneSv } from "@/lib/crm/phone-links";
 import { propertyRentalRight, propertyRentalRightLabel } from "@/lib/crm/property-rental-right";
 import { Calculator, Home, Pencil, Plus, Trash2, X } from "lucide-react";
@@ -62,6 +63,10 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
   const [startingReview, setStartingReview] = useState(false);
   const reviewDate = property.rentalReviewCheckOn ?? startedReview;
   const { data: propertyImages } = useSWR<{ id: string }[]>(`/api/crm/properties/${property.id}/images`, fetcher);
+  const { data: intake } = useSWR<PropertyIntakeFollowUpView | null>(
+    `/api/crm/properties/${property.id}/intake-follow-up`, fetcher,
+    { refreshInterval: (row) => row?.status === "checking" || row?.status === "waiting" ? 60_000 : 0 },
+  );
   const unspecified = [
     ...(propertyImages && propertyImages.length === 0 ? ["Bilder"] : []),
     ...(property.beds == null ? ["Antal bäddar"] : []),
@@ -214,6 +219,20 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-3 text-xs text-muted-foreground">
               <span>Ingen tillgänglighetskontroll är planerad.</span>
               <Button size="sm" variant="outline" disabled={startingReview} onClick={startRentalReview}>Planera kontroll</Button>
+            </div>
+          )}
+          {intake && (
+            <div className="mt-4 border-t pt-3 text-sm" aria-label="Uppföljning av bostadsintag">
+              <h3 className="font-medium">Bostadsintag via {intake.source === "hus" ? "HyrUtSmart" : "StayOnSite"}</h3>
+              {intake.status === "checking" && <p className="text-muted-foreground">Första kontrollen är planerad.</p>}
+              {intake.status === "ready" && <p className="text-muted-foreground">Underlag klart för matchning</p>}
+              {intake.status === "paused" && <p className="text-muted-foreground">Pausad medan bostaden är av marknaden</p>}
+              {intake.missing.length > 0 && (
+                <ul className="my-1 list-disc pl-4">
+                  {intake.missing.map((label) => <li key={label}>{label}</li>)}
+                </ul>
+              )}
+              {intake.nextFollowUpOn && <p className="text-muted-foreground">Nästa uppföljning <time dateTime={intake.nextFollowUpOn}>{intake.nextFollowUpOn}</time></p>}
             </div>
           )}
           {unspecified.length > 0 && (

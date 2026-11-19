@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PropertyWithOwner } from "@/lib/crm/owners";
 import { PropertyView } from "./PropertyView";
 
-vi.mock("swr", () => ({ default: () => ({ data: [] }) }));
+vi.mock("swr", () => ({ default: (key: string) => ({ data: key.endsWith("/intake-follow-up") ? null : [] }) }));
 vi.mock("@/components/crm/ProfitCalculatorDialog", () => ({ ProfitCalculatorDialog: () => null }));
 vi.mock("./MatchToRequestModal", () => ({ MatchToRequestModal: () => null }));
 vi.mock("./PropertyContentReview", () => ({ PropertyContentReview: () => null }));

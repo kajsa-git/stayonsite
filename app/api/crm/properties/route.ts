@@ -13,6 +13,7 @@ import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { hasPropertyPostalCode, PROPERTY_POSTAL_REQUIRED_ERROR } from "@/lib/crm/property-postal";
+import { startPropertyIntakeFollowUp } from "@/lib/crm/property-intake-follow-up";
 
 export async function GET(req: NextRequest) {
   const session = await requireApprovedSession();
@@ -119,6 +120,7 @@ export async function POST(req: NextRequest) {
   const row = await db.transaction(async (tx) => {
     const [created] = await tx.insert(properties).values({ id, ...values }).returning();
     await syncRentalReview(tx, null, created);
+    await startPropertyIntakeFollowUp(tx, created.id, "stayonsite");
     return created;
   });
   await indexProperty(id).catch((e) => console.error("search-index property:", e));

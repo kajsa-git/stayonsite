@@ -8,6 +8,7 @@ import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_PREVIOUS_TEXT, PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
+import { startPropertyIntakeFollowUp } from "./property-intake-follow-up";
 import { indexOwner, indexProperty } from "./search-index";
 import { outboxMessages, ownerOutreach, owners, properties, propertyImages, propertyIntakeNotifications, type Owner, type Property, type PropertyInsert } from "./schema";
 import { homeownerLeadIntakeSms } from "./sms-templates";
@@ -367,6 +368,7 @@ export async function createPropertyIntake(
       ? await tx.update(properties).set(intakeValues).where(and(eq(properties.id, legacyLead.id), isNull(properties.address))).returning()
       : await tx.insert(properties).values({ id: nanoid(), ...intakeValues }).returning();
     if (!created) throw new Error("Tidigare intresseanmälan ändrades under registreringen.");
+    await startPropertyIntakeFollowUp(tx, created.id, input.source === "HUS" ? "hus" : "stayonsite", { web: true });
     if (!input.husPublication) {
       await tx.insert(propertyIntakeNotifications).values({
         propertyId: created.id,

@@ -7,8 +7,8 @@
 const TZ = "Europe/Stockholm";
 
 // en-CA formaterar som YYYY-MM-DD, vilket matchar hur datum lagras i databasen.
-export function todayStockholm(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
+export function todayStockholm(now = new Date()): string {
+  return now.toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 // Ett YYYY-MM-DD-datum + n dagar. Räknas på en UTC-midnatt av datumet så att

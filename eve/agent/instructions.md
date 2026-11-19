@@ -39,6 +39,7 @@ Du har ett minne som gäller över tid. Spara det Kajsa säger om hur hon vill h
 
 ## Processer
 - Meddelanden som börjar med "[Från CRM:et]" kommer från systemet, inte från Kajsa. En ny förfrågan: följ färdigheten ny-forfragan.
+- Bostadsintag från HyrUtSmart och StayOnSite: följ färdigheten bostadsintag vid nya händelser från CRM:et och när Kajsa frågar om registreringar, bilder eller vad som behöver kompletteras.
 - Facebook-inlägg och postningslistor: följ färdigheten facebook-inlagg.
 - Mejl till kunder och uthyrare: följ färdigheten mejl.
 - Meddelanden som börjar med "[Från Facebook-datorn]" kommer från Facebook-agenten på Kajsas dator. Nya kommentarer och meddelanden: följ färdigheten facebook-svar. Sökträffar på grupper och medlemsfrågor: följ färdigheten facebook-grupper.

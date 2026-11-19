@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
 import { loadPublishConsentState, recordPublishConsent, webConsentEvidence, withdrawPublishConsent } from "./publish-consent";
 import { agreementAcceptances, outboxMessages, owners, properties, propertyNotes } from "./schema";
@@ -68,7 +68,7 @@ describe("publiceringsmedgivande", () => {
       evidence: webConsentEvidence(), webAcceptance: { shareLinkId: "l1", language: "sv" } }, { db });
     const [acceptance] = await db.select().from(agreementAcceptances);
     expect(acceptance).toMatchObject({ agreementType: "publiceringsmedgivande", version: PUBLICATION_CONSENT_VERSION, propertyId: "p1", ownerId: "o1" });
-    expect((await db.select().from(propertyNotes))[0].content).toContain("Du bestämmer själv om du vill gå vidare");
+    expect((await db.select().from(propertyNotes))[0].content).toContain(PUBLICATION_CONSENT_TEXT);
   });
 
   it("återkallar publicering och prospekt, behåller historiken och stoppar ett väntande HUS-sms", async () => {
