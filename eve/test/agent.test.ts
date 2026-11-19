@@ -318,3 +318,32 @@ describe("datorns kontakt", () => {
     assert.equal(JSON.parse(l.data.get("facebook-datorn/kontakt.json")!).larmat, false);
   });
 });
+
+import { loggaMessenger } from "../agent/channels/mac.ts";
+
+describe("Messenger mot CRM:et", () => {
+  it("loggar Messenger-händelser och visar kopplingen, men låter notiser vara", async () => {
+    const anrop: Array<[string, Record<string, unknown>]> = [];
+    const fake = (async (namn: string, args: Record<string, unknown>) => {
+      anrop.push([namn, args]);
+      return { thread: { ownerId: "o1", ownerName: "Anna Svensson" } };
+    }) as any;
+    const ut = await loggaMessenger(
+      [
+        { kind: "meddelande", key: "k1", url: "https://www.facebook.com/messages/t/123", summary: "Har ett hus", namn: "Anna Svensson" },
+        { kind: "notis", key: "k2", url: "https://www.facebook.com/groups/1", summary: "Bertil kommenterade" },
+      ],
+      fake,
+    );
+    assert.equal(anrop.length, 1);
+    assert.equal(anrop[0][0], "crm_messenger_log");
+    assert.equal(anrop[0][1].name, "Anna Svensson");
+    assert.match(formateraHandelser(ut), /CRM: Kopplad i CRM:et till uthyraren Anna Svensson \(ownerId o1\)/);
+  });
+  it("skickar händelsen ändå när CRM:et inte svarar", async () => {
+    const ut = await loggaMessenger([{ kind: "meddelande", key: "k1", url: "https://www.facebook.com/messages/t/1", summary: "x" }], (async () => {
+      throw new Error("nere");
+    }) as any);
+    assert.equal(ut[0].crm, undefined);
+  });
+});

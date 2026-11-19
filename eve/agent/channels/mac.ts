@@ -1,6 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { defineChannel, GET, POST } from "eve/channels";
 import { kajsasChatId } from "../lib/config.ts";
+import { anropaCrm } from "../lib/crm-mcp.ts";
 import { lasResultat, tolkaResultat } from "../lib/facebook-resultat.ts";
 import { antecknaKontakt, lasKontakt, sparaKontakt, versionUrHeader } from "../lib/datorkontakt.ts";
 import { avslutaUppdrag, blobLagring, hamtaUppdrag, oppnaUppdrag, sparaGrupp } from "../lib/facebook-uppdrag.ts";
@@ -19,7 +20,40 @@ function behorig(req: Request): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-type Event = { kind?: unknown; key?: unknown; url?: unknown; summary?: unknown; detail?: unknown };
+type Event = { kind?: unknown; key?: unknown; url?: unknown; summary?: unknown; detail?: unknown; namn?: unknown; crm?: string };
+
+type Trad = { thread?: { ownerId?: string | null; ownerName?: string | null; contactId?: string | null; contactName?: string | null; ownerCrmUrl?: string } };
+
+/**
+ * Loggar varje Messenger-meddelande på sin tråd i CRM:et och tar reda på om tråden är
+ * kopplad till en uthyrare eller kontakt. Går CRM:et inte att nå skickas händelsen ändå.
+ */
+export async function loggaMessenger(events: Event[], anropa: typeof anropaCrm = anropaCrm): Promise<Event[]> {
+  return Promise.all(
+    events.map(async (e) => {
+      if (e.kind !== "meddelande" || !str(e.url, 300) || !str(e.key, 100)) return e;
+      try {
+        const r = await anropa<Trad>("crm_messenger_log", {
+          url: str(e.url, 300),
+          name: str(e.namn, 120) || undefined,
+          text: str(e.summary, 2000) || "(tomt)",
+          detail: str(e.detail, 6000) || undefined,
+          eventKey: str(e.key, 100),
+        });
+        const t = r?.thread;
+        const crm = t?.ownerId
+          ? `Kopplad i CRM:et till uthyraren ${t.ownerName ?? ""} (ownerId ${t.ownerId}). Meddelandet är loggat där.`
+          : t?.contactId
+            ? `Kopplad i CRM:et till kontakten ${t.contactName ?? ""} (contactId ${t.contactId}). Meddelandet är loggat där.`
+            : "Tråden är inte kopplad till någon i CRM:et än.";
+        return { ...e, crm };
+      } catch (err) {
+        console.error("kajsas-agent: kunde inte logga Messenger i CRM:et", err instanceof Error ? err.message : err);
+        return e;
+      }
+    }),
+  );
+}
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
 export function formateraHandelser(events: Event[]): string {
@@ -29,6 +63,7 @@ export function formateraHandelser(events: Event[]): string {
     return [
       `${i + 1}. ${typ}: ${str(e.summary, 600)}`,
       str(e.url, 500) ? `   Länk: ${str(e.url, 500)}` : "",
+      e.crm ? `   CRM: ${e.crm}` : "",
       detalj ? `   <facebook_text>\n${detalj}\n   </facebook_text>` : "",
     ]
       .filter(Boolean)
@@ -129,8 +164,9 @@ export default defineChannel({
         return Response.json({ ok: true });
       }
 
-      const events = Array.isArray(body.events) ? (body.events as Event[]).slice(0, 20) : [];
-      if (!events.length) return new Response("bad request", { status: 400 });
+      const inkomna = Array.isArray(body.events) ? (body.events as Event[]).slice(0, 20) : [];
+      if (!inkomna.length) return new Response("bad request", { status: 400 });
+      const events = await loggaMessenger(inkomna);
       const nyckel = createHash("sha256")
         .update(events.map((e) => str(e.key, 100)).join("|"))
         .digest("hex")

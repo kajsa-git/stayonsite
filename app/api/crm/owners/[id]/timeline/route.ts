@@ -6,6 +6,7 @@
 import { requireApprovedSession } from "@/lib/crm/auth";
 import { db } from "@/lib/crm/db";
 import { emails, inboxMessages, outboxMessages, ownerOutreach, owners, properties, propertyNotes } from "@/lib/crm/schema";
+import { messengerMessagesForOwner } from "@/lib/crm/messenger";
 import { matchOutgoingSms } from "@/lib/crm/sms-timeline";
 import { desc, eq, or } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -117,6 +118,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       .limit(MAX_ITEMS),
   ]);
 
+  // Messenger-meddelanden från Facebook-datorn, i trådar kopplade till uthyraren.
+  const messengerRows = await messengerMessagesForOwner(id).catch(() => []);
   const matchedOutbox = matchOutgoingSms(smsRows, outboxRows);
   const matchedIds = new Set([...matchedOutbox.values()].map((message) => message.id));
   const items: OwnerTimelineItem[] = [
@@ -155,6 +158,19 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       body: e.body.length > 300 ? e.body.slice(0, 300) + "…" : e.body,
       status: null,
       service: null,
+      propertyId: null,
+      propertyAddress: null,
+      error: null,
+    })),
+    ...messengerRows.map((m): OwnerTimelineItem => ({
+      id: `messenger:${m.id}`,
+      kind: "note",
+      direction: "in",
+      at: toIso(m.seenAt),
+      title: "Messenger",
+      body: m.text,
+      status: null,
+      service: "Messenger",
       propertyId: null,
       propertyAddress: null,
       error: null,

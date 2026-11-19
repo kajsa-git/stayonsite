@@ -213,6 +213,8 @@ async function readMessengerList(page, workNames) {
   });
   const items = raw.map((r) => ({
     kind: "meddelande",
+    // Första raden i tråden är personens namn; agenten använder det för att hitta personen i CRM:et.
+    namn: (r.text.split("\n")[0] ?? "").trim().slice(0, 120) || undefined,
     url: cleanUrl(r.href),
     summary: normaliseText(r.text),
     key: itemKey("meddelande", r.href, r.text),
@@ -318,7 +320,7 @@ async function runOnce(state, { force = false } = {}) {
       await sleep(jitterMs(2500, 6000));
       const d = await readDetail(page, item);
       if (d.human) return await pauseForHuman(state, "Facebook vill att någon verifierar kontot");
-      events.push({ kind: item.kind, key: item.key, url: item.url, summary: item.summary, detail: d.detail });
+      events.push({ kind: item.kind, key: item.key, url: item.url, summary: item.summary, detail: d.detail, namn: item.namn });
     }
     // Resten skickas med bara sin sammanfattning; de öppnas inte i den här körningen.
     for (const item of work.slice(MAX_DETAILS_PER_RUN)) events.push(item);
