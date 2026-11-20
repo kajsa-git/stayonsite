@@ -8,7 +8,7 @@ import { skickaTillKajsa } from "../lib/telegram-api.ts";
 
 // Varje timme, utan modell: läser veckans kostnad per ort och pausar en orts annonser när
 // orten når taket per ort och vecka. Varnar vid 90 %. Kan den inte läsa kostnaden säger
-// den till en gång per dag, så att taket aldrig står obevakat i tysthet. En ny vecka
+// den till en gång per dag (dagtid), så att taket aldrig står obevakat i tysthet. En ny vecka
 // lämnar den det som pausades förra veckan till agenten, som frågar Kajsa om de ska igång.
 type Skicka = (text: string) => Promise<unknown>;
 
@@ -38,8 +38,11 @@ async function vakta(tillAgenten: Skicka) {
   } catch (e) {
     const fel = e instanceof Error ? e.message : String(e);
     console.error("kajsas-agent: annonsvakten", fel);
-    const idag = new Date().toISOString().slice(0, 10);
-    if (lage.felDatum !== idag) {
+    // En gång per svensk dag, och bara dagtid: Kajsa ska inte väckas av ett fel på natten.
+    const klockan = new Date();
+    const idag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm" }).format(klockan);
+    const timme = Number(new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", hour: "2-digit", hour12: false }).format(klockan));
+    if (lage.felDatum !== idag && timme >= 8 && timme < 20) {
       await sparaVakt(lagring, { ...lage, felDatum: idag });
       await skickaTillKajsa({ text: `Annonsvakten kan inte läsa annonsernas kostnad just nu, så taket per ort bevakas inte. (${fel.slice(0, 120)})` }).catch(() => {});
     }

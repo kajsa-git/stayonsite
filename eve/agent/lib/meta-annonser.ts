@@ -48,9 +48,13 @@ async function anrop(
     body,
     signal: AbortSignal.timeout(20_000),
   });
-  const json = (await res.json().catch(() => ({}))) as { error?: { message?: string; error_user_msg?: string } };
+  const json = (await res.json().catch(() => ({}))) as {
+    error?: { message?: string; error_user_msg?: string; code?: number; error_subcode?: number; fbtrace_id?: string };
+  };
   if (!res.ok || json.error) {
-    throw new MetaFel(`Meta svarade ${res.status}: ${json.error?.error_user_msg ?? json.error?.message ?? "okänt fel"}`);
+    const e = json.error;
+    const kod = e?.code != null ? ` (kod ${e.code}${e.error_subcode != null ? `/${e.error_subcode}` : ""}${e.fbtrace_id ? `, trace ${e.fbtrace_id}` : ""})` : "";
+    throw new MetaFel(`Meta svarade ${res.status}: ${e?.error_user_msg ?? e?.message ?? "okänt fel"}${kod}`);
   }
   return json;
 }
