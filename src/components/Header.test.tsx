@@ -45,20 +45,18 @@ describe('public navigation', () => {
   });
 
   it.each([
-    ['/', 'Mer', 'Boende vid datacenter', '/datacenter-boende', '/kontakt'],
-    ['/en/about', 'More', 'Data centre accommodation', '/en/data-centre-accommodation-sweden', '/en/corporate-housing-sweden#inquiry'],
-    ['/pl/zakwaterowanie-firmowe', 'Więcej', 'Zakwaterowanie przy centrach danych', '/pl/zakwaterowanie-centra-danych-szwecja', '/pl/zakwaterowanie-firmowe#inquiry'],
-  ])('makes secondary desktop pages available from %s', (path, label, dataCentreLabel, dataCentreHref, contactHref) => {
+    ['/', 'Datacenter', '/datacenter-boende', '/kontakt'],
+    ['/en/about', 'Data centres', '/en/data-centre-accommodation-sweden', '/en/corporate-housing-sweden#inquiry'],
+    ['/pl/zakwaterowanie-firmowe', 'Centra danych', '/pl/zakwaterowanie-centra-danych-szwecja', '/pl/zakwaterowanie-firmowe#inquiry'],
+  ])('shows every desktop page directly in the top menu from %s', (path, dataCentreLabel, dataCentreHref, contactHref) => {
     renderHeader(path);
-    fireEvent.keyDown(screen.getByRole('button', { name: label }), { key: 'Enter' });
-    const menu = screen.getByRole('menu');
-    expect(within(menu).getByRole('menuitem', { name: dataCentreLabel })).toHaveAttribute('href', dataCentreHref);
-    expect(within(menu).getByRole('menuitem', { name: /Kontakt|Contact/ })).toHaveAttribute('href', contactHref);
+    const nav = screen.getAllByRole('navigation')[0];
+    expect(within(nav).queryByRole('button', { name: /Mer|More|Więcej/ })).not.toBeInTheDocument();
+    expect(within(nav).getByRole('link', { name: dataCentreLabel })).toHaveAttribute('href', dataCentreHref);
+    expect(within(nav).getByRole('link', { name: /Kontakt|Contact/ })).toHaveAttribute('href', contactHref);
     if (path === '/') {
-      expect(within(menu).getByRole('menuitem', { name: 'Projektboende' })).toHaveAttribute('href', '/projektboende');
+      expect(within(nav).getByRole('link', { name: 'Projektboende' })).toHaveAttribute('href', '/projektboende');
     }
-    fireEvent.keyDown(menu, { key: 'Escape' });
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
   it('opens a named, keyboard-dismissable mobile menu and closes it after selecting a page', () => {

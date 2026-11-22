@@ -191,11 +191,16 @@ const Footer = () => {
         <div className="mt-16 pt-8 text-center border-t border-white/10">
           <p className="font-light text-white/50">&copy; {currentYear} StayOnSite. {t('footer.rights')}.</p>
           <p className="font-light text-white/40 mt-2">{t('footer.care')}</p>
-          {OPENAI_PIXEL_ID && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_SETTINGS_EVENT))} className="mt-4 text-sm text-white/70 underline hover:text-white">
-              {t('cookie.settings')}
-            </button>
-          )}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+            <a href="/integritetspolicy" className="inline-flex min-h-11 items-center text-white/70 underline hover:text-white">
+              {t('cookie.privacy')}
+            </a>
+            {OPENAI_PIXEL_ID && (
+              <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_SETTINGS_EVENT))} className="inline-flex min-h-11 items-center text-white/70 underline hover:text-white">
+                {t('cookie.settings')}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </footer>;

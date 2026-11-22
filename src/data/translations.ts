@@ -58,6 +58,7 @@ export type TranslationKey =
   | "nav.availableHousing"
   | "nav.projectHousing"
   | "nav.dataCentreHousing"
+  | "nav.dataCentreShort"
   | "nav.rentOutProperty"
   | "nav.menu"
   | "nav.more"
@@ -456,6 +457,7 @@ export type TranslationKey =
   | "cookie.openaiText"
   | "cookie.openaiDetails"
   | "cookie.more"
+  | "cookie.privacy"
   | "cookie.settings"
   | "cookie.accept"
   | "cookie.deny";
@@ -531,6 +533,7 @@ export const translations: Record<
     "nav.availableHousing": "Boenden",
     "nav.projectHousing": "Projektboende",
     "nav.dataCentreHousing": "Boende vid datacenter",
+    "nav.dataCentreShort": "Datacenter",
     "nav.rentOutProperty": "Hyr ut din bostad",
     "nav.menu": "Meny",
     "nav.more": "Mer",
@@ -1020,6 +1023,7 @@ export const translations: Record<
     "cookie.openaiText": "Vi använder cookies för annonsmätning, bland annat med OpenAI.",
     "cookie.openaiDetails": "Om du accepterar kan Google, Meta och OpenAI få uppgifter om besök och skickade formulär samt hashade kontaktuppgifter. Du kan ändra ditt val när som helst.",
     "cookie.more": "Mer info",
+    "cookie.privacy": "Integritetspolicy",
     "cookie.settings": "Cookieinställningar",
     "cookie.accept": "Acceptera",
     "cookie.deny": "Nej tack",
@@ -1091,6 +1095,7 @@ export const translations: Record<
     "nav.availableHousing": "Accommodation",
     "nav.projectHousing": "Project housing",
     "nav.dataCentreHousing": "Data centre accommodation",
+    "nav.dataCentreShort": "Data centres",
     "nav.rentOutProperty": "Rent out your property",
     "nav.menu": "Menu",
     "nav.more": "More",
@@ -1584,6 +1589,7 @@ export const translations: Record<
     "cookie.openaiText": "We use cookies for ad measurement, including with OpenAI.",
     "cookie.openaiDetails": "If you accept, Google, Meta and OpenAI may receive information about visits and submitted forms, as well as hashed contact details. You can change your choice at any time.",
     "cookie.more": "More info",
+    "cookie.privacy": "Privacy policy (Swedish)",
     "cookie.settings": "Cookie settings",
     "cookie.accept": "Accept",
     "cookie.deny": "No thanks",
@@ -1655,6 +1661,7 @@ export const translations: Record<
     "nav.availableHousing": "Noclegi",
     "nav.projectHousing": "Zakwaterowanie projektowe",
     "nav.dataCentreHousing": "Zakwaterowanie przy centrach danych",
+    "nav.dataCentreShort": "Centra danych",
     "nav.rentOutProperty": "Wynajmij nieruchomość",
     "nav.menu": "Menu",
     "nav.more": "Więcej",
@@ -2152,6 +2159,7 @@ export const translations: Record<
     "cookie.openaiText": "Używamy plików cookie do pomiaru reklam, także z OpenAI.",
     "cookie.openaiDetails": "Jeśli zaakceptujesz, Google, Meta i OpenAI mogą otrzymać informacje o wizytach i wysłanych formularzach oraz zahaszowane dane kontaktowe. Możesz zmienić wybór w dowolnym momencie.",
     "cookie.more": "Więcej",
+    "cookie.privacy": "Polityka prywatności (po szwedzku)",
     "cookie.settings": "Ustawienia plików cookie",
     "cookie.accept": "Akceptuję",
     "cookie.deny": "Nie, dziękuję",

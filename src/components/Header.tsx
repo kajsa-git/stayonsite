@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronDown, Menu, Phone } from 'lucide-react';
+import { Menu, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { DATACENTER_PATHS } from '@/data/datacenter';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -55,6 +54,15 @@ const Header = () => {
     { label: t('nav.contact'), href: contactHref },
   ];
 
+  // Dator: alla länkar synliga direkt, företagserbjudandena samlade efter "För företag".
+  const desktopLinks = [
+    navLinks[0],
+    ...(language === 'sv' ? [{ label: t('nav.projectHousing'), href: '/projektboende' }] : []),
+    { label: t('nav.dataCentreShort'), href: DATACENTER_PATHS[language] },
+    ...navLinks.slice(1),
+    { label: t('nav.contact'), href: contactHref },
+  ];
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     handleScroll();
@@ -89,9 +97,9 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-5 xl:flex">
-          <ul className="flex items-center gap-6">
-            {navLinks.map((link) => (
+        <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-6 xl:flex">
+          <ul className="flex items-center gap-5">
+            {desktopLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -103,23 +111,6 @@ const Header = () => {
               </li>
             ))}
           </ul>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="shrink-0 px-2">
-                {t('nav.more')}
-                <ChevronDown data-icon="inline-end" aria-hidden="true" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                {additionalLinks.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild>
-                    <Link href={link.href}>{link.label}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <LanguageSwitcher className="shrink-0" />
           <Button asChild className="shrink-0 rounded-full">
             <Link href={inquiryHref}>{inquiryLabel}</Link>

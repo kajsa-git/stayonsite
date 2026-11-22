@@ -77,7 +77,12 @@ export default function CookieConsent() {
                 </button>
               )}
             </p>
-            {OPENAI_PIXEL_ID && detailsOpen && <p className="mt-1 text-nordic-700">{t('cookie.openaiDetails')}</p>}
+            {OPENAI_PIXEL_ID && detailsOpen && (
+              <p className="mt-1 text-nordic-700">
+                {t('cookie.openaiDetails')}{' '}
+                <a href="/integritetspolicy" className="font-medium text-nordic-900 underline underline-offset-2">{t('cookie.privacy')}</a>
+              </p>
+            )}
           </div>
           {/* Lika tydliga val: att neka ska vara lika enkelt som att acceptera. */}
           <div className="flex shrink-0 gap-1.5 md:gap-2">
