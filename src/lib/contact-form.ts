@@ -25,6 +25,8 @@ export interface ContactFormSubmission {
   source?: string;
   fields: Record<string, string>;
   utmParams?: Record<string, string>;
+  /** Husägaren fortsätter direkt till /registrera-bostad efter inskicket. */
+  continueToIntake?: boolean;
 }
 
 export async function submitContactForm(

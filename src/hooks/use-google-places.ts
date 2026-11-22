@@ -59,7 +59,7 @@ export async function loadGoogleMapsLibrary<T = any>(name: string): Promise<T | 
   }
 }
 
-function parsePlace(place: any): PlaceParts {
+export function parsePlace(place: any): PlaceParts {
   const comps: any[] = place.addressComponents ?? [];
   const get = (type: string) => comps.find((c) => (c.types ?? []).includes(type))?.longText ?? "";
   const route = get("route");

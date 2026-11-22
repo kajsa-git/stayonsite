@@ -12,7 +12,7 @@ import useSWR from "swr";
 type OutboxMessage = {
   id: string;
   body: string;
-  status: "pending_publication" | "draft" | "queued" | "sending" | "sent" | "failed" | "cancelled";
+  status: "pending_publication" | "waiting_intake" | "draft" | "queued" | "sending" | "sent" | "failed" | "cancelled";
   error: string | null;
   deliveredAt: string | null;
   createdAt: string | null;
@@ -20,6 +20,7 @@ type OutboxMessage = {
 
 const STATUS_LABEL: Record<OutboxMessage["status"], { label: string; cls: string }> = {
   pending_publication: { label: "Väntar på publicering", cls: "bg-slate-100 text-slate-700" },
+  waiting_intake: { label: "Väntar – stoppas om bostaden registreras", cls: "bg-slate-100 text-slate-700" },
   queued: { label: "Köad", cls: "bg-amber-100 text-amber-800" },
   sending: { label: "Skickas…", cls: "bg-blue-100 text-blue-800" },
   sent: { label: "Skickad", cls: "bg-green-100 text-green-800" },

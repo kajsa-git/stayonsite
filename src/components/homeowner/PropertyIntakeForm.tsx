@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, ArrowRight, Check, CheckCircle2, Home, Loader2, Phone, Upload, X } from "lucide-react";
 import { PublishConsentCard } from "@/components/erbjudande/PublishConsentCard";
+import { AddressAutocomplete } from "@/components/homeowner/AddressAutocomplete";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
@@ -15,6 +16,7 @@ import { useUtmCapture } from "@/hooks/use-utm-capture";
 import { isValidEmail, isValidPhoneNumber } from "@/lib/contact";
 import { trackFormPhoneError } from "@/lib/gtag";
 import { compressImage } from "@/lib/image-compress";
+import { clearIntakePrefill, readIntakePrefill } from "@/lib/intake-prefill";
 import { getMetaTrackingContext, trackMetaEvent } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +54,7 @@ type IntakeFormState = {
   availableTo: string;
   availableUntilFurtherNotice: boolean;
   availabilityNote: string;
+  rentType: "" | "varm" | "kall";
   allIncluded: boolean;
   linensIncluded: boolean;
   heatWaterIncluded: boolean;
@@ -67,13 +70,25 @@ const MAX_IMAGE_COUNT = 10;
 const MAX_UPLOAD_IMAGE_BYTES = 4 * 1024 * 1024;
 
 const steps = [
-  { title: "Kontakt", eyebrow: "1" },
-  { title: "Adress", eyebrow: "2" },
-  { title: "Bostaden", eyebrow: "3" },
-  { title: "Utrustning", eyebrow: "4" },
-  { title: "Hyra", eyebrow: "5" },
-  { title: "Bilder", eyebrow: "6" },
+  { title: "Kontakt", heading: "Vem hyr ut bostaden?" },
+  { title: "Adress", heading: "Var ligger bostaden?" },
+  { title: "Bostaden", heading: "Hur stor är bostaden?" },
+  { title: "Utrustning", heading: "Vad finns i bostaden?" },
+  { title: "Hyra", heading: "Hyra och tillgänglighet" },
+  { title: "Bilder", heading: "Bilder och kontakt" },
 ] as const;
+
+// html har scroll-behavior: smooth. Ett stegbyte ska hoppa direkt till toppen,
+// annars avbryts animationen och nästa steg visas mitt på sidan.
+function jumpToTop() {
+  const html = document.documentElement;
+  const previous = html.style.scrollBehavior;
+  html.style.scrollBehavior = "auto";
+  window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  html.style.scrollBehavior = previous;
+}
+
+const NO_PARKING = "Ingen parkering";
 
 const PARKING_OPTIONS: { value: string; description?: string }[] = [
   { value: "Garage", description: "Inomhus/låsbart." },
@@ -81,6 +96,7 @@ const PARKING_OPTIONS: { value: string; description?: string }[] = [
   { value: "Egen uppfart", description: "På tomten." },
   { value: "Gatuparkering" },
   { value: "Parkeringsplats", description: "Egen p-plats i område." },
+  { value: NO_PARKING },
 ];
 
 const initialForm: IntakeFormState = {
@@ -117,6 +133,7 @@ const initialForm: IntakeFormState = {
   availableTo: "",
   availableUntilFurtherNotice: false,
   availabilityNote: "",
+  rentType: "",
   allIncluded: false,
   linensIncluded: false,
   heatWaterIncluded: true,
@@ -176,7 +193,10 @@ function LabelledInput({
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="min-h-11 rounded-md border-nordic-200 bg-white text-base"
+        className={cn(
+          "min-h-11 rounded-md border-nordic-200 bg-white text-base aria-[invalid=true]:border-red-600 md:text-base",
+          type === "date" && "appearance-none [&::-webkit-date-and-time-value]:text-left",
+        )}
       />
       {error && <p id={`${id}-error`} className="text-sm font-medium text-red-700">{error}</p>}
     </div>
@@ -188,17 +208,20 @@ function ToggleCard({
   checked,
   onChange,
   description,
+  className,
 }: {
   label: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
   description?: string;
+  className?: string;
 }) {
   return (
     <label
       className={cn(
-        "flex min-h-16 cursor-pointer items-start gap-3 rounded-md border bg-white p-4 transition-colors",
+        "flex min-h-14 cursor-pointer select-none items-start gap-3 rounded-md border bg-white p-3.5 transition-colors sm:min-h-16 sm:p-4",
         checked ? "border-nordic-800 bg-nordic-50" : "border-nordic-200 hover:border-nordic-400",
+        className,
       )}
     >
       <Checkbox checked={checked} onCheckedChange={(value) => onChange(value === true)} className="mt-0.5 h-5 w-5" />
@@ -218,6 +241,8 @@ function Stepper({
   min = 0,
   max,
   description,
+  required,
+  error,
 }: {
   id: keyof IntakeFormState;
   label: string;
@@ -226,32 +251,36 @@ function Stepper({
   min?: number;
   max?: number;
   description?: string;
+  required?: boolean;
+  error?: string;
 }) {
   const numeric = Number(value || 0);
   const next = (delta: number) => onChange(String(Math.min(max ?? Infinity, Math.max(min, (Number.isFinite(numeric) ? numeric : 0) + delta))));
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="text-sm font-semibold text-nordic-900">{label}</Label>
+      <Label htmlFor={id} className="text-sm font-semibold text-nordic-900">{label}{required ? " *" : ""}</Label>
       <div className="flex items-center">
-        <Button type="button" variant="outline" className="h-11 w-10 shrink-0 rounded-r-none p-0 text-lg" onClick={() => next(-1)} aria-label={`Minska ${label}`}>
+        <Button type="button" variant="outline" className="h-11 w-11 shrink-0 rounded-r-none p-0 text-lg" onClick={() => next(-1)} aria-label={`Minska ${label}`}>
           -
         </Button>
         <Input
           id={id}
           value={value}
           inputMode="numeric"
-          aria-describedby={description ? `${id}-description` : undefined}
+          aria-invalid={!!error}
+          aria-describedby={[description && `${id}-description`, error && `${id}-error`].filter(Boolean).join(" ") || undefined}
           onChange={(event) => {
             const digits = event.target.value.replace(/\D/g, "").slice(0, 3);
             onChange(digits && max !== undefined ? String(Math.min(max, Number(digits))) : digits);
           }}
-          className="h-11 min-w-0 flex-1 rounded-none border-x-0 text-center text-base font-semibold"
+          className="h-11 min-w-0 flex-1 rounded-none border-x-0 px-1 text-center text-base font-semibold aria-[invalid=true]:border-red-600 md:text-base"
         />
-        <Button type="button" variant="outline" className="h-11 w-10 shrink-0 rounded-l-none p-0 text-lg" onClick={() => next(1)} aria-label={`Öka ${label}`}>
+        <Button type="button" variant="outline" className="h-11 w-11 shrink-0 rounded-l-none p-0 text-lg" onClick={() => next(1)} aria-label={`Öka ${label}`}>
           +
         </Button>
       </div>
       {description && <p id={`${id}-description`} className="text-sm text-nordic-800">{description}</p>}
+      {error && <p id={`${id}-error`} className="text-sm font-medium text-red-700">{error}</p>}
     </div>
   );
 }
@@ -275,7 +304,31 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
   // Publiceringsgodkännandet — lever över båda vyerna så kortet inte nollställs
   // när man går vidare från del 2 till tack-sidan.
   const [publishConsented, setPublishConsented] = useState(false);
+  // Förnamn när husägaren kommer direkt från formuläret på /for-husagare.
+  const [continuedAs, setContinuedAs] = useState<string | null>(null);
+  // Leadet är redan räknat i Meta när kortformuläret skickades: räkna det inte två gånger.
+  const [fromLead, setFromLead] = useState(false);
   const Heading = headingLevel;
+
+  useEffect(() => {
+    const prefill = readIntakePrefill();
+    if (!prefill) return;
+    setFromLead(true);
+    setForm((current) => ({
+      ...current,
+      ownerName: prefill.ownerName || current.ownerName,
+      ownerPhone: prefill.ownerPhone || current.ownerPhone,
+      ownerEmail: prefill.ownerEmail || current.ownerEmail,
+      postalCode: prefill.postalCode || current.postalCode,
+      bedrooms: prefill.bedrooms || current.bedrooms,
+      city: prefill.city || current.city,
+    }));
+    // Kontaktsteget är redan ifyllt: börja på adressen, men låt Tillbaka visa uppgifterna.
+    if (prefill.ownerName && prefill.ownerPhone && isValidPhoneNumber(prefill.ownerPhone)) {
+      setStep(1);
+      setContinuedAs(prefill.ownerName.split(/\s+/)[0] || null);
+    }
+  }, []);
 
   const progress = ((step + 1) / steps.length) * 100;
 
@@ -296,12 +349,31 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
   }
 
   function toggleParking(value: string) {
+    setForm((current) => {
+      if (current.parkingType.includes(value)) {
+        return { ...current, parkingType: current.parkingType.filter((v) => v !== value) };
+      }
+      // "Ingen parkering" utesluter övriga val och tvärtom.
+      return value === NO_PARKING
+        ? { ...current, parkingType: [NO_PARKING], parkingSpaces: "0", parkingDetails: "", parkingLargeVehicle: "" }
+        : {
+          ...current,
+          parkingType: [...current.parkingType.filter((v) => v !== NO_PARKING), value],
+          parkingSpaces: current.parkingType.includes(NO_PARKING) ? "" : current.parkingSpaces,
+        };
+    });
+    setErrors((current) => ({ ...current, parkingType: undefined, parkingSpaces: undefined }));
+  }
+
+  function setRentType(rentType: "varm" | "kall") {
     setForm((current) => ({
       ...current,
-      parkingType: current.parkingType.includes(value)
-        ? current.parkingType.filter((v) => v !== value)
-        : [...current.parkingType, value],
+      rentType,
+      ...(rentType === "varm"
+        ? { allIncluded: true, linensIncluded: true, heatWaterIncluded: true, excludedNote: "" }
+        : { allIncluded: false, linensIncluded: false, heatWaterIncluded: true }),
     }));
+    setErrors((current) => ({ ...current, rentType: undefined }));
   }
 
   function setOwnerType(ownerType: IntakeFormState["ownerType"]) {
@@ -338,8 +410,15 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     if (targetStep === 2) {
       if (!form.bedrooms.trim()) next.bedrooms = "Ange antal sovrum.";
       if (!form.beds.trim()) next.beds = "Ange antal bäddar.";
+      if (!form.bathrooms.trim()) next.bathrooms = "Ange antal badrum.";
+    }
+    if (targetStep === 3) {
+      if (!form.parkingType.length) next.parkingType = "Välj typ av parkering, eller Ingen parkering.";
+      else if (!form.parkingType.includes(NO_PARKING) && !(Number(form.parkingSpaces) > 0)) next.parkingSpaces = "Ange antal parkeringsplatser.";
     }
     if (targetStep === 4) {
+      if (!(toNumber(form.desiredRent) && Number(form.desiredRent) > 0)) next.desiredRent = "Ange ungefärlig hyra per månad.";
+      if (!form.rentType) next.rentType = "Välj varmhyra eller kallhyra.";
       if (!form.moveInFrom && !form.availabilityNote.trim()) next.moveInFrom = "Ange datum eller skriv en kort notis.";
     }
     if (targetStep === 5) {
@@ -351,17 +430,32 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     return next;
   }
 
+  function focusFirstError(fieldErrors: FieldErrors) {
+    const first = Object.keys(fieldErrors)[0];
+    if (!first) return;
+    // Mitt i bilden: varken under den fasta sidhuvudet eller den fasta knappraden.
+    requestAnimationFrame(() => {
+      const el = document.getElementById(first);
+      if (!el) return;
+      el.focus({ preventScroll: true });
+      el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
+    });
+  }
+
   function goNext() {
     const nextErrors = validateStep();
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
+    if (Object.keys(nextErrors).length) {
+      focusFirstError(nextErrors);
+      return;
+    }
     setStep((current) => Math.min(current + 1, steps.length - 1));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    jumpToTop();
   }
 
   function goBack() {
     setStep((current) => Math.max(current - 1, 0));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    jumpToTop();
   }
 
   function collectAllErrors() {
@@ -416,6 +510,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
       availableTo: fieldValue(form.availableTo),
       availableUntilFurtherNotice: form.availableUntilFurtherNotice,
       availabilityNote: fieldValue(form.availabilityNote),
+      rentType: form.rentType || null,
       allIncluded: form.allIncluded,
       linensIncluded: form.linensIncluded,
       heatWaterIncluded: form.heatWaterIncluded,
@@ -482,14 +577,19 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
     const allErrors = collectAllErrors();
     if (Object.keys(allErrors).length) {
       const firstStep = steps.findIndex((_, index) => Object.keys(validateStep(index)).length > 0);
-      if (firstStep >= 0) setStep(firstStep);
+      if (firstStep >= 0 && firstStep !== step) {
+        setStep(firstStep);
+        jumpToTop();
+      } else {
+        focusFirstError(allErrors);
+      }
       return;
     }
 
     setIsSubmitting(true);
     setSubmitError("");
     try {
-      const tracking = getMetaTrackingContext("Lead");
+      const tracking = fromLead ? null : getMetaTrackingContext("Lead");
       const body = new FormData();
       body.append("payload", JSON.stringify({
         ...payload(),
@@ -517,13 +617,14 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
       }
 
       const uploaded = await uploadImages(result.propertyId, result.agreement?.token ?? null);
+      clearIntakePrefill();
       setSuccess({
         propertyId: result.propertyId,
         imageCount: (result.imageCount ?? 0) + uploaded.imageCount,
         imageErrors: [...(result.imageErrors ?? []), ...uploaded.imageErrors],
         agreement: result.agreement ?? null,
       });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      jumpToTop();
     } catch {
       setSubmitError("Det gick inte att skicka just nu. Försök igen eller ring 076-249 84 86.");
     } finally {
@@ -641,42 +742,51 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
   }
 
   return (
-    <section className="px-4 py-6 sm:px-6 lg:px-8">
+    <section className="pb-0 sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-md border border-nordic-200 bg-white shadow-sm">
-          <div className="border-b border-nordic-100 p-5 sm:p-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#0f766e]">
-                  <Home className="h-4 w-4" />
-                  {/* Privatpersoner får publiceringsmedgivandet som del 2 direkt efter inskicket. */}
-                  {form.ownerType === "privatperson" ? "Registrera bostad · Del 1 av 2" : "Registrera bostad"}
-                </div>
-                <Heading className="mt-2 text-2xl font-semibold text-nordic-900 sm:text-3xl">Fyll i bostadsuppgifter</Heading>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-nordic-700">
-                  Tar några minuter att fylla i. Du kan hoppa över sådant du är osäker på, men adress, kontakt och antal sovrum/bäddar behövs för att vi ska kunna bedöma bostaden snabbt.
-                </p>
-              </div>
+        <div className="border-y border-nordic-200 bg-white sm:rounded-md sm:border sm:shadow-sm">
+          <div className="border-b border-nordic-100 px-4 pb-5 pt-4 sm:p-6">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="flex items-center gap-2 font-semibold text-[#0f766e]">
+                <Home className="h-4 w-4" aria-hidden="true" />
+                Registrera bostad
+              </span>
+              <span className="font-medium tabular-nums text-nordic-700">
+                Steg {step + 1} av {steps.length}
+              </span>
             </div>
-            <Progress value={progress} className="mt-5 h-2 bg-nordic-100" />
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <Progress value={progress} aria-label={`Steg ${step + 1} av ${steps.length}`} className="mt-3 h-1.5 bg-nordic-100" />
+            <Heading className="mt-5 text-2xl font-semibold leading-tight text-nordic-900 sm:text-3xl">{steps[step].heading}</Heading>
+            {step === 0 && (
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-nordic-700">
+                Tar några minuter. Det vi alltid behöver är markerat med *, resten kan du hoppa över om du är osäker.
+              </p>
+            )}
+            {continuedAs && step === 1 && (
+              <p className="mt-3 flex gap-2 rounded-md border border-green-200 bg-green-50 p-3 text-sm leading-6 text-green-900">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-700" aria-hidden="true" />
+                <span>Tack {continuedAs}! Dina kontaktuppgifter är sparade. Nu fyller du i själva bostaden.</span>
+              </p>
+            )}
+            <div className="mt-5 hidden gap-2 sm:grid sm:grid-cols-6">
               {steps.map((item, index) => (
                 <button
                   key={item.title}
                   type="button"
                   onClick={() => setStep(index)}
+                  aria-current={index === step ? "step" : undefined}
                   className={cn(
                     "min-h-11 rounded-md border px-2 text-left text-xs transition-colors",
                     index === step ? "border-nordic-900 bg-nordic-900 text-white" : "border-nordic-200 bg-white text-nordic-700 hover:border-nordic-500",
                   )}
                 >
-                  <span className="block font-semibold">{item.eyebrow}. {item.title}</span>
+                  <span className="block font-semibold">{index + 1}. {item.title}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-5 sm:p-6">
+          <form onSubmit={handleSubmit} noValidate className="px-4 pt-5 sm:px-6 sm:pt-6">
             <input
               tabIndex={-1}
               autoComplete="off"
@@ -690,7 +800,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               <div className="space-y-5">
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-nordic-900">Vem fyller i uppgifterna?</p>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid grid-cols-2 gap-3">
                     <ToggleCard label="Jag är privatperson" checked={form.ownerType === "privatperson"} onChange={() => setOwnerType("privatperson")} />
                     <ToggleCard label="Jag representerar ett företag" checked={form.ownerType === "foretag"} onChange={() => setOwnerType("foretag")} />
                   </div>
@@ -721,9 +831,26 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
             {step === 1 && (
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <LabelledInput id="address" label="Adress" value={form.address} onChange={(value) => set("address", value)} error={errors.address} required autoComplete="street-address" placeholder="Adriansnäs gård 2" />
+                  <AddressAutocomplete
+                    id="address"
+                    label="Adress"
+                    value={form.address}
+                    onChange={(value) => set("address", value)}
+                    onSelect={(parts) => {
+                      setForm((current) => ({
+                        ...current,
+                        address: parts.street || current.address,
+                        postalCode: parts.postalCode || current.postalCode,
+                        city: parts.city || current.city,
+                        country: parts.country || current.country,
+                      }));
+                      setErrors((current) => ({ ...current, address: undefined, postalCode: undefined, city: undefined, country: undefined }));
+                    }}
+                    error={errors.address}
+                    placeholder="Börja skriva, t.ex. Storgatan 10"
+                  />
                 </div>
-                <LabelledInput id="postalCode" label="Postnummer" value={form.postalCode} onChange={(value) => set("postalCode", value)} error={errors.postalCode} required autoComplete="postal-code" placeholder="572 95" />
+                <LabelledInput id="postalCode" label="Postnummer" value={form.postalCode} onChange={(value) => set("postalCode", value)} error={errors.postalCode} required autoComplete="postal-code" inputMode="numeric" placeholder="572 95" />
                 <LabelledInput id="city" label="Ort" value={form.city} onChange={(value) => set("city", value)} error={errors.city} required autoComplete="address-level2" placeholder="Figeholm" />
                 <LabelledInput id="country" label="Land" value={form.country} onChange={(value) => set("country", value)} error={errors.country} required autoComplete="country-name" />
               </div>
@@ -731,17 +858,12 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
 
             {step === 2 && (
               <div className="space-y-5">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                   <LabelledInput id="squareMeters" label="Bostadsyta (m²)" value={form.squareMeters} onChange={(value) => set("squareMeters", value)} type="number" inputMode="decimal" />
-                  <Stepper id="bedrooms" label="Sovrum" value={form.bedrooms} onChange={(value) => set("bedrooms", value)} />
-                  <Stepper id="beds" label="Bäddar" value={form.beds} onChange={(value) => set("beds", value)} />
-                  <Stepper id="bathrooms" label="Badrum" value={form.bathrooms} onChange={(value) => set("bathrooms", value)} />
+                  <Stepper id="bedrooms" label="Sovrum" value={form.bedrooms} onChange={(value) => set("bedrooms", value)} required error={errors.bedrooms} />
+                  <Stepper id="beds" label="Bäddar" value={form.beds} onChange={(value) => set("beds", value)} required error={errors.beds} />
+                  <Stepper id="bathrooms" label="Badrum" value={form.bathrooms} onChange={(value) => set("bathrooms", value)} required error={errors.bathrooms} />
                 </div>
-                {(errors.bedrooms || errors.beds) && (
-                  <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700">
-                    {errors.bedrooms || errors.beds}
-                  </div>
-                )}
                 <div className="space-y-2">
                   <Label htmlFor="skick" className="text-sm font-semibold text-nordic-900">Skick och standard</Label>
                   <Textarea id="skick" value={form.skick} onChange={(event) => set("skick", event.target.value)} placeholder="T.ex. lantligt men hemtrevligt, äldre standard, nyrenoverat kök..." className="min-h-28 rounded-md border-nordic-200 bg-white text-base" />
@@ -751,21 +873,21 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
 
             {step === 3 && (
               <div className="space-y-6">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-2 gap-4">
                   <Stepper id="washingMachines" label="Tvättmaskin" value={form.washingMachines} onChange={(value) => set("washingMachines", value)} />
                   <Stepper id="dryers" label="Torktumlare" value={form.dryers} onChange={(value) => set("dryers", value)} />
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
                   <ToggleCard label="Möblerat" checked={form.furnished} onChange={(value) => set("furnished", value)} />
                   <ToggleCard label="Kök" checked={form.kitchen} onChange={(value) => set("kitchen", value)} />
                   <ToggleCard label="Diskmaskin" checked={form.dishwasher} onChange={(value) => set("dishwasher", value)} />
                   <ToggleCard label="Bredband" checked={form.broadband} onChange={(value) => set("broadband", value)} />
-                  <ToggleCard label="Hela bostaden hyrs ut" checked={form.egetBoende} onChange={(value) => set("egetBoende", value)} description="Egen bostad – inte rum delat med andra hyresgäster." />
+                  <ToggleCard label="Hela bostaden hyrs ut" checked={form.egetBoende} onChange={(value) => set("egetBoende", value)} description="Egen bostad – inte rum delat med andra hyresgäster." className="col-span-2 lg:col-span-1" />
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-nordic-900">Parkering</p>
+                <div id="parkingType" tabIndex={-1} className="space-y-2 outline-none" aria-describedby={errors.parkingType ? "parkingType-error" : undefined}>
+                  <p className="text-sm font-semibold text-nordic-900">Parkering *</p>
                   <p className="text-sm text-nordic-800">Välj det som stämmer – flera går bra.</p>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
                     {PARKING_OPTIONS.map((option) => (
                       <ToggleCard
                         key={option.value}
@@ -776,50 +898,58 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                       />
                     ))}
                   </div>
+                  {errors.parkingType && <p id="parkingType-error" className="text-sm font-medium text-red-700">{errors.parkingType}</p>}
                 </div>
-                <div className="max-w-sm">
-                  <Stepper
-                    id="parkingSpaces"
-                    label="Antal parkeringsplatser totalt"
-                    value={form.parkingSpaces}
-                    onChange={(value) => set("parkingSpaces", value)}
-                    max={500}
-                    description="Räkna med alla platser som hyresgästerna kan använda, även i garage."
-                  />
-                </div>
-                <Field>
-                  <FieldLabel htmlFor="parkingDetails">Hur är platserna fördelade?</FieldLabel>
-                  <Textarea
-                    id="parkingDetails"
-                    value={form.parkingDetails}
-                    onChange={(event) => set("parkingDetails", event.target.value)}
-                    maxLength={1000}
-                    placeholder="T.ex. 1 i garage och 2 på uppfarten"
-                  />
-                  <FieldDescription>Du kan också nämna om någon plats har begränsad tillgång.</FieldDescription>
-                </Field>
-                <FieldSet className="gap-2">
-                  <FieldLegend id="parking-large-vehicle-label" variant="label">
-                    Finns plats för större arbetsfordon, till exempel en skåpbil?
-                  </FieldLegend>
-                  <RadioGroup
-                    aria-labelledby="parking-large-vehicle-label"
-                    className="flex flex-wrap gap-6"
-                    value={form.parkingLargeVehicle}
-                    onValueChange={(value) => set("parkingLargeVehicle", value as IntakeFormState["parkingLargeVehicle"])}
-                  >
-                    {[
-                      { value: "yes", label: "Ja" },
-                      { value: "no", label: "Nej" },
-                      { value: "unsure", label: "Osäker" },
-                    ].map((option) => (
-                      <Field key={option.value} orientation="horizontal" className="w-auto">
-                        <RadioGroupItem id={`parking-large-vehicle-${option.value}`} value={option.value} />
-                        <FieldLabel htmlFor={`parking-large-vehicle-${option.value}`}>{option.label}</FieldLabel>
-                      </Field>
-                    ))}
-                  </RadioGroup>
-                </FieldSet>
+                {form.parkingType.length > 0 && !form.parkingType.includes(NO_PARKING) && (
+                  <>
+                    <div className="max-w-sm">
+                      <Stepper
+                        id="parkingSpaces"
+                        label="Antal parkeringsplatser"
+                        value={form.parkingSpaces}
+                        onChange={(value) => set("parkingSpaces", value)}
+                        max={500}
+                        required
+                        error={errors.parkingSpaces}
+                        description="Räkna med alla platser som hyresgästerna kan använda, även i garage."
+                      />
+                    </div>
+                    <Field>
+                      <FieldLabel htmlFor="parkingDetails">Hur är platserna fördelade?</FieldLabel>
+                      <Textarea
+                        id="parkingDetails"
+                        value={form.parkingDetails}
+                        onChange={(event) => set("parkingDetails", event.target.value)}
+                        maxLength={1000}
+                        placeholder="T.ex. 1 i garage och 2 på uppfarten"
+                        className="text-base md:text-base"
+                      />
+                      <FieldDescription>Du kan också nämna om någon plats har begränsad tillgång.</FieldDescription>
+                    </Field>
+                    <FieldSet className="gap-2">
+                      <FieldLegend id="parking-large-vehicle-label" variant="label">
+                        Finns plats för större arbetsfordon, till exempel en skåpbil?
+                      </FieldLegend>
+                      <RadioGroup
+                        aria-labelledby="parking-large-vehicle-label"
+                        className="flex flex-wrap gap-x-6 gap-y-1"
+                        value={form.parkingLargeVehicle}
+                        onValueChange={(value) => set("parkingLargeVehicle", value as IntakeFormState["parkingLargeVehicle"])}
+                      >
+                        {[
+                          { value: "yes", label: "Ja" },
+                          { value: "no", label: "Nej" },
+                          { value: "unsure", label: "Osäker" },
+                        ].map((option) => (
+                          <Field key={option.value} orientation="horizontal" className="min-h-11 w-auto">
+                            <RadioGroupItem id={`parking-large-vehicle-${option.value}`} value={option.value} />
+                            <FieldLabel htmlFor={`parking-large-vehicle-${option.value}`}>{option.label}</FieldLabel>
+                          </Field>
+                        ))}
+                      </RadioGroup>
+                    </FieldSet>
+                  </>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="equipmentNote" className="text-sm font-semibold text-nordic-900">Övrigt om utrustning</Label>
                   <Textarea id="equipmentNote" value={form.equipmentNote} onChange={(event) => set("equipmentNote", event.target.value)} placeholder="T.ex. bastu, altan, extra förvaring, redskap, larm, laddbox..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
@@ -828,32 +958,62 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
             )}
 
             {step === 4 && (
-              <div className="space-y-5">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <LabelledInput id="desiredRent" label="Önskad hyra per månad" value={form.desiredRent} onChange={(value) => set("desiredRent", value)} type="number" inputMode="decimal" placeholder="15000" />
-                  <LabelledInput id="moveInFrom" label="Tillgänglig från" value={form.moveInFrom} onChange={(value) => set("moveInFrom", value)} error={errors.moveInFrom} type="date" />
+              <div className="space-y-6">
+                <div className="max-w-sm">
+                  <LabelledInput id="desiredRent" label="Ungefärlig hyra per månad (kr)" value={form.desiredRent} onChange={(value) => set("desiredRent", value.replace(/[^\d]/g, ""))} error={errors.desiredRent} required inputMode="numeric" placeholder="15000" />
+                </div>
+
+                <div id="rentType" tabIndex={-1} className="space-y-3 outline-none">
+                  <div>
+                    <p className="text-sm font-semibold text-nordic-900">Varmhyra eller kallhyra? *</p>
+                    <p className="mt-1 text-sm leading-6 text-nordic-800">
+                      Eftersom vi hyr ut till företag uppskattas varmhyra – en fast summa per månad.
+                      Med varmhyra avses rimlig förbrukning.
+                    </p>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <ToggleCard
+                      label="Varmhyra"
+                      description="El, vatten, sophämtning, internet och sängkläder ingår."
+                      checked={form.rentType === "varm"}
+                      onChange={() => setRentType("varm")}
+                    />
+                    <ToggleCard
+                      label="Kallhyra"
+                      description="Hyresgästen betalar själv för en del av driften, till exempel el."
+                      checked={form.rentType === "kall"}
+                      onChange={() => setRentType("kall")}
+                    />
+                  </div>
+                  {errors.rentType && <p className="text-sm font-medium text-red-700">{errors.rentType}</p>}
+                </div>
+
+                {form.rentType === "kall" && (
+                  <div className="space-y-4 rounded-md bg-nordic-50 p-4">
+                    <p className="text-sm font-semibold text-nordic-900">Vad ingår i kallhyran?</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <ToggleCard label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(value) => set("heatWaterIncluded", value)} />
+                      <ToggleCard label="Sängkläder + handdukar" checked={form.linensIncluded} onChange={(value) => set("linensIncluded", value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="excludedNote" className="text-sm font-semibold text-nordic-900">Vad betalar hyresgästen själv?</Label>
+                      <Textarea id="excludedNote" value={form.excludedNote} onChange={(event) => set("excludedNote", event.target.value)} placeholder="T.ex. el efter förbrukning, internet, sophämtning..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base md:text-base" />
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid gap-5 border-t border-nordic-100 pt-6 sm:grid-cols-2">
+                  <LabelledInput id="moveInFrom" label="Tillgänglig från" value={form.moveInFrom} onChange={(value) => set("moveInFrom", value)} error={errors.moveInFrom} required type="date" />
                   <LabelledInput id="availableTo" label="Tillgänglig till" value={form.availableTo} onChange={(value) => set("availableTo", value)} type="date" />
-                  <ToggleCard label="Tillgänglig tills vidare / osäker sluttid" checked={form.availableUntilFurtherNotice} onChange={(value) => set("availableUntilFurtherNotice", value)} />
+                  <ToggleCard label="Tillgänglig tills vidare / osäker sluttid" checked={form.availableUntilFurtherNotice} onChange={(value) => set("availableUntilFurtherNotice", value)} className="sm:col-span-2" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="availabilityNote" className="text-sm font-semibold text-nordic-900">Kommentar om tillgänglighet</Label>
-                  <Textarea id="availabilityNote" value={form.availabilityNote} onChange={(event) => set("availabilityNote", event.target.value)} placeholder="T.ex. ledigt efter sommaren, bara vardagar, osäker sluttid..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-nordic-900">Vad ingår i hyran?</p>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <ToggleCard label="Allt ingår i hyran" checked={form.allIncluded} onChange={(value) => set("allIncluded", value)} />
-                    <ToggleCard label="Sängkläder + handdukar" checked={form.linensIncluded} onChange={(value) => set("linensIncluded", value)} />
-                    <ToggleCard label="Värme + varmvatten" checked={form.heatWaterIncluded} onChange={(value) => set("heatWaterIncluded", value)} />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="excludedNote" className="text-sm font-semibold text-nordic-900">Om något inte ingår, vad?</Label>
-                  <Textarea id="excludedNote" value={form.excludedNote} onChange={(event) => set("excludedNote", event.target.value)} placeholder="T.ex. el, internet, sophämtning, trädgårdsskötsel..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
+                  <Textarea id="availabilityNote" value={form.availabilityNote} onChange={(event) => set("availabilityNote", event.target.value)} placeholder="T.ex. ledigt efter sommaren, bara vardagar, osäker sluttid..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base md:text-base" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="specialNote" className="text-sm font-semibold text-nordic-900">Något särskilt vi bör veta</Label>
-                  <Textarea id="specialNote" value={form.specialNote} onChange={(event) => set("specialNote", event.target.value)} placeholder="T.ex. trappor, husdjur, parkering, vinterväg, säsong..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base" />
+                  <Textarea id="specialNote" value={form.specialNote} onChange={(event) => set("specialNote", event.target.value)} placeholder="T.ex. trappor, husdjur, vinterväg, säsong..." className="min-h-24 rounded-md border-nordic-200 bg-white text-base md:text-base" />
                 </div>
               </div>
             )}
@@ -868,7 +1028,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                     </div>
                     <label
                       htmlFor="images"
-                      className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+                      className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium sm:w-auto shadow-sm transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
                     >
                       <Upload className="h-4 w-4" />
                       Välj bilder
@@ -895,7 +1055,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                   )}
                 </div>
                 <label className="flex cursor-pointer gap-3 rounded-md border border-nordic-200 bg-white p-4">
-                  <Checkbox checked={form.consent} onCheckedChange={(value) => set("consent", value === true)} className="mt-0.5 h-5 w-5" />
+                  <Checkbox id="consent" checked={form.consent} onCheckedChange={(value) => set("consent", value === true)} className="mt-0.5 h-5 w-5" />
                   <span>
                     <span className="block text-sm font-semibold text-nordic-900">StayOnSite får kontakta mig om bostaden *</span>
                     <span className="mt-1 block text-sm text-nordic-700">Uppgifterna används för att bedöma bostaden och matcha mot företagskunder.</span>
@@ -912,19 +1072,25 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               </div>
             )}
 
-            <div className="mt-8 flex flex-col-reverse gap-3 border-t border-nordic-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <Button type="button" variant="outline" onClick={goBack} disabled={step === 0 || isSubmitting} className="min-h-11 gap-2">
-                <ArrowLeft className="h-4 w-4" />
+            <div className="sticky bottom-0 z-10 -mx-4 mt-8 flex items-center gap-3 border-t border-nordic-100 bg-white px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 sm:-mx-6 sm:justify-between sm:px-6 sm:pb-5 sm:pt-4">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={goBack}
+                disabled={isSubmitting}
+                className={cn("min-h-12 gap-2 px-3 text-nordic-800", step === 0 && "invisible")}
+              >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 Tillbaka
               </Button>
               {step < steps.length - 1 ? (
-                <Button type="button" onClick={goNext} className="min-h-11 gap-2 bg-nordic-900 hover:bg-nordic-800">
+                <Button type="button" onClick={goNext} className="min-h-12 flex-1 gap-2 bg-nordic-900 text-base hover:bg-nordic-800 sm:min-w-44 sm:flex-none">
                   Nästa
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Button>
               ) : (
-                <Button type="submit" disabled={isSubmitting} className="min-h-11 gap-2 bg-[#0f766e] hover:bg-[#115e59]">
-                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                <Button type="submit" disabled={isSubmitting} className="min-h-12 flex-1 gap-2 bg-[#0f766e] text-base hover:bg-[#115e59] sm:min-w-44 sm:flex-none">
+                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Check className="h-4 w-4" aria-hidden="true" />}
                   {isSubmitting ? "Skickar in..." : "Skicka in bostaden"}
                 </Button>
               )}

@@ -1,4 +1,4 @@
-import { HUS_REGISTRATION_URL } from "./homeowner-lead-email";
+import { HOMEOWNER_REGISTRATION_URL } from "./homeowner-lead-email";
 
 // Deterministiska SMS-mallar för utkast-knapparna i Min dag. Medvetet INTE
 // AI-genererade: samma knapp ger alltid samma text, i Kajsas etablerade ton
@@ -67,8 +67,8 @@ export function husIntakeConfirmSms(ownerName: string | null | undefined, approv
 // nästa steg är komplett bostadsregistrering, inte signering.
 export function homeownerLeadIntakeSms(): string {
   return [
-    `Hej! Registrera boendet för matchning med hyresgäster. Inget visas utan ditt godkännande: ${HUS_REGISTRATION_URL.replace(/^https:\/\//, "www.")}`,
-    "/Kajsa, HyrUtSmart - en del av StayOnSite",
+    `Hej! Registrera boendet för matchning med hyresgäster. Inget visas utan ditt godkännande: ${HOMEOWNER_REGISTRATION_URL.replace(/^https:\/\//, "")}`,
+    "/Kajsa, StayOnSite",
   ].join("\n");
 }
 

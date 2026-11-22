@@ -6,6 +6,7 @@ import { db } from "./db";
 import { normalizePropertyWriteBody } from "./owners";
 import { normalizePhoneE164, normalizePhoneForStorage } from "./phone-links";
 import { HUS_INTAKE_VERSION, HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
+import { WAITING_FOR_INTAKE } from "./homeowner-automation";
 import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_PREVIOUS_TEXT, PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { startPropertyIntakeFollowUp } from "./property-intake-follow-up";
@@ -111,6 +112,8 @@ export const propertyIntakeSchema = z
     linensIncluded: z.boolean().default(false),
     heatWaterIncluded: z.boolean().default(false),
     excludedNote: stringOrNull,
+    // Varmhyra = el, vatten, sophämtning, internet och sängkläder ingår vid rimlig förbrukning.
+    rentType: z.enum(["varm", "kall"]).optional().nullable(),
     specialNote: stringOrNull,
     rentalRight: z.enum(["ager", "andrahand"]).optional().nullable(),
     page: z.string().trim().max(200).optional().nullable(),
@@ -168,13 +171,20 @@ function line(label: string, value: string | number | boolean | null | undefined
   return `${label}: ${value}`;
 }
 
+export const NO_PARKING = "Ingen parkering";
+
+const RENT_TYPE_LABEL = {
+  varm: "Varmhyra (el, vatten, sophämtning, internet och sängkläder ingår vid rimlig förbrukning)",
+  kall: "Kallhyra",
+} as const;
+
 export function propertyIntakeInclusions(input: PropertyIntakeInput): string[] {
   return [
     input.allIncluded ? "Exakt allt ingår" : null,
     input.linensIncluded ? "Sängkläder och handduk" : null,
     input.heatWaterIncluded ? "Värme och varmvatten" : null,
     input.broadband ? "Bredband" : null,
-    (input.parkingType && input.parkingType.length) || input.parkingSpaces ? "Parkering" : null,
+    (input.parkingType ?? []).some((type) => type !== NO_PARKING) || input.parkingSpaces ? "Parkering" : null,
   ].filter(Boolean) as string[];
 }
 
@@ -208,6 +218,7 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
       ? `Godkänd text: ${approvedText}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}` : null,
     line("UTM", utmLine(input)),
     line("Önskad hyra", money(input.desiredRent)),
+    line("Hyresform", input.rentType ? RENT_TYPE_LABEL[input.rentType] : null),
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,
     included.length ? ["Vad ingår i hyran", ...included.map((item) => `- ${item}`)].join("\n") : null,
     line("Parkering", input.parkingType && input.parkingType.length ? input.parkingType.join(", ") : null),
@@ -393,13 +404,14 @@ export async function createPropertyIntake(
         status: "pending_publication",
         source: HUS_PUBLICATION_SMS_SOURCE,
       });
-      // A queued invitation to register is obsolete once this owner has
-      // completed the full form; retain it in history rather than sending it.
-      if (created.ownerId) await tx.update(outboxMessages).set({ status: "cancelled", error: "Bostaden har redan registrerats." }).where(and(
-        eq(outboxMessages.ownerId, created.ownerId), eq(outboxMessages.source, "intake"),
-        eq(outboxMessages.body, homeownerLeadIntakeSms()), inArray(outboxMessages.status, ["queued", "draft"]),
-      ));
     }
+    // A queued invitation to register is obsolete once this owner has completed
+    // the full form (HUS or stayonsite.se/registrera-bostad); keep it in history
+    // rather than sending it.
+    if (created.ownerId) await tx.update(outboxMessages).set({ status: "cancelled", error: "Bostaden har redan registrerats." }).where(and(
+      eq(outboxMessages.ownerId, created.ownerId), eq(outboxMessages.source, "intake"),
+      eq(outboxMessages.body, homeownerLeadIntakeSms()), inArray(outboxMessages.status, ["queued", "draft", WAITING_FOR_INTAKE]),
+    ));
     return created;
   });
 

@@ -1,4 +1,4 @@
-export const HUS_REGISTRATION_URL = "https://hyrutsmart.se/registrera";
+export const HOMEOWNER_REGISTRATION_URL = "https://www.stayonsite.se/registrera-bostad";
 
 type Locale = "sv" | "en" | "pl";
 
@@ -6,35 +6,35 @@ const copy = {
   sv: {
     subject: "Tack för din registrering – nästa steg",
     greeting: "Hej!",
-    intro: "Tack för din registrering. För att vi ska kunna matcha ditt boende med våra hyresgäster så behöver vi uppgifter om ditt boende. Det görs via vår bostadsregistrering, HyrUtSmart.",
+    intro: "Tack för din registrering. För att vi ska kunna matcha ditt boende med våra hyresgäster behöver vi uppgifter om boendet: adress, storlek, hyra och gärna bilder. Det tar ett par minuter.",
     label: "Fyll i bostaden",
-    button: "Till bostadsregistreringen hos HyrUtSmart",
+    button: "Registrera bostaden",
     followUp: "När du har fyllt i uppgifterna återkommer vi om nästa steg. Du kan känna dig trygg med att din exakta adress aldrig visas offentligt, och inget visas online utan ditt godkännande.",
     question: "Har du frågor? SMS:a eller ring oss direkt: 076-249 84 86.",
     signoff: "Med vänliga hälsningar,",
-    organization: "HyrUtSmart – en del av StayOnSite",
+    organization: "StayOnSite",
   },
   en: {
     subject: "Thank you for registering – next steps",
     greeting: "Hi!",
-    intro: "Thank you for registering. To match your property with our tenants, we need some details about it. You can provide them through HyrUtSmart, our property registration service.",
+    intro: "Thank you for registering. To match your property with our tenants, we need some details about it: address, size, rent and ideally photos. It takes a few minutes.",
     label: "Add your property details",
-    button: "Go to property registration at HyrUtSmart",
+    button: "Register the property",
     followUp: "Once you have completed the details, we will contact you about the next step. Your exact address is never shown publicly, and nothing is published online without your approval. The registration form is in Swedish.",
     question: "Questions? Text or call us directly: 076-249 84 86.",
     signoff: "Best regards,",
-    organization: "HyrUtSmart – part of StayOnSite",
+    organization: "StayOnSite",
   },
   pl: {
     subject: "Dziękujemy za rejestrację – następny krok",
     greeting: "Cześć!",
-    intro: "Dziękujemy za rejestrację. Aby dopasować Twoją nieruchomość do potrzeb naszych najemców, potrzebujemy informacji na jej temat. Możesz je podać w HyrUtSmart, naszym formularzu rejestracji nieruchomości.",
+    intro: "Dziękujemy za rejestrację. Aby dopasować Twoją nieruchomość do potrzeb naszych najemców, potrzebujemy informacji na jej temat: adres, powierzchnia, czynsz i najlepiej zdjęcia. Zajmie to kilka minut.",
     label: "Uzupełnij dane nieruchomości",
-    button: "Przejdź do rejestracji w HyrUtSmart",
+    button: "Zarejestruj nieruchomość",
     followUp: "Po uzupełnieniu danych skontaktujemy się z Tobą w sprawie kolejnego kroku. Dokładny adres nigdy nie jest widoczny publicznie, a bez Twojej zgody nic nie zostanie opublikowane online. Formularz jest w języku szwedzkim.",
     question: "Masz pytania? Napisz SMS lub zadzwoń bezpośrednio: 076-249 84 86.",
     signoff: "Pozdrawiam,",
-    organization: "HyrUtSmart – część StayOnSite",
+    organization: "StayOnSite",
   },
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -42,7 +42,7 @@ export function buildHomeownerLeadConfirmationEmail(locale: Locale) {
   const c = copy[locale];
   const text = [
     c.greeting, "", c.intro, "", c.label,
-    `${c.button}: ${HUS_REGISTRATION_URL}`, "", c.followUp, "",
+    `${c.button}: ${HOMEOWNER_REGISTRATION_URL}`, "", c.followUp, "",
     c.question, "", c.signoff, "Kajsa Sihlén", c.organization,
   ].join("\n");
   const html = `<!DOCTYPE html>
@@ -55,7 +55,7 @@ export function buildHomeownerLeadConfirmationEmail(locale: Locale) {
       <p>${c.greeting}</p>
       <p>${c.intro}</p>
       <p><strong>${c.label}</strong></p>
-      <p style="margin:28px 0;"><a href="${HUS_REGISTRATION_URL}" style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:700;">${c.button}</a></p>
+      <p style="margin:28px 0;"><a href="${HOMEOWNER_REGISTRATION_URL}" style="display:inline-block;background:#ff6300;color:#ffffff;padding:12px 24px;border-radius:9999px;text-decoration:none;font-weight:700;">${c.button}</a></p>
       <p>${c.followUp}</p>
       <p>${c.question}</p>
       <p>${c.signoff}<br>Kajsa Sihlén<br>${c.organization}</p>

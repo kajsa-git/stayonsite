@@ -59,10 +59,10 @@ describe('contact API consent handling', () => {
   );
 
   it.each([
-    ['sv', 'Till bostadsregistreringen hos HyrUtSmart'],
-    ['en', 'Go to property registration at HyrUtSmart'],
-    ['pl', 'Przejdź do rejestracji w HyrUtSmart'],
-  ] as const)('sends the %s homeowner receipt with the Hyr ut smart registration link', async (locale, button) => {
+    ['sv', 'Registrera bostaden'],
+    ['en', 'Register the property'],
+    ['pl', 'Zarejestruj nieruchomość'],
+  ] as const)('sends the %s homeowner receipt with the StayOnSite registration link', async (locale, button) => {
     const request = new NextRequest('https://example.com/api/contact', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -78,10 +78,28 @@ describe('contact API consent handling', () => {
     const confirmation = mocks.email.mock.calls[1][0];
     expect(confirmation.to).toBe('anna@example.com');
     expect(confirmation.replyTo).toBe('kajsa@stayonsite.se');
-    expect(confirmation.text).toContain('https://hyrutsmart.se/registrera');
-    expect(confirmation.html).toContain('href="https://hyrutsmart.se/registrera"');
+    expect(confirmation.text).toContain('https://www.stayonsite.se/registrera-bostad');
+    expect(confirmation.html).toContain('href="https://www.stayonsite.se/registrera-bostad"');
     expect(confirmation.html).toContain(button);
-    expect(confirmation.html).not.toContain('stayonsite.se/registrera-bostad');
+    expect(confirmation.html).not.toContain('hyrutsmart');
     expect(confirmation.html).not.toContain('/uthyrare/');
+  });
+
+  it('holds the registration email back when the homeowner continues straight to the full registration', async () => {
+    const request = new NextRequest('https://example.com/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        formType: 'homeowner', locale: 'sv', page: '/for-husagare', startedAt: Date.now(), continueToIntake: true,
+        fields: { name: 'Anna Exempel', email: 'anna@example.com', phone: '0701234567', bedrooms: '3', postalCode: '12345' },
+      }),
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    // Bara notisen till oss; registreringsmejlet skickas av påminnelse-cronen om det behövs.
+    expect(mocks.email).toHaveBeenCalledTimes(1);
+    expect(mocks.email.mock.calls[0][0].to).not.toBe('anna@example.com');
+    expect(mocks.email.mock.calls[0][0].text).toContain('Fortsatte direkt till bostadsregistreringen');
   });
 });

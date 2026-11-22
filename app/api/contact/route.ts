@@ -39,6 +39,8 @@ const base = {
   website: z.string().max(200).optional(),
   utmParams: z.record(z.string(), z.string()).optional(),
   adsConsent: z.enum(["granted", "denied"]).optional(),
+  // Husägaren skickas direkt vidare till /registrera-bostad efter kortformuläret.
+  continueToIntake: z.boolean().optional(),
   tracking: z.object({
     consent: z.literal(true),
     eventId: z.string().min(8).max(100),
@@ -175,6 +177,7 @@ function buildEmail(s: Submission, ip?: string, ua?: string, crmOk = true, crmEr
     mottagen: now,
   };
   if (s.source) meta.källa = s.source;
+  if (s.continueToIntake) meta.nästa = "Fortsatte direkt till bostadsregistreringen. Påminnelse (SMS + mejl) går ut efter 30 min om den inte blir klar.";
   if (ip) meta.ip = ip;
   if (ua) meta["user-agent"] = ua;
   if (s.utmParams && Object.keys(s.utmParams).length) {
@@ -428,6 +431,9 @@ export async function POST(req: NextRequest) {
         } else {
           console.error("Corporate qualification skipped because CRM intake was not mapped", { recipient: qualificationRecipient });
         }
+      } else if (isHomeownerLeadForm(submission.formType) && submission.continueToIntake) {
+        // Registreringsmejlet väntar: det skickas av påminnelse-cronen bara om
+        // husägaren inte blir klar med registreringen (releaseDueHomeownerNudges).
       } else {
         const isHomeowner = isHomeownerLeadForm(submission.formType);
         const confirmation = isHomeowner
@@ -456,6 +462,7 @@ export async function POST(req: NextRequest) {
         await queueHomeownerLeadIntakeSms({
           owner: crmResult.owner,
           fallbackPhone: (submission.fields as Record<string, string>).phone,
+          deferred: submission.continueToIntake === true,
         });
       } catch (err) {
         console.error("Homeowner confirmation SMS queue failed", err);

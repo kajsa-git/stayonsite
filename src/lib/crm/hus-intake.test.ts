@@ -94,6 +94,15 @@ describe("HUS registration", () => {
     expect(oldSms.status).toBe("cancelled");
   });
 
+  it("cancels the queued registration SMS when the owner registers on stayonsite.se", async () => {
+    await state.db.insert(outboxMessages).values({ id: "invite-sms", ownerId: "o1", toPhone: "+46701234567", body: homeownerLeadIntakeSms(), status: "queued", source: "intake" });
+    const { husPublication: _hus, ...stayonsite } = raw;
+    const { property } = await createPropertyIntake(propertyIntakeSchema.parse({ ...stayonsite, source: "property-intake", page: "/registrera-bostad" }));
+    expect(property.ownerId).toBe("o1");
+    const [invite] = await state.db.select().from(outboxMessages).where(eq(outboxMessages.id, "invite-sms"));
+    expect(invite.status).toBe("cancelled");
+  });
+
   it("does not merge ambiguous addressless properties", async () => {
     for (const id of ["lead1", "lead2"]) await state.db.insert(properties).values({ id, ownerId: "o1", postalCode: "96100", status: "off_market", notes: "Inkommen från webb (homeowner)" });
     const { property } = await createPropertyIntake(propertyIntakeSchema.parse(raw));

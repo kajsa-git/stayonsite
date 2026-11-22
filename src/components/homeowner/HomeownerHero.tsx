@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
@@ -9,6 +10,7 @@ import { motion } from 'framer-motion';
 import { isValidPhoneNumber } from '@/lib/contact';
 import { trackFormPhoneError, trackFormSubmit } from '@/lib/gtag';
 import { trackFbEvent } from '@/hooks/use-facebook-pixel';
+import { saveIntakePrefill } from '@/lib/intake-prefill';
 import {
   getContactFormErrorMessage,
   submitContactForm,
@@ -22,7 +24,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Send, Star } from 'lucide-react';
+import { Loader2, Send, Star } from 'lucide-react';
 
 // Läs-/verifiera-länk för spekulanter. Skriv-länken (g.page/r/.../review) hör hemma i uppföljning efter uthyrning.
 const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=Stayonsite+AB';
@@ -158,6 +160,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
   const faqItems = extraFaqItems ? [...baseFaqItems, ...extraFaqItems] : baseFaqItems;
 
   const utmParams = useUtmCapture();
+  const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
@@ -190,6 +193,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
         page: window.location.pathname,
         source: cityName ? `homeowner-city-${cityName}` : 'homeowner-conversion',
         utmParams,
+        continueToIntake: true,
         fields: {
           name: String(formData.get('name') ?? '').trim(),
           email: String(formData.get('email') ?? '').trim(),
@@ -203,14 +207,17 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
       trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       trackFbEvent('Lead', { content_name: 'homeowner' }, result.metaEventId);
 
-      toast({
-        title: t('homeowner.conversion.successTitle' as TranslationKey),
-        description: t('homeowner.conversion.successText' as TranslationKey),
+      // Kontaktuppgifterna är sparade. Husägaren fortsätter direkt med resten av
+      // bostaden på /registrera-bostad, förifyllt, i stället för att vänta på mejl/SMS.
+      saveIntakePrefill({
+        ownerName: String(formData.get('name') ?? ''),
+        ownerPhone: phone,
+        ownerEmail: String(formData.get('email') ?? ''),
+        postalCode: String(formData.get('postalCode') ?? ''),
+        bedrooms: String(formData.get('bedrooms') ?? ''),
+        city: cityName ?? '',
       });
-      setTimeout(() => {
-        setFormSuccess(false);
-        if (formRef.current) formRef.current.reset();
-      }, 8000);
+      router.push('/registrera-bostad');
     } catch (error) {
       toast({
         title: t('homeowner.form.error') || 'Error',
@@ -226,7 +233,8 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
   };
 
   const inputClass =
-    'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
+    // 16px på telefon: mindre text får iOS att zooma in när fältet fokuseras.
+    'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-base md:text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
 
   const labelClass =
     'text-[10px] font-bold uppercase tracking-widest text-white/75 ml-1';
@@ -313,18 +321,21 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
           >
             <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
               {formSuccess ? (
-                <div className="flex flex-col items-center justify-center text-center py-8">
-                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
+                <div className="flex flex-col items-center justify-center text-center py-8" role="status">
+                  <Loader2 className="h-8 w-8 animate-spin text-[#ff6300] mb-4" aria-hidden="true" />
                   <h3 className="text-2xl font-heading font-bold text-white mb-2">
-                    {t('homeowner.conversion.successTitle' as TranslationKey)}
+                    {tr('Tack! Nu tar vi bostaden', 'Thanks! Now for the property', 'Dziękujemy! Teraz nieruchomość')}
                   </h3>
                   <p className="text-white/70">
-                    {t('homeowner.conversion.successText' as TranslationKey)}
+                    {tr(
+                      'Dina kontaktuppgifter är sparade. Du skickas vidare till adress, hyra och bilder.',
+                      'Your contact details are saved. Taking you to address, rent and photos.',
+                      'Twoje dane kontaktowe są zapisane. Przechodzisz do adresu, czynszu i zdjęć.'
+                    )}
                   </p>
+                  <Link href="/registrera-bostad" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-white underline underline-offset-4">
+                    {tr('Fortsätt till registreringen', 'Continue to registration', 'Przejdź do rejestracji')}
+                  </Link>
                 </div>
               ) : (
                 <>
@@ -422,6 +433,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                           type="text"
                           required
                           autoComplete="postal-code"
+                          inputMode="numeric"
                           className={inputClass}
                           placeholder={t('homeowner.conversion.postalCodePlaceholder' as TranslationKey)}
                         />
