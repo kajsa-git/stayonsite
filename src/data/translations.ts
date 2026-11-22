@@ -454,6 +454,8 @@ export type TranslationKey =
   | "twotrack.homeowner.cta"
   | "cookie.text"
   | "cookie.openaiText"
+  | "cookie.openaiDetails"
+  | "cookie.more"
   | "cookie.settings"
   | "cookie.accept"
   | "cookie.deny";
@@ -1015,7 +1017,9 @@ export const translations: Record<
     "twotrack.homeowner.description": "Garanterad hyra varje månad, inga avdrag, 0 % i avgift.",
     "twotrack.homeowner.cta": "Hyr ut din bostad",
     "cookie.text": "Vi använder cookies för att mäta vår annonsering.",
-    "cookie.openaiText": "Vi använder cookies för att mäta annonsering, bland annat med OpenAI. Om du accepterar kan OpenAI få uppgifter om besök och skickade formulär samt hashade kontaktuppgifter.",
+    "cookie.openaiText": "Vi använder cookies för annonsmätning, bland annat med OpenAI.",
+    "cookie.openaiDetails": "Om du accepterar kan Google, Meta och OpenAI få uppgifter om besök och skickade formulär samt hashade kontaktuppgifter. Du kan ändra ditt val när som helst.",
+    "cookie.more": "Mer info",
     "cookie.settings": "Cookieinställningar",
     "cookie.accept": "Acceptera",
     "cookie.deny": "Nej tack",
@@ -1577,7 +1581,9 @@ export const translations: Record<
     "twotrack.homeowner.description": "Guaranteed rent every month, no deductions, 0% fee.",
     "twotrack.homeowner.cta": "Rent out your property",
     "cookie.text": "We use cookies to measure our advertising.",
-    "cookie.openaiText": "We use cookies to measure advertising, including with OpenAI. If you accept, OpenAI may receive information about visits and submitted forms, as well as hashed contact details.",
+    "cookie.openaiText": "We use cookies for ad measurement, including with OpenAI.",
+    "cookie.openaiDetails": "If you accept, Google, Meta and OpenAI may receive information about visits and submitted forms, as well as hashed contact details. You can change your choice at any time.",
+    "cookie.more": "More info",
     "cookie.settings": "Cookie settings",
     "cookie.accept": "Accept",
     "cookie.deny": "No thanks",
@@ -2143,7 +2149,9 @@ export const translations: Record<
     "twotrack.homeowner.description": "Gwarantowany czynsz co miesiąc, bez potrąceń, 0% opłat.",
     "twotrack.homeowner.cta": "Wynajmij swoją nieruchomość",
     "cookie.text": "Używamy plików cookie do pomiaru reklam.",
-    "cookie.openaiText": "Używamy plików cookie do pomiaru reklam, także z OpenAI. Jeśli zaakceptujesz, OpenAI może otrzymać informacje o wizytach i wysłanych formularzach oraz zahaszowane dane kontaktowe.",
+    "cookie.openaiText": "Używamy plików cookie do pomiaru reklam, także z OpenAI.",
+    "cookie.openaiDetails": "Jeśli zaakceptujesz, Google, Meta i OpenAI mogą otrzymać informacje o wizytach i wysłanych formularzach oraz zahaszowane dane kontaktowe. Możesz zmienić wybór w dowolnym momencie.",
+    "cookie.more": "Więcej",
     "cookie.settings": "Ustawienia plików cookie",
     "cookie.accept": "Akceptuję",
     "cookie.deny": "Nie, dziękuję",

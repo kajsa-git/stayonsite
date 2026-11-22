@@ -240,7 +240,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
     'text-[10px] font-bold uppercase tracking-widest text-white/75 ml-1';
 
   return (
-    <section className="relative isolate min-h-screen flex items-center overflow-hidden pt-16 pb-8 md:pt-28 md:pb-16 bg-primary">
+    <section className="relative isolate min-h-screen flex items-start lg:items-center overflow-hidden pt-24 pb-8 md:pt-28 md:pb-16 bg-primary">
       {/* Background image */}
       <motion.div
         initial={{ scale: 1.1, opacity: 0 }}
@@ -482,7 +482,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
           </motion.div>
 
           {/* Trust bar — mobile only (below form) */}
-          <div className="flex lg:hidden items-center justify-center gap-6 mt-6">
+          <div className="order-3 flex lg:hidden items-center justify-center gap-6 mt-6">
             <TrustStat
               value={t('homeowner.conversion.trustFee' as TranslationKey)}
               label={t('homeowner.conversion.trustFeeLabel' as TranslationKey)}

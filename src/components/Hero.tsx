@@ -30,7 +30,7 @@ const Hero = () => {
         <img
           src="/images/hero-home.webp"
           alt="Möblerat personalboende för byggarbetare i Sverige – StayOnSite"
-          {...{ fetchpriority: 'high' } as any}
+          fetchPriority="high"
           className="w-full h-full object-cover object-center"
         />
       </motion.div>

@@ -67,41 +67,41 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   };
 
   return (
-    <div className={cn("flex items-center gap-2 text-sm font-medium", className)}>
+    <div className={cn("flex items-center gap-1 text-sm font-medium", className)}>
       <button
         type="button"
         aria-label="Svenska"
         aria-pressed={language === 'sv'}
         onClick={() => handleLanguageChange('sv')}
         className={cn(
-          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          language === 'sv' ? "text-accent" : "text-current"
+          "inline-flex min-h-11 min-w-8 items-center justify-center rounded-sm px-1 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'sv' ? "font-semibold underline decoration-accent decoration-2 underline-offset-[6px]" : "opacity-80"
         )}
       >
         SV
       </button>
-      <span className="opacity-40" aria-hidden="true">|</span>
+      <span className="opacity-30" aria-hidden="true">|</span>
       <button
         type="button"
         aria-label="English"
         aria-pressed={language === 'en'}
         onClick={() => handleLanguageChange('en')}
         className={cn(
-          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          language === 'en' ? "text-accent" : "text-current"
+          "inline-flex min-h-11 min-w-8 items-center justify-center rounded-sm px-1 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'en' ? "font-semibold underline decoration-accent decoration-2 underline-offset-[6px]" : "opacity-80"
         )}
       >
         EN
       </button>
-      <span className="opacity-40" aria-hidden="true">|</span>
+      <span className="opacity-30" aria-hidden="true">|</span>
       <button
         type="button"
         aria-label="Polski"
         aria-pressed={language === 'pl'}
         onClick={() => handleLanguageChange('pl')}
         className={cn(
-          "rounded-sm transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          language === 'pl' ? "text-accent" : "text-current"
+          "inline-flex min-h-11 min-w-8 items-center justify-center rounded-sm px-1 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          language === 'pl' ? "font-semibold underline decoration-accent decoration-2 underline-offset-[6px]" : "opacity-80"
         )}
       >
         PL

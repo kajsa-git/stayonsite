@@ -68,7 +68,8 @@ const Header = () => {
         'fixed top-0 z-50 w-full transition-colors duration-300',
         useScrolledStyle
           ? 'border-b border-border bg-background/95 text-foreground shadow-sm backdrop-blur-lg'
-          : 'bg-transparent text-white'
+          // Mörk toning bakom menyn så att vit text och ikoner syns även mot ljusa partier i bilden.
+          : 'bg-gradient-to-b from-black/60 via-black/30 to-transparent text-white'
       )}
     >
       <div className="container mx-auto flex min-h-20 items-center justify-between gap-6 px-4 sm:px-6 xl:px-8">
@@ -88,8 +89,8 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-4 xl:flex">
-          <ul className="flex items-center gap-4">
+        <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-5 xl:flex">
+          <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
@@ -129,12 +130,12 @@ const Header = () => {
           <LanguageSwitcher />
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label={t('nav.openMenu')}>
+              <Button variant="ghost" size="icon" className="size-11 [&_svg]:size-6" aria-label={t('nav.openMenu')}>
                 <Menu aria-hidden="true" />
               </Button>
             </SheetTrigger>
             <SheetContent className="flex w-[min(90vw,24rem)] flex-col gap-6 overflow-y-auto" aria-describedby={undefined}>
-              <SheetHeader>
+              <SheetHeader className="text-left">
                 <SheetTitle>{t('nav.menu')}</SheetTitle>
               </SheetHeader>
               <nav aria-label={t('nav.primaryNavigation')} className="flex flex-col gap-6">
@@ -145,7 +146,7 @@ const Header = () => {
                         href={link.href}
                         onClick={() => setIsMenuOpen(false)}
                         aria-current={pathname === link.href ? 'page' : undefined}
-                        className="block rounded-lg px-3 py-3 font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:bg-muted"
+                        className="block rounded-lg px-3 py-3 text-lg font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:bg-muted"
                       >
                         {link.label}
                       </Link>
@@ -156,7 +157,7 @@ const Header = () => {
                 <ul className="flex flex-col gap-1">
                   {additionalLinks.map((link) => (
                     <li key={link.href}>
-                      <Link href={link.href} onClick={() => setIsMenuOpen(false)} className="block rounded-lg px-3 py-2 text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      <Link href={link.href} onClick={() => setIsMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-base text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         {link.label}
                       </Link>
                     </li>

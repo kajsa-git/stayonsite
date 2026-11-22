@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { Cookie } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { CONSENT_CHANGE_EVENT, GA_ADS_ID, getStoredConsent, updateConsent } from '@/lib/gtag'
 import { META_PIXEL_ID } from '@/lib/meta-pixel'
@@ -32,6 +31,7 @@ export default function CookieConsent() {
   const { t } = useLanguage()
   const showNotice = useSyncExternalStore(subscribeToConsent, shouldShowConsent, () => false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   useEffect(() => {
     const stored = getStoredConsent()
@@ -56,29 +56,46 @@ export default function CookieConsent() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-1 md:p-6 animate-in slide-in-from-bottom duration-500">
-      <div className="mx-auto max-w-lg rounded-2xl bg-white shadow-[0_-4px_30px_rgba(0,0,0,0.12)] border border-nordic-200 p-1.5 md:p-6 flex items-center gap-2 md:block">
-        <div className="flex min-w-0 flex-1 items-center gap-2 md:items-start md:gap-3">
-          <div className="w-7 h-7 md:mt-0.5 md:w-8 md:h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-            <Cookie size={16} className="text-accent" />
+    <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
+      <div
+        role="region"
+        aria-label="Cookies"
+        className="border-t border-nordic-200 bg-white px-4 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+      >
+        <div className="mx-auto flex max-w-5xl items-center gap-3">
+          <div className="min-w-0 flex-1 text-[13px] leading-snug text-nordic-800 md:text-sm">
+            <p>
+              {t(OPENAI_PIXEL_ID ? 'cookie.openaiText' : 'cookie.text')}{' '}
+              {OPENAI_PIXEL_ID && !detailsOpen && (
+                <button
+                  type="button"
+                  aria-expanded={false}
+                  onClick={() => setDetailsOpen(true)}
+                  className="font-medium text-nordic-900 underline underline-offset-2"
+                >
+                  {t('cookie.more')}
+                </button>
+              )}
+            </p>
+            {OPENAI_PIXEL_ID && detailsOpen && <p className="mt-1 text-nordic-700">{t('cookie.openaiDetails')}</p>}
           </div>
-          <p className="text-xs md:text-sm text-nordic-700 leading-[1.15] md:leading-relaxed">
-            {t(OPENAI_PIXEL_ID ? 'cookie.openaiText' : 'cookie.text')}
-          </p>
-        </div>
-        <div className="flex flex-shrink-0 gap-1 md:gap-3 md:mt-4 md:ml-11">
-          <button
-            onClick={handleAccept}
-            className="touch-manipulation min-h-10 rounded-full bg-[#ff6300] hover:bg-[#e25200] text-white text-xs md:text-sm font-semibold px-3 md:px-6 py-2 transition-colors"
-          >
-            {t('cookie.accept')}
-          </button>
-          <button
-            onClick={handleDeny}
-            className="touch-manipulation min-h-10 rounded-full border border-nordic-300 text-nordic-600 hover:bg-nordic-50 text-xs md:text-sm font-semibold px-3 md:px-6 py-2 transition-colors"
-          >
-            {t('cookie.deny')}
-          </button>
+          {/* Lika tydliga val: att neka ska vara lika enkelt som att acceptera. */}
+          <div className="flex shrink-0 gap-1.5 md:gap-2">
+            <button
+              type="button"
+              onClick={handleAccept}
+              className="touch-manipulation min-h-11 rounded-full bg-[#ff6300] px-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#e25200] md:px-5 md:text-sm"
+            >
+              {t('cookie.accept')}
+            </button>
+            <button
+              type="button"
+              onClick={handleDeny}
+              className="touch-manipulation min-h-11 rounded-full border border-nordic-300 px-3.5 text-[13px] font-semibold text-nordic-800 transition-colors hover:bg-nordic-50 md:px-5 md:text-sm"
+            >
+              {t('cookie.deny')}
+            </button>
+          </div>
         </div>
       </div>
     </div>
