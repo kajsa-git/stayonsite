@@ -1,4 +1,4 @@
-import { PUBLICATION_CONSENT_VERSION } from "@/lib/crm/publication-consent-text";
+import { WEB_PUBLICATION_CONSENT_VERSION } from "@/lib/crm/publication-consent-text";
 import { HUS_UPLOAD_LINK_ACTOR } from "@/lib/crm/hus-publication";
 import { PublicationConsentScopeError, recordPublishConsent, webConsentEvidence, withdrawPublishConsent } from "@/lib/crm/publish-consent";
 import { schedulePropertyReview } from "@/lib/crm/schedule-property-review";
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     });
     return withdrawn ? NextResponse.json({ ok: true }) : NextResponse.json({ error: "Bostaden ingår inte i länken." }, { status: 404 });
   }
-  if (body.version !== PUBLICATION_CONSENT_VERSION) {
+  if (body.version !== WEB_PUBLICATION_CONSENT_VERSION) {
     return NextResponse.json({ error: "Texten har uppdaterats. Ladda om sidan innan du godkänner." }, { status: 409 });
   }
   if (body.accepted !== true) {

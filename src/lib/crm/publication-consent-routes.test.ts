@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { PUBLICATION_CONSENT_PREVIOUS_VERSION, PUBLICATION_CONSENT_VERSION, WEB_PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import { HUS_UPLOAD_LINK_ACTOR } from "./hus-publication";
 import * as schema from "./schema";
 import { createTestDb, type TestDB } from "./test-db";
@@ -38,13 +38,14 @@ describe("publikationsflödets endpoints", () => {
   it("avvisar ett gammalt öppet formulär och en bostad som inte tillhör länken", async () => {
     expect((await web({ name: "Anna", propertyIds: ["p1"], version: "gammal" })).status).toBe(409);
     expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_PREVIOUS_VERSION })).status).toBe(409);
-    expect((await web({ name: "Anna", propertyIds: ["p1", "other"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(404);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(409);
+    expect((await web({ name: "Anna", propertyIds: ["p1", "other"], accepted: true, version: WEB_PUBLICATION_CONSENT_VERSION })).status).toBe(404);
     expect((await state.db.select().from(schema.properties).where(eq(schema.properties.id, "p1")))[0].publishConsentAt).toBeNull();
   });
 
   it("sparar bara de valda bostäderna utan att registrera ett förmedlingsavtal", async () => {
-    expect((await web({ name: "Anna", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION })).status).toBe(400);
-    expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION })).status).toBe(201);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], version: WEB_PUBLICATION_CONSENT_VERSION })).status).toBe(400);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: WEB_PUBLICATION_CONSENT_VERSION })).status).toBe(201);
     const rows = await state.db.select().from(schema.properties);
     expect(rows.find((p) => p.id === "p1")?.publishConsentAt).toBeTruthy();
     expect(rows.find((p) => p.id === "p2")?.publishConsentAt).toBeNull();
@@ -52,7 +53,7 @@ describe("publikationsflödets endpoints", () => {
   });
 
   it("låter uthyraren återkalla sin egen bostad men aldrig någon annans", async () => {
-    await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: PUBLICATION_CONSENT_VERSION });
+    await web({ name: "Anna", propertyIds: ["p1"], accepted: true, version: WEB_PUBLICATION_CONSENT_VERSION });
     await state.db.update(schema.properties).set({ published: true, prospektPublished: true }).where(eq(schema.properties.id, "p1"));
     expect((await web({ action: "withdraw", propertyIds: ["other"] })).status).toBe(404);
     expect((await web({ action: "withdraw", propertyIds: ["p1"] })).status).toBe(200);
@@ -63,7 +64,7 @@ describe("publikationsflödets endpoints", () => {
 
   it("hindrar en HUS-uppladdningslänk från att ändra publiceringsmedgivanden", async () => {
     await state.db.update(schema.shareLinks).set({ createdBy: HUS_UPLOAD_LINK_ACTOR }).where(eq(schema.shareLinks.id, "l1"));
-    expect((await web({ name: "Anna", propertyIds: ["p1"], version: PUBLICATION_CONSENT_VERSION })).status).toBe(404);
+    expect((await web({ name: "Anna", propertyIds: ["p1"], version: WEB_PUBLICATION_CONSENT_VERSION })).status).toBe(404);
     expect((await web({ action: "withdraw", propertyIds: ["p1"] })).status).toBe(404);
   });
 

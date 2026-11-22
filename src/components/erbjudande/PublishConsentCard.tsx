@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_PARAGRAPHS, PUBLICATION_CONSENT_VERSION } from "@/lib/crm/publication-consent-text";
+import { WEB_PUBLICATION_CONSENT_CHECKBOX_LABEL, WEB_PUBLICATION_CONSENT_PARAGRAPHS, WEB_PUBLICATION_CONSENT_VERSION } from "@/lib/crm/publication-consent-text";
 import type { ConsentableProperty } from "@/lib/crm/publish-consent";
 
 export function PublishConsentCard({
@@ -35,7 +35,7 @@ export function PublishConsentCard({
       const response = await fetch(`/api/share/${token}/publish-consent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ propertyIds: selected, name: name.trim(), accepted, website, version: PUBLICATION_CONSENT_VERSION }),
+        body: JSON.stringify({ propertyIds: selected, name: name.trim(), accepted, website, version: WEB_PUBLICATION_CONSENT_VERSION }),
       });
       if (!response.ok) {
         const result = await response.json().catch(() => ({}));
@@ -62,7 +62,7 @@ export function PublishConsentCard({
       {remaining.length > 0 ? (
         <form onSubmit={approve} className="mt-4 space-y-4">
           <div className="space-y-3 text-sm leading-relaxed text-nordic-700">
-            {PUBLICATION_CONSENT_PARAGRAPHS.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {WEB_PUBLICATION_CONSENT_PARAGRAPHS.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
           <fieldset className="space-y-2">
             <legend className="mb-2 text-sm font-medium text-nordic-900">
@@ -91,7 +91,7 @@ export function PublishConsentCard({
           <label className="flex items-start gap-3 text-sm leading-relaxed text-nordic-900">
             <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} required
               className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff6300]" />
-            <span>{PUBLICATION_CONSENT_CHECKBOX_LABEL}</span>
+            <span>{WEB_PUBLICATION_CONSENT_CHECKBOX_LABEL}</span>
           </label>
           <input type="text" value={website} onChange={(event) => setWebsite(event.target.value)}
             name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />

@@ -3,7 +3,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { db as defaultDb } from "./db";
 import { HUS_PUBLICATION_SMS_SOURCE, husPublicationSmsId } from "./hus-publication";
-import { PUBLICATION_CONSENT_CHECKBOX_LABEL, PUBLICATION_CONSENT_TEXT, PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
+import { WEB_PUBLICATION_CONSENT_CHECKBOX_LABEL, WEB_PUBLICATION_CONSENT_TEXT, WEB_PUBLICATION_CONSENT_VERSION } from "./publication-consent-text";
 import * as schema from "./schema";
 import { agreementAcceptances, outboxMessages, properties, propertyNotes } from "./schema";
 
@@ -92,7 +92,7 @@ export async function recordPublishConsent(input: RecordPublishConsentInput, opt
       });
       if (input.webAcceptance) {
         await tx.insert(agreementAcceptances).values({
-          id: nanoid(), agreementType: "publiceringsmedgivande", version: PUBLICATION_CONSENT_VERSION,
+          id: nanoid(), agreementType: "publiceringsmedgivande", version: WEB_PUBLICATION_CONSENT_VERSION,
           ownerId: input.ownerId ?? null, propertyId: row.id, shareLinkId: input.webAcceptance.shareLinkId,
           acceptedName: input.name.trim(), acceptedAt, ip: input.ip ?? null,
           userAgent: input.webAcceptance.userAgent ?? null, language: input.webAcceptance.language,
@@ -130,5 +130,5 @@ export async function withdrawPublishConsent(input: {
 }
 
 export function webConsentEvidence(): string {
-  return `Godkänt via uthyrarlänken, version ${PUBLICATION_CONSENT_VERSION}. Text: ${PUBLICATION_CONSENT_TEXT}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}`;
+  return `Godkänt via uthyrarlänken, version ${WEB_PUBLICATION_CONSENT_VERSION}. Text: ${WEB_PUBLICATION_CONSENT_TEXT}\nGodkännanderuta: ${WEB_PUBLICATION_CONSENT_CHECKBOX_LABEL}`;
 }
