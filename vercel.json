@@ -9,7 +9,8 @@
     { "path": "/api/cron/landlord-images", "schedule": "*/5 * * * *" },
     { "path": "/api/cron/agreement-reminders", "schedule": "0 7 * * *" },
     { "path": "/api/cron/fortnox-keepalive", "schedule": "0 8 * * 1" },
-    { "path": "/api/cron/property-review", "schedule": "0 6 * * *" }
+    { "path": "/api/cron/property-review", "schedule": "0 6 * * *" },
+    { "path": "/api/cron/owner-dedupe", "schedule": "30 5 * * *" }
   ],
   "headers": [
     {

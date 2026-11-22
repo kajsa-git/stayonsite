@@ -51,6 +51,12 @@ export type EditForm = {
   broadband: boolean | null;
   egetBoende: boolean | null;
   dishwasher: boolean | null;
+  propertyType: string;
+  sharedLaundry: boolean | null;
+  smokeAlarm: boolean | null;
+  fireExtinguisher: boolean | null;
+  burglarAlarm: boolean | null;
+  fireplace: boolean | null;
   allIncluded: boolean | null;
   excludedNote: string;
   linensIncluded: boolean | null;
@@ -107,6 +113,12 @@ export function toPropertyForm(p: PropertyWithOwner): EditForm {
     broadband: p.broadband ?? null,
     egetBoende: p.egetBoende ?? null,
     dishwasher: p.dishwasher ?? null,
+    propertyType: s(p.propertyType),
+    sharedLaundry: p.sharedLaundry ?? null,
+    smokeAlarm: p.smokeAlarm ?? null,
+    fireExtinguisher: p.fireExtinguisher ?? null,
+    burglarAlarm: p.burglarAlarm ?? null,
+    fireplace: p.fireplace ?? null,
     allIncluded: p.allIncluded ?? null,
     excludedNote: s(p.excludedNote),
     linensIncluded: p.linensIncluded ?? null,
@@ -165,6 +177,12 @@ export function propertyFormToPayload(form: EditForm): Partial<PropertyWithOwner
     broadband: form.broadband,
     egetBoende: form.egetBoende,
     dishwasher: form.dishwasher,
+    propertyType: t(form.propertyType),
+    sharedLaundry: form.sharedLaundry,
+    smokeAlarm: form.smokeAlarm,
+    fireExtinguisher: form.fireExtinguisher,
+    burglarAlarm: form.burglarAlarm,
+    fireplace: form.fireplace,
     allIncluded: form.allIncluded,
     excludedNote: t(form.excludedNote),
     linensIncluded: form.linensIncluded,

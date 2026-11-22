@@ -257,6 +257,21 @@ export function PropertyEditForm({
             <input type="number" className={FIELD_CLS} value={form.parkingSpaces} onChange={(e) => set("parkingSpaces", e.target.value)} />
           </Labeled>
         </div>
+        <Labeled label="Bostadstyp">
+          <select className={FIELD_CLS} value={form.propertyType} onChange={(e) => set("propertyType", e.target.value)}>
+            <option value="">Okänt</option>
+            <option value="hus">Hus</option>
+            <option value="lagenhet">Lägenhet</option>
+            <option value="annat">Annat</option>
+          </select>
+        </Labeled>
+        <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-2">
+          <PropertyFact label="Gemensam tvättstuga" value={form.sharedLaundry} onChange={(v) => set("sharedLaundry", v)} />
+          <PropertyFact label="Brandvarnare" value={form.smokeAlarm} onChange={(v) => set("smokeAlarm", v)} />
+          <PropertyFact label="Brandsläckare" value={form.fireExtinguisher} onChange={(v) => set("fireExtinguisher", v)} />
+          <PropertyFact label="Larm" value={form.burglarAlarm} onChange={(v) => set("burglarAlarm", v)} />
+          <PropertyFact label="Eldstad/kamin" value={form.fireplace} onChange={(v) => set("fireplace", v)} />
+        </div>
         <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-2">
           <PropertyFact label="Möblerat" value={form.furnished} onChange={(v) => set("furnished", v)} />
           <PropertyFact label="Kök" value={form.kitchen} onChange={(v) => set("kitchen", v)} />

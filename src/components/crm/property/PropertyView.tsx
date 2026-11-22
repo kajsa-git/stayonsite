@@ -260,6 +260,12 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
             <CardHeader className="px-5 pb-3 pt-5"><CardTitle className="text-base">Utrustning</CardTitle></CardHeader>
             <CardContent className="flex flex-col gap-5 px-5 pb-5">
               <dl className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3">
+                <Equip label="Bostadstyp" value={({ hus: "Hus", lagenhet: "Lägenhet", annat: "Annat" } as Record<string, string>)[property.propertyType ?? ""] ?? "–"} />
+                <Equip label="Brandvarnare" yes={property.smokeAlarm} />
+                <Equip label="Brandsläckare" yes={property.fireExtinguisher} />
+                <Equip label="Larm" yes={property.burglarAlarm} />
+                <Equip label="Eldstad/kamin" yes={property.fireplace} />
+                <Equip label="Gemensam tvättstuga" yes={property.sharedLaundry} />
                 <Equip label="Tvättmaskin" value={property.washingMachines != null ? String(property.washingMachines) : "–"} />
                 <Equip label="Tumlare" value={property.dryers != null ? String(property.dryers) : "–"} />
                 <Equip label="Diskmaskin" yes={property.dishwasher} />

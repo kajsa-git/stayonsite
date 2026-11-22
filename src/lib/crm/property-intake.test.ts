@@ -181,6 +181,15 @@ describe("property intake mapping", () => {
     expect(propertyIntakeSchema.parse({ ...sampleInput, features: ["Bastu", "Hemlig grej"] }).features).toEqual(["Bastu"]);
   });
 
+  it("writes structured property type and safety answers to the property, leaving unknowns null", () => {
+    const body = propertyIntakeToPropertyBody(propertyIntakeSchema.parse({
+      ...sampleInput, propertyType: "lagenhet", sharedLaundry: true, safety: { smokeAlarm: true, burglarAlarm: false },
+    }));
+    expect(body).toMatchObject({ propertyType: "lagenhet", sharedLaundry: true, smokeAlarm: true, burglarAlarm: false });
+    expect(body).not.toHaveProperty("fireplace");
+    expect(propertyIntakeToPropertyBody(propertyIntakeSchema.parse(sampleInput))).not.toHaveProperty("propertyType");
+  });
+
   it("accepts older submissions and keeps an omitted answer distinct from zero", () => {
     const { parkingDetails: _details, parkingLargeVehicle: _vehicle, ...oldInput } = sampleInput;
     const input = propertyIntakeSchema.parse({ ...oldInput, parkingSpaces: 0 });

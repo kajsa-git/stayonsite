@@ -379,6 +379,13 @@
       "when": 1795102800000,
       "tag": "0053_property_intake_follow_ups",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "6",
+      "when": 1795449600000,
+      "tag": "0054_property_structured_facts",
+      "breakpoints": true
     }
   ]
 }

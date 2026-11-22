@@ -72,7 +72,7 @@ const EXPECTED_PAYLOAD_KEYS = [
   "ownerEmail", "ownerId", "ownerName", "ownerOrgNr", "ownerPhone", "ownerType", "parkingSpaces",
   "postalCode", "publicDescription", "publicDescriptionEn", "publicDescriptionPl", "publicName",
   "rentIn", "rentOut", "rentalRight", "skick", "skickEn", "skickPl", "slug", "specialNote", "squareMeters",
-  "washingMachines",
+  "washingMachines", "propertyType", "sharedLaundry", "smokeAlarm", "fireExtinguisher", "burglarAlarm", "fireplace",
 ].sort();
 
 describe("propertyFormToPayload — payloadens fältuppsättning", () => {

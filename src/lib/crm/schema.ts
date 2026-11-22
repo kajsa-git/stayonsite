@@ -217,6 +217,13 @@ export const properties = sqliteTable("crm_properties", {
   washingMachines: integer("washing_machines"),
   dryers: integer("dryers"),
   dishwasher: integer("dishwasher", { mode: "boolean" }), // diskmaskin
+  propertyType: text("property_type"), // hus | lagenhet | annat
+  sharedLaundry: integer("shared_laundry", { mode: "boolean" }), // gemensam tvättstuga
+  // Säkerhet: null = okänt, false = nej, true = ja (en tom ruta får aldrig betyda nej).
+  smokeAlarm: integer("smoke_alarm", { mode: "boolean" }),
+  fireExtinguisher: integer("fire_extinguisher", { mode: "boolean" }),
+  burglarAlarm: integer("burglar_alarm", { mode: "boolean" }),
+  fireplace: integer("fireplace", { mode: "boolean" }),
   parkingSpaces: integer("parking_spaces"), // antal p-platser (separat från garage)
   // Vad ingår i hyran — diskreta booleans + textfält för undantag
   allIncluded: integer("all_included", { mode: "boolean" }), // exakt allt ingår i hyran
