@@ -75,8 +75,8 @@ When adding new UI text: add the key to `translations.ts` with all three languag
 
 ### Landing Pages
 
-- **Route:** `/lp/husagare` — isolated page without Header/Footer/navigation
-- **Components:** `src/components/lp/` (LpHeroForm, LpTrustBadges, LpTestimonials, LpBottomCTA)
+- **Routes:** `/lp/husagare` (renders the full `PropertyIntakeForm`), `/lp/korttidsboende`, `/lp/corporate-housing` — isolated pages without Header/Footer/navigation
+- **Components:** `src/components/lp/` (LpKorttidsboendeForm, LpCorporateForm)
 - **Tracking:** UTM capture (`src/hooks/use-utm-capture.ts`) + Facebook Pixel (`src/hooks/use-facebook-pixel.ts`, loaded via `NEXT_PUBLIC_FB_PIXEL_ID` env var)
 - **SEO protection:** noindex meta + `robots.txt Disallow: /lp/` + no internal links
 

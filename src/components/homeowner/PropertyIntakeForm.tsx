@@ -71,20 +71,21 @@ const MAX_UPLOAD_IMAGE_BYTES = 4 * 1024 * 1024;
 
 const steps = [
   { title: "Kontakt", heading: "Vem hyr ut bostaden?" },
-  { title: "Adress", heading: "Var ligger bostaden?" },
-  { title: "Bostaden", heading: "Hur stor är bostaden?" },
-  { title: "Utrustning", heading: "Vad finns i bostaden?" },
-  { title: "Hyra", heading: "Hyra och tillgänglighet" },
-  { title: "Bilder", heading: "Bilder och kontakt" },
+  { title: "Bostaden", heading: "Var ligger bostaden och hur stor är den?" },
+  { title: "Utrustning", heading: "Utrustning och parkering" },
+  { title: "Hyra och bilder", heading: "Hyra och bilder" },
 ] as const;
 
-// html har scroll-behavior: smooth. Ett stegbyte ska hoppa direkt till toppen,
-// annars avbryts animationen och nästa steg visas mitt på sidan.
+// html har scroll-behavior: smooth. Ett stegbyte ska hoppa direkt till formulärets
+// topp (inte sidans: på /lp/husagare ligger formuläret längre ned), annars avbryts
+// animationen och nästa steg visas mitt på sidan.
 function jumpToTop() {
   const html = document.documentElement;
   const previous = html.style.scrollBehavior;
   html.style.scrollBehavior = "auto";
-  window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  const anchor = document.getElementById("property-intake");
+  if (anchor) anchor.scrollIntoView({ block: "start", behavior: "instant" as ScrollBehavior });
+  else window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   html.style.scrollBehavior = previous;
 }
 
@@ -405,23 +406,18 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
       if (form.address.trim().length < 2) next.address = "Fyll i adress.";
       if (form.postalCode.trim().length < 3) next.postalCode = "Fyll i postnummer.";
       if (form.city.trim().length < 2) next.city = "Fyll i ort.";
-      if (form.country.trim().length < 2) next.country = "Fyll i land.";
-    }
-    if (targetStep === 2) {
       if (!form.bedrooms.trim()) next.bedrooms = "Ange antal sovrum.";
       if (!form.beds.trim()) next.beds = "Ange antal bäddar.";
       if (!form.bathrooms.trim()) next.bathrooms = "Ange antal badrum.";
     }
-    if (targetStep === 3) {
+    if (targetStep === 2) {
       if (!form.parkingType.length) next.parkingType = "Välj typ av parkering, eller Ingen parkering.";
       else if (!form.parkingType.includes(NO_PARKING) && !(Number(form.parkingSpaces) > 0)) next.parkingSpaces = "Ange antal parkeringsplatser.";
     }
-    if (targetStep === 4) {
+    if (targetStep === 3) {
       if (!(toNumber(form.desiredRent) && Number(form.desiredRent) > 0)) next.desiredRent = "Ange ungefärlig hyra per månad.";
       if (!form.rentType) next.rentType = "Välj varmhyra eller kallhyra.";
       if (!form.moveInFrom && !form.availabilityNote.trim()) next.moveInFrom = "Ange datum eller skriv en kort notis.";
-    }
-    if (targetStep === 5) {
       if (!form.consent) next.consent = "Godkänn att vi kontaktar dig om bostaden.";
       const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
       if (files.length > MAX_IMAGE_COUNT) next.images = "Ladda upp max 10 bilder.";
@@ -637,7 +633,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
   // påminnelse med samma länk — se cron:en i app/api/cron/agreement-reminders.
   if (success && success.agreement && !success.agreement.alreadySigned && agreementOutcome === null) {
     return (
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <section id="property-intake" className="scroll-mt-24 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl space-y-5">
           <div className="flex items-start gap-3 rounded-md border border-green-200 bg-white p-5 shadow-sm">
             <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-700" />
@@ -674,7 +670,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
 
   if (success) {
     return (
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <section id="property-intake" className="scroll-mt-24 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl rounded-md border border-green-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
             <CheckCircle2 className="h-7 w-7 text-green-700" />
@@ -742,7 +738,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
   }
 
   return (
-    <section className="pb-0 sm:px-6 sm:py-6 lg:px-8">
+    <section id="property-intake" className="scroll-mt-24 pb-0 sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="border-y border-nordic-200 bg-white sm:rounded-md sm:border sm:shadow-sm">
           <div className="border-b border-nordic-100 px-4 pb-5 pt-4 sm:p-6">
@@ -768,7 +764,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                 <span>Tack {continuedAs}! Dina kontaktuppgifter är sparade. Nu fyller du i själva bostaden.</span>
               </p>
             )}
-            <div className="mt-5 hidden gap-2 sm:grid sm:grid-cols-6">
+            <div className="mt-5 hidden gap-2 sm:grid sm:grid-cols-4">
               {steps.map((item, index) => (
                 <button
                   key={item.title}
@@ -850,14 +846,15 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
                     placeholder="Börja skriva, t.ex. Storgatan 10"
                   />
                 </div>
-                <LabelledInput id="postalCode" label="Postnummer" value={form.postalCode} onChange={(value) => set("postalCode", value)} error={errors.postalCode} required autoComplete="postal-code" inputMode="numeric" placeholder="572 95" />
-                <LabelledInput id="city" label="Ort" value={form.city} onChange={(value) => set("city", value)} error={errors.city} required autoComplete="address-level2" placeholder="Figeholm" />
-                <LabelledInput id="country" label="Land" value={form.country} onChange={(value) => set("country", value)} error={errors.country} required autoComplete="country-name" />
+                <div className="grid grid-cols-2 gap-4 sm:col-span-2">
+                  <LabelledInput id="postalCode" label="Postnummer" value={form.postalCode} onChange={(value) => set("postalCode", value)} error={errors.postalCode} required autoComplete="postal-code" inputMode="numeric" placeholder="572 95" />
+                  <LabelledInput id="city" label="Ort" value={form.city} onChange={(value) => set("city", value)} error={errors.city} required autoComplete="address-level2" placeholder="Figeholm" />
+                </div>
               </div>
             )}
 
-            {step === 2 && (
-              <div className="space-y-5">
+            {step === 1 && (
+              <div className="mt-8 space-y-5 border-t border-nordic-100 pt-6">
                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                   <LabelledInput id="squareMeters" label="Bostadsyta (m²)" value={form.squareMeters} onChange={(value) => set("squareMeters", value)} type="number" inputMode="decimal" />
                   <Stepper id="bedrooms" label="Sovrum" value={form.bedrooms} onChange={(value) => set("bedrooms", value)} required error={errors.bedrooms} />
@@ -871,7 +868,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               </div>
             )}
 
-            {step === 3 && (
+            {step === 2 && (
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <Stepper id="washingMachines" label="Tvättmaskin" value={form.washingMachines} onChange={(value) => set("washingMachines", value)} />
@@ -957,7 +954,7 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               </div>
             )}
 
-            {step === 4 && (
+            {step === 3 && (
               <div className="space-y-6">
                 <div className="max-w-sm">
                   <LabelledInput id="desiredRent" label="Ungefärlig hyra per månad (kr)" value={form.desiredRent} onChange={(value) => set("desiredRent", value.replace(/[^\d]/g, ""))} error={errors.desiredRent} required inputMode="numeric" placeholder="15000" />
@@ -1018,8 +1015,8 @@ export function PropertyIntakeForm({ headingLevel = "h1" }: { headingLevel?: "h1
               </div>
             )}
 
-            {step === 5 && (
-              <div className="space-y-5">
+            {step === 3 && (
+              <div className="mt-8 space-y-5 border-t border-nordic-100 pt-6">
                 <div className="rounded-md border border-dashed border-nordic-300 bg-nordic-50 p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>

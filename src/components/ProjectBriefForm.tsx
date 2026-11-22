@@ -52,6 +52,8 @@ export default function ProjectBriefForm({
   const [phoneError, setPhoneError] = useState('');
   const [roomPreference, setRoomPreference] = useState('');
   const [commute, setCommute] = useState('');
+  // Radix Select stoppar inte inskick på egen hand trots required: validera själva.
+  const [selectErrors, setSelectErrors] = useState<{ commute?: string; room?: string }>({});
 
   const handleFormFocus = () => {
     if (formStarted.current) return;
@@ -68,6 +70,18 @@ export default function ProjectBriefForm({
 
     setEmailError('');
     setPhoneError('');
+
+    const missing = {
+      ...(commute ? {} : { commute: 'Välj hur långt boendet får ligga från arbetsplatsen.' }),
+      ...(roomPreference ? {} : { room: 'Välj rumstyp.' }),
+    };
+    setSelectErrors(missing);
+    if (missing.commute || missing.room) {
+      const target = document.getElementById(missing.commute ? 'commute' : 'roomPreference');
+      target?.focus();
+      target?.scrollIntoView({ block: 'center' });
+      return;
+    }
 
     if (!isValidEmail(email)) {
       setEmailError('Ange en giltig e-postadress.');
@@ -203,9 +217,9 @@ export default function ProjectBriefForm({
         </div>
 
         <div className="space-y-2">
-          <Label className={labelClass}>Maximal pendlingstid</Label>
-          <Select value={commute} onValueChange={setCommute} required>
-            <SelectTrigger className={inputClass}>
+          <Label htmlFor="commute" className={labelClass}>Maximal pendlingstid</Label>
+          <Select value={commute} onValueChange={(value) => { setCommute(value); setSelectErrors((e) => ({ ...e, commute: undefined })); }} required>
+            <SelectTrigger id="commute" aria-invalid={!!selectErrors.commute} aria-describedby={selectErrors.commute ? 'commute-error' : undefined} className={`${inputClass} ${selectErrors.commute ? 'border-red-600' : ''}`}>
               <SelectValue placeholder="Välj sökradie" />
             </SelectTrigger>
             <SelectContent>
@@ -215,6 +229,7 @@ export default function ProjectBriefForm({
               <SelectItem value="Flexibelt efter utbud">Flexibelt efter utbud</SelectItem>
             </SelectContent>
           </Select>
+          {selectErrors.commute && <p id="commute-error" role="alert" className="text-sm text-red-700">{selectErrors.commute}</p>}
         </div>
 
         <div className="space-y-2">
@@ -231,9 +246,9 @@ export default function ProjectBriefForm({
         </div>
 
         <div className="space-y-2">
-          <Label className={labelClass}>Rumstyp</Label>
-          <Select value={roomPreference} onValueChange={setRoomPreference} required>
-            <SelectTrigger className={inputClass}>
+          <Label htmlFor="roomPreference" className={labelClass}>Rumstyp</Label>
+          <Select value={roomPreference} onValueChange={(value) => { setRoomPreference(value); setSelectErrors((e) => ({ ...e, room: undefined })); }} required>
+            <SelectTrigger id="roomPreference" aria-invalid={!!selectErrors.room} aria-describedby={selectErrors.room ? 'roomPreference-error' : undefined} className={`${inputClass} ${selectErrors.room ? 'border-red-600' : ''}`}>
               <SelectValue placeholder="Välj rumstyp" />
             </SelectTrigger>
             <SelectContent>
@@ -243,6 +258,7 @@ export default function ProjectBriefForm({
               <SelectItem value="Ej bestämt">Ej bestämt</SelectItem>
             </SelectContent>
           </Select>
+          {selectErrors.room && <p id="roomPreference-error" role="alert" className="text-sm text-red-700">{selectErrors.room}</p>}
         </div>
       </div>
 
