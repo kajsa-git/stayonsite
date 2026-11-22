@@ -12,22 +12,42 @@ const FloatingPhoneButton = ({ className }: { className?: string }) => {
   const [hideButton, setHideButton] = useState(false);
 
   useEffect(() => {
-    const targets = ['inquiry', 'homeowner-form']
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
-
-    if (targets.length === 0) return;
-
+    // Dölj knappen när ett formulär syns, så att den inte täcker fält. Registreringen
+    // på /for-husagare dyker upp först efter kortformuläret, därför bevakas DOM:en.
+    const ids = ['inquiry', 'homeowner-form', 'property-intake'];
+    const visible = new Map<Element, boolean>();
     const observer = new IntersectionObserver(
       (entries) => {
-        setHideButton(entries.some((entry) => entry.isIntersecting));
+        entries.forEach((entry) => visible.set(entry.target, entry.isIntersecting));
+        setHideButton([...visible.values()].some(Boolean));
       },
       { threshold: 0.2 }
     );
+    const observed = new Set<Element>();
+    const scan = () => {
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && !observed.has(el)) {
+          observed.add(el);
+          observer.observe(el);
+        }
+      });
+      observed.forEach((el) => {
+        if (!el.isConnected) {
+          observer.unobserve(el);
+          observed.delete(el);
+          visible.delete(el);
+        }
+      });
+    };
+    scan();
+    const mutations = new MutationObserver(scan);
+    mutations.observe(document.body, { childList: true, subtree: true });
 
-    targets.forEach((target) => observer.observe(target));
-
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      mutations.disconnect();
+    };
   }, []);
 
   if (hideButton) return null;

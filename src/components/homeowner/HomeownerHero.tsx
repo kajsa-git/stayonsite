@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { useUtmCapture } from '@/hooks/use-utm-capture';
@@ -24,7 +23,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Loader2, Send, Star } from 'lucide-react';
+import { Home, Send, Star } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { PropertyIntakeForm } from '@/components/homeowner/PropertyIntakeForm';
 
 // Läs-/verifiera-länk för spekulanter. Skriv-länken (g.page/r/.../review) hör hemma i uppföljning efter uthyrning.
 const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=Stayonsite+AB';
@@ -160,10 +161,19 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
   const faqItems = extraFaqItems ? [...baseFaqItems, ...extraFaqItems] : baseFaqItems;
 
   const utmParams = useUtmCapture();
-  const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
+  // Efter kortformuläret fortsätter registreringen (steg 2–4) här på sidan, i samma kort.
+  const [intakeStarted, setIntakeStarted] = useState(false);
+
+  useEffect(() => {
+    if (!intakeStarted) return;
+    const html = document.documentElement;
+    const previous = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    document.getElementById('property-intake')?.scrollIntoView({ block: 'start', behavior: 'instant' as ScrollBehavior });
+    html.style.scrollBehavior = previous;
+  }, [intakeStarted]);
   const [phoneError, setPhoneError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -203,12 +213,11 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
           ...(cityName ? { city: cityName } : {}),
         },
       });
-      setFormSuccess(true);
       trackFormSubmit({ email: String(formData.get('email') ?? ''), phone });
       trackFbEvent('Lead', { content_name: 'homeowner' }, result.metaEventId);
 
       // Kontaktuppgifterna är sparade. Husägaren fortsätter direkt med resten av
-      // bostaden på /registrera-bostad, förifyllt, i stället för att vänta på mejl/SMS.
+      // bostaden här på sidan, förifyllt, i stället för att vänta på mejl/SMS.
       saveIntakePrefill({
         ownerName: String(formData.get('name') ?? ''),
         ownerPhone: phone,
@@ -217,7 +226,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
         bedrooms: String(formData.get('bedrooms') ?? ''),
         city: cityName ?? '',
       });
-      router.push('/registrera-bostad');
+      setIntakeStarted(true);
     } catch (error) {
       toast({
         title: t('homeowner.form.error') || 'Error',
@@ -232,12 +241,27 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
     }
   };
 
+  // Samma utseende som registreringens steg 2–4, så att steg 1 och resten känns som ett formulär.
+  // 16px på telefon: mindre text får iOS att zooma in när fältet fokuseras.
   const inputClass =
-    // 16px på telefon: mindre text får iOS att zooma in när fältet fokuseras.
-    'h-12 px-4 rounded-xl bg-white/90 border-0 text-primary text-base md:text-sm font-medium placeholder:text-primary/40 focus-visible:ring-accent';
+    'h-12 px-4 rounded-md border border-nordic-200 bg-white text-nordic-900 text-base md:text-base placeholder:text-nordic-400 focus-visible:ring-nordic-900';
 
-  const labelClass =
-    'text-[10px] font-bold uppercase tracking-widest text-white/75 ml-1';
+  const labelClass = 'text-sm font-semibold text-nordic-900';
+
+  if (intakeStarted) {
+    return (
+      <section id="homeowner-inquiry" className="relative isolate overflow-hidden bg-primary pt-20 pb-10 sm:pt-24 md:pt-28">
+        <img
+          src={heroImage || '/images/hero-husagare.webp'}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-primary/85" />
+        <PropertyIntakeForm headingLevel="h2" />
+      </section>
+    );
+  }
 
   return (
     <section className="relative isolate min-h-screen flex items-start lg:items-center overflow-hidden pt-24 pb-8 md:pt-28 md:pb-16 bg-primary">
@@ -319,30 +343,23 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
             transition={{ delay: 0.3 }}
             className="scroll-mt-28 w-full lg:w-[440px] lg:flex-shrink-0 order-1 lg:order-2"
           >
-            <div className="bg-black/35 backdrop-blur-xl border border-white/20 rounded-[20px] p-5 md:p-8 shadow-2xl">
-              {formSuccess ? (
-                <div className="flex flex-col items-center justify-center text-center py-8" role="status">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#ff6300] mb-4" aria-hidden="true" />
-                  <h3 className="text-2xl font-heading font-bold text-white mb-2">
-                    {tr('Tack! Nu tar vi bostaden', 'Thanks! Now for the property', 'Dziękujemy! Teraz nieruchomość')}
-                  </h3>
-                  <p className="text-white/70">
-                    {tr(
-                      'Dina kontaktuppgifter är sparade. Du skickas vidare till adress, hyra och bilder.',
-                      'Your contact details are saved. Taking you to address, rent and photos.',
-                      'Twoje dane kontaktowe są zapisane. Przechodzisz do adresu, czynszu i zdjęć.'
-                    )}
-                  </p>
-                  <Link href="/registrera-bostad" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-white underline underline-offset-4">
-                    {tr('Fortsätt till registreringen', 'Continue to registration', 'Przejdź do rejestracji')}
-                  </Link>
-                </div>
-              ) : (
+            <div className="rounded-xl bg-white p-5 shadow-2xl md:p-7">
+              {(
                 <>
-                  <h2 className="text-lg md:text-xl font-bold text-white mb-1">
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between gap-3 text-sm">
+                      <span className="flex items-center gap-2 font-semibold text-[#0f766e]">
+                        <Home className="h-4 w-4" aria-hidden="true" />
+                        {tr('Registrera bostad', 'Register property', 'Rejestracja nieruchomości')}
+                      </span>
+                      <span className="font-medium tabular-nums text-nordic-700">{tr('Steg 1 av 4', 'Step 1 of 4', 'Krok 1 z 4')}</span>
+                    </div>
+                    <Progress value={25} aria-label={tr('Steg 1 av 4', 'Step 1 of 4', 'Krok 1 z 4')} className="mt-3 h-1.5 bg-nordic-100" />
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-semibold text-nordic-900 mb-1">
                     {t('homeowner.conversion.formTitle' as TranslationKey)}
                   </h2>
-                  <p className="text-sm text-white/75 mb-4">
+                  <p className="text-sm text-nordic-700 mb-4">
                     {t('homeowner.conversion.formSubtitle' as TranslationKey)}
                   </p>
 
@@ -395,11 +412,11 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                         aria-invalid={Boolean(phoneError)}
                         aria-describedby={phoneError ? 'ho-phone-error' : undefined}
                         onChange={() => phoneError && setPhoneError('')}
-                        className={`${inputClass} ${phoneError ? 'ring-2 ring-red-400' : ''}`}
+                        className={`${inputClass} ${phoneError ? 'border-red-600' : ''}`}
                         placeholder={t('homeowner.form.phonePlaceholder')}
                       />
                       {phoneError && (
-                        <p id="ho-phone-error" className="text-xs text-red-400">
+                        <p id="ho-phone-error" className="text-sm font-medium text-red-700">
                           {phoneError}
                         </p>
                       )}
@@ -465,7 +482,7 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                     href={GOOGLE_REVIEW_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 mt-3 text-xs text-white/70 hover:text-white transition-colors"
+                    className="flex items-center justify-center gap-2 mt-3 text-xs text-nordic-700 hover:text-nordic-900 transition-colors"
                   >
                     <GoogleIcon />
                     <span>5.0 på Google</span>
