@@ -127,6 +127,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/boenden" className="font-light flex items-center hover:text-white transition-colors duration-300">
+                  <div className="h-px w-6 bg-white/40 mr-3"></div>
+                  {t('nav.availableHousing')}
+                </Link>
+              </li>
+              <li>
                 <a href="/om-oss" className="font-light flex items-center hover:text-white transition-colors duration-300">
                   <div className="h-px w-6 bg-white/40 mr-3"></div>
                   {t('nav.about') || 'Om oss'}

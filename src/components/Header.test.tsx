@@ -39,24 +39,31 @@ describe('public navigation', () => {
   it('keeps English company, locations, about and logo navigation in English', () => {
     renderHeader('/en/corporate-housing/boden');
     expect(screen.getByRole('link', { name: 'For companies' })).toHaveAttribute('href', '/en/corporate-housing-sweden');
-    expect(screen.getByRole('link', { name: 'Locations' })).toHaveAttribute('href', '/en/corporate-housing-sweden#cities');
     expect(screen.getByRole('link', { name: 'About us' })).toHaveAttribute('href', '/en/about');
     expect(screen.getByRole('link', { name: 'StayOnSite' })).toHaveAttribute('href', '/en/corporate-housing-sweden');
   });
 
   it.each([
-    ['/', 'Datacenter', '/datacenter-boende', '/kontakt'],
-    ['/en/about', 'Data centres', '/en/data-centre-accommodation-sweden', '/en/corporate-housing-sweden#inquiry'],
-    ['/pl/zakwaterowanie-firmowe', 'Centra danych', '/pl/zakwaterowanie-centra-danych-szwecja', '/pl/zakwaterowanie-firmowe#inquiry'],
-  ])('shows every desktop page directly in the top menu from %s', (path, dataCentreLabel, dataCentreHref, contactHref) => {
+    ['/', ['För företag', 'För husägare', 'Om oss', 'Kontakt']],
+    ['/en/about', ['For companies', 'For Homeowners', 'About us', 'Contact']],
+  ])('keeps the desktop top menu to the main paths from %s', (path, labels) => {
     renderHeader(path);
     const nav = screen.getAllByRole('navigation')[0];
-    expect(within(nav).queryByRole('button', { name: /Mer|More|Więcej/ })).not.toBeInTheDocument();
-    expect(within(nav).getByRole('link', { name: dataCentreLabel })).toHaveAttribute('href', dataCentreHref);
-    expect(within(nav).getByRole('link', { name: /Kontakt|Contact/ })).toHaveAttribute('href', contactHref);
-    if (path === '/') {
-      expect(within(nav).getByRole('link', { name: 'Projektboende' })).toHaveAttribute('href', '/projektboende');
+    expect(within(nav).getAllByRole('link').map((link) => link.textContent)).toEqual(expect.arrayContaining(labels));
+    for (const hidden of ['Projektboende', 'Boenden', 'Våra orter', 'Datacenter', 'Locations']) {
+      expect(within(nav).queryByRole('link', { name: hidden })).not.toBeInTheDocument();
     }
+  });
+
+  it.each([
+    ['/', 'Boende vid datacenter', '/datacenter-boende'],
+    ['/en/about', 'Data centre accommodation', '/en/data-centre-accommodation-sweden'],
+  ])('keeps secondary pages in the mobile menu from %s', (path, dataCentreLabel, dataCentreHref) => {
+    renderHeader(path);
+    fireEvent.click(screen.getByRole('button', { name: /Öppna menyn|Open menu/ }));
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('link', { name: dataCentreLabel })).toHaveAttribute('href', dataCentreHref);
+    expect(within(dialog).getByRole('link', { name: /^(Boenden|Accommodation)$/ })).toHaveAttribute('href', '/boenden');
   });
 
   it('opens a named, keyboard-dismissable mobile menu and closes it after selecting a page', () => {

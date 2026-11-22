@@ -41,26 +41,18 @@ const Header = () => {
   const companyHref = language === 'sv' ? '/for-foretag' : homeHref;
   const contactHref = language === 'sv' ? '/kontakt' : `${homeHref}#inquiry`;
 
+  // Toppmenyn: bara huvudvägarna. Övriga sidor finns i mobilmenyns andra del och i sidfoten.
   const navLinks = [
     { label: t('nav.forCompanies'), href: companyHref },
-    { label: t('nav.locations'), href: `${homeHref}#cities` },
-    { label: t('nav.availableHousing'), href: '/boenden' },
     { label: t('nav.homeowner'), href: '/for-husagare' },
     { label: t('nav.about'), href: aboutHref },
+    { label: t('nav.contact'), href: contactHref },
   ];
   const additionalLinks = [
     ...(language === 'sv' ? [{ label: t('nav.projectHousing'), href: '/projektboende' }] : []),
     { label: t('nav.dataCentreHousing'), href: DATACENTER_PATHS[language] },
-    { label: t('nav.contact'), href: contactHref },
-  ];
-
-  // Dator: alla länkar synliga direkt, företagserbjudandena samlade efter "För företag".
-  const desktopLinks = [
-    navLinks[0],
-    ...(language === 'sv' ? [{ label: t('nav.projectHousing'), href: '/projektboende' }] : []),
-    { label: t('nav.dataCentreShort'), href: DATACENTER_PATHS[language] },
-    ...navLinks.slice(1),
-    { label: t('nav.contact'), href: contactHref },
+    { label: t('nav.locations'), href: `${homeHref}#cities` },
+    { label: t('nav.availableHousing'), href: '/boenden' },
   ];
 
   useEffect(() => {
@@ -99,7 +91,7 @@ const Header = () => {
 
         <nav aria-label={t('nav.primaryNavigation')} className="hidden items-center gap-6 xl:flex">
           <ul className="flex items-center gap-5">
-            {desktopLinks.map((link) => (
+            {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
