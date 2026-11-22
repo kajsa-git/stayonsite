@@ -7,6 +7,7 @@ import {
   propertyIntakeToPropertyBody,
   type PropertyIntakeInput,
 } from "./property-intake";
+import { intakeFactsFromNotes } from "@/lib/property-features";
 
 const sampleInput: PropertyIntakeInput = {
   ownerType: "privatperson",
@@ -156,6 +157,28 @@ describe("property intake mapping", () => {
   ])("records the vehicle answer %s distinctly", (answer, label) => {
     const input = propertyIntakeSchema.parse({ ...sampleInput, parkingLargeVehicle: answer });
     expect(buildPropertyIntakeNotes(input)).toContain(`Plats för större arbetsfordon: ${label}`);
+  });
+
+  it("records property type and shared laundry for CRM and the listing checklist", () => {
+    const input = propertyIntakeSchema.parse({ ...sampleInput, propertyType: "lagenhet", washingMachines: 0, dryers: 0, sharedLaundry: true });
+    expect(propertyIntakeInclusions(input)).toContain("Gemensam tvättstuga");
+    const notes = buildPropertyIntakeNotes(input);
+    expect(notes).toContain("Bostadstyp: Lägenhet");
+    expect(notes).toContain("Tvätt: gemensam tvättstuga");
+    const house = propertyIntakeSchema.parse({ ...sampleInput, propertyType: "hus", washingMachines: 1, dryers: 0 });
+    expect(buildPropertyIntakeNotes(house)).toContain("Tvätt: tvättmaskin");
+    expect(propertyIntakeToPropertyBody(house)).toMatchObject({ washingMachines: 1, dryers: 0 });
+  });
+
+  it("keeps safety answers explicit so a missing answer is never read as no", () => {
+    const input = propertyIntakeSchema.parse({ ...sampleInput, safety: { smokeAlarm: true, fireExtinguisher: false, burglarAlarm: true, fireplace: false } });
+    expect(propertyIntakeInclusions(input)).toEqual(expect.arrayContaining(["Brandvarnare", "Larm"]));
+    expect(propertyIntakeInclusions(input)).not.toContain("Eldstad/kamin");
+    const notes = buildPropertyIntakeNotes(input);
+    expect(notes).toContain("Säkerhet: brandvarnare ja, brandsläckare nej, larm ja, eldstad/kamin nej");
+    expect(intakeFactsFromNotes(notes)).toContain("Säkerhet: brandvarnare ja, brandsläckare nej, larm ja, eldstad/kamin nej");
+    expect(buildPropertyIntakeNotes(propertyIntakeSchema.parse({ ...sampleInput, safety: { smokeAlarm: true } }))).toContain("larm okänt");
+    expect(propertyIntakeSchema.parse({ ...sampleInput, features: ["Bastu", "Hemlig grej"] }).features).toEqual(["Bastu"]);
   });
 
   it("accepts older submissions and keeps an omitted answer distinct from zero", () => {

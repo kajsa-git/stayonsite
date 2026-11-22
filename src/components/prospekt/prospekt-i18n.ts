@@ -45,7 +45,7 @@ export const T: Record<Lang, {
     footer: "StayOnSite · Corporate housing i hela Sverige",
     metaDesc: (place) => `Möblerat boende i ${place} via StayOnSite — corporate housing i hela Sverige.`,
     hl: { furnished: "Möblerat", eget: "Eget boende" },
-    f: { area: "Yta", bedrooms: "Sovrum", beds: "Bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", dishwasher: "Diskmaskin", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
+    f: { area: "Yta", bedrooms: "Sovrum", beds: "Separata bäddar", bathrooms: "Badrum", washer: "Tvättmaskin", dryer: "Tumlare", dishwasher: "Diskmaskin", parking: "Parkering", from: "Tillgänglig från", to: "Tillgänglig till" },
     parkingUnit: "pl.",
   },
   en: {
@@ -65,7 +65,7 @@ export const T: Record<Lang, {
     footer: "StayOnSite · Corporate housing across Sweden",
     metaDesc: (place) => `Furnished accommodation in ${place} via StayOnSite — corporate housing across Sweden.`,
     hl: { furnished: "Furnished", eget: "Private accommodation" },
-    f: { area: "Area", bedrooms: "Bedrooms", beds: "Beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", dishwasher: "Dishwasher", parking: "Parking", from: "Available from", to: "Available until" },
+    f: { area: "Area", bedrooms: "Bedrooms", beds: "Separate beds", bathrooms: "Bathrooms", washer: "Washing machine", dryer: "Dryer", dishwasher: "Dishwasher", parking: "Parking", from: "Available from", to: "Available until" },
     parkingUnit: "spots",
   },
   pl: {
@@ -85,7 +85,7 @@ export const T: Record<Lang, {
     footer: "StayOnSite · Zakwaterowanie firmowe w całej Szwecji",
     metaDesc: (place) => `Umeblowane zakwaterowanie w ${place} przez StayOnSite — zakwaterowanie firmowe w całej Szwecji.`,
     hl: { furnished: "Umeblowane", eget: "Własne zakwaterowanie" },
-    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", dishwasher: "Zmywarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
+    f: { area: "Powierzchnia", bedrooms: "Sypialnie", beds: "Oddzielne łóżka", bathrooms: "Łazienki", washer: "Pralka", dryer: "Suszarka", dishwasher: "Zmywarka", parking: "Parking", from: "Dostępne od", to: "Dostępne do" },
     parkingUnit: "miejsc",
   },
 };

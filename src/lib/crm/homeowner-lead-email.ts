@@ -4,10 +4,10 @@ type Locale = "sv" | "en" | "pl";
 
 const copy = {
   sv: {
-    subject: "Tack för din registrering – nästa steg",
+    subject: "Slutför registreringen av din bostad",
     greeting: "Hej!",
-    intro: "Tack för din registrering. För att vi ska kunna matcha ditt boende med våra hyresgäster behöver vi uppgifter om boendet: adress, storlek, hyra och gärna bilder. Det tar ett par minuter.",
-    label: "Fyll i bostaden",
+    intro: "Du har påbörjat registreringen av din bostad hos oss. För att vi ska kunna matcha den med våra hyresgäster behöver vi resten av uppgifterna: adress, storlek, hyra och gärna bilder. Det tar ett par minuter.",
+    label: "Fyll i bostadens uppgifter",
     button: "Registrera bostaden",
     followUp: "När du har fyllt i uppgifterna återkommer vi om nästa steg. Du kan känna dig trygg med att din exakta adress aldrig visas offentligt, och inget visas online utan ditt godkännande.",
     question: "Har du frågor? SMS:a eller ring oss direkt: 076-249 84 86.",
@@ -15,9 +15,9 @@ const copy = {
     organization: "StayOnSite",
   },
   en: {
-    subject: "Thank you for registering – next steps",
+    subject: "Complete your property registration",
     greeting: "Hi!",
-    intro: "Thank you for registering. To match your property with our tenants, we need some details about it: address, size, rent and ideally photos. It takes a few minutes.",
+    intro: "You have started registering your property with us. To match it with our tenants, we need the rest of the details: address, size, rent and ideally photos. It takes a few minutes.",
     label: "Add your property details",
     button: "Register the property",
     followUp: "Once you have completed the details, we will contact you about the next step. Your exact address is never shown publicly, and nothing is published online without your approval. The registration form is in Swedish.",
@@ -26,9 +26,9 @@ const copy = {
     organization: "StayOnSite",
   },
   pl: {
-    subject: "Dziękujemy za rejestrację – następny krok",
+    subject: "Dokończ rejestrację nieruchomości",
     greeting: "Cześć!",
-    intro: "Dziękujemy za rejestrację. Aby dopasować Twoją nieruchomość do potrzeb naszych najemców, potrzebujemy informacji na jej temat: adres, powierzchnia, czynsz i najlepiej zdjęcia. Zajmie to kilka minut.",
+    intro: "Rozpocząłeś rejestrację nieruchomości u nas. Aby dopasować ją do potrzeb naszych najemców, potrzebujemy pozostałych informacji: adres, powierzchnia, czynsz i najlepiej zdjęcia. Zajmie to kilka minut.",
     label: "Uzupełnij dane nieruchomości",
     button: "Zarejestruj nieruchomość",
     followUp: "Po uzupełnieniu danych skontaktujemy się z Tobą w sprawie kolejnego kroku. Dokładny adres nigdy nie jest widoczny publicznie, a bez Twojej zgody nic nie zostanie opublikowane online. Formularz jest w języku szwedzkim.",

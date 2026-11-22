@@ -103,6 +103,15 @@ describe("HUS registration", () => {
     expect(invite.status).toBe("cancelled");
   });
 
+  it("cancels the reminder by phone even when the property lands on another owner record", async () => {
+    await state.db.insert(owners).values({ id: "lead", name: "Anna Exempel", phone: "+46701234567", ownerType: "privatperson" });
+    await state.db.insert(outboxMessages).values({ id: "lead-sms", ownerId: "lead", toPhone: "+46701234567", body: homeownerLeadIntakeSms(), status: "waiting_intake", source: "intake" });
+    const { husPublication: _hus, ...stayonsite } = raw;
+    await createPropertyIntake(propertyIntakeSchema.parse({ ...stayonsite, source: "property-intake", page: "/for-husagare" }));
+    const [sms] = await state.db.select().from(outboxMessages).where(eq(outboxMessages.id, "lead-sms"));
+    expect(sms.status).toBe("cancelled");
+  });
+
   it("does not merge ambiguous addressless properties", async () => {
     for (const id of ["lead1", "lead2"]) await state.db.insert(properties).values({ id, ownerId: "o1", postalCode: "96100", status: "off_market", notes: "Inkommen från webb (homeowner)" });
     const { property } = await createPropertyIntake(propertyIntakeSchema.parse(raw));

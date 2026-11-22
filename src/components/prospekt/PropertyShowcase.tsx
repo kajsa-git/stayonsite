@@ -48,15 +48,18 @@ export function PropertyShowcase({
     p.egetBoende && { label: tr.hl.eget, Icon: DoorClosed },
   ].filter(Boolean) as { label: string; Icon: typeof Sofa }[];
 
+  const yes = lang === "en" ? "Yes" : lang === "pl" ? "Tak" : "Ja";
+  const no = lang === "en" ? "No" : lang === "pl" ? "Nie" : "Nej";
+  const none = lang === "en" ? "None" : lang === "pl" ? "Brak" : "Ingen";
   const facts: { label: string; value: string }[] = [
     p.squareMeters != null && { label: tr.f.area, value: `${p.squareMeters} m²` },
     p.bedrooms != null && { label: tr.f.bedrooms, value: String(p.bedrooms) },
     p.beds != null && { label: tr.f.beds, value: String(p.beds) },
     p.bathrooms != null && { label: tr.f.bathrooms, value: String(p.bathrooms) },
-    p.washingMachines != null && { label: tr.f.washer, value: String(p.washingMachines) },
-    p.dryers != null && { label: tr.f.dryer, value: String(p.dryers) },
-    p.dishwasher && { label: tr.f.dishwasher, value: lang === "en" ? "Yes" : lang === "pl" ? "Tak" : "Ja" },
-    p.parkingSpaces != null && { label: tr.f.parking, value: `${p.parkingSpaces} ${tr.parkingUnit}` },
+    p.washingMachines != null && { label: tr.f.washer, value: p.washingMachines > 1 ? String(p.washingMachines) : p.washingMachines === 1 ? yes : no },
+    p.dryers != null && { label: tr.f.dryer, value: p.dryers > 1 ? String(p.dryers) : p.dryers === 1 ? yes : no },
+    p.dishwasher && { label: tr.f.dishwasher, value: yes },
+    p.parkingSpaces != null && { label: tr.f.parking, value: p.parkingSpaces > 0 ? `${p.parkingSpaces} ${tr.parkingUnit}` : none },
     p.moveInFrom && { label: tr.f.from, value: p.moveInFrom },
     p.availableTo && { label: tr.f.to, value: p.availableTo },
   ].filter(Boolean) as { label: string; value: string }[];

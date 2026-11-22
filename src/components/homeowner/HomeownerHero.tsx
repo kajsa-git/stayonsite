@@ -209,7 +209,6 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
           email: String(formData.get('email') ?? '').trim(),
           phone: phone.trim(),
           bedrooms: String(formData.get('bedrooms') ?? '').trim(),
-          postalCode: String(formData.get('postalCode') ?? '').trim(),
           ...(cityName ? { city: cityName } : {}),
         },
       });
@@ -222,7 +221,6 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
         ownerName: String(formData.get('name') ?? ''),
         ownerPhone: phone,
         ownerEmail: String(formData.get('email') ?? ''),
-        postalCode: String(formData.get('postalCode') ?? ''),
         bedrooms: String(formData.get('bedrooms') ?? ''),
         city: cityName ?? '',
       });
@@ -422,39 +420,22 @@ const HomeownerHero = ({ cityName, heroImage, subtitle, extraFaqItems, hideFaq }
                       )}
                     </div>
 
-                    {/* Bedrooms + Postal code side by side */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ho-bedrooms" className={labelClass}>
-                          {t('homeowner.conversion.bedrooms' as TranslationKey)}
-                        </Label>
-                        <Input
-                          id="ho-bedrooms"
-                          name="bedrooms"
-                          type="number"
-                          required
-                          min={1}
-                          max={20}
-                          inputMode="numeric"
-                          className={inputClass}
-                          placeholder={t('homeowner.conversion.bedroomsPlaceholder' as TranslationKey)}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ho-postal" className={labelClass}>
-                          {t('homeowner.conversion.postalCode' as TranslationKey)}
-                        </Label>
-                        <Input
-                          id="ho-postal"
-                          name="postalCode"
-                          type="text"
-                          required
-                          autoComplete="postal-code"
-                          inputMode="numeric"
-                          className={inputClass}
-                          placeholder={t('homeowner.conversion.postalCodePlaceholder' as TranslationKey)}
-                        />
-                      </div>
+                    {/* Bedrooms */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="ho-bedrooms" className={labelClass}>
+                        {t('homeowner.conversion.bedrooms' as TranslationKey)}
+                      </Label>
+                      <Input
+                        id="ho-bedrooms"
+                        name="bedrooms"
+                        type="number"
+                        required
+                        min={1}
+                        max={20}
+                        inputMode="numeric"
+                        className={inputClass}
+                        placeholder={t('homeowner.conversion.bedroomsPlaceholder' as TranslationKey)}
+                      />
                     </div>
 
                     {/* Submit */}

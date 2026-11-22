@@ -1,3 +1,4 @@
+import { intakeFactsFromNotes } from "@/lib/property-features";
 import { and, desc, eq, inArray, isNull, or, sql, type SQL } from "drizzle-orm";
 import { db as defaultDb } from "./db";
 import { CRM_MAILBOX } from "./email-sync";
@@ -55,7 +56,9 @@ async function ownerContext(db: DB, kind: ConversationTarget, id: string) {
   const [homes, followUps, approvals] = await Promise.all([
     db.select({
       id: properties.id, address: properties.address, city: properties.city, status: properties.status,
-      bedrooms: properties.bedrooms, beds: properties.beds, furnished: properties.furnished, ownHome: properties.egetBoende,
+      bedrooms: properties.bedrooms, beds: properties.beds, bathrooms: properties.bathrooms, furnished: properties.furnished, ownHome: properties.egetBoende,
+      washingMachines: properties.washingMachines, dryers: properties.dryers, parkingSpaces: properties.parkingSpaces,
+      inclusions: properties.inclusions, intakeNotes: properties.notes,
       moveInFrom: properties.moveInFrom, availableTo: properties.availableTo, availability: properties.availability,
       published: properties.published, publishConsentAt: properties.publishConsentAt, contentReviewStatus: properties.contentReviewStatus,
       images: sql<number>`(SELECT count(*) FROM ${propertyImages} WHERE ${propertyImages.propertyId} = ${properties.id})`,
@@ -76,8 +79,10 @@ async function ownerContext(db: DB, kind: ConversationTarget, id: string) {
   return {
     scope,
     identity: owner ? { ...owner, notes: excerpt(owner.notes, 800) } : null,
-    cases: { properties: homes.slice(0, CASE_LIMIT).map(({ intakeAssessment, ...home }) => ({
-      ...home, intakeMissing: intakeAssessment?.missing ?? [], crmUrl: crmRoute.property(home.id),
+    cases: { properties: homes.slice(0, CASE_LIMIT).map(({ intakeAssessment, intakeNotes, ...home }) => ({
+      // Svaren från bostadsregistreringen (bostadstyp, tvätt, säkerhet ja/nej, utrustning,
+      // hyresform, parkering) så att agenten vet vad som är känt och vad som ska följas upp.
+      ...home, intakeFacts: intakeFactsFromNotes(intakeNotes), intakeMissing: intakeAssessment?.missing ?? [], crmUrl: crmRoute.property(home.id),
     })),
       openFollowUps: followUps.slice(0, CASE_LIMIT), recordedApprovals: approvals.slice(0, CASE_LIMIT),
       moreCases: [homes, followUps, approvals].some((rows) => rows.length > CASE_LIMIT) },

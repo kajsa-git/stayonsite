@@ -69,7 +69,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
   );
   const unspecified = [
     ...(propertyImages && propertyImages.length === 0 ? ["Bilder"] : []),
-    ...(property.beds == null ? ["Antal bäddar"] : []),
+    ...(property.beds == null ? ["Antal separata bäddar"] : []),
     ...(property.rentIn == null ? ["Hyra till uthyraren"] : []),
     ...(!property.moveInFrom ? ["Tillgänglig från"] : []),
     ...(!property.publishConsentAt ? ["Publiceringsmedgivande i CRM"] : []),
@@ -206,7 +206,7 @@ export function PropertyView({ property, onUpdate, onDelete, startEditing }: Pro
         <CardContent className="px-5 pb-5">
           <dl className="grid grid-cols-2 gap-x-5 gap-y-4 border-t pt-4 sm:grid-cols-4">
             <SummaryStat label="Sovrum" value={property.bedrooms?.toString()} />
-            <SummaryStat label="Bäddar" value={property.beds?.toString()} />
+            <SummaryStat label="Separata bäddar" value={property.beds?.toString()} />
             <SummaryStat label="Yta" value={property.squareMeters != null ? `${property.squareMeters.toLocaleString("sv-SE")} m²` : null} />
             <SummaryStat label="Badrum" value={property.bathrooms?.toString()} />
             <SummaryStat label={property.status === "rented" ? "Angivet ledigdatum" : "Tillgänglig från"} value={property.moveInFrom} />

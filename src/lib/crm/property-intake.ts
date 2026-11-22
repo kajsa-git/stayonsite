@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, or } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, or } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { PHONE_ALLOWED_CHARS_REGEX } from "@/lib/contact";
@@ -12,7 +12,8 @@ import { PROPERTY_INTAKE_MARKER } from "./property-intake-marker";
 import { startPropertyIntakeFollowUp } from "./property-intake-follow-up";
 import { indexOwner, indexProperty } from "./search-index";
 import { outboxMessages, ownerOutreach, owners, properties, propertyImages, propertyIntakeNotifications, type Owner, type Property, type PropertyInsert } from "./schema";
-import { homeownerLeadIntakeSms } from "./sms-templates";
+import { HOMEOWNER_LEAD_SMS_BODIES } from "./sms-templates";
+import { PROPERTY_FEATURES, SAFETY_ITEMS } from "@/lib/property-features";
 import { isProvisionalWebOwner } from "./provisional-owner";
 export { PROPERTY_INTAKE_MARKER };
 
@@ -114,6 +115,13 @@ export const propertyIntakeSchema = z
     excludedNote: stringOrNull,
     // Varmhyra = el, vatten, sophämtning, internet och sängkläder ingår vid rimlig förbrukning.
     rentType: z.enum(["varm", "kall"]).optional().nullable(),
+    propertyType: z.enum(["hus", "lagenhet", "annat"]).optional().nullable(),
+    sharedLaundry: z.boolean().default(false),
+    safety: z.object({
+      smokeAlarm: z.boolean(), fireExtinguisher: z.boolean(), burglarAlarm: z.boolean(), fireplace: z.boolean(),
+    }).partial().optional().nullable(),
+    features: z.array(z.string().trim().max(60)).max(40).optional().nullable()
+      .transform((list) => (list ?? []).filter((item) => PROPERTY_FEATURES.includes(item))),
     specialNote: stringOrNull,
     rentalRight: z.enum(["ager", "andrahand"]).optional().nullable(),
     page: z.string().trim().max(200).optional().nullable(),
@@ -184,6 +192,9 @@ export function propertyIntakeInclusions(input: PropertyIntakeInput): string[] {
     input.linensIncluded ? "Sängkläder och handduk" : null,
     input.heatWaterIncluded ? "Värme och varmvatten" : null,
     input.broadband ? "Bredband" : null,
+    input.sharedLaundry ? "Gemensam tvättstuga" : null,
+    ...SAFETY_ITEMS.filter((item) => input.safety?.[item.key] === true).map((item) => item.label),
+    ...(input.features ?? []),
     (input.parkingType ?? []).some((type) => type !== NO_PARKING) || input.parkingSpaces ? "Parkering" : null,
   ].filter(Boolean) as string[];
 }
@@ -217,6 +228,16 @@ export function buildPropertyIntakeNotes(input: PropertyIntakeInput) {
     input.husPublication?.approved && approvedText
       ? `Godkänd text: ${approvedText}\nGodkännanderuta: ${PUBLICATION_CONSENT_CHECKBOX_LABEL}` : null,
     line("UTM", utmLine(input)),
+    line("Bostadstyp", input.propertyType ? { hus: "Hus", lagenhet: "Lägenhet", annat: "Annat" }[input.propertyType] : null),
+    line("Tvätt", [
+      input.washingMachines ? "tvättmaskin" : null,
+      input.dryers ? "torktumlare" : null,
+      input.sharedLaundry ? "gemensam tvättstuga" : null,
+    ].filter(Boolean).join(", ") || (input.propertyType ? "ingen tvätt i bostaden" : null)),
+    line("Säkerhet", input.safety
+      ? SAFETY_ITEMS.map((item) => `${item.label.toLowerCase()} ${input.safety?.[item.key] === true ? "ja" : input.safety?.[item.key] === false ? "nej" : "okänt"}`).join(", ")
+      : null),
+    line("Utrustning och regler", input.features?.length ? input.features.join(", ") : null),
     line("Önskad hyra", money(input.desiredRent)),
     line("Hyresform", input.rentType ? RENT_TYPE_LABEL[input.rentType] : null),
     availability.length ? ["Tillgänglighet", ...availability.map((item) => `- ${item}`)].join("\n") : null,
@@ -278,8 +299,16 @@ export function propertyIntakeToPropertyBody(input: PropertyIntakeInput): Record
 async function findOwnerByContact(email: string | null, phone: string | null, husName?: string): Promise<Owner | null> {
   const conditions = [email ? eq(owners.email, email) : null, phone ? eq(owners.phone, phone) : null].filter(Boolean);
   if (conditions.length === 0) return null;
-  const candidates = await db.select().from(owners).where(or(...conditions));
-  if (!husName) return candidates[0] ?? null;
+  const candidates = await db.select().from(owners).where(or(...conditions)).orderBy(desc(owners.updatedAt));
+  if (!husName) {
+    // Samma person kan finnas flera gånger (t.ex. ett nytt kortformulär). Välj den som
+    // matchar både e-post och telefon, annars den senast uppdaterade, så att bostaden
+    // hamnar hos uthyraren som just fyllde i kortformuläret.
+    const lower = (value: string | null) => value?.trim().toLowerCase() ?? null;
+    return candidates.find((o) => email && phone && lower(o.email) === lower(email) && o.phone === phone)
+      ?? candidates.find((o) => email && lower(o.email) === lower(email))
+      ?? candidates[0] ?? null;
+  }
   const normalize = (value: string) => value.normalize("NFKC").trim().toLocaleLowerCase("sv").replace(/\s+/g, " ");
   // An exact email match is strong evidence; a phone shared by two people or
   // companies must not silently attach the new listing to the wrong owner.
@@ -408,9 +437,14 @@ export async function createPropertyIntake(
     // A queued invitation to register is obsolete once this owner has completed
     // the full form (HUS or stayonsite.se/registrera-bostad); keep it in history
     // rather than sending it.
-    if (created.ownerId) await tx.update(outboxMessages).set({ status: "cancelled", error: "Bostaden har redan registrerats." }).where(and(
-      eq(outboxMessages.ownerId, created.ownerId), eq(outboxMessages.source, "intake"),
-      eq(outboxMessages.body, homeownerLeadIntakeSms()), inArray(outboxMessages.status, ["queued", "draft", WAITING_FOR_INTAKE]),
+    // Matcha både uthyraren och telefonnumret: finns personen flera gånger i CRM:et
+    // kan bostaden ha kopplats till en annan post än den påminnelsen skapades för.
+    const intakePhone = normalizePhoneE164(input.ownerPhone);
+    const recipient = [created.ownerId ? eq(outboxMessages.ownerId, created.ownerId) : null, intakePhone ? eq(outboxMessages.toPhone, intakePhone) : null]
+      .filter((condition): condition is NonNullable<typeof condition> => condition !== null);
+    if (recipient.length) await tx.update(outboxMessages).set({ status: "cancelled", error: "Bostaden har redan registrerats." }).where(and(
+      or(...recipient), eq(outboxMessages.source, "intake"),
+      inArray(outboxMessages.body, [...HOMEOWNER_LEAD_SMS_BODIES]), inArray(outboxMessages.status, ["queued", "draft", WAITING_FOR_INTAKE]),
     ));
     return created;
   });

@@ -63,14 +63,22 @@ export function husIntakeConfirmSms(ownerName: string | null | undefined, approv
   return `${greet(ownerName)} Tack för att du registrerade din bostad hos hus. Vi har tagit emot dina uppgifter och granskar dem. ${next} /hus, en tjänst av StayOnSite`;
 }
 
-// För korta husägarlead från hemsidan/LP där vi bara har telefon + ev. ort:
-// nästa steg är komplett bostadsregistrering, inte signering.
+// Påminnelse till husägare som fyllt i kortformuläret men inte slutfört
+// registreringen (skickas av cron efter en fördröjning, se homeowner-automation).
 export function homeownerLeadIntakeSms(): string {
   return [
-    `Hej! Registrera boendet för matchning med hyresgäster. Inget visas utan ditt godkännande: ${HOMEOWNER_REGISTRATION_URL.replace(/^https:\/\//, "")}`,
+    `Hej! Du har påbörjat registreringen av din bostad. Fyll i resten så kan vi matcha den med hyresgäster: ${HOMEOWNER_REGISTRATION_URL.replace(/^https:\/\//, "")}`,
     "/Kajsa, StayOnSite",
   ].join("\n");
 }
+
+// Tidigare versioner av samma påminnelse. Väntande rader med gammal text ska
+// också stoppas när bostaden registreras.
+export const HOMEOWNER_LEAD_SMS_BODIES: readonly string[] = [
+  homeownerLeadIntakeSms(),
+  "Hej! Registrera boendet för matchning med hyresgäster. Inget visas utan ditt godkännande: www.stayonsite.se/registrera-bostad\n/Kajsa, StayOnSite",
+  "Hej! Registrera boendet för matchning med hyresgäster. Inget visas utan ditt godkännande: www.hyrutsmart.se/registrera\n/Kajsa, HyrUtSmart - en del av StayOnSite",
+];
 
 // Uppdragsavtal-MEJL till uthyraren — HTML för interna klienten, full https-länk.
 export function landlordAvtalEmailHtml(ownerName: string | null | undefined, token: string): string {

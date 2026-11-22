@@ -57,8 +57,8 @@ describe("homeowner lead automation", () => {
       ownerId: "owner-1",
       source: "intake",
     });
-    expect(row.body).toContain("matchning med hyresgäster");
-    expect(row.body).toContain("Inget visas utan ditt godkännande");
+    expect(row.body).toContain("påbörjat registreringen");
+    expect(row.body).toContain("matcha den med hyresgäster");
     expect(row.body).not.toMatch(/gratis|kostnadsfri/i);
     expect(row.body).toContain("/Kajsa, StayOnSite");
     expect(row.body).toContain("www.stayonsite.se/registrera-bostad");
@@ -121,6 +121,14 @@ describe("registreringspåminnelse för husägare som fortsätter direkt", () =>
   it("rör inte påminnelser som är yngre än fördröjningen", async () => {
     await db.insert(outboxMessages).values({ id: "nudge", ownerId: "owner-1", toPhone: "+46701234567", body: "x", status: WAITING_FOR_INTAKE, source: "intake", createdAt: sqliteTs(new Date(now.getTime() - 10 * 60 * 1000)) });
     expect(await releaseDueHomeownerNudges({ now, db, sendEmail: async () => {} })).toMatchObject({ released: 0, cancelled: 0 });
+  });
+
+  it("stoppar påminnelsen när bostaden kopplats till en annan post med samma telefon", async () => {
+    await db.insert(owners).values({ id: "old-anna", name: "Anna", phone: "+46701234567", email: "anna@example.com" });
+    await db.insert(owners).values({ id: "owner-1", name: "Anna", phone: "+46701234567", email: "anna@example.com" });
+    await db.insert(outboxMessages).values({ id: "nudge", ownerId: "owner-1", toPhone: "+46701234567", body: "x", status: WAITING_FOR_INTAKE, source: "intake", createdAt: fortyMinutesAgo });
+    await db.insert(properties).values({ id: "p1", ownerId: "old-anna", address: "Nygatan 2", createdAt: sqliteTs(new Date(now.getTime() - 30 * 60 * 1000)) });
+    expect(await releaseDueHomeownerNudges({ now, db, sendEmail: async () => {} })).toMatchObject({ released: 0, cancelled: 1 });
   });
 
   it("stoppar påminnelsen om husägaren hunnit registrera en bostad", async () => {

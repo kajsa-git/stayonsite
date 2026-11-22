@@ -239,7 +239,7 @@ export function PropertyEditForm({
           <Labeled label="Sovrum">
             <input type="number" className={FIELD_CLS} value={form.bedrooms} onChange={(e) => set("bedrooms", e.target.value)} />
           </Labeled>
-          <Labeled label="Bäddar">
+          <Labeled label="Separata bäddar">
             <input type="number" className={FIELD_CLS} value={form.beds} onChange={(e) => set("beds", e.target.value)} />
           </Labeled>
           <Labeled label="Badrum">

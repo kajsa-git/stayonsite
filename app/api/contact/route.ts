@@ -79,7 +79,7 @@ const submissionSchema = z.discriminatedUnion("formType", [
     phone: z.string().min(6).max(50).refine(isValidPhone),
     message: z.string().min(10).max(4000),
   })}),
-  // Homeowner: supports both old (phone+city) and new (name+email+phone+bedrooms+postalCode)
+  // Homeowner: supports both old (phone+city) and new (name+email+phone+bedrooms, postalCode optional)
   z.object({ ...base, formType: z.literal("homeowner"), fields: z.union([
     z.object({
       phone: z.string().min(6).max(50).refine(isValidPhone),
@@ -90,7 +90,7 @@ const submissionSchema = z.discriminatedUnion("formType", [
       email: z.string().min(3).max(200).refine(isValidEmail),
       phone: z.string().min(6).max(50).refine(isValidPhone),
       bedrooms: z.string().regex(/^\d{1,2}$/),
-      postalCode: z.string().min(3).max(10),
+      postalCode: z.string().min(3).max(10).optional(),
     }),
   ])}),
   z.object({ ...base, formType: z.literal("lp-homeowner"), fields: z.object({

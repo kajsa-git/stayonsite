@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, lt, sql } from "drizzle-orm";
+import { and, asc, eq, gte, lt, or, sql } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
 import { db as defaultDb } from "./db";
@@ -107,10 +107,13 @@ export async function releaseDueHomeownerNudges(opts: { now?: Date; db?: DB; sen
   let emailErrors = 0;
   for (const message of due) {
     // Skydd om registreringen kopplades till uthyraren utan att påminnelsen stoppades.
-    const [registered] = message.ownerId
-      ? await db.select({ id: properties.id }).from(properties)
-        .where(and(eq(properties.ownerId, message.ownerId), gte(properties.createdAt, message.createdAt ?? cutoff))).limit(1)
-      : [];
+    // Registrerad bostad efter påminnelsen, hos samma uthyrare eller samma telefonnummer.
+    const [registered] = await db.select({ id: properties.id }).from(properties)
+      .leftJoin(owners, eq(owners.id, properties.ownerId))
+      .where(and(
+        gte(properties.createdAt, message.createdAt ?? cutoff),
+        message.ownerId ? or(eq(properties.ownerId, message.ownerId), eq(owners.phone, message.toPhone)) : eq(owners.phone, message.toPhone),
+      )).limit(1);
     const [row] = await db.update(outboxMessages)
       .set(registered ? { status: "cancelled", error: "Bostaden har redan registrerats." } : { status: "queued" })
       .where(and(eq(outboxMessages.id, message.id), eq(outboxMessages.status, WAITING_FOR_INTAKE)))
