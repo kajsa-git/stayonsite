@@ -11,5 +11,5 @@ export function husPublicationSmsId(propertyId: string): string {
 export function husPublishedLinkSms(propertyId: string): string {
   // The public detail page redirects an ID to its canonical slug. IDs have a
   // fixed length, unlike slugs and names, so the text fits in one GSM-7 SMS.
-  return `Hej! Din bostad är publicerad: www.stayonsite.se/boenden/${propertyId}\n/Kajsa, HyrUtSmart - en del av StayOnSite`;
+  return `Hej! Din bostad är publicerad: www.stayonsite.se/boenden/${propertyId}\n/Kajsa, StayOnSite`;
 }

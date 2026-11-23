@@ -11,5 +11,5 @@ it("sends a stable property link in one GSM-7 SMS", () => {
   expect(message).toContain("www.stayonsite.se/boenden/XCTc74ltDJrHAKXlid0Mg");
   expect(message).not.toContain("Exakt adress visas inte");
   expect(message).not.toContain("Svara här");
-  expect(message).toContain("/Kajsa, HyrUtSmart - en del av StayOnSite");
+  expect(message.split("\n")[1]).toBe("/Kajsa, StayOnSite");
 });
