@@ -2316,6 +2316,100 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'hyra-ut-hus-till-foretag-saffle-2026',
+    title: {
+      sv: 'Hyra ut hus till företag i Säffle 2026 – lönar det sig när VA-satsningen och E45-bygget behöver projektpersonal?',
+      en: 'Renting Your House to Companies in Säffle 2026 – Is It Worth It as Water Works and E45 Projects Bring in Project Staff?',
+      pl: 'Wynajem domu firmom w Säffle 2026 – czy to się opłaca, gdy modernizacja wodociągów i przebudowa E45 sprowadzają pracowników?',
+    },
+    description: {
+      sv: 'Äger du hus i Säffle? Så hyr du ut till företag med projektpersonal under VA-satsningen och E45-bygget – avtal, skatt, standard och prissättning.',
+      en: 'Own a house in Säffle? How to rent it to companies housing project staff during the water works upgrade and E45 rebuild – contracts, tax and standards.',
+      pl: 'Masz dom w Säffle? Jak wynająć go firmom dla pracowników projektu przy modernizacji wodociągów i E45 – umowy, podatki, standard.',
+    },
+    author: 'Kajsa Sihlén',
+    publishedDate: '2026-11-25',
+    category: 'Guide',
+    tags: ['Säffle', 'hyra ut hus', 'företagsbostäder', 'projektboende', 'Värmland', 'husägare'],
+    readingTime: 8,
+    audience: 'husagare',
+    keyTakeaways: [
+      'VA-satsningen i Säffle och Åmål omfattar 26 delprojekt, varav 14 i Åmåls kommun, med en samlad tidplan för 2026–2029.',
+      'Enligt lägesrapporten 28 maj 2026 pågår både produktion (fas 2) och detaljprojektering (fas 1) i flera VA-delprojekt.',
+      'Den 24 april 2026 fick E45 Hammar–Valnäs byggstartsbeslut under år 1–3 i planen, vilket innebär klartecken att upphandla byggentreprenaden.',
+      'E45 Säffle–Hammar är borttagen ur den nationella planen för infrastrukturen 2026–2037.',
+      'Vid uthyrning av småhus ger Skatteverket schablonavdrag på högst 40 000 kr plus 20 % av hyresintäkten, men inte vid uthyrning till egen eller närståendes arbetsgivare eller bolag.',
+    ],
+    faq: [
+      {
+        q: 'Hur länge brukar ett företag hyra ett hus i Säffle?',
+        a: 'Det beror på projektet. VA-satsningen har en samlad tidplan för 2026–2029, men delprojekten startar och avslutas vid olika tidpunkter, så hyrestiden bestäms i varje enskilt avtal.',
+      },
+      {
+        q: 'Får jag använda schablonavdraget när jag hyr ut till ett företag?',
+        a: 'Ja, enligt Skatteverket, om huset är en privatbostad och hyresgästen inte är din egen eller en närståendes arbetsgivare, eller ditt eget eller en närståendes bolag. För småhus är avdraget högst 40 000 kronor plus 20 procent av hyresintäkten.',
+      },
+      {
+        q: 'Kan jag hyra ut mitt fritidshus till projektpersonal?',
+        a: 'Ja, om huset fungerar för boende året runt med värme, vatten, tvätt och uppkoppling. Ett fritidshus som bara kan användas på sommaren passar sällan för anläggningsprojekt.',
+      },
+      {
+        q: 'Vad kostar det att hyra ut via StayOnSite?',
+        a: 'Ingenting. StayOnSite tar 0 % i avgift från husägare, och du får garanterad hyra enligt avtalet.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Säffle kommun – VA-projekt i Säffle kommun',
+        publisher: 'Säffle kommun',
+        url: 'https://saffle.se/boende-trafik-och-miljo/vatten-och-avlopp/va-projekt-i-saffle-kommun.html',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Åmåls kommun – Vi rustar upp VA-anläggningar i Säffle och Åmål',
+        publisher: 'amal.se',
+        url: 'https://amal.se/bygga-bo-och-leva-hallbart/vatten-och-avlopp/va-projekt-i-amals-kommun/vi-rustar-upp-va-anlaggningar-i-saffle-och-amal',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Säffle kommun – Projektet rör sig vidare enligt plan!',
+        publisher: 'Säffle kommun',
+        url: 'https://saffle.se/boende-trafik-och-miljo/vatten-och-avlopp/va-projekt-i-saffle-kommun/nyhetsfloden-va/aktuellt-inom-upprustning-av-va-anlaggningar-i-saffle-kommun/nyheter-va-process-2026/2026-05-28-projektet-ror-sig-vidare-enligt-plan.html',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Regeringen – Ny nationell plan för infrastrukturen 2026–2037, byggstartsbeslut',
+        publisher: 'Regeringen',
+        url: 'https://www.regeringen.se/contentassets/be0c107a413542cdbf5b369b864b2cdb/presentationsbilder-fran-presstraff-den-24-april-2026-om-byggstartsbeslut-for-infrastrukturprojekt/',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Regeringen – Regeringen satsar på Värmlandsbanan i den nya planen för transportinfrastrukturen',
+        publisher: 'Regeringen',
+        url: 'https://www.regeringen.se/pressmeddelanden/2026/04/regeringen-satsar-pa-varmlandsbanan-i-den-nya-planen-for-transportinfrastrukturen/',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Region Värmland – Regeringens beslut om infrastruktur, så påverkas Värmland',
+        publisher: 'regionvarmland.se',
+        url: 'https://regionvarmland.se/regionvarmland/nyhetsarkiv/region-varmland/2026-04-28-regeringens-beslut-om-infrastruktur---sa-paverkas-varmland',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Skatteverket – Hyra ut privatbostad',
+        publisher: 'Skatteverket',
+        url: 'https://www.skatteverket.se/privat/fastigheterochbostad/inkomsterfranbostad/hyrautprivatbostadbostadsrattsmahusochhyresratt.4.233f91f71260075abe8800033479.html',
+        checkedDate: '2026-11-25',
+      },
+      {
+        title: 'Skatteverket – Avdragslexikon för privatpersoner, U',
+        publisher: 'Skatteverket',
+        url: 'https://www.skatteverket.se/privat/skatter/arbeteochinkomst/avdragforprivatpersoner/u.4.5fc8c94513259a4ba1d800042761.html',
+        checkedDate: '2026-11-25',
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
